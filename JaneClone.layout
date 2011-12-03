@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="Makefile" open="1" top="0" tabpos="4">
+		<Cursor position="113" topLine="0" />
+	</File>
+	<File name="dat\transtable.dat" open="1" top="0" tabpos="8">
+		<Cursor position="4956" topLine="119" />
+	</File>
+	<File name="include\JaneClone.h" open="1" top="0" tabpos="7">
+		<Cursor position="432" topLine="0" />
+	</File>
+	<File name="include\tinystr.h" open="0" top="0" tabpos="6">
+		<Cursor position="392" topLine="72" />
+	</File>
+	<File name="include\tinyxml.h" open="0" top="0" tabpos="8">
+		<Cursor position="25421" topLine="689" />
+	</File>
+	<File name="src\JaneClone.cpp" open="1" top="1" tabpos="6">
+		<Cursor position="13404" topLine="378" />
+	</File>
+	<File name="src\Main.cpp" open="1" top="0" tabpos="5">
+		<Cursor position="464" topLine="7" />
+	</File>
+	<File name="src\tinystr.cpp" open="0" top="0" tabpos="5">
+		<Cursor position="1280" topLine="46" />
+	</File>
+	<File name="src\tinyxml.cpp" open="0" top="0" tabpos="7">
+		<Cursor position="19271" topLine="1024" />
+	</File>
+	<File name="src\tinyxmlerror.cpp" open="0" top="0" tabpos="9">
+		<Cursor position="503" topLine="14" />
+	</File>
+	<File name="src\tinyxmlparser.cpp" open="0" top="0" tabpos="10">
+		<Cursor position="561" topLine="33" />
+	</File>
+</CodeBlocks_layout_file>
