@@ -17,19 +17,23 @@
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 
-// C++の通常ライブラリなど
+// C++ -- boost
 #include <fstream>
 #include <iostream>
+#include <list>
 #include <boost/asio.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 
-// Cのライブラリ
+// C 標準ライブラリ
 #include <zlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+// 自作関数のヘッダ
+#include "ExtractBoardList.h"
 
 // 名前空間
 using namespace std;
@@ -68,8 +72,26 @@ public:
 
 private:
     // begin wxGlade: JaneClone::methods
-    void set_properties();
-    void do_layout();
+    void SetProperties();
+    void DoLayout();
+
+
+    /**
+    *---OnGetBoardList以下のメソッド
+    */
+    // 板一覧ファイルをダウンロードする処理
+	void DownloadBoardList();
+	// ダウンロードした板一覧ファイルを解凍する処理
+	void DecommpressFile();
+	// ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
+	void ConvertSJISToUTF8();
+	// 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
+	void SetBoardList();
+
+    /**
+    *---OnGetBoardList以下のメソッドおわり
+    */
+
 
     // URL入力欄のテキスト操作用
     wxTextCtrl* textCtlForURL;
@@ -80,7 +102,7 @@ protected:
 
     wxStaticText* label_1;
     wxButton* button_1;
-    wxTreeCtrl* tree_ctrl_1;
+    wxTreeCtrl* tree_ctrl;
     wxPanel* window_1_pane_1;
     wxPanel* window_2_pane_1;
     wxPanel* window_2_pane_2;

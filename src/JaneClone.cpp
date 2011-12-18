@@ -28,7 +28,6 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
     wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 {
 	// メニューバーの設置
-	// このへんのアンダーバーついた文字列はあとでxgettextで日本語化する
 	wxMenuBar *menuBar = new wxMenuBar;
     wxMenu *menu1 = new wxMenu;
     menu1->Append(ID_About, wxT("このソフトについて..."));
@@ -69,55 +68,43 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
     button_1 = new wxButton(this, wxID_ANY, wxT("GO"));
 
     //板一覧を取得してツリー表示
-    tree_ctrl_1 = new wxTreeCtrl(window_1_pane_1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+    tree_ctrl = new wxTreeCtrl(window_1_pane_1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
     window_2_pane_1 = new wxPanel(window_2, wxID_ANY);
     window_2_pane_2 = new wxPanel(window_2, wxID_ANY);
 
-    set_properties();
-    do_layout();
-    // end wxGlade
-
-    // ステータスバーの設置
-    //statusBarStr = new wxStatusBar(window_1_pane_2, wxID_ANY, wxST_SIZEGRIP);
-    //statusBarStr->SetStatusText(wxT("Ready"), 0);
+    SetProperties();
+    DoLayout();
     this->CreateStatusBar();
 	this->SetStatusText(wxT(" 完了"));
 }
 
 
-void JaneClone::set_properties()
+void JaneClone::SetProperties()
 {
     // wxGladeによる自動生成
     SetTitle(_("JaneClone"));
     SetSize(wxSize(960, 540));
     label_1->SetFont(wxFont(9, wxDEFAULT, wxNORMAL, wxNORMAL, 0, wxT("MS Shell Dlg 2")));
 
-    // デバッグ用のログを標準出力に設定する
-    wxLog *logger=new wxLogStream(&cout);
-	wxLog::SetActiveTarget(logger);
-
-    // TreeControlの中身を設定
+    // 板一覧情報を反映する
     wxImageList *treeImage = new wxImageList(16,16);
     wxArtProvider *listIcon = new wxArtProvider();
     wxBitmap idx1 = wxArtProvider::GetBitmap(wxART_FOLDER,wxART_OTHER );
     wxBitmap idx2 = wxArtProvider::GetBitmap(wxART_NEW,wxART_OTHER);
     treeImage->Add(idx1);
     treeImage->Add(idx2);
-    tree_ctrl_1->AssignImageList(treeImage);
+    tree_ctrl->AssignImageList(treeImage);
 
     wxTreeItemData *treeData = new wxTreeItemData();
-
-    wxTreeItemId rootId = tree_ctrl_1->AddRoot(wxT("2ch板一覧"), 0, 0, treeData);
-    wxTreeItemId sub1 = tree_ctrl_1->AppendItem(rootId,wxT("地震"), 0, 0, treeData);
-    wxTreeItemId itemId1 = tree_ctrl_1->AppendItem(sub1,wxT("地震headline"), 1, 1, treeData);
-    wxTreeItemId itemId2 = tree_ctrl_1->AppendItem(sub1,wxT("地震速報"), 1, 1, treeData);
-    wxTreeItemId itemId3 = tree_ctrl_1->AppendItem(sub1,wxT("臨時地震"), 1, 1, treeData);
-    wxTreeItemId itemId4 = tree_ctrl_1->AppendItem(sub1,wxT("臨時地震+"), 1, 1, treeData);
-    wxTreeItemId itemId5 = tree_ctrl_1->AppendItem(sub1,wxT("緊急自然災害"), 1, 1, treeData);
+    wxTreeItemId rootId = tree_ctrl->AddRoot(wxT("2ch板一覧"), 0, 0, treeData);
+    tree_ctrl->AppendItem(rootId,wxT("地震"), 0, 0, treeData);
+    tree_ctrl->AppendItem(rootId,wxT("雷"), 0, 0, treeData);
+    tree_ctrl->AppendItem(rootId,wxT("火事"), 0, 0, treeData);
+    tree_ctrl->AppendItem(rootId,wxT("おやじ"), 0, 0, treeData);
 }
 
 
-void JaneClone::do_layout()
+void JaneClone::DoLayout()
 {
     // 各種サイザー設定
     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
@@ -133,7 +120,7 @@ void JaneClone::do_layout()
 
     // 下部のスプリットウィンドウの設定
     // Sizer3にツリーコントロールが入る
-    sizer_3->Add(tree_ctrl_1, 1, wxEXPAND, 0);
+    sizer_3->Add(tree_ctrl, 1, wxEXPAND, 0);
     window_1_pane_1->SetSizer(sizer_3);
 
 	// スプリットウィンドウ(横の区切り)
@@ -159,9 +146,17 @@ void JaneClone::OnAbout(wxCommandEvent&)
 {
 }
 
+
 // 板一覧更新処理
-void JaneClone::OnGetBoardList(wxCommandEvent&)
-{
+void JaneClone::OnGetBoardList(wxCommandEvent&) {
+	JaneClone::DownloadBoardList();
+	JaneClone::DecommpressFile();
+	JaneClone::ConvertSJISToUTF8();
+	JaneClone::SetBoardList();
+}
+
+// 板一覧ファイルをダウンロードする処理
+void JaneClone::DownloadBoardList(){
     // ディレクトリ作成
     fs::path dir( "./dat" );
     fs::create_directory( dir );
@@ -204,10 +199,13 @@ void JaneClone::OnGetBoardList(wxCommandEvent&)
     }
     outputfilegzip.close();
     line.clear();
+}
 
+// ダウンロードした板一覧ファイルを解凍する処理
+void JaneClone::DecommpressFile(){
     // gzファイルをZlibを使って解凍する
     gzFile infile = gzopen("./dat/BoardList.gzip", "rb");
-    FILE *outfile = fopen("./dat/BoardListSJIS.xml", "wb");
+    FILE *outfile = fopen("./dat/BoardListSJIS.html", "wb");
 
     char buffer[128];
     int num_read = 0;
@@ -218,7 +216,10 @@ void JaneClone::OnGetBoardList(wxCommandEvent&)
     // ファイルポインタを閉じる
     gzclose(infile);
     fclose(outfile);
+}
 
+// ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
+void JaneClone::ConvertSJISToUTF8(){
     // 文字列変換処理
     // ファイルポインタの用意
     FILE *fp_sjis;
@@ -227,9 +228,9 @@ void JaneClone::OnGetBoardList(wxCommandEvent&)
     int c_utf8;
 
     /* 読み込みモードでSJISのファイルをオープン */
-	fp_sjis = fopen( "./dat/BoardListSJIS.xml", "r" );
+	fp_sjis = fopen( "./dat/BoardListSJIS.html", "r" );
     /* 書き出しモードでSJISのファイルをオープン */
-	fp_utf8 = fopen( "./dat/BoardListUTF8.xml", "w" );
+	fp_utf8 = fopen( "./dat/BoardListUTF8.html", "w" );
 
     // 判定用変数の準備
     char SJISHEX[3];
@@ -387,14 +388,16 @@ void JaneClone::OnGetBoardList(wxCommandEvent&)
     }
     fclose( fp_sjis );
     fclose( fp_utf8 );
+}
 
-    // ここからXMLエンコーダーでファイルを読み込んで変数に入れる
-    wxXmlDocument doc;
 
-    wxFFileInputStream input("./dat/BoardListUTF8.xml");
-	doc.Load(input, wxT("UTF-8"),wxXML_ELEMENT_NODE);
+// 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
+void JaneClone::SetBoardList(){
 
-	this->SetStatusText(doc.GetRoot()->GetName());
+	// インスタンスを作る
+	ExtractBoardList *ebl = new ExtractBoardList();
+	// 板一覧の情報が入ったリストをもらう
+	vector<char*> boardListArray = ebl->GetBoardList();
 }
 
 // バージョン情報が書かれたダイアログを表示する処理
@@ -406,5 +409,7 @@ void JaneClone::OnVersionInfo(wxCommandEvent&)
 							wxOK|wxICON_INFORMATION);
 	dialog.ShowModal();
 }
+
+
 
 
