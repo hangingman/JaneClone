@@ -68,7 +68,7 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
     button_1 = new wxButton(this, wxID_ANY, wxT("GO"));
 
     //板一覧を取得してツリー表示
-    tree_ctrl = new wxTreeCtrl(window_1_pane_1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+    m_tree_ctrl = new wxTreeCtrl(window_1_pane_1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
     window_2_pane_1 = new wxPanel(window_2, wxID_ANY);
     window_2_pane_2 = new wxPanel(window_2, wxID_ANY);
 
@@ -93,14 +93,10 @@ void JaneClone::SetProperties()
     wxBitmap idx2 = wxArtProvider::GetBitmap(wxART_NEW,wxART_OTHER);
     treeImage->Add(idx1);
     treeImage->Add(idx2);
-    tree_ctrl->AssignImageList(treeImage);
+    m_tree_ctrl->AssignImageList(treeImage);
 
-    wxTreeItemData *treeData = new wxTreeItemData();
-    wxTreeItemId rootId = tree_ctrl->AddRoot(wxT("2ch板一覧"), 0, 0, treeData);
-    tree_ctrl->AppendItem(rootId,wxT("地震"), 0, 0, treeData);
-    tree_ctrl->AppendItem(rootId,wxT("雷"), 0, 0, treeData);
-    tree_ctrl->AppendItem(rootId,wxT("火事"), 0, 0, treeData);
-    tree_ctrl->AppendItem(rootId,wxT("おやじ"), 0, 0, treeData);
+    m_treeData = new wxTreeItemData();
+    m_rootId = m_tree_ctrl->AddRoot(wxT("2ch板一覧"), 0, 0, m_treeData);
 }
 
 
@@ -120,7 +116,7 @@ void JaneClone::DoLayout()
 
     // 下部のスプリットウィンドウの設定
     // Sizer3にツリーコントロールが入る
-    sizer_3->Add(tree_ctrl, 1, wxEXPAND, 0);
+    sizer_3->Add(m_tree_ctrl, 1, wxEXPAND, 0);
     window_1_pane_1->SetSizer(sizer_3);
 
 	// スプリットウィンドウ(横の区切り)
@@ -149,10 +145,16 @@ void JaneClone::OnAbout(wxCommandEvent&)
 
 // 板一覧更新処理
 void JaneClone::OnGetBoardList(wxCommandEvent&) {
-	JaneClone::DownloadBoardList();
-	JaneClone::DecommpressFile();
-	JaneClone::ConvertSJISToUTF8();
-	JaneClone::SetBoardList();
+	// もし板一覧ファイルがdatフォルダに存在するならば一気に板一覧設定に飛ぶ
+	if(wxFile::Exists("./dat/BoardListUTF8.html")){
+		JaneClone::SetBoardList();
+	// そうでなければ板一覧をダウンロードしてくる
+	}else{
+		JaneClone::DownloadBoardList();
+		JaneClone::DecommpressFile();
+		JaneClone::ConvertSJISToUTF8();
+		JaneClone::SetBoardList();
+	}
 }
 
 // 板一覧ファイルをダウンロードする処理
@@ -397,7 +399,23 @@ void JaneClone::SetBoardList(){
 	// インスタンスを作る
 	ExtractBoardList *ebl = new ExtractBoardList();
 	// 板一覧の情報が入ったリストをもらう
-	vector<char*> boardListArray = ebl->GetBoardList();
+	wxArrayString boardListArray = ebl->GetBoardList();
+	// GUIにツリーコントロールを反映する
+	for (int i=0;i < boardListArray.size();i++) {
+		// ツリー名登録のための文字列
+		int treeID;
+		// 文字列が入っていなければツリーには入れない
+		if (!boardListArray[i].IsEmpty()) {
+			// カテゴリフォルダに当たる場合フォルダアイコンとしてツリーに登録
+			if (boardListArray[i].Contains(wxT("category:")) == 1) {
+				wxTreeItemId i = m_tree_ctrl->AppendItem(m_rootId,boardListArray[i].Remove(0, 9), 0, 0, m_treeData);
+				treeID = i;
+			}else{
+			// そうでなければファイルとしてツリーに登録
+				m_tree_ctrl->AppendItem(treeID,boardListArray[i], 1, 1, m_treeData);
+			}
+		}
+	}
 }
 
 // バージョン情報が書かれたダイアログを表示する処理

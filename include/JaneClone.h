@@ -13,14 +13,14 @@
 #include <wx/imaglist.h>
 #include <wx/artprov.h>
 #include <wx/xml/xml.h>
-#include <wx/log.h>
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
+#include <wx/string.h>
+#include <wx/file.h>
 
 // C++ -- boost
 #include <fstream>
 #include <iostream>
-#include <list>
 #include <boost/asio.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -97,12 +97,15 @@ private:
     wxTextCtrl* textCtlForURL;
     // ステータスバー表示用文字列
     wxStatusBar* statusBarStr;
+    // ツリーコントロールは内部からならいじれるようにしておく
+    wxTreeCtrl* m_tree_ctrl;
+    wxTreeItemData *m_treeData;
+    wxTreeItemId m_rootId;
 
 protected:
 
     wxStaticText* label_1;
     wxButton* button_1;
-    wxTreeCtrl* tree_ctrl;
     wxPanel* window_1_pane_1;
     wxPanel* window_2_pane_1;
     wxPanel* window_2_pane_2;
