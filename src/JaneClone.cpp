@@ -88,7 +88,6 @@ void JaneClone::SetProperties()
 
     // 板一覧情報を反映する
     wxImageList *treeImage = new wxImageList(16,16);
-    wxArtProvider *listIcon = new wxArtProvider();
     wxBitmap idx1 = wxArtProvider::GetBitmap(wxART_FOLDER,wxART_OTHER );
     wxBitmap idx2 = wxArtProvider::GetBitmap(wxART_NEW,wxART_OTHER);
     treeImage->Add(idx1);
@@ -146,7 +145,7 @@ void JaneClone::OnAbout(wxCommandEvent&)
 // 板一覧更新処理
 void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	// もし板一覧ファイルがdatフォルダに存在するならば一気に板一覧設定に飛ぶ
-	if(wxFile::Exists("./dat/BoardListUTF8.html")){
+	if(wxFile::Exists(wxT("./dat/BoardListUTF8.html"))){
 		JaneClone::SetBoardList();
 	// そうでなければ板一覧をダウンロードしてくる
 	}else{
@@ -401,6 +400,7 @@ void JaneClone::SetBoardList(){
 	// 板一覧の情報が入ったリストをもらう
 	wxArrayString boardListArray = ebl->GetBoardList();
 	// GUIにツリーコントロールを反映する
+	/*
 	for (int i=0;i < boardListArray.size();i++) {
 		// ツリー名登録のための文字列
 		int treeID;
@@ -416,6 +416,7 @@ void JaneClone::SetBoardList(){
 			}
 		}
 	}
+	*/
 }
 
 // バージョン情報が書かれたダイアログを表示する処理

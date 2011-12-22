@@ -5,10 +5,20 @@
 【 ソフト名 】	JaneClone
 【 製 作 者 】　　永田　裕之
 【  種  別  】 ２ちゃんねる専用ブラウザ
-【 開発環境 】　　Windows7 MinGW Code::Blocks
-【 動作環境 】  wxWidgets 2.9がインストールされた状態
+【 開発環境 】　　
+
+Windows7 MinGW Code::Blocks or Eclipse CDT
+Debian   gcc   Eclipse CDT
+
+【 動作環境 】
+Windows or Linux(Debian, Fedora, Centosあたりはいけると思われ)
+
+wxWidgets 2.8 or 2.9がインストールされていて「wx-config」コマンドが使える
+libxmlがインストールされていて「xml2-config」コマンドが使える
+boostがライブラリを含めてインストールされている。
+
 【バージョン】		0.3
-【最終更新日】	2011/12/19
+【最終更新日】	2011/12/23
 
 【 ウ ェ ブ 】	http://d.hatena.ne.jp/panzer-jagdironscrap1/
 【 E - mail 】 newserver002@gmail.com
@@ -21,11 +31,16 @@
 ◇ 動作条件 ◇
 
 今のところWindows + MinGW　の環境で wxWigets 2.8 or 2.9　をインストールした状態でコンパイルすれば実行できます。
-まだ正しく動作しません。動作するようになればバージョンを1.0にします。
+
+Linuxでも実行できるようになりました。動作環境は上に。
 
 ◇ インストール ◇
 
+(1) Windowsの場合
 MinGWのコンソールから「make」または「make -f Makefile」
+(2) Linuxの場合
+コンソールから「make -f Makefile.unx」
+(3) というかそのうちバイナリで配布します
 
 ◇ アンインストール ◇
 
@@ -37,3 +52,5 @@ MinGWのコンソールから「make」または「make -f Makefile」
 
 2011/12/19
 ・READMEをきっちり書く
+2011/12/23
+・LinuxバージョンのMakefileを書いてみる

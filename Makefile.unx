@@ -1,0 +1,47 @@
+TARGET 	= JaneClone
+OBJECTS 	= Main.o JaneClone.o ExtractBoardList.o
+
+# 基本コマンド
+RM 		:= rm
+CXX 	:= g++
+CC 		:= g++
+
+# デバッグ時とリリース時の微調整
+CXX_DEBUG_FLAGS		=	-g -O0
+CXX_RELEASE_FLAGS		=	-s -O2
+
+# オプション
+CPPFLAGS = -Wall -I/usr/include -I include `wx-config --cxxflags` `xml2-config --cflags`
+LDFLAGS  = -L/lib -L/usr/lib `wx-config --libs` `xml2-config --libs`  \
+-lz -lboost_filesystem -lboost_iostreams -lboost_system
+
+# boost == filesystem, iostream system
+# boostはバージョンや環境によって記述方法が変わるので注意
+# boostをインストールする場合はdevのパッケージを一緒にインストールしないとライブラリがついてこない
+
+# libxmlはlinuxの場合 'libxml2-dev' のパッケージ名でインストールできる
+
+VPATH    = include src
+
+# デバッグ
+.PHONY	: Debug
+Debug 	: CXXFLAGS+=$(CXX_DEBUG_FLAGS)
+Debug 	: all
+# リリース
+.PHONY	: Release
+Release	: CXXFLAGS+=$(CXX_RELEASE_FLAGS)
+Release	: all
+
+all : $(TARGET)
+$(TARGET) : $(OBJECTS)
+		$(CXX) $^ -o $@ $(LDFLAGS)
+		$(CXX) -c $< $(CPPFLAGS)
+ExtractBoardList : ExtractBoardList.cpp ExtractBoardList.h
+		$(CXX) -c $< $(CPPFLAGS)
+JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h
+		$(CXX) -c $< $(CPPFLAGS)
+Main.o : Main.cpp JaneClone.h
+		$(CXX) -c $< $(CPPFLAGS)
+.PHONY: clean
+clean:
+	$(RM) -f *.o $(TARGET)
