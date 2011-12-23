@@ -35,7 +35,7 @@ void ExtractBoardList::FindBoardInfo(xmlNode*& element, wxArrayString& array){
 			if(xmlStrcasecmp(node->name, (const xmlChar*)"B") == 0){
 				// 配列に要素を詰め込む
 				wxString wxNode( (char*)node->children->content, wxConvUTF8 );
-				wxString category = wxT("category:");
+				wxString category = wxT("c:");
 				category += wxNode;
 				array.Add(category);
 			}

@@ -94,8 +94,12 @@ void JaneClone::SetProperties()
     treeImage->Add(idx2);
     m_tree_ctrl->AssignImageList(treeImage);
 
+	// 板一覧情報のツリーコントロール
     m_treeData = new wxTreeItemData();
     m_rootId = m_tree_ctrl->AddRoot(wxT("2ch板一覧"), 0, 0, m_treeData);
+
+	// もし板一覧ファイルがdatフォルダに存在するならば一気に板一覧設定に飛ぶ
+	if(wxFile::Exists(wxT("./dat/BoardListUTF8.html"))){ JaneClone::SetBoardList();}
 }
 
 
@@ -399,24 +403,32 @@ void JaneClone::SetBoardList(){
 	ExtractBoardList *ebl = new ExtractBoardList();
 	// 板一覧の情報が入ったリストをもらう
 	wxArrayString boardListArray = ebl->GetBoardList();
+	// フラグ
+	boolean category_flag = false;
+	wxString categoryName;
+	wxString prefix = "c:";
+	wxTreeItemId category;
+
 	// GUIにツリーコントロールを反映する
-	/*
-	for (int i=0;i < boardListArray.size();i++) {
-		// ツリー名登録のための文字列
-		int treeID;
+	// 2chの入り口, 2ch総合案内を除外しているのでループ変数は3から始まる
+	// あと最後の方の余分なURLも除外している。 -- サーバに変更があった場合困るなあ…
+	for (int i=3;i < boardListArray.size() -1;i++) {
 		// 文字列が入っていなければツリーには入れない
-		if (!boardListArray[i].IsEmpty()) {
+		if (!boardListArray[i].IsSameAs("")) {
+			// カテゴリフォルダだったらフラグ立てる
+			if (boardListArray[i].Contains(prefix)){
+				category_flag = true;
+				categoryName = boardListArray[i];
+			}
 			// カテゴリフォルダに当たる場合フォルダアイコンとしてツリーに登録
-			if (boardListArray[i].Contains(wxT("category:")) == 1) {
-				wxTreeItemId i = m_tree_ctrl->AppendItem(m_rootId,boardListArray[i].Remove(0, 9), 0, 0, m_treeData);
-				treeID = i;
-			}else{
-			// そうでなければファイルとしてツリーに登録
-				m_tree_ctrl->AppendItem(treeID,boardListArray[i], 1, 1, m_treeData);
+			if (category_flag) {
+				category = m_tree_ctrl->AppendItem(m_rootId,categoryName, 0, 0, m_treeData);
+				category_flag = false;
+			} else {
+				m_tree_ctrl->AppendItem(category, boardListArray[i], 1, 1, m_treeData);
 			}
 		}
 	}
-	*/
 }
 
 // バージョン情報が書かれたダイアログを表示する処理
