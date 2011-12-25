@@ -17,6 +17,7 @@
 #include <wx/wfstream.h>
 #include <wx/string.h>
 #include <wx/file.h>
+#include <wx/notebook.h>
 
 // C++ -- boost
 #include <fstream>
@@ -106,12 +107,22 @@ protected:
 
     wxStaticText* label_1;
     wxButton* button_1;
-    wxPanel* window_1_pane_1;
-    wxPanel* window_2_pane_1;
-    wxPanel* window_2_pane_2;
+
+    // 左側
+	wxSplitterWindow* window_1;
+	// 右側
     wxSplitterWindow* window_2;
+
+    // 左側　-- 板一覧がツリーコントロールに入る
+    wxPanel* window_1_pane_1;
+	// 左側 -- 未使用　デバッグ画面でもつけるか
     wxPanel* window_1_pane_2;
-    wxSplitterWindow* window_1;
+
+	// 右側上段 -- 板一覧
+    wxPanel* window_2_pane_1;
+    // 右側下段　-- 個別のスレ
+    wxPanel* window_2_pane_2;
+
     // end wxGlade
 
     DECLARE_EVENT_TABLE()

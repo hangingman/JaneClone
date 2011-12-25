@@ -32,11 +32,9 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
     wxMenu *menu1 = new wxMenu;
     menu1->Append(ID_About, wxT("このソフトについて..."));
     menu1->Append(ID_Quit, wxT("終了"));
-
     wxMenu *menu2 = new wxMenu;
     wxMenu *menu3 = new wxMenu;
     menu3->Append(ID_GetBoardList, wxT("板一覧更新"));
-
     wxMenu *menu4 = new wxMenu;
     wxMenu *menu5 = new wxMenu;
     wxMenu *menu6 = new wxMenu;
@@ -44,7 +42,6 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
     wxMenu *menu8 = new wxMenu;
     wxMenu *menu9 = new wxMenu;
     menu9->Append(ID_GetVersionInfo, wxT("バージョン情報を開く"));
-
     menuBar->Append(menu1, wxT("ファイル"));
     menuBar->Append(menu2, wxT("表示"));
     menuBar->Append(menu3, wxT("板一覧"));
@@ -57,10 +54,15 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
 
     SetMenuBar(menuBar);// メニューバー設置終わり
 
+	// SetMinimumPaneSizeによってペインが合体しないように設定
     window_1 = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
+    window_1->SetMinimumPaneSize(20);
     window_1_pane_2 = new wxPanel(window_1, wxID_ANY);
-    window_2 = new wxSplitterWindow(window_1_pane_2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
     window_1_pane_1 = new wxPanel(window_1, wxID_ANY);
+
+    window_2 = new wxSplitterWindow(window_1_pane_2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
+    window_2->SetMinimumPaneSize(20);
+
 
     //URL入力欄の表示部分
     label_1 = new wxStaticText(this, wxID_ANY, wxT("URL:"));
@@ -107,14 +109,15 @@ void JaneClone::DoLayout()
 {
     // 各種サイザー設定
     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
 
     // 一番上のURL入力欄など
     sizer_2->Add(label_1, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 0);
     sizer_2->Add(textCtlForURL, 2, wxALL|wxEXPAND, 0);
     sizer_2->Add(button_1, 0, 0, 0);
+
     sizer_1->Add(sizer_2, 0, wxALL|wxEXPAND, 2);
 
     // 下部のスプリットウィンドウの設定
@@ -126,8 +129,27 @@ void JaneClone::DoLayout()
     window_2->SplitHorizontally(window_2_pane_1, window_2_pane_2);
     sizer_4->Add(window_2, 1, wxEXPAND, 0);
     window_1_pane_2->SetSizer(sizer_4);
-    // スプリットウィンドウ(縦の区切り) - 最初は150程度にしておく
-    window_1->SplitVertically(window_1_pane_1, window_1_pane_2, 150);
+
+    // 上部のタブを設定してみる
+    wxBoxSizer *topNote = new wxBoxSizer(wxVERTICAL);
+	wxNotebook *nb = new wxNotebook(window_2_pane_1,
+									-1,
+									wxPoint(-1, -1),
+									wxSize(-1, -1),
+									wxNB_TOP);
+
+	wxPanel *window1 = new wxPanel(nb, wxID_ANY);
+	window1->SetScrollbar(wxVERTICAL, 0, 16, 50);
+	nb->AddPage(window1, wxT("こころちゃーん"), true);
+	wxPanel *window2 = new wxPanel(nb, wxID_ANY);
+	window2->SetScrollbar(wxVERTICAL, 0, 16, 50);
+	nb->AddPage(window1, wxT("シャロですよー"), true);
+
+	topNote->Add(nb, 0, wxEXPAND, 10);
+	window_2_pane_1->SetSizer(topNote);
+
+    // スプリットウィンドウ(縦の区切り)
+    window_1->SplitVertically(window_1_pane_1, window_1_pane_2);
     sizer_1->Add(window_1, 1, wxEXPAND, 0);
     SetSizer(sizer_1);
 
@@ -135,6 +157,8 @@ void JaneClone::DoLayout()
     Layout();
     // end wxGlade
 }
+
+
 
 void JaneClone::OnQuit(wxCommandEvent&)
 {
