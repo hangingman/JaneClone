@@ -3,7 +3,7 @@
 #include "JaneClone.h"
 
 // boostの名前空間を使う
-using namespace boost::asio;
+//using namespace boost::asio;
 using namespace std;
 
 // enum
@@ -11,7 +11,7 @@ enum {
     ID_Quit = 1,
     ID_About,
     ID_GetBoardList,
-    ID_GetVersionInfo,
+    ID_GetVersionInfo
 };
 
 // event table
@@ -169,6 +169,19 @@ void JaneClone::OnAbout(wxCommandEvent&)
 {
 }
 
+// 板一覧のツリーがクリックされたときに起きるイベント
+void JaneClone::OnGetBoardInfo(wxTreeEvent& event)
+{
+	//wxTreeItemId selectedItem = event.GetItem();
+	//this->SetStatusText(selectedItem->GetItemText());
+	//this->SetStatusText(m_tree_ctrl->GetItemText(event.GetItem()));
+	//this->SetStatusText(wxT("テストです"));
+	wxDialog* dialog = new wxDialog(NULL, wxID_ANY,
+								wxT("一応イベントは反応してるみたいじゃぞ"),
+								wxDefaultPosition,
+								wxSize(300,300));
+	dialog->Show(true);
+}
 
 // 板一覧更新処理
 void JaneClone::OnGetBoardList(wxCommandEvent&) {
@@ -186,48 +199,55 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 
 // 板一覧ファイルをダウンロードする処理
 void JaneClone::DownloadBoardList(){
-    // ディレクトリ作成
-    fs::path dir( "./dat" );
-    fs::create_directory( dir );
 
-    // menu.2ch.net の http サービスに接続
-    ip::tcp::iostream s( "menu.2ch.net", "http" );
+	// ここから
+	wxHTTP http;
+	http.SetHeader(_T("Accept-Encoding"),_T("gzip"));
+	http.SetHeader(_T("Host"),_T("menu.2ch.net"));
+	http.SetHeader(_T("Accept"),_T(""));
+	http.SetHeader(_T("Referer"),_T("http://menu.2ch.net/"));
+	http.SetHeader(_T("Accept-Language"),_T("ja"));
+	http.SetHeader(_T("User-Agent"),_T("Mozilla/5.0"));
+	http.SetTimeout(5);
 
-    // 送信
-    s << "GET /bbsmenu.html HTTP/1.0 \r\n";
-    s << "Accept-Encoding: gzip \r\n";
-    s << "Host: menu.2ch.net \r\n";
-    s << "Accept:  \r\n";
-    s << "Referer: http://menu.2ch.net/ \r\n";
-    s << "Accept-Language: ja \r\n";
-    s << "User-Agent: Mozilla/5.0 \r\n";
-    s << "Connection: close \r\n";
-    s << "\r\n";
-    s << flush;
+	wxString server = "menu.2ch.net";
+	wxString path	= "/bbsmenu.html";
+	wxString msg	= "";
 
-    // 受信
-    string line;
-    bool flag = false;
-    // gzipのヘッダ作成
-    char HEX[] = {0x1f,0x8b,0x08,0x00};
-    //  ios::binary はバイナリ形式で出力（省略するとアスキー形式で出力）
-    fs::ofstream outputfilegzip( dir/"BoardList.gzip", std::ios::binary );
+	// 保存先を決める
+	wxFileOutputStream output(wxT("./dat/BoardList.gzip"));
+	wxDataOutputStream store(output);
 
-    while( getline(s, line) ){
-	if ( flag ) {
-	    // 真の場合
-	    outputfilegzip << line << endl;
-	} else {
-	    // 偽の場合
-	    unsigned int loc = line.find( *HEX , 0 );
-	    if( loc != string::npos ) {
-		outputfilegzip << line << endl;
-		flag = true;
-	    }
+	if(http.Connect(server,80)){
+		msg = wxT("接続しました");
+		wxInputStream *stream;
+		stream = http.GetInputStream(path);
+
+		if(stream == NULL){
+			msg = wxT("ストリームを受け取ることができませんでした。");
+		}else{
+			unsigned char buffer[1024];
+			int byteRead;
+			int totalRead;
+
+			msg = wxT("ストリームを受け取りました");
+			totalRead = 0;
+
+			while(!stream->Eof()){
+				stream->Read(buffer, sizeof(buffer));
+				store.Write8(buffer, sizeof(buffer));
+				byteRead=stream->LastRead();
+				if(byteRead<=0){break;}
+				totalRead+=byteRead;
+			}
+			wxString stringInt = wxString::Format(wxT("%i"),totalRead);
+			stringInt += wxT("バイト読み込みました。");
+			msg = stringInt;
+		}
+	}else{
+	msg = wxT("サーバーに接続できませんでした");
 	}
-    }
-    outputfilegzip.close();
-    line.clear();
+	wxMessageBox(msg);
 }
 
 // ダウンロードした板一覧ファイルを解凍する処理
@@ -249,176 +269,36 @@ void JaneClone::DecommpressFile(){
 
 // ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
 void JaneClone::ConvertSJISToUTF8(){
-    // 文字列変換処理
-    // ファイルポインタの用意
-    FILE *fp_sjis;
-    int c_sjis;
-    FILE *fp_utf8;
-    int c_utf8;
+  iconv_t icd;
+  FILE *fp_src, *fp_dst;
+  char s_src[S_SIZE], s_dst[S_SIZE];
+  const char *p_src;
+  char *p_dst;
+  size_t n_src, n_dst;
 
-    /* 読み込みモードでSJISのファイルをオープン */
-	fp_sjis = fopen( "./dat/BoardListSJIS.html", "r" );
-    /* 書き出しモードでSJISのファイルをオープン */
-	fp_utf8 = fopen( "./dat/BoardListUTF8.html", "w" );
+  icd = iconv_open("UTF-8", "Shift_JIS");
+  fp_src = fopen("./dat/BoardListSJIS.html", "r");
+  fp_dst = fopen("./dat/BoardListUTF8.html", "w");
 
-    // 判定用変数の準備
-    char SJISHEX[3];
-    // 変換テーブルから文字列を読み込むstring
-    string lineTrans;
-
-    // UTF-8への変換フラグ
-    // flag_su 0:通常時 1:1文字目　2:2文字目
-    int flag_su = 0;
-    // 変換テーブル探索用文字列
-    char search_table[5]; // 88a2\0　←　最終型
-
-    // 変換ループ
-    for(;;) {
-	// SJISファイルを一文字ごとに読み出す
-	c_sjis = fgetc( fp_sjis );
-
-	// SJISファイルが最終の文字ならばループから抜ける
-	if( c_sjis == EOF ) { break;}
-	sprintf(SJISHEX, "%02x", (char*)c_sjis);
-	SJISHEX[2] = '\x0';
-
-	// 2週目でフラグが1だったら２にしておく
-	if ( flag_su == 1 ) { flag_su = 2; }
-	// Shift-JISの先頭バイトが見つかればフラグを１に
-	if ( (SJIS_CHECK_STR) && flag_su != 1 && flag_su != 2 ){ flag_su = 1; }
-	//
-
-		// switch文の開始
-		switch (flag_su) {
-		// ascii文字だった場合そのまま書きだす
-		case 0:
-			// Shift_JIS以外のasciiコードならばそのまま書きだす
-			// SJISからUTF-8に値渡し
-			c_utf8 = c_sjis;
-			fputc(c_utf8, fp_utf8);
-			break;
-
-			// 1文字目のShift_JISコードを見つけたので保存
-		case 1:
-			// 1文字目が一致したので先頭１バイトを格納する
-			char testHex[8];
-			sprintf(testHex, "%02x", (char*)c_sjis);
-			search_table[0] = testHex[0];
-			search_table[1] = testHex[1];
-			search_table[2] = '\x0';
-
-			// もしも1文字目で変換が必要な半角カナ文字等だったらここで変換する
-			if (HANKAKU_CHECK_STR) {
-			printf("convert: %s ",search_table);
-
-			// 変換テーブルは読み込み専用で開く
-			ifstream transtable( "./dat/transtable.dat", std::ios::in );
-
-			// 対象となる文字列が見つかるまでループ
-			while ( getline(transtable, lineTrans) ) {
-				char scanstr[ 64 ];
-				strcpy( scanstr, lineTrans.c_str() );
-
-				// スキャンした文字列中のSJISとUTF8文字列へのポインタ
-				char *psjis_kana = scanstr;
-				psjis_kana = psjis_kana + 11;
-
-				// 探索文字列の大文字化
-				for( int i=0; i<3; i++ ){
-				search_table[i] = toupper( search_table[i] );
-				}
-				// scanstr中のSJIS文字列と一致すればループ脱出
-				if ( *psjis_kana == search_table[0] &&
-					*(psjis_kana+1) == search_table[1] ) {
-
-				// UTF-8用のバイナリを作成して書きこむ
-				char wb1[3] = { scanstr[21], scanstr[22], '\x0' };
-				char wb2[3] = { scanstr[23], scanstr[24], '\x0' };
-				char wb3[3] = { scanstr[25], scanstr[26], '\x0' };
-
-				printf("to %s%s%s \n",wb1,wb2,wb3);
-
-				//char型文字列から変換
-				long	nValue;
-				char*	wbEnd;
-
-				nValue = ::strtol(wb1,&wbEnd,16);
-				fputc((unsigned int)nValue, fp_utf8);
-				nValue = ::strtol(wb2,&wbEnd,16);
-				fputc((unsigned int)nValue, fp_utf8);
-				nValue = ::strtol(wb3,&wbEnd,16);
-				fputc((unsigned int)nValue, fp_utf8);
-
-				}
-			}
-			// フラグをもとに戻す
-			flag_su = 0;
-			// 変換テーブルは毎回閉じる
-			transtable.close();
-			}
-
-			break;
-
-			// 2文字目のShift_JISコードを見つけて変換テーブルに探しに行く
-		case 2:
-			sprintf(testHex, "%02x", (char*)c_sjis);
-			search_table[2] = testHex[0];
-			search_table[3] = testHex[1];
-			search_table[4] = '\x0';
-
-			// 変換テーブルは読み込み専用で開く
-			ifstream transtable( "./dat/transtable.dat", std::ios::in );
-
-			// 対象となる文字列が見つかるまでループ
-			while ( getline(transtable, lineTrans) ) {
-			char scanstr[ 64 ];
-			strcpy( scanstr, lineTrans.c_str() );
-
-			// スキャンした文字列中のSJISとUTF8文字列へのポインタ
-			char *psjis = scanstr;
-			psjis = psjis + 11;
-
-			// 探索文字列の大文字化
-			for( int i=0; i<5; i++ ){
-				search_table[i] = toupper( search_table[i] );
-			}
-			// scanstr中のSJIS文字列と一致すればループ脱出
-			if ( *psjis == search_table[0] &&
-				*(psjis+1) == search_table[1] &&
-				*(psjis+2) == search_table[2] &&
-				*(psjis+3) == search_table[3]   ) {
-
-				// UTF-8用のバイナリを作成して書きこむ
-				char wb1[3] = { scanstr[21], scanstr[22], '\x0' };
-				char wb2[3] = { scanstr[23], scanstr[24], '\x0' };
-				char wb3[3] = { scanstr[25], scanstr[26], '\x0' };
-
-				//char型文字列から変換
-				long	nValue;
-				char*	wbEnd;
-
-				nValue = ::strtol(wb1,&wbEnd,16);
-				fputc((unsigned int)nValue, fp_utf8);
-				nValue = ::strtol(wb2,&wbEnd,16);
-				fputc((unsigned int)nValue, fp_utf8);
-				nValue = ::strtol(wb3,&wbEnd,16);
-				// 文字「×」の文字コードは「C397__」後半の２文字が無いので飛ばすように設定
-				if ( strncmp(wb1 ,"C3" , 2) == 0 || strncmp(wb1 ,"C2" , 2) == 0) {break;}
-				fputc((unsigned int)nValue, fp_utf8);
-				break;
-				}
-			}
-			// フラグをもとに戻す
-			flag_su = 0;
-			// 変換テーブルは毎回閉じる
-			transtable.close();
-			break;
-		}// switch文終了
+  while(true){
+    fgets(s_src, S_SIZE, fp_src);
+    if (feof(fp_src))
+      break;
+    p_src = s_src;
+    p_dst = s_dst;
+    n_src = strlen(s_src);
+    n_dst = S_SIZE-1;
+    while(0 < n_src){
+      iconv(icd, &p_src, &n_src, &p_dst, &n_dst);
     }
-    fclose( fp_sjis );
-    fclose( fp_utf8 );
-}
+    *p_dst = '\0';
+    fputs(s_dst, fp_dst);
+  }
 
+  fclose(fp_dst);
+  fclose(fp_src);
+  iconv_close(icd);
+}
 
 // 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
 void JaneClone::SetBoardList(){

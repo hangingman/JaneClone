@@ -18,44 +18,40 @@
 #include <wx/string.h>
 #include <wx/file.h>
 #include <wx/notebook.h>
+#include <wx/dialog.h>
+#include <wx/event.h>
+#include <wx/wfstream.h>
+#include <wx/filesys.h>
+#include <wx/mstream.h>
+#include <wx/url.h>
+#include <wx/protocol/http.h>
+#include <wx/datstrm.h>
 
 // C++ -- boost
-#include <fstream>
-#include <iostream>
-#include <boost/asio.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/fstream.hpp>
+//#include <fstream>
+//#include <iostream>
+//#include <boost/asio.hpp>
+//#include <boost/filesystem/path.hpp>
+//#include <boost/filesystem/operations.hpp>
+//#include <boost/filesystem/fstream.hpp>
 
 // C 標準ライブラリ
 #include <zlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iconv.h>
 
 // 自作関数のヘッダ
 #include "ExtractBoardList.h"
 
 // 名前空間
 using namespace std;
-using namespace boost::asio;
-namespace fs = boost::filesystem;
+//using namespace boost::asio;
+//namespace fs = boost::filesystem;
 
-// マクロ
-#define SJIS_CHECK_STR	\
-strncmp(SJISHEX ,"8" , 1) == 0|| \
-strncmp(SJISHEX ,"9" , 1) == 0|| \
-strncmp(SJISHEX ,"e" , 1) == 0|| \
-strncmp(SJISHEX ,"a" , 1) == 0|| \
-strncmp(SJISHEX ,"b" , 1) == 0|| \
-strncmp(SJISHEX ,"c" , 1) == 0|| \
-strncmp(SJISHEX ,"d" , 1) == 0
-
-#define HANKAKU_CHECK_STR \
-strncmp(SJISHEX ,"a" , 1) == 0|| \
-strncmp(SJISHEX ,"b" , 1) == 0|| \
-strncmp(SJISHEX ,"c" , 1) == 0|| \
-strncmp(SJISHEX ,"d" , 1) == 0
+// ディスクからの読取サイズ
+#define S_SIZE (8192)
 
 
 class JaneClone : public wxFrame {
@@ -124,6 +120,10 @@ protected:
     wxPanel* window_2_pane_2;
 
     // end wxGlade
+
+    /** 内部処理 */
+	//　ツリーコントロールにクリックした時のイベント
+    void OnGetBoardInfo(wxTreeEvent& event);
 
     DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
