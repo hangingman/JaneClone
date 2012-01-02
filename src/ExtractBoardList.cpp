@@ -1,5 +1,10 @@
 #include "ExtractBoardList.h"
 
+
+/**
+ * ExtractBoardList
+ * コンストラクタ
+ */
 ExtractBoardList::ExtractBoardList()
 {
 	//　コンストラクタ
@@ -27,6 +32,10 @@ ExtractBoardList::ExtractBoardList()
 	this->m_list = array;
 }
 
+/**
+ *  FindBoardInfo
+ *   板一覧情報をwxArrayStringの形で収集する
+ */
 void ExtractBoardList::FindBoardInfo(xmlNode*& element, wxArrayString& array){
 	// 板一覧の配列
 	for(htmlNodePtr node = element; node != NULL; node = node->next){
@@ -56,7 +65,10 @@ void ExtractBoardList::FindBoardInfo(xmlNode*& element, wxArrayString& array){
 		}
 	}
 }
-
+/**
+ * GetBoardList
+ * 作成したArrayStringを返却する
+ */
 wxArrayString ExtractBoardList::GetBoardList()
 {
 	return this->m_list;

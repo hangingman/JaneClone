@@ -26,14 +26,7 @@
 #include <wx/url.h>
 #include <wx/protocol/http.h>
 #include <wx/datstrm.h>
-
-// C++ -- boost
-//#include <fstream>
-//#include <iostream>
-//#include <boost/asio.hpp>
-//#include <boost/filesystem/path.hpp>
-//#include <boost/filesystem/operations.hpp>
-//#include <boost/filesystem/fstream.hpp>
+#include <wx/aboutdlg.h>
 
 // C 標準ライブラリ
 #include <zlib.h>
@@ -44,6 +37,7 @@
 
 // 自作関数のヘッダ
 #include "ExtractBoardList.h"
+#include "FindBoardURL.h"
 
 // 名前空間
 using namespace std;

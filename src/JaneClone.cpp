@@ -21,6 +21,8 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
     EVT_MENU(ID_About, JaneClone::OnAbout)
     EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
     EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
+    // ツリーコントロールのイベント
+    EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 END_EVENT_TABLE()
 
 
@@ -172,15 +174,29 @@ void JaneClone::OnAbout(wxCommandEvent&)
 // 板一覧のツリーがクリックされたときに起きるイベント
 void JaneClone::OnGetBoardInfo(wxTreeEvent& event)
 {
-	//wxTreeItemId selectedItem = event.GetItem();
-	//this->SetStatusText(selectedItem->GetItemText());
-	//this->SetStatusText(m_tree_ctrl->GetItemText(event.GetItem()));
-	//this->SetStatusText(wxT("テストです"));
-	wxDialog* dialog = new wxDialog(NULL, wxID_ANY,
-								wxT("一応イベントは反応してるみたいじゃぞ"),
-								wxDefaultPosition,
-								wxSize(300,300));
-	dialog->Show(true);
+	// 選択されたTreeItemIdのインスタンス
+	wxTreeItemId pushedTree = event.GetItem();
+
+	// もしリストが板名だったら(※TreeItemに子要素が無かったら)
+	if (!m_tree_ctrl->ItemHasChildren(pushedTree)) {
+		/**
+		// 板名をwxStringで取得する
+		wxString boardName = m_tree_ctrl->GetItemText(pushedTree);
+
+		wxAboutDialogInfo info1;
+		info1.SetName(boardName);
+		wxAboutBox(info1);
+
+		// インスタンスを作る
+		FindBoardURL *fbu = new FindBoardURL();
+		// 板名に対応したURLを取ってくる
+		wxString boardURL = fbu->GetBoardURL(boardName);
+
+		wxAboutDialogInfo info;
+		info.SetName(boardURL);
+		wxAboutBox(info);
+		*/
+	}
 }
 
 // 板一覧更新処理
@@ -338,11 +354,13 @@ void JaneClone::SetBoardList(){
 // バージョン情報が書かれたダイアログを表示する処理
 void JaneClone::OnVersionInfo(wxCommandEvent&)
 {
-	wxMessageDialog dialog( NULL,
-							wxT("Jane Clone Version 1.00 \n\n Copyright(C) 2011 Nantonaku-Shiawase \n\n http://d.hatena.ne.jp/panzer-jagdironscrap1/"),
-							wxT("バージョン情報"),
-							wxOK|wxICON_INFORMATION);
-	dialog.ShowModal();
+	wxAboutDialogInfo info;
+    info.SetName(wxT("Jane Clone - ２ちゃんねるビューア"));
+    info.SetVersion(wxT("0.0.8"));
+    info.SetDescription(wxT("Copyright(C) 2011 Nantonaku-Shiawase"));
+    info.SetCopyright(wxT("http://d.hatena.ne.jp/panzer-jagdironscrap1/"));
+
+    wxAboutBox(info);
 }
 
 
