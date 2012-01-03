@@ -37,12 +37,9 @@
 
 // 自作関数のヘッダ
 #include "ExtractBoardList.h"
-#include "FindBoardURL.h"
 
 // 名前空間
 using namespace std;
-//using namespace boost::asio;
-//namespace fs = boost::filesystem;
 
 // ディスクからの読取サイズ
 #define S_SIZE (8192)
@@ -115,12 +112,13 @@ protected:
 
     // end wxGlade
 
-    /** 内部処理 */
+    /** 内部処理のためのメソッド、オブジェクト */
 	//　ツリーコントロールにクリックした時のイベント
     void OnGetBoardInfo(wxTreeEvent& event);
+    // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
+    wxArrayString* nameURLArray;
 
     DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
-
 
 #endif // JANECLONE_H

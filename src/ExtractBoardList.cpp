@@ -52,9 +52,16 @@ void ExtractBoardList::FindBoardInfo(xmlNode*& element, wxArrayString& array){
 			if(xmlStrcasecmp(node->name, (const xmlChar*)"A") == 0){
 				for(xmlAttrPtr attr = node->properties; attr != NULL; attr = attr->next){
 					if(xmlStrcasecmp(attr->name, (const xmlChar*)"HREF") == 0){
-						// 配列に要素を詰め込む
-						wxString wxNode( (char*)node->children->content, wxConvUTF8 );
-						array.Add(wxNode);
+						// 板名を配列に入れる
+						wxString wxNodeName( (char*)node->children->content, wxConvUTF8 );
+						wxString name = wxT("n:");
+						name += wxNodeName;
+						array.Add(name);
+						// URLを配列に入れる
+						wxString wxNodeURL( (char*)node->properties[0].children->content, wxConvUTF8 );
+						wxString url = wxT("u:");
+						url += wxNodeURL;
+						array.Add(url);
 					}
 				}
 			}

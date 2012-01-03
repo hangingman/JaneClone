@@ -179,7 +179,6 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event)
 
 	// もしリストが板名だったら(※TreeItemに子要素が無かったら)
 	if (!m_tree_ctrl->ItemHasChildren(pushedTree)) {
-		/**
 		// 板名をwxStringで取得する
 		wxString boardName = m_tree_ctrl->GetItemText(pushedTree);
 
@@ -187,15 +186,19 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event)
 		info1.SetName(boardName);
 		wxAboutBox(info1);
 
-		// インスタンスを作る
-		FindBoardURL *fbu = new FindBoardURL();
+		wxString boardURL;
+
 		// 板名に対応したURLを取ってくる
-		wxString boardURL = fbu->GetBoardURL(boardName);
+		for (int i=0;i < nameURLArray->GetCount(); i++){
+			if (nameURLArray->Item(i).Cmp(boardName) == 0) {
+				boardURL = nameURLArray->Item(i+1);
+				break;
+			}
+		}
 
 		wxAboutDialogInfo info;
 		info.SetName(boardURL);
 		wxAboutBox(info);
-		*/
 	}
 }
 
@@ -326,26 +329,42 @@ void JaneClone::SetBoardList(){
 	// フラグ
 	boolean category_flag = false;
 	wxString categoryName;
-	wxString prefix = "c:";
+
+	// カテゴリ名のプレフィックス
+	wxString c_prefix = wxT("c:");
+	// 板名のプレフィックス
+	wxString n_prefix = wxT("n:");
+	// URLのプレフィックス
+	wxString u_prefix = wxT("u:");
+	// カテゴリ名を保持するためのID
 	wxTreeItemId category;
+	// 板名とURLを対応させるmapを生成しておく
+	this->nameURLArray = new wxArrayString();
 
 	// GUIにツリーコントロールを反映する
 	// 2chの入り口, 2ch総合案内を除外しているのでループ変数は3から始まる
 	// あと最後の方の余分なURLも除外している。 -- サーバに変更があった場合困るなあ…
-	for (int i=3;i < boardListArray.size() -1;i++) {
+	for (int i=3;i < boardListArray.GetCount() -2;i++) {
 		// 文字列が入っていなければツリーには入れない
 		if (!boardListArray[i].IsSameAs("")) {
 			// カテゴリフォルダだったらフラグ立てる
-			if (boardListArray[i].Contains(prefix)){
+			if (boardListArray[i].Contains(c_prefix)){
 				category_flag = true;
-				categoryName = boardListArray[i];
+				categoryName = boardListArray[i].Remove(0, 2);
 			}
 			// カテゴリフォルダに当たる場合フォルダアイコンとしてツリーに登録
 			if (category_flag) {
 				category = m_tree_ctrl->AppendItem(m_rootId,categoryName, 0, 0, m_treeData);
 				category_flag = false;
 			} else {
-				m_tree_ctrl->AppendItem(category, boardListArray[i], 1, 1, m_treeData);
+				// 板名のプレフィックスがあった時のみツリーに追加する
+				if (boardListArray[i].Contains(n_prefix)) {
+					m_tree_ctrl->AppendItem(category, boardListArray[i].Remove(0, 2), 1, 1, m_treeData);
+
+					// 板名の配列に板名とURLを入れておく
+					nameURLArray->Add(boardListArray[i].Remove(0, 2));
+					nameURLArray->Add(boardListArray[i+1].Remove(0, 2));
+				}
 			}
 		}
 	}
@@ -362,7 +381,3 @@ void JaneClone::OnVersionInfo(wxCommandEvent&)
 
     wxAboutBox(info);
 }
-
-
-
-

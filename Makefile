@@ -12,7 +12,7 @@ CXX_RELEASE_FLAGS	=	-s -O2
 
 # オプション
 CPPFLAGS = -Wall -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
-LDFLAGS  = -L/c/MinGW/lib `wx-config --libs` `xml2-config --libs` -lws2_32 -lz
+LDFLAGS  = -static -L/c/MinGW/lib `wx-config --libs` `xml2-config --libs` -lws2_32 -lz
 
 VPATH    = include src
 
