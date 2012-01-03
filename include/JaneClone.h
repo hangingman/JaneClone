@@ -22,11 +22,15 @@
 #include <wx/event.h>
 #include <wx/wfstream.h>
 #include <wx/filesys.h>
+#include <wx/filename.h>
+#include <wx/filefn.h>
 #include <wx/mstream.h>
 #include <wx/url.h>
 #include <wx/protocol/http.h>
 #include <wx/datstrm.h>
 #include <wx/aboutdlg.h>
+#include <wx/hashmap.h>
+#include <wx/regex.h>
 
 // C 標準ライブラリ
 #include <zlib.h>
@@ -44,6 +48,13 @@ using namespace std;
 // ディスクからの読取サイズ
 #define S_SIZE (8192)
 
+// wxHashMapの宣言 -- 2chの板名とURLを対応させる
+class URLvsBoardName
+{
+	public:
+		wxString BoardName;
+		wxString BoardURL;
+};
 
 class JaneClone : public wxFrame {
 
@@ -65,14 +76,15 @@ private:
 
 
     /**
-    *---OnGetBoardList以下のメソッド
+    *　OnGetBoardList以下のメソッド
+    *　DecommpressFile()とConvertSJISToUTF8()は共通メソッドとして使えそう
     */
     // 板一覧ファイルをダウンロードする処理
 	void DownloadBoardList();
 	// ダウンロードした板一覧ファイルを解凍する処理
-	void DecommpressFile();
+	void DecommpressFile(wxString& , wxString& );
 	// ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
-	void ConvertSJISToUTF8();
+	void ConvertSJISToUTF8(wxString& , wxString&);
 	// 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
 	void SetBoardList();
 
@@ -82,18 +94,18 @@ private:
 
 
     // URL入力欄のテキスト操作用
-    wxTextCtrl* textCtlForURL;
+    wxTextCtrl* 	textCtlForURL;
     // ステータスバー表示用文字列
-    wxStatusBar* statusBarStr;
+    wxStatusBar* 	statusBarStr;
     // ツリーコントロールは内部からならいじれるようにしておく
-    wxTreeCtrl* m_tree_ctrl;
-    wxTreeItemData *m_treeData;
-    wxTreeItemId m_rootId;
+    wxTreeCtrl* 	m_tree_ctrl;
+    wxTreeItemData*	m_treeData;
+    wxTreeItemId 	m_rootId;
 
 protected:
 
-    wxStaticText* label_1;
-    wxButton* button_1;
+    wxStaticText* 	label_1;
+    wxButton* 		button_1;
 
     // 左側
 	wxSplitterWindow* window_1;
@@ -113,10 +125,20 @@ protected:
     // end wxGlade
 
     /** 内部処理のためのメソッド、オブジェクト */
+
 	//　ツリーコントロールにクリックした時のイベント
     void OnGetBoardInfo(wxTreeEvent& event);
     // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
-    wxArrayString* nameURLArray;
+    WX_DECLARE_HASH_MAP( int, URLvsBoardName*, wxIntegerHash, wxIntegerEqual, NameURLHash );
+    // HashMapの本体
+    NameURLHash retainHash;
+
+    /** 板名のツリーコントロールをクリックした場合表示されるwxNoteBook　*/
+    wxNotebook* boardNoteBook;
+    // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
+    void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL);
+    // スレッドタイトル一覧の取得メソッド
+    wxString DownloadThreadList(wxString& boardURL);
 
     DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
