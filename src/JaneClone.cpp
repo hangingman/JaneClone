@@ -8,7 +8,11 @@ using namespace std;
 
 // enum
 enum {
-	ID_Quit = 1, ID_About, ID_GetBoardList, ID_GetVersionInfo
+	ID_Quit = 1,
+	ID_About,
+	ID_GetBoardList,
+	ID_GetVersionInfo,
+	ID_OnClickBoardNote
 };
 
 // event table
@@ -20,6 +24,8 @@ EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
 EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
+// 板名のノートブックが選択された時のイベント
+EVT_NOTEBOOK_PAGE_CHANGED(ID_OnClickBoardNote, JaneClone::OnClickBoardNote)
 END_EVENT_TABLE()
 
 JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
@@ -98,6 +104,10 @@ void JaneClone::SetProperties() {
 
 	// もし板一覧ファイルがdatフォルダに存在するならば一気に板一覧設定に飛ぶ
 	if (wxFile::Exists(wxT("./dat/BoardListUTF8.html"))) {
+		JaneClone::SetBoardList();
+	}
+	// もし板のスレッド一覧ファイルが存在するならばノートブック(タブ)にセットする
+	if (wxFile::Exists(wxT("./dat/*.dat"))) {
 		JaneClone::SetBoardList();
 	}
 }
@@ -198,8 +208,8 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
 		wxRemoveFile(inputDecommPath);
 		wxRemoveFile(outputDecommPath);
 	}
-
-	wxPanel *noteWindow = new wxPanel(boardNoteBook, wxID_ANY);
+	// NoteWindow上にはwxListCtrlが乗る予定
+	wxPanel *noteWindow = new wxPanel(boardNoteBook, ID_OnClickBoardNote);
 	noteWindow->SetScrollbar(wxVERTICAL, 0, 16, 50);
 	boardNoteBook->AddPage(noteWindow, boardName, true);
 }
@@ -235,7 +245,7 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 // ダウンロードしたファイルのPATHをwxStringで返却する
 wxString JaneClone::DownloadThreadList(wxString& boardURL) {
 
-	// 正規表現を使ってサーバ名と板名を取得する
+	// 正規表現を使ってサーバ名と板名(ascii)を取得する
 	// そこまで難しい正規表現を使う必要はないようです
 	wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
 			wxRE_ADVANCED + wxRE_ICASE);
@@ -274,6 +284,7 @@ wxString JaneClone::DownloadThreadList(wxString& boardURL) {
 	// 通信のためのクラスのインスタンスを作る
 	SocketCommunication* sc = new SocketCommunication();
 	sc->DownloadThreadList(boardURL, server, boardName, outputPath);
+	delete sc;
 
 	// ステータスバーに通信終了の文字を出す
 	Status.Clear();
@@ -366,17 +377,21 @@ void JaneClone::DecommpressFile(wxString& inputPath, wxString& outputPath) {
  */
 void JaneClone::ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath) {
 
-	wxString msg = wxT("ここまではいけてます");
-	wxMessageBox(msg);
-
 	iconv_t icd;
 	FILE *fp_src, *fp_dst;
-	char s_src[S_SIZE], s_dst[S_SIZE];
+	char s_src[S_SIZE], s_dst[D_SIZE];
 	const char *p_src;
 	char *p_dst;
 	size_t n_src, n_dst;
+	int* iconctl;
 
-	icd = iconv_open("UTF-8", "Shift_JIS");
+	// 文字コード変換はCP932からUTF-8
+	icd = iconv_open("UTF-8", "CP932");
+	//  iconvctl で変換不可能な文字があった時の設定
+	//  変換不可能だったら捨てる
+	//  不正な文字があり、捨てられたときは iconctlに1が入る
+	iconvctl(icd, ICONV_GET_DISCARD_ILSEQ, iconctl);
+
 	fp_src = fopen(inputPath.mb_str(), "r");
 	fp_dst = fopen(outputPath.mb_str(), "w");
 
@@ -389,12 +404,19 @@ void JaneClone::ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath) {
 		n_src = strlen(s_src);
 		n_dst = S_SIZE - 1;
 		while (0 < n_src) {
-			iconv(icd, &p_src, &n_src, &p_dst, &n_dst);
+			size_t result;
+			result = iconv(icd, &p_src, &n_src, &p_dst, &n_dst);
+			// エラーがあれば止める
+			if (result == -1) {
+				this->SetStatusText(wxT("文字コード変換でエラーがありました。"));
+				perror("iconv");
+				break;
+			}
 		}
 		*p_dst = '\0';
 		fputs(s_dst, fp_dst);
 	}
-
+	this->SetStatusText(wxT("文字コード変換終了"));
 	fclose(fp_dst);
 	fclose(fp_src);
 	iconv_close(icd);
@@ -440,13 +462,28 @@ void JaneClone::SetBoardList() {
 				// もしhttp://~　を含んでいればURLとみなして飛ばす、そうでないならツリーに情報を追加
 				if (!boardListArray[i].Contains(wxT("http://"))) {
 					// ツリーに板名かURLを追加する
-					m_tree_ctrl->AppendItem(category, boardListArray[i], 1, 1,
-							m_treeData);
+					m_tree_ctrl->AppendItem(category, boardListArray[i], 1, 1, m_treeData);
 					// ここの辺のコードが汚すぎて死ぬ
 					// 板名の配列に板名とURLを入れておく
 					URLvsBoardName* urlVsName = new URLvsBoardName;
 					urlVsName->BoardName = boardListArray[i];
 					urlVsName->BoardURL = boardListArray[i + 1];
+
+					/**
+					// 正規表現を使ってサーバ名と板名(ascii)を取得する
+					// そこまで難しい正規表現を使う必要はないようです
+					wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
+
+					// 正規表現のコンパイルにエラーがなければ
+					if (reThreadList.IsValid()) {
+						// マッチさせる
+						if (reThreadList.Matches(boardListArray[i + 1])) {
+							// マッチした文字列の３番目をいただく
+							urlVsName->BoardNameAscii = reThreadList.GetMatch(boardListArray[i + 1], 3);
+						}
+					}
+					*/
+					// Hashに板情報を入れる
 					tmpHash[hashID] = urlVsName;
 					// Hashのキー値をインクリメントしておく
 					hashID++;
@@ -455,6 +492,11 @@ void JaneClone::SetBoardList() {
 		}
 	}
 	this->retainHash = tmpHash;
+}
+
+// 板名のノートブックがクリックされた時スレッド一覧を表示する処理
+void JaneClone::OnClickBoardNote(wxNotebookEvent& event) {
+	wxMessageBox(wxT("超反応"));
 }
 
 // バージョン情報が書かれたダイアログを表示する処理

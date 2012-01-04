@@ -47,7 +47,8 @@
 using namespace std;
 
 // ディスクからの読取サイズ
-#define S_SIZE (1024)
+#define S_SIZE (2048)
+#define D_SIZE (6144)
 
 // wxHashMapの宣言 -- 2chの板名とURLを対応させる
 class URLvsBoardName
@@ -55,7 +56,10 @@ class URLvsBoardName
 	public:
 		wxString BoardName;
 		wxString BoardURL;
+		wxString BoardNameAscii;
 };
+
+// wxHashMapの宣言 --
 
 class JaneClone : public wxFrame {
 
@@ -69,6 +73,8 @@ public:
     void OnAbout(wxCommandEvent& event);
     void OnGetBoardList(wxCommandEvent& event);
     void OnVersionInfo(wxCommandEvent& event);
+    // 右クリックを押した時のイベント(右クリックを何処で押したかを判定することが必要であるとともに)
+    void OnMouseClickRight(wxCommandEvent& event);
 
 private:
     // begin wxGlade: JaneClone::methods
@@ -140,6 +146,8 @@ protected:
     void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL);
     // スレッドタイトル一覧の取得メソッド
     wxString DownloadThreadList(wxString& boardURL);
+    // 板名のノートブックがクリックされた時スレッド一覧を表示する処理
+    void OnClickBoardNote(wxNotebookEvent& event);
 
     DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
