@@ -8,165 +8,151 @@ using namespace std;
 
 // enum
 enum {
-    ID_Quit = 1,
-    ID_About,
-    ID_GetBoardList,
-    ID_GetVersionInfo
+	ID_Quit = 1, ID_About, ID_GetBoardList, ID_GetVersionInfo
 };
 
 // event table
 BEGIN_EVENT_TABLE(JaneClone, wxFrame)
-	// メニューバーにあるコマンド入力で起動するメソッドのイベントテーブル
-    EVT_MENU(ID_Quit, JaneClone::OnQuit)
-    EVT_MENU(ID_About, JaneClone::OnAbout)
-    EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
-    EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
-    // ツリーコントロールのイベント
-    EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
+// メニューバーにあるコマンド入力で起動するメソッドのイベントテーブル
+EVT_MENU(ID_Quit, JaneClone::OnQuit)
+EVT_MENU(ID_About, JaneClone::OnAbout)
+EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
+EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
+// ツリーコントロールのイベント
+EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 END_EVENT_TABLE()
 
-
 JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
-    wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
+wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 {
 	// メニューバーの設置
 	wxMenuBar *menuBar = new wxMenuBar;
-    wxMenu *menu1 = new wxMenu;
-    menu1->Append(ID_About, wxT("このソフトについて..."));
-    menu1->Append(ID_Quit, wxT("終了"));
-    wxMenu *menu2 = new wxMenu;
-    wxMenu *menu3 = new wxMenu;
-    menu3->Append(ID_GetBoardList, wxT("板一覧更新"));
-    wxMenu *menu4 = new wxMenu;
-    wxMenu *menu5 = new wxMenu;
-    wxMenu *menu6 = new wxMenu;
-    wxMenu *menu7 = new wxMenu;
-    wxMenu *menu8 = new wxMenu;
-    wxMenu *menu9 = new wxMenu;
-    menu9->Append(ID_GetVersionInfo, wxT("バージョン情報を開く"));
-    menuBar->Append(menu1, wxT("ファイル"));
-    menuBar->Append(menu2, wxT("表示"));
-    menuBar->Append(menu3, wxT("板一覧"));
-    menuBar->Append(menu4, wxT("スレッド一覧"));
-    menuBar->Append(menu5, wxT("お気に入り"));
-    menuBar->Append(menu6, wxT("検索"));
-    menuBar->Append(menu7, wxT("ウィンドウ"));
-    menuBar->Append(menu8, wxT("ツール"));
-    menuBar->Append(menu9, wxT("ヘルプ"));
+	wxMenu *menu1 = new wxMenu;
+	menu1->Append(ID_About, wxT("このソフトについて..."));
+	menu1->Append(ID_Quit, wxT("終了"));
+	wxMenu *menu2 = new wxMenu;
+	wxMenu *menu3 = new wxMenu;
+	menu3->Append(ID_GetBoardList, wxT("板一覧更新"));
+	wxMenu *menu4 = new wxMenu;
+	wxMenu *menu5 = new wxMenu;
+	wxMenu *menu6 = new wxMenu;
+	wxMenu *menu7 = new wxMenu;
+	wxMenu *menu8 = new wxMenu;
+	wxMenu *menu9 = new wxMenu;
+	menu9->Append(ID_GetVersionInfo, wxT("バージョン情報を開く"));
+	menuBar->Append(menu1, wxT("ファイル"));
+	menuBar->Append(menu2, wxT("表示"));
+	menuBar->Append(menu3, wxT("板一覧"));
+	menuBar->Append(menu4, wxT("スレッド一覧"));
+	menuBar->Append(menu5, wxT("お気に入り"));
+	menuBar->Append(menu6, wxT("検索"));
+	menuBar->Append(menu7, wxT("ウィンドウ"));
+	menuBar->Append(menu8, wxT("ツール"));
+	menuBar->Append(menu9, wxT("ヘルプ"));
 
-    SetMenuBar(menuBar);// メニューバー設置終わり
+	SetMenuBar(menuBar);// メニューバー設置終わり
 
 	// SetMinimumPaneSizeによってペインが合体しないように設定
-    window_1 = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
-    window_1->SetMinimumPaneSize(20);
-    window_1_pane_2 = new wxPanel(window_1, wxID_ANY);
-    window_1_pane_1 = new wxPanel(window_1, wxID_ANY);
+	window_1 = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
+	window_1->SetMinimumPaneSize(20);
+	window_1_pane_2 = new wxPanel(window_1, wxID_ANY);
+	window_1_pane_1 = new wxPanel(window_1, wxID_ANY);
 
-    window_2 = new wxSplitterWindow(window_1_pane_2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
-    window_2->SetMinimumPaneSize(20);
+	window_2 = new wxSplitterWindow(window_1_pane_2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
+	window_2->SetMinimumPaneSize(20);
 
+	//URL入力欄の表示部分
+	label_1 = new wxStaticText(this, wxID_ANY, wxT("URL:"));
+	textCtlForURL = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+	button_1 = new wxButton(this, wxID_ANY, wxT("GO"));
 
-    //URL入力欄の表示部分
-    label_1 = new wxStaticText(this, wxID_ANY, wxT("URL:"));
-    textCtlForURL = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
-    button_1 = new wxButton(this, wxID_ANY, wxT("GO"));
+	//板一覧を取得してツリー表示
+	m_tree_ctrl = new wxTreeCtrl(window_1_pane_1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+	window_2_pane_1 = new wxPanel(window_2, wxID_ANY);
+	window_2_pane_2 = new wxPanel(window_2, wxID_ANY);
 
-    //板一覧を取得してツリー表示
-    m_tree_ctrl = new wxTreeCtrl(window_1_pane_1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
-    window_2_pane_1 = new wxPanel(window_2, wxID_ANY);
-    window_2_pane_2 = new wxPanel(window_2, wxID_ANY);
-
-    SetProperties();
-    DoLayout();
-    this->CreateStatusBar();
+	SetProperties();
+	DoLayout();
+	this->CreateStatusBar();
 	this->SetStatusText(wxT(" 完了"));
 }
 
+void JaneClone::SetProperties() {
+	// wxGladeによる自動生成
+	SetTitle(_("JaneClone"));
+	SetSize(wxSize(960, 540));
+	label_1->SetFont(
+			wxFont(9, wxDEFAULT, wxNORMAL, wxNORMAL, 0, wxT("MS Shell Dlg 2")));
 
-void JaneClone::SetProperties()
-{
-    // wxGladeによる自動生成
-    SetTitle(_("JaneClone"));
-    SetSize(wxSize(960, 540));
-    label_1->SetFont(wxFont(9, wxDEFAULT, wxNORMAL, wxNORMAL, 0, wxT("MS Shell Dlg 2")));
-
-    // 板一覧情報を反映する
-    wxImageList *treeImage = new wxImageList(16,16);
-    wxBitmap idx1 = wxArtProvider::GetBitmap(wxART_FOLDER,wxART_OTHER );
-    wxBitmap idx2 = wxArtProvider::GetBitmap(wxART_NEW,wxART_OTHER);
-    treeImage->Add(idx1);
-    treeImage->Add(idx2);
-    m_tree_ctrl->AssignImageList(treeImage);
+	// 板一覧情報を反映する
+	wxImageList *treeImage = new wxImageList(16, 16);
+	wxBitmap idx1 = wxArtProvider::GetBitmap(wxART_FOLDER, wxART_OTHER);
+	wxBitmap idx2 = wxArtProvider::GetBitmap(wxART_NEW, wxART_OTHER);
+	treeImage->Add(idx1);
+	treeImage->Add(idx2);
+	m_tree_ctrl->AssignImageList(treeImage);
 
 	// 板一覧情報のツリーコントロール
-    m_treeData = new wxTreeItemData();
-    m_rootId = m_tree_ctrl->AddRoot(wxT("2ch板一覧"), 0, 0, m_treeData);
+	m_treeData = new wxTreeItemData();
+	m_rootId = m_tree_ctrl->AddRoot(wxT("2ch板一覧"), 0, 0, m_treeData);
 
 	// もし板一覧ファイルがdatフォルダに存在するならば一気に板一覧設定に飛ぶ
-	if(wxFile::Exists(wxT("./dat/BoardListUTF8.html"))){ JaneClone::SetBoardList();}
+	if (wxFile::Exists(wxT("./dat/BoardListUTF8.html"))) {
+		JaneClone::SetBoardList();
+	}
 }
 
+void JaneClone::DoLayout() {
+	// 各種サイザー設定
+	wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
 
-void JaneClone::DoLayout()
-{
-    // 各種サイザー設定
-    wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
+	// 一番上のURL入力欄など
+	sizer_2->Add(label_1, 0, wxALL | wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL,
+			0);
+	sizer_2->Add(textCtlForURL, 2, wxALL | wxEXPAND, 0);
+	sizer_2->Add(button_1, 0, 0, 0);
 
-    // 一番上のURL入力欄など
-    sizer_2->Add(label_1, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 0);
-    sizer_2->Add(textCtlForURL, 2, wxALL|wxEXPAND, 0);
-    sizer_2->Add(button_1, 0, 0, 0);
+	sizer_1->Add(sizer_2, 0, wxALL | wxEXPAND, 2);
 
-    sizer_1->Add(sizer_2, 0, wxALL|wxEXPAND, 2);
-
-    // 下部のスプリットウィンドウの設定
-    // Sizer3にツリーコントロールが入る
-    sizer_3->Add(m_tree_ctrl, 1, wxEXPAND, 0);
-    window_1_pane_1->SetSizer(sizer_3);
+	// 下部のスプリットウィンドウの設定
+	// Sizer3にツリーコントロールが入る
+	sizer_3->Add(m_tree_ctrl, 1, wxEXPAND, 0);
+	window_1_pane_1->SetSizer(sizer_3);
 
 	// スプリットウィンドウ(横の区切り)
-    window_2->SplitHorizontally(window_2_pane_1, window_2_pane_2);
-    sizer_4->Add(window_2, 1, wxEXPAND, 0);
-    window_1_pane_2->SetSizer(sizer_4);
+	window_2->SplitHorizontally(window_2_pane_1, window_2_pane_2);
+	sizer_4->Add(window_2, 1, wxEXPAND, 0);
+	window_1_pane_2->SetSizer(sizer_4);
 
-    // 上部のタブを設定してみる
-    wxBoxSizer *topNote = new wxBoxSizer(wxVERTICAL);
-	boardNoteBook = new wxNotebook(window_2_pane_1,
-									-1,
-									wxPoint(-1, -1),
-									wxSize(-1, -1),
-									wxNB_TOP);
+	// 上部のタブを設定してみる
+	wxBoxSizer *topNote = new wxBoxSizer(wxVERTICAL);
+	boardNoteBook = new wxNotebook(window_2_pane_1, -1, wxPoint(-1, -1),
+			wxSize(-1, -1), wxNB_TOP);
 
 	topNote->Add(boardNoteBook, 0, wxEXPAND, 10);
 	window_2_pane_1->SetSizer(topNote);
 
-    // スプリットウィンドウ(縦の区切り)
-    window_1->SplitVertically(window_1_pane_1, window_1_pane_2);
-    sizer_1->Add(window_1, 1, wxEXPAND, 0);
-    SetSizer(sizer_1);
+	// スプリットウィンドウ(縦の区切り)
+	window_1->SplitVertically(window_1_pane_1, window_1_pane_2);
+	sizer_1->Add(window_1, 1, wxEXPAND, 0);
+	SetSizer(sizer_1);
 
-
-    Layout();
-    // end wxGlade
+	Layout();
+	// end wxGlade
 }
 
-
-
-void JaneClone::OnQuit(wxCommandEvent&)
-{
+void JaneClone::OnQuit(wxCommandEvent&) {
 	Close(true);
 }
 
-void JaneClone::OnAbout(wxCommandEvent&)
-{
+void JaneClone::OnAbout(wxCommandEvent&) {
 }
 
 // 板一覧のツリーがクリックされたときに起きるイベント
-void JaneClone::OnGetBoardInfo(wxTreeEvent& event)
-{
+void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
 	// 選択されたTreeItemIdのインスタンス
 	wxTreeItemId pushedTree = event.GetItem();
 
@@ -178,24 +164,40 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event)
 		wxString boardURL;
 		// 板名に対応したURLを取ってくる
 		NameURLHash::iterator it;
-        for( it = retainHash.begin(); it != retainHash.end(); ++it )
-        {
-        	URLvsBoardName* hash = it->second;
-        	if (hash->BoardName.Cmp(boardName) == 0 ){
-        		boardURL = hash->BoardURL;
-        		break;
-        	}
-        }
-        // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
-        SetBoardNameToNoteBook(boardName, boardURL);
+		for (it = retainHash.begin(); it != retainHash.end(); ++it) {
+			URLvsBoardName* hash = it->second;
+			if (hash->BoardName.Cmp(boardName) == 0) {
+				boardURL = hash->BoardURL;
+				break;
+			}
+		}
+		// 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
+		SetBoardNameToNoteBook(boardName, boardURL);
 	}
 }
 
 // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
-void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL)
-{
+void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
+		wxString& boardURL) {
+	// 戻り値は出力したgzipファイルの保存先
 	wxString outputPath = DownloadThreadList(boardURL);
+	// 出力先を指定してgzipファイルを解凍
+	wxString inputDecommPath = outputPath;
+	wxString outputDecommPath = outputPath;
+	outputDecommPath.Replace(_T(".gzip"), _T(".tmp"));
 
+	JaneClone::DecommpressFile(inputDecommPath, outputDecommPath);
+	// 出力先を指定してSJISのファイルをエンコードしてUTF-8に変える
+	wxString inputConvPath = outputDecommPath;
+	wxString outputConvPath = outputDecommPath;
+	outputConvPath.Replace(_T(".tmp"), _T(".dat"));
+	JaneClone::ConvertSJISToUTF8(inputConvPath, outputConvPath);
+
+	// 更新が終わったらgzipファイルとSJISファイルを消しておく
+	if (wxFile::Exists(inputDecommPath) && wxFile::Exists(outputDecommPath)) {
+		wxRemoveFile(inputDecommPath);
+		wxRemoveFile(outputDecommPath);
+	}
 
 	wxPanel *noteWindow = new wxPanel(boardNoteBook, wxID_ANY);
 	noteWindow->SetScrollbar(wxVERTICAL, 0, 16, 50);
@@ -205,23 +207,24 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL)
 // 板一覧更新処理
 void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	// もし板一覧ファイルがdatフォルダに存在するならば一気に板一覧設定に飛ぶ
-	if(wxFile::Exists(wxT("./dat/BoardListUTF8.html"))){
+	if (wxFile::Exists(wxT("./dat/BoardListUTF8.html"))) {
 		JaneClone::SetBoardList();
-	// そうでなければ板一覧をダウンロードしてくる
-	}else{
+		// そうでなければ板一覧をダウンロードしてくる
+	} else {
 		JaneClone::DownloadBoardList();
 
-		wxString inputDecommPath  = wxT("./dat/BoardList.gzip");
+		wxString inputDecommPath = wxT("./dat/BoardList.gzip");
 		wxString outputDecommPath = wxT("./dat/BoardListSJIS.html");
 		JaneClone::DecommpressFile(inputDecommPath, outputDecommPath);
 
-		wxString inputConvPath  = wxT("./dat/BoardListSJIS.html");
+		wxString inputConvPath = wxT("./dat/BoardListSJIS.html");
 		wxString outputConvPath = wxT("./dat/BoardListUTF8.html");
 		JaneClone::ConvertSJISToUTF8(inputConvPath, outputConvPath);
 		JaneClone::SetBoardList();
 
 		// 更新が終わったらgzipファイルとSJISファイルを消しておく
-		if( wxFile::Exists(inputDecommPath) && wxFile::Exists(outputDecommPath) ) {
+		if (wxFile::Exists(inputDecommPath)
+				&& wxFile::Exists(outputDecommPath)) {
 			wxRemoveFile(inputDecommPath);
 			wxRemoveFile(outputDecommPath);
 		}
@@ -230,10 +233,13 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 
 // スレッドタイトル一覧の取得メソッド
 // ダウンロードしたファイルのPATHをwxStringで返却する
-wxString JaneClone::DownloadThreadList(wxString& boardURL){
+wxString JaneClone::DownloadThreadList(wxString& boardURL) {
 
 	// 正規表現を使ってサーバ名と板名を取得する
-	wxRegEx reThreadList( _T("http:\/\/([^/]+)/([^/]+)/") , wxRE_ADVANCED + wxRE_ICASE );
+	// そこまで難しい正規表現を使う必要はないようです
+	wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
+			wxRE_ADVANCED + wxRE_ICASE);
+
 	// サーバ名と板名
 	wxString server;
 	wxString boardName;
@@ -241,113 +247,91 @@ wxString JaneClone::DownloadThreadList(wxString& boardURL){
 	// 正規表現のコンパイルにエラーがなければ
 	if (reThreadList.IsValid()) {
 		// マッチさせる
-		if ( reThreadList.Matches(boardURL) )
-		{
-			server = reThreadList.GetMatch(boardURL);
-			boardName = reThreadList.GetMatch(boardURL, 1);
+		if (reThreadList.Matches(boardURL)) {
+			// マッチした文字列の２番目と３番目をいただく
+			server = reThreadList.GetMatch(boardURL, 2);
+			boardName = reThreadList.GetMatch(boardURL, 3);
 		}
 	}
 
-	this->SetStatusText(server);
-
-	//wxString requestMessage = _T("/");
-
-	// ここから通信開始
-	wxHTTP http;
-	http.SetHeader(_T("GET"),_T("/subjec.txt HTTP/1.1"));
-	http.SetHeader(_T("Accept-Encoding"),_T("gzip"));
-	http.SetHeader(_T("Host"), server);
-	http.SetHeader(_T("Accept"),_T("*/*"));
-	http.SetHeader(_T("Referer"), boardURL);
-	http.SetHeader(_T("Accept-Language"),_T("ja"));
-	http.SetHeader(_T("User-Agent"),_T("Mozilla/5.0"));
-	http.SetTimeout(5);
-
-	wxString path	= "/subject.txt";
-	wxString msg	= "";
-
+	// ステータスバーに通信中の文字を出す
+	wxString Status = boardURL;
+	Status.Append(wxT("に接続中"));
+	this->SetStatusText(Status);
+	// HTTP通信に必要なメッセージを生成
+	wxString ms = _T("/");
+	ms.Append(boardName);
+	wxString path = ms;
+	path.Append(_T("/subjec.txt"));
+	ms.Append(_T("/subjec.txt HTTP/1.1"));
+	// ユーザーに見せるメッセージ
+	wxString msg = "";
 	// 保存先を決める
 	wxString outputPath = wxT("./dat/");
 	outputPath.Append(boardName);
+	outputPath.Append(wxT(".gzip"));
 
-	wxFileOutputStream output(outputPath);
-	wxDataOutputStream store(output);
+	// 通信のためのクラスのインスタンスを作る
+	SocketCommunication* sc = new SocketCommunication();
+	sc->DownloadThreadList(boardURL, server, boardName, outputPath);
 
-	if(http.Connect(server,80)){
-		msg = wxT("接続しました");
-		wxInputStream *stream;
-		stream = http.GetInputStream(path);
+	// ステータスバーに通信終了の文字を出す
+	Status.Clear();
+	Status = boardURL;
+	Status.Append(wxT("からのダウンロード終了"));
+	this->SetStatusText(Status);
 
-		if(stream == NULL){
-			msg = wxT("サーバと通信できませんでした");
-		}else{
-			unsigned char buffer[1024];
-			int byteRead;
-			int totalRead;
-			totalRead = 0;
-
-			while(!stream->Eof()){
-				stream->Read(buffer, sizeof(buffer));
-				store.Write8(buffer, sizeof(buffer));
-				byteRead=stream->LastRead();
-				if(byteRead<=0){break;}
-				totalRead+=byteRead;
-			}
-			msg = wxT("スレッドタイトル一覧の取得を終了しました");
-		}
-	}else{
-	msg = wxT("サーバーに接続できませんでした");
-	}
-	wxMessageBox(msg);
-
+	// 戻り値は出力したgzipファイルの保存先
 	return outputPath;
 }
 
 // 板一覧ファイルをダウンロードする処理
-void JaneClone::DownloadBoardList(){
+void JaneClone::DownloadBoardList() {
 
 	// ここから
 	wxHTTP http;
-	http.SetHeader(_T("Accept-Encoding"),_T("gzip"));
-	http.SetHeader(_T("Host"),_T("menu.2ch.net"));
-	http.SetHeader(_T("Accept"),_T(""));
-	http.SetHeader(_T("Referer"),_T("http://menu.2ch.net/"));
-	http.SetHeader(_T("Accept-Language"),_T("ja"));
-	http.SetHeader(_T("User-Agent"),_T("Mozilla/5.0"));
+	http.SetHeader(_T("Accept-Encoding"), _T("gzip"));
+	http.SetHeader(_T("Host"), _T("menu.2ch.net"));
+	http.SetHeader(_T("Accept"), _T(""));
+	http.SetHeader(_T("Referer"), _T("http://menu.2ch.net/"));
+	http.SetHeader(_T("Accept-Language"), _T("ja"));
+	http.SetHeader(_T("User-Agent"), _T("Mozilla/5.0"));
 	http.SetTimeout(5);
 
 	wxString server = "menu.2ch.net";
-	wxString path	= "/bbsmenu.html";
-	wxString msg	= "";
+	wxString path = "/bbsmenu.html";
+	wxString msg = "";
 
 	// 保存先を決める
 	wxFileOutputStream output(wxT("./dat/BoardList.gzip"));
 	wxDataOutputStream store(output);
 
-	if(http.Connect(server,80)){
+	if (http.Connect(server, 80)) {
 		msg = wxT("接続しました");
 		wxInputStream *stream;
 		stream = http.GetInputStream(path);
 
-		if(stream == NULL){
+		if (stream == NULL) {
 			msg = wxT("サーバと通信できませんでした");
-		}else{
+		} else {
 			unsigned char buffer[1024];
 			int byteRead;
 			int totalRead;
 			totalRead = 0;
 
-			while(!stream->Eof()){
+			while (!stream->Eof()) {
 				stream->Read(buffer, sizeof(buffer));
 				store.Write8(buffer, sizeof(buffer));
-				byteRead=stream->LastRead();
-				if(byteRead<=0){break;}
-				totalRead+=byteRead;
+				byteRead = stream->LastRead();
+				if (byteRead <= 0) {
+					break;
+				}
+				totalRead += byteRead;
 			}
 			msg = wxT("板一覧更新処理を終了しました");
 		}
-	}else{
-	msg = wxT("サーバーに接続できませんでした");
+	} else {
+		msg = wxT("サーバーに接続できませんでした");
 	}
 	wxMessageBox(msg);
 }
@@ -358,20 +342,20 @@ void JaneClone::DownloadBoardList(){
  * 引数１は読み込み元gzipファイルのPATH、引数２は解凍先のファイルのPATH
  * いずれもファイル名までを記述する
  */
-void JaneClone::DecommpressFile(wxString& inputPath, wxString& outputPath){
-    // gzファイルをZlibを使って解凍する
+void JaneClone::DecommpressFile(wxString& inputPath, wxString& outputPath) {
+	// gzファイルをZlibを使って解凍する
 	gzFile infile = gzopen(inputPath.mb_str(), "rb");
 	FILE *outfile = fopen(outputPath.mb_str(), "wb");
 
-    char buffer[S_SIZE];
-    int num_read = 0;
-    while ((num_read = gzread(infile, buffer, sizeof(buffer))) > 0) {
-	fwrite(buffer, 1, num_read, outfile);
-    }
+	char buffer[S_SIZE];
+	int num_read = 0;
+	while ((num_read = gzread(infile, buffer, sizeof(buffer))) > 0) {
+		fwrite(buffer, 1, num_read, outfile);
+	}
 
-    // ファイルポインタを閉じる
-    gzclose(infile);
-    fclose(outfile);
+	// ファイルポインタを閉じる
+	gzclose(infile);
+	fclose(outfile);
 }
 
 /**
@@ -380,40 +364,44 @@ void JaneClone::DecommpressFile(wxString& inputPath, wxString& outputPath){
  * 引数１は読み込み元のPATH、引数２は出力先ファイルのPATH
  * いずれもファイル名までを記述する
  */
-void JaneClone::ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath){
-  iconv_t icd;
-  FILE *fp_src, *fp_dst;
-  char s_src[S_SIZE], s_dst[S_SIZE];
-  const char *p_src;
-  char *p_dst;
-  size_t n_src, n_dst;
+void JaneClone::ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath) {
 
-  icd = iconv_open("UTF-8", "Shift_JIS");
-  fp_src = fopen( inputPath.mb_str(), "r");
-  fp_dst = fopen(outputPath.mb_str(), "w");
+	wxString msg = wxT("ここまではいけてます");
+	wxMessageBox(msg);
 
-  while(true){
-    fgets(s_src, S_SIZE, fp_src);
-    if (feof(fp_src))
-      break;
-    p_src = s_src;
-    p_dst = s_dst;
-    n_src = strlen(s_src);
-    n_dst = S_SIZE-1;
-    while(0 < n_src){
-      iconv(icd, &p_src, &n_src, &p_dst, &n_dst);
-    }
-    *p_dst = '\0';
-    fputs(s_dst, fp_dst);
-  }
+	iconv_t icd;
+	FILE *fp_src, *fp_dst;
+	char s_src[S_SIZE], s_dst[S_SIZE];
+	const char *p_src;
+	char *p_dst;
+	size_t n_src, n_dst;
 
-  fclose(fp_dst);
-  fclose(fp_src);
-  iconv_close(icd);
+	icd = iconv_open("UTF-8", "Shift_JIS");
+	fp_src = fopen(inputPath.mb_str(), "r");
+	fp_dst = fopen(outputPath.mb_str(), "w");
+
+	while (true) {
+		fgets(s_src, S_SIZE, fp_src);
+		if (feof(fp_src))
+			break;
+		p_src = s_src;
+		p_dst = s_dst;
+		n_src = strlen(s_src);
+		n_dst = S_SIZE - 1;
+		while (0 < n_src) {
+			iconv(icd, &p_src, &n_src, &p_dst, &n_dst);
+		}
+		*p_dst = '\0';
+		fputs(s_dst, fp_dst);
+	}
+
+	fclose(fp_dst);
+	fclose(fp_src);
+	iconv_close(icd);
 }
 
 // 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
-void JaneClone::SetBoardList(){
+void JaneClone::SetBoardList() {
 
 	// インスタンスを作る
 	ExtractBoardList *ebl = new ExtractBoardList();
@@ -435,28 +423,30 @@ void JaneClone::SetBoardList(){
 	// GUIにツリーコントロールを反映する
 	// 2chの入り口, 2ch総合案内を除外しているのでループ変数は3から始まる
 	// あと最後の方の余分なURLも除外している。 -- サーバに変更があった場合困るなあ…
-	for (int i=3;i < boardListArray.GetCount() -2;i++) {
+	for (int i = 3; i < boardListArray.GetCount() - 2; i++) {
 		// 文字列が入っていなければツリーには入れない
 		if (!boardListArray[i].IsSameAs("")) {
 			// カテゴリフォルダだったらフラグ立てる
-			if (boardListArray[i].Contains(c_prefix)){
+			if (boardListArray[i].Contains(c_prefix)) {
 				category_flag = true;
 				categoryName = boardListArray[i].Remove(0, 3);
 			}
 			// カテゴリフォルダに当たる場合フォルダアイコンとしてツリーに登録
 			if (category_flag) {
-				category = m_tree_ctrl->AppendItem(m_rootId,categoryName, 0, 0, m_treeData);
+				category = m_tree_ctrl->AppendItem(m_rootId, categoryName, 0, 0,
+						m_treeData);
 				category_flag = false;
 			} else {
 				// もしhttp://~　を含んでいればURLとみなして飛ばす、そうでないならツリーに情報を追加
 				if (!boardListArray[i].Contains(wxT("http://"))) {
 					// ツリーに板名かURLを追加する
-					m_tree_ctrl->AppendItem(category, boardListArray[i], 1, 1, m_treeData);
+					m_tree_ctrl->AppendItem(category, boardListArray[i], 1, 1,
+							m_treeData);
 					// ここの辺のコードが汚すぎて死ぬ
 					// 板名の配列に板名とURLを入れておく
 					URLvsBoardName* urlVsName = new URLvsBoardName;
 					urlVsName->BoardName = boardListArray[i];
-					urlVsName->BoardURL  = boardListArray[i+1];
+					urlVsName->BoardURL = boardListArray[i + 1];
 					tmpHash[hashID] = urlVsName;
 					// Hashのキー値をインクリメントしておく
 					hashID++;
@@ -468,13 +458,12 @@ void JaneClone::SetBoardList(){
 }
 
 // バージョン情報が書かれたダイアログを表示する処理
-void JaneClone::OnVersionInfo(wxCommandEvent&)
-{
+void JaneClone::OnVersionInfo(wxCommandEvent&) {
 	wxAboutDialogInfo info;
-    info.SetName(wxT("Jane Clone - ２ちゃんねるビューア"));
-    info.SetVersion(wxT("0.0.8"));
-    info.SetDescription(wxT("Copyright(C) 2011 Nantonaku-Shiawase"));
-    info.SetCopyright(wxT("http://d.hatena.ne.jp/panzer-jagdironscrap1/"));
+	info.SetName(wxT("Jane Clone - ２ちゃんねるビューア"));
+	info.SetVersion(wxT("0.0.8"));
+	info.SetDescription(wxT("Copyright(C) 2011 Nantonaku-Shiawase"));
+	info.SetCopyright(wxT("http://d.hatena.ne.jp/panzer-jagdironscrap1/"));
 
-    wxAboutBox(info);
+	wxAboutBox(info);
 }

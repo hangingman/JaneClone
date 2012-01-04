@@ -1,5 +1,5 @@
 TARGET 	= JaneClone
-OBJECTS = Main.o JaneClone.o ExtractBoardList.o
+OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o
 
 # 基本コマンド
 RM 		:= rm
@@ -11,10 +11,9 @@ CXX_DEBUG_FLAGS		=	-g -O0
 CXX_RELEASE_FLAGS	=	-s -O2
 
 # オプション
-CPPFLAGS = -Wall -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
+CPPFLAGS = -Wall -I/c/MinGW/include -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
 LDFLAGS  = -static -L/c/MinGW/lib `wx-config --libs` `xml2-config --libs` -lws2_32 -lz
-
-VPATH    = include src
+VPATH    = include src gimite
 
 # デバッグ
 .PHONY	: Debug
@@ -28,9 +27,11 @@ Release	: all
 all : $(TARGET)
 $(TARGET) : $(OBJECTS)
 		$(CXX) $^ -o $@ $(LDFLAGS)
+SocketCommunication.o : SocketCommunication.cpp SocketCommunication.h
+		$(CXX) -c $< $(CPPFLAGS)
 ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h
 		$(CXX) -c $< $(CPPFLAGS)
-JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h
+JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h
 		$(CXX) -c $< $(CPPFLAGS)
 Main.o : Main.cpp JaneClone.h
 		$(CXX) -c $< $(CPPFLAGS)

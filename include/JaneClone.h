@@ -39,14 +39,15 @@
 #include <string.h>
 #include <iconv.h>
 
-// 自作関数のヘッダ
+// 自作クラスのヘッダ
 #include "ExtractBoardList.h"
+#include "SocketCommunication.h"
 
 // 名前空間
 using namespace std;
 
 // ディスクからの読取サイズ
-#define S_SIZE (8192)
+#define S_SIZE (1024)
 
 // wxHashMapの宣言 -- 2chの板名とURLを対応させる
 class URLvsBoardName
