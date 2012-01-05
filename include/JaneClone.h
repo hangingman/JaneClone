@@ -31,6 +31,9 @@
 #include <wx/aboutdlg.h>
 #include <wx/hashmap.h>
 #include <wx/regex.h>
+#include <wx/dir.h>
+#include <wx/listctrl.h>
+#include <wx/sizer.h>
 
 // C 標準ライブラリ
 #include <zlib.h>
@@ -42,6 +45,7 @@
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
 #include "SocketCommunication.h"
+#include "DataType.h"
 
 // 名前空間
 using namespace std;
@@ -49,17 +53,6 @@ using namespace std;
 // ディスクからの読取サイズ
 #define S_SIZE (2048)
 #define D_SIZE (6144)
-
-// wxHashMapの宣言 -- 2chの板名とURLを対応させる
-class URLvsBoardName
-{
-	public:
-		wxString BoardName;
-		wxString BoardURL;
-		wxString BoardNameAscii;
-};
-
-// wxHashMapの宣言 --
 
 class JaneClone : public wxFrame {
 
@@ -136,12 +129,16 @@ protected:
 	//　ツリーコントロールにクリックした時のイベント
     void OnGetBoardInfo(wxTreeEvent& event);
     // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
+    // URLvsBoardNameクラスについてはDataType.h参照
     WX_DECLARE_HASH_MAP( int, URLvsBoardName*, wxIntegerHash, wxIntegerEqual, NameURLHash );
     // HashMapの本体
     NameURLHash retainHash;
 
+    // wxNotebook（上部）が乗るサイザー
+    wxBoxSizer *topNote;
     /** 板名のツリーコントロールをクリックした場合表示されるwxNoteBook　*/
     wxNotebook* boardNoteBook;
+
     // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
     void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL);
     // スレッドタイトル一覧の取得メソッド

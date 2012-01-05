@@ -77,12 +77,18 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	window_2_pane_1 = new wxPanel(window_2, wxID_ANY);
 	window_2_pane_2 = new wxPanel(window_2, wxID_ANY);
 
+	// 呼ばれる順序はSetProperties　→　DoLayout
 	SetProperties();
 	DoLayout();
 	this->CreateStatusBar();
 	this->SetStatusText(wxT(" 完了"));
 }
 
+/**
+ * SetProperties
+ * 前回からのデータ引継ぎ等の処理を行う。
+ *
+ */
 void JaneClone::SetProperties() {
 	// wxGladeによる自動生成
 	SetTitle(_("JaneClone"));
@@ -102,15 +108,32 @@ void JaneClone::SetProperties() {
 	m_treeData = new wxTreeItemData();
 	m_rootId = m_tree_ctrl->AddRoot(wxT("2ch板一覧"), 0, 0, m_treeData);
 
+	// カレントディレクトリを設定
+	wxDir dir(wxGetCwd());
+	// datフォルダ、propフォルダが存在するか確認。無ければ確認＆フォルダを作成
+	if (!dir.Exists(wxT("./dat/"))) {
+		wxMessageBox(wxT("datデータ保存用ディレクトリが見当たらないので作成します。\nフォルダ構成を確認してください。"));
+		::wxMkdir(wxT("./dat/"));
+	}
+	if (!dir.Exists(wxT("./prop/"))) {
+		wxMessageBox(wxT("設定ファイル保存用ディレクトリが見当たらないので作成します。\nフォルダ構成を確認してください。"));
+		::wxMkdir(wxT("./prop/"));
+	}
 	// もし板一覧ファイルがdatフォルダに存在するならば一気に板一覧設定に飛ぶ
 	if (wxFile::Exists(wxT("./dat/BoardListUTF8.html"))) {
 		JaneClone::SetBoardList();
 	}
 	// もし板のスレッド一覧ファイルが存在するならばノートブック(タブ)にセットする
-	if (wxFile::Exists(wxT("./dat/*.dat"))) {
-		JaneClone::SetBoardList();
-	}
+	//if (wxFile::Exists(wxT("./dat/*.dat"))) {
+	//	JaneClone::SetBoardList();
+	//}
 }
+
+/**
+ * DoLayout
+ * ユーザーが触る前のアプリのレイアウトを設定する
+ * 前回の起動時にレイアウトに変更があった場合はそれを反映する
+ */
 
 void JaneClone::DoLayout() {
 	// 各種サイザー設定
@@ -138,11 +161,9 @@ void JaneClone::DoLayout() {
 	window_1_pane_2->SetSizer(sizer_4);
 
 	// 上部のタブを設定してみる
-	wxBoxSizer *topNote = new wxBoxSizer(wxVERTICAL);
-	boardNoteBook = new wxNotebook(window_2_pane_1, -1, wxPoint(-1, -1),
-			wxSize(-1, -1), wxNB_TOP);
-
-	topNote->Add(boardNoteBook, 0, wxEXPAND, 10);
+	topNote = new wxBoxSizer(wxVERTICAL);
+	boardNoteBook = new wxNotebook(window_2_pane_1, -1, wxPoint(-1, -1), wxSize(-1, -1), wxNB_TOP);
+	topNote->Add(boardNoteBook, 0, wxEXPAND, 0);
 	window_2_pane_1->SetSizer(topNote);
 
 	// スプリットウィンドウ(縦の区切り)
@@ -150,6 +171,10 @@ void JaneClone::DoLayout() {
 	sizer_1->Add(window_1, 1, wxEXPAND, 0);
 	SetSizer(sizer_1);
 
+	// datフォルダ内にあるスレッド一覧の情報が入ったファイルとプロパティファイルを比べて
+	// 右側のペインにスレッド一覧情報を反映する
+
+	// 初期設定はこのLayout()が呼ばれる前に行わなくてはいけない
 	Layout();
 	// end wxGlade
 }
@@ -209,9 +234,83 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
 		wxRemoveFile(outputDecommPath);
 	}
 	// NoteWindow上にはwxListCtrlが乗る予定
+	wxBoxSizer* sizer_note = new wxBoxSizer(wxVERTICAL);
 	wxPanel *noteWindow = new wxPanel(boardNoteBook, ID_OnClickBoardNote);
-	noteWindow->SetScrollbar(wxVERTICAL, 0, 16, 50);
 	boardNoteBook->AddPage(noteWindow, boardName, true);
+    sizer_note->Add(noteWindow, 0, wxEXPAND, 10);
+    boardNoteBook->SetSizer(sizer_note);
+
+    wxBoxSizer* sizer_noteList = new wxBoxSizer(wxVERTICAL);
+	wxListCtrl* threadList = new wxListCtrl(noteWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+
+	wxListItem itemCol;
+	itemCol.SetText(wxT("番号"));
+	threadList->InsertColumn(0, itemCol);
+	itemCol.SetText(wxT("タイトル"));
+	threadList->InsertColumn(1, itemCol);
+	itemCol.SetText(wxT("レス"));
+	threadList->InsertColumn(2, itemCol);
+	itemCol.SetText(wxT("取得"));
+	threadList->InsertColumn(3, itemCol);
+	itemCol.SetText(wxT("新着"));
+	threadList->InsertColumn(4, itemCol);
+	itemCol.SetText(wxT("増レス"));
+	threadList->InsertColumn(5, itemCol);
+	itemCol.SetText(wxT("勢い"));
+	threadList->InsertColumn(6, itemCol);
+	itemCol.SetText(wxT("最終取得"));
+	threadList->InsertColumn(7, itemCol);
+	itemCol.SetText(wxT("since"));
+	threadList->InsertColumn(8, itemCol);
+	itemCol.SetText(wxT("板"));
+	threadList->InsertColumn(9, itemCol);
+
+	// データ挿入中に画面に描画すると遅くなるそうなので隠す
+	threadList->Hide();
+
+    for ( int i = 0; i < 10; i++ )
+    {
+        wxString buf;
+        buf.Printf(wxT("This is item %d"), i);
+        long tmp = threadList->InsertItem(i, buf, 0);
+        threadList->SetItemData(tmp, i);
+
+        buf.Printf(wxT("Col 1, item %d"), i);
+        threadList->SetItem(tmp, 1, buf);
+
+        buf.Printf(wxT("Item %d in column 2"), i);
+        threadList->SetItem(tmp, 2, buf);
+
+        buf.Printf(wxT("Item %d in column 3"), i);
+        threadList->SetItem(tmp, 3, buf);
+
+        buf.Printf(wxT("Item %d in column 4"), i);
+        threadList->SetItem(tmp, 4, buf);
+
+        buf.Printf(wxT("Item %d in column 5"), i);
+        threadList->SetItem(tmp, 5, buf);
+
+        buf.Printf(wxT("Item %d in column 6"), i);
+        threadList->SetItem(tmp, 6, buf);
+
+        buf.Printf(wxT("Item %d in column 7"), i);
+        threadList->SetItem(tmp, 7, buf);
+
+        buf.Printf(wxT("Item %d in column 8"), i);
+        threadList->SetItem(tmp, 8, buf);
+
+        buf.Printf(wxT("Item %d in column 9"), i);
+        threadList->SetItem(tmp, 9, buf);
+
+        buf.Printf(wxT("Item %d in column 10"), i);
+        threadList->SetItem(tmp, 10, buf);
+    }
+
+    threadList->Show();
+	sizer_noteList->Add(threadList, 0, wxEXPAND, 0);
+	noteWindow->SetSizer(sizer_noteList);
+	topNote->Add(boardNoteBook, 0, wxEXPAND, 0);
+	window_2_pane_1->SetSizer(topNote);
 }
 
 // 板一覧更新処理
@@ -469,7 +568,6 @@ void JaneClone::SetBoardList() {
 					urlVsName->BoardName = boardListArray[i];
 					urlVsName->BoardURL = boardListArray[i + 1];
 
-					/**
 					// 正規表現を使ってサーバ名と板名(ascii)を取得する
 					// そこまで難しい正規表現を使う必要はないようです
 					wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
@@ -482,7 +580,6 @@ void JaneClone::SetBoardList() {
 							urlVsName->BoardNameAscii = reThreadList.GetMatch(boardListArray[i + 1], 3);
 						}
 					}
-					*/
 					// Hashに板情報を入れる
 					tmpHash[hashID] = urlVsName;
 					// Hashのキー値をインクリメントしておく

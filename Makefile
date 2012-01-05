@@ -7,8 +7,9 @@ CXX 	:= g++
 CC 		:= g++
 
 # デバッグ時とリリース時の微調整
+# 最適化は実行しないことにした。最適化を行うとiconvが実行されなくなる。
 CXX_DEBUG_FLAGS		=	-g -O0
-CXX_RELEASE_FLAGS	=	-s -O2
+CXX_RELEASE_FLAGS	=	-s -O0
 
 # オプション
 CPPFLAGS = -Wall -I/c/MinGW/include -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
@@ -31,7 +32,7 @@ SocketCommunication.o : SocketCommunication.cpp SocketCommunication.h
 		$(CXX) -c $< $(CPPFLAGS)
 ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h
 		$(CXX) -c $< $(CPPFLAGS)
-JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h
+JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h DataType.h
 		$(CXX) -c $< $(CPPFLAGS)
 Main.o : Main.cpp JaneClone.h
 		$(CXX) -c $< $(CPPFLAGS)
