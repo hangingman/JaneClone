@@ -92,7 +92,7 @@ private:
     *---OnGetBoardList以下のメソッドおわり
     */
 
-
+protected:
     // URL入力欄のテキスト操作用
     wxTextCtrl* 	textCtlForURL;
     // ステータスバー表示用文字列
@@ -101,9 +101,6 @@ private:
     wxTreeCtrl* 	m_tree_ctrl;
     wxTreeItemData*	m_treeData;
     wxTreeItemId 	m_rootId;
-
-protected:
-
     wxStaticText* 	label_1;
     wxButton* 		button_1;
 

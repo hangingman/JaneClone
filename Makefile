@@ -1,10 +1,11 @@
 TARGET 	= JaneClone
-OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o
+OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o icon_rc.o
 
 # 基本コマンド
 RM 		:= rm
 CXX 	:= g++
 CC 		:= g++
+WINDRES := windres
 
 # デバッグ時とリリース時の微調整
 # 最適化は実行しないことにした。最適化を行うとiconvが実行されなくなる。
@@ -28,6 +29,8 @@ Release	: all
 all : $(TARGET)
 $(TARGET) : $(OBJECTS)
 		$(CXX) $^ -o $@ $(LDFLAGS)
+icon_rc.o : icon.rc
+		$(WINDRES) -i rc/"icon.rc" -O coff -o "icon_rc.o" -I/mingw/include/wx-2.9
 SocketCommunication.o : SocketCommunication.cpp SocketCommunication.h
 		$(CXX) -c $< $(CPPFLAGS)
 ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h

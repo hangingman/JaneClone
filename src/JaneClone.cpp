@@ -31,6 +31,8 @@ END_EVENT_TABLE()
 JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
 wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 {
+	// アイコンの設定
+	SetIcon(wxICON(wxicon));
 	// メニューバーの設置
 	wxMenuBar *menuBar = new wxMenuBar;
 	wxMenu *menu1 = new wxMenu;
@@ -124,9 +126,8 @@ void JaneClone::SetProperties() {
 		JaneClone::SetBoardList();
 	}
 	// もし板のスレッド一覧ファイルが存在するならばノートブック(タブ)にセットする
-	//if (wxFile::Exists(wxT("./dat/*.dat"))) {
-	//	JaneClone::SetBoardList();
-	//}
+	// ノートブック部分に追加する材料を用意
+	boardNoteBook = new wxNotebook(window_2_pane_1, -1, wxPoint(-1, -1), wxSize(-1, -1), wxNB_TOP);
 }
 
 /**
@@ -143,11 +144,9 @@ void JaneClone::DoLayout() {
 	wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
 
 	// 一番上のURL入力欄など
-	sizer_2->Add(label_1, 0, wxALL | wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL,
-			0);
+	sizer_2->Add(label_1, 0, wxALL | wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL, 0);
 	sizer_2->Add(textCtlForURL, 2, wxALL | wxEXPAND, 0);
 	sizer_2->Add(button_1, 0, 0, 0);
-
 	sizer_1->Add(sizer_2, 0, wxALL | wxEXPAND, 2);
 
 	// 下部のスプリットウィンドウの設定
@@ -159,12 +158,6 @@ void JaneClone::DoLayout() {
 	window_2->SplitHorizontally(window_2_pane_1, window_2_pane_2);
 	sizer_4->Add(window_2, 1, wxEXPAND, 0);
 	window_1_pane_2->SetSizer(sizer_4);
-
-	// 上部のタブを設定してみる
-	topNote = new wxBoxSizer(wxVERTICAL);
-	boardNoteBook = new wxNotebook(window_2_pane_1, -1, wxPoint(-1, -1), wxSize(-1, -1), wxNB_TOP);
-	topNote->Add(boardNoteBook, 0, wxEXPAND, 0);
-	window_2_pane_1->SetSizer(topNote);
 
 	// スプリットウィンドウ(縦の区切り)
 	window_1->SplitVertically(window_1_pane_1, window_1_pane_2);
@@ -234,14 +227,18 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
 		wxRemoveFile(outputDecommPath);
 	}
 	// NoteWindow上にはwxListCtrlが乗る予定
-	wxBoxSizer* sizer_note = new wxBoxSizer(wxVERTICAL);
 	wxPanel *noteWindow = new wxPanel(boardNoteBook, ID_OnClickBoardNote);
-	boardNoteBook->AddPage(noteWindow, boardName, true);
-    sizer_note->Add(noteWindow, 0, wxEXPAND, 10);
-    boardNoteBook->SetSizer(sizer_note);
-
-    wxBoxSizer* sizer_noteList = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer_noteList  = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer_pane		= new wxBoxSizer(wxVERTICAL);
 	wxListCtrl* threadList = new wxListCtrl(noteWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+
+	//** スレッド一覧画面用の材料を生成　*/
+	sizer_noteList->Add(threadList, 1, wxEXPAND, 0);
+	noteWindow->SetSizer(sizer_noteList);
+
+    boardNoteBook->AddPage(noteWindow, boardName);
+    sizer_pane->Add(boardNoteBook, 1, wxEXPAND, 0);
+    window_2_pane_1->SetSizer(sizer_pane);
 
 	wxListItem itemCol;
 	itemCol.SetText(wxT("番号"));
@@ -267,6 +264,9 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
 
 	// データ挿入中に画面に描画すると遅くなるそうなので隠す
 	threadList->Hide();
+
+	// スレッド一覧画面を構成するデータを拾ってくる
+
 
     for ( int i = 0; i < 10; i++ )
     {
@@ -301,16 +301,9 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
 
         buf.Printf(wxT("Item %d in column 9"), i);
         threadList->SetItem(tmp, 9, buf);
-
-        buf.Printf(wxT("Item %d in column 10"), i);
-        threadList->SetItem(tmp, 10, buf);
     }
 
     threadList->Show();
-	sizer_noteList->Add(threadList, 0, wxEXPAND, 0);
-	noteWindow->SetSizer(sizer_noteList);
-	topNote->Add(boardNoteBook, 0, wxEXPAND, 0);
-	window_2_pane_1->SetSizer(topNote);
 }
 
 // 板一覧更新処理
@@ -542,9 +535,9 @@ void JaneClone::SetBoardList() {
 	int hashID = 0;
 
 	// GUIにツリーコントロールを反映する
-	// 2chの入り口, 2ch総合案内を除外しているのでループ変数は3から始まる
+	// 2chの入り口, 2ch総合案内を除外しているのでループ変数は5から始まる
 	// あと最後の方の余分なURLも除外している。 -- サーバに変更があった場合困るなあ…
-	for (int i = 3; i < boardListArray.GetCount() - 2; i++) {
+	for (int i = 5; i < boardListArray.GetCount() - 2; i++) {
 		// 文字列が入っていなければツリーには入れない
 		if (!boardListArray[i].IsSameAs("")) {
 			// カテゴリフォルダだったらフラグ立てる
