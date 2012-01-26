@@ -10,7 +10,7 @@
 // スレッド一覧をダウンロードしてくるメソッド 　引数はサーバーのフルURL、サーバ名、板名、保存先
 // うまくいけばtrueを返す
 bool SocketCommunication::DownloadThreadList(wxString& boardURL,
-		wxString& server, wxString& boardName, wxString outputPath) {
+		wxString& server, wxString& boardName, wxString outputPath, wxString headerPath) {
 	// wxからstdへの変換
 	std::string boardURLSTL = std::string(boardURL.mb_str());
 	std::string serverSTL = std::string(server.mb_str());
@@ -42,11 +42,14 @@ bool SocketCommunication::DownloadThreadList(wxString& boardURL,
 			// gzipのヘッダ作成
 			char HEX[] = {0x1f,0x8b,0x08,0x00};
 
-			//ファイルに書き出す
-			wxCharBuffer buffer = outputPath.ToUTF8();
-			std::ofstream ofs(buffer.data(), std::ios::binary | std::ios::trunc);
-			//1行ずつ受信してバイナリ形式で書きこむ
-			//このへんの処理はWin, Linux共通ではないだろうから同じソースコードで違う挙動になるかもしれない
+			// ファイルに書き出す(バイナリ部分)
+			wxCharBuffer binaryFile = outputPath.ToUTF8();
+			std::ofstream ofs(binaryFile.data(), std::ios::binary | std::ios::trunc);
+			// ファイルに書き出す(ヘッダ部分)
+			wxCharBuffer headerFile = headerPath.ToUTF8();
+			std::ofstream ofsh(headerFile.data(), std::ios::trunc);
+			// 1行ずつ受信してバイナリ形式で書きこむ
+			// このへんの処理はWin, Linux共通ではないだろうから同じソースコードで違う挙動になるかもしれない
 			while (std::getline(sst, s)) {
 				if (flag) {
 					// 真の場合
@@ -57,6 +60,9 @@ bool SocketCommunication::DownloadThreadList(wxString& boardURL,
 					if (loc != std::string::npos) {
 						ofs << s << std::endl;
 						flag = true;
+					} else {
+						// ヘッダーを書きだす
+						ofsh << s << std::endl;
 					}
 				}
 			}

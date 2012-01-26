@@ -1,10 +1,10 @@
 TARGET 	= JaneClone
-OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o icon_rc.o
+OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o SQLiteBundle.o icon_rc.o
 
 # 基本コマンド
-RM 		:= rm
+RM 	:= rm
 CXX 	:= g++
-CC 		:= g++
+CC 	:= g++
 WINDRES := windres
 
 # デバッグ時とリリース時の微調整
@@ -13,9 +13,9 @@ CXX_DEBUG_FLAGS		=	-g -O0
 CXX_RELEASE_FLAGS	=	-s -O0
 
 # オプション
-CPPFLAGS = -Wall -I/c/MinGW/include -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
-LDFLAGS  = -static -L/c/MinGW/lib `wx-config --libs` `xml2-config --libs` -lws2_32 -lz
-VPATH    = include src gimite
+CPPFLAGS = -Wall -D __WXMSW__ -I/c/MinGW/include -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
+LDFLAGS  = -static -L/c/MinGW/lib `wx-config --libs` `xml2-config --libs` -lws2_32 -lz -lwxcode_mswu_wxsqlite3-2.9 -lsqlite3
+VPATH    = include src gimite rc
 
 # デバッグ
 .PHONY	: Debug
@@ -31,11 +31,13 @@ $(TARGET) : $(OBJECTS)
 		$(CXX) $^ -o $@ $(LDFLAGS)
 icon_rc.o : icon.rc
 		$(WINDRES) -i rc/"icon.rc" -O coff -o "icon_rc.o" -I/mingw/include/wx-2.9
+SQLiteBundle.o : SQLiteBundle.cpp SQLiteBundle.h
+		$(CXX) -c $< $(CPPFLAGS)
 SocketCommunication.o : SocketCommunication.cpp SocketCommunication.h
 		$(CXX) -c $< $(CPPFLAGS)
 ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h
 		$(CXX) -c $< $(CPPFLAGS)
-JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h DataType.h
+JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h DataType.h SQLiteBundle.h
 		$(CXX) -c $< $(CPPFLAGS)
 Main.o : Main.cpp JaneClone.h
 		$(CXX) -c $< $(CPPFLAGS)

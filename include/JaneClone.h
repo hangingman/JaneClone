@@ -34,18 +34,20 @@
 #include <wx/dir.h>
 #include <wx/listctrl.h>
 #include <wx/sizer.h>
+#include <wx/textfile.h>
+#include <wx/convauto.h>
 
 // C 標準ライブラリ
 #include <zlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <iconv.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
 #include "SocketCommunication.h"
 #include "DataType.h"
+#include "SQLiteBundle.h"
 
 // 名前空間
 using namespace std;
@@ -53,6 +55,17 @@ using namespace std;
 // ディスクからの読取サイズ
 #define S_SIZE (2048)
 #define D_SIZE (6144)
+
+// テキストの終端文字が何で終わるのかを定義
+#if defined(__WXMSW__)
+	#define TextEndLineType wxTextFileType_Dos
+#endif
+#if defined(__WXGTK__)
+	#define TextEndLineType	wxTextFileType_Unix
+#endif
+#if defined(__WXMAC__)
+	#define TextEndLineType wxTextFileType_Mac
+#endif
 
 class JaneClone : public wxFrame {
 
@@ -66,7 +79,6 @@ public:
     void OnAbout(wxCommandEvent& event);
     void OnGetBoardList(wxCommandEvent& event);
     void OnVersionInfo(wxCommandEvent& event);
-    // 右クリックを押した時のイベント(右クリックを何処で押したかを判定することが必要であるとともに)
     void OnMouseClickRight(wxCommandEvent& event);
 
 private:
@@ -74,11 +86,6 @@ private:
     void SetProperties();
     void DoLayout();
 
-
-    /**
-    *　OnGetBoardList以下のメソッド
-    *　DecommpressFile()とConvertSJISToUTF8()は共通メソッドとして使えそう
-    */
     // 板一覧ファイルをダウンロードする処理
 	void DownloadBoardList();
 	// ダウンロードした板一覧ファイルを解凍する処理
@@ -87,10 +94,6 @@ private:
 	void ConvertSJISToUTF8(wxString& , wxString&);
 	// 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
 	void SetBoardList();
-
-    /**
-    *---OnGetBoardList以下のメソッドおわり
-    */
 
 protected:
     // URL入力欄のテキスト操作用
@@ -119,10 +122,6 @@ protected:
     // 右側下段　-- 個別のスレ
     wxPanel* window_2_pane_2;
 
-    // end wxGlade
-
-    /** 内部処理のためのメソッド、オブジェクト */
-
 	//　ツリーコントロールにクリックした時のイベント
     void OnGetBoardInfo(wxTreeEvent& event);
     // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
@@ -132,7 +131,7 @@ protected:
     NameURLHash retainHash;
 
     // wxNotebook（上部）が乗るサイザー
-    wxBoxSizer *topNote;
+    wxBoxSizer* topNote;
     /** 板名のツリーコントロールをクリックした場合表示されるwxNoteBook　*/
     wxNotebook* boardNoteBook;
 
@@ -142,6 +141,9 @@ protected:
     wxString DownloadThreadList(wxString& boardURL);
     // 板名のノートブックがクリックされた時スレッド一覧を表示する処理
     void OnClickBoardNote(wxNotebookEvent& event);
+
+    // アプリケーション起動時からSQLiteを管理するオブジェクト
+    SQLiteBundle* sqlite;
 
     DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
