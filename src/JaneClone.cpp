@@ -370,12 +370,17 @@ wxString JaneClone::DownloadThreadList(wxString& boardURL) {
 	wxString msg = "";
 	// 保存先を決める
 	wxString outputPath = wxT("./dat/");
+	// ヘッダ用の保存先
+	wxString headerPath = outputPath;
+	headerPath.Append(boardName);
+	headerPath.Append(wxT(".head"));
+
 	outputPath.Append(boardName);
 	outputPath.Append(wxT(".gzip"));
 
 	// 通信のためのクラスのインスタンスを作る
 	SocketCommunication* sc = new SocketCommunication();
-	sc->DownloadThreadList(boardURL, server, boardName, outputPath);
+	sc->DownloadThreadList(boardURL, server, boardName, outputPath, headerPath);
 	delete sc;
 
 	// ステータスバーに通信終了の文字を出す
