@@ -70,82 +70,91 @@ using namespace std;
 class JaneClone : public wxFrame {
 
 public:
-    // begin wxGlade: JaneClone::ids
-    // end wxGlade
+  // begin wxGlade: JaneClone::ids
+  // end wxGlade
 
-    JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE);
+  JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE);
 
-    void OnQuit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-    void OnGetBoardList(wxCommandEvent& event);
-    void OnVersionInfo(wxCommandEvent& event);
-    void OnMouseClickRight(wxCommandEvent& event);
+  void OnQuit(wxCommandEvent& event);
+  void OnAbout(wxCommandEvent& event);
+  void OnGetBoardList(wxCommandEvent& event);
+  void OnVersionInfo(wxCommandEvent& event);
+  void OnMouseClickRight(wxCommandEvent& event);
 
 private:
-    // begin wxGlade: JaneClone::methods
-    void SetProperties();
-    void DoLayout();
+  // begin wxGlade: JaneClone::methods
+  void SetProperties();
+  void DoLayout();
 
-    // 板一覧ファイルをダウンロードする処理
-	void DownloadBoardList();
-	// ダウンロードした板一覧ファイルを解凍する処理
-	void DecommpressFile(wxString& , wxString& );
-	// ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
-	void ConvertSJISToUTF8(wxString& , wxString&);
-	// 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
-	void SetBoardList();
+  // 板一覧ファイルをダウンロードする処理
+  void DownloadBoardList();
+  // ダウンロードした板一覧ファイルを解凍する処理
+  void DecommpressFile(wxString& , wxString& );
+  // ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
+  void ConvertSJISToUTF8(wxString& , wxString&);
+  // 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
+  void SetBoardList();
 
 protected:
-    // URL入力欄のテキスト操作用
-    wxTextCtrl* 	textCtlForURL;
-    // ステータスバー表示用文字列
-    wxStatusBar* 	statusBarStr;
-    // ツリーコントロールは内部からならいじれるようにしておく
-    wxTreeCtrl* 	m_tree_ctrl;
-    wxTreeItemData*	m_treeData;
-    wxTreeItemId 	m_rootId;
-    wxStaticText* 	label_1;
-    wxButton* 		button_1;
+  // URL入力欄のテキスト操作用
+  wxTextCtrl* 	textCtlForURL;
+  // ステータスバー表示用文字列
+  wxStatusBar* 	statusBarStr;
+  // ツリーコントロールは内部からならいじれるようにしておく
+  wxTreeCtrl* 	m_tree_ctrl;
+  wxTreeItemData*	m_treeData;
+  wxTreeItemId 	m_rootId;
+  wxStaticText* 	label_1;
+  wxButton* 		button_1;
 
-    // 左側
-	wxSplitterWindow* window_1;
-	// 右側
-    wxSplitterWindow* window_2;
+  // 左側
+  wxSplitterWindow* window_1;
+  // 右側
+  wxSplitterWindow* window_2;
 
-    // 左側　-- 板一覧がツリーコントロールに入る
-    wxPanel* window_1_pane_1;
-	// 左側 -- 未使用　デバッグ画面でもつけるか
-    wxPanel* window_1_pane_2;
+  // 左側　-- 板一覧がツリーコントロールに入る
+  wxPanel* window_1_pane_1;
+  // 左側 -- 未使用　デバッグ画面でもつけるか
+  wxPanel* window_1_pane_2;
 
-	// 右側上段 -- 板一覧
-    wxPanel* window_2_pane_1;
-    // 右側下段　-- 個別のスレ
-    wxPanel* window_2_pane_2;
+  // 右側上段 -- 板一覧
+  wxPanel* window_2_pane_1;
+  // 右側下段　-- 個別のスレ
+  wxPanel* window_2_pane_2;
 
-	//　ツリーコントロールにクリックした時のイベント
-    void OnGetBoardInfo(wxTreeEvent& event);
-    // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
-    // URLvsBoardNameクラスについてはDataType.h参照
-    WX_DECLARE_HASH_MAP( int, URLvsBoardName*, wxIntegerHash, wxIntegerEqual, NameURLHash );
-    // HashMapの本体
-    NameURLHash retainHash;
+  //　ツリーコントロールにクリックした時のイベント
+  void OnGetBoardInfo(wxTreeEvent& event);
+  // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
+  // URLvsBoardNameクラスについてはDataType.h参照
+  WX_DECLARE_HASH_MAP( int, URLvsBoardName*, wxIntegerHash, wxIntegerEqual, NameURLHash );
+  // HashMapの本体
+  NameURLHash retainHash;
 
-    // wxNotebook（上部）が乗るサイザー
-    wxBoxSizer* topNote;
-    /** 板名のツリーコントロールをクリックした場合表示されるwxNoteBook　*/
-    wxNotebook* boardNoteBook;
+  // wxNotebook（上部）が乗るサイザー
+  wxBoxSizer* topNote;
+  /** 板名のツリーコントロールをクリックした場合表示されるwxNoteBook　*/
+  wxNotebook* boardNoteBook;
 
-    // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
-    void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL);
-    // スレッドタイトル一覧の取得メソッド
-    wxString DownloadThreadList(wxString& boardURL);
-    // 板名のノートブックがクリックされた時スレッド一覧を表示する処理
-    void OnClickBoardNote(wxNotebookEvent& event);
+  // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
+  void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL);
+  // スレッドタイトル一覧の取得メソッド
+  wxString DownloadThreadList(wxString& boardURL);
+  // 板名のノートブックがクリックされた時スレッド一覧を表示する処理
+  void OnClickBoardNote(wxNotebookEvent& event);
 
-    // アプリケーション起動時からSQLiteを管理するオブジェクト
-    SQLiteBundle* sqlite;
+  // アプリケーション起動時からSQLiteを管理するオブジェクト
+  SQLiteBundle* sqlite;
 
-    DECLARE_EVENT_TABLE()
+  // スレッド一覧の情報を保持するwxHashMap　ユーザが板名をクリックするたびに作られる
+  // ThreadListクラスについてはDataType.h参照
+  WX_DECLARE_HASH_MAP( int, ThreadList*, wxIntegerHash, wxIntegerEqual, ThreadListHash );
+  // ThreadListHashの本体
+  ThreadListHash threadListHash;
+
+  // スレッド一覧のハッシュマップを作成するメソッド
+  void SetThreadList(wxString& inputThreadListdat);
+
+  DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
 
 #endif // JANECLONE_H
