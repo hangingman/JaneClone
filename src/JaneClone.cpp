@@ -231,10 +231,9 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
   wxBoxSizer* sizer_pane = new wxBoxSizer(wxVERTICAL);
   wxListCtrl* threadList = new wxListCtrl(noteWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
 
-  //** スレッド一覧画面用の材料を生成　*/
+  /** スレッド一覧画面用の材料を生成　*/
   sizer_noteList->Add(threadList, 1, wxEXPAND, 0);
   noteWindow->SetSizer(sizer_noteList);
-
   boardNoteBook->AddPage(noteWindow, boardName);
   sizer_pane->Add(boardNoteBook, 1, wxEXPAND, 0);
   window_2_pane_1->SetSizer(sizer_pane);
@@ -267,43 +266,44 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
   // スレッド一覧画面を構成するデータを拾ってくる
   JaneClone::SetThreadList(outputConvPath);
 
-  for ( int i = 0; i < 10; i++ )
-    {
-      wxString buf;
-      buf.Printf(wxT("This is item %d"), i);
-      long tmp = threadList->InsertItem(i, buf, 0);
-      threadList->SetItemData(tmp, i);
+  // スレッド一覧情報をリストから取ってくる
+  ThreadListHash::iterator it;
+  int i = 0;
 
-      buf.Printf(wxT("Col 1, item %d"), i);
-      threadList->SetItem(tmp, 1, buf);
+  for (it = this->threadListHash.begin(); it != this->threadListHash.end(); ++it) {
+    // スレッド一覧クラスの１レコード分を反映する
+    ThreadList* hash = it->second;
+    wxString buf;
 
-      buf.Printf(wxT("Item %d in column 2"), i);
-      threadList->SetItem(tmp, 2, buf);
+    // 番号
+    buf.Printf(wxT("%d"), i);
+    long tmp = threadList->InsertItem(i, buf, 0);
+    // スレタイ
+    threadList->SetItem(tmp, 1, hash->title);
+    // 最新のレス(スタブ)
+    threadList->SetItem(tmp, 2, wxString::Format(wxT("%i"),hash->response));
+    // 取得
+    threadList->SetItem(tmp, 3, wxString::Format(wxT("%i"),hash->response));
+    // 新着
+    threadList->SetItem(tmp, 4, wxT("取得レス数"));
+    // 増レス
+    threadList->SetItem(tmp, 5, wxT("増レス数"));
+    // 勢い
+    threadList->SetItem(tmp, 6, wxT("新着レス数をここに入れる"));
+    // 最終取得
+    threadList->SetItem(tmp, 7, wxT("前回取得時と比べた増レス数をここに入れる"));
+    // since
+    threadList->SetItem(tmp, 8, wxT("計算した勢い値をここに入れる"));
+    // 板名
+    threadList->SetItem(tmp, 9, wxT("最終取得日を入れる"));
 
-      buf.Printf(wxT("Item %d in column 3"), i);
-      threadList->SetItem(tmp, 3, buf);
-
-      buf.Printf(wxT("Item %d in column 4"), i);
-      threadList->SetItem(tmp, 4, buf);
-
-      buf.Printf(wxT("Item %d in column 5"), i);
-      threadList->SetItem(tmp, 5, buf);
-
-      buf.Printf(wxT("Item %d in column 6"), i);
-      threadList->SetItem(tmp, 6, buf);
-
-      buf.Printf(wxT("Item %d in column 7"), i);
-      threadList->SetItem(tmp, 7, buf);
-
-      buf.Printf(wxT("Item %d in column 8"), i);
-      threadList->SetItem(tmp, 8, buf);
-
-      buf.Printf(wxT("Item %d in column 9"), i);
-      threadList->SetItem(tmp, 9, buf);
-    }
+    // ループ変数のインクリメント
+    i++;
+  }
 
   threadList->Show();
 }
+
 
 // スレッド一覧をファイルからロードしてハッシュマップにもたせる処理
 void JaneClone::SetThreadList(wxString& inputThreadListDat) {
@@ -311,44 +311,35 @@ void JaneClone::SetThreadList(wxString& inputThreadListDat) {
   // テキストファイルの読み込み
   wxTextFile datfile(inputThreadListDat);
   datfile.Open();
-  
+
   // スレッド一覧読み込み用正規表現を準備する
-  wxRegEx reThreadLine(_T("([\d]+).dat<>(.+) \(([\d]+)\)$"), wxRE_ADVANCED + wxRE_ICASE);
+  wxRegEx reThreadLine(_T("([[:digit:]]+).dat<>(.+)\\(([[:digit:]]{1,3})\\)"), wxRE_ADVANCED + wxRE_ICASE);
   // スレッドに番号をつける
   int loopNumber = 1;
 
   // テキストファイルの終端まで読み込む
   for ( wxString line = datfile.GetFirstLine(); !datfile.Eof(); line = datfile.GetNextLine() ) {
+
     // スレッド一覧クラスを生成する
-    ThreadList *threadList;
+    ThreadList *threadList = new ThreadList();
 
     // 正規表現で情報を取得する
     if ( reThreadLine.Matches(line) ) {
       // キー値を取得する
-      wxString oid = reThreadLine.GetMatch(line, 1);
-      // キー値
-      threadList->oid = oid;      
+      threadList->oid = reThreadLine.GetMatch(line, 1);      
       // スレタイを取得する
-      wxString title = reThreadLine.GetMatch(line, 2);
-      // タイトル
-      threadList->title = title;
+      threadList->title = reThreadLine.GetMatch(line, 2);
       // レス数を取得する
-      wxString response = reThreadLine.GetMatch(line, 3);
-      // レス数
-      threadList->response = wxAtoi(response);
+      threadList->response = wxAtoi(reThreadLine.GetMatch(line, 3));
     }
     // 番号
     threadList->number = loopNumber;
-
     // Hashにスレッド情報を入れる
     this->threadListHash[loopNumber] = threadList;
     // ループ変数をインクリメント
     loopNumber++;
   }
-  // 最終行の処理を行う
 }
-
-
 
 // 板一覧更新処理
 void JaneClone::OnGetBoardList(wxCommandEvent&) {

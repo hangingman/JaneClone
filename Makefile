@@ -8,7 +8,6 @@ CC 	:= g++
 WINDRES := windres
 
 # デバッグ時とリリース時の微調整
-# 最適化は実行しないことにした。最適化を行うとiconvが実行されなくなる。
 CXX_DEBUG_FLAGS		=	-g -O0
 CXX_RELEASE_FLAGS	=	-s -O0
 
