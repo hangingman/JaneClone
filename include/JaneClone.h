@@ -17,7 +17,7 @@
 #include <wx/wfstream.h>
 #include <wx/string.h>
 #include <wx/file.h>
-#include <wx/notebook.h>
+#include <wx/aui/auibook.h>
 #include <wx/dialog.h>
 #include <wx/event.h>
 #include <wx/wfstream.h>
@@ -75,11 +75,14 @@ public:
 
   JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE);
 
+
+  // イベントテーブル系
   void OnQuit(wxCommandEvent& event);
   void OnAbout(wxCommandEvent& event);
   void OnGetBoardList(wxCommandEvent& event);
   void OnVersionInfo(wxCommandEvent& event);
   void OnMouseClickRight(wxCommandEvent& event);
+  void OnMouseEventHappen(wxMouseEvent& event);
 
 private:
   // begin wxGlade: JaneClone::methods
@@ -133,14 +136,12 @@ protected:
   // wxNotebook（上部）が乗るサイザー
   wxBoxSizer* topNote;
   /** 板名のツリーコントロールをクリックした場合表示されるwxNoteBook　*/
-  wxNotebook* boardNoteBook;
+  wxAuiNotebook* boardNoteBook;
 
   // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
   void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL);
   // スレッドタイトル一覧の取得メソッド
   wxString DownloadThreadList(wxString& boardURL);
-  // 板名のノートブックがクリックされた時スレッド一覧を表示する処理
-  void OnClickBoardNote(wxNotebookEvent& event);
 
   // アプリケーション起動時からSQLiteを管理するオブジェクト
   SQLiteBundle* sqlite;

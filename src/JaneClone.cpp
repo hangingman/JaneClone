@@ -10,8 +10,7 @@ enum {
 	ID_Quit = 1,
 	ID_About,
 	ID_GetBoardList,
-	ID_GetVersionInfo,
-	ID_OnClickBoardNote
+	ID_GetVersionInfo
 };
 
 // event table
@@ -23,8 +22,6 @@ EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
 EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
-// 板名のノートブックが選択された時のイベント
-EVT_NOTEBOOK_PAGE_CHANGED(ID_OnClickBoardNote, JaneClone::OnClickBoardNote)
 END_EVENT_TABLE()
 
 JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
@@ -125,8 +122,8 @@ void JaneClone::SetProperties() {
     JaneClone::SetBoardList();
   }
   // もし板のスレッド一覧ファイルが存在するならばノートブック(タブ)にセットする
-  // ノートブック部分に追加する材料を用意
-  boardNoteBook = new wxNotebook(window_2_pane_1, -1, wxPoint(-1, -1), wxSize(-1, -1), wxNB_TOP);
+  // wxAuiNotebookに更新した
+  boardNoteBook = new wxAuiNotebook(window_2_pane_1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
 }
 
 /**
@@ -200,6 +197,7 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
     }
     // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
     SetBoardNameToNoteBook(boardName, boardURL);
+    // ノートブックへの反映が無事に終了すれば、SQLiteに板名と
   }
 }
 
@@ -226,7 +224,7 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
     wxRemoveFile(outputDecommPath);
   }
   // NoteWindow上にはwxListCtrlが乗る予定
-  wxPanel *noteWindow = new wxPanel(boardNoteBook, ID_OnClickBoardNote);
+  wxPanel *noteWindow = new wxPanel(boardNoteBook, wxID_ANY);
   wxBoxSizer* sizer_noteList = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer* sizer_pane = new wxBoxSizer(wxVERTICAL);
   wxListCtrl* threadList = new wxListCtrl(noteWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
@@ -622,11 +620,6 @@ void JaneClone::SetBoardList() {
     }
   }
   this->retainHash = tmpHash;
-}
-
-// 板名のノートブックがクリックされた時スレッド一覧を表示する処理
-void JaneClone::OnClickBoardNote(wxNotebookEvent& event) {
-	wxMessageBox(wxT("超反応"));
 }
 
 // バージョン情報が書かれたダイアログを表示する処理
