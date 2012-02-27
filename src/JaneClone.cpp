@@ -2,7 +2,6 @@
 
 #include "JaneClone.h"
 
-// boostの名前空間を使う
 using namespace std;
 
 // enum
@@ -121,9 +120,10 @@ void JaneClone::SetProperties() {
   if (wxFile::Exists(wxT("./dat/BoardListUTF8.html"))) {
     JaneClone::SetBoardList();
   }
-  // もし板のスレッド一覧ファイルが存在するならばノートブック(タブ)にセットする
   // wxAuiNotebookに更新した
   boardNoteBook = new wxAuiNotebook(window_2_pane_1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
+  // ユーザーが以前見ていた板一覧をセットする
+  sqlite->UserLookingBoardSetter(boardNoteBook);
 }
 
 /**
@@ -169,7 +169,10 @@ void JaneClone::DoLayout() {
 }
 
 void JaneClone::OnQuit(wxCommandEvent&) {
-	Close(true);
+
+  // ツリーコントロールをデリートしてやらないとセグる
+  delete m_tree_ctrl;
+  Close(true);
 }
 
 void JaneClone::OnAbout(wxCommandEvent&) {
@@ -197,7 +200,6 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
     }
     // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
     SetBoardNameToNoteBook(boardName, boardURL);
-    // ノートブックへの反映が無事に終了すれば、SQLiteに板名と
   }
 }
 
@@ -298,10 +300,9 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
     // ループ変数のインクリメント
     i++;
   }
-
+  // スレッドリストを表示させる
   threadList->Show();
 }
-
 
 // スレッド一覧をファイルからロードしてハッシュマップにもたせる処理
 void JaneClone::SetThreadList(wxString& inputThreadListDat) {
@@ -631,4 +632,14 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
   info.SetCopyright(wxT("http://d.hatena.ne.jp/panzer-jagdironscrap1/"));
 
   wxAboutBox(info);
+}
+
+// デストラクタでSQLiteBundleのインスタンスを消しておく
+JaneClone::~JaneClone()
+{
+  delete m_tree_ctrl;
+  // ユーザが開いていた板一覧をSQLiteに登録する
+  //sqlite->UserLookingBoardRegister(boardNoteBook);
+  // SQLiteBundleのインスタンスを削除する
+  //delete sqlite;
 }

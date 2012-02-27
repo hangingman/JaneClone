@@ -12,7 +12,7 @@
 #include <wx/msgdlg.h>
 #include <wx/imaglist.h>
 #include <wx/artprov.h>
-#include <wx/xml/xml.h>
+#include <wx/xml/xml.h>x
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 #include <wx/string.h>
@@ -74,6 +74,8 @@ public:
   // end wxGlade
 
   JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE);
+
+  ~JaneClone();
 
 
   // イベントテーブル系

@@ -18,6 +18,8 @@
 #include "wx/wx.h"
 #endif
 
+#include <wx/dir.h>
+#include <wx/aui/auibook.h>
 #include "wx/wxsqlite3.h"
 
 /*
@@ -28,12 +30,16 @@
 
 class SQLiteBundle : public wxSQLite3Database {
 
-public:
+ public:
+  // コンストラクタでいろいろ初期化を行う
   SQLiteBundle();
 
-private:
-
-protected:
+  // JaneClone終了時にユーザが開いていた板一覧をSQLiteに登録する処理
+  void UserLookingBoardRegister(wxAuiNotebook* boardNoteBook);
+  // JaneClone開始時にユーザが以前開いていた板一覧をNotebookに設定する処理
+  void UserLookingBoardSetter(wxAuiNotebook* boardNoteBook);
+  // 板一覧更新時に板名とURL、板名(ascii)のデータを保持したテーブルを作る
+  void URLvsBoardNameTableSetter();
 
 };
 

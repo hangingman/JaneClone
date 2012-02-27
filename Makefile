@@ -47,7 +47,8 @@ SocketCommunication.o : SocketCommunication.cpp SocketCommunication.h
 		$(CXX) -c $< $(CPPFLAGS)
 ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h
 		$(CXX) -c $< $(CPPFLAGS)
-JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h DataType.h SQLiteBundle.h
+JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h \
+                   DataType.h SQLiteBundle.h
 		$(CXX) -c $< $(CPPFLAGS)
 Main.o : Main.cpp JaneClone.h
 		$(CXX) -c $< $(CPPFLAGS)
