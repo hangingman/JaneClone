@@ -511,7 +511,7 @@ void JaneClone::ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath) {
   iconv_t icd;
   FILE *fp_src, *fp_dst;
   char s_src[S_SIZE], s_dst[D_SIZE];
-  const char *p_src;
+  char *p_src;
   char *p_dst;
   size_t n_src, n_dst;
   int* iconctl;

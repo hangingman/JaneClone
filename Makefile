@@ -6,7 +6,7 @@
 ################################################################################
 
 TARGET 	= JaneClone
-OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o \
+OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o        \
           SQLiteBundle.o icon_rc.o
 
 # 基本コマンド
@@ -20,11 +20,12 @@ CXX_DEBUG_FLAGS		=	-g -O0
 CXX_RELEASE_FLAGS	=	-s -O0
 
 # オプション
-CPPFLAGS = -Wall -D __WXMSW__ -I/c/MinGW/include -I/c/MinGW/include  \
+CPPFLAGS = -Wall -D __WXMSW__ -I/c/MinGW/include -I/c/MinGW/include          \
            -I include `wx-config --cxxflags` `xml2-config --cflags`
-LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs` \
-           `xml2-config --libs` -lws2_32 -lz -lwxcode_mswu_wxsqlite3-2.9 \
-           -lsqlite3
+LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs`       \
+           `xml2-config --libs` -lws2_32 -lz -lwxcode_mswu_wxsqlite3-2.9     \
+           -lsqlite3 -liconv
+           
 VPATH    = include src gimite rc
 
 # デバッグ

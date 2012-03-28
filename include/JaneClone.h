@@ -42,6 +42,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iconv.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
