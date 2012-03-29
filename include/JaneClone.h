@@ -84,8 +84,8 @@ public:
   void OnAbout(wxCommandEvent& event);
   void OnGetBoardList(wxCommandEvent& event);
   void OnVersionInfo(wxCommandEvent& event);
-  void OnMouseClickRight(wxCommandEvent& event);
-  void OnMouseEventHappen(wxMouseEvent& event);
+  void OnContext(wxContextMenuEvent& event);
+  void OnRightClick(wxAuiNotebookEvent& event);
 
 private:
   // begin wxGlade: JaneClone::methods

@@ -9,18 +9,26 @@ enum {
 	ID_Quit = 1,
 	ID_About,
 	ID_GetBoardList,
-	ID_GetVersionInfo
+	ID_GetVersionInfo,
+	ID_AnyRightClick
 };
 
 // event table
 BEGIN_EVENT_TABLE(JaneClone, wxFrame)
+
 // メニューバーにあるコマンド入力で起動するメソッドのイベントテーブル
 EVT_MENU(ID_Quit, JaneClone::OnQuit)
 EVT_MENU(ID_About, JaneClone::OnAbout)
 EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
 EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
+
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
+
+// 右クリックした際のイベント処理
+EVT_CONTEXT_MENU(JaneClone::OnContext)
+EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(wxID_ANY, JaneClone::OnRightClick)
+
 END_EVENT_TABLE()
 
 JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
@@ -621,6 +629,15 @@ void JaneClone::SetBoardList() {
     }
   }
   this->retainHash = tmpHash;
+}
+
+// GUI上で右クリックされた際に起こるイベント処理
+void JaneClone::OnContext(wxContextMenuEvent& event) {
+	wxMessageBox(wxT("右クリックしましたねm9( ﾟдﾟ)"));
+}
+
+void JaneClone::OnRightClick(wxAuiNotebookEvent& event) {
+	wxMessageBox(wxT("右クリックしましたねm9( ﾟдﾟ)"));
 }
 
 // バージョン情報が書かれたダイアログを表示する処理
