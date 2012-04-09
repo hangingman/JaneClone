@@ -8,7 +8,7 @@
 #ifndef DATATYPE_H_
 #define DATATYPE_H_
 
-// wxHashMap—p‚ÌƒNƒ‰ƒX -- 2ch‚Ì”Â–¼‚ÆURL‚ğ‘Î‰‚³‚¹‚é
+// wxHashMapç”¨ã®ã‚¯ãƒ©ã‚¹ -- 2chã®æ¿åã¨URLã‚’å¯¾å¿œã•ã›ã‚‹
 class URLvsBoardName
 {
 public:
@@ -17,31 +17,31 @@ public:
   wxString BoardNameAscii;
 };
 
-// ƒXƒŒƒbƒhˆê———p‚ÌƒNƒ‰ƒX
+// ã‚¹ãƒ¬ãƒƒãƒ‰ä¸€è¦§ç”¨ã®ã‚¯ãƒ©ã‚¹
 class ThreadList
 {
 public:
-  // ƒL[’l(ƒzƒXƒg–¼‚É‚±‚Ì”Ô†‚ğ‚Â‚¯‚é‚±‚Æ‚ÅƒXƒŒƒbƒh‚ÌURL‚É‚È‚é)
+  // ã‚­ãƒ¼å€¤(ãƒ›ã‚¹ãƒˆåã«ã“ã®ç•ªå·ã‚’ã¤ã‘ã‚‹ã“ã¨ã§ã‚¹ãƒ¬ãƒƒãƒ‰ã®URLã«ãªã‚‹)
   wxString oid;
-  // ”Ô†(’P‚Éæ“¾‚µ‚½datƒtƒ@ƒCƒ‹‚Ì‡˜‚©‚ç)
+  // ç•ªå·(å˜ã«å–å¾—ã—ãŸdatãƒ•ã‚¡ã‚¤ãƒ«ã®é †åºã‹ã‚‰)
   int number;
-  // ƒ^ƒCƒgƒ‹
+  // ã‚¿ã‚¤ãƒˆãƒ«
   wxString title;
-  // ƒŒƒX
+  // ãƒ¬ã‚¹
   int response;
-  // æ“¾
+  // å–å¾—
   int cachedResponseNumber;
-  // V’…
+  // æ–°ç€
   int newResponseNumber;
-  // ‘ƒŒƒX
+  // å¢—ãƒ¬ã‚¹
   int increaseResponseNumber;
-  // ¨‚¢
+  // å‹¢ã„
   int momentum;
-  // ÅIæ“¾
+  // æœ€çµ‚å–å¾—
   wxString lastUpdate;
   // since
   wxString since;
-  // ”Â
+  // æ¿
   wxString boardName;
 };
 

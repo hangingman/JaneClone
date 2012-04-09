@@ -19,27 +19,29 @@
 #endif
 
 #include <wx/dir.h>
-#include <wx/aui/auibook.h>
-#include "wx/wxsqlite3.h"
+#include <wx/wxsqlite3.h>
+#include "DataType.h"
 
 /*
- * SQLiteBundleƒNƒ‰ƒX
- * wxSQLite3Database‚ğŒp³‚µƒ†[ƒU[‚ªˆÈ‘O‚ÉŒ©‚½”Â–¼
- * ƒXƒŒ‚È‚Ç‚ğ’€Ÿ‹L˜^‚·‚éB
+ * SQLiteBundleã‚¯ãƒ©ã‚¹
+ * wxSQLite3Databaseã‚’ç¶™æ‰¿ã—ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒä»¥å‰ã«è¦‹ãŸæ¿åã‚¹ãƒ¬ãªã©ã‚’é€æ¬¡è¨˜éŒ²ã™ã‚‹ã€‚
  */
 
-class SQLiteBundle : public wxSQLite3Database {
+// URLvsBoardNameã‚¯ãƒ©ã‚¹ã«ã¤ã„ã¦ã¯DataType.hå‚ç…§
+WX_DECLARE_HASH_MAP( int, URLvsBoardName*, wxIntegerHash, wxIntegerEqual, NameURLHash );
 
- public:
-  // ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚¢‚ë‚¢‚ë‰Šú‰»‚ğs‚¤
-  SQLiteBundle();
+class SQLiteBundle: public wxSQLite3Database {
 
-  // JaneCloneI—¹‚Éƒ†[ƒU‚ªŠJ‚¢‚Ä‚¢‚½”Âˆê——‚ğSQLite‚É“o˜^‚·‚éˆ—
-  void UserLookingBoardRegister(wxAuiNotebook* boardNoteBook);
-  // JaneCloneŠJn‚Éƒ†[ƒU‚ªˆÈ‘OŠJ‚¢‚Ä‚¢‚½”Âˆê——‚ğNotebook‚Éİ’è‚·‚éˆ—
-  void UserLookingBoardSetter(wxAuiNotebook* boardNoteBook);
-  // ”Âˆê——XV‚É”Â–¼‚ÆURLA”Â–¼(ascii)‚Ìƒf[ƒ^‚ğ•Û‚µ‚½ƒe[ƒuƒ‹‚ğì‚é
-  void URLvsBoardNameTableSetter();
+public:
+	// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã„ã‚ã„ã‚åˆæœŸåŒ–ã‚’è¡Œã†
+	SQLiteBundle();
+
+	// JaneCloneçµ‚äº†æ™‚ã«ãƒ¦ãƒ¼ã‚¶ãŒé–‹ã„ã¦ã„ãŸæ¿ä¸€è¦§ã‚’SQLiteã«ç™»éŒ²ã™ã‚‹å‡¦ç†
+	int UserLookingBoardRegister(wxArrayString);
+	// JaneCloneé–‹å§‹æ™‚ã«ãƒ¦ãƒ¼ã‚¶ãŒä»¥å‰é–‹ã„ã¦ã„ãŸæ¿ä¸€è¦§ã‚’Notebookã«è¨­å®šã™ã‚‹å‡¦ç†
+	int UserLookingBoardSetter();
+	// æ¿ä¸€è¦§æ›´æ–°æ™‚ã«æ¿åã¨URLã€æ¿å(ascii)ã®ãƒ‡ãƒ¼ã‚¿ã‚’ä¿æŒã—ãŸãƒ†ãƒ¼ãƒ–ãƒ«ã‚’ä½œã‚‹
+	int UrlVsBoardNameTableSetter(wxArrayString);
 
 };
 

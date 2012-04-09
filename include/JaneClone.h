@@ -36,6 +36,7 @@
 #include <wx/sizer.h>
 #include <wx/textfile.h>
 #include <wx/convauto.h>
+#include <wx/process.h>
 
 // C 標準ライブラリ
 #include <zlib.h>
@@ -76,9 +77,14 @@ public:
 
   JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE);
 
-  ~JaneClone();
+  // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
+  // URLvsBoardNameクラスについてはDataType.h参照
+  WX_DECLARE_HASH_MAP( int, URLvsBoardName*, wxIntegerHash, wxIntegerEqual, NameURLHash );
+  // HashMapの本体
+  NameURLHash retainHash;
 
-
+private:
+  // begin wxGlade: JaneClone::methods
   // イベントテーブル系
   void OnQuit(wxCommandEvent& event);
   void OnAbout(wxCommandEvent& event);
@@ -86,9 +92,8 @@ public:
   void OnVersionInfo(wxCommandEvent& event);
   void OnContext(wxContextMenuEvent& event);
   void OnRightClick(wxAuiNotebookEvent& event);
+  void OnCloseWindow(wxCloseEvent& event);
 
-private:
-  // begin wxGlade: JaneClone::methods
   void SetProperties();
   void DoLayout();
 
@@ -130,11 +135,6 @@ protected:
 
   //　ツリーコントロールにクリックした時のイベント
   void OnGetBoardInfo(wxTreeEvent& event);
-  // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
-  // URLvsBoardNameクラスについてはDataType.h参照
-  WX_DECLARE_HASH_MAP( int, URLvsBoardName*, wxIntegerHash, wxIntegerEqual, NameURLHash );
-  // HashMapの本体
-  NameURLHash retainHash;
 
   // wxNotebook（上部）が乗るサイザー
   wxBoxSizer* topNote;
@@ -145,9 +145,6 @@ protected:
   void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL);
   // スレッドタイトル一覧の取得メソッド
   wxString DownloadThreadList(wxString& boardURL);
-
-  // アプリケーション起動時からSQLiteを管理するオブジェクト
-  SQLiteBundle* sqlite;
 
   // スレッド一覧の情報を保持するwxHashMap　ユーザが板名をクリックするたびに作られる
   // ThreadListクラスについてはDataType.h参照
