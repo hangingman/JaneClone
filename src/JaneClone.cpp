@@ -353,12 +353,15 @@ void JaneClone::SetThreadList(wxString& inputThreadListDat) {
 	}
 }
 
-// 板一覧更新処理
+/**
+ * 板一覧更新処理
+ */
 void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	// もし板一覧ファイルがdatフォルダに存在するならば一気に板一覧設定に飛ぶ
 	if (wxFile::Exists(wxT("./dat/BoardListUTF8.html"))) {
 		JaneClone::SetBoardList();
-		// そうでなければ板一覧をダウンロードしてくる
+
+	// そうでなければ板一覧をダウンロードしてくる
 	} else {
 		JaneClone::DownloadBoardList();
 
@@ -566,11 +569,16 @@ void JaneClone::ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath) {
 	iconv_close(icd);
 }
 
-// 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
+/**
+ * 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
+ */
 void JaneClone::SetBoardList() {
 
 	// インスタンスを作る
-	ExtractBoardList *ebl = new ExtractBoardList();
+	ExtractBoardList *extractBoardList = new ExtractBoardList();
+	delete extractBoardList;
+
+	/** 全面的な書き直し　・・・　SQLiteに板情報を格納・そこからHashに情報格納
 	// 板一覧の情報が入ったリストをもらう
 	wxArrayString boardListArray = ebl->GetBoardList();
 	// フラグ
@@ -638,27 +646,7 @@ void JaneClone::SetBoardList() {
 	}
 	this->retainHash = tmpHash;
 
-	// HashMapの内容をSQLiteに格納する
-	SQLiteBundle* sqlite = new SQLiteBundle();
-	// SQLiteクラスに渡す配列
-	wxArrayString urlVsBoardArray;
-
-	// Hashの内容をArrayStringに移す
-	NameURLHash::iterator it;
-	for (it = retainHash.begin(); it != retainHash.end(); it++) {
-		URLvsBoardName* hash = it->second;
-
-		// 板名・URL・板名（ascii）を順番に配列に渡す
-		urlVsBoardArray.Add(hash->BoardName);
-		urlVsBoardArray.Add(hash->BoardURL);
-		urlVsBoardArray.Add(hash->BoardNameAscii);
-	}
-	// SQLiteに配列を渡す
-	int rc = sqlite->UrlVsBoardNameTableSetter(urlVsBoardArray);
-	if ( 0 != rc) {
-		wxMessageBox(wxT("板一覧更新処理でエラーが発生しました。もう一度やり直してみてください。"));
-	}
-	delete sqlite;
+	*/
 }
 
 // GUI上で右クリックされた際に起こるイベント処理
@@ -685,23 +673,23 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
 void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
 	// JaneClone終了時ユーザがノートブック部分に残していた板名のリストを作る
-	wxArrayString userLookBoard;
-	for (int i=0;i < boardNoteBook->GetPageCount();i++) {
-		userLookBoard.Add(boardNoteBook->GetPageText(i));
-	}
+	//wxArrayString userLookBoard;
+	//for (int i=0;i < boardNoteBook->GetPageCount();i++) {
+	//	userLookBoard.Add(boardNoteBook->GetPageText(i));
+	//}
 
 	// ユーザが開いていた板一覧をSQLiteに登録する
-	if ( 0 != userLookBoard.GetCount() ) {
-		SQLiteBundle* sqlite = new SQLiteBundle();
-		int rc = sqlite->UserLookingBoardRegister(userLookBoard);
-		delete sqlite;
+	//if ( 0 != userLookBoard.GetCount() ) {
+		//SQLiteBundle* sqlite = new SQLiteBundle();
+		//int rc = sqlite->UserLookingBoardRegister(userLookBoard);
+		//delete sqlite;
 
 		// 実行コードがエラーならば警告を出して終了
-		if (rc != 0) {
-			wxMessageBox(wxT("終了処理にてエラーが発生しました"));
-			Destroy();
-		}
-	}
+		//if (rc != 0) {
+		//	wxMessageBox(wxT("終了処理にてエラーが発生しました"));
+		//	Destroy();
+		//}
+	//}
 
 	// ウィンドウを閉じて処理を終了される
 	Destroy();

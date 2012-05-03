@@ -49,7 +49,7 @@
 #include "ExtractBoardList.h"
 #include "SocketCommunication.h"
 #include "DataType.h"
-#include "SQLiteBundle.h"
+#include "SQLiteAccessor.h"
 
 // 名前空間
 using namespace std;

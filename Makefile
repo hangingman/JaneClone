@@ -7,7 +7,7 @@
 
 TARGET 	= JaneClone
 OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o        \
-          SQLiteBundle.o icon_rc.o
+          SQLiteAccessor.o icon_rc.o
 
 # 基本コマンド
 RM 	:= rm
@@ -42,14 +42,14 @@ $(TARGET) : $(OBJECTS)
 		$(CXX) $^ -o $@ $(LDFLAGS)
 icon_rc.o : icon.rc
 		$(WINDRES) -i rc/"icon.rc" -O coff -o "icon_rc.o" -I/mingw/include/wx-2.9
-SQLiteBundle.o : SQLiteBundle.cpp SQLiteBundle.h
+SQLiteAccessor.o : SQLiteAccessor.cpp SQLiteAccessor.h
 		$(CXX) -c $< $(CPPFLAGS)
 SocketCommunication.o : SocketCommunication.cpp SocketCommunication.h
 		$(CXX) -c $< $(CPPFLAGS)
-ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h
+ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h SQLiteAccessor.h
 		$(CXX) -c $< $(CPPFLAGS)
 JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h \
-                   DataType.h SQLiteBundle.h
+                   DataType.h SQLiteAccessor.h
 		$(CXX) -c $< $(CPPFLAGS)
 Main.o : Main.cpp JaneClone.h
 		$(CXX) -c $< $(CPPFLAGS)
