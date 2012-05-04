@@ -28,9 +28,17 @@ public:
 	 */
 	void SetCommit();
 	/**
+	 * 板一覧情報をSQLite内のテーブルから取得しArrayStringの形で返す
+	 */
+	static wxArrayString GetBoardInfo();
+	/**
 	 * 指定されたテーブルに情報が存在するかどうか聞く
 	 */
 	static bool TableHasInfo(const wxString);
+	/**
+	 * 指定されたテーブルを削除する
+	 */
+	static void DropTable(const wxString);
 };
 
 #endif /* SQLITEACCESSOR_H_ */

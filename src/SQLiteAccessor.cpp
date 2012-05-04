@@ -58,6 +58,48 @@ void SQLiteAccessor::SetCommit()
 }
 
 /**
+ * 板一覧情報をSQLite内のテーブルから取得しArrayStringの形で返す
+ */
+wxArrayString SQLiteAccessor::GetBoardInfo()
+{
+	// SQLite3の初期化
+	const wxString dbFile = wxGetCwd() + wxT("./sqlite/JaneClone.db");
+	wxSQLite3Database::InitializeSQLite();
+	// Dbを開く
+	wxSQLite3Database db;
+	db.Open(dbFile);
+
+	// リザルトセットを用意する
+	wxSQLite3ResultSet rs;
+	// SQL文を用意する
+	wxString SQL_QUERY =
+			wxT("SELECT BOARDNAME_KANJI, BOARD_URL, CATEGORY ");
+	SQL_QUERY+=wxT("FROM BOARD_INFO");
+
+	// SQL文を実行する
+	rs = db.ExecuteQuery(SQL_QUERY);
+	db.Close();
+
+	// リザルトセットをArrayStringに設定する
+	wxArrayString array;
+
+	while (!rs.Eof()) {
+		wxString boardName = rs.GetAsString(wxT("BOARDNAME_KANJI"));
+		wxString url = rs.GetAsString(wxT("BOARD_URL"));
+		wxString category = rs.GetAsString(wxT("CATEGORY"));
+
+		// 各項目がNULLで無ければArrayStringに詰める
+		if (boardName.Length() > 0 && url.Length() > 0 && category.Length() > 0) {
+			array.Add(boardName);
+			array.Add(url);
+			array.Add(category);
+		}
+		rs.NextRow();
+	}
+
+	return array;
+}
+/**
  * 指定されたテーブルに情報が存在するかどうか聞く(トランザクション処理なし単独)
  */
 bool SQLiteAccessor::TableHasInfo(const wxString tableName)
@@ -93,7 +135,26 @@ bool SQLiteAccessor::TableHasInfo(const wxString tableName)
 	return false;
 }
 
+/**
+ * 指定されたテーブルを削除する
+ */
+void SQLiteAccessor::DropTable(const wxString tableName)
+{
+	// SQLite3の初期化
+	const wxString dbFile = wxGetCwd() + wxT("./sqlite/JaneClone.db");
+	wxSQLite3Database::InitializeSQLite();
+	// Dbを開く
+	wxSQLite3Database db;
+	db.Open(dbFile);
 
+	// SQL文を用意する
+	wxString SQL_QUERY = wxT("DROP TABLE IF EXISTS ");
+	SQL_QUERY += tableName;
+
+	// SQL文を実行する
+	db.ExecuteQuery(SQL_QUERY);
+	db.Close();
+}
 
 
 

@@ -11,7 +11,7 @@ class ExtractBoardList
 {
 	public:
 		// コンストラクタ
-		ExtractBoardList();
+		ExtractBoardList(const char* file);
 
 	private:
 		// 内部の処理関数

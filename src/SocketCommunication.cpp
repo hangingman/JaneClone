@@ -28,17 +28,14 @@ int SocketCommunication::DownloadBoardList(const wxString outputPath,
 		rc = DownloadBoardListMod(gzipPath, headerPath);
 	}
 
-	// 取得したファイルの解凍・UTF化を行う
-	JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
-	JaneCloneUtil::ConvertSJISToUTF8(tmpPath, (wxString&)outputPath);
-
+	// gzip拡張子のファイルがあれば、ファイルの解凍・UTF化を行う
+	if (wxFile::Exists(gzipPath)) {
+		JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
+		JaneCloneUtil::ConvertSJISToUTF8(tmpPath, (wxString&) outputPath);
+	}
 	// 更新が終わったらgzipファイルとSJISファイルを消しておく
-	if (wxFile::Exists(gzipPath)){
-		wxRemoveFile(gzipPath);
-	}
-	if (wxFile::Exists(wxT("./dat/tmp.html"))) {
-		wxRemoveFile(wxT("./dat/tmp.html"));
-	}
+	RemoveTmpFile(gzipPath);
+	RemoveTmpFile(tmpPath);
 
 	return rc;
 }
@@ -50,7 +47,7 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 		const wxString headerPath) {
 	// 実行コード
 	int rc = 0;
-
+	// gimiteによる通信開始
 	gimite::startup_socket();
 	{
 		// menu.2ch.netのポート80(HTTP)に接続。
@@ -103,7 +100,7 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 				}
 			}
 		}
-		//最後に1回だけ呼び出してください。
+		// gimiteによる通信終了
 		gimite::cleanup_socket();
 
 		return rc;
@@ -114,7 +111,107 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
  */
 int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
 		const wxString headerPath) {
-	return 0;
+	// 実行コード
+	int rc = 0;
+	// 最終更新日時をヘッダ情報から取得する
+	wxString lastModifiedTime = CheckLastModifiedTime(headerPath);
+	// バイナリとヘッダは前回取得した名前と同じでは困るのでtmpファイルとして作成しておく
+	wxString tmpOutputPath = outputPath;
+	tmpOutputPath += wxT(".tmp");
+	wxString tmpHeaderPath = headerPath;
+	tmpHeaderPath += wxT(".tmp");
+
+	// 304かどうか判断するためのフラグ
+	bool mod_flag = false;
+	// ヘッダを取り除くためのフラグ
+	bool flag = false;
+	// gzipのヘッダ作成
+	char HEX[] = { 0x1f, 0x8b, 0x08, 0x00 };
+
+	// gimiteによる通信開始
+	gimite::startup_socket();
+	{
+		// menu.2ch.netのポート80(HTTP)に接続。
+		gimite::socket_stream sst("menu.2ch.net", 80);
+		//エラーチェック。
+		if (!sst) {
+			std::cerr << "Failed to connect." << std::endl;
+		} else {
+			//文字列を送信。
+			sst << "GET /bbsmenu.html HTTP/1.1 \r\n";
+			sst << "Accept-Encoding: gzip \r\n";
+			sst << "Host: menu.2ch.net \r\n";
+			sst << "If-Modified-Since:" << lastModifiedTime.mb_str() << "\r\n";
+			sst << "Accept: */* \r\n";
+			sst << "Referer: http://menu.2ch.net/ \r\n";
+			sst << "Accept-Language: ja \r\n";
+			sst << "User-Agent: Monazilla/1.00 (monaweb/1.00) \r\n";
+			sst << "Connection: close \r\n";
+			sst << "\r\n";
+
+			// 受信用文字列
+			std::string s;
+
+			// ファイルに書き出す(バイナリ部分)
+			wxCharBuffer binaryFile = tmpOutputPath.ToUTF8();
+			std::ofstream ofs(binaryFile.data(),
+					std::ios::binary | std::ios::trunc);
+			// ファイルに書き出す(ヘッダ部分)
+			wxCharBuffer headerFile = tmpHeaderPath.ToUTF8();
+			std::ofstream ofsh(headerFile.data(), std::ios::trunc);
+
+			/** 1行目に「HTTP/1.1 304 Not Modified」が含まれない場合のみ更新を行う */
+			while (std::getline(sst, s)) {
+
+				/** 更新フラグ立たず・ヘッダ部分 */
+				if (!mod_flag && !flag) {
+					unsigned int loc = s.find("304 Not Modified");
+					// １行目の読み出しで304があればbreak
+					if (loc != std::string::npos) {
+						ofs.close();
+						ofsh.close();
+						// tmpファイルは消しておく
+						RemoveTmpFile(tmpOutputPath);
+						RemoveTmpFile(tmpHeaderPath);
+						break;
+						// そうでなければファイルストリームの準備をする
+					} else {
+						// 更新フラグを立てる
+						mod_flag = true;
+						// ヘッダーを書きだす（更新）
+						ofsh << s;
+					}
+
+					/** 更新フラグ立つ・ヘッダ部分 */
+				} else if (mod_flag && !flag) {
+					unsigned int loc = s.find(*HEX, 0);
+					if (loc != std::string::npos) {
+						ofs << s << std::endl;
+						flag = true;
+					} else {
+						// ヘッダーを書きだす（更新）
+						ofsh << s;
+					}
+					/** 更新フラグ立つ・ボディ部分 */
+				} else if (mod_flag && flag) {
+					ofs << s << std::endl;
+				}
+			}
+		}
+		// gimiteによる通信終了
+		gimite::cleanup_socket();
+
+		// 更新が最後までうまく行った場合以前のファイルを削除する
+		if (mod_flag && flag) {
+			RemoveTmpFile(outputPath);
+			RemoveTmpFile(headerPath);
+			// tmpファイルを本物のファイルとする
+			wxRenameFile(tmpOutputPath, outputPath);
+			wxRenameFile(tmpHeaderPath, headerPath);
+		}
+	}
+
+	return rc;
 }
 
 /**
@@ -214,6 +311,15 @@ wxString SocketCommunication::CheckLastModifiedTime(const wxString headerPath) {
 
 	} else {
 		std::cout << "ファイルのオープンに失敗しました" << std::endl;
+	}
+}
+
+/**
+ * 一時ファイルを消す
+ */
+void SocketCommunication::RemoveTmpFile(const wxString removeFile) {
+	if (wxFile::Exists(removeFile)) {
+		wxRemoveFile(removeFile);
 	}
 }
 

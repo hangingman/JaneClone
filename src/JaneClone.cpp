@@ -375,8 +375,12 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	if (rc != 0) {
 		wxMessageBox(wxT("板一覧情報取得に失敗しました。ネットワークの接続状況を確認してください。"));
 	} else {
-		//ExtractBoardList* extractBoardList = new ExtractBoardList();
-		//extractBoardList->
+		// もし板一覧情報テーブルが空でなければテーブルを削除しておく
+		if (SQLiteAccessor::TableHasInfo(wxT("BOARD_INFO"))) {
+			SQLiteAccessor::DropTable(wxT("BOARD_INFO"));
+		}
+		// 板一覧情報を展開し、SQLiteに設定する
+		new ExtractBoardList(BOARD_LIST_PATH.mb_str());
 		// 板一覧情報をセットする
 		JaneClone::SetBoardList();
 	}
@@ -386,6 +390,8 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
  * SQLiteから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
+	// ArrayStringの形で板一覧情報を取得する
+	wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
 }
 
 // GUI上で右クリックされた際に起こるイベント処理

@@ -46,6 +46,10 @@ private:
 	 */
 	int DownloadBoardListMod(const wxString outputPath,
 			const wxString headerPath);
+	/**
+	 * 一時ファイルを消す
+	 */
+	void RemoveTmpFile(const wxString removeFile);
 };
 
 #endif /* SOCKETCOMMUNICATION_H_ */

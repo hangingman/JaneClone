@@ -5,7 +5,7 @@
  * ExtractBoardList
  * コンストラクタ
  */
-ExtractBoardList::ExtractBoardList()
+ExtractBoardList::ExtractBoardList(const char* file)
 {
 	//　コンストラクタ
 	htmlDocPtr m_doc;
@@ -13,7 +13,6 @@ ExtractBoardList::ExtractBoardList()
 	accessor = new SQLiteAccessor();
 
 	// ファイル名とエンコードの設定
-	char* file = "./dat/BoardListUTF8.html";
 	char* enc = "utf-8";
 
 	// xmlの読み込み
