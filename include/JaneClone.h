@@ -38,25 +38,15 @@
 #include <wx/convauto.h>
 #include <wx/process.h>
 
-// C 標準ライブラリ
-#include <zlib.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <iconv.h>
-
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
 #include "SocketCommunication.h"
 #include "DataType.h"
 #include "SQLiteAccessor.h"
+#include "JaneCloneUtil.h"
 
 // 名前空間
 using namespace std;
-
-// ディスクからの読取サイズ
-#define S_SIZE (2048)
-#define D_SIZE (6144)
 
 // テキストの終端文字が何で終わるのかを定義
 #if defined(__WXMSW__)
@@ -68,6 +58,15 @@ using namespace std;
 #if defined(__WXMAC__)
 	#define TextEndLineType wxTextFileType_Mac
 #endif
+
+/*
+ * 定数値の宣言
+ */
+
+// 板一覧情報ファイルのパス
+static const wxString BOARD_LIST_PATH = wxT("./dat/boardlist.html");
+// 板一覧情報ファイルのヘッダ情報のパス
+static const wxString BOARD_LIST_HEADER_PATH = wxT("./dat/boardlistheader.html");
 
 class JaneClone : public wxFrame {
 
@@ -97,12 +96,6 @@ private:
   void SetProperties();
   void DoLayout();
 
-  // 板一覧ファイルをダウンロードする処理
-  void DownloadBoardList();
-  // ダウンロードした板一覧ファイルを解凍する処理
-  void DecommpressFile(wxString& , wxString& );
-  // ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
-  void ConvertSJISToUTF8(wxString& , wxString&);
   // 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
   void SetBoardList();
 
@@ -143,8 +136,6 @@ protected:
 
   // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
   void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL);
-  // スレッドタイトル一覧の取得メソッド
-  wxString DownloadThreadList(wxString& boardURL);
 
   // スレッド一覧の情報を保持するwxHashMap　ユーザが板名をクリックするたびに作られる
   // ThreadListクラスについてはDataType.h参照

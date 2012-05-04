@@ -123,9 +123,14 @@ void JaneClone::SetProperties() {
 		wxMessageBox(wxT("設定ファイル保存用ディレクトリが見当たらないので作成します。\nフォルダ構成を確認してください。"));
 		::wxMkdir(wxT("./prop/"));
 	}
-	// もし板一覧ファイルがdatフォルダに存在するならば一気に板一覧設定に飛ぶ
-	if (wxFile::Exists(wxT("./dat/BoardListUTF8.html"))) {
-		JaneClone::SetBoardList();
+	// sqliteの初期化を行う
+	SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
+	sqliteAccessor->SetCommit();
+	delete sqliteAccessor;
+
+	// もしSQLite上に板一覧情報が存在するならば板一覧設定に飛ぶ
+	if (SQLiteAccessor::TableHasInfo(wxT("BOARD_INFO"))) {
+		SetBoardList();
 	}
 	// wxAuiNotebookに更新した
 	boardNoteBook = new wxAuiNotebook(window_2_pane_1, wxID_ANY,
@@ -206,11 +211,12 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
 			}
 		}
 		// 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
-		SetBoardNameToNoteBook(boardName, boardURL);
+		//SetBoardNameToNoteBook(boardName, boardURL);
 	}
 }
 
 // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
+/**
 void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
 		wxString& boardURL) {
 	// 戻り値は出力したgzipファイルの保存先
@@ -240,6 +246,7 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
 			wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
 
 	/** スレッド一覧画面用の材料を生成　*/
+/**
 	sizer_noteList->Add(threadList, 1, wxEXPAND, 0);
 	noteWindow->SetSizer(sizer_noteList);
 	boardNoteBook->AddPage(noteWindow, boardName);
@@ -314,6 +321,7 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
 	// スレッドリストを表示させる
 	threadList->Show();
 }
+**/
 
 // スレッド一覧をファイルからロードしてハッシュマップにもたせる処理
 void JaneClone::SetThreadList(wxString& inputThreadListDat) {
@@ -357,296 +365,27 @@ void JaneClone::SetThreadList(wxString& inputThreadListDat) {
  * 板一覧更新処理
  */
 void JaneClone::OnGetBoardList(wxCommandEvent&) {
-	// もし板一覧ファイルがdatフォルダに存在するならば一気に板一覧設定に飛ぶ
-	if (wxFile::Exists(wxT("./dat/BoardListUTF8.html"))) {
-		JaneClone::SetBoardList();
 
-	// そうでなければ板一覧をダウンロードしてくる
+	// ソケット通信を行う
+	SocketCommunication* socketCommunication = new SocketCommunication();
+	int rc = socketCommunication->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
+	delete socketCommunication;
+
+	// 実行コード別のダイアログを出す
+	if (rc != 0) {
+		wxMessageBox(wxT("板一覧情報取得に失敗しました。ネットワークの接続状況を確認してください。"));
 	} else {
-		JaneClone::DownloadBoardList();
-
-		wxString inputDecommPath = wxT("./dat/BoardList.gzip");
-		wxString outputDecommPath = wxT("./dat/BoardListSJIS.html");
-		JaneClone::DecommpressFile(inputDecommPath, outputDecommPath);
-
-		wxString inputConvPath = wxT("./dat/BoardListSJIS.html");
-		wxString outputConvPath = wxT("./dat/BoardListUTF8.html");
-		JaneClone::ConvertSJISToUTF8(inputConvPath, outputConvPath);
+		//ExtractBoardList* extractBoardList = new ExtractBoardList();
+		//extractBoardList->
+		// 板一覧情報をセットする
 		JaneClone::SetBoardList();
-
-		// 更新が終わったらgzipファイルとSJISファイルを消しておく
-		if (wxFile::Exists(inputDecommPath)
-				&& wxFile::Exists(outputDecommPath)) {
-			wxRemoveFile(inputDecommPath);
-			wxRemoveFile(outputDecommPath);
-		}
 	}
-}
-
-// スレッドタイトル一覧の取得メソッド
-// ダウンロードしたファイルのPATHをwxStringで返却する
-wxString JaneClone::DownloadThreadList(wxString& boardURL) {
-
-	// 正規表現を使ってサーバ名と板名(ascii)を取得する
-	// そこまで難しい正規表現を使う必要はないようです
-	wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
-			wxRE_ADVANCED + wxRE_ICASE);
-
-	// サーバ名と板名
-	wxString server;
-	wxString boardName;
-
-	// 正規表現のコンパイルにエラーがなければ
-	if (reThreadList.IsValid()) {
-		// マッチさせる
-		if (reThreadList.Matches(boardURL)) {
-			// マッチした文字列の２番目と３番目をいただく
-			server = reThreadList.GetMatch(boardURL, 2);
-			boardName = reThreadList.GetMatch(boardURL, 3);
-		}
-	}
-
-	// ステータスバーに通信中の文字を出す
-	wxString Status = boardURL;
-	Status.Append(wxT("に接続中"));
-	this->SetStatusText(Status);
-	// HTTP通信に必要なメッセージを生成
-	wxString ms = _T("/");
-	ms.Append(boardName);
-	wxString path = ms;
-	path.Append(_T("/subjec.txt"));
-	ms.Append(_T("/subjec.txt HTTP/1.1"));
-	// ユーザーに見せるメッセージ
-	wxString msg = "";
-	// 保存先を決める
-	wxString outputPath = wxT("./dat/");
-	// ヘッダ用の保存先
-	wxString headerPath = outputPath;
-	headerPath.Append(boardName);
-	headerPath.Append(wxT(".head"));
-
-	outputPath.Append(boardName);
-	outputPath.Append(wxT(".gzip"));
-
-	// 通信のためのクラスのインスタンスを作る
-	SocketCommunication* sc = new SocketCommunication();
-	sc->DownloadThreadList(boardURL, server, boardName, outputPath, headerPath);
-	delete sc;
-
-	// ステータスバーに通信終了の文字を出す
-	Status.Clear();
-	Status = boardURL;
-	Status.Append(wxT("からのダウンロード終了"));
-	this->SetStatusText(Status);
-
-	// 戻り値は出力したgzipファイルの保存先
-	return outputPath;
-}
-
-// 板一覧ファイルをダウンロードする処理
-void JaneClone::DownloadBoardList() {
-
-	// ここから
-	wxHTTP http;
-	http.SetHeader(_T("Accept-Encoding"), _T("gzip"));
-	http.SetHeader(_T("Host"), _T("menu.2ch.net"));
-	http.SetHeader(_T("Accept"), _T(""));
-	http.SetHeader(_T("Referer"), _T("http://menu.2ch.net/"));
-	http.SetHeader(_T("Accept-Language"), _T("ja"));
-	http.SetHeader(_T("User-Agent"), _T("Mozilla/5.0"));
-	http.SetTimeout(5);
-
-	wxString server = "menu.2ch.net";
-	wxString path = "/bbsmenu.html";
-	wxString msg = "";
-
-	// 保存先を決める
-	wxFileOutputStream output(wxT("./dat/BoardList.gzip"));
-	wxDataOutputStream store(output);
-
-	if (http.Connect(server, 80)) {
-		msg = wxT("接続しました");
-		wxInputStream *stream;
-		stream = http.GetInputStream(path);
-
-		if (stream == NULL) {
-			msg = wxT("サーバと通信できませんでした");
-		} else {
-			unsigned char buffer[1024];
-			int byteRead;
-			int totalRead;
-			totalRead = 0;
-
-			while (!stream->Eof()) {
-				stream->Read(buffer, sizeof(buffer));
-				store.Write8(buffer, sizeof(buffer));
-				byteRead = stream->LastRead();
-				if (byteRead <= 0) {
-					break;
-				}
-				totalRead += byteRead;
-			}
-			msg = wxT("板一覧更新処理を終了しました");
-		}
-	} else {
-		msg = wxT("サーバーに接続できませんでした");
-	}
-	wxMessageBox(msg);
 }
 
 /**
- * DecommpressFile()
- * gzipファイルを解凍する処理
- * 引数１は読み込み元gzipファイルのPATH、引数２は解凍先のファイルのPATH
- * いずれもファイル名までを記述する
- */
-void JaneClone::DecommpressFile(wxString& inputPath, wxString& outputPath) {
-	// gzファイルをZlibを使って解凍する
-	gzFile infile = gzopen(inputPath.mb_str(), "rb");
-	FILE *outfile = fopen(outputPath.mb_str(), "wb");
-
-	char buffer[S_SIZE];
-	int num_read = 0;
-	while ((num_read = gzread(infile, buffer, sizeof(buffer))) > 0) {
-		fwrite(buffer, 1, num_read, outfile);
-	}
-
-	// ファイルポインタを閉じる
-	gzclose(infile);
-	fclose(outfile);
-}
-
-/**
- * ConvertSJISToUTF8()
- * ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
- * 引数１は読み込み元のPATH、引数２は出力先ファイルのPATH
- * いずれもファイル名までを記述する
- */
-void JaneClone::ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath) {
-
-	iconv_t icd;
-	FILE *fp_src, *fp_dst;
-	char s_src[S_SIZE], s_dst[D_SIZE];
-	char *p_src;
-	char *p_dst;
-	size_t n_src, n_dst;
-	int* iconctl;
-
-	// 文字コード変換はCP932からUTF-8
-	icd = iconv_open("UTF-8", "CP932");
-	//  iconvctl で変換不可能な文字があった時の設定
-	//  変換不可能だったら捨てる
-	//  不正な文字があり、捨てられたときは iconctlに1が入る
-	iconvctl(icd, ICONV_GET_DISCARD_ILSEQ, iconctl);
-
-	fp_src = fopen(inputPath.mb_str(), "r");
-	fp_dst = fopen(outputPath.mb_str(), "w");
-
-	while (true) {
-		fgets(s_src, S_SIZE, fp_src);
-		if (feof(fp_src))
-			break;
-		p_src = s_src;
-		p_dst = s_dst;
-		n_src = strlen(s_src);
-		n_dst = S_SIZE - 1;
-		while (0 < n_src) {
-			size_t result;
-			result = iconv(icd, &p_src, &n_src, &p_dst, &n_dst);
-			// エラーがあれば止める
-			if (result == -1) {
-				this->SetStatusText(wxT("文字コード変換でエラーがありました。"));
-				perror("iconv");
-				break;
-			}
-		}
-		*p_dst = '\0';
-		fputs(s_dst, fp_dst);
-	}
-	this->SetStatusText(wxT("文字コード変換終了"));
-	fclose(fp_dst);
-	fclose(fp_src);
-	iconv_close(icd);
-}
-
-/**
- * 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
+ * SQLiteから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
-
-	// インスタンスを作る
-	ExtractBoardList *extractBoardList = new ExtractBoardList();
-	delete extractBoardList;
-
-	/** 全面的な書き直し　・・・　SQLiteに板情報を格納・そこからHashに情報格納
-	// 板一覧の情報が入ったリストをもらう
-	wxArrayString boardListArray = ebl->GetBoardList();
-	// フラグ
-	boolean category_flag = false;
-	// カテゴリ名一時格納用
-	wxString categoryName;
-	// カテゴリ名のプレフィックス
-	wxString c_prefix = wxT("c::");
-	// カテゴリ名を保持するためのID
-	wxTreeItemId category;
-	// 板名とURLを対応させるHashを生成しておく
-	NameURLHash tmpHash;
-	// Hashのカウント用Integer
-	int hashID = 0;
-
-	// GUIにツリーコントロールを反映する
-	// 2chの入り口, 2ch総合案内を除外しているのでループ変数は5から始まる
-	// あと最後の方の余分なURLも除外している。 -- サーバに変更があった場合困るなあ…
-	for (int i = 5; i < boardListArray.GetCount() - 2; i++) {
-		// 文字列が入っていなければツリーには入れない
-		if (!boardListArray[i].IsSameAs("")) {
-			// カテゴリフォルダだったらフラグ立てる
-			if (boardListArray[i].Contains(c_prefix)) {
-				category_flag = true;
-				categoryName = boardListArray[i].Remove(0, 3);
-			}
-			// カテゴリフォルダに当たる場合フォルダアイコンとしてツリーに登録
-			if (category_flag) {
-				category = m_tree_ctrl->AppendItem(m_rootId, categoryName, 0, 0,
-						m_treeData);
-				category_flag = false;
-			} else {
-				// もしhttp://~　を含んでいればURLとみなして飛ばす、そうでないならツリーに情報を追加
-				if (!boardListArray[i].Contains(wxT("http://"))) {
-					// ツリーに板名かURLを追加する
-					m_tree_ctrl->AppendItem(category, boardListArray[i], 1, 1,
-							m_treeData);
-					// ここの辺のコードが汚すぎて死ぬ
-					// 板名の配列に板名とURLを入れておく
-					URLvsBoardName* urlVsName = new URLvsBoardName;
-					urlVsName->BoardName = boardListArray[i];
-					urlVsName->BoardURL = boardListArray[i + 1];
-
-					// 正規表現を使ってサーバ名と板名(ascii)を取得する
-					// そこまで難しい正規表現を使う必要はないようです
-					wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
-							wxRE_ADVANCED + wxRE_ICASE);
-
-					// 正規表現のコンパイルにエラーがなければ
-					if (reThreadList.IsValid()) {
-						// マッチさせる
-						if (reThreadList.Matches(boardListArray[i + 1])) {
-							// マッチした文字列の３番目をいただく
-							urlVsName->BoardNameAscii = reThreadList.GetMatch(
-									boardListArray[i + 1], 3);
-						}
-					}
-					// Hashに板情報を入れる
-					tmpHash[hashID] = urlVsName;
-					// Hashのキー値をインクリメントしておく
-					hashID++;
-				}
-			}
-		}
-	}
-	this->retainHash = tmpHash;
-
-	*/
 }
 
 // GUI上で右クリックされた際に起こるイベント処理
@@ -671,26 +410,5 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
 
 // 終了前処理では、保存しておきたいユーザー設定をSQLiteに登録しておく
 void JaneClone::OnCloseWindow(wxCloseEvent& event) {
-
-	// JaneClone終了時ユーザがノートブック部分に残していた板名のリストを作る
-	//wxArrayString userLookBoard;
-	//for (int i=0;i < boardNoteBook->GetPageCount();i++) {
-	//	userLookBoard.Add(boardNoteBook->GetPageText(i));
-	//}
-
-	// ユーザが開いていた板一覧をSQLiteに登録する
-	//if ( 0 != userLookBoard.GetCount() ) {
-		//SQLiteBundle* sqlite = new SQLiteBundle();
-		//int rc = sqlite->UserLookingBoardRegister(userLookBoard);
-		//delete sqlite;
-
-		// 実行コードがエラーならば警告を出して終了
-		//if (rc != 0) {
-		//	wxMessageBox(wxT("終了処理にてエラーが発生しました"));
-		//	Destroy();
-		//}
-	//}
-
-	// ウィンドウを閉じて処理を終了される
 	Destroy();
 }

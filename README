@@ -7,25 +7,25 @@
 【  種  別  】 ２ちゃんねる専用ブラウザ
 【 開発環境 】　　
 
-Windows7 MinGW Code::Blocks or Eclipse CDT
+Windows7 MinGW + Eclipse CDT
 Debian   gcc   Eclipse CDT
 
 【 動作環境 】
 Windows or Linux(Debian, Fedora, Centosあたりはいけると思われ)
 
-wxWidgets 2.8 or 2.9がインストールされていて「wx-config」コマンドが使える
+wxWidgets 2.9がインストールされていて「wx-config」コマンドが使える
 libxmlがインストールされていて「xml2-config」コマンドが使える
 
-【バージョン】		0.3
-【最終更新日】	2011/12/23
+【バージョン】		0.5
+【最終更新日】	2012/05/04
 
-【 ウ ェ ブ 】	http://d.hatena.ne.jp/panzer-jagdironscrap1/
+【 ウ ェ ブ 】	http://nantonaku-shiawase.hatenablog.com/
 【 E - mail 】 newserver002@gmail.com
 
 ---------- ----------
 ◇ 概要 ◇
 
-２ちゃんねるの専ブラ作成が目的です。wxWidgets,boost,libxmlを使っています。
+２ちゃんねるの専ブラ作成が目的です。wxWidgets,libxml,iconvを使っています。
 
 ◇ 動作条件 ◇
 
@@ -57,3 +57,5 @@ MinGWのコンソールから「make」または「make -f Makefile」
 ・LinuxバージョンのMakefileを書いてみる
 2012/01/03
 ・gitをどれで使うか正直自分でも混乱してきたのでいろいろ整理した
+2012/05/04
+・SQLiteを導入し情報取得処理をフレームクラスから分けた。とりあえず板一覧情報取得までテスト確認済。

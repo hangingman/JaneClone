@@ -1,28 +1,30 @@
+################################################################################
+#
+# JaneCloneビルド用Makefile 
+# Copyright (c) 2012 HIROYUKI Nagata <jagdironscrap@gmail.com>
+#
+################################################################################
+
 TARGET 	= JaneClone
-OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o
+OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o        \
+          SQLiteAccessor.o icon_rc.o JaneCloneUtil.o
 
 # 基本コマンド
-RM 		:= rm
-CXX 	:= g++
-CC 		:= g++
+RM 	:= rm
+CXX := g++ -gstabs
+CC 	:= g++
 
 # デバッグ時とリリース時の微調整
-# 最適化は実行しないことにした。最適化を行うとiconvが実行されなくなる。
-CXX_DEBUG_FLAGS		=	-g -O0
-CXX_RELEASE_FLAGS	=	-s -O0
+#CXX_DEBUG_FLAGS	=	-g -O0
+#CXX_RELEASE_FLAGS	=	-s -O0
 
 # オプション
-CPPFLAGS = -Wall -D __WXGTK__ -I/usr/include -I include `wx-config --cxxflags` `xml2-config --cflags`
-LDFLAGS  = -L/lib -L/usr/lib `wx-config --libs` `xml2-config --libs`  \
--lz -lboost_filesystem -lboost_iostreams -lboost_system
-
-# boost == filesystem, iostream system
-# boostはバージョンや環境によって記述方法が変わるので注意
-# boostをインストールする場合はdevのパッケージを一緒にインストールしないとライブラリがついてこない
-
-# libxmlはlinuxの場合 'libxml2-dev' のパッケージ名でインストールできる
-
-VPATH    = include src
+CPPFLAGS = -Wall -D __WXGTK__ -I/usr/include          \
+           -I include `wx-config --cxxflags` `xml2-config --cflags`
+LDFLAGS  = -static -L/lib -L/usr/lib -lwx_***_aui-2.9 `wx-config --libs`       \
+           `xml2-config --libs` -lz -lwxcode_***_wxsqlite3-2.9     \
+           -lsqlite3 -liconv
+VPATH    = include src gimite rc
 
 # デバッグ
 .PHONY	: Debug
@@ -36,11 +38,18 @@ Release	: all
 all : $(TARGET)
 $(TARGET) : $(OBJECTS)
 		$(CXX) $^ -o $@ $(LDFLAGS)
-SocketCommunication.o : SocketCommunication.cpp SocketCommunication.h
+icon_rc.o : icon.rc
+		$(WINDRES) -i rc/"icon.rc" -O coff -o "icon_rc.o" -I/mingw/include/wx-2.9
+SQLiteAccessor.o : SQLiteAccessor.cpp SQLiteAccessor.h
 		$(CXX) -c $< $(CPPFLAGS)
-ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h
+JaneCloneUtil.o : JaneCloneUtil.cpp JaneCloneUtil.h
 		$(CXX) -c $< $(CPPFLAGS)
-JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h DataType.h
+SocketCommunication.o : SocketCommunication.cpp SocketCommunication.h JaneCloneUtil.h
+		$(CXX) -c $< $(CPPFLAGS)
+ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h SQLiteAccessor.h
+		$(CXX) -c $< $(CPPFLAGS)
+JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h \
+                   DataType.h SQLiteAccessor.h
 		$(CXX) -c $< $(CPPFLAGS)
 Main.o : Main.cpp JaneClone.h
 		$(CXX) -c $< $(CPPFLAGS)
