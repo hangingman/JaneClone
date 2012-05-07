@@ -217,111 +217,111 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
 
 // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
 /**
-void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
-		wxString& boardURL) {
-	// 戻り値は出力したgzipファイルの保存先
-	wxString outputPath = DownloadThreadList(boardURL);
-	// 出力先を指定してgzipファイルを解凍
-	wxString inputDecommPath = outputPath;
-	wxString outputDecommPath = outputPath;
-	outputDecommPath.Replace(_T(".gzip"), _T(".tmp"));
+ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
+ wxString& boardURL) {
+ // 戻り値は出力したgzipファイルの保存先
+ wxString outputPath = DownloadThreadList(boardURL);
+ // 出力先を指定してgzipファイルを解凍
+ wxString inputDecommPath = outputPath;
+ wxString outputDecommPath = outputPath;
+ outputDecommPath.Replace(_T(".gzip"), _T(".tmp"));
 
-	JaneClone::DecommpressFile(inputDecommPath, outputDecommPath);
-	// 出力先を指定してSJISのファイルをエンコードしてUTF-8に変える
-	wxString inputConvPath = outputDecommPath;
-	wxString outputConvPath = outputDecommPath;
-	outputConvPath.Replace(_T(".tmp"), _T(".dat"));
-	JaneClone::ConvertSJISToUTF8(inputConvPath, outputConvPath);
+ JaneClone::DecommpressFile(inputDecommPath, outputDecommPath);
+ // 出力先を指定してSJISのファイルをエンコードしてUTF-8に変える
+ wxString inputConvPath = outputDecommPath;
+ wxString outputConvPath = outputDecommPath;
+ outputConvPath.Replace(_T(".tmp"), _T(".dat"));
+ JaneClone::ConvertSJISToUTF8(inputConvPath, outputConvPath);
 
-	// 更新が終わったらgzipファイルとSJISファイルを消しておく
-	if (wxFile::Exists(inputDecommPath) && wxFile::Exists(outputDecommPath)) {
-		wxRemoveFile(inputDecommPath);
-		wxRemoveFile(outputDecommPath);
-	}
-	// NoteWindow上にはwxListCtrlが乗る予定
-	wxPanel *noteWindow = new wxPanel(boardNoteBook, wxID_ANY);
-	wxBoxSizer* sizer_noteList = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer* sizer_pane = new wxBoxSizer(wxVERTICAL);
-	wxListCtrl* threadList = new wxListCtrl(noteWindow, wxID_ANY,
-			wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+ // 更新が終わったらgzipファイルとSJISファイルを消しておく
+ if (wxFile::Exists(inputDecommPath) && wxFile::Exists(outputDecommPath)) {
+ wxRemoveFile(inputDecommPath);
+ wxRemoveFile(outputDecommPath);
+ }
+ // NoteWindow上にはwxListCtrlが乗る予定
+ wxPanel *noteWindow = new wxPanel(boardNoteBook, wxID_ANY);
+ wxBoxSizer* sizer_noteList = new wxBoxSizer(wxVERTICAL);
+ wxBoxSizer* sizer_pane = new wxBoxSizer(wxVERTICAL);
+ wxListCtrl* threadList = new wxListCtrl(noteWindow, wxID_ANY,
+ wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
 
-	/** スレッド一覧画面用の材料を生成　*/
+ /** スレッド一覧画面用の材料を生成　*/
 /**
-	sizer_noteList->Add(threadList, 1, wxEXPAND, 0);
-	noteWindow->SetSizer(sizer_noteList);
-	boardNoteBook->AddPage(noteWindow, boardName);
-	sizer_pane->Add(boardNoteBook, 1, wxEXPAND, 0);
-	window_2_pane_1->SetSizer(sizer_pane);
+ sizer_noteList->Add(threadList, 1, wxEXPAND, 0);
+ noteWindow->SetSizer(sizer_noteList);
+ boardNoteBook->AddPage(noteWindow, boardName);
+ sizer_pane->Add(boardNoteBook, 1, wxEXPAND, 0);
+ window_2_pane_1->SetSizer(sizer_pane);
 
-	wxListItem itemCol;
-	itemCol.SetText(wxT("番号"));
-	threadList->InsertColumn(0, itemCol);
-	itemCol.SetText(wxT("タイトル"));
-	threadList->InsertColumn(1, itemCol);
-	itemCol.SetText(wxT("レス"));
-	threadList->InsertColumn(2, itemCol);
-	itemCol.SetText(wxT("取得"));
-	threadList->InsertColumn(3, itemCol);
-	itemCol.SetText(wxT("新着"));
-	threadList->InsertColumn(4, itemCol);
-	itemCol.SetText(wxT("増レス"));
-	threadList->InsertColumn(5, itemCol);
-	itemCol.SetText(wxT("勢い"));
-	threadList->InsertColumn(6, itemCol);
-	itemCol.SetText(wxT("最終取得"));
-	threadList->InsertColumn(7, itemCol);
-	itemCol.SetText(wxT("since"));
-	threadList->InsertColumn(8, itemCol);
-	itemCol.SetText(wxT("板"));
-	threadList->InsertColumn(9, itemCol);
+ wxListItem itemCol;
+ itemCol.SetText(wxT("番号"));
+ threadList->InsertColumn(0, itemCol);
+ itemCol.SetText(wxT("タイトル"));
+ threadList->InsertColumn(1, itemCol);
+ itemCol.SetText(wxT("レス"));
+ threadList->InsertColumn(2, itemCol);
+ itemCol.SetText(wxT("取得"));
+ threadList->InsertColumn(3, itemCol);
+ itemCol.SetText(wxT("新着"));
+ threadList->InsertColumn(4, itemCol);
+ itemCol.SetText(wxT("増レス"));
+ threadList->InsertColumn(5, itemCol);
+ itemCol.SetText(wxT("勢い"));
+ threadList->InsertColumn(6, itemCol);
+ itemCol.SetText(wxT("最終取得"));
+ threadList->InsertColumn(7, itemCol);
+ itemCol.SetText(wxT("since"));
+ threadList->InsertColumn(8, itemCol);
+ itemCol.SetText(wxT("板"));
+ threadList->InsertColumn(9, itemCol);
 
-	// データ挿入中に画面に描画すると遅くなるそうなので隠す
-	threadList->Hide();
+ // データ挿入中に画面に描画すると遅くなるそうなので隠す
+ threadList->Hide();
 
-	// スレッド一覧画面を構成するデータを拾ってくる
-	JaneClone::SetThreadList(outputConvPath);
+ // スレッド一覧画面を構成するデータを拾ってくる
+ JaneClone::SetThreadList(outputConvPath);
 
-	// スレッド一覧情報をリストから取ってくる
-	ThreadListHash::iterator it;
-	int i = 0;
+ // スレッド一覧情報をリストから取ってくる
+ ThreadListHash::iterator it;
+ int i = 0;
 
-	for (it = this->threadListHash.begin(); it != this->threadListHash.end();
-			++it) {
-		// スレッド一覧クラスの１レコード分を反映する
-		ThreadList* hash = it->second;
-		wxString buf;
+ for (it = this->threadListHash.begin(); it != this->threadListHash.end();
+ ++it) {
+ // スレッド一覧クラスの１レコード分を反映する
+ ThreadList* hash = it->second;
+ wxString buf;
 
-		// 番号
-		buf.Printf(wxT("%d"), i);
-		long tmp = threadList->InsertItem(i, buf, 0);
-		// スレタイ
-		threadList->SetItem(tmp, 1, hash->title);
-		// 最新のレス(スタブ)
-		threadList->SetItem(tmp, 2,
-				wxString::Format(wxT("%i"), hash->response));
-		// 取得
-		threadList->SetItem(tmp, 3,
-				wxString::Format(wxT("%i"), hash->response));
-		// 新着
-		threadList->SetItem(tmp, 4, wxT("取得レス数"));
-		// 増レス
-		threadList->SetItem(tmp, 5, wxT("増レス数"));
-		// 勢い
-		threadList->SetItem(tmp, 6, wxT("新着レス数をここに入れる"));
-		// 最終取得
-		threadList->SetItem(tmp, 7, wxT("前回取得時と比べた増レス数をここに入れる"));
-		// since
-		threadList->SetItem(tmp, 8, wxT("計算した勢い値をここに入れる"));
-		// 板名
-		threadList->SetItem(tmp, 9, wxT("最終取得日を入れる"));
+ // 番号
+ buf.Printf(wxT("%d"), i);
+ long tmp = threadList->InsertItem(i, buf, 0);
+ // スレタイ
+ threadList->SetItem(tmp, 1, hash->title);
+ // 最新のレス(スタブ)
+ threadList->SetItem(tmp, 2,
+ wxString::Format(wxT("%i"), hash->response));
+ // 取得
+ threadList->SetItem(tmp, 3,
+ wxString::Format(wxT("%i"), hash->response));
+ // 新着
+ threadList->SetItem(tmp, 4, wxT("取得レス数"));
+ // 増レス
+ threadList->SetItem(tmp, 5, wxT("増レス数"));
+ // 勢い
+ threadList->SetItem(tmp, 6, wxT("新着レス数をここに入れる"));
+ // 最終取得
+ threadList->SetItem(tmp, 7, wxT("前回取得時と比べた増レス数をここに入れる"));
+ // since
+ threadList->SetItem(tmp, 8, wxT("計算した勢い値をここに入れる"));
+ // 板名
+ threadList->SetItem(tmp, 9, wxT("最終取得日を入れる"));
 
-		// ループ変数のインクリメント
-		i++;
-	}
-	// スレッドリストを表示させる
-	threadList->Show();
-}
-**/
+ // ループ変数のインクリメント
+ i++;
+ }
+ // スレッドリストを表示させる
+ threadList->Show();
+ }
+ **/
 
 // スレッド一覧をファイルからロードしてハッシュマップにもたせる処理
 void JaneClone::SetThreadList(wxString& inputThreadListDat) {
@@ -368,7 +368,8 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 
 	// ソケット通信を行う
 	SocketCommunication* socketCommunication = new SocketCommunication();
-	int rc = socketCommunication->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
+	int rc = socketCommunication->DownloadBoardList(BOARD_LIST_PATH,
+			BOARD_LIST_HEADER_PATH);
 	delete socketCommunication;
 
 	// 実行コード別のダイアログを出す
@@ -392,6 +393,58 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 void JaneClone::SetBoardList() {
 	// ArrayStringの形で板一覧情報を取得する
 	wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
+	// カテゴリ名一時格納用
+	wxString categoryName ;
+	// 板名一時格納用
+	wxString boardName;
+	// URL一時格納用
+	wxString url;
+
+	// カテゴリ名を保持するためのID
+	wxTreeItemId category;
+	// 板名とURLを対応させるHashを生成しておく
+	NameURLHash tmpHash;
+	// Hashのカウント用Integer
+	int hashID = 0;
+
+	// 板一覧情報をツリーに渡す
+	for (int i = 0; i < boardInfoArray.GetCount(); i += 3) {
+		// カテゴリをツリーに登録
+		if (categoryName != boardInfoArray[i + 2]) {
+			category = m_tree_ctrl->AppendItem(m_rootId, boardInfoArray[i + 2], 0, 0,
+					m_treeData);
+		}
+		// それぞれの要素を一時格納
+		boardName = boardInfoArray[i];
+		url = boardInfoArray[i + 1];
+		categoryName = boardInfoArray[i + 2];
+
+		// ツリーに板名を追加する
+		m_tree_ctrl->AppendItem(category, boardName, 1, 1, m_treeData);
+
+		// 板名の配列に板名とURLを入れておく
+		URLvsBoardName* urlVsName = new URLvsBoardName;
+		urlVsName->BoardName = boardName;
+		urlVsName->BoardURL = url;
+
+		// 正規表現を使ってサーバ名と板名(ascii)を取得する
+		// そこまで難しい正規表現を使う必要はないようです
+		wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
+				wxRE_ADVANCED + wxRE_ICASE);
+
+		// 正規表現のコンパイルにエラーがなければ
+		if (reThreadList.IsValid()) {
+			// マッチさせる
+			if (reThreadList.Matches(url)) {
+				// マッチした文字列の３番目をいただく
+				urlVsName->BoardNameAscii = reThreadList.GetMatch(url, 3);
+			}
+		}
+		// Hashに板情報を入れる
+		tmpHash[hashID] = urlVsName;
+		// Hashのキー値をインクリメントしておく
+		hashID++;
+	}
 }
 
 // GUI上で右クリックされた際に起こるイベント処理
