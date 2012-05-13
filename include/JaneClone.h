@@ -42,7 +42,7 @@
 #include "ExtractBoardList.h"
 #include "SocketCommunication.h"
 #include "DataType.h"
-#include "SQLiteAccessor.h"
+#include "MetakitAccessor.h"
 #include "JaneCloneUtil.h"
 
 // 名前空間

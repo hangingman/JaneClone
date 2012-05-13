@@ -3,7 +3,7 @@
 
 #include <wx/wx.h>
 #include <libxml/HTMLparser.h>
-#include "SQLiteAccessor.h"
+#include "MetakitAccessor.h"
 
 using namespace std;
 
@@ -20,7 +20,7 @@ class ExtractBoardList
 		htmlDocPtr m_doc;
 
 		// SQLiteAccessorのインスタンス
-		SQLiteAccessor* accessor;
+		MetakitAccessor* accessor;
 };
 
 #endif // EXTRACTBOARDLIST_H

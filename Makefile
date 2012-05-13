@@ -6,7 +6,8 @@
 ################################################################################
 
 TARGET 	= JaneClone
-OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o SQLiteAccessor.o icon_rc.o JaneCloneUtil.o
+OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o         \
+		  MetakitAccessor.o icon_rc.o JaneCloneUtil.o
 
 # 基本コマンド
 CXX		:= g++
@@ -19,7 +20,7 @@ CXX_RELEASE_FLAGS	=	-s -O0
 
 # オプション
 CPPFLAGS = -Wall -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
-LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs` `xml2-config --libs` -lws2_32 -lz -lwxcode_mswu_wxsqlite3-2.9 -lsqlite3 -liconv
+LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs` `xml2-config --libs` -lws2_32 -lz -liconv -lmk4
 VPATH    = include src gimite rc
 
 # デバッグ
@@ -36,16 +37,15 @@ $(TARGET) : $(OBJECTS)
 		$(CXX) $^ -o $@ $(LDFLAGS)
 icon_rc.o : icon.rc
 		$(WINDRES) -i rc/"icon.rc" -O coff -o "icon_rc.o" -I/mingw/include/wx-2.9
-SQLiteAccessor.o : SQLiteAccessor.cpp SQLiteAccessor.h
+MetakitAccessor.o : MetakitAccessor.cpp MetakitAccessor.h
 		$(CXX) -c $< $(CPPFLAGS)
 JaneCloneUtil.o : JaneCloneUtil.cpp JaneCloneUtil.h
 		$(CXX) -c $< $(CPPFLAGS)
 SocketCommunication.o : SocketCommunication.cpp SocketCommunication.h JaneCloneUtil.h
 		$(CXX) -c $< $(CPPFLAGS)
-ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h SQLiteAccessor.h
+ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h MetakitAccessor.h
 		$(CXX) -c $< $(CPPFLAGS)
-JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h \
-                   DataType.h SQLiteAccessor.h
+JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h DataType.h MetakitAccessor.h
 		$(CXX) -c $< $(CPPFLAGS)
 Main.o : Main.cpp JaneClone.h
 		$(CXX) -c $< $(CPPFLAGS)

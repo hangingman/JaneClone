@@ -123,13 +123,12 @@ void JaneClone::SetProperties() {
 		wxMessageBox(wxT("設定ファイル保存用ディレクトリが見当たらないので作成します。\nフォルダ構成を確認してください。"));
 		::wxMkdir(wxT("./prop/"));
 	}
-	// sqliteの初期化を行う
-	SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
-	sqliteAccessor->SetCommit();
-	delete sqliteAccessor;
+	// metakitの初期化を行う
+	MetakitAccessor* metakitAccessor = new MetakitAccessor();
+	delete metakitAccessor;
 
-	// もしSQLite上に板一覧情報が存在するならば板一覧設定に飛ぶ
-	if (SQLiteAccessor::TableHasInfo(wxT("BOARD_INFO"))) {
+	// もしMetakit上に板一覧情報が存在するならば板一覧設定に飛ぶ
+	if (MetakitAccessor::TableHasView(wxT("BOARD_INFO"))) {
 		SetBoardList();
 	}
 	// wxAuiNotebookに更新した
@@ -370,8 +369,8 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 		wxMessageBox(wxT("板一覧情報取得に失敗しました。ネットワークの接続状況を確認してください。"));
 	} else {
 		// もし板一覧情報テーブルが空でなければテーブルを削除しておく
-		if (SQLiteAccessor::TableHasInfo(wxT("BOARD_INFO"))) {
-			SQLiteAccessor::DropTable(wxT("BOARD_INFO"));
+		if (MetakitAccessor::TableHasView(wxT("BOARD_INFO"))) {
+			MetakitAccessor::DropView(wxT("BOARD_INFO"));
 		}
 		// 板一覧情報を展開し、SQLiteに設定する
 		new ExtractBoardList(BOARD_LIST_PATH.mb_str());
@@ -385,7 +384,7 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
  */
 void JaneClone::SetBoardList() {
 	// ArrayStringの形で板一覧情報を取得する
-	wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
+	wxArrayString boardInfoArray = MetakitAccessor::GetBoardInfo();
 	// カテゴリ名一時格納用
 	wxString categoryName;
 	// 板名一時格納用
@@ -401,7 +400,7 @@ void JaneClone::SetBoardList() {
 	int hashID = 0;
 
 	// 板一覧情報をツリーに渡す
-	for (int i = 0; i < boardInfoArray.GetCount(); i += 3) {
+	for (unsigned int i = 0; i < boardInfoArray.GetCount(); i += 3) {
 		// カテゴリをツリーに登録
 		if (categoryName != boardInfoArray[i + 2]) {
 			category = m_tree_ctrl->AppendItem(m_rootId, boardInfoArray[i + 2],
