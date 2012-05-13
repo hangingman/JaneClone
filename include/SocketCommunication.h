@@ -23,14 +23,14 @@ public:
 	 * 板一覧ファイルをダウンロードしてくるメソッド 引数はサーバーのフルURL、サーバ名、板名、保存先
 	 * もし前回通信した際のログが残っていれば更新の確認のみ行う
 	 */
-	int DownloadBoardList(const wxString outputPath,
-			const wxString headerPath);
+	int DownloadBoardList(const wxString outputPath, const wxString headerPath);
 	/**
-	 * スレッド一覧をダウンロードしてくるメソッド 　引数はサーバーのフルURL、サーバ名、板名、保存先
+	 * スレッド一覧をダウンロードしてくるメソッド
+	 * @param 板名,URL,サーバー名
+	 * @return datファイル保存先
 	 */
-	int DownloadThreadList(const wxString& boardURL, const wxString& server,
-			const wxString& boardName, const wxString outputPath,
-			const wxString headerPath);
+	wxString DownloadThreadList(const wxString& boardName,
+			const wxString& boardURL, const wxString& boardNameAscii);
 private:
 	/**
 	 * 前回の通信ログが存在すれば、最後に取得した日時を変数に格納する
@@ -46,6 +46,18 @@ private:
 	 */
 	int DownloadBoardListMod(const wxString outputPath,
 			const wxString headerPath);
+	/**
+	 * 新規にスレッド一覧をダウンロードしてくるメソッド
+	 * @param 板名,URL,サーバー名
+	 * @return 実行コード
+	 */
+	int DownloadThreadListNew(const wxString& gzipPath, const wxString& headerPath);
+	/**
+	 * 前回との差分のスレッド一覧をダウンロードしてくるメソッド
+	 * @param 板名,URL,サーバー名
+	 * @return 実行コード
+	 */
+	int DownloadThreadListMod(const wxString& gzipPath, const wxString& headerPath);
 	/**
 	 * 一時ファイルを消す
 	 */

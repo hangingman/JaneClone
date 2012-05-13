@@ -6,36 +6,29 @@
 ################################################################################
 
 TARGET 	= JaneClone
-OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o        \
-          SQLiteAccessor.o icon_rc.o JaneCloneUtil.o
+OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o SQLiteAccessor.o icon_rc.o JaneCloneUtil.o
 
 # 基本コマンド
-RM 	:= rm
-CXX := g++ -gstabs
-CC 	:= g++
+CXX		:= g++
+RM 		:= rm
 WINDRES := windres
 
 # デバッグ時とリリース時の微調整
-#CXX_DEBUG_FLAGS	=	-gstabs -O0
-#CXX_RELEASE_FLAGS	=	-s -O0
+CXX_DEBUG_FLAGS		=	-gstabs -O0
+CXX_RELEASE_FLAGS	=	-s -O0
 
 # オプション
-CPPFLAGS = -Wall -D __WXMSW__ -I/c/MinGW/include -I/c/MinGW/include          \
-           -I include `wx-config --cxxflags` `xml2-config --cflags`
-           
-LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs`       \
-           `xml2-config --libs` -lws2_32 -lz -lwxcode_mswu_wxsqlite3-2.9     \
-           -lsqlite3 -liconv
-           
+CPPFLAGS = -Wall -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
+LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs` `xml2-config --libs` -lws2_32 -lz -lwxcode_mswu_wxsqlite3-2.9 -lsqlite3 -liconv
 VPATH    = include src gimite rc
 
 # デバッグ
 .PHONY	: Debug
-Debug 	: CXXFLAGS+=$(CXX_DEBUG_FLAGS)
+Debug 	: CXX+=$(CXX_DEBUG_FLAGS)
 Debug 	: all
 # リリース
 .PHONY	: Release
-Release	: CXXFLAGS+=$(CXX_RELEASE_FLAGS)
+Release	: CXX+=$(CXX_RELEASE_FLAGS)
 Release	: all
 
 all : $(TARGET)

@@ -135,7 +135,7 @@ protected:
   wxAuiNotebook* boardNoteBook;
 
   // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
-  void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL);
+  void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii);
 
   // スレッド一覧の情報を保持するwxHashMap　ユーザが板名をクリックするたびに作られる
   // ThreadListクラスについてはDataType.h参照

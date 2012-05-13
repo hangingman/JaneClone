@@ -7,7 +7,7 @@
 
 #include "SocketCommunication.h"
 /**
- * 板一覧ファイルをダウンロードしてくるメソッド 引数はサーバーのフルURL、サーバ名、板名、保存先
+ * 板一覧ファイルをダウンロードしてくるメソッド 引数は板一覧ファイル保存先、板一覧ファイルヘッダ保存先
  */
 int SocketCommunication::DownloadBoardList(const wxString outputPath,
 		const wxString headerPath) {
@@ -215,77 +215,6 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
 }
 
 /**
- * スレッド一覧をダウンロードしてくるメソッド 　引数はサーバーのフルURL、サーバ名、板名、保存先
- */
-int SocketCommunication::DownloadThreadList(const wxString& boardURL,
-		const wxString& server, const wxString& boardName,
-		const wxString outputPath, const wxString headerPath) {
-
-	int rc = 0;
-	// wxからstdへの変換
-	std::string boardURLSTL = std::string(boardURL.mb_str());
-	std::string serverSTL = std::string(server.mb_str());
-	std::string boardNameSTL = std::string(boardName.mb_str());
-
-	gimite::startup_socket();
-	{
-		//ikura.2ch.netのポート80(HTTP)に接続。
-		gimite::socket_stream sst(serverSTL, 80);
-		//エラーチェック。
-		if (!sst) {
-			std::cerr << "Failed to connect." << std::endl;
-		} else {
-			//文字列を送信。
-			sst << "GET /" + boardNameSTL + "/subject.txt HTTP/1.1 \r\n";
-			sst << "Accept-Encoding: gzip \r\n";
-			sst << "Host: " + serverSTL + " \r\n";
-			sst << "Accept: */*\r\n";
-			sst << "Referer: " + boardURLSTL + " \r\n";
-			sst << "Accept-Language: ja \r\n";
-			sst << "User-Agent: Mozilla/5.0 \r\n";
-			sst << "Connection: close \r\n";
-			sst << "\r\n";
-
-			// 受信用文字列
-			std::string s;
-			// ヘッダを取り除くためのフラグ
-			bool flag = false;
-			// gzipのヘッダ作成
-			char HEX[] = { 0x1f, 0x8b, 0x08, 0x00 };
-
-			// ファイルに書き出す(バイナリ部分)
-			wxCharBuffer binaryFile = outputPath.ToUTF8();
-			std::ofstream ofs(binaryFile.data(),
-					std::ios::binary | std::ios::trunc);
-			// ファイルに書き出す(ヘッダ部分)
-			wxCharBuffer headerFile = headerPath.ToUTF8();
-			std::ofstream ofsh(headerFile.data(), std::ios::trunc);
-			// 1行ずつ受信してバイナリ形式で書きこむ
-			// このへんの処理はWin, Linux共通ではないだろうから同じソースコードで違う挙動になるかもしれない
-			while (std::getline(sst, s)) {
-				if (flag) {
-					// 真の場合
-					ofs << s << std::endl;
-				} else {
-					// 偽の場合
-					unsigned int loc = s.find(*HEX, 0);
-					if (loc != std::string::npos) {
-						ofs << s << std::endl;
-						flag = true;
-					} else {
-						// ヘッダーを書きだす
-						ofsh << s << std::endl;
-					}
-				}
-			}
-		}
-		//最後に1回だけ呼び出してください。
-		gimite::cleanup_socket();
-		return rc;
-	}
-}
-
-/**
  * 前回の通信ログが存在すれば、最後に取得した日時を変数に格納する
  */
 wxString SocketCommunication::CheckLastModifiedTime(const wxString headerPath) {
@@ -315,6 +244,76 @@ wxString SocketCommunication::CheckLastModifiedTime(const wxString headerPath) {
 }
 
 /**
+ * スレッド一覧をダウンロードしてくるメソッド
+ * @param 板名,URL,サーバー名
+ * @return datファイル保存先
+ */
+wxString SocketCommunication::DownloadThreadList(const wxString & boardName,
+		const wxString & boardURL, const wxString & boardNameAscii) {
+
+	// 実行コード
+	int rc = 0;
+	// 出力するファイルの名前
+	wxString outputFileName = boardNameAscii;
+	outputFileName+=wxT(".dat");
+	// 出力先のファイルパスを設定する
+	wxString outputFilePath = wxT("./dat/");
+	outputFilePath+=boardNameAscii;
+	outputFilePath+=wxT("/");
+
+	// 保存用フォルダ存在するか確認。無ければフォルダを作成
+	if (!wxFile::Exists(outputFilePath)) {
+		::wxMkdir(outputFilePath);
+	}
+	outputFilePath+=outputFileName;
+	// gzip用のパスを設定する
+	wxString gzipPath = outputFilePath;
+	gzipPath.Replace(".dat", ".gzip");
+	// ヘッダーのパスを設定する
+	wxString headerPath = outputFilePath;
+	headerPath.Replace(".dat", ".header");
+
+	// 解凍された板一覧情報が存在しないor前回の通信ログが残っていないならば通常通りソケット通信を行う
+	if ((!wxFileExists(outputFilePath)) || (!wxFileExists(headerPath))) {
+		rc = DownloadThreadListNew((const wxString)gzipPath, (const wxString)headerPath);
+		// そうでなければ前回の通信の差分を取得しに行く
+	} else {
+		rc = DownloadThreadListNew((const wxString)gzipPath, (const wxString)headerPath);
+	}
+
+	// gzip拡張子のファイルがあれば、ファイルの解凍を行う
+	if (wxFile::Exists(gzipPath)) {
+		JaneCloneUtil::DecommpressFile(gzipPath, outputFilePath);
+	}
+	// 更新が終わったらgzipファイルを消しておく
+	RemoveTmpFile(gzipPath);
+
+	return outputFileName;
+}
+
+/**
+ * 新規にスレッド一覧をダウンロードしてくるメソッド
+ * @param 板名,URL,サーバー名
+ * @return 実行コード
+ */
+int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath, const wxString& headerPath) {
+	int rc = 0;
+
+	return rc;
+}
+
+/**
+ * 前回との差分のスレッド一覧をダウンロードしてくるメソッド
+ * @param 板名,URL,サーバー名
+ * @return 実行コード
+ */
+int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath, const wxString& headerPath) {
+	int rc = 0;
+
+	return rc;
+}
+
+/**
  * 一時ファイルを消す
  */
 void SocketCommunication::RemoveTmpFile(const wxString removeFile) {
@@ -322,4 +321,3 @@ void SocketCommunication::RemoveTmpFile(const wxString removeFile) {
 		wxRemoveFile(removeFile);
 	}
 }
-
