@@ -48,7 +48,7 @@ void JaneCloneUtil::ConvertSJISToUTF8( wxString & inputPath,
 	//  iconvctl で変換不可能な文字があった時の設定
 	//  変換不可能だったら捨てる
 	//  不正な文字があり、捨てられたときは iconctlに1が入る
-	iconvctl(icd, ICONV_GET_DISCARD_ILSEQ, iconctl);
+	//iconvctl(icd, ICONV_GET_DISCARD_ILSEQ, iconctl);  <-- fix me ! iconvctlは最新のlibiconvで共通で使えるのか検証する
 
 	fp_src = fopen(inputPath.mb_str(), "r");
 	fp_dst = fopen(outputPath.mb_str(), "w");

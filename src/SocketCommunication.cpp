@@ -16,7 +16,7 @@ int SocketCommunication::DownloadBoardList(const wxString outputPath,
 	int rc = 0;
 	// 拡張子をgzipに変える
 	wxString gzipPath = outputPath;
-	gzipPath.Replace(".html", ".gzip");
+	gzipPath.Replace(wxT(".html"), wxT(".gzip"));
 	// 一時保存用ファイルのパスを設定する
 	wxString tmpPath = wxT("./dat/tmp.html");
 
@@ -218,11 +218,11 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
  * 前回の通信ログが存在すれば、最後に取得した日時を変数に格納する
  */
 wxString SocketCommunication::CheckLastModifiedTime(const wxString headerPath) {
-	wxString lastGetTime = "";
+	wxString lastGetTime = wxT("");
 
 	// ログを読み込む
 	wxTextFile file(headerPath);
-	file.Open(wxConvAuto(wxFONTENCODING_UTF8));
+	//file.Open(wxConvAuto(wxFONTENCODING_UTF8)); <-- fix me ! wx2.9からの新機能なので他の実装方法を考える
 	wxString line;
 
 	if (file.IsOpened()) {
@@ -268,10 +268,10 @@ wxString SocketCommunication::DownloadThreadList(const wxString & boardName,
 	outputFilePath+=outputFileName;
 	// gzip用のパスを設定する
 	wxString gzipPath = outputFilePath;
-	gzipPath.Replace(".dat", ".gzip");
+	gzipPath.Replace(wxT(".dat"), wxT(".gzip"));
 	// ヘッダーのパスを設定する
 	wxString headerPath = outputFilePath;
-	headerPath.Replace(".dat", ".header");
+	headerPath.Replace(wxT(".dat"), wxT(".header"));
 
 	// 解凍された板一覧情報が存在しないor前回の通信ログが残っていないならば通常通りソケット通信を行う
 	if ((!wxFileExists(outputFilePath)) || (!wxFileExists(headerPath))) {

@@ -46,7 +46,7 @@ void ExtractBoardList::FindBoardInfo(xmlNode*& element) {
 			if (xmlStrcasecmp(node->name, (const xmlChar*) "B") == 0) {
 				// 配列に要素を詰め込む
 				if (sizeof(node->children->content) > 0) {
-					wxString category(node->children->content, wxConvUTF8);
+					wxString category((const char*)node->children->content, wxConvUTF8);
 					lsCategory = category;
 				}
 			}
@@ -60,10 +60,9 @@ void ExtractBoardList::FindBoardInfo(xmlNode*& element) {
 						if (sizeof(node->children->content) > 0
 								&& sizeof(node->properties[0].children->content)
 										> 0) {
-							wxString name(node->children->content, wxConvUTF8);
+							wxString name((const char*)node->children->content, wxConvUTF8);
 							lsName = name;
-							wxString url(node->properties[0].children->content,
-									wxConvUTF8);
+							wxString url((const char*)node->properties[0].children->content, wxConvUTF8);
 							lsUrl = url;
 
 							// 格納した情報をMetakitに配置する

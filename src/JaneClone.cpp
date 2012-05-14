@@ -34,7 +34,15 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
 wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 {
 	// アイコンの設定
+#if defined(__WXMSW__)
 	SetIcon(wxICON(wxicon));
+#endif
+//#if defined(__WXGTK__)
+//
+//#endif
+//#if defined(__WXMAC__)
+//
+//#endif
 	// メニューバーの設置
 	wxMenuBar *menuBar = new wxMenuBar;
 	wxMenu *menu1 = new wxMenu;
@@ -452,7 +460,7 @@ void JaneClone::OnRightClick(wxAuiNotebookEvent& event) {
 void JaneClone::OnVersionInfo(wxCommandEvent&) {
 	wxAboutDialogInfo info;
 	info.SetName(wxT("Jane Clone - ２ちゃんねるビューア"));
-	info.SetVersion(wxT("0.0.8"));
+	info.SetVersion(wxT("0.5.0"));
 	info.SetDescription(wxT("Copyright(C) 2011 Nantonaku-Shiawase"));
 	info.SetCopyright(wxT("http://d.hatena.ne.jp/panzer-jagdironscrap1/"));
 
