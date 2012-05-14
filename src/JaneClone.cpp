@@ -4,6 +4,11 @@
 
 using namespace std;
 
+// warning回避のための定数
+#if defined(__WXGTK__)
+	#include"../rc/aichan.xpm";
+#endif
+
 // enum
 enum {
 	ID_Quit = 1, ID_About, ID_GetBoardList, ID_GetVersionInfo, ID_AnyRightClick
@@ -37,9 +42,9 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 #if defined(__WXMSW__)
 	SetIcon(wxICON(wxicon));
 #endif
-//#if defined(__WXGTK__)
-//
-//#endif
+#if defined(__WXGTK__)
+	SetIcon(wxICON(aichan));
+#endif
 //#if defined(__WXMAC__)
 //
 //#endif

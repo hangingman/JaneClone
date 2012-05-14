@@ -1,5 +1,5 @@
 /* XPM */
-static char * aichan_xpm[] = {
+static const char * aichan_xpm[] = {
 "128 128 13225 3",
 "   	c None",
 ".  	c #F7F1DE",
