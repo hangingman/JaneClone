@@ -9,11 +9,10 @@
 #define JANECLONEUTIL_H_
 
 #include <wx/wx.h>
+#include <wx/strconv.h>
+#include <wx/textfile.h>
+#include <wx/file.h>
 #include <zlib.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <iconv.h>
 
 class JaneCloneUtil {
 public:
@@ -33,7 +32,6 @@ public:
 private:
 	// ディスクからの読取サイズ
 	#define S_SIZE (2048)
-	#define D_SIZE (6144)
 };
 
 #endif /* JANECLONEUTIL_H_ */

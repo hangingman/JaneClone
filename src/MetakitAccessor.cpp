@@ -22,7 +22,7 @@ MetakitAccessor::MetakitAccessor() {
 	// dbファイルの初期化
 	wxString dbFile = METAKIT_FILE_PATH;
 	// 空のViewを作る
-	c4_Storage storage((const char*)dbFile.mb_str(), true);
+	c4_Storage storage(dbFile.mb_str(), true);
 	c4_View vBoardInfo = storage.GetAs(BOARD_INFO_STRUCTURE);
 	storage.Commit();
 }
@@ -56,7 +56,7 @@ void MetakitAccessor::SetBoardInfoCommit() {
 	c4_StringProp pCategory("CATEGORY");
 
 	// Viewを得る
-	c4_Storage storage((const char*)dbFile.mb_str(), true);
+	c4_Storage storage(dbFile.mb_str(), true);
 	// View内のカラムを指定する（コンマとカラム名の間にスペースがあると指定した名前を引けなくなるので注意）
 	c4_View vBoardInfo = storage.GetAs(BOARD_INFO_STRUCTURE);
 
@@ -65,9 +65,9 @@ void MetakitAccessor::SetBoardInfoCommit() {
 		// wxStringに一度変換
 		// レコードを追加する
 		c4_Row row;
-		pBoardName(row) = (const char*)boardInfoArray->Item(i).mb_str();
-		pBoardURL(row) = (const char*)boardInfoArray->Item(i + 1).mb_str();
-		pCategory(row) = (const char*)boardInfoArray->Item(i + 2).mb_str();
+		pBoardName(row) = boardInfoArray->Item(i).mb_str();
+		pBoardURL(row) = boardInfoArray->Item(i + 1).mb_str();
+		pCategory(row) = boardInfoArray->Item(i + 2).mb_str();
 		vBoardInfo.Add(row);
 	}
 	// コミット実行
@@ -82,7 +82,7 @@ wxArrayString MetakitAccessor::GetBoardInfo() {
 	// dbファイルの初期化
 	wxString dbFile = METAKIT_FILE_PATH;
 	// Viewを得る
-	c4_Storage storage((const char*)dbFile.mb_str(), true);
+	c4_Storage storage(dbFile.mb_str(), true);
 	c4_View vBoardInfo = storage.GetAs(BOARD_INFO_STRUCTURE);
 	c4_String types;
 
@@ -96,21 +96,34 @@ wxArrayString MetakitAccessor::GetBoardInfo() {
 	// リザルトセットをArrayStringに設定する
 	wxArrayString array;
 
-	for (int j = 0; j < vBoardInfo.GetSize(); ++j){
+	for (int j = 0; j < vBoardInfo.GetSize(); ++j) {
 		c4_RowRef r = vBoardInfo[j];
 
-		for (int k = 0; k < types.GetLength(); k+=3) {
+		for (int k = 0; k < types.GetLength(); k += 3) {
+#if defined(__WXMSW__)
 			c4_Property p = vBoardInfo.NthProperty(k);
-			wxString boardName = wxString((const char*) ((c4_StringProp&) p) (r), wxConvUTF8);
+			wxString boardName = (const char*) ((c4_StringProp&) p) (r);
 			array.Add(boardName);
-
-			p = vBoardInfo.NthProperty(k+1);
-			wxString url = wxString ((const char*) ((c4_StringProp&) p) (r), wxConvUTF8);
+			p = vBoardInfo.NthProperty(k + 1);
+			wxString url = (const char*) ((c4_StringProp&) p) (r);
 			array.Add(url);
-
-			p = vBoardInfo.NthProperty(k+2);
-			wxString category = wxString ((const char*) ((c4_StringProp&) p) (r), wxConvUTF8);
+			p = vBoardInfo.NthProperty(k + 2);
+			wxString category = (const char*) ((c4_StringProp&) p) (r);
 			array.Add(category);
+#else
+			c4_Property p = vBoardInfo.NthProperty(k);
+			wxString boardName = wxString((const char*) ((c4_StringProp&) p)(r),
+					wxConvUTF8);
+			array.Add(boardName);
+			p = vBoardInfo.NthProperty(k + 1);
+			wxString url = wxString((const char*) ((c4_StringProp&) p)(r),
+					wxConvUTF8);
+			array.Add(url);
+			p = vBoardInfo.NthProperty(k + 2);
+			wxString category = wxString((const char*) ((c4_StringProp&) p)(r),
+					wxConvUTF8);
+			array.Add(category);
+#endif
 		}
 	}
 
@@ -123,7 +136,7 @@ bool MetakitAccessor::TableHasView(const wxString viewName) {
 	// dbファイルの初期化
 	wxString dbFile = METAKIT_FILE_PATH;
 	// Viewを得る
-	c4_Storage storage((const char*)dbFile.mb_str(), true);
+	c4_Storage storage(dbFile.mb_str(), true);
 	// View一覧を取得する
 	wxString viewList = wxString(storage.Description(), wxConvUTF8);
 
@@ -141,7 +154,7 @@ void MetakitAccessor::DropView(const wxString viewName) {
 	// dbファイルの初期化
 	wxString dbFile = METAKIT_FILE_PATH;
 	// Viewを得る
-	c4_Storage storage((const char*)dbFile.mb_str(), true);
+	c4_Storage storage(dbFile.mb_str(), true);
 
 	// 指定されたView名をViewの構造に変えて、中身を削除する
 	if (viewName == wxT("BOARD_INFO")) {
