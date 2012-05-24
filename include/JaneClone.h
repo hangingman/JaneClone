@@ -12,7 +12,7 @@
 #include <wx/msgdlg.h>
 #include <wx/imaglist.h>
 #include <wx/artprov.h>
-#include <wx/xml/xml.h>x
+#include <wx/xml/xml.h>
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 #include <wx/string.h>

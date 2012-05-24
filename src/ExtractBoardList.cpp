@@ -11,10 +11,11 @@ ExtractBoardList::ExtractBoardList(const char* file) {
 	accessor = new MetakitAccessor();
 
 	// ファイル名とエンコードの設定
-	char* enc = "utf-8";
+	const char* enc = "utf-8";
 
 	// xmlの読み込み
-	if (m_doc = htmlReadFile(file, enc, 1)) {
+	if (htmlReadFile(file, enc, 1)) {
+		m_doc = htmlReadFile(file, enc, 1);
 		htmlNodePtr root = xmlDocGetRootElement(m_doc);
 		if (root != NULL) {
 			ExtractBoardList::FindBoardInfo(root);

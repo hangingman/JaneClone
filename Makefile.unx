@@ -48,4 +48,4 @@ Main.o : Main.cpp JaneClone.h
 		$(CXX) -c $< $(CPPFLAGS)
 .PHONY: clean
 clean:
-	$(RM) -f *.o *.exe
+	$(RM) -f *.o $(TARGET)

@@ -7,6 +7,9 @@
 
 #include "MetakitAccessor.h"
 
+// BOARD_INFOのView内構造
+static const char* BOARD_INFO_STRUCTURE = "BOARD_INFO[BOARDNAME_KANJI:S,BOARD_URL:S,CATEGORY:S]";
+
 /**
  * データベースの初期化
  */

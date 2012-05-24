@@ -17,8 +17,6 @@
 
 // Metakitのファイルパス
 static const wxString METAKIT_FILE_PATH = wxT("./metakit/JaneClone.dat");
-// BOARD_INFOのView内構造
-static const char* BOARD_INFO_STRUCTURE = "BOARD_INFO[BOARDNAME_KANJI:S,BOARD_URL:S,CATEGORY:S]";
 
 class MetakitAccessor {
 public:
