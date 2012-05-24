@@ -1,5 +1,3 @@
-//icon.rc
-//[ID] [ICON] [….ico]
 wxicon ICON "aichan.ico"
 #include "wx/msw/wx.rc"
 
@@ -8,6 +6,10 @@ wxicon ICON "aichan.ico"
 画像の元ネタは以下より、ありがとうございます
 http://www.gatag.net/02/06/2009/080000.html
 
+Copyright (C) Frank Wouters
+http://members.virtualtourist.com/m/5be5c/
+
+そして2chのコピペ
 
 ”このスレッドは天才チンパンジー「アイちゃん」が
 言語訓練のために立てたものです。

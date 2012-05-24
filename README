@@ -37,6 +37,9 @@ Debian：gcc 4.5.5, wxWidgets 2.8, metakit-2.4.9.7　libxmlはapt-getで可
 【Mac】
 あ・・・ごめんなさい それ来月からなんですよ
 
+◇ ライセンス ◇
+GNU 一般公衆利用許諾契約書のバージョン2に従います
+
 ◇ インストール ◇
 
 (1) Windowsの場合
