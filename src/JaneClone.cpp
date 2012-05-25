@@ -86,10 +86,10 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	closeT->Append(wxID_ANY, wxT("最後に閉じたスレを開く"));
 	closeT->AppendSeparator();
 	menu1->AppendSubMenu(closeT, wxT("最近閉じたスレ"));
-	wxMenu *closeB = new wxMenu;
-	closeB->Append(wxID_ANY, wxT("最後に閉じた板を開く"));
-	closeB->AppendSeparator();
-	menu1->AppendSubMenu(closeB, wxT("最近閉じた板"));
+	wxMenu *closeRec = new wxMenu;
+	closeRec->Append(wxID_ANY, wxT("最後に閉じた板を開く"));
+	closeRec->AppendSeparator();
+	menu1->AppendSubMenu(closeRec, wxT("最近閉じた板"));
 	menu1->AppendSeparator();
 	menu1->Append(ID_Restart, wxT("再起動"));
 	menu1->Append(ID_Quit, wxT("終了"));
@@ -123,14 +123,14 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	 * スレ覧部分
 	 */
 	wxMenu *menu4 = new wxMenu;
-	wxMenu *close = new wxMenu;
-	close->Append(wxID_ANY, wxT("現在の板を閉じる"));
-	close->AppendSeparator();
-	close->Append(wxID_ANY, wxT("選択されていない板を閉じる"));
-	close->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
-	close->Append(wxID_ANY, wxT("これより左を閉じる"));
-	close->Append(wxID_ANY, wxT("これより右を閉じる"));
-	menu4->AppendSubMenu(closeT, wxT("閉じる"));
+	wxMenu *closeB = new wxMenu;
+	closeB->Append(wxID_ANY, wxT("現在の板を閉じる"));
+	closeB->AppendSeparator();
+	closeB->Append(wxID_ANY, wxT("選択されていない板を閉じる"));
+	closeB->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
+	closeB->Append(wxID_ANY, wxT("これより左を閉じる"));
+	closeB->Append(wxID_ANY, wxT("これより右を閉じる"));
+	menu4->AppendSubMenu(closeB, wxT("閉じる"));
 	menu4->AppendSeparator();
 	wxMenu *open = new wxMenu;
 	open->Append(wxID_ANY, wxT("新着をすべて開く"));
@@ -214,10 +214,24 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	 * スレッド部分
 	 */
 	wxMenu *menu5 = new wxMenu;
-	wxMenu *aboneT = new wxMenu;
-	menu5->AppendSubMenu(aboneT, wxT("閉じる"));
+	wxMenu *closeTh = new wxMenu;
+	closeTh->Append(wxID_ANY, wxT("選択中のタブを閉じる"));
+	closeTh->Append(wxID_ANY, wxT("未読として閉じる"));
+	closeTh->AppendSeparator();
+	closeTh->Append(wxID_ANY, wxT("選択されていないタブを閉じる"));
+	closeTh->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
+	closeTh->Append(wxID_ANY, wxT("これより左を閉じる"));
+	closeTh->Append(wxID_ANY, wxT("これより右を閉じる"));
+	closeTh->AppendSeparator();
+	closeTh->Append(wxID_ANY, wxT("新着なしのタブを閉じる"));
+	closeTh->Append(wxID_ANY, wxT("dat落ちのタブを閉じる"));
+	menu5->AppendSubMenu(closeTh, wxT("閉じる"));
 	menu5->AppendSeparator();
 	wxMenu *tabLock = new wxMenu;
+	tabLock->Append(wxID_ANY, wxT("このタブをロックする"));
+	tabLock->Append(wxID_ANY, wxT("すべてのタブをロックする"));
+	tabLock->Append(wxID_ANY, wxT("これより左をロックする"));
+	tabLock->Append(wxID_ANY, wxT("これより右をロックする"));
 	menu5->AppendSubMenu(tabLock, wxT("タブロック"));
 	menu5->AppendSeparator();
 	menu5->Append(wxID_ANY, wxT("次スレ候補検索"));
@@ -227,12 +241,24 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	menu5->AppendSeparator();
 	menu5->Append(wxID_ANY, wxT("印を付ける"));
 	wxMenu *addFav = new wxMenu;
+	addFav->Append(wxID_ANY, wxT("「お気に入り」に追加"));
+	addFav->AppendSeparator();
+	addFav->Append(wxID_ANY, wxT("「リンク」に追加"));
 	menu5->AppendSubMenu(addFav, wxT("お気に入りに追加"));
 	menu5->Append(wxID_ANY, wxT("お気に入りを削除"));
 	menu5->AppendSeparator();
 	menu5->Append(wxID_ANY, wxT("強制過去ログ化"));
 	menu5->AppendSeparator();
 	wxMenu *move = new wxMenu;
+	move->Append(wxID_ANY, wxT("戻る"));
+	move->Append(wxID_ANY, wxT("進む"));
+	move->AppendSeparator();
+	move->Append(wxID_ANY, wxT("閉じた付近に戻る"));
+	move->Append(wxID_ANY, wxT("新着までスクロール"));
+	move->Append(wxID_ANY, wxT("次のレス↓"));
+	move->Append(wxID_ANY, wxT("前のレス↑"));
+	move->AppendSeparator();
+	move->Append(wxID_ANY, wxT("指定レス番号にジャンプ"));
 	menu5->AppendSubMenu(move, wxT("移動"));
 	menu5->AppendSeparator();
 	menu5->Append(wxID_ANY, wxT("新着チェック"));
@@ -244,51 +270,146 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	menu5->Append(wxID_ANY, wxT("ブラウザで開く"));
 	menu5->AppendSeparator();
 	wxMenu *broadcast = new wxMenu;
+	broadcast->Append(wxID_ANY, wxT("オートリロード"));
+	broadcast->Append(wxID_ANY, wxT("オートスクロール"));
+	broadcast->Append(wxID_ANY, wxT("オートリロード・スクロール"));
 	menu5->AppendSubMenu(broadcast , wxT("実況支援"));
 	menu5->AppendSeparator();
 	wxMenu *copyMenu5 = new wxMenu;
+	copyMenu5->Append(wxID_ANY, wxT("URLをコピー"));
+	copyMenu5->Append(wxID_ANY, wxT("タイトルをコピー"));
+	copyMenu5->Append(wxID_ANY, wxT("タイトルとURLをコピー"));
 	menu5->AppendSubMenu(copyMenu5, wxT("コピー"));
 	menu5->AppendSeparator();
 	menu5->Append(wxID_ANY, wxT("この板を開く"));
 	menu5->Append(wxID_ANY, wxT("この板の看板を見る"));
 	menu5->AppendSeparator();
 	wxMenu *saveLog = new wxMenu;
+	saveLog->Append(wxID_ANY, wxT("datを名前を付けて保存"));
+	saveLog->Append(wxID_ANY, wxT("datをクリップボードにコピー"));
 	menu5->AppendSubMenu(saveLog, wxT("このログを保存"));
 	menu5->Append(wxID_ANY, wxT("このログを削除"));
 	menu5->Append(wxID_ANY, wxT("再読み込み"));
 	menu5->AppendSeparator();
 	wxMenu *iReadHere = new wxMenu;
+	iReadHere->Append(wxID_ANY, wxT("この辺まで読んだ"));
+	iReadHere->Append(wxID_ANY, wxT("最後まで読んだ"));
+	iReadHere->Append(wxID_ANY, wxT("「ここまで読んだ」にジャンプ"));
+	iReadHere->Append(wxID_ANY, wxT("「ここまで読んだ」を解除"));
 	menu5->AppendSubMenu(iReadHere, wxT("ここまで読んだ"));
 	wxMenu *chkResponse = new wxMenu;
+	chkResponse->Append(wxID_ANY, wxT("レスのチェックをすべて解除"));
 	menu5->AppendSubMenu(chkResponse, wxT("レスのチェック"));
 	menu5->AppendSeparator();
-	wxMenu *changeResNum = new wxMenu;
-	menu5->AppendSubMenu(changeResNum, wxT("表示レス数を変更"));
 	wxMenu *changeLocalAbone = new wxMenu;
+	changeLocalAbone->AppendRadioItem(wxID_ANY, wxT("透明"));
+	changeLocalAbone->AppendRadioItem(wxID_ANY, wxT("標準"));
+	changeLocalAbone->AppendRadioItem(wxID_ANY, wxT("ポップアップ"));
+	changeLocalAbone->AppendRadioItem(wxID_ANY, wxT("あぼ～ん無効"));
+	changeLocalAbone->AppendRadioItem(wxID_ANY, wxT("あぼ～んのみ"));
+	changeLocalAbone->AppendRadioItem(wxID_ANY, wxT("自分書込のみ"));
+	changeLocalAbone->AppendRadioItem(wxID_ANY, wxT("自分返信のみ"));
 	menu5->AppendSubMenu(changeLocalAbone, wxT("ローカルあぼ～ん表示の変更"));
 	wxMenu *extractRedRes = new wxMenu;
+	extractRedRes->Append(wxID_ANY, wxT("赤レス抽出"));
+	extractRedRes->Append(wxID_ANY, wxT("被参照レス抽出"));
+	extractRedRes->AppendSeparator();
+	extractRedRes->Append(wxID_ANY, wxT("赤レスフィルタ"));
+	extractRedRes->Append(wxID_ANY, wxT("被参照レス抽出フィルタ"));
 	menu5->AppendSubMenu(extractRedRes, wxT("赤レス抽出"));
 
 	/**
 	 * お気に入り部分
 	 */
 	wxMenu *menu6 = new wxMenu;
+
+	// ！ここはお気に入りスレッドを動的に確保する！
+
 	/**
 	 * 検索部分
 	 */
 	wxMenu *menu7 = new wxMenu;
+	menu7->Append(wxID_ANY, wxT("検索"));
+	menu7->Append(wxID_ANY, wxT("↓検索"));
+	menu7->Append(wxID_ANY, wxT("↑検索"));
+	menu7->AppendSeparator();
+	menu7->Append(wxID_ANY, wxT("レス抽出"));
+	menu7->AppendSeparator();
+	menu7->Append(wxID_ANY, wxT("スレのツリー形式表示"));
+	menu7->Append(wxID_ANY, wxT("スレのアウトライン表示"));
+	menu7->AppendSeparator();
+	menu7->Append(wxID_ANY, wxT("スレ絞込み"));
+	menu7->Append(wxID_ANY, wxT("スレ絞込み結果クリア"));
+	menu7->Append(wxID_ANY, wxT("ログから検索"));
+	menu7->AppendSeparator();
+	menu7->Append(wxID_ANY, wxT("スレッドタイトル検索"));
+	menu7->Append(wxID_ANY, wxT("2chのURLにジャンプ"));
+	menu7->AppendSeparator();
+	menu7->Append(wxID_ANY, wxT("検索履歴削除"));
 	/**
 	 * ウィンドウ部分
 	 */
 	wxMenu *menu8 = new wxMenu;
+	menu8->Append(wxID_ANY, wxT("閉じる"));
+	menu8->AppendSeparator();
+	menu8->Append(wxID_ANY, wxT("次のタブ"));
+	menu8->Append(wxID_ANY, wxT("前のタブ"));
+	menu8->AppendSeparator();
+	menu8->Append(wxID_ANY, wxT("重ねて表示"));
+	menu8->Append(wxID_ANY, wxT("左右に並べて表示"));
+	menu8->Append(wxID_ANY, wxT("上下に並べて表示"));
+	menu8->Append(wxID_ANY, wxT("すべて元のサイズに戻す"));
+	menu8->Append(wxID_ANY, wxT("すべて最大化"));
+	menu8->AppendSeparator();
+	menu8->Append(wxID_ANY, wxT("最小化"));
+	menu8->AppendSeparator();
+
+	// ！ここは開いているスレを動的に確保する！
+
 	/**
 	 * ツール部分
 	 */
 	wxMenu *menu9 = new wxMenu;
+	menu9->Append(wxID_ANY, wxT("更新チェック"));
+	menu9->AppendSeparator();
+	wxMenu *image = new wxMenu;
+	image->Append(wxID_ANY, wxT("マウスオーバーで画像を開く"));
+	image->Append(wxID_ANY, wxT("クリップボード監視"));
+	image->AppendSeparator();
+	image->Append(wxID_ANY, wxT("キャッシュ一覧"));
+	menu9->AppendSubMenu(image, wxT("画像"));
+	wxMenu *memo = new wxMenu;
+	memo->Append(wxID_ANY, wxT("名前履歴消去"));
+	memo->Append(wxID_ANY, wxT("メール履歴消去"));
+	memo->AppendSeparator();
+	memo->Append(wxID_ANY, wxT("次のメモ"));
+	memo->Append(wxID_ANY, wxT("前のメモ"));
+	memo->Append(wxID_ANY, wxT("名前をつけて保存"));
+	memo->Append(wxID_ANY, wxT("ファイルを開く"));
+	memo->Append(wxID_ANY, wxT("メモをクリア"));
+	memo->Append(wxID_ANY, wxT("AA入力支援"));
+	memo->Append(wxID_ANY, wxT("一つ前のレスを貼り付け"));
+	memo->AppendSeparator();
+	memo->Append(wxID_ANY, wxT("メモ欄の内容で書き込む"));
+	menu9->AppendSubMenu(memo, wxT("メモ"));
+	menu9->AppendSeparator();
+	menu9->AppendCheckItem(wxID_ANY, wxT("サウンド"));
+	menu9->AppendSeparator();
+	menu9->Append(wxID_ANY, wxT("ビューア設定"));
+	menu9->Append(wxID_ANY, wxT("設定"));
 	/**
 	 * ヘルプ部分
 	 */
 	wxMenu *menu10 = new wxMenu;
+	menu10->Append(wxID_ANY, wxT("ヘルプ"));
+	menu10->AppendSeparator();
+	menu10->Append(wxID_ANY, wxT("JaneClone公式サイトをブラウザで開く"));
+	menu10->AppendSeparator();
+	menu10->Append(wxID_ANY, wxT("2ちゃんねるビューア●に登録"));
+	menu10->AppendSeparator();
+	menu10->Append(wxID_ANY, wxT("アップデートチェック"));
+	menu10->AppendSeparator();
+	menu10->Append(wxID_ANY, wxT("バグレポート"));
 	menu10->Append(ID_GetVersionInfo, wxT("バージョン情報を開く"));
 
 	menuBar->Append(menu1, wxT("ファイル"));
