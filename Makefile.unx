@@ -19,7 +19,7 @@ CXX_RELEASE_FLAGS	 =	-s -O0
 
 # オプション
 CPPFLAGS = -Wall -I include `wx-config --cxxflags` `xml2-config --cflags`
-LDFLAGS  = -L/usr/local/lib `wx-config --libs` `xml2-config --libs` -lz -lmk4
+LDFLAGS  = -lwx_gtk2u_aui-2.8 `wx-config --libs` `xml2-config --libs` -lz -lmk4
 VPATH    = include src gimite rc
 
 # デバッグ
