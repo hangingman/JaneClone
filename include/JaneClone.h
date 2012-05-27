@@ -38,6 +38,7 @@
 #include <wx/wfstream.h>
 #include <wx/string.h>
 #include <wx/file.h>
+#include <wx/aui/aui.h>
 #include <wx/aui/auibook.h>
 #include <wx/dialog.h>
 #include <wx/event.h>
@@ -58,6 +59,8 @@
 #include <wx/textfile.h>
 #include <wx/convauto.h>
 #include <wx/process.h>
+#include <wx/srchctrl.h>
+#include <wx/richtext/richtextctrl.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
@@ -96,6 +99,7 @@ public:
   // end wxGlade
 
   JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE);
+  ~JaneClone();
 
   // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
   // URLvsBoardNameクラスについてはDataType.h参照
@@ -114,50 +118,68 @@ private:
   void OnRightClick(wxAuiNotebookEvent& event);
   void OnCloseWindow(wxCloseEvent& event);
 
+  // 各種GUI上の設定
+  void SetJaneCloneManuBar();
   void SetProperties();
   void DoLayout();
+  void SetJaneCloneAuiPaneInfo();
 
   // 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
   void SetBoardList();
 
-protected:
-  // URL入力欄のテキスト操作用
-  wxTextCtrl* 	textCtlForURL;
+  // すべてのウィジェットが載るAuiマネージャー
+  wxAuiManager m_mgr;
   // ステータスバー表示用文字列
   wxStatusBar* 	statusBarStr;
+
+  /**
+   * 画面上部のオブジェクトとメソッド
+   */
+  // 検索バー
+  wxSearchCtrl* m_search_ctrl;
+  // URL入力欄
+  wxRichTextCtrl* m_url_input;
+  // URLを表すString
+  wxString m_url_text;
+
+  /**
+   * 画面左側のオブジェクトとメソッド
+   */
   // ツリーコントロールは内部からならいじれるようにしておく
   wxTreeCtrl* 	m_tree_ctrl;
   wxTreeItemData*	m_treeData;
   wxTreeItemId 	m_rootId;
-  wxStaticText* 	label_1;
-  wxButton* 		button_1;
-
-  // 左側
-  wxSplitterWindow* window_1;
-  // 右側
-  wxSplitterWindow* window_2;
-
-  // 左側　-- 板一覧がツリーコントロールに入る
-  wxPanel* window_1_pane_1;
-  // 左側 -- 未使用　デバッグ画面でもつけるか
-  wxPanel* window_1_pane_2;
-
-  // 右側上段 -- 板一覧
-  wxPanel* window_2_pane_1;
-  // 右側下段　-- 個別のスレ
-  wxPanel* window_2_pane_2;
 
   //　ツリーコントロールにクリックした時のイベント
   void OnGetBoardInfo(wxTreeEvent& event);
 
+  /**
+   * 右上のオブジェクトとメソッド
+   */
+  // 右側上部・板一覧のノートブックとスレッド一覧リストが載るウィンドウ
+  wxWindow* boardListThreadList;
   // wxNotebook（上部）が乗るサイザー
   wxBoxSizer* topNote;
-  /** 板名のツリーコントロールをクリックした場合表示されるwxNoteBook　*/
+  // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
   wxAuiNotebook* boardNoteBook;
-
   // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
   void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii);
 
+  /**
+   * 右下のオブジェクトとメソッド
+   */
+  // 右側下部・スレッド一覧のノートブックとスレの中身が載るウィンドウ
+  wxWindow* threadTabThreadContent;
+  // wxNotebook（下部）が乗るサイザー
+  wxBoxSizer* bottomNote;
+  // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
+  wxAuiNotebook* threadNoteBook;
+  // スレッド一覧をクリックすると、それをスレ表示画面に反映するメソッド（スタブ）
+  void SetThreadContentToNoteBook();
+
+  /**
+   * その他のオブジェクトとメソッド
+   */
   // スレッド一覧の情報を保持するwxHashMap　ユーザが板名をクリックするたびに作られる
   // ThreadListクラスについてはDataType.h参照
   WX_DECLARE_HASH_MAP( int, ThreadList*, wxIntegerHash, wxIntegerEqual, ThreadListHash );

@@ -73,6 +73,36 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 //#if defined(__WXMAC__)
 //
 //#endif
+
+	/**
+	 * 必要なwxWindowを宣言する
+	 */
+	// 板一覧を取得してツリー表示
+	m_tree_ctrl = new wxTreeCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+
+	// 右側上部・板一覧のノートブックとスレッド一覧リストが載るウィンドウ
+	boardListThreadList = new wxWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxHSCROLL);
+
+	// 右側上部・板一覧のノートブックとスレッド一覧リストが載るウィンドウ
+	threadTabThreadContent = new wxWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxHSCROLL);
+
+	// 検索バー
+	m_search_ctrl = new wxSearchCtrl((wxWindow*)this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+	// URL入力欄
+	m_url_input = new wxRichTextCtrl(this, wxID_ANY, m_url_text, wxDefaultPosition, wxDefaultSize);
+
+	// 各種GUI設定を行う
+	SetJaneCloneManuBar();
+	SetProperties();
+	DoLayout();
+	this->CreateStatusBar();
+	this->SetStatusText(wxT(" 完了"));
+}
+/**
+ * SetJaneCloneManuBar
+ * メニューバーの設定を行う
+ */
+void JaneClone::SetJaneCloneManuBar() {
 	/*
 	 * メニューバーの設置
 	 */
@@ -427,50 +457,22 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	/**
 	 * メニューバー設置終わり
 	 */
-
-	// SetMinimumPaneSizeによってペインが合体しないように設定
-	window_1 = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
-	window_1->SetMinimumPaneSize(20);
-	window_1_pane_2 = new wxPanel(window_1, wxID_ANY);
-	window_1_pane_1 = new wxPanel(window_1, wxID_ANY);
-
-	window_2 = new wxSplitterWindow(window_1_pane_2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
-	window_2->SetMinimumPaneSize(20);
-
-	//URL入力欄の表示部分
-	label_1 = new wxStaticText(this, wxID_ANY, wxT("URL:"));
-	textCtlForURL = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
-	button_1 = new wxButton(this, wxID_ANY, wxT("GO"));
-
-	//板一覧を取得してツリー表示
-	m_tree_ctrl = new wxTreeCtrl(window_1_pane_1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
-	window_2_pane_1 = new wxPanel(window_2, wxID_ANY);
-	window_2_pane_2 = new wxPanel(window_2, wxID_ANY);
-
-	// 呼ばれる順序はSetProperties　→　DoLayout
-	SetProperties();
-	DoLayout();
-	this->CreateStatusBar();
-	this->SetStatusText(wxT(" 完了"));
 }
 
 /**
  * SetProperties
  * 前回からのデータ引継ぎ等の処理を行う。
- *
  */
 void JaneClone::SetProperties() {
 	// wxGladeによる自動生成
 	SetTitle(_("JaneClone"));
-	SetSize(wxSize(960, 540));
-	label_1->SetFont(
-			wxFont(9, wxDEFAULT, wxNORMAL, wxNORMAL, 0, wxT("MS Shell Dlg 2")));
+	SetSize(wxSize(960, 640));
 
-	// 板一覧情報を反映する
+	// イメージリストにアイコンを登録する
 	wxImageList *treeImage = new wxImageList(16, 16);
 	wxBitmap idx1(wxT("rc/folder.png"), wxBITMAP_TYPE_PNG);
-	wxBitmap idx2(wxT("rc/text-html.png"), wxBITMAP_TYPE_PNG);
 	treeImage->Add(idx1);
+	wxBitmap idx2(wxT("rc/text-html.png"), wxBITMAP_TYPE_PNG);
 	treeImage->Add(idx2);
 	m_tree_ctrl->AssignImageList(treeImage);
 
@@ -497,8 +499,12 @@ void JaneClone::SetProperties() {
 	if (MetakitAccessor::TableHasView(wxT("BOARD_INFO"))) {
 		SetBoardList();
 	}
-	// wxAuiNotebookに更新した
-	boardNoteBook = new wxAuiNotebook(window_2_pane_1, wxID_ANY,
+	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
+	boardNoteBook = new wxAuiNotebook(boardListThreadList, wxID_ANY,
+			wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
+
+	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
+	threadNoteBook = new wxAuiNotebook(threadTabThreadContent, wxID_ANY,
 			wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
 }
 
@@ -507,42 +513,67 @@ void JaneClone::SetProperties() {
  * ユーザーが触る前のアプリのレイアウトを設定する
  * 前回の起動時にレイアウトに変更があった場合はそれを反映する
  */
-
 void JaneClone::DoLayout() {
-	// 各種サイザー設定
-	wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
-	wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
-	wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
-
-	// 一番上のURL入力欄など
-	sizer_2->Add(label_1, 0, wxALL | wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL,
-			0);
-	sizer_2->Add(textCtlForURL, 2, wxALL | wxEXPAND, 0);
-	sizer_2->Add(button_1, 0, 0, 0);
-	sizer_1->Add(sizer_2, 0, wxALL | wxEXPAND, 2);
-
-	// 下部のスプリットウィンドウの設定
-	// Sizer3にツリーコントロールが入る
-	sizer_3->Add(m_tree_ctrl, 1, wxEXPAND, 0);
-	window_1_pane_1->SetSizer(sizer_3);
-
-	// スプリットウィンドウ(横の区切り)
-	window_2->SplitHorizontally(window_2_pane_1, window_2_pane_2);
-	sizer_4->Add(window_2, 1, wxEXPAND, 0);
-	window_1_pane_2->SetSizer(sizer_4);
-
-	// スプリットウィンドウ(縦の区切り)
-	window_1->SplitVertically(window_1_pane_1, window_1_pane_2);
-	sizer_1->Add(window_1, 1, wxEXPAND, 0);
-	SetSizer(sizer_1);
-
-	// datフォルダ内にあるスレッド一覧の情報が入ったファイルとプロパティファイルを比べて
-	// 右側のペインにスレッド一覧情報を反映する
-
+	// Auiマネージャーがどのフレームを管理するか示す
+	m_mgr.SetManagedWindow(this);
+	// それぞれのペインの情報を設定する
+	SetJaneCloneAuiPaneInfo();
+	// Auiマネージャーの設定を反映する
+	m_mgr.Update();
 	// 初期設定はこのLayout()が呼ばれる前に行わなくてはいけない
 	Layout();
 	// end wxGlade
+}
+/**
+ * SetJaneCloneAuiPaneInfo
+ * AuiManagerのPaneInfoを設定する
+ */
+void JaneClone::SetJaneCloneAuiPaneInfo() {
+	// 上部・検索バーを設定する
+	wxAuiPaneInfo search;
+	search.Caption(wxT("検索バー"));
+	search.Top();
+	search.CloseButton(false);
+	m_mgr.AddPane(m_search_ctrl, search);
+
+	// 上部・URL入力欄を設定する
+	wxAuiPaneInfo url;
+	url.Caption(wxT("url"));
+	url.Top();
+	url.CloseButton(false);
+	m_mgr.AddPane(m_url_input, url);
+
+	// 左側・板一覧のツリーコントロールを設定する
+	wxAuiPaneInfo boardTree;
+	boardTree.Caption(wxT("板一覧"));
+	boardTree.Left();
+	boardTree.CloseButton(false);
+	boardTree.BestSize(100, 300);
+	m_mgr.AddPane(m_tree_ctrl, boardTree);
+
+	// 右側上部・板一覧のノートブックとスレッド一覧リストが載ったウィンドウ
+	wxAuiPaneInfo boardListThreadListInfo;
+	boardListThreadListInfo.Caption(wxT("スレッド一覧"));
+	boardListThreadListInfo.Right();
+	boardListThreadListInfo.CloseButton(false);
+	boardListThreadListInfo.BestSize(400, 400);
+	m_mgr.AddPane(boardListThreadList, boardListThreadListInfo);
+
+	// 右側下部・スレッド一覧タブとスレ表示画面が載ったウィンドウ
+	wxAuiPaneInfo threadTabThreadContentInfo;
+	threadTabThreadContentInfo.Caption(wxT("開いているスレ"));
+	threadTabThreadContentInfo.Right();
+	threadTabThreadContentInfo.CloseButton(false);
+	threadTabThreadContentInfo.BestSize(400, 400);
+	m_mgr.AddPane(threadTabThreadContent, threadTabThreadContentInfo);
+}
+
+/**
+ * デストラクタ
+ */
+JaneClone::~JaneClone() {
+	// Auiマネージャーを削除する
+	m_mgr.UnInit();
 }
 
 void JaneClone::OnQuit(wxCommandEvent&) {
@@ -608,7 +639,7 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName,
 	noteWindow->SetSizer(sizer_noteList);
 	boardNoteBook->AddPage(noteWindow, boardName);
 	sizer_pane->Add(boardNoteBook, 1, wxEXPAND, 0);
-	window_2_pane_1->SetSizer(sizer_pane);
+	boardListThreadList->SetSizer(sizer_pane);
 
 	wxListItem itemCol;
 	itemCol.SetText(wxT("番号"));
