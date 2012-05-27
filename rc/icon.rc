@@ -1,21 +1,2 @@
-wxicon ICON "aichan.ico"
+wxicon ICON "janeclone.ico"
 #include "wx/msw/wx.rc"
-
-/** 
-
-画像の元ネタは以下より、ありがとうございます
-http://www.gatag.net/02/06/2009/080000.html
-
-Copyright (C) Frank Wouters
-http://members.virtualtourist.com/m/5be5c/
-
-そして2chのコピペ
-
-”このスレッドは天才チンパンジー「アイちゃん」が
-言語訓練のために立てたものです。
-
-アイと研究員とのやり取りに利用するスレッドなので、
-関係者以外は書きこまないで下さい。
-
-　　　　　　　　　　　　　　　　　　京都大学霊長類研究所”
- */

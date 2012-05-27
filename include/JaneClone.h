@@ -137,8 +137,12 @@ private:
    */
   // 検索バー
   wxSearchCtrl* m_search_ctrl;
+  // URL入力欄が載るパネル
+  wxPanel* m_url_input_panel;
   // URL入力欄
-  wxRichTextCtrl* m_url_input;
+  wxTextCtrl* m_url_input;
+  // URL入力欄の画像つきボタン
+  wxBitmapButton* m_url_input_button;
   // URLを表すString
   wxString m_url_text;
 

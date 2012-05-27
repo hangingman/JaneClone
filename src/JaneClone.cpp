@@ -26,7 +26,7 @@
 using namespace std;
 
 #if defined(__WXGTK__)
-	#include"../rc/aichan.xpm";
+	#include"../rc/janeclone.xpm";
 #endif
 
 // enum
@@ -68,7 +68,7 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	SetIcon(wxICON(wxicon));
 #endif
 #if defined(__WXGTK__)
-	SetIcon(wxICON(aichan));
+	SetIcon(wxICON(janeclone));
 #endif
 //#if defined(__WXMAC__)
 //
@@ -89,7 +89,11 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	// 検索バー
 	m_search_ctrl = new wxSearchCtrl((wxWindow*)this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 	// URL入力欄
-	m_url_input = new wxRichTextCtrl(this, wxID_ANY, m_url_text, wxDefaultPosition, wxDefaultSize);
+	m_url_input_panel = new wxPanel(this, wxID_ANY);
+	m_url_input = new wxTextCtrl(m_url_input_panel, wxID_ANY, m_url_text, wxDefaultPosition, wxDefaultSize);
+	m_url_input_button = new wxBitmapButton(m_url_input_panel, wxID_ANY, wxBitmap(wxT("rc/go-next.png"), wxBITMAP_TYPE_ANY));
+
+	// わかりやすい画像つき各種処理ボタン
 
 	// 各種GUI設定を行う
 	SetJaneCloneManuBar();
@@ -499,10 +503,14 @@ void JaneClone::SetProperties() {
 	if (MetakitAccessor::TableHasView(wxT("BOARD_INFO"))) {
 		SetBoardList();
 	}
+	// アプリ上部URL入力欄の画像つきボタンのサイズ調整
+	m_url_input_button->SetSize(m_url_input_button->GetBestSize());
+	// アプリ上部URL入力欄のフォント調整
+	m_url_input->SetFont(wxFont(12, wxDEFAULT, wxNORMAL, wxNORMAL, 0, wxT("")));
+
 	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
 	boardNoteBook = new wxAuiNotebook(boardListThreadList, wxID_ANY,
 			wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
-
 	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
 	threadNoteBook = new wxAuiNotebook(threadTabThreadContent, wxID_ANY,
 			wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
@@ -514,6 +522,12 @@ void JaneClone::SetProperties() {
  * 前回の起動時にレイアウトに変更があった場合はそれを反映する
  */
 void JaneClone::DoLayout() {
+	// アプリ上部、URL入力欄のレイアウトを設定する
+    wxBoxSizer* url_sizer = new wxBoxSizer(wxHORIZONTAL);
+    url_sizer->Add(m_url_input, 1, wxEXPAND, 0);
+    url_sizer->Add(m_url_input_button, 0, 0, 0);
+    m_url_input_panel->SetSizer(url_sizer);
+
 	// Auiマネージャーがどのフレームを管理するか示す
 	m_mgr.SetManagedWindow(this);
 	// それぞれのペインの情報を設定する
@@ -538,10 +552,11 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 
 	// 上部・URL入力欄を設定する
 	wxAuiPaneInfo url;
+	url.MinSize(wxSize(0, 16));
 	url.Caption(wxT("url"));
 	url.Top();
 	url.CloseButton(false);
-	m_mgr.AddPane(m_url_input, url);
+	m_mgr.AddPane(m_url_input_panel, url);
 
 	// 左側・板一覧のツリーコントロールを設定する
 	wxAuiPaneInfo boardTree;
@@ -555,6 +570,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	wxAuiPaneInfo boardListThreadListInfo;
 	boardListThreadListInfo.Caption(wxT("スレッド一覧"));
 	boardListThreadListInfo.Right();
+	boardListThreadListInfo.Center();
 	boardListThreadListInfo.CloseButton(false);
 	boardListThreadListInfo.BestSize(400, 400);
 	m_mgr.AddPane(boardListThreadList, boardListThreadListInfo);
@@ -563,6 +579,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	wxAuiPaneInfo threadTabThreadContentInfo;
 	threadTabThreadContentInfo.Caption(wxT("開いているスレ"));
 	threadTabThreadContentInfo.Right();
+	threadTabThreadContentInfo.Center();
 	threadTabThreadContentInfo.CloseButton(false);
 	threadTabThreadContentInfo.BestSize(400, 400);
 	m_mgr.AddPane(threadTabThreadContent, threadTabThreadContentInfo);
@@ -580,6 +597,8 @@ void JaneClone::OnQuit(wxCommandEvent&) {
 
 	// ツリーコントロールをデリートしてやらないとセグる
 	delete m_tree_ctrl;
+	// Auiマネージャーを削除する
+	m_mgr.UnInit();
 	Close(true);
 }
 
