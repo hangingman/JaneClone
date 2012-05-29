@@ -21,7 +21,7 @@ CXX_RELEASE_FLAGS	=	-s -O0
 # オプション
 CPPFLAGS = -Wall -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
 LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 -lwx_mswu_richtext-2.9 `wx-config --libs` `xml2-config --libs` -lws2_32 -lz -lmk4
-VPATH    = include src gimite rc
+VPATH    = include src rc
 
 # デバッグ
 .PHONY	: Debug
