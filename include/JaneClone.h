@@ -72,17 +72,6 @@
 // 名前空間
 using namespace std;
 
-// テキストの終端文字が何で終わるのかを定義
-#if defined(__WXMSW__)
-	#define TextEndLineType wxTextFileType_Dos
-#endif
-#if defined(__WXGTK__)
-	#define TextEndLineType	wxTextFileType_Unix
-#endif
-#if defined(__WXMAC__)
-	#define TextEndLineType wxTextFileType_Mac
-#endif
-
 /*
  * 定数値の宣言
  */

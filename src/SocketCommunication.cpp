@@ -61,64 +61,68 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 		const wxString headerPath) {
 	// 実行コード
 	int rc = 0;
-	// gimiteによる通信開始
-	gimite::startup_socket();
-	{
-		// menu.2ch.netのポート80(HTTP)に接続。
-		gimite::socket_stream sst("menu.2ch.net", 80);
-		//エラーチェック。
-		if (!sst) {
-			std::cerr << "Failed to connect." << std::endl;
+
+	wxHTTP http;
+	http.SetHeader(_T("Accept-Encoding"), _T("gzip"));
+	http.SetHeader(_T("Host"), _T("menu.2ch.net"));
+	http.SetHeader(_T("Accept"), _T(""));
+	http.SetHeader(_T("Referer"), _T("http://menu.2ch.net/"));
+	http.SetHeader(_T("Accept-Language"), _T("ja"));
+	http.SetHeader(_T("User-Agent"), _T("Mozilla/5.0"));
+	http.SetTimeout(5);
+
+	wxString server = "menu.2ch.net";
+	wxString path = "/bbsmenu.html";
+	wxString msg = "";
+
+	// 保存先を決める
+	wxFileOutputStream output(outputPath);
+	wxDataOutputStream store(output);
+
+	if (http.Connect(server, 80)) {
+		wxInputStream *stream;
+		stream = http.GetInputStream(path);
+
+		if (stream == NULL) {
+			return -1;
 		} else {
-			//文字列を送信。
-			sst << "GET /bbsmenu.html HTTP/1.1 \r\n";
-			sst << "Accept-Encoding: gzip \r\n";
-			sst << "Host: menu.2ch.net \r\n";
-			sst << "Accept: */* \r\n";
-			sst << "Referer: http://menu.2ch.net/ \r\n";
-			sst << "Accept-Language: ja \r\n";
-			sst << "User-Agent: Monazilla/1.00 (monaweb/1.00) \r\n";
-			sst << "Connection: close \r\n";
-			sst << "\r\n";
+			unsigned char buffer[1024];
+			int byteRead;
+			int totalRead;
+			totalRead = 0;
 
-			// 受信用文字列
-			std::string s;
-			// ヘッダを取り除くためのフラグ
-			bool flag = false;
-			// gzipのヘッダ作成
-			char HEX[] = { 0x1f, 0x8b, 0x08, 0x00 };
+			// ヘッダを読み出す
+			cout << http.GetResponse() << endl;
+			cout << http.GetHeader(wxT("Date")) << endl;
+			cout << http.GetHeader(wxT("Server")) << endl;
+			cout << http.GetHeader(wxT("Last-Modified")) << endl;
+			cout << http.GetHeader(wxT("ETag")) << endl;
+			cout << http.GetHeader(wxT("Accept-Ranges")) << endl;
+			cout << http.GetHeader(wxT("Content-Length")) << endl;
+			cout << http.GetHeader(wxT("Connection")) << endl;
+			cout << http.GetContentType() << endl;
 
-			// ファイルに書き出す(バイナリ部分)
-			wxCharBuffer binaryFile = outputPath.ToUTF8();
-			std::ofstream ofs(binaryFile.data(),
-					std::ios::binary | std::ios::trunc);
-			// ファイルに書き出す(ヘッダ部分)
-			wxCharBuffer headerFile = headerPath.ToUTF8();
-			std::ofstream ofsh(headerFile.data(), std::ios::trunc);
-
-			// 1行ずつ受信してバイナリ形式で書きこむ
-			while (std::getline(sst, s)) {
-				if (flag) {
-					// 真の場合
-					ofs << s << std::endl;
-				} else {
-					// 偽の場合
-					unsigned int loc = s.find(*HEX, 0);
-					if (loc != std::string::npos) {
-						ofs << s << std::endl;
-						flag = true;
-					} else {
-						// ヘッダーを書きだす（新規）
-						ofsh << s;
-					}
+			// ストリームを受け取るループ部分
+			while (!stream->Eof()) {
+				stream->Read(buffer, sizeof(buffer));
+				store.Write8(buffer, sizeof(buffer));
+				byteRead = stream->LastRead();
+				if (byteRead <= 0) {
+					break;
 				}
+				totalRead += byteRead;
 			}
+			wxString stringInt = wxString::Format(wxT("%i"), totalRead);
+			stringInt += wxT("バイト読み込みました。");
+			msg = stringInt;
 		}
-		// gimiteによる通信終了
-		gimite::cleanup_socket();
-
-		return rc;
+	} else {
+		msg = wxT("サーバーに接続できませんでした");
 	}
+
+	cout << msg << endl;
+
+	return rc;
 }
 /**
  * 前回との差分を取得しに行く
@@ -236,7 +240,7 @@ wxString SocketCommunication::CheckLastModifiedTime(const wxString headerPath) {
 
 	// ログを読み込む
 	wxTextFile file(headerPath);
-	//file.Open(wxConvAuto(wxFONTENCODING_UTF8)); <-- fix me ! wx2.9からの新機能なので他の実装方法を考える
+	file.Open(wxConvUTF8);
 	wxString line;
 
 	if (file.IsOpened()) {
@@ -269,17 +273,17 @@ wxString SocketCommunication::DownloadThreadList(const wxString & boardName,
 	int rc = 0;
 	// 出力するファイルの名前
 	wxString outputFileName = boardNameAscii;
-	outputFileName+=wxT(".dat");
+	outputFileName += wxT(".dat");
 	// 出力先のファイルパスを設定する
 	wxString outputFilePath = wxT("./dat/");
-	outputFilePath+=boardNameAscii;
-	outputFilePath+=wxT("/");
+	outputFilePath += boardNameAscii;
+	outputFilePath += wxT("/");
 
 	// 保存用フォルダ存在するか確認。無ければフォルダを作成
 	if (!wxFile::Exists(outputFilePath)) {
 		::wxMkdir(outputFilePath);
 	}
-	outputFilePath+=outputFileName;
+	outputFilePath += outputFileName;
 	// gzip用のパスを設定する
 	wxString gzipPath = outputFilePath;
 	gzipPath.Replace(wxT(".dat"), wxT(".gzip"));
@@ -289,10 +293,12 @@ wxString SocketCommunication::DownloadThreadList(const wxString & boardName,
 
 	// 解凍された板一覧情報が存在しないor前回の通信ログが残っていないならば通常通りソケット通信を行う
 	if ((!wxFileExists(outputFilePath)) || (!wxFileExists(headerPath))) {
-		rc = DownloadThreadListNew((const wxString)gzipPath, (const wxString)headerPath);
+		rc = DownloadThreadListNew((const wxString) gzipPath,
+				(const wxString) headerPath);
 		// そうでなければ前回の通信の差分を取得しに行く
 	} else {
-		rc = DownloadThreadListNew((const wxString)gzipPath, (const wxString)headerPath);
+		rc = DownloadThreadListNew((const wxString) gzipPath,
+				(const wxString) headerPath);
 	}
 
 	// gzip拡張子のファイルがあれば、ファイルの解凍を行う
@@ -310,7 +316,8 @@ wxString SocketCommunication::DownloadThreadList(const wxString & boardName,
  * @param 板名,URL,サーバー名
  * @return 実行コード
  */
-int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath, const wxString& headerPath) {
+int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
+		const wxString& headerPath) {
 	int rc = 0;
 
 	return rc;
@@ -321,7 +328,8 @@ int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath, const w
  * @param 板名,URL,サーバー名
  * @return 実行コード
  */
-int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath, const wxString& headerPath) {
+int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath,
+		const wxString& headerPath) {
 	int rc = 0;
 
 	return rc;
@@ -335,3 +343,40 @@ void SocketCommunication::RemoveTmpFile(const wxString removeFile) {
 		wxRemoveFile(removeFile);
 	}
 }
+
+/**
+ * HTTPヘッダを書きだす
+ */
+void SocketCommunication::WriteHeaderFile(const wxHTTP & http,
+		const wxString & headerPath) {
+
+	// ヘッダファイルの書き出し先を作る
+	wxTextFile headerFile(headerPath);
+
+	// 既にファイルが存在するならば中身を消す
+	if (headerFile.Exists()) {
+		headerFile.Open(wxConvUTF8);
+		headerFile.Clear();
+	// 存在しないなら作成する
+	} else {
+		headerFile.Create();
+	}
+
+	// ヘッダの内容を書きだしていく
+	wxString status = wxT("HTTP1.1/ ");
+	status += wxString::Format(_T("%d"), http.GetResponse());
+	headerFile.AddLine(status, TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Date")),TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Server")),TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Last-Modified")),TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("ETag")),TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Accept-Ranges")),TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Content-Length")),TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Connection")),TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetContentType(),TEXT_ENDLINE_TYPE);
+
+	// 書きだした内容を保存する
+	headerFile.Write(wxTextFileType_None, wxConvUTF8);
+	headerFIle.Close();
+}
+

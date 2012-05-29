@@ -26,11 +26,22 @@
 #include <wx/wx.h>
 #include <wx/filefn.h>
 #include <wx/textfile.h>
-#include <iostream>
-#include <fstream>
-#include "gimite/socket.h"
+#include <wx/protocol/http.h>
+#include <wx/wfstream.h>
+#include <wx/datstrm.h>
 
 class SocketCommunication {
+
+// テキストの終端文字が何で終わるのかを定義
+#ifdef __WXMSW__
+	#define TEXT_ENDLINE_TYPE wxTextFileType_Dos
+#endif
+#ifdef __WXGTK__
+	#define TEXT_ENDLINE_TYPE wxTextFileType_Unix
+#endif
+#ifdef __WXMAC__)
+	#define TEXT_ENDLINE_TYPE wxTextFileType_Mac
+#endif
 
 public:
 	/**
@@ -65,17 +76,23 @@ private:
 	 * @param 板名,URL,サーバー名
 	 * @return 実行コード
 	 */
-	int DownloadThreadListNew(const wxString& gzipPath, const wxString& headerPath);
+	int DownloadThreadListNew(const wxString& gzipPath,
+			const wxString& headerPath);
 	/**
 	 * 前回との差分のスレッド一覧をダウンロードしてくるメソッド
 	 * @param 板名,URL,サーバー名
 	 * @return 実行コード
 	 */
-	int DownloadThreadListMod(const wxString& gzipPath, const wxString& headerPath);
+	int DownloadThreadListMod(const wxString& gzipPath,
+			const wxString& headerPath);
 	/**
 	 * 一時ファイルを消す
 	 */
 	void RemoveTmpFile(const wxString removeFile);
+	/**
+	 * HTTPヘッダを書きだす
+	 */
+	void WriteHeaderFile(const wxHTTP& http, const wxString& headerPath);
 };
 
 #endif /* SOCKETCOMMUNICATION_H_ */
