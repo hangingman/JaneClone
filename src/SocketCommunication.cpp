@@ -84,6 +84,7 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 		stream = http.GetInputStream(path);
 
 		if (stream == NULL) {
+			output.Close();
 			return -1;
 		} else {
 			unsigned char buffer[1024];
@@ -91,16 +92,8 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 			int totalRead;
 			totalRead = 0;
 
-			// ヘッダを読み出す
-			cout << http.GetResponse() << endl;
-			cout << http.GetHeader(wxT("Date")) << endl;
-			cout << http.GetHeader(wxT("Server")) << endl;
-			cout << http.GetHeader(wxT("Last-Modified")) << endl;
-			cout << http.GetHeader(wxT("ETag")) << endl;
-			cout << http.GetHeader(wxT("Accept-Ranges")) << endl;
-			cout << http.GetHeader(wxT("Content-Length")) << endl;
-			cout << http.GetHeader(wxT("Connection")) << endl;
-			cout << http.GetContentType() << endl;
+			// ヘッダを書きだす
+			WriteHeaderFile(http, headerPath);
 
 			// ストリームを受け取るループ部分
 			while (!stream->Eof()) {
@@ -112,15 +105,13 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 				}
 				totalRead += byteRead;
 			}
-			wxString stringInt = wxString::Format(wxT("%i"), totalRead);
-			stringInt += wxT("バイト読み込みました。");
-			msg = stringInt;
+
+			output.Close();
 		}
 	} else {
-		msg = wxT("サーバーに接続できませんでした");
+		output.Close();
+		return -1;
 	}
-
-	cout << msg << endl;
 
 	return rc;
 }
@@ -139,94 +130,68 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
 	wxString tmpHeaderPath = headerPath;
 	tmpHeaderPath += wxT(".tmp");
 
-	// 304かどうか判断するためのフラグ
-	bool mod_flag = false;
-	// ヘッダを取り除くためのフラグ
-	bool flag = false;
-	// gzipのヘッダ作成
-	char HEX[] = { 0x1f, 0x8b, 0x08, 0x00 };
+	wxHTTP http;
+	http.SetHeader(_T("Accept-Encoding"), _T("gzip"));
+	http.SetHeader(_T("Host"), _T("menu.2ch.net"));
+	http.SetHeader(_T("If-Modified-Since"), lastModifiedTime);
+	http.SetHeader(_T("Accept"), _T(""));
+	http.SetHeader(_T("Referer"), _T("http://menu.2ch.net/"));
+	http.SetHeader(_T("Accept-Language"), _T("ja"));
+	http.SetHeader(_T("User-Agent"), _T("Mozilla/5.0"));
+	http.SetTimeout(5);
 
-	// gimiteによる通信開始
-	gimite::startup_socket();
-	{
-		// menu.2ch.netのポート80(HTTP)に接続。
-		gimite::socket_stream sst("menu.2ch.net", 80);
-		//エラーチェック。
-		if (!sst) {
-			std::cerr << "Failed to connect." << std::endl;
+	wxString server = "menu.2ch.net";
+	wxString path = "/bbsmenu.html";
+	wxString msg = "";
+
+	// 保存先を決める
+	wxFileOutputStream output(tmpOutputPath);
+	wxDataOutputStream store(output);
+
+	if (http.Connect(server, 80)) {
+		wxInputStream *stream;
+		stream = http.GetInputStream(path);
+
+		if (stream == NULL) {
+			output.Close();
+			return -1;
+		} else if (304 == http.GetResponse()) {
+			output.Close();
+			// レスポンスコードが304ならば変更なしなので正常終了
+			RemoveTmpFile(tmpOutputPath);
+			return 0;
 		} else {
-			//文字列を送信。
-			sst << "GET /bbsmenu.html HTTP/1.1 \r\n";
-			sst << "Accept-Encoding: gzip \r\n";
-			sst << "Host: menu.2ch.net \r\n";
-			sst << "If-Modified-Since:" << lastModifiedTime.mb_str() << "\r\n";
-			sst << "Accept: */* \r\n";
-			sst << "Referer: http://menu.2ch.net/ \r\n";
-			sst << "Accept-Language: ja \r\n";
-			sst << "User-Agent: Monazilla/1.00 (monaweb/1.00) \r\n";
-			sst << "Connection: close \r\n";
-			sst << "\r\n";
+			unsigned char buffer[1024];
+			int byteRead;
+			int totalRead;
+			totalRead = 0;
 
-			// 受信用文字列
-			std::string s;
+			// ヘッダを書きだす
+			WriteHeaderFile(http, tmpHeaderPath);
 
-			// ファイルに書き出す(バイナリ部分)
-			wxCharBuffer binaryFile = tmpOutputPath.ToUTF8();
-			std::ofstream ofs(binaryFile.data(),
-					std::ios::binary | std::ios::trunc);
-			// ファイルに書き出す(ヘッダ部分)
-			wxCharBuffer headerFile = tmpHeaderPath.ToUTF8();
-			std::ofstream ofsh(headerFile.data(), std::ios::trunc);
-
-			/** 1行目に「HTTP/1.1 304 Not Modified」が含まれない場合のみ更新を行う */
-			while (std::getline(sst, s)) {
-
-				/** 更新フラグ立たず・ヘッダ部分 */
-				if (!mod_flag && !flag) {
-					unsigned int loc = s.find("304 Not Modified");
-					// １行目の読み出しで304があればbreak
-					if (loc != std::string::npos) {
-						ofs.close();
-						ofsh.close();
-						// tmpファイルは消しておく
-						RemoveTmpFile(tmpOutputPath);
-						RemoveTmpFile(tmpHeaderPath);
-						break;
-						// そうでなければファイルストリームの準備をする
-					} else {
-						// 更新フラグを立てる
-						mod_flag = true;
-						// ヘッダーを書きだす（更新）
-						ofsh << s;
-					}
-
-					/** 更新フラグ立つ・ヘッダ部分 */
-				} else if (mod_flag && !flag) {
-					unsigned int loc = s.find(*HEX, 0);
-					if (loc != std::string::npos) {
-						ofs << s << std::endl;
-						flag = true;
-					} else {
-						// ヘッダーを書きだす（更新）
-						ofsh << s;
-					}
-					/** 更新フラグ立つ・ボディ部分 */
-				} else if (mod_flag && flag) {
-					ofs << s << std::endl;
+			// ストリームを受け取るループ部分
+			while (!stream->Eof()) {
+				stream->Read(buffer, sizeof(buffer));
+				store.Write8(buffer, sizeof(buffer));
+				byteRead = stream->LastRead();
+				if (byteRead <= 0) {
+					break;
 				}
+				totalRead += byteRead;
 			}
-		}
-		// gimiteによる通信終了
-		gimite::cleanup_socket();
 
-		// 更新が最後までうまく行った場合以前のファイルを削除する
-		if (mod_flag && flag) {
+			output.Close();
+
+			// 最後までうまく行った場合
 			RemoveTmpFile(outputPath);
 			RemoveTmpFile(headerPath);
 			// tmpファイルを本物のファイルとする
 			wxRenameFile(tmpOutputPath, outputPath);
 			wxRenameFile(tmpHeaderPath, headerPath);
 		}
+	} else {
+		output.Close();
+		return -1;
 	}
 
 	return rc;
@@ -357,7 +322,7 @@ void SocketCommunication::WriteHeaderFile(const wxHTTP & http,
 	if (headerFile.Exists()) {
 		headerFile.Open(wxConvUTF8);
 		headerFile.Clear();
-	// 存在しないなら作成する
+		// 存在しないなら作成する
 	} else {
 		headerFile.Create();
 	}
@@ -366,17 +331,18 @@ void SocketCommunication::WriteHeaderFile(const wxHTTP & http,
 	wxString status = wxT("HTTP1.1/ ");
 	status += wxString::Format(_T("%d"), http.GetResponse());
 	headerFile.AddLine(status, TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Date")),TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Server")),TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Last-Modified")),TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("ETag")),TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Accept-Ranges")),TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Content-Length")),TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Connection")),TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetContentType(),TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Date")), TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Server")), TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Last-Modified")), TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("ETag")), TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Accept-Ranges")), TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Content-Length")),
+			TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetHeader(wxT("Connection")), TEXT_ENDLINE_TYPE);
+	headerFile.AddLine(http.GetContentType(), TEXT_ENDLINE_TYPE);
 
 	// 書きだした内容を保存する
 	headerFile.Write(wxTextFileType_None, wxConvUTF8);
-	headerFIle.Close();
+	headerFile.Close();
 }
 
