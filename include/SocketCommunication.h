@@ -29,6 +29,7 @@
 #include <wx/protocol/http.h>
 #include <wx/wfstream.h>
 #include <wx/datstrm.h>
+#include <wx/regex.h>
 
 class SocketCommunication {
 
@@ -54,8 +55,8 @@ public:
 	 * @param 板名,URL,サーバー名
 	 * @return datファイル保存先
 	 */
-	wxString DownloadThreadList(const wxString& boardName,
-			const wxString& boardURL, const wxString& boardNameAscii);
+	wxString DownloadThreadList(const wxString boardName,
+			const wxString boardURL, const wxString boardNameAscii);
 private:
 	/**
 	 * 前回の通信ログが存在すれば、最後に取得した日時を変数に格納する
@@ -73,18 +74,28 @@ private:
 			const wxString headerPath);
 	/**
 	 * 新規にスレッド一覧をダウンロードしてくるメソッド
-	 * @param 板名,URL,サーバー名
+	 * @param gzipのダウンロード先パス
+	 * @param HTTPヘッダのダウンロード先パス
+	 * @param 板名（ascii）
 	 * @return 実行コード
 	 */
-	int DownloadThreadListNew(const wxString& gzipPath,
-			const wxString& headerPath);
+	int DownloadThreadListNew(const wxString gzipPath,
+			const wxString headerPath,
+			const wxString boardNameAscii,
+			const wxString hostName,
+			const wxString boardURL);
 	/**
 	 * 前回との差分のスレッド一覧をダウンロードしてくるメソッド
-	 * @param 板名,URL,サーバー名
+	 * @param gzipのダウンロード先パス
+	 * @param HTTPヘッダのダウンロード先パス
+	 * @param 板名（ascii）
 	 * @return 実行コード
 	 */
-	int DownloadThreadListMod(const wxString& gzipPath,
-			const wxString& headerPath);
+	int DownloadThreadListMod(const wxString gzipPath,
+			const wxString headerPath,
+			const wxString boardNameAscii,
+			const wxString hostName,
+			const wxString boardURL);
 	/**
 	 * 一時ファイルを消す
 	 */
@@ -92,7 +103,7 @@ private:
 	/**
 	 * HTTPヘッダを書きだす
 	 */
-	void WriteHeaderFile(wxHTTP& http, const wxString& headerPath);
+	void WriteHeaderFile(wxHTTP& http, const wxString headerPath);
 };
 
 #endif /* SOCKETCOMMUNICATION_H_ */

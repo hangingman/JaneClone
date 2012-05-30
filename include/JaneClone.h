@@ -61,6 +61,7 @@
 #include <wx/process.h>
 #include <wx/srchctrl.h>
 #include <wx/richtext/richtextctrl.h>
+#include <wx/strconv.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
