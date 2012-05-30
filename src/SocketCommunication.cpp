@@ -71,9 +71,9 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 	http.SetHeader(_T("User-Agent"), _T("Mozilla/5.0"));
 	http.SetTimeout(5);
 
-	wxString server = "menu.2ch.net";
-	wxString path = "/bbsmenu.html";
-	wxString msg = "";
+	wxString server = wxT("menu.2ch.net");
+	wxString path = wxT("/bbsmenu.html");
+	wxString msg = wxT("");
 
 	// 保存先を決める
 	wxFileOutputStream output(outputPath);
@@ -140,9 +140,9 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
 	http.SetHeader(_T("User-Agent"), _T("Mozilla/5.0"));
 	http.SetTimeout(5);
 
-	wxString server = "menu.2ch.net";
-	wxString path = "/bbsmenu.html";
-	wxString msg = "";
+	wxString server = wxT("menu.2ch.net");
+	wxString path = wxT("/bbsmenu.html");
+	wxString msg = wxT("");
 
 	// 保存先を決める
 	wxFileOutputStream output(tmpOutputPath);
@@ -210,8 +210,8 @@ wxString SocketCommunication::CheckLastModifiedTime(const wxString headerPath) {
 
 	if (file.IsOpened()) {
 		// ログの中身を1行ずつ走査
-		for (line = file.GetFirstLine(); !file.Eof();
-				line = file.GetNextLine()) {
+		for (line = file.GetFirstLine(); !file.Eof(); line =
+				file.GetNextLine()) {
 			if (line.Contains(wxT("Last-Modified:"))) {
 				lastGetTime = line.Mid(14);
 				break;
@@ -220,10 +220,9 @@ wxString SocketCommunication::CheckLastModifiedTime(const wxString headerPath) {
 		// ファイルのクローズを行う
 		file.Close();
 		return lastGetTime;
-
-	} else {
-		std::cout << "ファイルのオープンに失敗しました" << std::endl;
 	}
+
+	return lastGetTime = wxT("could't read lastgettime");
 }
 
 /**
@@ -234,8 +233,6 @@ wxString SocketCommunication::CheckLastModifiedTime(const wxString headerPath) {
 wxString SocketCommunication::DownloadThreadList(const wxString & boardName,
 		const wxString & boardURL, const wxString & boardNameAscii) {
 
-	// 実行コード
-	int rc = 0;
 	// 出力するファイルの名前
 	wxString outputFileName = boardNameAscii;
 	outputFileName += wxT(".dat");
@@ -258,11 +255,11 @@ wxString SocketCommunication::DownloadThreadList(const wxString & boardName,
 
 	// 解凍された板一覧情報が存在しないor前回の通信ログが残っていないならば通常通りソケット通信を行う
 	if ((!wxFileExists(outputFilePath)) || (!wxFileExists(headerPath))) {
-		rc = DownloadThreadListNew((const wxString) gzipPath,
+		DownloadThreadListNew((const wxString) gzipPath,
 				(const wxString) headerPath);
 		// そうでなければ前回の通信の差分を取得しに行く
 	} else {
-		rc = DownloadThreadListNew((const wxString) gzipPath,
+		DownloadThreadListNew((const wxString) gzipPath,
 				(const wxString) headerPath);
 	}
 
@@ -312,7 +309,7 @@ void SocketCommunication::RemoveTmpFile(const wxString removeFile) {
 /**
  * HTTPヘッダを書きだす
  */
-void SocketCommunication::WriteHeaderFile(const wxHTTP & http,
+void SocketCommunication::WriteHeaderFile(wxHTTP & http,
 		const wxString & headerPath) {
 
 	// ヘッダファイルの書き出し先を作る

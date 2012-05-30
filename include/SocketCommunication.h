@@ -39,7 +39,7 @@ class SocketCommunication {
 #ifdef __WXGTK__
 	#define TEXT_ENDLINE_TYPE wxTextFileType_Unix
 #endif
-#ifdef __WXMAC__)
+#ifdef __WXMAC__
 	#define TEXT_ENDLINE_TYPE wxTextFileType_Mac
 #endif
 
@@ -92,7 +92,7 @@ private:
 	/**
 	 * HTTPヘッダを書きだす
 	 */
-	void WriteHeaderFile(const wxHTTP& http, const wxString& headerPath);
+	void WriteHeaderFile(wxHTTP& http, const wxString& headerPath);
 };
 
 #endif /* SOCKETCOMMUNICATION_H_ */
