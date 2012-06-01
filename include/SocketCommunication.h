@@ -33,7 +33,9 @@
 
 class SocketCommunication {
 
-// テキストの終端文字が何で終わるのかを定義
+/**
+ * テキストの終端文字が何で終わるのかを定義
+ */
 #ifdef __WXMSW__
 	#define TEXT_ENDLINE_TYPE wxTextFileType_Dos
 #endif
@@ -52,8 +54,10 @@ public:
 	int DownloadBoardList(const wxString outputPath, const wxString headerPath);
 	/**
 	 * スレッド一覧をダウンロードしてくるメソッド
-	 * @param 板名,URL,サーバー名
-	 * @return datファイル保存先
+	 * @param 板名
+	 * @param URL
+	 * @param サーバー名
+	 * @return ダウンロードしたdatファイル保存先
 	 */
 	wxString DownloadThreadList(const wxString boardName,
 			const wxString boardURL, const wxString boardNameAscii);

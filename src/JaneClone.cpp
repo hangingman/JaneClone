@@ -488,11 +488,9 @@ void JaneClone::SetProperties() {
 	wxDir dir(wxGetCwd());
 	// datフォルダ、propフォルダが存在するか確認。無ければ確認＆フォルダを作成
 	if (!dir.Exists(wxT("./dat/"))) {
-		wxMessageBox(wxT("datデータ保存用ディレクトリが見当たらないので作成します。\nフォルダ構成を確認してください。"));
 		::wxMkdir(wxT("./dat/"));
 	}
 	if (!dir.Exists(wxT("./prop/"))) {
-		wxMessageBox(wxT("設定ファイル保存用ディレクトリが見当たらないので作成します。\nフォルダ構成を確認してください。"));
 		::wxMkdir(wxT("./prop/"));
 	}
 	// metakitの初期化を行う
@@ -650,14 +648,37 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 			boardURL, boardNameAscii);
 	delete socketCommunication;
 
-	// NoteWindow上にはwxListCtrlが乗る予定
+	// フラグを用意する
+	bool itIsNewBoardName = true;
+	size_t page = 0;
+	// ユーザーが開いているタブの板名を調べる
+	for (int i=0;i < boardNoteBook->GetPageCount();i++) {
+		if ( boardName.Cmp(boardNoteBook->GetPageText(i)) == 0 ) {
+			itIsNewBoardName = false;
+			page = i;
+			break;
+		}
+	}
+
+	// もし新規のダウンロードだった場合
+	if (itIsNewBoardName) {
+		SetThreadListItemNew((const wxString)boardName, (const wxString)outputPath);
+	// 更新処理の場合
+	} else {
+		SetThreadListItemUpdate((const wxString)boardName, (const wxString)outputPath);
+	}
+}
+
+void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString outputPath) {
+
+	// NoteWindow上にはwxListCtrlが乗る
 	wxPanel *noteWindow = new wxPanel(boardNoteBook, wxID_ANY);
 	wxBoxSizer* sizer_noteList = new wxBoxSizer(wxVERTICAL);
 	wxBoxSizer* sizer_pane = new wxBoxSizer(wxVERTICAL);
 	wxListCtrl* threadList = new wxListCtrl(noteWindow, wxID_ANY,
 			wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
 
-	/** スレッド一覧画面用の材料を生成　*/
+	// スレッド一覧画面用の材料を生成(新規)
 	sizer_noteList->Add(threadList, 1, wxEXPAND, 0);
 	noteWindow->SetSizer(sizer_noteList);
 	boardNoteBook->AddPage(noteWindow, boardName);
@@ -733,10 +754,14 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 	threadList->Show();
 }
 
+void JaneClone::SetThreadListItemUpdate(const wxString boardName, const wxString outputPath) {
+
+}
+
 /**
  * スレッド一覧をファイルからロードしてハッシュマップにもたせる処理
  */
-void JaneClone::SetThreadList(wxString& inputThreadListDat) {
+void JaneClone::SetThreadList(const wxString inputThreadListDat) {
 
 	// テキストファイルの読み込み
 	wxTextFile datfile(inputThreadListDat);

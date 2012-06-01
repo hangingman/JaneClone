@@ -158,6 +158,9 @@ private:
   wxAuiNotebook* boardNoteBook;
   // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
   void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii);
+  // ノートブックに反映する際のコールバック
+  void SetThreadListItemNew(const wxString boardName, const wxString outputPath);
+  void SetThreadListItemUpdate(const wxString boardName, const wxString outputPath);
 
   /**
    * 右下のオブジェクトとメソッド
@@ -181,7 +184,7 @@ private:
   ThreadListHash threadListHash;
 
   // スレッド一覧のハッシュマップを作成するメソッド
-  void SetThreadList(wxString& inputThreadListdat);
+  void SetThreadList(const wxString inputThreadListdat);
 
   DECLARE_EVENT_TABLE()
 }; // wxGlade: end class

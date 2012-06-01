@@ -46,10 +46,10 @@ int SocketCommunication::DownloadBoardList(const wxString outputPath,
 	if (wxFile::Exists(gzipPath)) {
 		JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
 		JaneCloneUtil::ConvertSJISToUTF8(tmpPath, (wxString&) outputPath);
+		// 更新が終わったらgzipファイルとSJISファイルを消しておく
+		RemoveTmpFile(gzipPath);
+		RemoveTmpFile(tmpPath);
 	}
-	// 更新が終わったらgzipファイルとSJISファイルを消しておく
-	RemoveTmpFile(gzipPath);
-	RemoveTmpFile(tmpPath);
 
 	return rc;
 }
@@ -393,7 +393,78 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 	 * User-Agent: Monazilla/1.00 (ブラウザ名/バージョン)
 	 * Connection: close
 	 */
+
 	int rc = 0;
+
+	// 最終更新日時をヘッダ情報から取得する
+	wxString lastModifiedTime = CheckLastModifiedTime(headerPath);
+	// バイナリとヘッダは前回取得した名前と同じでは困るのでtmpファイルとして作成しておく
+	wxString tmpOutputPath(gzipPath);
+	tmpOutputPath.Replace(wxT(".gzip"), wxT(".tmp"));
+	wxString tmpHeaderPath = headerPath;
+	tmpHeaderPath += wxT(".tmp");
+
+	// 取得先のパスを引数から作成する
+	wxString getPath = wxT("GET /");
+	getPath += boardNameAscii;
+	getPath += wxT("/subject.txt");
+
+	wxHTTP http;
+	http.SetHeader(getPath, _T("HTTP/1.1"));
+	http.SetHeader(_T("Accept-Encoding"), _T("gzip"));
+	http.SetHeader(_T("Host"), hostName);
+	http.SetHeader(_T("If-Modified-Since"), lastModifiedTime);
+	http.SetHeader(_T("Accept"), _T("*/*"));
+	http.SetHeader(_T("Referer"), boardURL);
+	http.SetHeader(_T("Accept-Language"), _T("ja"));
+	http.SetHeader(_T("User-Agent"), _T("Monazilla/1.00"));
+	http.SetHeader(_T("Connection"), _T("close"));
+	http.SetTimeout(5);
+
+	wxString server = hostName;
+	wxString path = wxT("/");
+	path += boardNameAscii;
+	path += wxT("/subject.txt");
+	wxString msg = "";
+
+	// 保存先を決める
+	wxFileOutputStream output(gzipPath);
+	wxDataOutputStream store(output);
+
+	if (http.Connect(server, 80)) {
+		wxInputStream *stream;
+		stream = http.GetInputStream(path);
+
+		if (stream == NULL) {
+			return -1;
+		} else if (304 == http.GetResponse()) {
+			output.Close();
+			// レスポンスコードが304ならば変更なしなので正常終了
+			RemoveTmpFile(gzipPath);
+			return 0;
+		} else {
+			unsigned char buffer[1024];
+			int byteRead;
+
+			// ヘッダを書きだす
+			WriteHeaderFile(http, (const wxString) tmpHeaderPath);
+
+			// ストリームを受け取るループ部分
+			while (!stream->Eof()) {
+				stream->Read(buffer, sizeof(buffer));
+				store.Write8(buffer, sizeof(buffer));
+				byteRead = stream->LastRead();
+				if (byteRead <= 0) {
+					break;
+				}
+			}
+		}
+	} else {
+		return -1;
+	}
+
+	// ヘッダファイルを移動させる
+	wxRenameFile(tmpHeaderPath, headerPath);
 
 	return rc;
 }
