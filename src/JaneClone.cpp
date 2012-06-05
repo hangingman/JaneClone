@@ -652,8 +652,8 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 	bool itIsNewBoardName = true;
 	size_t page = 0;
 	// ユーザーが開いているタブの板名を調べる
-	for (int i=0;i < boardNoteBook->GetPageCount();i++) {
-		if ( boardName.Cmp(boardNoteBook->GetPageText(i)) == 0 ) {
+	for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) {
+		if (boardName.Cmp(boardNoteBook->GetPageText(i)) == 0) {
 			itIsNewBoardName = false;
 			page = i;
 			break;
@@ -662,62 +662,68 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 
 	// もし新規のダウンロードだった場合
 	if (itIsNewBoardName) {
-		SetThreadListItemNew((const wxString)boardName, (const wxString)outputPath);
-	// 更新処理の場合
+		SetThreadListItemNew((const wxString) boardName,
+				(const wxString) outputPath);
+		// 更新処理の場合
 	} else {
-		SetThreadListItemUpdate((const wxString)boardName, (const wxString)outputPath);
+		SetThreadListItemUpdate((const wxString) boardName,
+				(const wxString) outputPath);
 	}
 }
+/**
+ * ノートブックに、新規にダウンロードされたスレッド一覧情報を反映するメソッド
+ */
+void JaneClone::SetThreadListItemNew(const wxString boardName,
+		const wxString outputPath) {
 
-void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString outputPath) {
-
-	// NoteWindow上にはwxListCtrlが乗る
-	wxPanel *noteWindow = new wxPanel(boardNoteBook, wxID_ANY);
-	wxBoxSizer* sizer_noteList = new wxBoxSizer(wxVERTICAL);
-	wxBoxSizer* sizer_pane = new wxBoxSizer(wxVERTICAL);
-	wxListCtrl* threadList = new wxListCtrl(noteWindow, wxID_ANY,
-			wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+	// Hashに格納する板名タブのオブジェクトのインスタンスを準備する
+	BoardTabAndThread* boardTabAndTh = new BoardTabAndThread();
+	boardTabAndTh->noteWindow = new wxPanel(boardNoteBook, wxID_ANY);
+	boardTabAndTh->sizer_noteList = new wxBoxSizer(wxVERTICAL);
+	boardTabAndTh->sizer_pane = new wxBoxSizer(wxVERTICAL);
+	boardTabAndTh->threadList = new wxListCtrl(boardTabAndTh->noteWindow,
+			wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
 
 	// スレッド一覧画面用の材料を生成(新規)
-	sizer_noteList->Add(threadList, 1, wxEXPAND, 0);
-	noteWindow->SetSizer(sizer_noteList);
-	boardNoteBook->AddPage(noteWindow, boardName);
-	sizer_pane->Add(boardNoteBook, 1, wxEXPAND, 0);
-	boardListThreadList->SetSizer(sizer_pane);
+	boardTabAndTh->sizer_noteList->Add(boardTabAndTh->threadList, 1, wxEXPAND, 0);
+	boardTabAndTh->noteWindow->SetSizer(boardTabAndTh->sizer_noteList);
+	boardNoteBook->AddPage(boardTabAndTh->noteWindow, boardName);
+	boardTabAndTh->sizer_pane->Add(boardNoteBook, 1, wxEXPAND, 0);
+	boardListThreadList->SetSizer(boardTabAndTh->sizer_pane);
 
 	wxListItem itemCol;
 	itemCol.SetText(wxT("番号"));
-	threadList->InsertColumn(0, itemCol);
+	boardTabAndTh->threadList->InsertColumn(0, itemCol);
 	itemCol.SetText(wxT("タイトル"));
-	threadList->InsertColumn(1, itemCol);
+	boardTabAndTh->threadList->InsertColumn(1, itemCol);
 	itemCol.SetText(wxT("レス"));
-	threadList->InsertColumn(2, itemCol);
+	boardTabAndTh->threadList->InsertColumn(2, itemCol);
 	itemCol.SetText(wxT("取得"));
-	threadList->InsertColumn(3, itemCol);
+	boardTabAndTh->threadList->InsertColumn(3, itemCol);
 	itemCol.SetText(wxT("新着"));
-	threadList->InsertColumn(4, itemCol);
+	boardTabAndTh->threadList->InsertColumn(4, itemCol);
 	itemCol.SetText(wxT("増レス"));
-	threadList->InsertColumn(5, itemCol);
+	boardTabAndTh->threadList->InsertColumn(5, itemCol);
 	itemCol.SetText(wxT("勢い"));
-	threadList->InsertColumn(6, itemCol);
+	boardTabAndTh->threadList->InsertColumn(6, itemCol);
 	itemCol.SetText(wxT("最終取得"));
-	threadList->InsertColumn(7, itemCol);
+	boardTabAndTh->threadList->InsertColumn(7, itemCol);
 	itemCol.SetText(wxT("since"));
-	threadList->InsertColumn(8, itemCol);
+	boardTabAndTh->threadList->InsertColumn(8, itemCol);
 	itemCol.SetText(wxT("板"));
-	threadList->InsertColumn(9, itemCol);
+	boardTabAndTh->threadList->InsertColumn(9, itemCol);
 
 	// データ挿入中に画面に描画すると遅くなるそうなので隠す
-	threadList->Hide();
+	boardTabAndTh->threadList->Hide();
 
-	// スレッド一覧画面を構成するデータを拾ってくる
+	// スレッド一覧をファイルからロードしてハッシュマップにもたせる
 	JaneClone::SetThreadList(outputPath);
 
 	// スレッド一覧情報をリストから取ってくる
 	ThreadListHash::iterator it;
 	int i = 0;
-
-	for (it = this->threadListHash.begin(); it != this->threadListHash.end();
+	// イテレーターで無駄なく処理する
+	for (it = this->m_threadListHash.begin(); it != this->m_threadListHash.end();
 			++it) {
 		// スレッド一覧クラスの１レコード分を反映する
 		ThreadList* hash = it->second;
@@ -725,41 +731,54 @@ void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString ou
 
 		// 番号
 		buf.Printf(wxT("%d"), i);
-		long tmp = threadList->InsertItem(i, buf, 0);
+		long tmp = boardTabAndTh->threadList->InsertItem(i, buf, 0);
 		// スレタイ
-		threadList->SetItem(tmp, 1, hash->title);
+		boardTabAndTh->threadList->SetItem(tmp, 1, hash->title);
 		// 最新のレス(スタブ)
-		threadList->SetItem(tmp, 2,
+		boardTabAndTh->threadList->SetItem(tmp, 2,
 				wxString::Format(wxT("%i"), hash->response));
 		// 取得
-		threadList->SetItem(tmp, 3,
+		boardTabAndTh->threadList->SetItem(tmp, 3,
 				wxString::Format(wxT("%i"), hash->response));
 		// 新着
-		threadList->SetItem(tmp, 4, wxT("取得レス数"));
+		boardTabAndTh->threadList->SetItem(tmp, 4, wxT("取得レス数"));
 		// 増レス
-		threadList->SetItem(tmp, 5, wxT("増レス数"));
+		boardTabAndTh->threadList->SetItem(tmp, 5, wxT("増レス数"));
 		// 勢い
-		threadList->SetItem(tmp, 6, wxT("新着レス数をここに入れる"));
+		boardTabAndTh->threadList->SetItem(tmp, 6, wxT("新着レス数をここに入れる"));
 		// 最終取得
-		threadList->SetItem(tmp, 7, wxT("前回取得時と比べた増レス数をここに入れる"));
+		boardTabAndTh->threadList->SetItem(tmp, 7, wxT("前回取得時と比べた増レス数をここに入れる"));
 		// since
-		threadList->SetItem(tmp, 8, wxT("計算した勢い値をここに入れる"));
+		boardTabAndTh->threadList->SetItem(tmp, 8, wxT("計算した勢い値をここに入れる"));
 		// 板名
-		threadList->SetItem(tmp, 9, wxT("最終取得日を入れる"));
+		boardTabAndTh->threadList->SetItem(tmp, 9, boardName);
 
 		// ループ変数のインクリメント
 		i++;
 	}
-	// スレッドリストを表示させる
-	threadList->Show();
-}
 
-void JaneClone::SetThreadListItemUpdate(const wxString boardName, const wxString outputPath) {
+	// リストのカラムの幅を最大化する
+	for (unsigned int i=0;i < 9;i++) {
+		boardTabAndTh->threadList->SetColumnWidth(i, wxLIST_AUTOSIZE);
+	}
+
+	//　boardName(key),boardTabAndTh(value)としてHashに格納する
+	boardTabAndThreadHash[(const wxString) boardName] =
+			(const BoardTabAndThread&) boardTabAndTh;
+	// スレッドリストを表示させる
+	boardTabAndTh->threadList->Show();
+}
+/**
+ * ノートブックに、スレッド一覧情報の更新を反映するメソッド
+ */
+void JaneClone::SetThreadListItemUpdate(const wxString boardName,
+		const wxString outputPath) {
 
 }
 
 /**
  * スレッド一覧をファイルからロードしてハッシュマップにもたせる処理
+ * (※m_threadListHashに値が充填される)
  */
 void JaneClone::SetThreadList(const wxString inputThreadListDat) {
 
@@ -792,7 +811,7 @@ void JaneClone::SetThreadList(const wxString inputThreadListDat) {
 		// 番号
 		threadList->number = loopNumber;
 		// Hashにスレッド情報を入れる
-		this->threadListHash[loopNumber] = threadList;
+		this->m_threadListHash[loopNumber] = threadList;
 		// ループ変数をインクリメント
 		loopNumber++;
 	}

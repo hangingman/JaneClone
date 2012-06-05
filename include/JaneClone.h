@@ -162,6 +162,15 @@ private:
   void SetThreadListItemNew(const wxString boardName, const wxString outputPath);
   void SetThreadListItemUpdate(const wxString boardName, const wxString outputPath);
 
+  // BoardTabAndThreadのHashMap（板名をkeyとしてスレッドタブ全般のオブジェクトを管理する）
+  WX_DECLARE_HASH_MAP( wxString,				// type of the keys
+		  	  	  	   BoardTabAndThread,		// type of the values
+		  	  	  	   wxStringHash ,			// hasher
+		  	  	  	   wxStringEqual,			// key equality predicate
+		  	  	  	   BoardTabAndThreadHash);  // name of the class
+  // JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
+  BoardTabAndThreadHash boardTabAndThreadHash;
+
   /**
    * 右下のオブジェクトとメソッド
    */
@@ -181,7 +190,7 @@ private:
   // ThreadListクラスについてはDataType.h参照
   WX_DECLARE_HASH_MAP( int, ThreadList*, wxIntegerHash, wxIntegerEqual, ThreadListHash );
   // ThreadListHashの本体
-  ThreadListHash threadListHash;
+  ThreadListHash m_threadListHash;
 
   // スレッド一覧のハッシュマップを作成するメソッド
   void SetThreadList(const wxString inputThreadListdat);
