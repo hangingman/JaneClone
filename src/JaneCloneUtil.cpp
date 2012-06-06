@@ -77,3 +77,24 @@ void JaneCloneUtil::ConvertSJISToUTF8( wxString & inputPath,
 	utf8_file.Close();
 }
 
+/**
+ * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
+ */
+wxString JaneCloneUtil::GetHTTPCommTimeFromHeader(wxString& headerPath) {
+	// HTTPヘッダファイルを読み込む
+	wxTextFile httpHeaderFile;
+	httpHeaderFile.Open(headerPath, wxConvUTF8);
+	wxString str;
+
+	// ファイルがオープンされているならば
+	if (httpHeaderFile.IsOpened()) {
+		for (str = httpHeaderFile.GetFirstLine(); !httpHeaderFile.Eof(); str = httpHeaderFile.GetNextLine()) {
+			// 上から読み込んで一番最初に当たる日付が取得日時
+			if (str.Contains(wxT("Date:")) && str.Contains(wxT("GMT"))) {
+				return str;
+			}
+		}
+	}
+}
+
+

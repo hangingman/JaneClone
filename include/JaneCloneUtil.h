@@ -43,6 +43,10 @@ public:
 	 */
 	static void ConvertSJISToUTF8(wxString& inputPath,
 			wxString& outputPath);
+	/**
+	 * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
+	 */
+	static wxString GetHTTPCommTimeFromHeader(wxString& headerPath);
 private:
 	// ディスクからの読取サイズ
 	#define S_SIZE (2048)

@@ -30,6 +30,7 @@
 #include <wx/wfstream.h>
 #include <wx/datstrm.h>
 #include <wx/regex.h>
+#include <wx/dir.h>
 
 class SocketCommunication {
 

@@ -239,7 +239,7 @@ wxString SocketCommunication::DownloadThreadList(const wxString boardName,
 	outputFilePath += wxT("/");
 
 	// 保存用フォルダ存在するか確認。無ければフォルダを作成
-	if (!wxFile::Exists(outputFilePath)) {
+	if (!wxDir::Exists(outputFilePath)) {
 		::wxMkdir(outputFilePath);
 	}
 	outputFilePath += outputFileName;
@@ -500,15 +500,41 @@ void SocketCommunication::WriteHeaderFile(wxHTTP& http,
 	wxString status = wxT("HTTP1.1/ ");
 	status += wxString::Format(_T("%d"), http.GetResponse());
 	headerFile.AddLine(status, TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Date")), TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Server")), TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Last-Modified")), TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("ETag")), TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Accept-Ranges")), TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Content-Length")),
-			TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetHeader(wxT("Connection")), TEXT_ENDLINE_TYPE);
-	headerFile.AddLine(http.GetContentType(), TEXT_ENDLINE_TYPE);
+
+	// ヘッダの要素と中身を書き出す
+
+	// Date:
+	wxString date = wxT("Date: ");
+	date+=http.GetHeader(wxT("Date"));
+	headerFile.AddLine(date, TEXT_ENDLINE_TYPE);
+	// Server:
+	wxString server = wxT("Server: ");
+	server+=http.GetHeader(wxT("Server"));
+	headerFile.AddLine(server, TEXT_ENDLINE_TYPE);
+	// Last-Modified:
+	wxString lastModified = wxT("Last-Modified: ");
+	lastModified+=http.GetHeader(wxT("Last-Modified"));
+	headerFile.AddLine(lastModified, TEXT_ENDLINE_TYPE);
+	// ETag:
+	wxString etag = wxT("ETag: ");
+	etag+=http.GetHeader(wxT("ETag"));
+	headerFile.AddLine(etag, TEXT_ENDLINE_TYPE);
+	// Accept-Ranges:
+	wxString acceptRanges = wxT("Accept-Ranges: ");
+	acceptRanges+=http.GetHeader(wxT("Accept-Ranges"));
+	headerFile.AddLine(acceptRanges, TEXT_ENDLINE_TYPE);
+	// Content-Length:
+	wxString contentLength = wxT("Content-Length: ");
+	contentLength+=http.GetHeader(wxT("Content-Length"));
+	headerFile.AddLine(contentLength,TEXT_ENDLINE_TYPE);
+	// Connection:
+	wxString connection = wxT("Connection: ");
+	connection+=http.GetHeader(wxT("Connection"));
+	headerFile.AddLine(connection, TEXT_ENDLINE_TYPE);
+	// Content-Type:
+	wxString contentType = wxT("Content-Type: ");
+	contentType+=http.GetContentType();
+	headerFile.AddLine(contentType, TEXT_ENDLINE_TYPE);
 
 	// 書きだした内容を保存する
 	headerFile.Write(wxTextFileType_None, wxConvUTF8);

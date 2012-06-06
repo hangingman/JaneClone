@@ -774,6 +774,86 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 		const wxString outputPath) {
 
+	// HashMapから対象の板のオブジェクトを取り出す
+	if (boardTabAndThreadHash.find( boardName ) == boardTabAndThreadHash.end()) {
+		wxMessageBox("スレッド一覧更新処理に失敗しました。");
+	}
+
+	BoardTabAndThread boardTabAndTh = boardTabAndThreadHash[(const wxString) boardName];
+
+	wxListItem itemCol;
+	itemCol.SetText(wxT("番号"));
+	boardTabAndTh.threadList->InsertColumn(0, itemCol);
+	itemCol.SetText(wxT("タイトル"));
+	boardTabAndTh.threadList->InsertColumn(1, itemCol);
+	itemCol.SetText(wxT("レス"));
+	boardTabAndTh.threadList->InsertColumn(2, itemCol);
+	itemCol.SetText(wxT("取得"));
+	boardTabAndTh.threadList->InsertColumn(3, itemCol);
+	itemCol.SetText(wxT("新着"));
+	boardTabAndTh.threadList->InsertColumn(4, itemCol);
+	itemCol.SetText(wxT("増レス"));
+	boardTabAndTh.threadList->InsertColumn(5, itemCol);
+	itemCol.SetText(wxT("勢い"));
+	boardTabAndTh.threadList->InsertColumn(6, itemCol);
+	itemCol.SetText(wxT("最終取得"));
+	boardTabAndTh.threadList->InsertColumn(7, itemCol);
+	itemCol.SetText(wxT("since"));
+	boardTabAndTh.threadList->InsertColumn(8, itemCol);
+	itemCol.SetText(wxT("板"));
+	boardTabAndTh.threadList->InsertColumn(9, itemCol);
+
+	// データ挿入中に画面に描画すると遅くなるそうなので隠す
+	boardTabAndTh.threadList->Hide();
+
+	// スレッド一覧をファイルからロードしてハッシュマップにもたせる
+	JaneClone::SetThreadList(outputPath);
+
+	// スレッド一覧情報をリストから取ってくる
+	ThreadListHash::iterator it;
+	int i = 0;
+	// イテレーターで無駄なく処理する
+	for (it = this->m_threadListHash.begin(); it != this->m_threadListHash.end();
+			++it) {
+		// スレッド一覧クラスの１レコード分を反映する
+		ThreadList* hash = it->second;
+		wxString buf;
+
+		// 番号
+		buf.Printf(wxT("%d"), i);
+		long tmp = boardTabAndTh.threadList->InsertItem(i, buf, 0);
+		// スレタイ
+		boardTabAndTh.threadList->SetItem(tmp, 1, hash->title);
+		// 最新のレス(スタブ)
+		boardTabAndTh.threadList->SetItem(tmp, 2,
+				wxString::Format(wxT("%i"), hash->response));
+		// 取得
+		boardTabAndTh.threadList->SetItem(tmp, 3,
+				wxString::Format(wxT("%i"), hash->response));
+		// 新着
+		boardTabAndTh.threadList->SetItem(tmp, 4, wxT("新着"));
+		// 増レス
+		boardTabAndTh.threadList->SetItem(tmp, 5, wxT("増レス数"));
+		// 勢い
+		boardTabAndTh.threadList->SetItem(tmp, 6, wxT("勢い"));
+		// 最終取得
+		boardTabAndTh.threadList->SetItem(tmp, 7, wxT("最終取得"));
+		// since
+		boardTabAndTh.threadList->SetItem(tmp, 8, wxT("since"));
+		// 板名
+		boardTabAndTh.threadList->SetItem(tmp, 9, boardName);
+
+		// ループ変数のインクリメント
+		i++;
+	}
+
+	// リストのカラムの幅を最大化する
+	for (unsigned int i=0;i < 9;i++) {
+		boardTabAndTh.threadList->SetColumnWidth(i, wxLIST_AUTOSIZE);
+	}
+
+	// スレッドリストを表示させる
+	boardTabAndTh.threadList->Show();
 }
 
 /**
