@@ -97,4 +97,17 @@ wxString JaneCloneUtil::GetHTTPCommTimeFromHeader(wxString& headerPath) {
 	}
 }
 
+/**
+ * 指定された数字からスレッドの作成された時間を計算する処理
+ */
+wxString JaneCloneUtil::CalcThreadCreatedTime(wxString& threadNum) {
+	int threadNumInt = wxAtoi(threadNum);
+	time_t timeGMT = (time_t)threadNumInt;
+	struct tm *date = localtime(&timeGMT);
+	char str[64];
+	strftime(str, 63, "%x %H:%M", date);
+	return wxString(str, wxConvUTF8);
+}
+
+
 

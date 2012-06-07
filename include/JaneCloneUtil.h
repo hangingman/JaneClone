@@ -47,6 +47,11 @@ public:
 	 * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
 	 */
 	static wxString GetHTTPCommTimeFromHeader(wxString& headerPath);
+
+	/**
+	 * 指定された数字からスレッドの作成された時間を計算する処理
+	 */
+	static wxString CalcThreadCreatedTime(wxString& threadNum);
 private:
 	// ディスクからの読取サイズ
 	#define S_SIZE (2048)

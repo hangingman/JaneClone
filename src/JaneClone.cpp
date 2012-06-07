@@ -734,22 +734,21 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 		long tmp = boardTabAndTh->threadList->InsertItem(i, buf, 0);
 		// スレタイ
 		boardTabAndTh->threadList->SetItem(tmp, 1, hash->title);
-		// 最新のレス(スタブ)
+		// 最新のレス
 		boardTabAndTh->threadList->SetItem(tmp, 2,
 				wxString::Format(wxT("%i"), hash->response));
 		// 取得
-		boardTabAndTh->threadList->SetItem(tmp, 3,
-				wxString::Format(wxT("%i"), hash->response));
+		boardTabAndTh->threadList->SetItem(tmp, 3, wxEmptyString);
 		// 新着
-		boardTabAndTh->threadList->SetItem(tmp, 4, wxT("取得レス数"));
+		boardTabAndTh->threadList->SetItem(tmp, 4, wxEmptyString);
 		// 増レス
-		boardTabAndTh->threadList->SetItem(tmp, 5, wxT("増レス数"));
+		boardTabAndTh->threadList->SetItem(tmp, 5, wxEmptyString);
 		// 勢い
-		boardTabAndTh->threadList->SetItem(tmp, 6, wxT("新着レス数をここに入れる"));
+		boardTabAndTh->threadList->SetItem(tmp, 6, wxEmptyString);
 		// 最終取得
-		boardTabAndTh->threadList->SetItem(tmp, 7, wxT("前回取得時と比べた増レス数をここに入れる"));
+		boardTabAndTh->threadList->SetItem(tmp, 7, wxEmptyString);
 		// since
-		boardTabAndTh->threadList->SetItem(tmp, 8, wxT("計算した勢い値をここに入れる"));
+		boardTabAndTh->threadList->SetItem(tmp, 8, JaneCloneUtil::CalcThreadCreatedTime(hash->oid));
 		// 板名
 		boardTabAndTh->threadList->SetItem(tmp, 9, boardName);
 
@@ -828,18 +827,17 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 		boardTabAndTh.threadList->SetItem(tmp, 2,
 				wxString::Format(wxT("%i"), hash->response));
 		// 取得
-		boardTabAndTh.threadList->SetItem(tmp, 3,
-				wxString::Format(wxT("%i"), hash->response));
+		boardTabAndTh.threadList->SetItem(tmp, 3, wxEmptyString);
 		// 新着
-		boardTabAndTh.threadList->SetItem(tmp, 4, wxT("新着"));
+		boardTabAndTh.threadList->SetItem(tmp, 4, wxEmptyString);
 		// 増レス
-		boardTabAndTh.threadList->SetItem(tmp, 5, wxT("増レス数"));
+		boardTabAndTh.threadList->SetItem(tmp, 5, wxEmptyString);
 		// 勢い
-		boardTabAndTh.threadList->SetItem(tmp, 6, wxT("勢い"));
+		boardTabAndTh.threadList->SetItem(tmp, 6, wxEmptyString);
 		// 最終取得
-		boardTabAndTh.threadList->SetItem(tmp, 7, wxT("最終取得"));
+		boardTabAndTh.threadList->SetItem(tmp, 7, wxEmptyString);
 		// since
-		boardTabAndTh.threadList->SetItem(tmp, 8, wxT("since"));
+		boardTabAndTh.threadList->SetItem(tmp, 8, JaneCloneUtil::CalcThreadCreatedTime(hash->oid));
 		// 板名
 		boardTabAndTh.threadList->SetItem(tmp, 9, boardName);
 
