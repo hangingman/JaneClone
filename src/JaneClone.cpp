@@ -25,7 +25,7 @@
 using namespace std;
 
 #if defined(__WXGTK__)
-#include"../rc/janeclone.xpm";
+#include"../rc/janeclone.xpm"
 #endif
 
 // enum
@@ -650,12 +650,10 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 
 	// フラグを用意する
 	bool itIsNewBoardName = true;
-	size_t page = 0;
 	// ユーザーが開いているタブの板名を調べる
 	for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) {
 		if (boardName.Cmp(boardNoteBook->GetPageText(i)) == 0) {
 			itIsNewBoardName = false;
-			page = i;
 			break;
 		}
 	}
@@ -685,7 +683,8 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 			wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
 
 	// スレッド一覧画面用の材料を生成(新規)
-	boardTabAndTh->sizer_noteList->Add(boardTabAndTh->threadList, 1, wxEXPAND, 0);
+	boardTabAndTh->sizer_noteList->Add(boardTabAndTh->threadList, 1, wxEXPAND,
+			0);
 	boardTabAndTh->noteWindow->SetSizer(boardTabAndTh->sizer_noteList);
 	boardNoteBook->AddPage(boardTabAndTh->noteWindow, boardName);
 	boardTabAndTh->sizer_pane->Add(boardNoteBook, 1, wxEXPAND, 0);
@@ -723,8 +722,8 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 	ThreadListHash::iterator it;
 	int i = 0;
 	// イテレーターで無駄なく処理する
-	for (it = this->m_threadListHash.begin(); it != this->m_threadListHash.end();
-			++it) {
+	for (it = this->m_threadListHash.begin();
+			it != this->m_threadListHash.end(); ++it) {
 		// スレッド一覧クラスの１レコード分を反映する
 		ThreadList* hash = it->second;
 		wxString buf;
@@ -748,7 +747,8 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 		// 最終取得
 		boardTabAndTh->threadList->SetItem(tmp, 7, wxEmptyString);
 		// since
-		boardTabAndTh->threadList->SetItem(tmp, 8, JaneCloneUtil::CalcThreadCreatedTime(hash->oid));
+		boardTabAndTh->threadList->SetItem(tmp, 8,
+				JaneCloneUtil::CalcThreadCreatedTime(hash->oid));
 		// 板名
 		boardTabAndTh->threadList->SetItem(tmp, 9, boardName);
 
@@ -757,7 +757,7 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 	}
 
 	// リストのカラムの幅を最大化する
-	for (unsigned int i=0;i < 9;i++) {
+	for (unsigned int i = 0; i < 9; i++) {
 		boardTabAndTh->threadList->SetColumnWidth(i, wxLIST_AUTOSIZE);
 	}
 
@@ -774,11 +774,12 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 		const wxString outputPath) {
 
 	// HashMapから対象の板のオブジェクトを取り出す
-	if (boardTabAndThreadHash.find( boardName ) == boardTabAndThreadHash.end()) {
-		wxMessageBox("スレッド一覧更新処理に失敗しました。");
+	if (boardTabAndThreadHash.find(boardName) == boardTabAndThreadHash.end()) {
+		wxMessageBox(wxT("スレッド一覧更新処理に失敗しました。"));
 	}
 
-	BoardTabAndThread boardTabAndTh = boardTabAndThreadHash[(const wxString) boardName];
+	BoardTabAndThread boardTabAndTh =
+			boardTabAndThreadHash[(const wxString) boardName];
 
 	wxListItem itemCol;
 	itemCol.SetText(wxT("番号"));
@@ -812,8 +813,8 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	ThreadListHash::iterator it;
 	int i = 0;
 	// イテレーターで無駄なく処理する
-	for (it = this->m_threadListHash.begin(); it != this->m_threadListHash.end();
-			++it) {
+	for (it = this->m_threadListHash.begin();
+			it != this->m_threadListHash.end(); ++it) {
 		// スレッド一覧クラスの１レコード分を反映する
 		ThreadList* hash = it->second;
 		wxString buf;
@@ -837,7 +838,8 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 		// 最終取得
 		boardTabAndTh.threadList->SetItem(tmp, 7, wxEmptyString);
 		// since
-		boardTabAndTh.threadList->SetItem(tmp, 8, JaneCloneUtil::CalcThreadCreatedTime(hash->oid));
+		boardTabAndTh.threadList->SetItem(tmp, 8,
+				JaneCloneUtil::CalcThreadCreatedTime(hash->oid));
 		// 板名
 		boardTabAndTh.threadList->SetItem(tmp, 9, boardName);
 
@@ -846,7 +848,7 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	}
 
 	// リストのカラムの幅を最大化する
-	for (unsigned int i=0;i < 9;i++) {
+	for (unsigned int i = 0; i < 9; i++) {
 		boardTabAndTh.threadList->SetColumnWidth(i, wxLIST_AUTOSIZE);
 	}
 

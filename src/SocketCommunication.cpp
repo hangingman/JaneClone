@@ -334,7 +334,7 @@ int SocketCommunication::DownloadThreadListNew(const wxString gzipPath,
 	wxString path = wxT("/");
 	path += boardNameAscii;
 	path += wxT("/subject.txt");
-	wxString msg = "";
+	wxString msg = wxEmptyString;
 
 	// 保存先を決める
 	wxFileOutputStream output(gzipPath);
@@ -425,7 +425,7 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 	wxString path = wxT("/");
 	path += boardNameAscii;
 	path += wxT("/subject.txt");
-	wxString msg = "";
+	wxString msg = wxEmptyString;
 
 	// 保存先を決める
 	wxFileOutputStream output(gzipPath);

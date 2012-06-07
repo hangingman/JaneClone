@@ -95,6 +95,8 @@ wxString JaneCloneUtil::GetHTTPCommTimeFromHeader(wxString& headerPath) {
 			}
 		}
 	}
+	// ここまで来てしまった場合空文字を返す
+	return wxEmptyString;
 }
 
 /**
