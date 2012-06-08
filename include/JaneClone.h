@@ -150,10 +150,6 @@ private:
   /**
    * 右上のオブジェクトとメソッド
    */
-  // 右側上部・板一覧のノートブックとスレッド一覧リストが載るウィンドウ
-  wxWindow* boardListThreadList;
-  // wxNotebook（上部）が乗るサイザー
-  wxBoxSizer* topNote;
   // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
   wxAuiNotebook* boardNoteBook;
   // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
@@ -174,10 +170,6 @@ private:
   /**
    * 右下のオブジェクトとメソッド
    */
-  // 右側下部・スレッド一覧のノートブックとスレの中身が載るウィンドウ
-  wxWindow* threadTabThreadContent;
-  // wxNotebook（下部）が乗るサイザー
-  wxBoxSizer* bottomNote;
   // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
   wxAuiNotebook* threadNoteBook;
   // スレッド一覧をクリックすると、それをスレ表示画面に反映するメソッド（スタブ）

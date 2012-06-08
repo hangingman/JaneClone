@@ -60,9 +60,6 @@ public:
 // 板名タブと中のリストの構造を持ったオブジェクト
 class BoardTabAndThread {
 public :
-	wxPanel* noteWindow;
-	wxBoxSizer* sizer_noteList;
-	wxBoxSizer* sizer_pane;
 	wxListCtrl* threadList;
 };
 

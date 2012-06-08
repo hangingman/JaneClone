@@ -80,12 +80,6 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	// 板一覧を取得してツリー表示
 	m_tree_ctrl = new wxTreeCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
 
-	// 右側上部・板一覧のノートブックとスレッド一覧リストが載るウィンドウ
-	boardListThreadList = new wxWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxHSCROLL);
-
-	// 右側上部・板一覧のノートブックとスレッド一覧リストが載るウィンドウ
-	threadTabThreadContent = new wxWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL | wxHSCROLL);
-
 	// 検索バー
 	m_search_ctrl = new wxSearchCtrl((wxWindow*)this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 	// URL入力欄
@@ -506,12 +500,14 @@ void JaneClone::SetProperties() {
 	// アプリ上部URL入力欄のフォント調整
 	m_url_input->SetFont(wxFont(12, wxDEFAULT, wxNORMAL, wxNORMAL, 0, wxT("")));
 
+	// ノートブックのサイズ調整
+	wxSize client_size = GetClientSize();
+
 	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-	boardNoteBook = new wxAuiNotebook(boardListThreadList, wxID_ANY,
-			wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
+	boardNoteBook = new wxAuiNotebook(this, wxID_ANY, wxPoint(client_size.x, client_size.y), wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
+
 	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-	threadNoteBook = new wxAuiNotebook(threadTabThreadContent, wxID_ANY,
-			wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
+	threadNoteBook = new wxAuiNotebook(this, wxID_ANY, wxPoint(client_size.x, client_size.y), wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
 }
 
 /**
@@ -571,7 +567,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	boardListThreadListInfo.Center();
 	boardListThreadListInfo.CloseButton(false);
 	boardListThreadListInfo.BestSize(400, 400);
-	m_mgr.AddPane(boardListThreadList, boardListThreadListInfo);
+	m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
 
 	// 右側下部・スレッド一覧タブとスレ表示画面が載ったウィンドウ
 	wxAuiPaneInfo threadTabThreadContentInfo;
@@ -580,7 +576,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	threadTabThreadContentInfo.Center();
 	threadTabThreadContentInfo.CloseButton(false);
 	threadTabThreadContentInfo.BestSize(400, 400);
-	m_mgr.AddPane(threadTabThreadContent, threadTabThreadContentInfo);
+	m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
 }
 
 /**
@@ -674,21 +670,12 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 void JaneClone::SetThreadListItemNew(const wxString boardName,
 		const wxString outputPath) {
 
+	// ノートブックの変更中はノートブックに触れないようにする
+	boardNoteBook->Freeze();
 	// Hashに格納する板名タブのオブジェクトのインスタンスを準備する
 	BoardTabAndThread* boardTabAndTh = new BoardTabAndThread();
-	boardTabAndTh->noteWindow = new wxPanel(boardNoteBook, wxID_ANY);
-	boardTabAndTh->sizer_noteList = new wxBoxSizer(wxVERTICAL);
-	boardTabAndTh->sizer_pane = new wxBoxSizer(wxVERTICAL);
-	boardTabAndTh->threadList = new wxListCtrl(boardTabAndTh->noteWindow,
+	boardTabAndTh->threadList = new wxListCtrl(boardNoteBook,
 			wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
-
-	// スレッド一覧画面用の材料を生成(新規)
-	boardTabAndTh->sizer_noteList->Add(boardTabAndTh->threadList, 1, wxEXPAND,
-			0);
-	boardTabAndTh->noteWindow->SetSizer(boardTabAndTh->sizer_noteList);
-	boardNoteBook->AddPage(boardTabAndTh->noteWindow, boardName);
-	boardTabAndTh->sizer_pane->Add(boardNoteBook, 1, wxEXPAND, 0);
-	boardListThreadList->SetSizer(boardTabAndTh->sizer_pane);
 
 	wxListItem itemCol;
 	itemCol.SetText(wxT("番号"));
@@ -765,7 +752,10 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 	boardTabAndThreadHash[(const wxString) boardName] =
 			(const BoardTabAndThread&) boardTabAndTh;
 	// スレッドリストを表示させる
+	boardNoteBook->AddPage( boardTabAndTh->threadList, boardName, false);
 	boardTabAndTh->threadList->Show();
+	boardNoteBook->Thaw();
+	m_mgr.Update();
 }
 /**
  * ノートブックに、スレッド一覧情報の更新を反映するメソッド
@@ -773,6 +763,8 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 		const wxString outputPath) {
 
+	// ノートブックの変更中はノートブックに触れないようにする
+	boardNoteBook->Freeze();
 	// HashMapから対象の板のオブジェクトを取り出す
 	if (boardTabAndThreadHash.find(boardName) == boardTabAndThreadHash.end()) {
 		wxMessageBox(wxT("スレッド一覧更新処理に失敗しました。"));
@@ -854,6 +846,8 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 
 	// スレッドリストを表示させる
 	boardTabAndTh.threadList->Show();
+	boardNoteBook->Thaw();
+	m_mgr.Update();
 }
 
 /**

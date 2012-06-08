@@ -52,3 +52,7 @@ Main.o : Main.cpp JaneClone.h
 .PHONY: clean
 clean:
 	$(RM) -f *.o *.exe
+
+.PHONY: test
+test :
+	echo $(shell find . \( -name \*.cpp -o -name \*.h \) -print)
