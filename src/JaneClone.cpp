@@ -504,10 +504,14 @@ void JaneClone::SetProperties() {
 	wxSize client_size = GetClientSize();
 
 	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-	boardNoteBook = new wxAuiNotebook(this, wxID_ANY, wxPoint(client_size.x, client_size.y), wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
+	boardNoteBook = new wxAuiNotebook(this, wxID_ANY,
+			wxPoint(client_size.x, client_size.y), wxDefaultSize,
+			wxAUI_NB_DEFAULT_STYLE);
 
 	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-	threadNoteBook = new wxAuiNotebook(this, wxID_ANY, wxPoint(client_size.x, client_size.y), wxDefaultSize, wxAUI_NB_DEFAULT_STYLE);
+	threadNoteBook = new wxAuiNotebook(this, wxID_ANY,
+			wxPoint(client_size.x, client_size.y), wxDefaultSize,
+			wxAUI_NB_DEFAULT_STYLE);
 }
 
 /**
@@ -542,7 +546,6 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	search.Caption(wxT("検索バー"));
 	search.Top();
 	search.CloseButton(false);
-	m_mgr.AddPane(m_search_ctrl, search);
 
 	// 上部・URL入力欄を設定する
 	wxAuiPaneInfo url;
@@ -550,7 +553,6 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	url.Caption(wxT("url"));
 	url.Top();
 	url.CloseButton(false);
-	m_mgr.AddPane(m_url_input_panel, url);
 
 	// 左側・板一覧のツリーコントロールを設定する
 	wxAuiPaneInfo boardTree;
@@ -558,7 +560,6 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	boardTree.Left();
 	boardTree.CloseButton(false);
 	boardTree.BestSize(100, 300);
-	m_mgr.AddPane(m_tree_ctrl, boardTree);
 
 	// 右側上部・板一覧のノートブックとスレッド一覧リストが載ったウィンドウ
 	wxAuiPaneInfo boardListThreadListInfo;
@@ -567,7 +568,6 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	boardListThreadListInfo.Center();
 	boardListThreadListInfo.CloseButton(false);
 	boardListThreadListInfo.BestSize(400, 400);
-	m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
 
 	// 右側下部・スレッド一覧タブとスレ表示画面が載ったウィンドウ
 	wxAuiPaneInfo threadTabThreadContentInfo;
@@ -576,7 +576,22 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	threadTabThreadContentInfo.Center();
 	threadTabThreadContentInfo.CloseButton(false);
 	threadTabThreadContentInfo.BestSize(400, 400);
+
+	// Addの順番と反映がLinuxとWindowsで逆なので、順番をifdefで設定する
+#ifdef __WXMSW__
+	m_mgr.AddPane(m_search_ctrl, search);
+	m_mgr.AddPane(m_url_input_panel, url);
+	m_mgr.AddPane(m_tree_ctrl, boardTree);
+	m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
 	m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
+#else
+	m_mgr.AddPane(m_url_input_panel, url);
+	m_mgr.AddPane(m_search_ctrl, search);
+	m_mgr.AddPane(m_tree_ctrl, boardTree);
+	m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
+	m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
+#endif
+
 }
 
 /**
@@ -674,8 +689,8 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 	boardNoteBook->Freeze();
 	// Hashに格納する板名タブのオブジェクトのインスタンスを準備する
 	BoardTabAndThread* boardTabAndTh = new BoardTabAndThread();
-	boardTabAndTh->threadList = new wxListCtrl(boardNoteBook,
-			wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+	boardTabAndTh->threadList = new wxListCtrl(boardNoteBook, wxID_ANY,
+			wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
 
 	wxListItem itemCol;
 	itemCol.SetText(wxT("番号"));
@@ -752,7 +767,7 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 	boardTabAndThreadHash[(const wxString) boardName] =
 			(const BoardTabAndThread&) boardTabAndTh;
 	// スレッドリストを表示させる
-	boardNoteBook->AddPage( boardTabAndTh->threadList, boardName, false);
+	boardNoteBook->AddPage(boardTabAndTh->threadList, boardName, false);
 	boardTabAndTh->threadList->Show();
 	boardNoteBook->Thaw();
 	m_mgr.Update();
