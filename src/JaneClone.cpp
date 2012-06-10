@@ -95,6 +95,10 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	SetJaneCloneManuBar();
 	SetProperties();
 	DoLayout();
+
+	// ユーザーが前回までに見ていた板一覧タブとスレッド一覧タブをセットする
+	SetPreviousUserLookedTab();
+
 	this->CreateStatusBar();
 	this->SetStatusText(wxT(" 完了"));
 }
@@ -595,7 +599,25 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 #endif
 
 }
+/**
+ * SetPreviousUserLookedTab
+ * ユーザーが前回までに見ていた板一覧タブとスレッド一覧タブをセットする
+ */
+void JaneClone::SetPreviousUserLookedTab() {
+	wxArrayString userLookedBoardList = MetakitAccessor::GetUserLookingBoardList();
+	for (unsigned int i=0;i < userLookedBoardList.GetCount();i++) {
 
+		wxString boardName = userLookedBoardList[i];
+
+		// 板名に対応したURLを取ってくる
+		URLvsBoardName hash = retainHash[boardName];
+		wxString boardNameAscii = hash.boardNameAscii;
+		wxString outputPath = wxT("./dat/") + boardNameAscii + wxT("/") + boardNameAscii + wxT(".dat");
+
+		// 板一覧タブをセットする
+		SetThreadListItemNew(boardName, outputPath);
+	}
+}
 /**
  * デストラクタ
  */
@@ -636,17 +658,6 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
 		URLvsBoardName hash = retainHash[boardName];
 		boardNameAscii = hash.boardNameAscii;
 		boardURL = hash.boardURL;
-
-//		NameURLHash::iterator it;
-//		for (it = retainHash.begin(); it != retainHash.end(); ++it) {
-//			URLvsBoardName* hash = it->second;
-//
-//			if (hash->BoardName.Cmp(boardName) == 0) {
-//				boardURL = hash->BoardURL;
-//				boardNameAscii = hash->BoardNameAscii;
-//				break;
-//			}
-//		}
 
 		// 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
 		SetBoardNameToNoteBook(boardName, boardURL, boardNameAscii);
@@ -1048,8 +1059,10 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
 	for (unsigned int i=0;i < pages;i++) {
 		wxString pageText = boardNoteBook->GetPageText((size_t)i);
-		URLvsBoardName hash = retainHash[pageText];
-		userLookingBoardName.Add(hash.boardNameAscii);
+		// 空文字でなければ追加する
+		if ( ! pageText.IsEmpty() ) {
+			userLookingBoardName.Add(pageText);
+		}
 	}
 
 	// 開いていた板の一覧をmetakitに送る
@@ -1063,9 +1076,13 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
  */
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
-	wxListItem itemCol = event.GetItem();
-	itemCol.SetColumn(2);
-	//wxMessageBox(wxString::Format(wxT("%i"), data.GetText()));
-	wxMessageBox(itemCol.GetText());
+//	wxMessageBox(event.GetLabel());
+//	wxMessageBox(event.GetText());
+//	wxMessageBox(wxString::Format(wxT("%i"), event.GetColumn()));
+//	wxMessageBox(wxString::Format(wxT("%i"), event.GetIndex()));
+//	wxMessageBox(wxString::Format(wxT("%i"), event.GetData()));
+	BoardTabAndThread boardTabAndTh =
+			boardTabAndThreadHash[(const wxString) boardName];
+	boardTabAndTh->threadList
 }
 

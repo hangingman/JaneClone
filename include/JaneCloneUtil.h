@@ -27,6 +27,7 @@
 #include <wx/textfile.h>
 #include <wx/file.h>
 #include <zlib.h>
+#include <iconv.h>
 
 class JaneCloneUtil {
 public:

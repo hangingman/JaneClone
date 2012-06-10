@@ -118,6 +118,7 @@ private:
   void SetProperties();
   void DoLayout();
   void SetJaneCloneAuiPaneInfo();
+  void SetPreviousUserLookedTab();
 
   // 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
   void SetBoardList();

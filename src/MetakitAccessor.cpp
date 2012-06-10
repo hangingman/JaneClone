@@ -22,9 +22,11 @@
 #include "MetakitAccessor.h"
 
 // BOARD_INFOのView内構造
-static const char* BOARD_INFO_STRUCTURE = "BOARD_INFO[BOARDNAME_KANJI:S,BOARD_URL:S,CATEGORY:S]";
+static const char* BOARD_INFO_STRUCTURE =
+		"BOARD_INFO[BOARDNAME_KANJI:S,BOARD_URL:S,CATEGORY:S]";
 // USER_LOOKING_BOARDLISTのView内構造
-static const char* USER_LOOKING_BOARDLIST_STRUCTURE = "USER_LOOKING_BOARDLIST[OID:I,BOARDNAME_ASCII:S]";
+static const char* USER_LOOKING_BOARDLIST_STRUCTURE =
+		"USER_LOOKING_BOARDLIST[BOARDNAME_KANJI:S]";
 
 /**
  * データベースの初期化
@@ -95,7 +97,7 @@ void MetakitAccessor::SetBoardInfoCommit() {
 }
 
 /**
- * 板一覧情報をSQLite内のテーブルから取得しArrayStringの形で返す
+ * 板一覧情報をMetakit内のテーブルから取得しArrayStringの形で返す
  */
 wxArrayString MetakitAccessor::GetBoardInfo() {
 	// dbファイルの初期化
@@ -119,7 +121,7 @@ wxArrayString MetakitAccessor::GetBoardInfo() {
 		c4_RowRef r = vBoardInfo[j];
 
 		for (int k = 0; k < types.GetLength(); k += 3) {
-#if defined(__WXMSW__)
+#ifdef __WXMSW__
 			c4_Property p = vBoardInfo.NthProperty(k);
 			wxString boardName = (const char*) ((c4_StringProp&) p) (r);
 			array.Add(boardName);
@@ -177,7 +179,13 @@ void MetakitAccessor::DropView(const wxString viewName) {
 
 	// 指定されたView名をViewの構造に変えて、中身を削除する
 	if (viewName == wxT("BOARD_INFO")) {
+		// ２ちゃんねるの板一覧情報テーブルの場合
 		c4_View v = storage.GetAs(BOARD_INFO_STRUCTURE);
+		v.RemoveAll();
+		storage.Commit();
+	} else if (viewName == wxT("USER_LOOKING_BOARDLIST")) {
+		// ユーザーが最後に見ていたテーブルの一覧情報の場合
+		c4_View v = storage.GetAs(USER_LOOKING_BOARDLIST_STRUCTURE);
 		v.RemoveAll();
 		storage.Commit();
 	}
@@ -186,24 +194,25 @@ void MetakitAccessor::DropView(const wxString viewName) {
 /**
  * ユーザーがJaneClone終了時にタブで開いていた板の名前を登録する
  */
-void MetakitAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardListArray) {
+void MetakitAccessor::SetUserLookingBoardList(
+		wxArrayString& userLookingBoardListArray) {
+
+	// Viewの中身を削除する
+	DropView(wxT("USER_LOOKING_BOARDLIST"));
 
 	// dbファイルの初期化
 	wxString dbFile = METAKIT_FILE_PATH;
 	// プロパティを用意する（カラム名）
-	c4_IntProp pOid("OID");
-	c4_StringProp pBoardName("BOARDNAME_ASCII");
+	c4_StringProp pBoardName("BOARDNAME_KANJI");
 	// Viewを得る
 	c4_Storage storage(dbFile.mb_str(), true);
 	// View内のカラムを指定する（コンマとカラム名の間にスペースがあると指定した名前を引けなくなるので注意）
-	c4_View vUserLookingBoardList = storage.GetAs(USER_LOOKING_BOARDLIST_STRUCTURE);
-	// コミット実行(内容をクリアするため)
-	storage.Commit();
+	c4_View vUserLookingBoardList = storage.GetAs(
+			USER_LOOKING_BOARDLIST_STRUCTURE);
 
 	// 配列内のレコードを追加する
 	for (unsigned int i = 0; i < userLookingBoardListArray.GetCount(); i++) {
 		c4_Row row;
-		pOid(row) = i;
 		pBoardName(row) = userLookingBoardListArray[i].mb_str();
 		vUserLookingBoardList.Add(row);
 	}
@@ -211,5 +220,45 @@ void MetakitAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardLis
 	// コミット実行
 	storage.Commit();
 }
+/**
+ * JaneClone開始時に以前ユーザーがタブで開いていた板の名前を取得する
+ */
+wxArrayString MetakitAccessor::GetUserLookingBoardList() {
+	// dbファイルの初期化
+	wxString dbFile = METAKIT_FILE_PATH;
+	// Viewを得る
+	c4_Storage storage(dbFile.mb_str(), true);
+	c4_View vUserLookingBoardList = storage.GetAs(
+			USER_LOOKING_BOARDLIST_STRUCTURE);
+	c4_String types;
 
+	// ??? 解析中 ↓　なんでこここれで値がとれているのかよくわからん
+	for (int i = 0; i < vUserLookingBoardList.NumProperties(); i++) {
+		c4_Property prop = vUserLookingBoardList.NthProperty(i);
+		char t = prop.Type();
+		types += t;
+	}
+
+	// リザルトセットをArrayStringに設定する
+	wxArrayString array;
+
+	for (int j = 0; j < vUserLookingBoardList.GetSize(); ++j) {
+		c4_RowRef r = vUserLookingBoardList[j];
+
+		for (int k = 0; k < types.GetLength(); k++) {
+#ifdef __WXMSW__
+			c4_Property p = vUserLookingBoardList.NthProperty(k);
+			wxString boardName = (const char*) ((c4_StringProp&) p) (r);
+			array.Add(boardName);
+#else
+			c4_Property p = vUserLookingBoardList.NthProperty(k);
+			wxString boardName = wxString(
+					(const char*) ((c4_StringProp&) p)(r), wxConvUTF8);
+			array.Add(boardName);
+#endif
+		}
+	}
+
+	return array;
+}
 
