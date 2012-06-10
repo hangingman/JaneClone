@@ -25,9 +25,9 @@
 // wxHashMap用のクラス -- 2chの板名とURLを対応させる
 class URLvsBoardName {
 public:
-	wxString BoardName;
-	wxString BoardURL;
-	wxString BoardNameAscii;
+	wxString boardName;
+	wxString boardURL;
+	wxString boardNameAscii;
 };
 
 // スレッド一覧用のクラス
@@ -57,7 +57,7 @@ public:
 	wxString boardName;
 };
 
-// 板名タブと中のリストの構造を持ったオブジェクト
+// リストの構造を持ったオブジェクト
 class BoardTabAndThread {
 public :
 	wxListCtrl* threadList;

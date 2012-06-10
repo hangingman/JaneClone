@@ -23,6 +23,8 @@
 
 // BOARD_INFOのView内構造
 static const char* BOARD_INFO_STRUCTURE = "BOARD_INFO[BOARDNAME_KANJI:S,BOARD_URL:S,CATEGORY:S]";
+// USER_LOOKING_BOARDLISTのView内構造
+static const char* USER_LOOKING_BOARDLIST_STRUCTURE = "USER_LOOKING_BOARDLIST[OID:I,BOARDNAME_ASCII:S]";
 
 /**
  * データベースの初期化
@@ -180,4 +182,34 @@ void MetakitAccessor::DropView(const wxString viewName) {
 		storage.Commit();
 	}
 }
+
+/**
+ * ユーザーがJaneClone終了時にタブで開いていた板の名前を登録する
+ */
+void MetakitAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardListArray) {
+
+	// dbファイルの初期化
+	wxString dbFile = METAKIT_FILE_PATH;
+	// プロパティを用意する（カラム名）
+	c4_IntProp pOid("OID");
+	c4_StringProp pBoardName("BOARDNAME_ASCII");
+	// Viewを得る
+	c4_Storage storage(dbFile.mb_str(), true);
+	// View内のカラムを指定する（コンマとカラム名の間にスペースがあると指定した名前を引けなくなるので注意）
+	c4_View vUserLookingBoardList = storage.GetAs(USER_LOOKING_BOARDLIST_STRUCTURE);
+	// コミット実行(内容をクリアするため)
+	storage.Commit();
+
+	// 配列内のレコードを追加する
+	for (unsigned int i = 0; i < userLookingBoardListArray.GetCount(); i++) {
+		c4_Row row;
+		pOid(row) = i;
+		pBoardName(row) = userLookingBoardListArray[i].mb_str();
+		vUserLookingBoardList.Add(row);
+	}
+
+	// コミット実行
+	storage.Commit();
+}
+
 

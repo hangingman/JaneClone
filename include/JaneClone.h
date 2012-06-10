@@ -92,8 +92,12 @@ public:
   ~JaneClone();
 
   // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
-  // URLvsBoardNameクラスについてはDataType.h参照
-  WX_DECLARE_HASH_MAP( int, URLvsBoardName*, wxIntegerHash, wxIntegerEqual, NameURLHash );
+  // URLvsBoardNameのHashMap（板名をkeyとしてBoardURLとascii文字の固有名を持つ）
+  WX_DECLARE_HASH_MAP( wxString,				// type of the keys
+		  	  	  	   URLvsBoardName,			// type of the values
+		  	  	  	   wxStringHash ,			// hasher
+		  	  	  	   wxStringEqual,			// key equality predicate
+		  	  	  	   NameURLHash);  			// name of the class
   // HashMapの本体
   NameURLHash retainHash;
 
@@ -107,6 +111,7 @@ private:
   void OnContext(wxContextMenuEvent& event);
   void OnRightClick(wxAuiNotebookEvent& event);
   void OnCloseWindow(wxCloseEvent& event);
+  void OnLeftClickAtListCtrl(wxListEvent& event);
 
   // 各種GUI上の設定
   void SetJaneCloneManuBar();

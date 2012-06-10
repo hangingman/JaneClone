@@ -51,6 +51,10 @@ public:
 	 */
 	static wxArrayString GetBoardInfo();
 	/**
+	 * ユーザーがJaneClone終了時にタブで開いていた板の名前を登録する
+	 */
+	static void SetUserLookingBoardList(wxArrayString& userLookingBoardListArray);
+	/**
 	 * 指定されたテーブルに情報が存在するかどうかを調べるメソッド
 	 */
 	static bool TableHasView(const wxString);

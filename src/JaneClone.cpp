@@ -30,13 +30,13 @@ using namespace std;
 
 // enum
 enum {
-	ID_Quit = 1, // 終了
-	ID_Restart, // 再起動
-	ID_About, // このソフトについて
-	ID_GetBoardList, // 板一覧情報取得
-	ID_GetVersionInfo, // バージョン情報
-	ID_AnyRightClick
-// 右クリック
+	ID_Quit = 1, 		// 終了
+	ID_Restart, 		// 再起動
+	ID_About, 			// このソフトについて
+	ID_GetBoardList, 	// 板一覧情報取得
+	ID_GetVersionInfo, 	// バージョン情報
+	ID_AnyRightClick,	// 右クリック
+	ID_BoardListClick	// 板一覧リストでのクリック
 };
 
 // event table
@@ -55,6 +55,8 @@ EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 EVT_CONTEXT_MENU(JaneClone::OnContext)
 EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(wxID_ANY, JaneClone::OnRightClick)
 
+// 板一覧リスト・またはスレッド一覧リストでのクリック
+EVT_LIST_ITEM_FOCUSED(wxID_ANY, JaneClone::OnLeftClickAtListCtrl)
 // 終了前処理
 EVT_CLOSE(JaneClone::OnCloseWindow)
 
@@ -631,16 +633,20 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
 		wxString boardNameAscii;
 
 		// 板名に対応したURLを取ってくる
-		NameURLHash::iterator it;
-		for (it = retainHash.begin(); it != retainHash.end(); ++it) {
-			URLvsBoardName* hash = it->second;
+		URLvsBoardName hash = retainHash[boardName];
+		boardNameAscii = hash.boardNameAscii;
+		boardURL = hash.boardURL;
 
-			if (hash->BoardName.Cmp(boardName) == 0) {
-				boardURL = hash->BoardURL;
-				boardNameAscii = hash->BoardNameAscii;
-				break;
-			}
-		}
+//		NameURLHash::iterator it;
+//		for (it = retainHash.begin(); it != retainHash.end(); ++it) {
+//			URLvsBoardName* hash = it->second;
+//
+//			if (hash->BoardName.Cmp(boardName) == 0) {
+//				boardURL = hash->BoardURL;
+//				boardNameAscii = hash->BoardNameAscii;
+//				break;
+//			}
+//		}
 
 		// 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
 		SetBoardNameToNoteBook(boardName, boardURL, boardNameAscii);
@@ -711,8 +717,10 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 	boardTabAndTh->threadList->InsertColumn(7, itemCol);
 	itemCol.SetText(wxT("since"));
 	boardTabAndTh->threadList->InsertColumn(8, itemCol);
-	itemCol.SetText(wxT("板"));
+	itemCol.SetText(wxT("固有番号"));
 	boardTabAndTh->threadList->InsertColumn(9, itemCol);
+	itemCol.SetText(wxT("板"));
+	boardTabAndTh->threadList->InsertColumn(10, itemCol);
 
 	// データ挿入中に画面に描画すると遅くなるそうなので隠す
 	boardTabAndTh->threadList->Hide();
@@ -724,8 +732,8 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 	ThreadListHash::iterator it;
 	int i = 0;
 	// イテレーターで無駄なく処理する
-	for (it = this->m_threadListHash.begin();
-			it != this->m_threadListHash.end(); ++it) {
+	for (it = m_threadListHash.begin();
+			it != m_threadListHash.end(); ++it) {
 		// スレッド一覧クラスの１レコード分を反映する
 		ThreadList* hash = it->second;
 		wxString buf;
@@ -751,15 +759,21 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 		// since
 		boardTabAndTh->threadList->SetItem(tmp, 8,
 				JaneCloneUtil::CalcThreadCreatedTime(hash->oid));
+		// 固有番号(UnixTime)
+		boardTabAndTh->threadList->SetItem(tmp, 9, hash->oid);
 		// 板名
-		boardTabAndTh->threadList->SetItem(tmp, 9, boardName);
+		boardTabAndTh->threadList->SetItem(tmp, 10, boardName);
 
+		// スレッド番号をwxListCtrlのデータとして持たせる
+		wxListItem insertItemCol;
+		insertItemCol.SetData((long)wxAtoi(hash->oid));
+		boardTabAndTh->threadList->SetItem(insertItemCol);
 		// ループ変数のインクリメント
 		i++;
 	}
 
 	// リストのカラムの幅を最大化する
-	for (unsigned int i = 0; i < 9; i++) {
+	for (unsigned int i = 0; i < 10; i++) {
 		boardTabAndTh->threadList->SetColumnWidth(i, wxLIST_AUTOSIZE);
 	}
 
@@ -807,8 +821,10 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	boardTabAndTh.threadList->InsertColumn(7, itemCol);
 	itemCol.SetText(wxT("since"));
 	boardTabAndTh.threadList->InsertColumn(8, itemCol);
-	itemCol.SetText(wxT("板"));
+	itemCol.SetText(wxT("固有番号"));
 	boardTabAndTh.threadList->InsertColumn(9, itemCol);
+	itemCol.SetText(wxT("板"));
+	boardTabAndTh.threadList->InsertColumn(10, itemCol);
 
 	// データ挿入中に画面に描画すると遅くなるそうなので隠す
 	boardTabAndTh.threadList->Hide();
@@ -820,8 +836,8 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	ThreadListHash::iterator it;
 	int i = 0;
 	// イテレーターで無駄なく処理する
-	for (it = this->m_threadListHash.begin();
-			it != this->m_threadListHash.end(); ++it) {
+	for (it = m_threadListHash.begin();
+			it != m_threadListHash.end(); ++it) {
 		// スレッド一覧クラスの１レコード分を反映する
 		ThreadList* hash = it->second;
 		wxString buf;
@@ -847,15 +863,21 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 		// since
 		boardTabAndTh.threadList->SetItem(tmp, 8,
 				JaneCloneUtil::CalcThreadCreatedTime(hash->oid));
+		// 固有番号(UnixTime)
+		boardTabAndTh.threadList->SetItem(tmp, 9, hash->oid);
 		// 板名
-		boardTabAndTh.threadList->SetItem(tmp, 9, boardName);
+		boardTabAndTh.threadList->SetItem(tmp, 10, boardName);
 
+		// スレッド番号をwxListCtrlのデータとして持たせる
+		wxListItem insertItemCol;
+		insertItemCol.SetData((long)wxAtoi(hash->oid));
+		boardTabAndTh.threadList->SetItem(insertItemCol);
 		// ループ変数のインクリメント
 		i++;
 	}
 
 	// リストのカラムの幅を最大化する
-	for (unsigned int i = 0; i < 9; i++) {
+	for (unsigned int i = 0; i < 10; i++) {
 		boardTabAndTh.threadList->SetColumnWidth(i, wxLIST_AUTOSIZE);
 	}
 
@@ -871,6 +893,10 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
  */
 void JaneClone::SetThreadList(const wxString inputThreadListDat) {
 
+	// スレッド一覧のハッシュにデータが残っていれば削除する
+	if (0 != m_threadListHash.size()) {
+		m_threadListHash.clear();
+	}
 	// テキストファイルの読み込み
 	wxTextFile datfile(inputThreadListDat);
 	datfile.Open();
@@ -900,7 +926,7 @@ void JaneClone::SetThreadList(const wxString inputThreadListDat) {
 		// 番号
 		threadList->number = loopNumber;
 		// Hashにスレッド情報を入れる
-		this->m_threadListHash[loopNumber] = threadList;
+		m_threadListHash[loopNumber] = threadList;
 		// ループ変数をインクリメント
 		loopNumber++;
 	}
@@ -925,7 +951,7 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 		if (MetakitAccessor::TableHasView(wxT("BOARD_INFO"))) {
 			MetakitAccessor::DropView(wxT("BOARD_INFO"));
 		}
-		// 板一覧情報を展開し、SQLiteに設定する
+		// 板一覧情報を展開し、Metakitに設定する
 		new ExtractBoardList(BOARD_LIST_PATH.mb_str());
 		// 板一覧情報をセットする
 		JaneClone::SetBoardList();
@@ -933,7 +959,7 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 }
 
 /**
- * SQLiteから板一覧情報を抽出してレイアウトに反映するメソッド
+ * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
 	// ArrayStringの形で板一覧情報を取得する
@@ -947,8 +973,6 @@ void JaneClone::SetBoardList() {
 
 	// カテゴリ名を保持するためのID
 	wxTreeItemId category;
-	// 板名とURLを対応させるHashを生成しておく
-	NameURLHash tmpHash;
 	// Hashのカウント用Integer
 	int hashID = 0;
 
@@ -968,9 +992,9 @@ void JaneClone::SetBoardList() {
 		m_tree_ctrl->AppendItem(category, boardName, 1, 1, m_treeData);
 
 		// 板名の配列に板名とURLを入れておく
-		URLvsBoardName* urlVsName = new URLvsBoardName;
-		urlVsName->BoardName = boardName;
-		urlVsName->BoardURL = url;
+		URLvsBoardName urlVsName;
+		urlVsName.boardName = boardName;
+		urlVsName.boardURL = url;
 
 		// 正規表現を使ってサーバ名と板名(ascii)を取得する
 		// そこまで難しい正規表現を使う必要はないようです
@@ -982,16 +1006,15 @@ void JaneClone::SetBoardList() {
 			// マッチさせる
 			if (reThreadList.Matches(url)) {
 				// マッチした文字列の３番目をいただく
-				urlVsName->BoardNameAscii = reThreadList.GetMatch(url, 3);
+				urlVsName.boardNameAscii = reThreadList.GetMatch(url, 3);
 			}
 		}
 		// Hashに板情報を入れる
-		tmpHash[hashID] = urlVsName;
+		if ( ! boardName.IsEmpty() )
+			retainHash[(const wxString)boardName] = (const URLvsBoardName&) urlVsName;
 		// Hashのキー値をインクリメントしておく
 		hashID++;
 	}
-
-	this->retainHash = tmpHash;
 }
 
 // GUI上で右クリックされた際に起こるイベント処理
@@ -1014,7 +1037,35 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
 	wxAboutBox(info);
 }
 
-// 終了前処理では、保存しておきたいユーザー設定をSQLiteに登録しておく
+// 終了前処理では、保存しておきたいユーザー設定をMetakitに登録しておく
 void JaneClone::OnCloseWindow(wxCloseEvent& event) {
+
+	// 終了処理中と表示する
+	SetStatusText(wxT("終了前処理を実行中..."));
+	// 開いていた板の名前をmetakitに登録する
+	wxArrayString userLookingBoardName;
+	size_t pages = boardNoteBook->GetPageCount();
+
+	for (unsigned int i=0;i < pages;i++) {
+		wxString pageText = boardNoteBook->GetPageText((size_t)i);
+		URLvsBoardName hash = retainHash[pageText];
+		userLookingBoardName.Add(hash.boardNameAscii);
+	}
+
+	// 開いていた板の一覧をmetakitに送る
+	MetakitAccessor::SetUserLookingBoardList(userLookingBoardName);
+	SetStatusText(wxT("終了前処理が終わりました！"));
+
 	Destroy();
 }
+/**
+ * 板一覧リスト・またはスレッド一覧リストでのクリック
+ */
+void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
+
+	wxListItem itemCol = event.GetItem();
+	itemCol.SetColumn(2);
+	//wxMessageBox(wxString::Format(wxT("%i"), data.GetText()));
+	wxMessageBox(itemCol.GetText());
+}
+
