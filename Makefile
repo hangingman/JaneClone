@@ -22,6 +22,7 @@ CXX_RELEASE_FLAGS	=	-s -O0
 
 # オプション
 CXXFLAGS = -Wall -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
+RCFLAGS  = $(shell wx-config --cxxflags | awk '{ print $$2 }')  # wx-configからwxのヘッダファイルのルートディレクトリを取り出している
 LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs` `xml2-config --libs` -liconv -lmk4
 VPATH    = include src rc
 
@@ -50,7 +51,7 @@ depend:
 
 # icon build
 icon.o : icon.rc
-		$(WINDRES) -i rc/"icon.rc" -O coff -o "icon.o" -I/mingw/include/wx-2.9
+		$(WINDRES) -i $^ -O coff -o $@  $(RCFLAGS)
 
 # clean
 .PHONY: clean
