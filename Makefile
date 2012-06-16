@@ -5,9 +5,11 @@
 #
 ################################################################################
 
-TARGET 	= JaneClone
-OBJECTS = Main.o JaneClone.o ExtractBoardList.o SocketCommunication.o         \
-		  MetakitAccessor.o icon_rc.o JaneCloneUtil.o
+TARGET  = JaneClone
+SOURCES = $(notdir $(shell find . -name '*.cpp'))
+RCS		= $(notdir $(shell find . -name '*.rc'))
+OBJECTS = $(SOURCES:.cpp=.o)
+OBJECTS +=$(RCS:.rc=.o)
 
 # 基本コマンド
 CXX		:= g++
@@ -19,40 +21,38 @@ CXX_DEBUG_FLAGS		=	-gstabs -O0
 CXX_RELEASE_FLAGS	=	-s -O0
 
 # オプション
-CPPFLAGS = -Wall -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
+CXXFLAGS = -Wall -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`
 LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs` `xml2-config --libs` -liconv -lmk4
 VPATH    = include src rc
 
-# デバッグ
+# make all
+all : $(TARGET)
+$(TARGET): $(OBJECTS)
+		$(CXX) $^ -o $@ $(LDFLAGS)
+
+# suffix rule
+.SUFFIXES: .cpp .o
+.cpp.o:
+		$(CXX) $(CXXFLAGS) $(INCLUDE) -c $<
+
+# debug
 .PHONY	: Debug
 Debug 	: CXX+=$(CXX_DEBUG_FLAGS)
 Debug 	: all
-# リリース
+# release
 .PHONY	: Release
 Release	: CXX+=$(CXX_RELEASE_FLAGS)
 Release	: all
 
-all : $(TARGET)
-$(TARGET) : $(OBJECTS)
-		$(CXX) $^ -o $@ $(LDFLAGS)
-icon_rc.o : icon.rc
-		$(WINDRES) -i rc/"icon.rc" -O coff -o "icon_rc.o" -I/mingw/include/wx-2.9
-MetakitAccessor.o : MetakitAccessor.cpp MetakitAccessor.h
-		$(CXX) -c $< $(CPPFLAGS)
-JaneCloneUtil.o : JaneCloneUtil.cpp JaneCloneUtil.h
-		$(CXX) -c $< $(CPPFLAGS)
-SocketCommunication.o : SocketCommunication.cpp SocketCommunication.h JaneCloneUtil.h
-		$(CXX) -c $< $(CPPFLAGS)
-ExtractBoardList.o : ExtractBoardList.cpp ExtractBoardList.h MetakitAccessor.h
-		$(CXX) -c $< $(CPPFLAGS)
-JaneCloneFrame.o : JaneClone.cpp JaneClone.h　ExtractBoardList.h SocketCommunication.h DataType.h MetakitAccessor.h
-		$(CXX) -c $< $(CPPFLAGS)
-Main.o : Main.cpp JaneClone.h
-		$(CXX) -c $< $(CPPFLAGS)
+# dependency
+depend:
+	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
+
+# icon build
+icon.o : icon.rc
+		$(WINDRES) -i rc/"icon.rc" -O coff -o "icon.o" -I/mingw/include/wx-2.9
+
+# clean
 .PHONY: clean
 clean:
-	$(RM) -f *.o *.exe
-
-.PHONY: test
-test :
-	echo $(shell find . \( -name \*.cpp -o -name \*.h \) -print)
+	$(RM) -f *.o $(TARGET).exe

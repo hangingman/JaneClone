@@ -913,7 +913,7 @@ void JaneClone::SetThreadList(const wxString inputThreadListDat) {
 	datfile.Open();
 
 	// スレッド一覧読み込み用正規表現を準備する
-	wxRegEx reThreadLine(_T("([[:digit:]]+).dat<>(.+)\\(([[:digit:]]{1,3})\\)"),
+	wxRegEx reThreadLine(_T("([[:digit:]]+).dat<>(.+)\\(([[:digit:]]{1,4})\\)"),
 			wxRE_ADVANCED + wxRE_ICASE);
 	// スレッドに番号をつける
 	int loopNumber = 1;
@@ -1075,14 +1075,5 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
  * 板一覧リスト・またはスレッド一覧リストでのクリック
  */
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
-
-//	wxMessageBox(event.GetLabel());
-//	wxMessageBox(event.GetText());
-//	wxMessageBox(wxString::Format(wxT("%i"), event.GetColumn()));
-//	wxMessageBox(wxString::Format(wxT("%i"), event.GetIndex()));
-//	wxMessageBox(wxString::Format(wxT("%i"), event.GetData()));
-	BoardTabAndThread boardTabAndTh =
-			boardTabAndThreadHash[(const wxString) boardName];
-	boardTabAndTh->threadList
 }
 
