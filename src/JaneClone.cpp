@@ -894,15 +894,23 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
  * 板一覧リスト・またはスレッド一覧タブを変更した時のイベント
  */
 void JaneClone::OnChangedTab(wxAuiNotebookEvent& event) {
-	// 選択したタブの板名を取得する
-	wxString selectedBoardName = boardNoteBook->GetPageText(event.GetSelection());
-	VirtualBoardListCtrl vbListCtrl = vbListCtrlHash[(const wxString) selectedBoardName];
 
-	// ノートブックの変更中はノートブックに触れないようにする
-	boardNoteBook->Freeze();
-	vbListCtrl.RefreshItems(0, vbListCtrl.GetItemCount());
-	// ノートブックの解放
-	boardNoteBook->Thaw();
+	if (wxNOT_FOUND != event.GetOldSelection()) {
+		// イベント以前に選択していたタブがある場合選択したタブの板名を取得する
+		wxString selectedBoardName = boardNoteBook->GetPageText(
+				event.GetSelection());
+		VirtualBoardListCtrl vbListCtrl =
+				vbListCtrlHash[(const wxString) selectedBoardName];
 
-	m_mgr.Update();
+		// ノートブックの変更中はノートブックに触れないようにする
+		boardNoteBook->Freeze();
+		if (vbListCtrl.GetItemCount() != 0) {
+			// リストコントロールのアイテムの数が0でなければ
+			vbListCtrl.RefreshItems(0, vbListCtrl.GetItemCount());
+		}
+		// ノートブックの解放
+		boardNoteBook->Thaw();
+
+		m_mgr.Update();
+	}
 }
