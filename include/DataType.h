@@ -57,10 +57,4 @@ public:
 	wxString boardName;
 };
 
-// リストの構造を持ったオブジェクト
-class BoardTabAndThread {
-public :
-	wxListCtrl* threadList;
-};
-
 #endif /* DATATYPE_H_ */

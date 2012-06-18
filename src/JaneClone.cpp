@@ -30,13 +30,13 @@ using namespace std;
 
 // enum
 enum {
-	ID_Quit = 1, 		// 終了
-	ID_Restart, 		// 再起動
-	ID_About, 			// このソフトについて
-	ID_GetBoardList, 	// 板一覧情報取得
-	ID_GetVersionInfo, 	// バージョン情報
-	ID_AnyRightClick,	// 右クリック
-	ID_BoardListClick	// 板一覧リストでのクリック
+	ID_Quit = 1, // 終了
+	ID_Restart, // 再起動
+	ID_About, // このソフトについて
+	ID_GetBoardList, // 板一覧情報取得
+	ID_GetVersionInfo, // バージョン情報
+	ID_AnyRightClick, // 右クリック
+	ID_BoardListClick // 板一覧リストでのクリック
 };
 
 // event table
@@ -54,6 +54,8 @@ EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 右クリックした際のイベント処理
 EVT_CONTEXT_MENU(JaneClone::OnContext)
 EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(wxID_ANY, JaneClone::OnRightClick)
+// AuiNotebookのタブを変更した時の処理
+EVT_AUINOTEBOOK_PAGE_CHANGING(wxID_ANY, JaneClone::OnChangedTab)
 
 // 板一覧リスト・またはスレッド一覧リストでのクリック
 EVT_LIST_ITEM_FOCUSED(wxID_ANY, JaneClone::OnLeftClickAtListCtrl)
@@ -604,15 +606,17 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
  * ユーザーが前回までに見ていた板一覧タブとスレッド一覧タブをセットする
  */
 void JaneClone::SetPreviousUserLookedTab() {
-	wxArrayString userLookedBoardList = MetakitAccessor::GetUserLookingBoardList();
-	for (unsigned int i=0;i < userLookedBoardList.GetCount();i++) {
+	wxArrayString userLookedBoardList =
+			MetakitAccessor::GetUserLookingBoardList();
+	for (unsigned int i = 0; i < userLookedBoardList.GetCount(); i++) {
 
 		wxString boardName = userLookedBoardList[i];
 
 		// 板名に対応したURLを取ってくる
 		URLvsBoardName hash = retainHash[boardName];
 		wxString boardNameAscii = hash.boardNameAscii;
-		wxString outputPath = wxT("./dat/") + boardNameAscii + wxT("/") + boardNameAscii + wxT(".dat");
+		wxString outputPath = wxT("./dat/") + boardNameAscii + wxT("/")
+				+ boardNameAscii + wxT(".dat");
 
 		// 板一覧タブをセットする
 		SetThreadListItemNew(boardName, outputPath);
@@ -705,96 +709,22 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 	// ノートブックの変更中はノートブックに触れないようにする
 	boardNoteBook->Freeze();
 	// Hashに格納する板名タブのオブジェクトのインスタンスを準備する
-	BoardTabAndThread* boardTabAndTh = new BoardTabAndThread();
-	boardTabAndTh->threadList = new wxListCtrl(boardNoteBook, wxID_ANY,
-			wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
-
-	wxListItem itemCol;
-	itemCol.SetText(wxT("番号"));
-	boardTabAndTh->threadList->InsertColumn(0, itemCol);
-	itemCol.SetText(wxT("タイトル"));
-	boardTabAndTh->threadList->InsertColumn(1, itemCol);
-	itemCol.SetText(wxT("レス"));
-	boardTabAndTh->threadList->InsertColumn(2, itemCol);
-	itemCol.SetText(wxT("取得"));
-	boardTabAndTh->threadList->InsertColumn(3, itemCol);
-	itemCol.SetText(wxT("新着"));
-	boardTabAndTh->threadList->InsertColumn(4, itemCol);
-	itemCol.SetText(wxT("増レス"));
-	boardTabAndTh->threadList->InsertColumn(5, itemCol);
-	itemCol.SetText(wxT("勢い"));
-	boardTabAndTh->threadList->InsertColumn(6, itemCol);
-	itemCol.SetText(wxT("最終取得"));
-	boardTabAndTh->threadList->InsertColumn(7, itemCol);
-	itemCol.SetText(wxT("since"));
-	boardTabAndTh->threadList->InsertColumn(8, itemCol);
-	itemCol.SetText(wxT("固有番号"));
-	boardTabAndTh->threadList->InsertColumn(9, itemCol);
-	itemCol.SetText(wxT("板"));
-	boardTabAndTh->threadList->InsertColumn(10, itemCol);
-
-	// データ挿入中に画面に描画すると遅くなるそうなので隠す
-	boardTabAndTh->threadList->Hide();
-
-	// スレッド一覧をファイルからロードしてハッシュマップにもたせる
-	JaneClone::SetThreadList(outputPath);
-
-	// スレッド一覧情報をリストから取ってくる
-	ThreadListHash::iterator it;
-	int i = 0;
-	// イテレーターで無駄なく処理する
-	for (it = m_threadListHash.begin();
-			it != m_threadListHash.end(); ++it) {
-		// スレッド一覧クラスの１レコード分を反映する
-		ThreadList* hash = it->second;
-		wxString buf;
-
-		// 番号
-		buf.Printf(wxT("%d"), i);
-		long tmp = boardTabAndTh->threadList->InsertItem(i, buf, 0);
-		// スレタイ
-		boardTabAndTh->threadList->SetItem(tmp, 1, hash->title);
-		// 最新のレス
-		boardTabAndTh->threadList->SetItem(tmp, 2,
-				wxString::Format(wxT("%i"), hash->response));
-		// 取得
-		boardTabAndTh->threadList->SetItem(tmp, 3, wxEmptyString);
-		// 新着
-		boardTabAndTh->threadList->SetItem(tmp, 4, wxEmptyString);
-		// 増レス
-		boardTabAndTh->threadList->SetItem(tmp, 5, wxEmptyString);
-		// 勢い
-		boardTabAndTh->threadList->SetItem(tmp, 6, wxEmptyString);
-		// 最終取得
-		boardTabAndTh->threadList->SetItem(tmp, 7, wxEmptyString);
-		// since
-		boardTabAndTh->threadList->SetItem(tmp, 8,
-				JaneCloneUtil::CalcThreadCreatedTime(hash->oid));
-		// 固有番号(UnixTime)
-		boardTabAndTh->threadList->SetItem(tmp, 9, hash->oid);
-		// 板名
-		boardTabAndTh->threadList->SetItem(tmp, 10, boardName);
-
-		// スレッド番号をwxListCtrlのデータとして持たせる
-		wxListItem insertItemCol;
-		insertItemCol.SetData((long)wxAtoi(hash->oid));
-		boardTabAndTh->threadList->SetItem(insertItemCol);
-		// ループ変数のインクリメント
-		i++;
-	}
+	VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
+			(wxWindow*) boardNoteBook, (const wxString) boardName,
+			(const wxString) outputPath);
 
 	// リストのカラムの幅を最大化する
-	for (unsigned int i = 0; i < 10; i++) {
-		boardTabAndTh->threadList->SetColumnWidth(i, wxLIST_AUTOSIZE);
-	}
+	//for (int i = 0; i < vbListCtrl->GetItemCount(); i++) {
+	//	vbListCtrl->SetColumnWidth(i, wxLIST_AUTOSIZE);
+	//}
 
 	//　boardName(key),boardTabAndTh(value)としてHashに格納する
-	boardTabAndThreadHash[(const wxString) boardName] =
-			(const BoardTabAndThread&) boardTabAndTh;
+	vbListCtrlHash[(const wxString) boardName] =
+			(const VirtualBoardListCtrl&) vbListCtrl;
 	// スレッドリストを表示させる
-	boardNoteBook->AddPage(boardTabAndTh->threadList, boardName, false);
-	boardTabAndTh->threadList->Show();
+	boardNoteBook->AddPage(vbListCtrl, boardName, false);
 	boardNoteBook->Thaw();
+
 	m_mgr.Update();
 }
 /**
@@ -806,141 +736,24 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	// ノートブックの変更中はノートブックに触れないようにする
 	boardNoteBook->Freeze();
 	// HashMapから対象の板のオブジェクトを取り出す
-	if (boardTabAndThreadHash.find(boardName) == boardTabAndThreadHash.end()) {
+	if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
 		wxMessageBox(wxT("スレッド一覧更新処理に失敗しました。"));
 	}
 
-	BoardTabAndThread boardTabAndTh =
-			boardTabAndThreadHash[(const wxString) boardName];
+	VirtualBoardListCtrl vbListCtrl = vbListCtrlHash[(const wxString) boardName];
 
-	wxListItem itemCol;
-	itemCol.SetText(wxT("番号"));
-	boardTabAndTh.threadList->InsertColumn(0, itemCol);
-	itemCol.SetText(wxT("タイトル"));
-	boardTabAndTh.threadList->InsertColumn(1, itemCol);
-	itemCol.SetText(wxT("レス"));
-	boardTabAndTh.threadList->InsertColumn(2, itemCol);
-	itemCol.SetText(wxT("取得"));
-	boardTabAndTh.threadList->InsertColumn(3, itemCol);
-	itemCol.SetText(wxT("新着"));
-	boardTabAndTh.threadList->InsertColumn(4, itemCol);
-	itemCol.SetText(wxT("増レス"));
-	boardTabAndTh.threadList->InsertColumn(5, itemCol);
-	itemCol.SetText(wxT("勢い"));
-	boardTabAndTh.threadList->InsertColumn(6, itemCol);
-	itemCol.SetText(wxT("最終取得"));
-	boardTabAndTh.threadList->InsertColumn(7, itemCol);
-	itemCol.SetText(wxT("since"));
-	boardTabAndTh.threadList->InsertColumn(8, itemCol);
-	itemCol.SetText(wxT("固有番号"));
-	boardTabAndTh.threadList->InsertColumn(9, itemCol);
-	itemCol.SetText(wxT("板"));
-	boardTabAndTh.threadList->InsertColumn(10, itemCol);
-
-	// データ挿入中に画面に描画すると遅くなるそうなので隠す
-	boardTabAndTh.threadList->Hide();
-
-	// スレッド一覧をファイルからロードしてハッシュマップにもたせる
-	JaneClone::SetThreadList(outputPath);
-
-	// スレッド一覧情報をリストから取ってくる
-	ThreadListHash::iterator it;
-	int i = 0;
-	// イテレーターで無駄なく処理する
-	for (it = m_threadListHash.begin();
-			it != m_threadListHash.end(); ++it) {
-		// スレッド一覧クラスの１レコード分を反映する
-		ThreadList* hash = it->second;
-		wxString buf;
-
-		// 番号
-		buf.Printf(wxT("%d"), i);
-		long tmp = boardTabAndTh.threadList->InsertItem(i, buf, 0);
-		// スレタイ
-		boardTabAndTh.threadList->SetItem(tmp, 1, hash->title);
-		// 最新のレス(スタブ)
-		boardTabAndTh.threadList->SetItem(tmp, 2,
-				wxString::Format(wxT("%i"), hash->response));
-		// 取得
-		boardTabAndTh.threadList->SetItem(tmp, 3, wxEmptyString);
-		// 新着
-		boardTabAndTh.threadList->SetItem(tmp, 4, wxEmptyString);
-		// 増レス
-		boardTabAndTh.threadList->SetItem(tmp, 5, wxEmptyString);
-		// 勢い
-		boardTabAndTh.threadList->SetItem(tmp, 6, wxEmptyString);
-		// 最終取得
-		boardTabAndTh.threadList->SetItem(tmp, 7, wxEmptyString);
-		// since
-		boardTabAndTh.threadList->SetItem(tmp, 8,
-				JaneCloneUtil::CalcThreadCreatedTime(hash->oid));
-		// 固有番号(UnixTime)
-		boardTabAndTh.threadList->SetItem(tmp, 9, hash->oid);
-		// 板名
-		boardTabAndTh.threadList->SetItem(tmp, 10, boardName);
-
-		// スレッド番号をwxListCtrlのデータとして持たせる
-		wxListItem insertItemCol;
-		insertItemCol.SetData((long)wxAtoi(hash->oid));
-		boardTabAndTh.threadList->SetItem(insertItemCol);
-		// ループ変数のインクリメント
-		i++;
-	}
+	// ノートブックの変更中はノートブックに触れないようにする
+	boardNoteBook->Freeze();
 
 	// リストのカラムの幅を最大化する
-	for (unsigned int i = 0; i < 10; i++) {
-		boardTabAndTh.threadList->SetColumnWidth(i, wxLIST_AUTOSIZE);
-	}
+	//for (int i = 0; i < vbListCtrl.GetItemCount(); i++) {
+	//	vbListCtrl.SetColumnWidth(i, wxLIST_AUTOSIZE);
+	//}
 
-	// スレッドリストを表示させる
-	boardTabAndTh.threadList->Show();
+	// ノートブックの解放
 	boardNoteBook->Thaw();
+
 	m_mgr.Update();
-}
-
-/**
- * スレッド一覧をファイルからロードしてハッシュマップにもたせる処理
- * (※m_threadListHashに値が充填される)
- */
-void JaneClone::SetThreadList(const wxString inputThreadListDat) {
-
-	// スレッド一覧のハッシュにデータが残っていれば削除する
-	if (0 != m_threadListHash.size()) {
-		m_threadListHash.clear();
-	}
-	// テキストファイルの読み込み
-	wxTextFile datfile(inputThreadListDat);
-	datfile.Open();
-
-	// スレッド一覧読み込み用正規表現を準備する
-	wxRegEx reThreadLine(_T("([[:digit:]]+).dat<>(.+)\\(([[:digit:]]{1,4})\\)"),
-			wxRE_ADVANCED + wxRE_ICASE);
-	// スレッドに番号をつける
-	int loopNumber = 1;
-
-	// テキストファイルの終端まで読み込む
-	for (wxString line = datfile.GetFirstLine(); !datfile.Eof();
-			line = datfile.GetNextLine()) {
-
-		// スレッド一覧クラスを生成する
-		ThreadList *threadList = new ThreadList();
-
-		// 正規表現で情報を取得する
-		if (reThreadLine.Matches(line)) {
-			// キー値を取得する
-			threadList->oid = reThreadLine.GetMatch(line, 1);
-			// スレタイを取得する
-			threadList->title = reThreadLine.GetMatch(line, 2);
-			// レス数を取得する
-			threadList->response = wxAtoi(reThreadLine.GetMatch(line, 3));
-		}
-		// 番号
-		threadList->number = loopNumber;
-		// Hashにスレッド情報を入れる
-		m_threadListHash[loopNumber] = threadList;
-		// ループ変数をインクリメント
-		loopNumber++;
-	}
 }
 
 /**
@@ -1021,8 +834,9 @@ void JaneClone::SetBoardList() {
 			}
 		}
 		// Hashに板情報を入れる
-		if ( ! boardName.IsEmpty() )
-			retainHash[(const wxString)boardName] = (const URLvsBoardName&) urlVsName;
+		if (!boardName.IsEmpty())
+			retainHash[(const wxString) boardName] =
+					(const URLvsBoardName&) urlVsName;
 		// Hashのキー値をインクリメントしておく
 		hashID++;
 	}
@@ -1057,10 +871,10 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 	wxArrayString userLookingBoardName;
 	size_t pages = boardNoteBook->GetPageCount();
 
-	for (unsigned int i=0;i < pages;i++) {
-		wxString pageText = boardNoteBook->GetPageText((size_t)i);
+	for (unsigned int i = 0; i < pages; i++) {
+		wxString pageText = boardNoteBook->GetPageText((size_t) i);
 		// 空文字でなければ追加する
-		if ( ! pageText.IsEmpty() ) {
+		if (!pageText.IsEmpty()) {
 			userLookingBoardName.Add(pageText);
 		}
 	}
@@ -1072,8 +886,23 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 	Destroy();
 }
 /**
- * 板一覧リスト・またはスレッド一覧リストでのクリック
+ * 板一覧リスト・またはスレッド一覧リストでのクリック時のイベント
  */
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 }
+/**
+ * 板一覧リスト・またはスレッド一覧タブを変更した時のイベント
+ */
+void JaneClone::OnChangedTab(wxAuiNotebookEvent& event) {
+	// 選択したタブの板名を取得する
+	wxString selectedBoardName = boardNoteBook->GetPageText(event.GetSelection());
+	VirtualBoardListCtrl vbListCtrl = vbListCtrlHash[(const wxString) selectedBoardName];
 
+	// ノートブックの変更中はノートブックに触れないようにする
+	boardNoteBook->Freeze();
+	vbListCtrl.RefreshItems(0, vbListCtrl.GetItemCount());
+	// ノートブックの解放
+	boardNoteBook->Thaw();
+
+	m_mgr.Update();
+}

@@ -45,10 +45,6 @@ Debug 	: all
 Release	: CXX+=$(CXX_RELEASE_FLAGS)
 Release	: all
 
-# dependency
-depend:
-	$(CXX) -MM $(INCLUDE) $(CXXFLAGS) $(SOURCES) > dependencies
-
 # icon build
 icon.o : icon.rc
 		$(WINDRES) -i $^ -O coff -o $@  $(RCFLAGS)
