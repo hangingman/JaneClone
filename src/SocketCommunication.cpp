@@ -207,8 +207,8 @@ wxString SocketCommunication::CheckLastModifiedTime(const wxString headerPath) {
 
 	if (file.IsOpened()) {
 		// ログの中身を1行ずつ走査
-		for (line = file.GetFirstLine(); !file.Eof();
-				line = file.GetNextLine()) {
+		for (line = file.GetFirstLine(); !file.Eof(); line =
+				file.GetNextLine()) {
 			if (line.Contains(wxT("Last-Modified:"))) {
 				lastGetTime = line.Mid(14);
 				break;
@@ -470,6 +470,167 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 }
 
 /**
+ * スレッドのデータをダウンロードしてくるメソッド
+ * @param 板名
+ * @param URL
+ * @param サーバー名
+ * @param 固有番号
+ * @return ダウンロードしたdatファイル保存先
+ */
+wxString SocketCommunication::DownloadThread(const wxString boardName,
+		const wxString boardURL, const wxString boardNameAscii,
+		const wxString origNumber) {
+
+	// 出力するファイルの名前
+	wxString outputFileName = origNumber + wxT(".dat");
+	// 出力先のファイルパスを設定する
+	wxString outputFilePath = wxT("./dat/") + boardNameAscii + wxT("/");
+	// 保存用フォルダが存在するか確認。無ければフォルダを作成
+	if (!wxDir::Exists(outputFilePath)) {
+		::wxMkdir(outputFilePath);
+	}
+	outputFilePath += outputFileName;
+	// gzip用のパスを設定する
+	wxString gzipPath = outputFilePath;
+	gzipPath.Replace(wxT(".dat"), wxT(".gzip"));
+	// 一時保存用のパスを設定する
+	wxString tmpPath = outputFilePath;
+	tmpPath.Replace(wxT(".dat"), wxT(".tmp"));
+	// ヘッダーのパスを設定する
+	wxString headerPath = outputFilePath;
+	headerPath.Replace(wxT(".dat"), wxT(".header"));
+
+	// URLからホスト名を取得する
+	wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
+			wxRE_ADVANCED + wxRE_ICASE);
+	// ホスト名
+	wxString hostName;
+	if (reThreadList.IsValid()) {
+		if (reThreadList.Matches(boardURL)) {
+			hostName = reThreadList.GetMatch(boardURL, 2);
+		}
+	}
+
+	if ((!wxFileExists(outputFilePath)) || (!wxFileExists(headerPath))) {
+		// 解凍された板一覧情報が存在しないor前回の通信ログが残っていないならば通常通りソケット通信を行う
+		DownloadThreadNew((const wxString) gzipPath,
+				(const wxString) headerPath, (const wxString) boardNameAscii,
+				(const wxString) origNumber, (const wxString) hostName);
+	} else {
+		// そうでなければ前回の通信の差分を取得しに行く
+		DownloadThreadMod((const wxString) gzipPath,
+				(const wxString) headerPath, (const wxString) boardNameAscii,
+				(const wxString) origNumber, (const wxString) hostName);
+	}
+
+	// gzip拡張子のファイルがあれば、ファイルの解凍・UTF化を行う
+	if (wxFile::Exists(gzipPath)) {
+		JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
+		JaneCloneUtil::ConvertSJISToUTF8(tmpPath, outputFilePath);
+	}
+	// 更新が終わったらgzipファイルとSJISファイルを消しておく
+	RemoveTmpFile(gzipPath);
+	RemoveTmpFile(tmpPath);
+
+	return outputFilePath;
+}
+
+/**
+ * 新規にスレッドのデータをダウンロードしてくるメソッド
+ * @param gzipのダウンロード先パス
+ * @param HTTPヘッダのダウンロード先パス
+ * @param 板名（ascii）
+ * @param 固有番号
+ * @return 実行コード
+ */
+int SocketCommunication::DownloadThreadNew(const wxString gzipPath,
+		const wxString headerPath, const wxString boardNameAscii,
+		const wxString origNumber, const wxString hostName) {
+
+	/**
+	 * スレッド取得の凡例(１回目)
+	 *
+	 * GET /[板名]/dat/[スレッド番号].dat HTTP/1.1
+	 * Accept-Encoding: gzip
+	 * Host: [サーバー]
+	 * Accept: ＊/＊
+	 * Referer: http://[サーバー]/test/read.cgi/[板名]/[スレッド番号]/
+	 * Accept-Language: ja
+	 * User-Agent: Monazilla/1.00 (ブラウザ名/バージョン)
+	 * Connection: close
+	 */
+
+	int rc = 0;
+
+	// 取得先のパスを引数から作成する
+	const wxString getPath = wxT("GET /") + boardNameAscii + wxT("/dat/") + origNumber
+			+ wxT(".dat");
+	// リファラを引数から作成する
+	const wxString referer = wxT("http://") + hostName + wxT("/test/read.cgi/")
+			+ boardNameAscii + wxT("/") + origNumber;
+
+	wxHTTP http;
+	http.SetHeader(getPath, _T("HTTP/1.1"));
+	http.SetHeader(_T("Accept-Encoding"), _T("gzip"));
+	http.SetHeader(_T("Host"), hostName);
+	http.SetHeader(_T("Accept"), _T("*/*"));
+	http.SetHeader(_T("Referer"), referer);
+	http.SetHeader(_T("Accept-Language"), _T("ja"));
+	http.SetHeader(_T("User-Agent"), _T("Monazilla/1.00"));
+	http.SetHeader(_T("Connection"), _T("close"));
+	http.SetTimeout(5);
+
+	wxString server = hostName;
+	wxString path = wxT("/") + boardNameAscii + wxT("/subject.txt");
+	wxString msg = wxEmptyString;
+
+	// 保存先を決める
+	wxFileOutputStream output(gzipPath);
+	wxDataOutputStream store(output);
+
+	if (http.Connect(server, 80)) {
+		wxInputStream *stream;
+		stream = http.GetInputStream(path);
+
+		if (stream == NULL) {
+			return -1;
+		} else {
+			unsigned char buffer[1024];
+			int byteRead;
+
+			// ヘッダを書きだす
+			WriteHeaderFile(http, (const wxString) headerPath);
+
+			// ストリームを受け取るループ部分
+			while (!stream->Eof()) {
+				stream->Read(buffer, sizeof(buffer));
+				store.Write8(buffer, sizeof(buffer));
+				byteRead = stream->LastRead();
+				if (byteRead <= 0) {
+					break;
+				}
+			}
+		}
+	} else {
+		return -1;
+	}
+
+	return rc;
+}
+
+/**
+ * 前回との差分のスレッドのデータをダウンロードしてくるメソッド
+ * @param URL
+ * @param サーバー名
+ * @param 固有番号
+ * @return ダウンロードしたdatファイル保存先
+ */
+int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
+		const wxString headerPath, const wxString boardNameAscii,
+		const wxString origNumber, const wxString hostName) {
+}
+
+/**
  * 一時ファイルを消す
  */
 void SocketCommunication::RemoveTmpFile(const wxString removeFile) {
@@ -505,35 +666,35 @@ void SocketCommunication::WriteHeaderFile(wxHTTP& http,
 
 	// Date:
 	wxString date = wxT("Date: ");
-	date+=http.GetHeader(wxT("Date"));
+	date += http.GetHeader(wxT("Date"));
 	headerFile.AddLine(date, TEXT_ENDLINE_TYPE);
 	// Server:
 	wxString server = wxT("Server: ");
-	server+=http.GetHeader(wxT("Server"));
+	server += http.GetHeader(wxT("Server"));
 	headerFile.AddLine(server, TEXT_ENDLINE_TYPE);
 	// Last-Modified:
 	wxString lastModified = wxT("Last-Modified: ");
-	lastModified+=http.GetHeader(wxT("Last-Modified"));
+	lastModified += http.GetHeader(wxT("Last-Modified"));
 	headerFile.AddLine(lastModified, TEXT_ENDLINE_TYPE);
 	// ETag:
 	wxString etag = wxT("ETag: ");
-	etag+=http.GetHeader(wxT("ETag"));
+	etag += http.GetHeader(wxT("ETag"));
 	headerFile.AddLine(etag, TEXT_ENDLINE_TYPE);
 	// Accept-Ranges:
 	wxString acceptRanges = wxT("Accept-Ranges: ");
-	acceptRanges+=http.GetHeader(wxT("Accept-Ranges"));
+	acceptRanges += http.GetHeader(wxT("Accept-Ranges"));
 	headerFile.AddLine(acceptRanges, TEXT_ENDLINE_TYPE);
 	// Content-Length:
 	wxString contentLength = wxT("Content-Length: ");
-	contentLength+=http.GetHeader(wxT("Content-Length"));
-	headerFile.AddLine(contentLength,TEXT_ENDLINE_TYPE);
+	contentLength += http.GetHeader(wxT("Content-Length"));
+	headerFile.AddLine(contentLength, TEXT_ENDLINE_TYPE);
 	// Connection:
 	wxString connection = wxT("Connection: ");
-	connection+=http.GetHeader(wxT("Connection"));
+	connection += http.GetHeader(wxT("Connection"));
 	headerFile.AddLine(connection, TEXT_ENDLINE_TYPE);
 	// Content-Type:
 	wxString contentType = wxT("Content-Type: ");
-	contentType+=http.GetContentType();
+	contentType += http.GetContentType();
 	headerFile.AddLine(contentType, TEXT_ENDLINE_TYPE);
 
 	// 書きだした内容を保存する

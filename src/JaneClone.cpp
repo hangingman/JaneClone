@@ -713,16 +713,17 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 			(wxWindow*) boardNoteBook, (const wxString) boardName,
 			(const wxString) outputPath);
 
-	// リストのカラムの幅を最大化する
-	//for (int i = 0; i < vbListCtrl->GetItemCount(); i++) {
-	//	vbListCtrl->SetColumnWidth(i, wxLIST_AUTOSIZE);
-	//}
-
 	//　boardName(key),boardTabAndTh(value)としてHashに格納する
 	vbListCtrlHash[(const wxString) boardName] =
 			(const VirtualBoardListCtrl&) vbListCtrl;
 	// スレッドリストを表示させる
 	boardNoteBook->AddPage(vbListCtrl, boardName, false);
+	// カラムの幅を最大化
+	vbListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE);
+	vbListCtrl->SetColumnWidth(8, wxLIST_AUTOSIZE);
+	vbListCtrl->SetColumnWidth(9, wxLIST_AUTOSIZE);
+	vbListCtrl->SetColumnWidth(10, wxLIST_AUTOSIZE);
+
 	boardNoteBook->Thaw();
 
 	m_mgr.Update();
@@ -744,11 +745,6 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 
 	// ノートブックの変更中はノートブックに触れないようにする
 	boardNoteBook->Freeze();
-
-	// リストのカラムの幅を最大化する
-	//for (int i = 0; i < vbListCtrl.GetItemCount(); i++) {
-	//	vbListCtrl.SetColumnWidth(i, wxLIST_AUTOSIZE);
-	//}
 
 	// ノートブックの解放
 	boardNoteBook->Thaw();
@@ -886,9 +882,35 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 	Destroy();
 }
 /**
- * 板一覧リスト・またはスレッド一覧リストでのクリック時のイベント
+ * 板一覧リストでのクリック時のイベント
  */
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
+
+	// 現在アクティブになっているタブの板名を取得する
+	wxString boardName = boardNoteBook->GetPageText(
+			boardNoteBook->GetSelection());
+
+	if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
+		wxMessageBox(wxT("valueが見つからん！"));
+	} else {
+		VirtualBoardListCtrl vbListCtrl =
+				vbListCtrlHash[(const wxString) boardName];
+
+		// Hashから情報を引き出す
+		URLvsBoardName hash = retainHash[boardName];
+		wxString boardURL = hash.boardURL;
+		wxString boardNameAscii = hash.boardNameAscii;
+
+		// スレの固有番号をリストから取り出す
+		//long index = event.GetIndex();
+		//wxString origNumber(vbListCtrl.OnGetItemText(index, (long) 9));
+		//wxMessageBox(origNumber);
+
+		// ソケット通信を行う
+		//SocketCommunication* socketCommunication = new SocketCommunication();
+		//socketCommunication->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
+		//delete socketCommunication;
+	}
 }
 /**
  * 板一覧リスト・またはスレッド一覧タブを変更した時のイベント
@@ -908,9 +930,9 @@ void JaneClone::OnChangedTab(wxAuiNotebookEvent& event) {
 			// リストコントロールのアイテムの数が0でなければ
 			vbListCtrl.RefreshItems(0, vbListCtrl.GetItemCount());
 		}
+
 		// ノートブックの解放
 		boardNoteBook->Thaw();
-
 		m_mgr.Update();
 	}
 }

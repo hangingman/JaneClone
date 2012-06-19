@@ -17,8 +17,8 @@ RM 		:= rm
 WINDRES := windres
 
 # デバッグ時とリリース時の微調整
-CXX_DEBUG_FLAGS		=	-gstabs -O0
-CXX_RELEASE_FLAGS	=	-s -O0
+CXX_DEBUG_FLAGS		=	-gstabs
+CXX_RELEASE_FLAGS	=	-s
 
 # オプション
 CXXFLAGS = -Wall -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags`

@@ -34,23 +34,26 @@
 
 class SocketCommunication {
 
-/**
- * テキストの終端文字が何で終わるのかを定義
- */
+	/**
+	 * テキストの終端文字が何で終わるのかを定義
+	 */
 #ifdef __WXMSW__
-	#define TEXT_ENDLINE_TYPE wxTextFileType_Dos
+#define TEXT_ENDLINE_TYPE wxTextFileType_Dos
 #endif
 #ifdef __WXGTK__
-	#define TEXT_ENDLINE_TYPE wxTextFileType_Unix
+#define TEXT_ENDLINE_TYPE wxTextFileType_Unix
 #endif
 #ifdef __WXMAC__
-	#define TEXT_ENDLINE_TYPE wxTextFileType_Mac
+#define TEXT_ENDLINE_TYPE wxTextFileType_Mac
 #endif
 
 public:
 	/**
-	 * 板一覧ファイルをダウンロードしてくるメソッド 引数はサーバーのフルURL、サーバ名、板名、保存先
+	 * 板一覧ファイルをダウンロードしてくるメソッド
 	 * もし前回通信した際のログが残っていれば更新の確認のみ行う
+	 * @param  板一覧datファイル保存先
+	 * @param  板一覧headerファイル保存先
+	 * @return 実行コード
 	 */
 	int DownloadBoardList(const wxString outputPath, const wxString headerPath);
 	/**
@@ -62,11 +65,17 @@ public:
 	 */
 	wxString DownloadThreadList(const wxString boardName,
 			const wxString boardURL, const wxString boardNameAscii);
-private:
 	/**
-	 * 前回の通信ログが存在すれば、最後に取得した日時を変数に格納する
+	 * スレッドのデータをダウンロードしてくるメソッド
+	 * @param 板名
+	 * @param URL
+	 * @param サーバー名
+	 * @param 固有番号
+	 * @return ダウンロードしたdatファイル保存先
 	 */
-	wxString CheckLastModifiedTime(const wxString headerPath);
+	wxString DownloadThread(const wxString boardName, const wxString boardURL,
+			const wxString boardNameAscii, const wxString origNumber);
+private:
 	/**
 	 * 新規に板一覧情報を取得しに行く
 	 */
@@ -85,10 +94,8 @@ private:
 	 * @return 実行コード
 	 */
 	int DownloadThreadListNew(const wxString gzipPath,
-			const wxString headerPath,
-			const wxString boardNameAscii,
-			const wxString hostName,
-			const wxString boardURL);
+			const wxString headerPath, const wxString boardNameAscii,
+			const wxString hostName, const wxString boardURL);
 	/**
 	 * 前回との差分のスレッド一覧をダウンロードしてくるメソッド
 	 * @param gzipのダウンロード先パス
@@ -97,10 +104,37 @@ private:
 	 * @return 実行コード
 	 */
 	int DownloadThreadListMod(const wxString gzipPath,
-			const wxString headerPath,
-			const wxString boardNameAscii,
-			const wxString hostName,
-			const wxString boardURL);
+			const wxString headerPath, const wxString boardNameAscii,
+			const wxString hostName, const wxString boardURL);
+
+	/**
+	 * 新規にスレッドのデータをダウンロードしてくるメソッド
+	 * @param gzipのダウンロード先パス
+	 * @param HTTPヘッダのダウンロード先パス
+	 * @param 板名（ascii）
+	 * @param 固有番号
+	 * @param サーバーのホスト名
+	 * @return 実行コード
+	 */
+	int DownloadThreadNew(const wxString gzipPath, const wxString headerPath,
+			const wxString boardNameAscii, const wxString origNumber,
+			const wxString hostName);
+
+	/**
+	 * 前回との差分のスレッドのデータをダウンロードしてくるメソッド
+	 * @param URL
+	 * @param サーバー名
+	 * @param 固有番号
+	 * @param サーバーのホスト名
+	 * @return ダウンロードしたdatファイル保存先
+	 */
+	int DownloadThreadMod(const wxString gzipPath, const wxString headerPath,
+			const wxString boardNameAscii, const wxString origNumber,
+			const wxString hostName);
+	/**
+	 * 前回の通信ログが存在すれば、最後に取得した日時を変数に格納する
+	 */
+	wxString CheckLastModifiedTime(const wxString headerPath);
 	/**
 	 * 一時ファイルを消す
 	 */

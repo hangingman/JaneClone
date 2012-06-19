@@ -96,6 +96,7 @@ public:
 	long GetColumnCount() {
 		return 11;
 	}
+
 private:
 	// 内部にあるリスト
 	VirtualBoardList m_vBoardList;
