@@ -100,6 +100,42 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 }
 
 /**
+ * 内部リストの更新処理
+ * @param VirtualBoardList
+ */
+void VirtualBoardListCtrl::Refresh(const VirtualBoardList& virtualBoardList) {
+
+	// 内部にデータがあればリストをクリアする
+	if ( ! m_vBoardList.empty())
+		m_vBoardList.clear();
+
+	m_vBoardList = virtualBoardList;
+
+	this->Hide();
+
+	/**
+	 * データ挿入
+	 */
+
+	// データを挿入
+	SetItemCount(m_vBoardList.size());
+
+	InsertColumn(COL_NUM, wxT("番号"));
+	InsertColumn(COL_TITLE, wxT("タイトル"));
+	InsertColumn(COL_RESP, wxT("レス"));
+	InsertColumn(COL_CACHEDRES, wxT("取得"));
+	InsertColumn(COL_NEWRESP, wxT("新着"));
+	InsertColumn(COL_INCRESP, wxT("増レス"));
+	InsertColumn(COL_MOMENTUM, wxT("勢い"));
+	InsertColumn(COL_LASTUP, wxT("最終取得"));
+	InsertColumn(COL_SINCE, wxT("SINCE"));
+	InsertColumn(COL_OID, wxT("固有番号"));
+	InsertColumn(COL_BOARDNAME, wxT("板"));
+
+	this->Show();
+}
+
+/**
  * wxListCtrl備え付きの仮想関数 ： wxListCtrlを継承したクラスで仮想関数を実装することで使えるようになる
  * 指定されたアイテムとカラムに存在するテキストを返すことができる
  */

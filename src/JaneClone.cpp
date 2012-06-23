@@ -716,6 +716,9 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 	//　boardName(key),boardTabAndTh(value)としてHashに格納する
 	vbListCtrlHash[(const wxString) boardName] =
 			(const VirtualBoardListCtrl&) vbListCtrl;
+	// listctrl内のリストをJaneCloneのメモリに持たせる
+	vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
+
 	// スレッドリストを表示させる
 	boardNoteBook->AddPage(vbListCtrl, boardName, false);
 	// カラムの幅を最大化
@@ -739,17 +742,24 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	// HashMapから対象の板のオブジェクトを取り出す
 	if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
 		wxMessageBox(wxT("スレッド一覧更新処理に失敗しました。"));
+		boardNoteBook->Thaw();
+	} else {
+		// リストコントロールを呼び出す
+		VirtualBoardListCtrl vbListCtrl =
+				vbListCtrlHash[(const wxString) boardName];
+		// リストコントロールに入るべきリストをリフレッシュする
+		VirtualBoardList vbList = vbListHash[(const wxString) boardName];
+		vbListCtrl.m_vBoardList = vbList;
+		// カラムの幅を最大化
+		vbListCtrl.SetColumnWidth(1, wxLIST_AUTOSIZE);
+		vbListCtrl.SetColumnWidth(8, wxLIST_AUTOSIZE);
+		vbListCtrl.SetColumnWidth(9, wxLIST_AUTOSIZE);
+		vbListCtrl.SetColumnWidth(10, wxLIST_AUTOSIZE);
+		// ノートブックの解放
+		boardNoteBook->Thaw();
+
+		m_mgr.Update();
 	}
-
-	VirtualBoardListCtrl vbListCtrl = vbListCtrlHash[(const wxString) boardName];
-
-	// ノートブックの変更中はノートブックに触れないようにする
-	boardNoteBook->Freeze();
-
-	// ノートブックの解放
-	boardNoteBook->Thaw();
-
-	m_mgr.Update();
 }
 
 /**
@@ -891,10 +901,14 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 			boardNoteBook->GetSelection());
 
 	if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
-		wxMessageBox(wxT("valueが見つからん！"));
+		wxMessageBox(wxT("すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダの中身をいじっていませんか？"));
 	} else {
+		// リストコントロールを引き出してくる
 		VirtualBoardListCtrl vbListCtrl =
 				vbListCtrlHash[(const wxString) boardName];
+		// ノートブックの移り変わり時にリストコントロールに入るべきリストをリフレッシュする
+		VirtualBoardList vbList = vbListHash[(const wxString) boardName];
+		vbListCtrl.m_vBoardList = vbList;
 
 		// Hashから情報を引き出す
 		URLvsBoardName hash = retainHash[boardName];
@@ -902,14 +916,15 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 		wxString boardNameAscii = hash.boardNameAscii;
 
 		// スレの固有番号をリストから取り出す
-		//long index = event.GetIndex();
-		//wxString origNumber(vbListCtrl.OnGetItemText(index, (long) 9));
-		//wxMessageBox(origNumber);
+		long index = event.GetIndex();
+		wxString origNumber(vbListCtrl.OnGetItemText(index, (long) 9));
 
 		// ソケット通信を行う
-		//SocketCommunication* socketCommunication = new SocketCommunication();
-		//socketCommunication->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
-		//delete socketCommunication;
+		SocketCommunication* socketCommunication = new SocketCommunication();
+		socketCommunication->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
+		delete socketCommunication;
+		// 無事に通信が終了したならばステータスバーに表示
+		this->SetStatusText(wxT(" スレッドのダウンロード終了"));
 	}
 }
 /**

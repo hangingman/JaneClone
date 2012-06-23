@@ -176,6 +176,15 @@ private:
   // JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
   VirtualBoardListCtrlHash vbListCtrlHash;
 
+  // VirtualBoardListのHashMap（板名をkeyとしてリストコントロール内部のリストを管理する）
+  WX_DECLARE_HASH_MAP( wxString,					// type of the keys
+		  	  	  	   VirtualBoardList,			// type of the values
+		  	  	  	   wxStringHash ,				// hasher
+		  	  	  	   wxStringEqual,				// key equality predicate
+		  	  	  	   VirtualBoardListHash);		// name of the class
+
+  VirtualBoardListHash vbListHash;
+
   /**
    * 右下のオブジェクトとメソッド
    */

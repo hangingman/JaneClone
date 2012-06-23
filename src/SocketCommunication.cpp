@@ -581,7 +581,7 @@ int SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 	http.SetTimeout(5);
 
 	wxString server = hostName;
-	wxString path = wxT("/") + boardNameAscii + wxT("/subject.txt");
+	wxString path = wxT("/") + boardNameAscii + wxT("/dat/") + origNumber + wxT(".dat");
 	wxString msg = wxEmptyString;
 
 	// 保存先を決める
@@ -593,6 +593,7 @@ int SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 		stream = http.GetInputStream(path);
 
 		if (stream == NULL) {
+			wxMessageBox(wxT("ストリームの受信に失敗"));
 			return -1;
 		} else {
 			unsigned char buffer[1024];
@@ -612,6 +613,7 @@ int SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 			}
 		}
 	} else {
+		wxMessageBox(wxT("通信失敗"));
 		return -1;
 	}
 
@@ -628,6 +630,8 @@ int SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 		const wxString headerPath, const wxString boardNameAscii,
 		const wxString origNumber, const wxString hostName) {
+
+
 }
 
 /**
