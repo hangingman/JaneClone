@@ -25,6 +25,7 @@
 #include "JaneCloneUtil.h"
 #include <wx/wx.h>
 #include <wx/filefn.h>
+#include <wx/filename.h>
 #include <wx/textfile.h>
 #include <wx/protocol/http.h>
 #include <wx/wfstream.h>
@@ -132,9 +133,10 @@ private:
 			const wxString boardNameAscii, const wxString origNumber,
 			const wxString hostName);
 	/**
-	 * 前回の通信ログが存在すれば、最後に取得した日時を変数に格納する
+	 * 通信ログに残っているHTTPレスポンスコードを取得する
 	 */
-	wxString CheckLastModifiedTime(const wxString headerPath);
+	wxString GetHTTPResponseCode(const wxString headerPath,
+			const wxString reqCode);
 	/**
 	 * 一時ファイルを消す
 	 */
