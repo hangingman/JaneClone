@@ -848,15 +848,6 @@ void JaneClone::SetBoardList() {
 	}
 }
 
-// GUI上で右クリックされた際に起こるイベント処理
-void JaneClone::OnContext(wxContextMenuEvent& event) {
-	wxMessageBox(wxT("右クリックしましたねm9( ﾟдﾟ)"));
-}
-
-void JaneClone::OnRightClick(wxAuiNotebookEvent& event) {
-	wxMessageBox(wxT("右クリックしましたねm9( ﾟдﾟ)"));
-}
-
 // バージョン情報が書かれたダイアログを表示する処理
 void JaneClone::OnVersionInfo(wxCommandEvent&) {
 	wxAboutDialogInfo info;
@@ -950,4 +941,13 @@ void JaneClone::OnChangedTab(wxAuiNotebookEvent& event) {
 		boardNoteBook->Thaw();
 		m_mgr.Update();
 	}
+}
+
+// GUI上で右クリックされた際に起こるイベント処理
+void JaneClone::OnContext(wxContextMenuEvent& event) {
+	wxMessageBox(wxT("右クリックしましたねm9( ﾟдﾟ)"));
+}
+
+void JaneClone::OnRightClick(wxAuiNotebookEvent& event) {
+	wxMessageBox(wxT("右クリックしましたねm9( ﾟдﾟ)"));
 }
