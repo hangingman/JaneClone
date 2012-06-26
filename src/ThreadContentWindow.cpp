@@ -23,36 +23,47 @@
 
 IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
 
-ThreadContentWindow::ThreadContentWindow() {
-}
-
-bool ThreadContentWindow::LoadFile(const wxFileName& filename) {
-
-}
-bool ThreadContentWindow::LoadPage(const wxString& location) {
+/**
+ * 通常のコンストラクタ
+ */
+ThreadContentWindow::ThreadContentWindow(wxWindow* parent):
+wxHtmlWindow(parent, wxID_ANY-1, wxDefaultPosition, wxDefaultSize, wxHW_DEFAULT_STYLE) {
 
 }
+/**
+ * HTMLのセルがクリックされた時に起こるイベント
+ */
 bool ThreadContentWindow::OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y,
 		const wxMouseEvent& event) {
-
 }
+/**
+ * HTMLのセル上でカーソルが動いた時に起こるイベント
+ */
 void ThreadContentWindow::OnCellMouseHover(wxHtmlCell *cell, wxCoord x,
 		wxCoord y) {
 
 }
-void ThreadContentWindow::OnLinkClicked(const wxHtmlLinkInfo& link) {
-
-}
+/**
+ * URLが開かれた時に呼ばれるメソッド
+ */
 wxHtmlOpeningStatus ThreadContentWindow::OnOpeningURL(wxHtmlURLType type,
 		const wxString& url, wxString *redirect) {
-
 }
+/**
+ * <TITLE>タグを読み込んだ時に呼ばれる
+ */
 void ThreadContentWindow::OnSetTitle(const wxString& title) {
 
 }
+/**
+ * カスタム設定を読み込むメソッド
+ */
 void ThreadContentWindow::ReadCustomization(wxConfigBase *cfg, wxString path) {
 
 }
+/**
+ * カスタム設定を書き込むメソッド
+ */
 void ThreadContentWindow::WriteCustomization(wxConfigBase *cfg, wxString path) {
 
 }

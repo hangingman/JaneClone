@@ -26,18 +26,46 @@
 
 class WXDLLEXPORT ThreadContentWindow : public wxHtmlWindow {
 public:
-	ThreadContentWindow();
-	bool LoadFile(const wxFileName& filename);
-	bool LoadPage(const wxString& location);
+	/**
+	 * 通常のコンストラクタ
+	 */
+	ThreadContentWindow(wxWindow* parent);
+	/**
+	 * Hash用のコンストラクタ
+	 */
+	ThreadContentWindow() {}
+	ThreadContentWindow(const ThreadContentWindow&) {}
+	/**
+	 * オペレーターに対する参照返し
+	 */
+	ThreadContentWindow& operator=(const ThreadContentWindow&) {return *this;}
+	/**
+	 * HTMLのセルがクリックされた時に起こるイベント
+	 */
 	bool OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y, const wxMouseEvent& event);
+	/**
+	 * HTMLのセル上でカーソルが動いた時に起こるイベント
+	 */
 	void OnCellMouseHover(wxHtmlCell *cell, wxCoord x, wxCoord y);
-	void OnLinkClicked(const wxHtmlLinkInfo& link);
+	/**
+	 * URLが開かれた時に呼ばれるメソッド
+	 */
 	wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type,const wxString& url, wxString *redirect);
+	/**
+	 * <TITLE>タグを読み込んだ時に呼ばれる
+	 */
 	void OnSetTitle(const wxString& title);
+	/**
+	 * カスタム設定を読み込むメソッド
+	 */
 	void ReadCustomization(wxConfigBase *cfg, wxString);
+	/**
+	 * カスタム設定を書き込むメソッド
+	 */
 	void WriteCustomization(wxConfigBase *cfg, wxString);
 
 private:
+
 	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
 };
 
