@@ -945,13 +945,12 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 	threadNoteBook->Freeze();
 	// Hashに格納する板名タブのオブジェクトのインスタンスを準備する
 	ThreadContentWindow* tcw = new ThreadContentWindow(
-			(wxWindow*) threadNoteBook);
-	tcw->LoadPage(threadContentPath);
+			(wxWindow*) threadNoteBook, threadContentPath);
 
 	//　origNumber(key),ThreadContentWindow(value)としてHashに格納する
 	tcwHash[(const wxString) origNumber] = (const ThreadContentWindow&) tcw;
 
-	// スレッドリストを表示させる
+	// スレッドを表示させる
 	threadNoteBook->AddPage(tcw, title, false);
 	threadNoteBook->Thaw();
 

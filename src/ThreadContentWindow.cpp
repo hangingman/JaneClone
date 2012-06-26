@@ -26,10 +26,102 @@ IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
 /**
  * 通常のコンストラクタ
  */
-ThreadContentWindow::ThreadContentWindow(wxWindow* parent):
-wxHtmlWindow(parent, wxID_ANY-1, wxDefaultPosition, wxDefaultSize, wxHW_DEFAULT_STYLE) {
+ThreadContentWindow::ThreadContentWindow(wxWindow* parent, const wxString& threadContentPath):
+wxHtmlWindow(parent, wxID_ANY-1, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO) {
 
+	// 指定されたパスからHTMLファイルを読み出す
+	const wxString htmlSource = GetConvertedDatFile(threadContentPath);
+	// メモリに読み込んだHTMLを表示する
+	this->SetPage(htmlSource);
 }
+
+/**
+ * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
+ */
+const wxString ThreadContentWindow::GetConvertedDatFile(
+		const wxString& threadContentPath) {
+
+	// wxStringにバッファするサイズを計測する
+	size_t fileSize = JaneCloneUtil::GetFileSize(threadContentPath);
+
+	if (fileSize == 0)
+		// 読み込みに失敗した場合
+		return FAIL_TO_READ_PAGE;
+
+	// 取得サイズ分だけwxStringを確保する
+	wxString htmlSource;
+	htmlSource.Alloc(fileSize);
+	htmlSource += HTML_HEADER;
+
+	// テキストファイルの読み込み
+	wxTextFile datfile;
+	datfile.Open(threadContentPath, wxConvUTF8);
+	wxString str;
+	int number = 0;
+
+	// スレッドのそれぞれの要素
+	wxString default_nanashi;
+	wxString mail;
+	wxString day_and_ID;
+	wxString res;
+
+	// ファイルがオープンされているならば
+	if (datfile.IsOpened()) {
+		for (str = datfile.GetFirstLine(); !datfile.Eof();
+				str = datfile.GetNextLine()) {
+
+			// 正規表現のコンパイルにエラーがなければ
+			if (regexThread.IsValid()) {
+				// マッチさせる
+				if (regexThread.Matches(str)) {
+					// マッチさせたそれぞれの要素を取得する
+					default_nanashi.Clear();
+					default_nanashi = regexThread.GetMatch(str, 1);
+					mail.Clear();
+					mail = regexThread.GetMatch(str, 2);
+					day_and_ID.Clear();
+					day_and_ID = regexThread.GetMatch(str, 3);
+					res.Clear();
+					res = regexThread.GetMatch(str, 4);
+				}
+			}
+
+			// ひとかたまりのHTMLソースにまとめる
+			wxString lumpOfHTML = wxT("<dt>");
+			lumpOfHTML += wxString::Format("%d", number);
+			if ( mail != wxEmptyString ) {
+				// もしメ欄になにか入っているならば
+				lumpOfHTML += wxT(" ：<a href=\"mailto:");
+				lumpOfHTML += mail;
+				lumpOfHTML += wxT("\"><b>");
+				lumpOfHTML += default_nanashi;
+				lumpOfHTML += wxT("</b></a>");
+				lumpOfHTML += day_and_ID;
+				lumpOfHTML += wxT("<dd>");
+				lumpOfHTML += res;
+			} else {
+				// 空の場合
+				lumpOfHTML += wxT(" ：<font color=green><b>");
+				lumpOfHTML += default_nanashi;
+				lumpOfHTML += wxT("</b></font>");
+				lumpOfHTML += day_and_ID;
+				lumpOfHTML += wxT("<dd>");
+				lumpOfHTML += res;
+			}
+
+			// HTMLソースを加える
+			htmlSource += lumpOfHTML;
+
+			number++;
+		}
+	}
+
+	htmlSource += HTML_FOOTER;
+	datfile.Close();
+
+	return htmlSource;
+}
+
 /**
  * HTMLのセルがクリックされた時に起こるイベント
  */

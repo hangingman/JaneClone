@@ -23,13 +23,32 @@
 #define THREADCONTENTWINDOW_H_
 
 #include <wx/html/htmlwin.h>
+#include <wx/regex.h>
+#include "JaneCloneUtil.h"
+
+// 読み込みに失敗した場合に表示するページ
+static const wxString FAIL_TO_READ_PAGE =
+		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
+			charset=UTF-8\"><title></title></head><body><span>ファイルの読み込みに失敗しました・リロードしてみてください</span></body></html>");
+
+// ヘッダ部分にあたるHTML
+static const wxString HTML_HEADER =
+		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
+		charset=UTF-8\"></head><body bgcolor=#efefef text=black link=blue alink=red vlink=#660099>");
+
+// フッター部分にあたるHTML
+static const wxString HTML_FOOTER = wxT("</body></html>");
+
+// スレッド読み込み用正規表現
+static const wxRegEx regexThread(_T("^(.+)<>(.*)<>(.+)<>(.*)<>$"), wxRE_ADVANCED + wxRE_ICASE);
 
 class WXDLLEXPORT ThreadContentWindow : public wxHtmlWindow {
+
 public:
 	/**
 	 * 通常のコンストラクタ
 	 */
-	ThreadContentWindow(wxWindow* parent);
+	ThreadContentWindow(wxWindow* parent, const wxString& threadContentPath);
 	/**
 	 * Hash用のコンストラクタ
 	 */
@@ -65,6 +84,10 @@ public:
 	void WriteCustomization(wxConfigBase *cfg, wxString);
 
 private:
+	/**
+	 * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
+	 */
+	const wxString GetConvertedDatFile(const wxString& threadContentPath);
 
 	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
 };

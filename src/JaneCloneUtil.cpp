@@ -26,8 +26,8 @@
  * 引数１は読み込み元gzipファイルのPATH、引数２は解凍先のファイルのPATH
  * いずれもファイル名までを記述する
  */
-void JaneCloneUtil::DecommpressFile( wxString & inputPath,
-		 wxString & outputPath) {
+void JaneCloneUtil::DecommpressFile(wxString & inputPath,
+		wxString & outputPath) {
 	// gzファイルをZlibを使って解凍する
 	gzFile infile = gzopen(inputPath.mb_str(), "rb");
 	FILE *outfile = fopen(outputPath.mb_str(), "wb");
@@ -47,8 +47,8 @@ void JaneCloneUtil::DecommpressFile( wxString & inputPath,
  * ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
  * 引数１は読み込み元のPATH、引数２は出力先ファイルのPATH いずれもファイル名までを記述する
  */
-void JaneCloneUtil::ConvertSJISToUTF8( wxString & inputPath,
-		 wxString & outputPath) {
+void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath,
+		wxString & outputPath) {
 
 	iconv_t icd;
 	FILE *fp_src, *fp_dst;
@@ -80,7 +80,7 @@ void JaneCloneUtil::ConvertSJISToUTF8( wxString & inputPath,
 			size_t result;
 			result = iconv(icd, &p_src, &n_src, &p_dst, &n_dst);
 			// エラーがあれば止める
-			if ((int)result == -1) {
+			if ((int) result == -1) {
 				perror("iconv");
 				break;
 			}
@@ -104,7 +104,8 @@ wxString JaneCloneUtil::GetHTTPCommTimeFromHeader(wxString& headerPath) {
 
 	// ファイルがオープンされているならば
 	if (httpHeaderFile.IsOpened()) {
-		for (str = httpHeaderFile.GetFirstLine(); !httpHeaderFile.Eof(); str = httpHeaderFile.GetNextLine()) {
+		for (str = httpHeaderFile.GetFirstLine(); !httpHeaderFile.Eof(); str =
+				httpHeaderFile.GetNextLine()) {
 			// 上から読み込んで一番最初に当たる日付が取得日時
 			if (str.Contains(wxT("Date:")) && str.Contains(wxT("GMT"))) {
 				return str;
@@ -120,12 +121,38 @@ wxString JaneCloneUtil::GetHTTPCommTimeFromHeader(wxString& headerPath) {
  */
 wxString JaneCloneUtil::CalcThreadCreatedTime(wxString& threadNum) {
 	int threadNumInt = wxAtoi(threadNum);
-	time_t timeGMT = (time_t)threadNumInt;
+	time_t timeGMT = (time_t) threadNumInt;
 	struct tm *date = localtime(&timeGMT);
 	char str[64];
 	strftime(str, 63, "%x %H:%M", date);
 	return wxString(str, wxConvUTF8);
 }
 
+/**
+ * 指定されたパスにファイルがあればファイルサイズを返す処理
+ */
+size_t JaneCloneUtil::GetFileSize(const wxString& filePath) {
 
+	/**
+	 * メモ：2chのスレッドの容量を測る場合、スレッドはデータ容量が約500KBで規制されるので
+	 * fileSizeをsize_tでキャストしても安全？
+	 * 符号なしint型の範囲は 0 ～ 65535
+	 */
+
+	if (wxFileName::FileExists(filePath)) {
+
+		wxULongLong fileSize = wxFileName::GetSize(filePath);
+
+		if (fileSize == wxInvalidSize) {
+			// ファイルが正常に開けなかった場合
+			return 0;
+		} else {
+			// unsigned long型で返却
+			return (size_t)fileSize.GetLo();
+		}
+	} else {
+		// ファイルが存在しなかった場合
+		return 0;
+	}
+}
 

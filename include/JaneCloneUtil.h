@@ -26,6 +26,7 @@
 #include <wx/strconv.h>
 #include <wx/textfile.h>
 #include <wx/file.h>
+#include <wx/filename.h>
 #include <zlib.h>
 #include <iconv.h>
 
@@ -53,6 +54,12 @@ public:
 	 * 指定された数字からスレッドの作成された時間を計算する処理
 	 */
 	static wxString CalcThreadCreatedTime(wxString& threadNum);
+
+	/**
+	 * 指定されたパスにファイルがあればファイルサイズを返す処理
+	 */
+	static size_t GetFileSize(const wxString& filePath);
+
 private:
 	// ディスクからの読取サイズ
 	#define S_SIZE (2048)
