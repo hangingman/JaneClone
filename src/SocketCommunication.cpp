@@ -727,7 +727,7 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 			// ストリームを受け取るループ部分
 			while (!stream->Eof()) {
 				stream->Read(buffer, sizeof(buffer));
-				modifFile.AddLine(buffer, TEXT_ENDLINE_TYPE);
+				modifFile.AddLine(wxString::FromUTF8((const char*)buffer), TEXT_ENDLINE_TYPE);
 				byteRead = stream->LastRead();
 				if (byteRead <= 0) {
 					break;

@@ -88,7 +88,9 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 
 			// ひとかたまりのHTMLソースにまとめる
 			wxString lumpOfHTML = wxT("<dt>");
-			lumpOfHTML += wxString::Format("%d", number);
+			wxString num;
+			num << number;
+			lumpOfHTML += num;
 			if ( mail != wxEmptyString ) {
 				// もしメ欄になにか入っているならば
 				lumpOfHTML += wxT(" ：<a href=\"mailto:");
