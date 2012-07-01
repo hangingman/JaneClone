@@ -287,7 +287,6 @@ wxString SocketCommunication::DownloadThreadList(const wxString boardName,
 	}
 	// 更新が終わったらgzipファイルとSJISファイルを消しておく
 	RemoveTmpFile(gzipPath);
-	RemoveTmpFile(tmpPath);
 
 	return outputFilePath;
 }

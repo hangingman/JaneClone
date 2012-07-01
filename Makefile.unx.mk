@@ -20,7 +20,7 @@ CXX_RELEASE_FLAGS	 =	-s -O0
 
 # オプション
 CXXFLAGS = -Wall -I/usr/local/include -I include `wx-config --cxxflags` `xml2-config --cflags`
-LDFLAGS  = -L/usr/local/lib -lwx_gtk2u_aui-2.8 `wx-config --libs` `xml2-config --libs` -lmk4
+LDFLAGS  = -L/usr/local/lib -lwx_gtk2u_aui-2.8 `wx-config --libs` `xml2-config --libs` -lmk4 ./libnkf.a
 VPATH    = include src rc
 
 # make all

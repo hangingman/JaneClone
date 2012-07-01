@@ -23,11 +23,12 @@
 #define JANECLONEUTIL_H_
 
 #include <wx/wx.h>
-#include <wx/strconv.h>
 #include <wx/textfile.h>
 #include <wx/file.h>
 #include <wx/filename.h>
+#include <wx/filefn.h>
 #include <zlib.h>
+#include "libnkf.h"
 
 class JaneCloneUtil {
 public:

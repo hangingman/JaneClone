@@ -50,31 +50,21 @@ void JaneCloneUtil::DecommpressFile(wxString & inputPath,
 void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath,
 		wxString & outputPath) {
 
-	// 出力先ファイルを作成する
-	wxFile outputFile;
-	outputFile.Create(outputPath, true, wxS_DEFAULT);
-	outputFile.Close();
+	// コマンド用の文字列を準備する
+	wxCharBuffer buffer = inputPath.ToUTF8();
+	// コマンドの最終型 $ nkf --ic=CP932 --oc=UTF-8 --overwrite sjis.txt
+	int argc = 5;
+	char *argv[] = { "nkf", "--ic=CP932", "--oc=UTF-8", "--overwrite", buffer.data() };
 
-	// Shift_JISファイルを読み込む
-	wxTextFile shift_JIS_file;
-	shift_JIS_file.Open(inputPath, wxCSConv(wxT("CP932")));
-	wxString str;
-	// 書き出し先のファイルを設定する
-	wxTextFile utf8_file;
-	utf8_file.Open(outputPath, wxConvUTF8);
+	// nkfを呼び出す
+	int rc = nkf(argc, argv);
 
-	// きちんとどちらのファイルもオープンされているならば
-	if (shift_JIS_file.IsOpened() && utf8_file.IsOpened()) {
-		for (str = shift_JIS_file.GetFirstLine(); !shift_JIS_file.Eof(); str = shift_JIS_file.GetNextLine()) {
-			// 書き出し先にデータを書き出す
-			utf8_file.AddLine(str, wxTextFileType_Dos);
-		}
+	if ( ::wxFileExists(inputPath) ) {
+		// inputPathにファイルがあることが確認できたらコピーする
+		::wxCopyFile(inputPath, outputPath);
+	} else {
+		// 本当はここでログを出したい
 	}
-
-	// ファイルのクローズ
-	shift_JIS_file.Close();
-	utf8_file.Write(wxTextFileType_Dos, wxConvUTF8);
-	utf8_file.Close();
 }
 
 /**
@@ -132,7 +122,7 @@ size_t JaneCloneUtil::GetFileSize(const wxString& filePath) {
 			return 0;
 		} else {
 			// unsigned long型で返却
-			return (size_t)fileSize.GetLo();
+			return (size_t) fileSize.GetLo();
 		}
 	} else {
 		// ファイルが存在しなかった場合
