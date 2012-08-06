@@ -28,7 +28,11 @@
 #include <wx/filename.h>
 #include <wx/filefn.h>
 #include <zlib.h>
-#include "libnkf.h"
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <iterator>
+#include "LibNKF.h"
 
 class JaneCloneUtil {
 public:

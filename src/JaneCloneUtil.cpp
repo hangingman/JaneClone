@@ -50,21 +50,12 @@ void JaneCloneUtil::DecommpressFile(wxString & inputPath,
 void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath,
 		wxString & outputPath) {
 
-	// コマンド用の文字列を準備する
-	wxCharBuffer buffer = inputPath.ToUTF8();
-	// コマンドの最終型 $ nkf --ic=CP932 --oc=UTF-8 --overwrite sjis.txt
-	int argc = 5;
-	char *argv[] = { "nkf", "--ic=CP932", "--oc=UTF-8", "--overwrite", buffer.data() };
-
-	// nkfを呼び出す
-	int rc = nkf(argc, argv);
-
-	if ( ::wxFileExists(inputPath) ) {
-		// inputPathにファイルがあることが確認できたらコピーする
-		::wxCopyFile(inputPath, outputPath);
-	} else {
-		// 本当はここでログを出したい
-	}
+	// LibNKFを呼び出してCP932からUTF-8への変換を行う
+	/* ! Fix Me !  全然うまく動かん */
+	LibNKF* nkf = new LibNKF();
+	nkf->Convert(std::string(inputPath.mb_str()),
+			std::string(outputPath.mb_str()), "--ic=CP932 --oc=UTF-8");
+	delete nkf;
 }
 
 /**

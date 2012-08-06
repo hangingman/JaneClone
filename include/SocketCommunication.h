@@ -32,6 +32,7 @@
 #include <wx/datstrm.h>
 #include <wx/regex.h>
 #include <wx/dir.h>
+#include <wx/utils.h>
 
 class SocketCommunication {
 
