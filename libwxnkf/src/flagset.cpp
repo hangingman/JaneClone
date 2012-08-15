@@ -1,12 +1,13 @@
 /*
- * FlagSet.cpp
+ * flagset.cpp
+ *
  * すべてのフラグを管理するクラス
  *  Created on: 2012/07/29
  * Contributor: Hiroyuki Nagata
  */
 
-#include "NKFBaseConfig.h"
-#include "FlagSet.h"
+#include "wxnkfbaseconfig.h"
+#include "flagset.h"
 
 std::bitset<nkf_flag_num> FlagSet::GetFlagSet() {
 
@@ -22,3 +23,4 @@ std::bitset<nkf_flag_num> FlagSet::GetFlagSet() {
 
 	return nkfFlags;
 }
+

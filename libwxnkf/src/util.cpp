@@ -1,248 +1,259 @@
 /*
- * Util.cpp
+ * util.cpp
  *
+ * nkf common method
  *  Created on: 2012/07/12
  * Contributor: Hiroyuki Nagata
  */
 
-#include "Util.h"
+#include "util.h"
 
 /**
- * 文字コード名からNKFEncodingクラスを判別し、引数のオブジェクトに設定する
+ * judge baseID and return wxNKFEncoding instance
+ * 0: set input
+ * 1: set output
  */
-void Util::NKFEncFind(const char *name, NKFNativeEncoding* enc) {
-
-	// indexを設定する
+void Util::NKFEncFind(const char* name, wxNKFEncoding* enc, int io) {
+	// setting unique encode index(int)
 	int idx = -1;
+	// encode name to encode index
 	idx = NKFEncFindIndex(name);
-	NKFEncFromIndex(idx, enc);
+	// set data to encode class instance
+	NKFEncFromIndex(idx, enc, io);
 }
 /**
- * IDに対応するNKFEncodingクラスを返却する
+ * return wxNKFEncoding class per encoding ID
  */
-void Util::NKFEncFromIndex(int idx, NKFNativeEncoding* enc) {
+void Util::NKFEncFromIndex(int idx, wxNKFEncoding* enc, int io) {
 
-	// 返却用のクラスのインスタンス
-	enc->id = idx;
+	/**
+	 * base name & base id
+	 */
+	int baseId;
+	wxString baseName;
+	/**
+	 * unique name & unique id
+	 */
+	int uniqueId = idx;
+	wxString uniqueName;
 
 	/*
-	 *  使用するbaseEncodingとidを設定する
+	 *  set unique encode id and base encoding
 	 */
 	if (idx == ASCII || idx == ISO_8859_1 || idx == BINARY) {
-		// NkfEncodingASCIIの場合
-		enc->baseId = ASCII;
-		enc->baseName = "ASCII";
-		enc->iconvName = "e_iconv";
-		enc->oconvName = "e_oconv";
+		// NkfEncodingASCII
+		baseId = ASCII;
+		baseName = wxT("ASCII");
 
-		// idを設定する
+		// set id
 		switch (idx) {
 		case ASCII:
-			enc->baseName = "US-ASCII";
+			uniqueName = wxT("US-ASCII");
 			break;
 		case ISO_8859_1:
-			enc->baseName = "ISO-8859-1";
+			uniqueName = wxT("ISO-8859-1");
 			break;
 		case BINARY:
-			enc->baseName = "BINARY";
+			uniqueName = wxT("BINARY");
 			break;
 		}
 
 	} else if (idx == ISO_2022_JP || idx == CP50220 || idx == CP50221
 			|| idx == CP50222 || idx == ISO_2022_JP_1 || idx == ISO_2022_JP_3
 			|| idx == ISO_2022_JP_2004) {
-		// NkfEncodingISO_2022_JPの場合
-		enc->baseId = ISO_2022_JP;
-		enc->baseName = "ISO-2022-JP";
-		enc->iconvName = "e_iconv";
-		enc->oconvName = "j_oconv";
+		// NkfEncodingISO_2022_JP
+		baseId = ISO_2022_JP;
+		baseName = wxT("ISO-2022-JP");
 
-		// idを設定する
+		// set id
 		switch (idx) {
 		case ISO_2022_JP:
-			enc->baseName = "ISO-2022-JP";
+			uniqueName = wxT("ISO-2022-JP");
 			break;
 		case CP50220:
-			enc->baseName = "CP50220";
+			uniqueName = wxT("CP50220");
 			break;
 		case CP50221:
-			enc->baseName = "CP50221";
+			uniqueName = wxT("CP50221");
 			break;
 		case CP50222:
-			enc->baseName = "CP50222";
+			uniqueName = wxT("CP50222");
 			break;
 		case ISO_2022_JP_1:
-			enc->baseName = "ISO-2022-JP-1";
+			uniqueName = wxT("ISO-2022-JP-1");
 			break;
 		case ISO_2022_JP_3:
-			enc->baseName = "ISO-2022-JP-3";
+			uniqueName = wxT("ISO-2022-JP-3");
 			break;
 		case ISO_2022_JP_2004:
-			enc->baseName = "ISO-2022-JP-2004";
+			uniqueName = wxT("ISO-2022-JP-2004");
 			break;
 		}
 
 	} else if (idx == SHIFT_JIS || idx == WINDOWS_31J || idx == CP10001
 			|| idx == SHIFT_JISX0213 || idx == SHIFT_JIS_2004) {
-		// NkfEncodingShift_JISの場合
-		enc->baseId = SHIFT_JIS;
-		enc->baseName = "Shift_JIS";
-		enc->iconvName = "s_iconv";
-		enc->oconvName = "s_oconv";
+		// NkfEncodingShift_JIS
+		baseId = SHIFT_JIS;
+		baseName = wxT("Shift_JIS");
 
-		// idを設定する
+		// set id
 		switch (idx) {
 		case SHIFT_JIS:
-			enc->baseName = "Shift_JIS";
+			uniqueName = wxT("Shift_JIS");
 			break;
 		case WINDOWS_31J:
-			enc->baseName = "Windows-31J";
+			uniqueName = wxT("Windows-31J");
 			break;
 		case CP10001:
-			enc->baseName = "CP10001";
+			uniqueName = wxT("CP10001");
 			break;
 		case SHIFT_JISX0213:
-			enc->baseName = "Shift_JISX0213";
+			uniqueName = wxT("Shift_JISX0213");
 			break;
 		case SHIFT_JIS_2004:
-			enc->baseName = "Shift_JIS-2004";
+			uniqueName = wxT("Shift_JIS-2004");
 			break;
 		}
 
 	} else if (idx == EUC_JP || idx == EUCJP_NKF || idx == CP51932
 			|| idx == EUCJP_MS || idx == EUCJP_ASCII || idx == EUC_JISX0213
 			|| idx == EUC_JIS_2004) {
-		// NkfEncodingEUC_JPの場合
-		enc->baseId = EUC_JP;
-		enc->baseName = "EUC-JP";
-		enc->iconvName = "e_iconv";
-		enc->oconvName = "e_oconv";
+		// NkfEncodingEUC_JP
+		baseId = EUC_JP;
+		baseName = wxT("EUC-JP");
 
-		// idを設定する
+		// set id
 		switch (idx) {
 		case EUC_JP:
-			enc->baseName = "EUC-JP";
+			uniqueName = wxT("EUC-JP");
 			break;
 		case EUCJP_NKF:
-			enc->baseName = "eucJP-nkf";
+			uniqueName = wxT("eucJP-nkf");
 			break;
 		case CP51932:
-			enc->baseName = "CP51932";
+			uniqueName = wxT("CP51932");
 			break;
 		case EUCJP_MS:
-			enc->baseName = "eucJP-MS";
+			uniqueName = wxT("eucJP-MS");
 			break;
 		case EUCJP_ASCII:
-			enc->baseName = "eucJP-ASCII";
+			uniqueName = wxT("eucJP-ASCII");
 			break;
 		case EUC_JISX0213:
-			enc->baseName = "EUC-JISX0213";
+			uniqueName = wxT("EUC-JISX0213");
 			break;
 		case EUC_JIS_2004:
-			enc->baseName = "EUC-JIS-2004";
+			uniqueName = wxT("EUC-JIS-2004");
 			break;
 		}
 
 	} else if (idx == UTF_8 || idx == UTF_8N || idx == UTF_8_BOM
 			|| idx == UTF8_MAC) {
-		// NkfEncodingUTF_8の場合
-		enc->baseId = UTF_8;
-		enc->baseName = "UTF-8";
-		enc->iconvName = "w_iconv";
-		enc->oconvName = "w_oconv";
+		// NkfEncodingUTF_8
+		baseId = UTF_8;
+		baseName = wxT("UTF-8");
 
-		// idを設定する
+		// set id
 		switch (idx) {
 		case UTF_8:
-			enc->baseName = "UTF-8";
+			uniqueName = wxT("UTF-8");
 			break;
 		case UTF_8N:
-			enc->baseName = "UTF-8N";
+			uniqueName = wxT("UTF-8N");
 			break;
 		case UTF_8_BOM:
-			enc->baseName = "UTF-8-BOM";
+			uniqueName = wxT("UTF-8-BOM");
 			break;
 		case UTF8_MAC:
-			enc->baseName = "UTF8-MAC";
+			uniqueName = wxT("UTF8-MAC");
 			break;
 		}
 
 	} else if (idx == UTF_16 || idx == UTF_16BE || idx == UTF_16BE_BOM
 			|| idx == UTF_16LE || idx == UTF_16LE_BOM) {
-		// NkfEncodingUTF_16の場合
-		enc->baseId = UTF_16;
-		enc->baseName = "UTF-16";
-		enc->iconvName = "w_iconv16";
-		enc->oconvName = "w_oconv16";
+		// NkfEncodingUTF_16
+		baseId = UTF_16;
+		baseName = wxT("UTF-16");
 
-		// idを設定する
+		// set id
 		switch (idx) {
 		case UTF_16:
-			enc->baseName = "UTF-16";
+			uniqueName = wxT("UTF-16");
 			break;
 		case UTF_16BE:
-			enc->baseName = "UTF-16BE";
+			uniqueName = wxT("UTF-16BE");
 			break;
 		case UTF_16BE_BOM:
-			enc->baseName = "UTF-16BE-BOM";
+			uniqueName = wxT("UTF-16BE-BOM");
 			break;
 		case UTF_16LE:
-			enc->baseName = "UTF-16LE";
+			uniqueName = wxT("UTF-16LE");
 			break;
 		case UTF_16LE_BOM:
-			enc->baseName = "UTF-16LE-BOM";
+			uniqueName = wxT("UTF-16LE-BOM");
 			break;
 		}
 
 	} else if (idx == UTF_32 || idx == UTF_32BE || idx == UTF_32BE_BOM
 			|| idx == UTF_32LE || idx == UTF_32LE_BOM) {
-		// NkfEncodingUTF_32の場合
-		enc->baseId = UTF_32;
-		enc->baseName = "UTF-32";
-		enc->iconvName = "w_iconv32";
-		enc->oconvName = "w_oconv32";
+		// NkfEncodingUTF_32
+		baseId = UTF_32;
+		baseName = wxT("UTF-32");
 
-		// idを設定する
+		// set id
 		switch (idx) {
 		case UTF_32:
-			enc->baseName = "UTF-32";
+			uniqueName = wxT("UTF-32");
 			break;
 		case UTF_32BE:
-			enc->baseName = "UTF-32BE";
+			uniqueName = wxT("UTF-32BE");
 			break;
 		case UTF_32BE_BOM:
-			enc->baseName = "UTF-32BE-BOM";
+			uniqueName = wxT("UTF-32BE-BOM");
 			break;
 		case UTF_32LE:
-			enc->baseName = "UTF-32LE";
+			uniqueName = wxT("UTF-32LE");
 			break;
 		case UTF_32LE_BOM:
-			enc->baseName = "UTF-32LE-BOM";
+			uniqueName = wxT("UTF-32LE-BOM");
 			break;
 		}
 	} else {
-		// idxが異常な値だった場合
-		enc->baseId = -1;
-		enc->baseName = "";
+		// idx is abnormal
+		baseId = -1;
+		baseName = wxEmptyString;
 		enc = 0;
+	}
+
+	// set data to encode instance
+	if (SET_INPUT_MODE == io) {
+		enc->inputMode = baseId;
+		enc->inputBaseName = baseName;
+		enc->iCharID = idx;
+		enc->iCharName = uniqueName;
+	}
+
+	if (SET_OUTPUT_MODE == io) {
+		enc->outputMode = baseId;
+		enc->outputBaseName = baseName;
+		enc->oCharID = idx;
+		enc->iCharName = uniqueName;
 	}
 }
 /**
- * 文字コード名から文字コードに対応するIDを取得する
+ * get encode ID by name
  */
-int Util::NKFEncFindIndex(const char* name) {
+int Util::NKFEncFindIndex(const char *name) {
 
 	if (name[0] == 'X' && *(name + 1) == '-')
 		name += 2;
 
-	// NULLであれば問答無用でエラー
+	// If NULL, force to error
 	if (name == 0)
 		return -1;
 
 	int id = 0;
-	/**
-	 * 文字コード名の最初の1文字をリテラルとして取り出してidを判定する
-	 */
+
 	switch (name[0]) {
 
 	case '6':
@@ -257,10 +268,10 @@ int Util::NKFEncFindIndex(const char* name) {
 		id = BINARY;
 		break;
 
-	case 'C': // 最初の文字が「C」の場合
+	case 'C': // case of 'C'
 		switch (name[1]) {
 
-		case 'P': // 「CP**」の場合
+		case 'P': // "CP**"
 			if (StrncmpFromHead("CP50220", name)) {
 				id = CP50220;
 			} else if (StrncmpFromHead("CP50221", name)) {
@@ -276,7 +287,7 @@ int Util::NKFEncFindIndex(const char* name) {
 			}
 			break;
 
-		case 'S': // 「CS**」の場合
+		case 'S': // "CS**"
 			if (StrncmpFromHead("CSISO2022JP", name)) {
 				id = CP50221;
 			} else if (StrncmpFromHead("CSWINDOWS31J", name)) {
@@ -286,10 +297,10 @@ int Util::NKFEncFindIndex(const char* name) {
 		}
 		break;
 
-	case 'E': // 最初の文字が「E」の場合, EUC**
+	case 'E': // case of 'E' EUC**
 		switch (name[3]) {
 
-		case 'J': // 「EUCJ**」の場合
+		case 'J': // "EUCJ**"
 			if (StrncmpFromHead("EUCJP", name)) {
 				id = EUC_JP;
 			} else if (StrncmpFromHead("EUCJP-NKF", name)) {
@@ -303,7 +314,7 @@ int Util::NKFEncFindIndex(const char* name) {
 			}
 			break;
 
-		case '-': // 「EUC-**」の場合
+		case '-': // "EUC-**"
 			if (StrncmpFromHead("EUC-JP", name)) {
 				id = EUC_JP;
 			} else if (StrncmpFromHead("EUC-JP-MS", name)) {
@@ -319,7 +330,7 @@ int Util::NKFEncFindIndex(const char* name) {
 		}
 		break;
 
-	case 'I': // 最初の文字が「I」の場合, ISO**
+	case 'I': // case of 'I' ISO**
 		if (StrncmpFromHead("ISO-2022-JP", name)) {
 			id = ISO_2022_JP;
 		} else if (StrncmpFromHead("ISO2022JP-CP932", name)) {
@@ -333,7 +344,7 @@ int Util::NKFEncFindIndex(const char* name) {
 		}
 		break;
 
-	case 'M': // 最初の文字が「M」の場合
+	case 'M': // case of 'M'
 		if (StrncmpFromHead("MS_Kanji", name)) {
 			id = SHIFT_JIS;
 		} else if (StrncmpFromHead("MS932", name)) {
@@ -349,21 +360,21 @@ int Util::NKFEncFindIndex(const char* name) {
 		id = ASCII;
 		break;
 
-	case 'S': // 最初の文字が「S」の場合
-		if (StrncmpFromHead("Shift_JIS", name)) {
+	case 'S': // case of 'S'
+		if (StrncmpFromHead("SHIFT_JIS", name)) {
 			id = SHIFT_JIS;
 		} else if (StrncmpFromHead("SJIS", name)) {
 			id = SHIFT_JIS;
-		} else if (StrncmpFromHead("Shift_JISX0213", name)) {
+		} else if (StrncmpFromHead("SHIFT_JISX0213", name)) {
 			id = SHIFT_JISX0213;
-		} else if (StrncmpFromHead("Shift_JIS-2004", name)) {
+		} else if (StrncmpFromHead("SHIFT_JIS-2004", name)) {
 			id = SHIFT_JIS_2004;
 		}
 		break;
 
-	case 'U': // 最初の文字が「U」の場合
+	case 'U': // case of 'U'
 
-		switch (name[4]) { // 「UTF-*」の場合
+		switch (name[4]) { // "UTF-*"
 
 		case '8':
 			if (StrncmpFromHead("UTF-8", name)) {
@@ -419,93 +430,65 @@ int Util::NKFEncFindIndex(const char* name) {
 	return id;
 }
 /**
- * 文字コードを初期化する
+ * Initialize character code
  */
-NKFNativeEncoding* Util::NKFDefaultEncoding() {
-
-	NKFNativeEncoding* enc;
-	enc->id = 0;
+void Util::NKFDefaultEncoding(wxNKFEncoding* enc, int io) {
 
 #ifdef DEFAULT_CODE_LOCALE
-	enc = NKFLocaleEncoding();
+	NKFLocaleEncoding(enc, io);
 #elif defined(DEFAULT_ENCIDX)
-	enc = Util::NKFEncFromIndex(DEFAULT_ENCIDX);
+	Util::NKFEncFromIndex(DEFAULT_ENCIDX, enc, io);
 #endif
-
-	return enc;
 }
 /**
- * OSのロケールカらデフォルトのNKFEncodingを取得し返す
+ * convert EUC-JP to UTF-8
  */
-void Util::NKFLocaleEncoding(NKFNativeEncoding* enc) {
-	const char* encname;
-#ifdef HAVE_LANGINFO_H
-	encname = nl_langinfo(CODESET);
-#elif defined(__WIN32__)
-	static char buf[16];
-	sprintf(buf, "CP%d", GetACP());
-	encname = buf;
-#endif
-	if (encname)
-		// encnameに何らかの文字列が設定されていた場合
-		Util::NKFEncFind(encname, enc);
-}
-/**
- *
- */
-nkf_char Util::E2sConv(nkf_char c2, nkf_char c1, nkf_char* p2, nkf_char* p1,
+nkf_char Util::E2wConv(nkf_char c2, nkf_char c1,
 		std::bitset<nkf_flag_num> nkfFlags) {
 
-	nkf_char ndx;
-	if (is_eucg3(c2)) {
-		ndx = c2 & 0x7f;
-		if (nkfFlags[x0213_f]) {
-			if ((0x21 <= ndx && ndx <= 0x2F)) {
-				if (p2)
-					*p2 = ((ndx - 1) >> 1) + 0xec - ndx / 8 * 3;
-				if (p1)
-					*p1 = c1 + ((ndx & 1) ? ((c1 < 0x60) ? 0x1f : 0x20) : 0x7e);
-				return 0;
-			} else if (0x6E <= ndx && ndx <= 0x7E) {
-				if (p2)
-					*p2 = ((ndx - 1) >> 1) + 0xbe;
-				if (p1)
-					*p1 = c1 + ((ndx & 1) ? ((c1 < 0x60) ? 0x1f : 0x20) : 0x7e);
-				return 0;
-			}
-			return 1;
-		}
+	const unsigned short *p;
 
-		else if (nkf_isgraph(ndx)) {
-			nkf_char val = 0;
-			const unsigned short *ptr;
-			UTF8Table* table;
-			//ptr = table->x0212_shiftjis[ndx - 0x21];
-			if (ptr) {
-				val = ptr[(c1 & 0x7f) - 0x21];
+	if (c2 == JIS_X_0201_1976_K) {
+		if (nkfFlags[ms_ucs_map_f] == UCS_MAP_CP10001) {
+			switch (c1) {
+			case 0x20:
+				return 0xA0;
+			case 0x7D:
+				return 0xA9;
 			}
-			if (val) {
-				c2 = val >> 8;
-				c1 = val & 0xff;
-				if (p2)
-					*p2 = c2;
-				if (p1)
-					*p1 = c1;
-				return 0;
-			}
-			//c2 = Util::X0212Shift(c2);
 		}
+		p = UTF8Table::euc_to_utf8_1byte;
+	} else if (is_eucg3(c2)) {
+		if (nkfFlags[ms_ucs_map_f] == UCS_MAP_ASCII && c2 == NKF_INT32_C(0x8F22)
+				&& c1 == 0x43) {
+			return 0xA6;
+		}
+		c2 = (c2 & 0x7f) - 0x21;
+		if (0 <= c2 && c2 < sizeof_euc_to_utf8_2bytes)
+			p = UTF8Table::x0212_to_utf8_2bytes[c2];
+		else
+			return 0;
+	} else {
+		c2 &= 0x7f;
+		c2 = (c2 & 0x7f) - 0x21;
+		if (0 <= c2 && c2 < sizeof_euc_to_utf8_2bytes)
+			p = nkfFlags[ms_ucs_map_f] == UCS_MAP_ASCII ?
+					UTF8Table::euc_to_utf8_2bytes[c2] :
+				nkfFlags[ms_ucs_map_f] == UCS_MAP_CP10001 ?
+						UTF8Table::euc_to_utf8_2bytes_mac[c2] :
+						UTF8Table::euc_to_utf8_2bytes_ms[c2];
+		else
+			return 0;
 	}
-	if (0x7F < c2)
-		return 1;
-	if (p2)
-		*p2 = ((c2 - 1) >> 1) + ((c2 <= 0x5e) ? 0x71 : 0xb1);
-	if (p1)
-		*p1 = c1 + ((c2 & 1) ? ((c1 < 0x60) ? 0x1f : 0x20) : 0x7e);
+	if (!p)
+		return 0;
+	c1 = (c1 & 0x7f) - 0x21;
+	if (0 <= c1 && c1 < sizeof_euc_to_utf8_1byte)
+		return p[c1];
 	return 0;
 }
 /**
- * Shift_JISからEUC-JPへの変換
+ * convert Shift_JIS to EUC-JP
  */
 nkf_char Util::S2eConv(nkf_char c2, nkf_char c1, nkf_char* p2, nkf_char* p1,
 		std::bitset<nkf_flag_num> nkfFlags) {
@@ -582,7 +565,7 @@ nkf_char Util::S2eConv(nkf_char c2, nkf_char c1, nkf_char* p2, nkf_char* p1,
 	return 0;
 }
 /**
- * UTF-8からEUC-JPへの変換
+ * convert UTF-8 to EUC-JP
  */
 nkf_char Util::W2eConv(nkf_char c2, nkf_char c1, nkf_char c0, nkf_char* p2,
 		nkf_char* p1, std::bitset<nkf_flag_num> nkfFlags) {
@@ -605,52 +588,146 @@ nkf_char Util::W2eConv(nkf_char c2, nkf_char c1, nkf_char c0, nkf_char* p2,
 	}
 	return ret;
 }
-
-nkf_char Util::E2wConv(nkf_char c2, nkf_char c1,
+/**
+ * convert UTF-8 to Shift_JIS
+ */
+nkf_char Util::E2sConv(nkf_char c2, nkf_char c1, nkf_char* p2, nkf_char* p1,
 		std::bitset<nkf_flag_num> nkfFlags) {
 
-	const unsigned short *p;
-
-	if (c2 == JIS_X_0201_1976_K) {
-		if (nkfFlags[ms_ucs_map_f] == UCS_MAP_CP10001) {
-			switch (c1) {
-			case 0x20:
-				return 0xA0;
-			case 0x7D:
-				return 0xA9;
+	nkf_char ndx;
+	if (is_eucg3(c2)) {
+		ndx = c2 & 0x7f;
+		if (nkfFlags[x0213_f]) {
+			if ((0x21 <= ndx && ndx <= 0x2F)) {
+				if (p2)
+					*p2 = ((ndx - 1) >> 1) + 0xec - ndx / 8 * 3;
+				if (p1)
+					*p1 = c1 + ((ndx & 1) ? ((c1 < 0x60) ? 0x1f : 0x20) : 0x7e);
+				return 0;
+			} else if (0x6E <= ndx && ndx <= 0x7E) {
+				if (p2)
+					*p2 = ((ndx - 1) >> 1) + 0xbe;
+				if (p1)
+					*p1 = c1 + ((ndx & 1) ? ((c1 < 0x60) ? 0x1f : 0x20) : 0x7e);
+				return 0;
 			}
+			return 1;
 		}
-		p = UTF8Table::euc_to_utf8_1byte;
-	} else if (is_eucg3(c2)) {
-		if (nkfFlags[ms_ucs_map_f] == UCS_MAP_ASCII && c2 == NKF_INT32_C(0x8F22)
-				&& c1 == 0x43) {
-			return 0xA6;
+
+		else if (nkf_isgraph(ndx)) {
+			nkf_char val = 0;
+			const unsigned short *ptr;
+			ptr = UTF8Table::x0212_shiftjis[ndx - 0x21];
+
+			if (ptr) {
+				val = ptr[(c1 & 0x7f) - 0x21];
+			}
+			if (val) {
+				c2 = val >> 8;
+				c1 = val & 0xff;
+				if (p2)
+					*p2 = c2;
+				if (p1)
+					*p1 = c1;
+				return 0;
+			}
+			c2 = Util::X0212Shift(c2);
 		}
-		c2 = (c2 & 0x7f) - 0x21;
-		if (0 <= c2 && c2 < sizeof_euc_to_utf8_2bytes)
-			p = UTF8Table::x0212_to_utf8_2bytes[c2];
-		else
-			return 0;
-	} else {
-		c2 &= 0x7f;
-		c2 = (c2 & 0x7f) - 0x21;
-		if (0 <= c2 && c2 < sizeof_euc_to_utf8_2bytes)
-			p = nkfFlags[ms_ucs_map_f] == UCS_MAP_ASCII ?
-					UTF8Table::euc_to_utf8_2bytes[c2] :
-				nkfFlags[ms_ucs_map_f] == UCS_MAP_CP10001 ?
-						UTF8Table::euc_to_utf8_2bytes_mac[c2] :
-						UTF8Table::euc_to_utf8_2bytes_ms[c2];
-		else
-			return 0;
 	}
-	if (!p)
-		return 0;
-	c1 = (c1 & 0x7f) - 0x21;
-	if (0 <= c1 && c1 < sizeof_euc_to_utf8_1byte)
-		return p[c1];
+	if (0x7F < c2)
+		return 1;
+	if (p2)
+		*p2 = ((c2 - 1) >> 1) + ((c2 <= 0x5e) ? 0x71 : 0xb1);
+	if (p1)
+		*p1 = c1 + ((c2 & 1) ? ((c1 < 0x60) ? 0x1f : 0x20) : 0x7e);
 	return 0;
 }
+/**
+ * get default os locale
+ */
+void Util::NKFLocaleEncoding(wxNKFEncoding* enc, int io) {
 
+	const char* encname;
+#ifdef HAVE_LANGINFO_H
+	encname = nl_langinfo(CODESET);
+#elif defined(__WIN32__)
+	static char buf[16];
+	sprintf(buf, "CP%d", GetACP());
+	encname = buf;
+#endif
+	if (encname)
+		Util::NKFEncFind(encname, enc, io);
+}
+/**
+ * convert Unicode to UTF-8
+ */
+void Util::NKFUnicodeToUTF8(nkf_char val, nkf_char* p1, nkf_char* p2,
+		nkf_char* p3, nkf_char* p4) {
+
+	val &= VALUE_MASK;
+	if (val < 0x80) {
+		*p1 = val;
+		*p2 = 0;
+		*p3 = 0;
+		*p4 = 0;
+	} else if (val < 0x800) {
+		*p1 = 0xc0 | (val >> 6);
+		*p2 = 0x80 | (val & 0x3f);
+		*p3 = 0;
+		*p4 = 0;
+	} else if (nkf_char_unicode_bmp_p(val)) {
+		*p1 = 0xe0 | (val >> 12);
+		*p2 = 0x80 | ((val >> 6) & 0x3f);
+		*p3 = 0x80 | (val & 0x3f);
+		*p4 = 0;
+	} else if (nkf_char_unicode_value_p(val)) {
+		*p1 = 0xf0 | (val >> 18);
+		*p2 = 0x80 | ((val >> 12) & 0x3f);
+		*p3 = 0x80 | ((val >> 6) & 0x3f);
+		*p4 = 0x80 | (val & 0x3f);
+	} else {
+		*p1 = 0;
+		*p2 = 0;
+		*p3 = 0;
+		*p4 = 0;
+	}
+}
+/**
+ * convert UTF-8 to Unicode
+ */
+nkf_char Util::NKFUTF8ToUnicode(nkf_char c1, nkf_char c2, nkf_char c3,
+		nkf_char c4) {
+
+	nkf_char wc;
+	if (c1 <= 0x7F) {
+		/* single byte */
+		wc = c1;
+	} else if (c1 <= 0xC3) {
+		/* trail byte or invalid */
+		return -1;
+	} else if (c1 <= 0xDF) {
+		/* 2 bytes */
+		wc = (c1 & 0x1F) << 6;
+		wc |= (c2 & 0x3F);
+	} else if (c1 <= 0xEF) {
+		/* 3 bytes */
+		wc = (c1 & 0x0F) << 12;
+		wc |= (c2 & 0x3F) << 6;
+		wc |= (c3 & 0x3F);
+	} else if (c2 <= 0xF4) {
+		/* 4 bytes */
+		wc = (c1 & 0x0F) << 18;
+		wc |= (c2 & 0x3F) << 12;
+		wc |= (c3 & 0x3F) << 6;
+		wc |= (c4 & 0x3F);
+	} else {
+		return -1;
+	}
+	return wc;
+}
+/**
+ * convert Unicode to JIS
+ */
 int Util::UnicodeToJISCommon(nkf_char c2, nkf_char c1, nkf_char c0,
 		nkf_char* p2, nkf_char* p1, std::bitset<nkf_flag_num> nkfFlags) {
 
@@ -824,7 +901,9 @@ int Util::UnicodeToJISCommon(nkf_char c2, nkf_char c1, nkf_char c0,
 	}
 	return ret;
 }
-
+/**
+ * convert Unicode to JIS 2
+ */
 int Util::UnicodeToJISCommon2(nkf_char c1, nkf_char c0,
 		const unsigned short * const * pp, nkf_char psize, nkf_char* p2,
 		nkf_char* p1, std::bitset<nkf_flag_num> nkfFlags) {
@@ -869,39 +948,8 @@ int Util::UnicodeToJISCommon2(nkf_char c1, nkf_char c0,
 	return 0;
 }
 /**
- * UTF-8からUnicodeへの変換
+ * convert UTF-16 to EUC-JP
  */
-nkf_char Util::NKFUTF8ToUnicode(nkf_char c1, nkf_char c2, nkf_char c3,
-		nkf_char c4) {
-
-	nkf_char wc;
-	if (c1 <= 0x7F) {
-		/* single byte */
-		wc = c1;
-	} else if (c1 <= 0xC3) {
-		/* trail byte or invalid */
-		return -1;
-	} else if (c1 <= 0xDF) {
-		/* 2 bytes */
-		wc = (c1 & 0x1F) << 6;
-		wc |= (c2 & 0x3F);
-	} else if (c1 <= 0xEF) {
-		/* 3 bytes */
-		wc = (c1 & 0x0F) << 12;
-		wc |= (c2 & 0x3F) << 6;
-		wc |= (c3 & 0x3F);
-	} else if (c2 <= 0xF4) {
-		/* 4 bytes */
-		wc = (c1 & 0x0F) << 18;
-		wc |= (c2 & 0x3F) << 12;
-		wc |= (c3 & 0x3F) << 6;
-		wc |= (c4 & 0x3F);
-	} else {
-		return -1;
-	}
-	return wc;
-}
-
 nkf_char Util::W16eConv(nkf_char val, nkf_char* p2, nkf_char* p1,
 		std::bitset<nkf_flag_num> nkfFlags) {
 
@@ -925,48 +973,26 @@ nkf_char Util::W16eConv(nkf_char val, nkf_char* p2, nkf_char* p1,
 	}
 	return ret;
 }
-
-void Util::NKFUnicodeToUTF8(nkf_char val, nkf_char* p1, nkf_char* p2,
-		nkf_char* p3, nkf_char* p4) {
-
-	val &= VALUE_MASK;
-	if (val < 0x80) {
-		*p1 = val;
-		*p2 = 0;
-		*p3 = 0;
-		*p4 = 0;
-	} else if (val < 0x800) {
-		*p1 = 0xc0 | (val >> 6);
-		*p2 = 0x80 | (val & 0x3f);
-		*p3 = 0;
-		*p4 = 0;
-	} else if (nkf_char_unicode_bmp_p(val)) {
-		*p1 = 0xe0 | (val >> 12);
-		*p2 = 0x80 | ((val >> 6) & 0x3f);
-		*p3 = 0x80 | (val & 0x3f);
-		*p4 = 0;
-	} else if (nkf_char_unicode_value_p(val)) {
-		*p1 = 0xf0 | (val >> 18);
-		*p2 = 0x80 | ((val >> 12) & 0x3f);
-		*p3 = 0x80 | ((val >> 6) & 0x3f);
-		*p4 = 0x80 | (val & 0x3f);
+/**
+ * use X0212
+ */
+nkf_char Util::X0212Shift(nkf_char c) {
+	nkf_char ret = c;
+	c &= 0x7f;
+	if (is_eucg3(ret)) {
+		if (0x75 <= c && c <= 0x7f) {
+			ret = c + (0x109 - 0x75);
+		}
 	} else {
-		*p1 = 0;
-		*p2 = 0;
-		*p3 = 0;
-		*p4 = 0;
+		if (0x75 <= c && c <= 0x7f) {
+			ret = c + (0x113 - 0x75);
+		}
 	}
+	return ret;
 }
 /**
- * ２つの引数を先頭から比較してboolを返す、比較する長さは１つ目の引数の長さ
- * 完全一致した場合のみtrueを返す
+ * use X0212
  */
-bool Util::StrncmpFromHead(const char* charCode, const char* name) {
-	size_t cmpLen = strlen(charCode);
-	int ret = strncmp(charCode, name, cmpLen);
-	return ret == 0 ? true : false;
-}
-
 nkf_char Util::X0212Unshift(nkf_char c) {
 
 	nkf_char ret = c;
@@ -977,6 +1003,12 @@ nkf_char Util::X0212Unshift(nkf_char c) {
 	}
 	return ret;
 }
-
-
+/**
+ * compare two strings and return bool
+ */
+bool Util::StrncmpFromHead(const char* charCode, const char* name) {
+	size_t cmpLen = strlen(charCode);
+	int ret = strncmp(charCode, name, cmpLen);
+	return ret == 0 ? true : false;
+}
 

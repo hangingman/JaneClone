@@ -1,8 +1,8 @@
 /*
- * FlagSet.h
+ * flagset.h
  *
  *  Created on: 2012/07/29
- *      Author: learning
+ * Contributor: Hiroyuki Nagata
  */
 
 #ifndef FLAGSET_H_
@@ -44,7 +44,6 @@
 enum byte_order {
 	ENDIAN_BIG = 1, ENDIAN_LITTLE = 2, ENDIAN_2143 = 3, ENDIAN_3412 = 4
 };
-
 
 enum ConvFlags {
 	/* if 0 read option, else quit read option */

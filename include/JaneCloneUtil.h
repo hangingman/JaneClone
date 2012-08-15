@@ -22,17 +22,18 @@
 #ifndef JANECLONEUTIL_H_
 #define JANECLONEUTIL_H_
 
-#include <wx/wx.h>
-#include <wx/textfile.h>
-#include <wx/file.h>
-#include <wx/filename.h>
-#include <wx/filefn.h>
 #include <zlib.h>
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <iterator>
-#include "LibNKF.h"
+#include <wx/wx.h>
+#include <wx/textfile.h>
+#include <wx/file.h>
+#include <wx/filename.h>
+#include <wx/filefn.h>
+#include <wx/thread.h>
+#include "wx/wxnkf.h"
 
 class JaneCloneUtil {
 public:

@@ -15,8 +15,8 @@ DEPSRCS = $(shell find src/ -name '*.cpp')
 DEP		= dep
 
 # depend library
-LIBNKF	= libnkf.a
-NKFDIR	= libnkf
+LIBNKF	= libwxnkf.a
+NKFDIR	= libwxnkf
 
 # basic command
 CXX		:= g++
@@ -29,10 +29,10 @@ CXX_DEBUG_FLAGS		=	-gstabs
 CXX_RELEASE_FLAGS	=	-s
 
 # compile option
-CXXFLAGS = -Wall -I/c/MinGW/include -I include `wx-config --cxxflags` `xml2-config --cflags` -I$(NKFDIR)
+CXXFLAGS = -Wall -I/c/MinGW/include -I include -I libwxnkf/include `wx-config --cxxflags` `xml2-config --cflags` -I$(NKFDIR)
 RCFLAGS  = $(shell wx-config --cxxflags | awk '{ print $$2 }')  # wx-configからwxのヘッダファイルのルートディレクトリを取り出している
-LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs` `xml2-config --libs` $(NKFDIR)/libnkfcpp.a -lmk4
-VPATH    = include src rc libnkf
+LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs` `xml2-config --libs` $(NKFDIR)/libwxnkf.a -lmk4
+VPATH    = include src rc
 
 # dummy target
 .PHONY	: Debug Release clean all-clean
@@ -62,11 +62,11 @@ icon.o : icon.rc
 
 # libnkf build
 $(LIBNKF):
-	@echo "libnkf build"
+	@echo "libwxnkf build"
 	@if [ -f $(NKFDIR)/$(LIBNKF) ]; then \
-		echo "libnkf found"; \
+		echo "libwxnkf found"; \
 	else \
-		echo "libnkf not found, so now build"; \
+		echo "libwxnkf not found, so now build"; \
 		$(MAKE) -C $(NKFDIR) ; \
 	fi
 

@@ -1,5 +1,5 @@
 /*
- * UTF8Table.h
+ * utf8table.h
  *
  *  Created on: 2012/07/10
  * Contributor: Hiroyuki Nagata
@@ -34,9 +34,10 @@ struct normalization_pair {
 
 
 class UTF8Table {
+
 public:
 
-	// それぞれの配列を宣言…ちょっと多すぎるか
+	// declare several utf8table array
 	static const unsigned short euc_to_utf8_A1[];
 	static const unsigned short euc_to_utf8_A1_ms[];
 	static const unsigned short euc_to_utf8_A2[];

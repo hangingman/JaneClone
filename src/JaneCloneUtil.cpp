@@ -51,10 +51,8 @@ void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath,
 		wxString & outputPath) {
 
 	// LibNKFを呼び出してCP932からUTF-8への変換を行う
-	/* ! Fix Me !  全然うまく動かん */
-	LibNKF* nkf = new LibNKF();
-	nkf->Convert(std::string(inputPath.mb_str()),
-			std::string(outputPath.mb_str()), "--ic=CP932 --oc=UTF-8");
+	wxNKF* nkf = new wxNKF();
+	nkf->Convert(inputPath, outputPath, wxT("--ic=CP932 --oc=UTF-8"));
 	delete nkf;
 }
 

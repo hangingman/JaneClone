@@ -1,19 +1,19 @@
 /*
- * NKFBaseConfig.h
+ * wxnkfbaseconfig.h
  *
  *  Created on: 2012/07/15
  * Contributor: Hiroyuki Nagata
  */
 
-#ifndef NKFBASECONFIG_H_
-#define NKFBASECONFIG_H_
+#ifndef WXNKFBASECONFIG_H_
+#define WXNKFBASECONFIG_H_
 
-#ifdef __WIN32__
-#include <windows.h>
-#include <locale.h>
-#endif
-
-#include <assert.h>
+//#ifdef __WIN32__
+//#include <windows.h>
+//#include <locale.h>
+//#endif
+//
+//#include <assert.h>
 #include <cstdio>
 
 #ifdef nkf_char
@@ -200,4 +200,4 @@ enum nkf_encodings {
 #define nkf_char_unicode_bmp_p(c) ((c & VALUE_MASK) <= UNICODE_BMP_MAX)
 #define nkf_char_unicode_value_p(c) ((c & VALUE_MASK) <= UNICODE_MAX)
 
-#endif /* NKFBASECONFIG_H_ */
+#endif /* WXNKFBASECONFIG_H_ */

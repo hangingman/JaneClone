@@ -1,48 +1,45 @@
 ################################################################################
-# libnkfcppビルド用Makefile 
+# libwxnkfビルド用Makefile 
 # Contributor:
 #	Hiroyuki Nagata <newserver002@gmail.com>
 ################################################################################
 
 # target and sources
-TARGET  = libnkfcpp.a
-SOURCES = Util.cpp               \
-		  LibNKF.cpp			 \
-		  FlagSet.cpp			 \
-		  UTF8Table.cpp			 \
-		  NKFNativeEncoding.cpp  \
-		  UTF16Util.cpp			 \
-		  InputCodeList.cpp
-		  
-OBJECTS = $(SOURCES:.cpp=.o)
+TARGET  = libwxnkf.a
+SOURCES = $(shell find src/ -name '*.cpp')
+OBJECTS = $(notdir $(SOURCES:.cpp=.o))
+
 # sources for dependency
-DEPSRCS = $(shell find . -name '*.cpp')
+DEPSRCS = $(shell find src/ -name '*.cpp')
 DEP		= dep
 
 # basic command
-CXX		:= g++ -gstabs
+CXX		:= g++ -s -O2
 AR      := ar
 RM		:= rm
+MV		:= mv
 VERSION := 2.1.2
 MKDIR	:= mkdir
+MAKE	:= make
 
 # compile option
-CXXFLAGS:= -Wall -I.
-LDFLAGS := -static
+CXXFLAGS = -Wall `wx-config --cxxflags` -I./include
+LDFLAGS := -static `wx-config --libs` -lstdc++
 ARFLAG	:= crsv
+VPATH	 = include src
 
 # dummy target
-.PHONY: dep clean test
+.PHONY: dep clean
 # make all
-all:	$(DEP) $(TARGET) $(OBJECTS) $(TESTS)
+all:	$(DEP) $(TARGET)
 # suffix rule
 .cpp.o:
 		$(CXX) $(CXXFLAGS) -c $<
 # make dependency
-dep:
+$(DEP):
 	$(CXX) -MM -MG $(DEPSRCS) >makefile.dep
 # build library
-$(TARGET): $(OBJECTS) $(SOURCES)
+$(TARGET) : $(OBJECTS) $(SOURCES)
 		$(AR) $(ARFLAG) $(TARGET) $(OBJECTS)
 # clean
 clean:
