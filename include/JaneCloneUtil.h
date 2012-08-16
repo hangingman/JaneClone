@@ -32,7 +32,6 @@
 #include <wx/file.h>
 #include <wx/filename.h>
 #include <wx/filefn.h>
-#include <wx/thread.h>
 #include "wx/wxnkf.h"
 
 class JaneCloneUtil {

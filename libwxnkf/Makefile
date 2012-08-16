@@ -14,7 +14,7 @@ DEPSRCS = $(shell find src/ -name '*.cpp')
 DEP		= dep
 
 # basic command
-CXX		:= g++ -s -O2
+CXX		:= g++ -gstabs
 AR      := ar
 RM		:= rm
 MV		:= mv
