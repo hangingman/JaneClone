@@ -35,8 +35,8 @@ enum {
 	ID_About, // このソフトについて
 	ID_GetBoardList, // 板一覧情報取得
 	ID_GetVersionInfo, // バージョン情報
-	ID_AnyRightClick, // 右クリック
-	ID_BoardListClick // 板一覧リストでのクリック
+	ID_ThreadNoteBook, // スレッド一覧ノートブックに使うID
+	ID_BoardNoteBook // 板一覧用ノートブックに使うID
 };
 
 // event table
@@ -50,10 +50,11 @@ EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
 
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
+// 板一覧ノートブックで右クリックされた時の処理
+EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_BoardNoteBook, JaneClone::OnRightClickBoardNoteBook)
+// スレッド一覧ノートブックで右クリックされた時の処理
+EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_ThreadNoteBook, JaneClone::OnRightClickThreadNoteBook)
 
-// 右クリックした際のイベント処理
-EVT_CONTEXT_MENU(JaneClone::OnContext)
-EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(wxID_ANY, JaneClone::OnRightClick)
 // AuiNotebookのタブを変更した時の処理
 EVT_AUINOTEBOOK_PAGE_CHANGING(wxID_ANY, JaneClone::OnChangedTab)
 
@@ -74,9 +75,6 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 #if defined(__WXGTK__)
 	SetIcon(wxICON(janeclone));
 #endif
-//#if defined(__WXMAC__)
-//
-//#endif
 
 	/**
 	 * 必要なwxWindowを宣言する
@@ -512,12 +510,12 @@ void JaneClone::SetProperties() {
 	wxSize client_size = GetClientSize();
 
 	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-	boardNoteBook = new wxAuiNotebook(this, wxID_ANY,
+	boardNoteBook = new wxAuiNotebook(this, ID_BoardNoteBook,
 			wxPoint(client_size.x, client_size.y), wxDefaultSize,
 			wxAUI_NB_DEFAULT_STYLE);
 
 	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-	threadNoteBook = new wxAuiNotebook(this, wxID_ANY,
+	threadNoteBook = new wxAuiNotebook(this, ID_ThreadNoteBook,
 			wxPoint(client_size.x, client_size.y), wxDefaultSize,
 			wxAUI_NB_DEFAULT_STYLE);
 }
@@ -619,7 +617,7 @@ void JaneClone::SetPreviousUserLookedTab() {
 				+ boardNameAscii + wxT(".dat");
 
 		// 板一覧タブをセットする
-		SetThreadListItemNew(boardName, outputPath, (const size_t)i);
+		SetThreadListItemNew(boardName, outputPath, (const size_t) i);
 	}
 }
 /**
@@ -981,13 +979,67 @@ void JaneClone::OnChangedTab(wxAuiNotebookEvent& event) {
 		m_mgr.Update();
 	}
 }
+/**
+ * 板一覧ノートブックで右クリックされた時の処理
+ */
+void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
+	wxString selectedBoardName = boardNoteBook->GetPageText(
+			event.GetSelection());
 
-// GUI上で右クリックされた際に起こるイベント処理
-void JaneClone::OnContext(wxContextMenuEvent& event) {
-	wxMessageBox(wxT("右クリックしましたねm9( ﾟдﾟ)"));
+	wxMenu* threadTabUtil = new wxMenu();
+	threadTabUtil->Append(wxID_ANY, wxT("このタブを閉じる"));
+	threadTabUtil->AppendSeparator();
+	threadTabUtil->Append(wxID_ANY, wxT("このタブ以外を閉じる"));
+	threadTabUtil->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
+	threadTabUtil->Append(wxID_ANY, wxT("これより左を閉じる"));
+	threadTabUtil->Append(wxID_ANY, wxT("これより右を閉じる"));
+	threadTabUtil->AppendSeparator();
+	threadTabUtil->Append(wxID_ANY, wxT("新着をすべて開く"));
+	threadTabUtil->Append(wxID_ANY, wxT("お気に入りの新着をすべて開く"));
+	threadTabUtil->Append(wxID_ANY, wxT("新着スレッドをすべて開く"));
+	threadTabUtil->AppendSeparator();
+
+	wxMenu* addFav = new wxMenu();
+	addFav->Append(wxID_ANY, wxT("「お気に入り」に追加"));
+	addFav->AppendSeparator();
+	addFav->Append(wxID_ANY, wxT("「リンク」に追加"));
+	threadTabUtil->AppendSubMenu(addFav, wxT("お気に入りに追加"));
+	threadTabUtil->AppendSeparator();
+
+	threadTabUtil->Append(wxID_ANY, wxT("スレッド新規作成"));
+	threadTabUtil->AppendSeparator();
+	threadTabUtil->Append(wxID_ANY, wxT("ブラウザで開く"));
+	threadTabUtil->Append(wxID_ANY, wxT("index表示"));
+	threadTabUtil->Append(wxID_ANY, wxT("看板を見る"));
+	threadTabUtil->AppendSeparator();
+
+	threadTabUtil->AppendSeparator();
+	wxMenu* copy = new wxMenu();
+	copy->Append(wxID_ANY, wxT("URLをコピー"));
+	copy->Append(wxID_ANY, wxT("タイトルをコピー"));
+	copy->Append(wxID_ANY, wxT("タイトルとURLをコピー"));
+	threadTabUtil->AppendSubMenu(copy, wxT("コピー"));
+	threadTabUtil->AppendSeparator();
+
+	wxMenu* deleteLog = new wxMenu();
+	deleteLog->Append(wxID_ANY, wxT("すべてのログを削除"));
+	deleteLog->Append(wxID_ANY, wxT("お気に入り以外のログを削除"));
+	threadTabUtil->AppendSubMenu(deleteLog, wxT("ログ削除"));
+	threadTabUtil->AppendSeparator();
+
+	threadTabUtil->Append(wxID_ANY, wxT("板移転の追尾"));
+	threadTabUtil->AppendSeparator();
+	threadTabUtil->Append(wxID_ANY, wxT("板のインデックスを再構築"));
+	threadTabUtil->Append(wxID_ANY, wxT("過去ログ非表示"));
+
+	// ポップアップメニューを表示させる
+	PopupMenu(threadTabUtil);
 }
-
-void JaneClone::OnRightClick(wxAuiNotebookEvent& event) {
-	wxMessageBox(wxT("右クリックしましたねm9( ﾟдﾟ)"));
+/**
+ * スレッド一覧ノートブックで右クリックされた時の処理
+ */
+void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
+	wxString selectedThreadName = threadNoteBook->GetPageText(
+			event.GetSelection());
 }
 

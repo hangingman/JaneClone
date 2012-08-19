@@ -113,11 +113,11 @@ private:
 	void OnAbout(wxCommandEvent& event);
 	void OnGetBoardList(wxCommandEvent& event);
 	void OnVersionInfo(wxCommandEvent& event);
-	void OnContext(wxContextMenuEvent& event);
-	void OnRightClick(wxAuiNotebookEvent& event);
 	void OnCloseWindow(wxCloseEvent& event);
 	void OnLeftClickAtListCtrl(wxListEvent& event);
 	void OnChangedTab(wxAuiNotebookEvent& event);
+	void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
+	void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
 
 	// 各種GUI上の設定
 	void SetJaneCloneManuBar();
