@@ -141,12 +141,11 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 
 		// for 2byte process
 		while ((c1 = in->GetC()) != EOF && (c2 = in->GetC()) != EOF) {
-			if (utf16->NKFIconvUTF16(c1, c2, 0, 0)
-					== NKF_ICONV_NEED_TWO_MORE_BYTES && (c3 = in->GetC()) != EOF
-					&& (c4 = in->GetC()) != EOF) {
-				out->Write8(utf16->NKFIconvUTF16(c1, c2, c3, c4));
-			}
+			if (utf16->NKFIconvUTF16(c1, c2, 0,
+					0) == NKF_ICONV_NEED_TWO_MORE_BYTES && (c3 = in->GetC()) != EOF
+					&& (c4 = in->GetC()) != EOF) {out->Write8(utf16->NKFIconvUTF16(c1, c2, c3, c4));
 		}
+	}
 		goto finished;
 	}
 
@@ -161,9 +160,8 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 			if (c2 > DEL) {
 				/* in case of 8th bit is on */
 				if (!nkfFlags[estab_f] && !nkfFlags[mime_decode_mode]) {
-					/**
-					 * まだ文字コードが確定しておらず曖昧な状態
-					 */
+					/* character code guess convert mode */
+
 //					GuessConv* gIConv = new GuessConv();
 //					if (gIConv->GuessIConv(f, c2, c1, flagPool, inputEncoding,
 //							outputEncoding) == EOF) {
@@ -477,8 +475,8 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 							if (c1 == SP) {
 								in->Ungetch(SP);
 								continue;
-							} else if (c1 == LF
-									&& (c1 = in->GetC()) != EOF&& c1 == SP) {
+							} else if (c1 == LF && (c1 = in->GetC()) != EOF
+									&& c1 == SP) {
 								in->Ungetch(SP);
 								continue;
 							} else {
@@ -640,12 +638,11 @@ wxString wxNKF::KanjiConvert(wxInputStream* in) {
 
 		// for 2byte process
 		while ((c1 = in->GetC()) != EOF && (c2 = in->GetC()) != EOF) {
-			if (utf16->NKFIconvUTF16(c1, c2, 0, 0)
-					== NKF_ICONV_NEED_TWO_MORE_BYTES && (c3 = in->GetC()) != EOF
-					&& (c4 = in->GetC()) != EOF) {
-				oConvStr->push_back(utf16->NKFIconvUTF16(c1, c2, c3, c4));
-			}
+			if (utf16->NKFIconvUTF16(c1, c2, 0,
+					0) == NKF_ICONV_NEED_TWO_MORE_BYTES && (c3 = in->GetC()) != EOF
+					&& (c4 = in->GetC()) != EOF) {oConvStr->push_back(utf16->NKFIconvUTF16(c1, c2, c3, c4));
 		}
+	}
 		goto finished;
 	}
 
@@ -660,9 +657,8 @@ wxString wxNKF::KanjiConvert(wxInputStream* in) {
 			if (c2 > DEL) {
 				/* in case of 8th bit is on */
 				if (!nkfFlags[estab_f] && !nkfFlags[mime_decode_mode]) {
-					/**
-					 * まだ文字コードが確定しておらず曖昧な状態
-					 */
+					/* character code guess convert mode */
+
 //					GuessConv* gIConv = new GuessConv();
 //					if (gIConv->GuessIConv(f, c2, c1, flagPool, inputEncoding,
 //							outputEncoding) == EOF) {
@@ -976,8 +972,8 @@ wxString wxNKF::KanjiConvert(wxInputStream* in) {
 							if (c1 == SP) {
 								in->Ungetch(SP);
 								continue;
-							} else if (c1 == LF
-									&& (c1 = in->GetC()) != EOF&& c1 == SP) {
+							} else if (c1 == LF && (c1 = in->GetC()) != EOF
+									&& c1 == SP) {
 								in->Ungetch(SP);
 								continue;
 							} else {
@@ -1069,13 +1065,13 @@ wxString wxNKF::KanjiConvert(wxInputStream* in) {
 	wchar_t* wideChar = (wchar_t*) oConvStr->c_str();
 	/* debug */
 	printf("%s\n", "converted wxString:");
-	wprintf( L"%s\n", wideChar );
+	wprintf(L"%s\n", wideChar);
 
 	wxString result(wideChar);
 	/* debug */
 	printf("%s\n", "converted wxString:");
-	for (int i=0;i<result.Len();i++) {
-		printf("0x%02x\n",result[i]);
+	for (int i = 0; i < result.Len(); i++) {
+		printf("0x%02x\n", result[i]);
 	}
 
 	return result;
@@ -1089,7 +1085,7 @@ wxString wxNKF::KanjiConvert(wxInputStream* in) {
  */
 int wxNKF::SetOption(const wxString option) {
 
-	const char* buf = option.c_str();
+	const char* buf = (const char*) option.mb_str();
 	unsigned char* cp = (unsigned char*) buf;
 	nkf_char i, j;
 	unsigned char *p;
@@ -1818,6 +1814,18 @@ int wxNKF::ModuleConnection() {
 
 	if (nkfFlags[x0201_f] == NKF_UNSPECIFIED) {
 		nkfFlags[x0201_f] = X0201_DEFAULT;
+	}
+
+	/* set input encoding and process method */
+	if (wxEnc->inputMode) {
+		if (nkfFlags[estab_f] != -TRUE) {
+			nkfFlags[estab_f] = -TRUE;
+		}
+	} else {
+		if (nkfFlags[estab_f] != FALSE) {
+			nkfFlags[estab_f] = FALSE;
+		}
+		wxEnc->inputMode = ISO_2022_JP;
 	}
 
 	return 0;
