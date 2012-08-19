@@ -14,13 +14,11 @@
 #include "flagset.h"
 #include "wxnkfencoding.h"
 
-#ifdef __WXMAC__
-#include <langinfo.h>
-#endif
-
 #ifdef __WXMSW__
 #include <windows.h>
 #include <locale.h>
+#else
+#include <langinfo.h>
 #endif
 
 #define SET_INPUT_MODE 0

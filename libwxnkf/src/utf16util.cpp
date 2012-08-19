@@ -21,7 +21,7 @@ nkf_char UTF16Util::NKFIconvUTF16(nkf_char c1, nkf_char c2, nkf_char c3,
 			if (0xDC <= c3 && c3 <= 0xDF) {
 				wc = UTF16_TO_UTF32(c1 << 8 | c2, c3 << 8 | c4);
 			} else
-				return NKF_ICONV_NEED_TWO_MORE_BYTES;
+				return (nkf_char)NKF_ICONV_NEED_TWO_MORE_BYTES;
 		} else {
 			wc = c1 << 8 | c2;
 		}
@@ -30,7 +30,7 @@ nkf_char UTF16Util::NKFIconvUTF16(nkf_char c1, nkf_char c2, nkf_char c3,
 			if (0xDC <= c4 && c4 <= 0xDF) {
 				wc = UTF16_TO_UTF32(c2 << 8 | c1, c4 << 8 | c3);
 			} else
-				return NKF_ICONV_NEED_TWO_MORE_BYTES;
+				return (nkf_char)NKF_ICONV_NEED_TWO_MORE_BYTES;
 		} else {
 			wc = c2 << 8 | c1;
 		}

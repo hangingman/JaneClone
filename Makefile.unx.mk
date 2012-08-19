@@ -5,44 +5,69 @@
 #
 ################################################################################
 
+# target and sources
 TARGET  = JaneClone
-SOURCES = $(notdir $(shell find . -name '*.cpp'))
+SOURCES = $(notdir $(shell find src/ -name '*.cpp'))
 OBJECTS = $(SOURCES:.cpp=.o)
-OBJECTS +=$(RCS:.rc=.o)
 
-# 基本コマンド
+# sources for dependency
+DEPSRCS = $(shell find src/ -name '*.cpp')
+DEP		= dep
+
+# depend library
+LIBNKF	= libwxnkf.a
+NKFDIR	= libwxnkf
+
+# basic command
 CXX		:= g++
 RM 		:= rm
+MAKE	:= make
 
-# デバッグ時とリリース時の微調整
-CXX_DEBUG_FLAGS	 =	-gstabs -O0
-CXX_RELEASE_FLAGS	 =	-s -O0
+# debug and release
+CXX_DEBUG_FLAGS	=	-gstabs
+CXX_RELEASE_FLAGS	=	-s
 
-# オプション
-CXXFLAGS = -Wall -I/usr/local/include -I include `wx-config --cxxflags` `xml2-config --cflags`
-LDFLAGS  = -L/usr/local/lib -lwx_gtk2u_aui-2.8 `wx-config --libs` `xml2-config --libs` -lmk4 ./libnkf.a
+# compile option
+CXXFLAGS = -Wall -I/usr/local/include -I include `wx-config --cxxflags` `xml2-config --cflags` -I$(NKFDIR)/include
+LDFLAGS  = -L/usr/local/lib -lwx_gtk2u_aui-2.8 `wx-config --libs` `xml2-config --libs` -lmk4 $(NKFDIR)/libwxnkf.a
 VPATH    = include src rc
 
+# dummy target
+.PHONY	: Debug Release clean all-clean
+
 # make all
-all : $(TARGET)
+all : $(LIBNKF) $(DEP) $(TARGET)
 $(TARGET): $(OBJECTS)
 		$(CXX) $^ -o $@ $(LDFLAGS)
-
+# make dependency
+dep:
+	$(CXX) -MM -MG $(DEPSRCS) >makefile.dep
 # suffix rule
 .SUFFIXES: .cpp .o
 .cpp.o:
 		$(CXX) $(CXXFLAGS) $(INCLUDE) -c $<
 
 # debug
-.PHONY	: Debug
 Debug 	: CXX+=$(CXX_DEBUG_FLAGS)
 Debug 	: all
 # release
-.PHONY	: Release
 Release	: CXX+=$(CXX_RELEASE_FLAGS)
 Release	: all
 
+# libnkf build
+$(LIBNKF):
+	@echo "libwxnkf build"
+	@if [ -f $(NKFDIR)/$(LIBNKF) ]; then \
+		echo "libwxnkf found"; \
+	else \
+		echo "libwxnkf not found, so now build"; \
+		$(MAKE) -C $(NKFDIR) ; \
+	fi
+
 # clean
-.PHONY: clean
 clean:
 	$(RM) -f *.o $(TARGET)
+# all-clean
+all-clean:
+	$(RM) -f *.o $(TARGET) makefile.dep
+	$(MAKE) -C $(NKFDIR) clean
