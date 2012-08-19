@@ -986,18 +986,87 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
 	wxString selectedBoardName = boardNoteBook->GetPageText(
 			event.GetSelection());
 
+	wxMenu* boardTabUtil = new wxMenu();
+	boardTabUtil->Append(wxID_ANY, wxT("このタブを閉じる"));
+	boardTabUtil->AppendSeparator();
+	boardTabUtil->Append(wxID_ANY, wxT("このタブ以外を閉じる"));
+	boardTabUtil->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
+	boardTabUtil->Append(wxID_ANY, wxT("これより左を閉じる"));
+	boardTabUtil->Append(wxID_ANY, wxT("これより右を閉じる"));
+	boardTabUtil->AppendSeparator();
+	boardTabUtil->Append(wxID_ANY, wxT("新着をすべて開く"));
+	boardTabUtil->Append(wxID_ANY, wxT("お気に入りの新着をすべて開く"));
+	boardTabUtil->Append(wxID_ANY, wxT("新着スレッドをすべて開く"));
+	boardTabUtil->AppendSeparator();
+
+	wxMenu* addFav = new wxMenu();
+	addFav->Append(wxID_ANY, wxT("「お気に入り」に追加"));
+	addFav->AppendSeparator();
+	addFav->Append(wxID_ANY, wxT("「リンク」に追加"));
+	boardTabUtil->AppendSubMenu(addFav, wxT("お気に入りに追加"));
+	boardTabUtil->AppendSeparator();
+
+	boardTabUtil->Append(wxID_ANY, wxT("スレッド新規作成"));
+	boardTabUtil->AppendSeparator();
+	boardTabUtil->Append(wxID_ANY, wxT("ブラウザで開く"));
+	boardTabUtil->Append(wxID_ANY, wxT("index表示"));
+	boardTabUtil->Append(wxID_ANY, wxT("看板を見る"));
+	boardTabUtil->AppendSeparator();
+
+	boardTabUtil->AppendSeparator();
+	wxMenu* copy = new wxMenu();
+	copy->Append(wxID_ANY, wxT("URLをコピー"));
+	copy->Append(wxID_ANY, wxT("タイトルをコピー"));
+	copy->Append(wxID_ANY, wxT("タイトルとURLをコピー"));
+	boardTabUtil->AppendSubMenu(copy, wxT("コピー"));
+	boardTabUtil->AppendSeparator();
+
+	wxMenu* deleteLog = new wxMenu();
+	deleteLog->Append(wxID_ANY, wxT("すべてのログを削除"));
+	deleteLog->Append(wxID_ANY, wxT("お気に入り以外のログを削除"));
+	boardTabUtil->AppendSubMenu(deleteLog, wxT("ログ削除"));
+	boardTabUtil->AppendSeparator();
+
+	boardTabUtil->Append(wxID_ANY, wxT("板移転の追尾"));
+	boardTabUtil->AppendSeparator();
+	boardTabUtil->Append(wxID_ANY, wxT("板のインデックスを再構築"));
+	boardTabUtil->Append(wxID_ANY, wxT("過去ログ非表示"));
+
+	// ポップアップメニューを表示させる
+	PopupMenu(boardTabUtil);
+}
+/**
+ * スレッド一覧ノートブックで右クリックされた時の処理
+ */
+void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
+	wxString selectedThreadName = threadNoteBook->GetPageText(
+			event.GetSelection());
+
 	wxMenu* threadTabUtil = new wxMenu();
 	threadTabUtil->Append(wxID_ANY, wxT("このタブを閉じる"));
+	threadTabUtil->Append(wxID_ANY, wxT("未読として閉じる"));
 	threadTabUtil->AppendSeparator();
 	threadTabUtil->Append(wxID_ANY, wxT("このタブ以外を閉じる"));
+	threadTabUtil->Append(wxID_ANY, wxT("新着なしのタブを閉じる"));
 	threadTabUtil->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
 	threadTabUtil->Append(wxID_ANY, wxT("これより左を閉じる"));
 	threadTabUtil->Append(wxID_ANY, wxT("これより右を閉じる"));
 	threadTabUtil->AppendSeparator();
-	threadTabUtil->Append(wxID_ANY, wxT("新着をすべて開く"));
-	threadTabUtil->Append(wxID_ANY, wxT("お気に入りの新着をすべて開く"));
-	threadTabUtil->Append(wxID_ANY, wxT("新着スレッドをすべて開く"));
+
+	wxMenu *tabLock = new wxMenu;
+	tabLock->Append(wxID_ANY, wxT("このタブをロックする"));
+	tabLock->Append(wxID_ANY, wxT("すべてのタブをロックする"));
+	tabLock->Append(wxID_ANY, wxT("これより左をロックする"));
+	tabLock->Append(wxID_ANY, wxT("これより右をロックする"));
+	threadTabUtil->AppendSubMenu(tabLock, wxT("タブロック"));
 	threadTabUtil->AppendSeparator();
+
+	threadTabUtil->Append(wxID_ANY, wxT("次スレ候補検索"));
+	threadTabUtil->Append(wxID_ANY, wxT("次スレ候補を開く"));
+	threadTabUtil->Append(wxID_ANY, wxT("ヒストリー検索"));
+	threadTabUtil->AppendSeparator();
+
+	threadTabUtil->Append(wxID_ANY, wxT("印を付ける"));
 
 	wxMenu* addFav = new wxMenu();
 	addFav->Append(wxID_ANY, wxT("「お気に入り」に追加"));
@@ -1006,14 +1075,21 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
 	threadTabUtil->AppendSubMenu(addFav, wxT("お気に入りに追加"));
 	threadTabUtil->AppendSeparator();
 
-	threadTabUtil->Append(wxID_ANY, wxT("スレッド新規作成"));
-	threadTabUtil->AppendSeparator();
-	threadTabUtil->Append(wxID_ANY, wxT("ブラウザで開く"));
-	threadTabUtil->Append(wxID_ANY, wxT("index表示"));
-	threadTabUtil->Append(wxID_ANY, wxT("看板を見る"));
+	wxMenu* addFavAll = new wxMenu();
+	addFavAll->Append(wxID_ANY, wxT("「お気に入り」に追加"));
+	addFavAll->AppendSeparator();
+	addFavAll->Append(wxID_ANY, wxT("「リンク」に追加"));
+	threadTabUtil->AppendSubMenu(addFavAll, wxT("すべてのタブをお気に入りに追加"));
 	threadTabUtil->AppendSeparator();
 
+	threadTabUtil->Append(wxID_ANY, wxT("新着チェック"));
+	threadTabUtil->Append(wxID_ANY, wxT("すべてのタブの新着チェック"));
+	threadTabUtil->Append(wxID_ANY, wxT("中止"));
+	threadTabUtil->Append(wxID_ANY, wxT("レス"));
 	threadTabUtil->AppendSeparator();
+	threadTabUtil->Append(wxID_ANY, wxT("ブラウザで開く"));
+	threadTabUtil->AppendSeparator();
+
 	wxMenu* copy = new wxMenu();
 	copy->Append(wxID_ANY, wxT("URLをコピー"));
 	copy->Append(wxID_ANY, wxT("タイトルをコピー"));
@@ -1021,25 +1097,36 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
 	threadTabUtil->AppendSubMenu(copy, wxT("コピー"));
 	threadTabUtil->AppendSeparator();
 
-	wxMenu* deleteLog = new wxMenu();
-	deleteLog->Append(wxID_ANY, wxT("すべてのログを削除"));
-	deleteLog->Append(wxID_ANY, wxT("お気に入り以外のログを削除"));
-	threadTabUtil->AppendSubMenu(deleteLog, wxT("ログ削除"));
+	threadTabUtil->Append(wxID_ANY, wxT("この板を開く"));
 	threadTabUtil->AppendSeparator();
 
-	threadTabUtil->Append(wxID_ANY, wxT("板移転の追尾"));
+	wxMenu *broadcast = new wxMenu;
+	broadcast->Append(wxID_ANY, wxT("オートリロード"));
+	broadcast->Append(wxID_ANY, wxT("オートスクロール"));
+	broadcast->Append(wxID_ANY, wxT("オートリロード・スクロール"));
+	threadTabUtil->AppendSubMenu(broadcast, wxT("実況支援"));
 	threadTabUtil->AppendSeparator();
-	threadTabUtil->Append(wxID_ANY, wxT("板のインデックスを再構築"));
-	threadTabUtil->Append(wxID_ANY, wxT("過去ログ非表示"));
+
+	wxMenu *iReadHere = new wxMenu;
+	iReadHere->Append(wxID_ANY, wxT("この辺まで読んだ"));
+	iReadHere->Append(wxID_ANY, wxT("最後まで読んだ"));
+	iReadHere->Append(wxID_ANY, wxT("「ここまで読んだ」にジャンプ"));
+	iReadHere->Append(wxID_ANY, wxT("「ここまで読んだ」を解除"));
+	threadTabUtil->AppendSubMenu(iReadHere, wxT("ここまで読んだ"));
+
+	wxMenu *chkResponse = new wxMenu;
+	chkResponse->Append(wxID_ANY, wxT("レスのチェックをすべて解除"));
+	threadTabUtil->AppendSubMenu(chkResponse, wxT("レスのチェック"));
+	threadTabUtil->AppendSeparator();
+
+	wxMenu *saveLog = new wxMenu;
+	saveLog->Append(wxID_ANY, wxT("datを名前を付けて保存"));
+	saveLog->Append(wxID_ANY, wxT("datをクリップボードにコピー"));
+	threadTabUtil->AppendSubMenu(saveLog, wxT("このログを保存"));
+	threadTabUtil->Append(wxID_ANY, wxT("このログを削除"));
+	threadTabUtil->Append(wxID_ANY, wxT("再読み込み"));
 
 	// ポップアップメニューを表示させる
 	PopupMenu(threadTabUtil);
-}
-/**
- * スレッド一覧ノートブックで右クリックされた時の処理
- */
-void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
-	wxString selectedThreadName = threadNoteBook->GetPageText(
-			event.GetSelection());
 }
 
