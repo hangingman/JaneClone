@@ -61,6 +61,7 @@
 #include <wx/srchctrl.h>
 #include <wx/richtext/richtextctrl.h>
 #include <wx/strconv.h>
+#include <wx/config.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
@@ -71,9 +72,6 @@
 #include "JaneCloneUtil.h"
 #include "VirtualBoardListCtrl.h"
 #include "ThreadContentWindow.h"
-
-// 名前空間
-using namespace std;
 
 /*
  * 定数値の宣言
@@ -156,6 +154,9 @@ private:
 	wxTreeItemData* m_treeData;
 	wxTreeItemId m_rootId;
 
+	// ログ出力画面
+	wxTextCtrl* m_logCtrl;
+
 	//　ツリーコントロールにクリックした時のイベント
 	void OnGetBoardInfo(wxTreeEvent& event);
 
@@ -217,6 +218,9 @@ private:
 	WX_DECLARE_HASH_MAP( int, ThreadList*, wxIntegerHash, wxIntegerEqual, ThreadListHash );
 	// ThreadListHashの本体
 	ThreadListHash m_threadListHash;
+
+	// wxConfigクラスのインスタンス
+	static wxConfig* config;
 
 	DECLARE_EVENT_TABLE()
 };

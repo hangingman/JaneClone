@@ -83,11 +83,13 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	m_tree_ctrl = new wxTreeCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
 
 	// 検索バー
-	m_search_ctrl = new wxSearchCtrl((wxWindow*)this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+	m_search_ctrl = new wxSearchCtrl((wxWindow*)this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
 	// URL入力欄
 	m_url_input_panel = new wxPanel(this, wxID_ANY);
 	m_url_input = new wxTextCtrl(m_url_input_panel, wxID_ANY, m_url_text, wxDefaultPosition, wxDefaultSize);
 	m_url_input_button = new wxBitmapButton(m_url_input_panel, wxID_ANY, wxBitmap(wxT("rc/go-next.png"), wxBITMAP_TYPE_ANY));
+	// ログ出力ウィンドウ
+	m_logCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
 
 	// わかりやすい画像つき各種処理ボタン
 
@@ -567,6 +569,13 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	boardTree.CloseButton(false);
 	boardTree.BestSize(100, 300);
 
+	// 左側下部・ログ出力ウィンドウを設定する
+	wxAuiPaneInfo logWindow;
+	logWindow.Caption(wxT("ログ出力画面"));
+	logWindow.Left();
+	logWindow.CloseButton(false);
+	logWindow.MaxSize(20, 20);
+
 	// 右側上部・板一覧のノートブックとスレッド一覧リストが載ったウィンドウ
 	wxAuiPaneInfo boardListThreadListInfo;
 	boardListThreadListInfo.Caption(wxT("スレッド一覧"));
@@ -588,11 +597,13 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	m_mgr.AddPane(m_search_ctrl, search);
 	m_mgr.AddPane(m_url_input_panel, url);
 	m_mgr.AddPane(m_tree_ctrl, boardTree);
+	m_mgr.AddPane(m_logCtrl, logWindow);
 	m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
 	m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
 #else
 	m_mgr.AddPane(m_url_input_panel, url);
 	m_mgr.AddPane(m_search_ctrl, search);
+	m_mgr.AddPane(m_logCtrl, logWindow);
 	m_mgr.AddPane(m_tree_ctrl, boardTree);
 	m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
 	m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
