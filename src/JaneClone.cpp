@@ -558,6 +558,17 @@ void JaneClone::DoLayout() {
 	wxString perspective;
 	config->Read(wxT("Perspective"), &perspective, wxEmptyString);
 	m_mgr.LoadPerspective((const wxString)perspective, true);
+
+	int x, y;
+	config->Read(wxT("FrameX"), &x, 640);
+	config->Read(wxT("FrameY"), &y, 480);
+	this->SetSize(x, y);
+
+	int px, py;
+	config->Read(wxT("FramePx"), &px, 0);
+	config->Read(wxT("FramePy"), &py, 0);
+	this->Move(px, py);
+
 	// 初期設定はこのLayout()が呼ばれる前に行わなくてはいけない
 	Layout();
 	// end wxGlade
@@ -923,11 +934,22 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
 	// 開いていた板の一覧をmetakitに送る
 	MetakitAccessor::SetUserLookingBoardList(userLookingBoardName);
-	SetStatusText(wxT("終了前処理が終わりました！"));
 
-	// レイアウトの情報を保存する
+	// wxAuiManagerのレイアウトの情報を保存する
 	const wxString perspective = m_mgr.SavePerspective();
-	config->Write(("Perspective"), perspective);
+	config->Write(wxT("Perspective"), perspective);
+	// フレームのレイアウト情報を保存する
+	int x, y;
+	this->GetSize(&x, &y);
+	config->Write(wxT("FrameX"), x);
+	config->Write(wxT("FrameY"), y);
+
+	int px, py;
+	this->GetPosition(&px, &py);
+	config->Write(wxT("FramePx"), px);
+	config->Write(wxT("FramePy"), py);
+
+	SetStatusText(wxT("終了前処理が終わりました！"));
 
 	Destroy();
 }
