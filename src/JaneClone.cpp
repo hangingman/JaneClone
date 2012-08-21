@@ -90,6 +90,13 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	m_url_input_button = new wxBitmapButton(m_url_input_panel, wxID_ANY, wxBitmap(wxT("rc/go-next.png"), wxBITMAP_TYPE_ANY));
 	// ログ出力ウィンドウ
 	m_logCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
+	wxFont font;
+	font.SetNativeFontInfoUserDesc(wxT("MS PGothic 12 CP932"));
+	wxTextAttr attr;
+	attr.SetFont(font);
+	m_logCtrl->SetDefaultStyle(attr);
+
+	*m_logCtrl << wxT("(ヽ´ん`)…デバッグ用画面…\n");
 
 	// わかりやすい画像つき各種処理ボタン
 
@@ -103,6 +110,7 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 
 	this->CreateStatusBar();
 	this->SetStatusText(wxT(" 完了"));
+	*m_logCtrl << wxT("(ヽ´ん`)…レイアウト設定終わりです…\n");
 }
 /**
  * SetJaneCloneManuBar
@@ -823,6 +831,9 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
  */
 void JaneClone::OnGetBoardList(wxCommandEvent&) {
 
+	*m_logCtrl << wxT("三┏（ ；´ん｀）┛…板一覧更新\n");
+	*m_logCtrl << wxT("三　　　┛┓\n");
+
 	// ソケット通信を行う
 	SocketCommunication* socketCommunication = new SocketCommunication();
 	int rc = socketCommunication->DownloadBoardList(BOARD_LIST_PATH,
@@ -832,6 +843,7 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	// 実行コード別のダイアログを出す
 	if (rc != 0) {
 		wxMessageBox(wxT("板一覧情報取得に失敗しました。ネットワークの接続状況を確認してください。"));
+
 	} else {
 		// もし板一覧情報テーブルが空でなければテーブルを削除しておく
 		if (MetakitAccessor::TableHasView(wxT("BOARD_INFO"))) {
@@ -841,6 +853,11 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 		new ExtractBoardList(BOARD_LIST_PATH.mb_str());
 		// 板一覧情報をセットする
 		JaneClone::SetBoardList();
+
+		*m_logCtrl << wxT("　　　 ／⌒ヽ ｽﾞｽﾞｰ \n");
+		*m_logCtrl << wxT("　　　(ヽ´ん`）　　 \n");
+		*m_logCtrl << wxT("　　　(っ=|||ｏ) \n");
+		*m_logCtrl << wxT("￣￣ ｀――´￣￣￣＼ \n");
 	}
 }
 
@@ -958,6 +975,15 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
  */
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
+	*m_logCtrl << wxT("スレッドの取得だー\n");
+	*m_logCtrl << wxT("　　　　　　 　　三　(　＾ν） \n");
+	*m_logCtrl << wxT("　　　　　　　三 ｰ（‐∪─→\n");
+	*m_logCtrl << wxT("　　 三 ／￣￣￣ 》 ￣＼ \n");
+	*m_logCtrl << wxT("　三三 |　　　　　　Ｕ　・　|\n");
+	*m_logCtrl << wxT("　 三 と|　　　 　　　　ι| |\n");
+	*m_logCtrl << wxT("　　三 /_∧∨￣￣/_∧Ｕ\n");
+	*m_logCtrl << wxT("\n");
+
 	// 現在アクティブになっているタブの板名を取得する
 	wxString boardName = boardNoteBook->GetPageText(
 			boardNoteBook->GetSelection());
@@ -994,6 +1020,15 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
 		// スレッドの内容をノートブックに反映する
 		SetThreadContentToNoteBook(threadContentPath, origNumber, title);
+
+		*m_logCtrl << wxT("取得完了\n");
+		*m_logCtrl << wxT("　　　　　　(´ん｀/)三\n");
+		*m_logCtrl << wxT("　　　　　←─-‐）‐三\n");
+		*m_logCtrl << wxT("　　／￣￣《￣￣＼三　　\n");
+		*m_logCtrl << wxT("　|　・　Ｕ　　　　　 |三三\n");
+		*m_logCtrl << wxT("　| |ι　　　 　 　　|三\n");
+		*m_logCtrl << wxT("  Ｕ｜｜ ￣￣｜｜\n");
+		*m_logCtrl << wxT("\n");
 	}
 }
 
