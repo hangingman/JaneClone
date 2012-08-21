@@ -62,6 +62,7 @@
 #include <wx/richtext/richtextctrl.h>
 #include <wx/strconv.h>
 #include <wx/config.h>
+#include <wx/fileconf.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
@@ -76,7 +77,7 @@
 /*
  * 定数値の宣言
  */
-
+#define APP_CONFIG_FILE wxT("janeclone.env")
 // 板一覧情報ファイルのパス
 static const wxString BOARD_LIST_PATH = wxT("./dat/boardlist.html");
 // 板一覧情報ファイルのヘッダ情報のパス
@@ -219,8 +220,8 @@ private:
 	// ThreadListHashの本体
 	ThreadListHash m_threadListHash;
 
-	// wxConfigクラスのインスタンス
-	static wxConfig* config;
+	// wxFileConfigクラスのインスタンス
+	wxFileConfig* config;
 
 	DECLARE_EVENT_TABLE()
 };

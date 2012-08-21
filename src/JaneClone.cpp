@@ -492,9 +492,23 @@ void JaneClone::SetProperties() {
 	if (!dir.Exists(wxT("./dat/"))) {
 		::wxMkdir(wxT("./dat/"));
 	}
+
 	if (!dir.Exists(wxT("./prop/"))) {
-		::wxMkdir(wxT("./prop/"));
+		wxMkdir(wxT("./prop/"));
 	}
+	// 設定ファイルの準備をする
+	wxString configFile = wxGetCwd();
+#ifdef __WXMSW__
+	// Windowsではパスの区切りは"\"
+	configFile += wxT("\\prop\\");
+#else
+	// Linuxではパスの区切りは"/"
+	configFile += wxT("/prop/");
+#endif
+	configFile += APP_CONFIG_FILE;
+	config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile,
+			wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+
 	// metakitの初期化を行う
 	MetakitAccessor* metakitAccessor = new MetakitAccessor();
 	delete metakitAccessor;
@@ -540,6 +554,10 @@ void JaneClone::DoLayout() {
 	SetJaneCloneAuiPaneInfo();
 	// Auiマネージャーの設定を反映する
 	m_mgr.Update();
+	// 設定ファイルからレイアウト情報を読み取る
+	wxString perspective;
+	config->Read(wxT("Perspective"), &perspective, wxEmptyString);
+	m_mgr.LoadPerspective((const wxString)perspective, true);
 	// 初期設定はこのLayout()が呼ばれる前に行わなくてはいけない
 	Layout();
 	// end wxGlade
@@ -551,12 +569,14 @@ void JaneClone::DoLayout() {
 void JaneClone::SetJaneCloneAuiPaneInfo() {
 	// 上部・検索バーを設定する
 	wxAuiPaneInfo search;
+	search.Name(wxT("searchbar"));
 	search.Caption(wxT("検索バー"));
 	search.Top();
 	search.CloseButton(false);
 
 	// 上部・URL入力欄を設定する
 	wxAuiPaneInfo url;
+	url.Name(wxT("urlbar"));
 	url.MinSize(wxSize(0, 16));
 	url.Caption(wxT("url"));
 	url.Top();
@@ -564,6 +584,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 
 	// 左側・板一覧のツリーコントロールを設定する
 	wxAuiPaneInfo boardTree;
+	boardTree.Name(wxT("boardTree"));
 	boardTree.Caption(wxT("板一覧"));
 	boardTree.Left();
 	boardTree.CloseButton(false);
@@ -571,6 +592,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 
 	// 左側下部・ログ出力ウィンドウを設定する
 	wxAuiPaneInfo logWindow;
+	logWindow.Name(wxT("logWindow"));
 	logWindow.Caption(wxT("ログ出力画面"));
 	logWindow.Left();
 	logWindow.CloseButton(false);
@@ -578,6 +600,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 
 	// 右側上部・板一覧のノートブックとスレッド一覧リストが載ったウィンドウ
 	wxAuiPaneInfo boardListThreadListInfo;
+	boardListThreadListInfo.Name(wxT("boardListThreadListInfo"));
 	boardListThreadListInfo.Caption(wxT("スレッド一覧"));
 	boardListThreadListInfo.Right();
 	boardListThreadListInfo.Center();
@@ -586,6 +609,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 
 	// 右側下部・スレッド一覧タブとスレ表示画面が載ったウィンドウ
 	wxAuiPaneInfo threadTabThreadContentInfo;
+	threadTabThreadContentInfo.Name(wxT("threadTabThreadContentInfo"));
 	threadTabThreadContentInfo.Caption(wxT("開いているスレ"));
 	threadTabThreadContentInfo.Right();
 	threadTabThreadContentInfo.Center();
@@ -637,6 +661,7 @@ void JaneClone::SetPreviousUserLookedTab() {
 JaneClone::~JaneClone() {
 	// Auiマネージャーを削除する
 	m_mgr.UnInit();
+	delete config;
 }
 
 void JaneClone::OnQuit(wxCommandEvent&) {
@@ -645,6 +670,7 @@ void JaneClone::OnQuit(wxCommandEvent&) {
 	delete m_tree_ctrl;
 	// Auiマネージャーを削除する
 	m_mgr.UnInit();
+
 	Close(true);
 }
 
@@ -898,6 +924,10 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 	// 開いていた板の一覧をmetakitに送る
 	MetakitAccessor::SetUserLookingBoardList(userLookingBoardName);
 	SetStatusText(wxT("終了前処理が終わりました！"));
+
+	// レイアウトの情報を保存する
+	const wxString perspective = m_mgr.SavePerspective();
+	config->Write(("Perspective"), perspective);
 
 	Destroy();
 }
