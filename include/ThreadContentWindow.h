@@ -24,6 +24,7 @@
 
 #include <wx/html/htmlwin.h>
 #include <wx/regex.h>
+#include "ThreadContentCell.h"
 #include "JaneCloneUtil.h"
 
 // 読み込みに失敗した場合に表示するページ
@@ -68,7 +69,7 @@ public:
 	/**
 	 * HTMLのセル上でカーソルが動いた時に起こるイベント
 	 */
-	void OnCellMouseHover(wxHtmlCell *cell, wxCoord x, wxCoord y);
+	void OnCellMouseHover(ThreadContentCell *thCell, wxCoord x, wxCoord y);
 	/**
 	 * URLが開かれた時に呼ばれるメソッド
 	 */

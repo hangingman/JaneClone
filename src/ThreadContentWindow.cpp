@@ -140,9 +140,11 @@ bool ThreadContentWindow::OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y,
 /**
  * HTMLのセル上でカーソルが動いた時に起こるイベント
  */
-void ThreadContentWindow::OnCellMouseHover(wxHtmlCell *cell, wxCoord x,
+void ThreadContentWindow::OnCellMouseHover(ThreadContentCell* thCell, wxCoord x,
 		wxCoord y) {
 
+	wxHtmlLinkInfo* info = thCell->GetLink(x, y);
+	wxMessageBox(info->GetTarget());
 }
 /**
  * URLが開かれた時に呼ばれるメソッド
