@@ -70,9 +70,14 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 		for (str = datfile.GetFirstLine(); !datfile.Eof();
 				str = datfile.GetNextLine()) {
 
-			// 正規表現のコンパイルにエラーがなければ
+			// ひとかたまりのHTMLソースにまとめる
+			wxString lumpOfHTML = wxT("<dt>");
+			wxString num;
+			num << number;
+			lumpOfHTML += num;
+
+			// 正規表現でレスの内容を取り出してメモリに展開する
 			if (regexThread.IsValid()) {
-				// マッチさせる
 				if (regexThread.Matches(str)) {
 					// マッチさせたそれぞれの要素を取得する
 					default_nanashi.Clear();
@@ -81,16 +86,18 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 					mail = regexThread.GetMatch(str, 2);
 					day_and_ID.Clear();
 					day_and_ID = regexThread.GetMatch(str, 3);
+
+					// レスの最初に<table>タグを入れる
 					res.Clear();
-					res = regexThread.GetMatch(str, 4);
+					res.Append(wxT("<table border=0 id=\"") + num + wxT("\">"));
+					res.Append(regexThread.GetMatch(str, 4));
+					res.Append(wxT("</table>"));
+
+					// レス内部のURLに<a>タグをつける
+					res = ReplaceURLText(res);
 				}
 			}
 
-			// ひとかたまりのHTMLソースにまとめる
-			wxString lumpOfHTML = wxT("<dt>");
-			wxString num;
-			num << number;
-			lumpOfHTML += num;
 			if ( mail != wxEmptyString ) {
 				// もしメ欄になにか入っているならば
 				lumpOfHTML += wxT(" ：<a href=\"mailto:");
@@ -160,4 +167,30 @@ void ThreadContentWindow::ReadCustomization(wxConfigBase *cfg, wxString path) {
  */
 void ThreadContentWindow::WriteCustomization(wxConfigBase *cfg, wxString path) {
 
+}
+/**
+ * レス内にURLがあれば<a>タグを付ける
+ */
+wxString ThreadContentWindow::ReplaceURLText(const wxString& responseText) {
+
+	wxString text = responseText;
+	wxString tmp, result;
+	size_t start, len;
+
+	if (regexURL.IsValid() && regexURL.Matches(responseText)) {
+		for (tmp = text; regexURL.Matches(tmp); tmp = tmp.SubString(start+len, tmp.Len())) {
+			regexURL.GetMatch(&start, &len, 0);
+			result+=tmp.SubString(0, start-1);
+			result+=wxT("<a href=\"");
+			result+=tmp.SubString(start, start+len-1);
+			result+=wxT("\"/>");
+			result+=tmp.SubString(start, start+len-1);
+			result+=wxT("</a>");
+		}
+		result+=tmp;
+	} else {
+		return responseText;
+	}
+
+	return result;
 }

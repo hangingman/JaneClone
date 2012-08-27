@@ -42,6 +42,9 @@ static const wxString HTML_FOOTER = wxT("</body></html>");
 // スレッド読み込み用正規表現
 static const wxRegEx regexThread(_T("^(.+)<>(.*)<>(.+)<>(.*)<>$"), wxRE_ADVANCED + wxRE_ICASE);
 
+// URL検出用正規表現
+static const wxRegEx regexURL(_T("(http|https|ttp|ftp)://([[:alnum:]]|[[:punct:]]|[=]|[~])*"), wxRE_ADVANCED + wxRE_ICASE);
+
 class WXDLLEXPORT ThreadContentWindow : public wxHtmlWindow {
 
 public:
@@ -88,6 +91,11 @@ private:
 	 * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
 	 */
 	const wxString GetConvertedDatFile(const wxString& threadContentPath);
+	/**
+	 * レス内にURLがあれば<a>タグを付ける
+	 */
+	static wxString ReplaceURLText(const wxString& responseText);
+
 
 	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
 };
