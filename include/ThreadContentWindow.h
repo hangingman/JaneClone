@@ -80,6 +80,12 @@ public:
 	 * カスタム設定を書き込むメソッド
 	 */
 	void WriteCustomization(wxConfigBase *cfg, wxString);
+	/**
+	 * 内部で持っているHTMLソースを返す
+	 */
+	wxString GetInternalHtmlSource() {
+		return m_htmlSource;
+	};
 
 private:
 	/**
@@ -90,10 +96,6 @@ private:
 	 * レス内にURLがあれば<a>タグを付ける
 	 */
 	static wxString ReplaceURLText(const wxString& responseText);
-	/**
-	 * レスアンカーがあれば<a>タグをつける
-	 */
-	static wxString ReplaceResAnchor(const wxString& responseText);
 	/**
 	 * 内部的に持っているHTMLデータ
 	 */

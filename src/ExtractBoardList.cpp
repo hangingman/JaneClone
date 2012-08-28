@@ -108,8 +108,7 @@ void ExtractBoardList::FindBoardInfo(xmlNode*& element) {
 				}
 			}
 			// 再帰的に処理する
-			if (node->children != NULL)
-			{
+			if (node->children != NULL) {
 				ExtractBoardList::FindBoardInfo(node->children);
 			}
 		}

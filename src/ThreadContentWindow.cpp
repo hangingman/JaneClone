@@ -58,7 +58,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 	wxTextFile datfile;
 	datfile.Open(threadContentPath, wxConvUTF8);
 	wxString str;
-	int number = 0;
+	int number = 1;
 
 	// スレッドのそれぞれの要素
 	wxString default_nanashi;
@@ -94,8 +94,6 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 					res.Append(regexThread.GetMatch(str, 4));
 					res.Append(wxT("</table>"));
 
-					// レスアンカーがあれば<a>タグをつける
-					res = ReplaceResAnchor(res);
 					// レス内部のURLに<a>タグをつける
 					res = ReplaceURLText(res);
 				}
@@ -103,7 +101,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 
 			if (mail != wxEmptyString) {
 				// もしメ欄になにか入っているならば
-				lumpOfHTML += wxT(" ：<a href=\"mailto:");
+				lumpOfHTML += wxT(" 名前<a href=\"mailto:");
 				lumpOfHTML += mail;
 				lumpOfHTML += wxT("\"><b>");
 				lumpOfHTML += default_nanashi;
@@ -113,7 +111,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 				lumpOfHTML += res;
 			} else {
 				// 空の場合
-				lumpOfHTML += wxT(" ：<font color=green><b>");
+				lumpOfHTML += wxT(" 名前<font color=green><b>");
 				lumpOfHTML += default_nanashi;
 				lumpOfHTML += wxT("</b></font>");
 				lumpOfHTML += day_and_ID;
@@ -173,34 +171,6 @@ wxString ThreadContentWindow::ReplaceURLText(const wxString& responseText) {
 			result += tmp.SubString(0, start - 1);
 			result += wxT("<a href=\"");
 			result += tmp.SubString(start, start + len - 1);
-			result += wxT("\"/>");
-			result += tmp.SubString(start, start + len - 1);
-			result += wxT("</a>");
-		}
-		result += tmp;
-	} else {
-		return responseText;
-	}
-
-	return result;
-}
-/**
- * レスアンカーがあれば<a>タグをつける
- */
-wxString ThreadContentWindow::ReplaceResAnchor(const wxString& responseText) {
-
-	wxString text = responseText;
-	wxString tmp, result;
-	size_t start, len;
-
-	if (regexAnchor.IsValid() && regexAnchor.Matches(responseText)) {
-		for (tmp = text; regexAnchor.Matches(tmp);
-				tmp = tmp.SubString(start + len, tmp.Len())) {
-			regexAnchor.GetMatch(&start, &len, 0);
-			wxString num = regexAnchor.GetMatch((const wxString)tmp, 1);
-			result += tmp.SubString(0, start - 1);
-			result += wxT("<a href=\"#");
-			result += num;
 			result += wxT("\"/>");
 			result += tmp.SubString(start, start + len - 1);
 			result += wxT("</a>");

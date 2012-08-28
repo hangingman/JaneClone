@@ -868,8 +868,31 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
 	wxHtmlLinkInfo* linkInfo = cell->GetLink(cell->GetPosX(), cell->GetPosY());
 
 	if (linkInfo) {
-		if (linkInfo->GetHref() != wxEmptyString) {
-			wxMessageBox(wxT("href:") + linkInfo->GetHref());
+		if (linkInfo->GetHref() != wxEmptyString
+				&& linkInfo->GetTarget() == _T("_blank")) {
+			// レスアンカーを察知した場合の処理
+			// <a>タグ内サンプル　<a href="../test/read.cgi/poverty/1345636335/20" target="_blank">
+			wxString href = linkInfo->GetHref();
+			wxStringTokenizer tkz(href, wxT("//"));
+			wxString orgNumber, resNumber;
+
+			while (tkz.HasMoreTokens()) {
+				wxString tmp = tkz.GetNextToken();
+				if (tmp.IsNumber() && tmp.Len() == 10) {
+					// 取得した値が全て数字で、長さが10のUNIX Time形式の場合処理を続行する
+					orgNumber = tmp;
+					resNumber = tkz.GetNextToken();
+					break;
+				}
+			}
+
+			if (orgNumber == wxEmptyString || resNumber == wxEmptyString)
+				return;
+
+			// アンカーの出現位置
+			wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
+			// 取得した情報を元に新しいポップアップウィンドウを出現させる
+			SetPopUpWindow(event, orgNumber, resNumber, anchorPoint);
 		}
 	}
 }
@@ -1249,4 +1272,20 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
 	// ポップアップメニューを表示させる
 	PopupMenu(threadTabUtil);
 }
+/**
+ * レスアンカーに対応するレスを表示するポップアップウィンドウを出現させる
+ */
+void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& origNumber,
+		wxString& resNumber, wxPoint& anchorPoint) {
+
+	// スレッドのソースを手に入れる
+	//wxString allSource = tcwHash[(const wxString) origNumber].GetInternalHtmlSource();
+	// アンカーが指し示すHTMLソースを取得する
+	//FindIndicatedResponse* findIndi = new FindIndicatedResponse(*allSource, resNumber);
+	//wxString indicatedHtml = findIndi->GetIndicatedResponse();
+	wxMessageBox(wxT("ここまできた"));
+	wxPopupTransientWindow* popUp = new wxPopupTransientWindow(this, wxBORDER_NONE);
+	popUp->Position(anchorPoint, wxSize(200, 200));
+}
+
 

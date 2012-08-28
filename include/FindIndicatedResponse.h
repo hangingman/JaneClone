@@ -19,28 +19,25 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef EXTRACTBOARDLIST_H
-#define EXTRACTBOARDLIST_H
+#ifndef FINDINDICATEDRESPONSE_H_
+#define FINDINDICATEDRESPONSE_H_
 
 #include <wx/wx.h>
 #include <libxml/HTMLparser.h>
-#include "MetakitAccessor.h"
 
 using namespace std;
 
-class ExtractBoardList {
+class FindIndicatedResponse {
+
 public:
-	// コンストラクタ
-	ExtractBoardList(const char* file);
-
-private:
-	// 内部の処理関数
-	void FindBoardInfo(xmlNode*& element);
-	// 構造体へのポインタ
-	htmlDocPtr m_doc;
-
-	// SQLiteAccessorのインスタンス
-	MetakitAccessor* accessor;
+	/**
+	 * コンストラクタ
+	 */
+	FindIndicatedResponse(const wxString* allSource, wxString& resNumber);
+	/**
+	 * HTMLをパースした結果を渡す処理
+	 */
+	wxString GetIndicatedResponse();
 };
 
-#endif // EXTRACTBOARDLIST_H
+#endif /* FINDINDICATEDRESPONSE_H_ */

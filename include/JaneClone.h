@@ -63,6 +63,8 @@
 #include <wx/strconv.h>
 #include <wx/config.h>
 #include <wx/fileconf.h>
+#include <wx/tokenzr.h>
+#include <wx/popupwin.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
@@ -225,6 +227,9 @@ private:
 
 	// wxFileConfigクラスのインスタンス
 	wxFileConfig* config;
+
+	// ポップアップウィンドウを出現させる
+	void SetPopUpWindow(wxHtmlCellEvent& event, wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint);
 
 	DECLARE_EVENT_TABLE()
 };
