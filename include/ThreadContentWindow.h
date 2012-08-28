@@ -24,7 +24,6 @@
 
 #include <wx/html/htmlwin.h>
 #include <wx/regex.h>
-#include "ThreadContentCell.h"
 #include "JaneCloneUtil.h"
 
 // 読み込みに失敗した場合に表示するページ
@@ -46,6 +45,9 @@ static const wxRegEx regexThread(_T("^(.+)<>(.*)<>(.+)<>(.*)<>$"), wxRE_ADVANCED
 // URL検出用正規表現
 static const wxRegEx regexURL(_T("(http|https|ttp|ftp)://([[:alnum:]]|[[:punct:]]|[=]|[~])*"), wxRE_ADVANCED + wxRE_ICASE);
 
+// アンカー検出用正規表現
+static const wxRegEx regexAnchor(_T(">{1,2}([[:digit:]]{1,4})"), wxRE_ADVANCED + wxRE_ICASE);
+
 class WXDLLEXPORT ThreadContentWindow : public wxHtmlWindow {
 
 public:
@@ -62,14 +64,6 @@ public:
 	 * オペレーターに対する参照返し
 	 */
 	ThreadContentWindow& operator=(const ThreadContentWindow&) {return *this;}
-	/**
-	 * HTMLのセルがクリックされた時に起こるイベント
-	 */
-	bool OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y, const wxMouseEvent& event);
-	/**
-	 * HTMLのセル上でカーソルが動いた時に起こるイベント
-	 */
-	void OnCellMouseHover(ThreadContentCell *thCell, wxCoord x, wxCoord y);
 	/**
 	 * URLが開かれた時に呼ばれるメソッド
 	 */
@@ -96,6 +90,14 @@ private:
 	 * レス内にURLがあれば<a>タグを付ける
 	 */
 	static wxString ReplaceURLText(const wxString& responseText);
+	/**
+	 * レスアンカーがあれば<a>タグをつける
+	 */
+	static wxString ReplaceResAnchor(const wxString& responseText);
+	/**
+	 * 内部的に持っているHTMLデータ
+	 */
+	wxString m_htmlSource;
 
 
 	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)

@@ -27,12 +27,13 @@ IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
  * 通常のコンストラクタ
  */
 ThreadContentWindow::ThreadContentWindow(wxWindow* parent, const wxString& threadContentPath):
-wxHtmlWindow(parent, wxID_ANY-1, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO) {
+wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO) {
 
 	// 指定されたパスからHTMLファイルを読み出す
 	const wxString htmlSource = GetConvertedDatFile(threadContentPath);
 	// メモリに読み込んだHTMLを表示する
 	this->SetPage(htmlSource);
+	this->m_htmlSource = htmlSource;
 }
 
 /**
@@ -93,12 +94,14 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 					res.Append(regexThread.GetMatch(str, 4));
 					res.Append(wxT("</table>"));
 
+					// レスアンカーがあれば<a>タグをつける
+					res = ReplaceResAnchor(res);
 					// レス内部のURLに<a>タグをつける
 					res = ReplaceURLText(res);
 				}
 			}
 
-			if ( mail != wxEmptyString ) {
+			if (mail != wxEmptyString) {
 				// もしメ欄になにか入っているならば
 				lumpOfHTML += wxT(" ：<a href=\"mailto:");
 				lumpOfHTML += mail;
@@ -129,22 +132,6 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 	datfile.Close();
 
 	return htmlSource;
-}
-
-/**
- * HTMLのセルがクリックされた時に起こるイベント
- */
-bool ThreadContentWindow::OnCellClicked(wxHtmlCell *cell, wxCoord x, wxCoord y,
-		const wxMouseEvent& event) {
-}
-/**
- * HTMLのセル上でカーソルが動いた時に起こるイベント
- */
-void ThreadContentWindow::OnCellMouseHover(ThreadContentCell* thCell, wxCoord x,
-		wxCoord y) {
-
-	wxHtmlLinkInfo* info = thCell->GetLink(x, y);
-	wxMessageBox(info->GetTarget());
 }
 /**
  * URLが開かれた時に呼ばれるメソッド
@@ -180,16 +167,45 @@ wxString ThreadContentWindow::ReplaceURLText(const wxString& responseText) {
 	size_t start, len;
 
 	if (regexURL.IsValid() && regexURL.Matches(responseText)) {
-		for (tmp = text; regexURL.Matches(tmp); tmp = tmp.SubString(start+len, tmp.Len())) {
+		for (tmp = text; regexURL.Matches(tmp);
+				tmp = tmp.SubString(start + len, tmp.Len())) {
 			regexURL.GetMatch(&start, &len, 0);
-			result+=tmp.SubString(0, start-1);
-			result+=wxT("<a href=\"");
-			result+=tmp.SubString(start, start+len-1);
-			result+=wxT("\"/>");
-			result+=tmp.SubString(start, start+len-1);
-			result+=wxT("</a>");
+			result += tmp.SubString(0, start - 1);
+			result += wxT("<a href=\"");
+			result += tmp.SubString(start, start + len - 1);
+			result += wxT("\"/>");
+			result += tmp.SubString(start, start + len - 1);
+			result += wxT("</a>");
 		}
-		result+=tmp;
+		result += tmp;
+	} else {
+		return responseText;
+	}
+
+	return result;
+}
+/**
+ * レスアンカーがあれば<a>タグをつける
+ */
+wxString ThreadContentWindow::ReplaceResAnchor(const wxString& responseText) {
+
+	wxString text = responseText;
+	wxString tmp, result;
+	size_t start, len;
+
+	if (regexAnchor.IsValid() && regexAnchor.Matches(responseText)) {
+		for (tmp = text; regexAnchor.Matches(tmp);
+				tmp = tmp.SubString(start + len, tmp.Len())) {
+			regexAnchor.GetMatch(&start, &len, 0);
+			wxString num = regexAnchor.GetMatch((const wxString)tmp, 1);
+			result += tmp.SubString(0, start - 1);
+			result += wxT("<a href=\"#");
+			result += num;
+			result += wxT("\"/>");
+			result += tmp.SubString(start, start + len - 1);
+			result += wxT("</a>");
+		}
+		result += tmp;
 	} else {
 		return responseText;
 	}

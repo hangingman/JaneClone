@@ -41,28 +41,27 @@ enum {
 
 // event table
 BEGIN_EVENT_TABLE(JaneClone, wxFrame)
-
 // メニューバーにあるコマンド入力で起動するメソッドのイベントテーブル
 EVT_MENU(ID_Quit, JaneClone::OnQuit)
 EVT_MENU(ID_About, JaneClone::OnAbout)
 EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
 EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
-
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
 EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_BoardNoteBook, JaneClone::OnRightClickBoardNoteBook)
 // スレッド一覧ノートブックで右クリックされた時の処理
 EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_ThreadNoteBook, JaneClone::OnRightClickThreadNoteBook)
-
 // AuiNotebookのタブを変更した時の処理
 EVT_AUINOTEBOOK_PAGE_CHANGING(wxID_ANY, JaneClone::OnChangedTab)
-
 // 板一覧リスト・またはスレッド一覧リストでのクリック
 EVT_LIST_ITEM_FOCUSED(wxID_ANY, JaneClone::OnLeftClickAtListCtrl)
 // 終了前処理
 EVT_CLOSE(JaneClone::OnCloseWindow)
-
+// wxHtmlWindow上でのイベント処理
+EVT_HTML_CELL_HOVER(wxID_ANY, JaneClone::OnCellHover)
+EVT_HTML_CELL_CLICKED(wxID_ANY, JaneClone::OnCellClicked)
+EVT_HTML_LINK_CLICKED(wxID_ANY, JaneClone::OnLinkClicked)
 END_EVENT_TABLE()
 
 JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
@@ -565,7 +564,7 @@ void JaneClone::DoLayout() {
 	// 設定ファイルからレイアウト情報を読み取る
 	wxString perspective;
 	config->Read(wxT("Perspective"), &perspective, wxEmptyString);
-	m_mgr.LoadPerspective((const wxString)perspective, true);
+	m_mgr.LoadPerspective((const wxString) perspective, true);
 
 	int x, y;
 	config->Read(wxT("FrameX"), &x, 640);
@@ -860,7 +859,30 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 		*m_logCtrl << wxT("￣￣ ｀――´￣￣￣＼ \n");
 	}
 }
+/**
+ * HtmlWindow上でマウスホバーが起きた場合の処理
+ */
+void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
 
+	wxHtmlCell* cell = event.GetCell();
+	wxHtmlLinkInfo* linkInfo = cell->GetLink(cell->GetPosX(), cell->GetPosY());
+
+	if (linkInfo) {
+		if (linkInfo->GetHref() != wxEmptyString) {
+			wxMessageBox(wxT("href:") + linkInfo->GetHref());
+		}
+	}
+}
+/**
+ * 特定のセルがクリックされた場合の処理
+ */
+void JaneClone::OnCellClicked(wxHtmlCellEvent& event) {
+}
+/*
+ * 特定のリンクがクリックされた場合の処理
+ */
+void JaneClone::OnLinkClicked(wxHtmlLinkEvent& event) {
+}
 /**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */

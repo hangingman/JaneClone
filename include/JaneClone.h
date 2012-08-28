@@ -117,6 +117,9 @@ private:
 	void OnChangedTab(wxAuiNotebookEvent& event);
 	void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
 	void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
+	void OnCellHover(wxHtmlCellEvent& event);
+	void OnCellClicked(wxHtmlCellEvent& event);
+	void OnLinkClicked(wxHtmlLinkEvent& event);
 
 	// 各種GUI上の設定
 	void SetJaneCloneManuBar();
