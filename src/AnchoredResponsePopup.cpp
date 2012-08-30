@@ -52,7 +52,7 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
 
 	topsizer->Add(htmlWin, 1, wxALL, 10);
 	htmlWin->SetSizer(topsizer);
-	//topsizer->Fit(this);
+	topsizer->Fit(this);
 }
 
 wxSize AnchoredResponsePopup::GetPopupWindowSize() {
