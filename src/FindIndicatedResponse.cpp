@@ -24,11 +24,60 @@
 /**
  * コンストラクタ
  */
-FindIndicatedResponse::FindIndicatedResponse(const wxString* allSource,
+FindIndicatedResponse::FindIndicatedResponse(wxString& allSource,
 		wxString& resNumber) {
+
+	// HTML読み込み用構造体
+	htmlDocPtr m_doc;
+	// 取得したい情報が入っているHTMLソース
+	wxCharBuffer buffer = allSource.ToUTF8();
+	// URL指定(NULLだとダメ)
+	const char* URL = _("./tmp");
+	// エンコードの設定
+	const char* enc = "utf-8";
+
+	// メモリからHTMLを読み出す
+	m_doc = htmlReadMemory(allSource.data(), sizeof(allSource), URL, enc, HTML_PARSE_RECOVER);
+
+	if (NULL == m_doc) {
+		// NULLが返された場合その時点で終了する
+		xmlCleanupParser();
+		xmlCleanupCharEncodingHandlers();
+		return;
+	}
+
+	// htmlNodePtrに変換する
+	htmlNodePtr root = xmlDocGetRootElement(m_doc);
+
+	if (NULL == root) {
+		// NULLが返された場合その時点で終了する
+		xmlFreeDoc(m_doc);
+		m_doc = NULL;
+		xmlCleanupParser();
+		xmlCleanupCharEncodingHandlers();
+		return;
+
+	} else {
+		// 正常処理
+		FindIndicatedResponseNode(root);
+		xmlFreeDoc(m_doc);
+		m_doc = NULL;
+	}
+
+	// 終了後の後片付け
+	xmlCleanupParser();
+	xmlCleanupCharEncodingHandlers();
 }
 /**
  * HTMLをパースした結果を渡す処理
  */
 wxString FindIndicatedResponse::GetIndicatedResponse() {
+	return indicatedRes;
 }
+/**
+ *  FindBoardInfo
+ *  板一覧情報を収集しSQLiteに格納する
+ */
+void FindIndicatedResponse::FindIndicatedResponseNode(xmlNode*& element) {
+}
+

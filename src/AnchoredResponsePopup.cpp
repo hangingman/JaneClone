@@ -45,7 +45,7 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
 	html+=HTML_FOOTER;
 
 	topsizer = new wxBoxSizer(wxVERTICAL);
-
+	// ここでサイズ指定してやらないと異常終了します
 	htmlWin = new wxHtmlWindow(this, wxID_ANY, point, size, wxHW_SCROLLBAR_NEVER);
 	htmlWin->SetBorders(0);
 	htmlWin->SetPage(html);
@@ -55,9 +55,6 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
 	topsizer->Add(htmlWin, 1, wxALL, 10);
 	htmlWin->SetSizer(topsizer);
 	topsizer->Fit(this);
-}
-
-AnchoredResponsePopup::~AnchoredResponsePopup() {
 }
 
 void AnchoredResponsePopup::Popup(wxWindow* WXUNUSED(focus)) {

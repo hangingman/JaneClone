@@ -36,8 +36,7 @@ enum {
 	ID_GetBoardList, // 板一覧情報取得
 	ID_GetVersionInfo, // バージョン情報
 	ID_ThreadNoteBook, // スレッド一覧ノートブックに使うID
-	ID_BoardNoteBook, // 板一覧用ノートブックに使うID
-	ID_TestMethod // テストのためのID
+	ID_BoardNoteBook // 板一覧用ノートブックに使うID
 };
 
 // event table
@@ -47,7 +46,6 @@ EVT_MENU(ID_Quit, JaneClone::OnQuit)
 EVT_MENU(ID_About, JaneClone::OnAbout)
 EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
 EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
-EVT_MENU(ID_TestMethod, JaneClone::TestMethod)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
@@ -142,7 +140,7 @@ void JaneClone::SetJaneCloneManuBar() {
 	 * 表示部分
 	 */
 	wxMenu *menu2 = new wxMenu;
-	menu2->Append(ID_TestMethod, wxT("テスト実行"));
+	menu2->Append(wxID_ANY, wxT("表示～"));
 	/**
 	 * 板覧部分
 	 */
@@ -1263,22 +1261,15 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& origNumber,
 		wxString& resNumber, wxPoint& anchorPoint) {
 
 	// スレッドのソースを手に入れる
-	//wxString allSource = tcwHash[(const wxString) origNumber].GetInternalHtmlSource();
+	wxString allSource = tcwHash[(const wxString) origNumber].GetInternalHtmlSource();
 	// アンカーが指し示すHTMLソースを取得する
-	//FindIndicatedResponse* findIndi = new FindIndicatedResponse(*allSource, resNumber);
-	//wxString indicatedHtml = findIndi->GetIndicatedResponse();
-	//	wxString test = wxT("<h2>Hello,World!!</h2>");
-	//	AnchoredResponsePopup* popUp = new AnchoredResponsePopup((wxWindow*)threadNoteBook, test);
-	//	popUp->Position(anchorPoint, wxSize(200, 200));
-	//	popUp->Popup();
+	FindIndicatedResponse* findIndi = new FindIndicatedResponse(allSource, resNumber);
+	wxString indicatedHtml = findIndi->GetIndicatedResponse();
+	delete findIndi;
 
-	wxString test = wxT("<h2>Hello,World!!</h2>");
-	AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook, anchorPoint, wxSize(300, 300), test);
+	// 取得したレスをポップアップさせる
+	indicatedHtml += wxT("<h2>Hello,World!!</h2>");
+	AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook, anchorPoint, wxSize(300, 300), indicatedHtml);
 	popup->Popup();
-}
-/**
- * 何かテストしたい時に使う
- */
-void JaneClone::TestMethod(wxCommandEvent& event) {
 }
 

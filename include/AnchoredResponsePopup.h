@@ -34,7 +34,7 @@ class AnchoredResponsePopup: public wxPopupTransientWindow {
 
 	public:
 	AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource );
-    virtual ~AnchoredResponsePopup();
+    virtual ~AnchoredResponsePopup(){};
 
     virtual void Popup(wxWindow *focus = NULL);
     virtual void OnDismiss();

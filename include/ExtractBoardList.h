@@ -26,8 +26,6 @@
 #include <libxml/HTMLparser.h>
 #include "MetakitAccessor.h"
 
-using namespace std;
-
 class ExtractBoardList {
 public:
 	// コンストラクタ
@@ -36,7 +34,7 @@ public:
 private:
 	// 内部の処理関数
 	void FindBoardInfo(xmlNode*& element);
-	// 構造体へのポインタ
+	// 構造体
 	htmlDocPtr m_doc;
 
 	// SQLiteAccessorのインスタンス

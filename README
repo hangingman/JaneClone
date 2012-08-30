@@ -1,23 +1,18 @@
 ========== ========== ==========
-  JaneClone  ver.0.5
+  JaneClone  ver.0.6
 ========== ========== ==========
 
 【 ソフト名 】	JaneClone
 【 製 作 者 】　　永田　裕之
 【  種  別  】 ２ちゃんねる専用ブラウザ
-【 開発環境 】　　
+【 動作環境 （予定）】
+Windows or Linux or *BSD or Mac OSX
 
-Windows7 MinGW + Eclipse CDT
-Debian   gcc   Eclipse CDT
-
-【 動作環境 】
-Windows or Linux(Debian, Fedora, Centosあたりはいけると思われ)
-
-wxWidgets2.8がインストールされていて「wx-config」コマンドが使える
+wxWidgets2.9.* がインストールされていて「wx-config」コマンドが使える
 libxml2がインストールされていて「xml2-config」コマンドが使える
 
-【バージョン】		0.5
-【最終更新日】	2012/05/15
+【バージョン】		0.6
+【最終更新日】	2012/08/30
 
 【 ウ ェ ブ 】	http://nantonaku-shiawase.hatenablog.com/
 【 E - mail 】 newserver002@gmail.com
@@ -25,17 +20,17 @@ libxml2がインストールされていて「xml2-config」コマンドが使�
 ---------- ----------
 ◇ 概要 ◇
 
-２ちゃんねるの専ブラ作成が目的です。wxWidgets,libxml2,iconv,metakit を使っています。
+２ちゃんねるの専ブラ作成が目的です。wxWidgets,libxml2,libnkf,metakit を使っています。
 
-◇ 動作条件 ◇
+◇ 開発環境 ◇
 
-wxWidgets2.9はまだ不安定な部分があるので、実装はwx2.8ベースで行うことにしました（2012/05/15）
-【Windows + MinGW】:
-gcc 4.5.2, wxWigets 2.8 or 2.9,libxml2-2.7.8, metakit-2.4.9.7
-【Linux】
-Debian：gcc 4.5.5, wxWidgets 2.8, metakit-2.4.9.7　libxmlはapt-getで可
-【Mac】
-あ・・・ごめんなさい それ来月からなんですよ
+【Windows(64bit) + MinGW(32bit)】:
+gcc 4.5.2, wxWigets 2.9, metakit-2.4.9.7, libxml2はmingw-getのパッケージ
+【Linux(64bit)】
+gcc 4.5.5, wxWidgets 2.9, metakit-2.4.9.7　libxml2はapt-getのパッケージ
+【Mac OSX(64bit)】
+まだ有効な組み合わせを見つけられていません
+一応wxWidgetsの2.9以降の64bit版ビルドに成功しています
 
 ◇ ライセンス ◇
 GNU 一般公衆利用許諾契約書のバージョン2に従います
@@ -45,8 +40,10 @@ GNU 一般公衆利用許諾契約書のバージョン2に従います
 (1) Windowsの場合
 MinGWのコンソールから「make」または「make -f Makefile」
 (2) Linuxの場合
-コンソールから「make -f Makefile.unx」
-(3) というかそのうちバイナリで配布します
+コンソールから「make -f Makefile.unx.mk」
+(3) Mac OSXの場合
+Mac用Makefileを用意できていません。もしビルドしたい場合はMakefileをご自分で用意なさってください。
+その場合 Command Line Tools for Xcodeをインストールしていると作業が楽になると思います。
 
 ◇ アンインストール ◇
 
@@ -66,3 +63,5 @@ MinGWのコンソールから「make」または「make -f Makefile」
 ・SQLiteを導入し情報取得処理をフレームクラスから分けた。とりあえず板一覧情報取得までテスト確認済。
 2012/05/24
 ・64bit Debian, 64bit Fedoraでのビルドに成功した
+2012/08/30
+・wxStringからchar*への変換でwx-2.9の機能が必要になったため、必要なライブラリの条件を書き換える

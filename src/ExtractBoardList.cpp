@@ -26,7 +26,7 @@
  * コンストラクタ
  */
 ExtractBoardList::ExtractBoardList(const char* file) {
-	//　コンストラクタ
+	// HTML読み込み用構造体
 	htmlDocPtr m_doc;
 	// インスタンスを用意する
 	accessor = new MetakitAccessor();
@@ -34,17 +34,34 @@ ExtractBoardList::ExtractBoardList(const char* file) {
 	// ファイル名とエンコードの設定
 	const char* enc = "utf-8";
 
-	// xmlの読み込み
-	if (htmlReadFile(file, enc, 1)) {
-		m_doc = htmlReadFile(file, enc, 1);
-		htmlNodePtr root = xmlDocGetRootElement(m_doc);
-		if (root != NULL) {
-			ExtractBoardList::FindBoardInfo(root);
-		}
+	// HTMLの読み込み
+	m_doc = htmlReadFile(file, enc, HTML_PARSE_RECOVER );
+
+	if (NULL == m_doc) {
+		// NULLが返された場合その時点で終了する
+		xmlCleanupParser();
+		xmlCleanupCharEncodingHandlers();
+		delete accessor;
+	}
+
+	// htmlNodePtrに変換する
+	htmlNodePtr root = xmlDocGetRootElement(m_doc);
+
+	if (NULL == root) {
+		// NULLが返された場合その時点で終了する
+		xmlFreeDoc(m_doc);
+		m_doc = NULL;
+		xmlCleanupParser();
+		xmlCleanupCharEncodingHandlers();
+		delete accessor;
+	} else {
+		// 正常処理
+		FindBoardInfo(root);
 		xmlFreeDoc(m_doc);
 		m_doc = NULL;
 	}
 
+	// 終了後の後片付け
 	xmlCleanupParser();
 	xmlCleanupCharEncodingHandlers();
 	accessor->SetBoardInfoCommit();

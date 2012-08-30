@@ -25,19 +25,25 @@
 #include <wx/wx.h>
 #include <libxml/HTMLparser.h>
 
-using namespace std;
-
 class FindIndicatedResponse {
 
 public:
 	/**
 	 * コンストラクタ
 	 */
-	FindIndicatedResponse(const wxString* allSource, wxString& resNumber);
+	FindIndicatedResponse(wxString& allSource, wxString& resNumber);
 	/**
 	 * HTMLをパースした結果を渡す処理
 	 */
 	wxString GetIndicatedResponse();
+
+private:
+	// 内部の処理関数
+	void FindIndicatedResponseNode(xmlNode*& element);
+	// 構造体
+	htmlDocPtr m_doc;
+	// HTMLをパースした結果を保存する文字列
+	wxString indicatedRes;
 };
 
 #endif /* FINDINDICATEDRESPONSE_H_ */
