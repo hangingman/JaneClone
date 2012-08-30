@@ -71,11 +71,13 @@ wxString JaneCloneUtil::GetHTTPCommTimeFromHeader(wxString& headerPath) {
 				httpHeaderFile.GetNextLine()) {
 			// 上から読み込んで一番最初に当たる日付が取得日時
 			if (str.Contains(wxT("Date:")) && str.Contains(wxT("GMT"))) {
+				httpHeaderFile.Close();
 				return str;
 			}
 		}
 	}
 	// ここまで来てしまった場合空文字を返す
+	httpHeaderFile.Close();
 	return wxEmptyString;
 }
 
@@ -118,4 +120,137 @@ size_t JaneCloneUtil::GetFileSize(const wxString& filePath) {
 		return 0;
 	}
 }
+/**
+ * アンカーで指定されたレスをファイルから読み取ってDOM形式にして送り返す
+ */
+wxString JaneCloneUtil::FindAnchoredResponse(wxString& boardNameAscii,
+		wxString& origNumber, wxString& resNumber) {
 
+	// ファイルパスの組み立てとファイルの有無確認
+	wxDir dir(wxGetCwd());
+	wxString filePath = dir.GetName();
+
+#ifdef __WXMSW__
+	// Windowsではパスの区切りは"\"
+	filePath += wxT("\\dat\\");
+	filePath += boardNameAscii;
+	filePath += wxT("\\");
+	filePath += origNumber;
+	filePath += wxT(".dat");
+#else
+	// それ以外ではパスの区切りは"/"
+	filePath += wxT("/dat/");
+	filePath += boardNboardNameAscii;
+	filePath += wxT("/");
+	filePath += origNumber;
+	filePath += wxT(".dat");
+#endif
+
+	if (!wxFile::Exists(filePath)) {
+		// 無ければ空文字リターン
+		return wxEmptyString;
+	}
+
+	int resNumInt = wxAtoi(resNumber);
+
+	// datファイルを読み込む
+	wxTextFile datFile;
+	datFile.Open(filePath, wxConvUTF8);
+	wxString str;
+
+	if (datFile.IsOpened() && 1 == resNumInt) {
+		str = datFile.GetFirstLine();
+		datFile.Close();
+
+	} else if (datFile.IsOpened() && resNumInt > 1) {
+		datFile.GetFirstLine();
+
+		for (int i = 1; !datFile.Eof(); str = datFile.GetNextLine()) {
+			// 上から読み込んでレス番号にあたる行のレスを取得する
+			if (i == resNumInt) {
+				datFile.Close();
+				break;
+			}
+			++i;
+		}
+	}
+
+	// HTMLのDOM形式にする
+	wxString lumpOfHTML = HTML_HEADER_POPUP;
+	lumpOfHTML += wxT("<dt>");
+	lumpOfHTML += resNumber;
+
+	wxString default_nanashi, mail, day_and_ID, res;
+
+	// 正規表現でレスの内容を取り出してメモリに展開する
+	if (regexThread.IsValid()) {
+		if (regexThread.Matches(str)) {
+			// マッチさせたそれぞれの要素を取得する
+			default_nanashi = regexThread.GetMatch(str, 1);
+			mail = regexThread.GetMatch(str, 2);
+			day_and_ID = regexThread.GetMatch(str, 3);
+
+			// レスの最初に<table>タグを入れる
+			res.Append(wxT("<table border=0 id=\"") + resNumber + wxT("\">"));
+			res.Append(regexThread.GetMatch(str, 4));
+			res.Append(wxT("</table>"));
+
+			// レス内部のURLに<a>タグをつける
+			res = ReplaceURLText(res);
+			// レスの最後に改行
+			res.Append(wxT("<br>"));
+		}
+	}
+
+	if (mail != wxEmptyString) {
+		// もしメ欄になにか入っているならば
+		lumpOfHTML += wxT(" 名前：<a href=\"mailto:");
+		lumpOfHTML += mail;
+		lumpOfHTML += wxT("\"><b>");
+		lumpOfHTML += default_nanashi;
+		lumpOfHTML += wxT("</b></a>");
+		lumpOfHTML += day_and_ID;
+		lumpOfHTML += wxT("<dd>");
+		lumpOfHTML += res;
+	} else {
+		// 空の場合
+		lumpOfHTML += wxT(" 名前：<font color=green><b>");
+		lumpOfHTML += default_nanashi;
+		lumpOfHTML += wxT("</b></font>");
+		lumpOfHTML += day_and_ID;
+		lumpOfHTML += wxT("<dd>");
+		lumpOfHTML += res;
+	}
+
+	// HTMLソースを加える
+	lumpOfHTML += HTML_FOOTER;
+
+	return lumpOfHTML;
+}
+/**
+ * レス内にURLがあれば<a>タグを付ける
+ */
+wxString JaneCloneUtil::ReplaceURLText(const wxString& responseText) {
+
+	wxString text = responseText;
+	wxString tmp, result;
+	size_t start, len;
+
+	if (regexURL.IsValid() && regexURL.Matches(responseText)) {
+		for (tmp = text; regexURL.Matches(tmp);
+				tmp = tmp.SubString(start + len, tmp.Len())) {
+			regexURL.GetMatch(&start, &len, 0);
+			result += tmp.SubString(0, start - 1);
+			result += wxT("<a href=\"");
+			result += tmp.SubString(start, start + len - 1);
+			result += wxT("\"/>");
+			result += tmp.SubString(start, start + len - 1);
+			result += wxT("</a>");
+		}
+		result += tmp;
+	} else {
+		return responseText;
+	}
+
+	return result;
+}

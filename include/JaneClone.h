@@ -74,7 +74,6 @@
 #include "JaneCloneUtil.h"
 #include "VirtualBoardListCtrl.h"
 #include "ThreadContentWindow.h"
-#include "FindIndicatedResponse.h"
 #include "AnchoredResponsePopup.h"
 
 /*
@@ -209,11 +208,12 @@ private:
 			const wxString&);
 
 	// ThreadContentWindowのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
-	WX_DECLARE_HASH_MAP( wxString, // type of the keys
-			ThreadContentWindow,// type of the values
-			wxStringHash ,// hasher
-			wxStringEqual,// key equality predicate
-			ThreadContentWindowHash);// name of the class
+	WX_DECLARE_HASH_MAP( wxString,    // type of the keys
+			ThreadContentWindow*,     // ポインタを詰める
+			wxStringHash ,            // hasher
+			wxStringEqual,            // key equality predicate
+			ThreadContentWindowHash); // name of the class
+
 	// JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
 	ThreadContentWindowHash tcwHash;
 
@@ -230,7 +230,7 @@ private:
 	wxFileConfig* config;
 
 	// ポップアップウィンドウを出現させる
-	void SetPopUpWindow(wxHtmlCellEvent& event, wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint);
+	void SetPopUpWindow(wxHtmlCellEvent& event,wxString&  boardNameAscii, wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint);
 
 	DECLARE_EVENT_TABLE()
 };

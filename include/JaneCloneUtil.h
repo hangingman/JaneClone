@@ -32,7 +32,10 @@
 #include <wx/file.h>
 #include <wx/filename.h>
 #include <wx/filefn.h>
+#include <wx/dir.h>
+#include <wx/regex.h>
 #include "wx/wxnkf.h"
+#include "DataType.h"
 
 class JaneCloneUtil {
 public:
@@ -41,32 +44,38 @@ public:
 	 * 引数１は読み込み元gzipファイルのPATH、引数２は解凍先のファイルのPATH
 	 * いずれもファイル名までを記述する
 	 */
-	static void DecommpressFile(wxString& inputPath,
-			wxString& outputPath);
+	static void DecommpressFile(wxString& inputPath, wxString& outputPath);
 	/**
 	 * ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
 	 * 引数１は読み込み元のPATH、引数２は出力先ファイルのPATH いずれもファイル名までを記述する
 	 */
-	static void ConvertSJISToUTF8(wxString& inputPath,
-			wxString& outputPath);
+	static void ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath);
 	/**
 	 * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
 	 */
 	static wxString GetHTTPCommTimeFromHeader(wxString& headerPath);
-
 	/**
 	 * 指定された数字からスレッドの作成された時間を計算する処理
 	 */
 	static wxString CalcThreadCreatedTime(wxString& threadNum);
-
 	/**
 	 * 指定されたパスにファイルがあればファイルサイズを返す処理
 	 */
 	static size_t GetFileSize(const wxString& filePath);
+	/**
+	 * アンカーで指定されたレスをファイルから読み取ってDOM形式にして送り返す
+	 */
+	static wxString FindAnchoredResponse(wxString& boardNameAscii,
+			wxString& origNumber, wxString& resNumber);
+	/**
+	 * レス内にURLがあれば<a>タグを付ける
+	 */
+	static wxString ReplaceURLText(const wxString& responseText);
 
 private:
 	// ディスクからの読取サイズ
-	#define S_SIZE (2048)
+#define S_SIZE (2048)
+
 };
 
 #endif /* JANECLONEUTIL_H_ */

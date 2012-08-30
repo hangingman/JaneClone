@@ -37,9 +37,7 @@ END_EVENT_TABLE()
 AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource )
 :wxPopupTransientWindow( parent )
 {
-	this->Position(point, size);
 	wxBoxSizer *topsizer;
-	wxHtmlWindow *htmlWin;
 	wxString html = HTML_HEADER;
 	html+=htmlSource;
 	html+=HTML_FOOTER;
@@ -55,6 +53,10 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
 	topsizer->Add(htmlWin, 1, wxALL, 10);
 	htmlWin->SetSizer(topsizer);
 	topsizer->Fit(this);
+}
+
+wxSize AnchoredResponsePopup::GetPopupWindowSize() {
+	return wxSize(htmlWin->GetInternalRepresentation()->GetWidth(), htmlWin->GetInternalRepresentation()->GetHeight());
 }
 
 void AnchoredResponsePopup::Popup(wxWindow* WXUNUSED(focus)) {

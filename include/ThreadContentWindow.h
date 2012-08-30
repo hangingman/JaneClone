@@ -23,7 +23,6 @@
 #define THREADCONTENTWINDOW_H_
 
 #include <wx/html/htmlwin.h>
-#include <wx/regex.h>
 #include "DataType.h"
 #include "JaneCloneUtil.h"
 
@@ -31,15 +30,6 @@
 static const wxString FAIL_TO_READ_PAGE =
 		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
 			charset=UTF-8\"><title></title></head><body><span>ファイルの読み込みに失敗しました・リロードしてみてください</span></body></html>");
-
-// スレッド読み込み用正規表現
-static const wxRegEx regexThread(_T("^(.+)<>(.*)<>(.+)<>(.*)<>$"), wxRE_ADVANCED + wxRE_ICASE);
-
-// URL検出用正規表現
-static const wxRegEx regexURL(_T("(http|https|ttp|ftp)://([[:alnum:]]|[[:punct:]]|[=]|[~])*"), wxRE_ADVANCED + wxRE_ICASE);
-
-// アンカー検出用正規表現
-static const wxRegEx regexAnchor(_T(">{1,2}([[:digit:]]{1,4})"), wxRE_ADVANCED + wxRE_ICASE);
 
 class WXDLLEXPORT ThreadContentWindow : public wxHtmlWindow {
 
@@ -60,24 +50,13 @@ public:
 	/**
 	 * 内部で持っているHTMLソースを返す
 	 */
-	wxString GetInternalHtmlSource() {
-		return m_htmlSource;
-	};
+	wxString GetInternalHtmlSource();
 
 private:
 	/**
 	 * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
 	 */
 	const wxString GetConvertedDatFile(const wxString& threadContentPath);
-	/**
-	 * レス内にURLがあれば<a>タグを付ける
-	 */
-	static wxString ReplaceURLText(const wxString& responseText);
-	/**
-	 * 内部的に持っているHTMLデータ
-	 */
-	wxString m_htmlSource;
-
 
 	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
 };

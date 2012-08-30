@@ -22,6 +22,8 @@
 #ifndef DATATYPE_H_
 #define DATATYPE_H_
 
+#include <wx/regex.h>
+
 // wxHashMap用のクラス -- 2chの板名とURLを対応させる
 class URLvsBoardName {
 public:
@@ -59,10 +61,19 @@ public:
 
 // ヘッダ部分にあたるHTML
 static const wxString HTML_HEADER =
-		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
-		charset=UTF-8\"></head><body bgcolor=#efefef text=black link=blue alink=red vlink=#660099>");
+		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body bgcolor=#efefef text=black link=blue alink=red vlink=#660099>");
+
+// ポップアップウィンドウのヘッダ部分にあたるHTML
+static const wxString HTML_HEADER_POPUP =
+		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body bgcolor=#eedcb3 text=black link=blue alink=red vlink=#660099>");
 
 // フッター部分にあたるHTML
 static const wxString HTML_FOOTER = wxT("</body></html>");
+
+// スレッド読み込み用正規表現
+static const wxRegEx regexThread(_T("^(.+)<>(.*)<>(.+)<>(.*)<>$"), wxRE_ADVANCED + wxRE_ICASE);
+
+// URL検出用正規表現
+static const wxRegEx regexURL(_T("(http|https|ttp|ftp)://([[:alnum:]]|[[:punct:]]|[=]|[~])*"), wxRE_ADVANCED + wxRE_ICASE);
 
 #endif /* DATATYPE_H_ */

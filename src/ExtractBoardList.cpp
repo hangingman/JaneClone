@@ -42,6 +42,7 @@ ExtractBoardList::ExtractBoardList(const char* file) {
 		xmlCleanupParser();
 		xmlCleanupCharEncodingHandlers();
 		delete accessor;
+		return;
 	}
 
 	// htmlNodePtrに変換する
@@ -49,21 +50,17 @@ ExtractBoardList::ExtractBoardList(const char* file) {
 
 	if (NULL == root) {
 		// NULLが返された場合その時点で終了する
-		xmlFreeDoc(m_doc);
-		m_doc = NULL;
 		xmlCleanupParser();
 		xmlCleanupCharEncodingHandlers();
 		delete accessor;
+		return;
 	} else {
 		// 正常処理
 		FindBoardInfo(root);
-		xmlFreeDoc(m_doc);
-		m_doc = NULL;
+		xmlCleanupParser();
+		xmlCleanupCharEncodingHandlers();
 	}
 
-	// 終了後の後片付け
-	xmlCleanupParser();
-	xmlCleanupCharEncodingHandlers();
 	accessor->SetBoardInfoCommit();
 	delete accessor;
 }

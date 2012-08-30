@@ -870,25 +870,27 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
 			// <a>タグ内サンプル　<a href="../test/read.cgi/poverty/1345636335/20" target="_blank">
 			wxString href = linkInfo->GetHref();
 			wxStringTokenizer tkz(href, wxT("//"));
-			wxString orgNumber, resNumber;
+			wxString boardNameAscii, orgNumber, resNumber;
 
 			while (tkz.HasMoreTokens()) {
 				wxString tmp = tkz.GetNextToken();
-				if (tmp.IsNumber() && tmp.Len() == 10) {
-					// 取得した値が全て数字で、長さが10のUNIX Time形式の場合処理を続行する
-					orgNumber = tmp;
+				if (tmp == _T("read.cgi")) {
+					boardNameAscii = tkz.GetNextToken();
+					orgNumber = tkz.GetNextToken();
 					resNumber = tkz.GetNextToken();
 					break;
 				}
 			}
 
-			if (orgNumber == wxEmptyString || resNumber == wxEmptyString)
+			if (orgNumber == wxEmptyString || resNumber == wxEmptyString
+					|| boardNameAscii == wxEmptyString) {
 				return;
-
+			}
 			// アンカーの出現位置
 			wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY() + 80);
 			// 取得した情報を元に新しいポップアップウィンドウを出現させる
-			SetPopUpWindow(event, orgNumber, resNumber, anchorPoint);
+			SetPopUpWindow(event, boardNameAscii, orgNumber, resNumber,
+					anchorPoint);
 		}
 	}
 }
@@ -1071,7 +1073,7 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 			(wxWindow*) threadNoteBook, threadContentPath);
 
 	//　origNumber(key),ThreadContentWindow(value)としてHashに格納する
-	tcwHash[(const wxString) origNumber] = (const ThreadContentWindow&) tcw;
+	tcwHash[origNumber] = tcw;
 
 	// スレッドを表示させる
 	threadNoteBook->AddPage(tcw, title, false);
@@ -1257,19 +1259,28 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
 /**
  * レスアンカーに対応するレスを表示するポップアップウィンドウを出現させる
  */
-void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& origNumber,
-		wxString& resNumber, wxPoint& anchorPoint) {
+void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
+		wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint) {
 
-	// スレッドのソースを手に入れる
-	wxString allSource = tcwHash[(const wxString) origNumber].GetInternalHtmlSource();
 	// アンカーが指し示すHTMLソースを取得する
-	FindIndicatedResponse* findIndi = new FindIndicatedResponse(allSource, resNumber);
-	wxString indicatedHtml = findIndi->GetIndicatedResponse();
-	delete findIndi;
+	wxString htmlDOM = JaneCloneUtil::FindAnchoredResponse(boardNameAscii,
+			origNumber, resNumber);
+
+	if (wxEmptyString == htmlDOM) {
+		// 空文字で帰ってきたらリターン
+		return;
+	}
 
 	// 取得したレスをポップアップさせる
-	indicatedHtml += wxT("<h2>Hello,World!!</h2>");
-	AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook, anchorPoint, wxSize(300, 300), indicatedHtml);
+	AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook,
+			anchorPoint, wxSize(640, 300), htmlDOM);
+
+	// マウスカーソルの位置に調整する
+	wxPoint mousePoint = wxGetMousePosition();
+	mousePoint.x -= 400;
+	mousePoint.y += 100;
+
+	popup->Position(mousePoint, popup->GetPopupWindowSize());
 	popup->Popup();
 }
 

@@ -30,10 +30,9 @@ ThreadContentWindow::ThreadContentWindow(wxWindow* parent, const wxString& threa
 wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO) {
 
 	// 指定されたパスからHTMLファイルを読み出す
-	const wxString htmlSource = GetConvertedDatFile(threadContentPath);
+	wxString htmlSource = GetConvertedDatFile(threadContentPath);
 	// メモリに読み込んだHTMLを表示する
 	this->SetPage(htmlSource);
-	this->m_htmlSource = htmlSource;
 }
 /**
  * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
@@ -94,7 +93,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 					res.Append(wxT("</table>"));
 
 					// レス内部のURLに<a>タグをつける
-					res = ReplaceURLText(res);
+					res = JaneCloneUtil::ReplaceURLText(res);
 					// レスの最後に改行
 					res.Append(wxT("<br>"));
 				}
@@ -131,31 +130,4 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 	datfile.Close();
 
 	return htmlSource;
-}
-/**
- * レス内にURLがあれば<a>タグを付ける
- */
-wxString ThreadContentWindow::ReplaceURLText(const wxString& responseText) {
-
-	wxString text = responseText;
-	wxString tmp, result;
-	size_t start, len;
-
-	if (regexURL.IsValid() && regexURL.Matches(responseText)) {
-		for (tmp = text; regexURL.Matches(tmp);
-				tmp = tmp.SubString(start + len, tmp.Len())) {
-			regexURL.GetMatch(&start, &len, 0);
-			result += tmp.SubString(0, start - 1);
-			result += wxT("<a href=\"");
-			result += tmp.SubString(start, start + len - 1);
-			result += wxT("\"/>");
-			result += tmp.SubString(start, start + len - 1);
-			result += wxT("</a>");
-		}
-		result += tmp;
-	} else {
-		return responseText;
-	}
-
-	return result;
 }

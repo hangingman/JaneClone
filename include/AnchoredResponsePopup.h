@@ -36,10 +36,11 @@ class AnchoredResponsePopup: public wxPopupTransientWindow {
 	AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource );
     virtual ~AnchoredResponsePopup(){};
 
-    virtual void Popup(wxWindow *focus = NULL);
-    virtual void OnDismiss();
-    virtual bool ProcessLeftDown(wxMouseEvent& event);
-    virtual bool Show( bool show = true );
+    void Popup(wxWindow *focus = NULL);
+    void OnDismiss();
+    bool ProcessLeftDown(wxMouseEvent& event);
+    bool Show( bool show = true );
+    wxSize GetPopupWindowSize();
 
 private:
     void OnMouse( wxMouseEvent &event );
@@ -48,6 +49,8 @@ private:
     void OnKillFocus( wxFocusEvent &event );
 
 private:
+    wxHtmlWindow *htmlWin;
+
     DECLARE_CLASS(AnchoredResponsePopup)
     DECLARE_EVENT_TABLE()
 };
