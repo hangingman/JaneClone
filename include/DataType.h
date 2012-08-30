@@ -57,4 +57,12 @@ public:
 	wxString boardName;
 };
 
+// ヘッダ部分にあたるHTML
+static const wxString HTML_HEADER =
+		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
+		charset=UTF-8\"></head><body bgcolor=#efefef text=black link=blue alink=red vlink=#660099>");
+
+// フッター部分にあたるHTML
+static const wxString HTML_FOOTER = wxT("</body></html>");
+
 #endif /* DATATYPE_H_ */

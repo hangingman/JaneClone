@@ -35,7 +35,6 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
 	this->SetPage(htmlSource);
 	this->m_htmlSource = htmlSource;
 }
-
 /**
  * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
  */
@@ -96,12 +95,14 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 
 					// レス内部のURLに<a>タグをつける
 					res = ReplaceURLText(res);
+					// レスの最後に改行
+					res.Append(wxT("<br>"));
 				}
 			}
 
 			if (mail != wxEmptyString) {
 				// もしメ欄になにか入っているならば
-				lumpOfHTML += wxT(" 名前<a href=\"mailto:");
+				lumpOfHTML += wxT(" 名前：<a href=\"mailto:");
 				lumpOfHTML += mail;
 				lumpOfHTML += wxT("\"><b>");
 				lumpOfHTML += default_nanashi;
@@ -111,7 +112,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 				lumpOfHTML += res;
 			} else {
 				// 空の場合
-				lumpOfHTML += wxT(" 名前<font color=green><b>");
+				lumpOfHTML += wxT(" 名前：<font color=green><b>");
 				lumpOfHTML += default_nanashi;
 				lumpOfHTML += wxT("</b></font>");
 				lumpOfHTML += day_and_ID;
@@ -130,30 +131,6 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 	datfile.Close();
 
 	return htmlSource;
-}
-/**
- * URLが開かれた時に呼ばれるメソッド
- */
-wxHtmlOpeningStatus ThreadContentWindow::OnOpeningURL(wxHtmlURLType type,
-		const wxString& url, wxString *redirect) {
-}
-/**
- * <TITLE>タグを読み込んだ時に呼ばれる
- */
-void ThreadContentWindow::OnSetTitle(const wxString& title) {
-
-}
-/**
- * カスタム設定を読み込むメソッド
- */
-void ThreadContentWindow::ReadCustomization(wxConfigBase *cfg, wxString path) {
-
-}
-/**
- * カスタム設定を書き込むメソッド
- */
-void ThreadContentWindow::WriteCustomization(wxConfigBase *cfg, wxString path) {
-
 }
 /**
  * レス内にURLがあれば<a>タグを付ける

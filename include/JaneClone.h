@@ -64,7 +64,6 @@
 #include <wx/config.h>
 #include <wx/fileconf.h>
 #include <wx/tokenzr.h>
-#include <wx/popupwin.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
@@ -75,6 +74,7 @@
 #include "JaneCloneUtil.h"
 #include "VirtualBoardListCtrl.h"
 #include "ThreadContentWindow.h"
+#include "AnchoredResponsePopup.h"
 
 /*
  * 定数値の宣言

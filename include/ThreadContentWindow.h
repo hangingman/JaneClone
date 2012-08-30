@@ -24,20 +24,13 @@
 
 #include <wx/html/htmlwin.h>
 #include <wx/regex.h>
+#include "DataType.h"
 #include "JaneCloneUtil.h"
 
 // 読み込みに失敗した場合に表示するページ
 static const wxString FAIL_TO_READ_PAGE =
 		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
 			charset=UTF-8\"><title></title></head><body><span>ファイルの読み込みに失敗しました・リロードしてみてください</span></body></html>");
-
-// ヘッダ部分にあたるHTML
-static const wxString HTML_HEADER =
-		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
-		charset=UTF-8\"></head><body bgcolor=#efefef text=black link=blue alink=red vlink=#660099>");
-
-// フッター部分にあたるHTML
-static const wxString HTML_FOOTER = wxT("</body></html>");
 
 // スレッド読み込み用正規表現
 static const wxRegEx regexThread(_T("^(.+)<>(.*)<>(.+)<>(.*)<>$"), wxRE_ADVANCED + wxRE_ICASE);
@@ -64,22 +57,6 @@ public:
 	 * オペレーターに対する参照返し
 	 */
 	ThreadContentWindow& operator=(const ThreadContentWindow&) {return *this;}
-	/**
-	 * URLが開かれた時に呼ばれるメソッド
-	 */
-	wxHtmlOpeningStatus OnOpeningURL(wxHtmlURLType type,const wxString& url, wxString *redirect);
-	/**
-	 * <TITLE>タグを読み込んだ時に呼ばれる
-	 */
-	void OnSetTitle(const wxString& title);
-	/**
-	 * カスタム設定を読み込むメソッド
-	 */
-	void ReadCustomization(wxConfigBase *cfg, wxString);
-	/**
-	 * カスタム設定を書き込むメソッド
-	 */
-	void WriteCustomization(wxConfigBase *cfg, wxString);
 	/**
 	 * 内部で持っているHTMLソースを返す
 	 */

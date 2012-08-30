@@ -831,7 +831,6 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 void JaneClone::OnGetBoardList(wxCommandEvent&) {
 
 	*m_logCtrl << wxT("三┏（ ；´ん｀）┛…板一覧更新\n");
-	*m_logCtrl << wxT("三　　　┛┓\n");
 
 	// ソケット通信を行う
 	SocketCommunication* socketCommunication = new SocketCommunication();
@@ -853,10 +852,7 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 		// 板一覧情報をセットする
 		JaneClone::SetBoardList();
 
-		*m_logCtrl << wxT("　　　 ／⌒ヽ ｽﾞｽﾞｰ \n");
 		*m_logCtrl << wxT("　　　(ヽ´ん`）　　 \n");
-		*m_logCtrl << wxT("　　　(っ=|||ｏ) \n");
-		*m_logCtrl << wxT("￣￣ ｀――´￣￣￣＼ \n");
 	}
 }
 /**
@@ -1020,14 +1016,7 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
  */
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
-	*m_logCtrl << wxT("スレッドの取得だー\n");
 	*m_logCtrl << wxT("　　　　　　 　　三　(　＾ν） \n");
-	*m_logCtrl << wxT("　　　　　　　三 ｰ（‐∪─→\n");
-	*m_logCtrl << wxT("　　 三 ／￣￣￣ 》 ￣＼ \n");
-	*m_logCtrl << wxT("　三三 |　　　　　　Ｕ　・　|\n");
-	*m_logCtrl << wxT("　 三 と|　　　 　　　　ι| |\n");
-	*m_logCtrl << wxT("　　三 /_∧∨￣￣/_∧Ｕ\n");
-	*m_logCtrl << wxT("\n");
 
 	// 現在アクティブになっているタブの板名を取得する
 	wxString boardName = boardNoteBook->GetPageText(
@@ -1066,14 +1055,7 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 		// スレッドの内容をノートブックに反映する
 		SetThreadContentToNoteBook(threadContentPath, origNumber, title);
 
-		*m_logCtrl << wxT("取得完了\n");
 		*m_logCtrl << wxT("　　　　　　(´ん｀/)三\n");
-		*m_logCtrl << wxT("　　　　　←─-‐）‐三\n");
-		*m_logCtrl << wxT("　　／￣￣《￣￣＼三　　\n");
-		*m_logCtrl << wxT("　|　・　Ｕ　　　　　 |三三\n");
-		*m_logCtrl << wxT("　| |ι　　　 　 　　|三\n");
-		*m_logCtrl << wxT("  Ｕ｜｜ ￣￣｜｜\n");
-		*m_logCtrl << wxT("\n");
 	}
 }
 
@@ -1283,9 +1265,10 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& origNumber,
 	// アンカーが指し示すHTMLソースを取得する
 	//FindIndicatedResponse* findIndi = new FindIndicatedResponse(*allSource, resNumber);
 	//wxString indicatedHtml = findIndi->GetIndicatedResponse();
-	wxMessageBox(wxT("ここまできた"));
-	wxPopupTransientWindow* popUp = new wxPopupTransientWindow(this, wxBORDER_NONE);
+	wxString test = wxT("<h2>Hello,World!!</h2>");
+	AnchoredResponsePopup* popUp = new AnchoredResponsePopup((wxWindow*)threadNoteBook, test);
 	popUp->Position(anchorPoint, wxSize(200, 200));
+	popUp->Popup();
 }
 
 
