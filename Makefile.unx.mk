@@ -24,12 +24,38 @@ RM 		:= rm
 MAKE	:= make
 
 # debug and release
-CXX_DEBUG_FLAGS	=	-gstabs
-CXX_RELEASE_FLAGS	=	-s
+CXX_DEBUG_FLAGS   =	-gstabs
+CXX_RELEASE_FLAGS = -O2
 
 # compile option
-CXXFLAGS = -Wall -I/usr/local/include -I include `wx-config --cxxflags` `xml2-config --cflags` -I$(NKFDIR)/include
-LDFLAGS  = -L/usr/local/lib -lwx_gtk2u_aui-2.8 `wx-config --libs` `xml2-config --libs` -lmk4 $(NKFDIR)/libwxnkf.a
+PREFIX	  = /usr/local/
+CXXFLAGS = -Wall -I$(PREFIX)include -I include \
+`wx-config --cxxflags` `xml2-config --cflags`   \
+-I$(NKFDIR)/include
+
+# 足りない静的ライブラリを補充して並び替えた
+LDFLAGS  = -static									\
+-L/usr/local/lib	-L$(NKFDIR)/					\
+-lwx_gtk2u_aui-2.9 \
+/usr/local/lib/libwx_gtk2u_xrc-2.9.a 				\
+/usr/local/lib/libwx_gtk2u_qa-2.9.a 				\
+/usr/local/lib/libwx_baseu_net-2.9.a 				\
+/usr/local/lib/libwx_gtk2u_html-2.9.a 			\
+/usr/local/lib/libwx_gtk2u_adv-2.9.a 				\
+/usr/local/lib/libwx_gtk2u_core-2.9.a 			\
+/usr/local/lib/libwx_baseu_xml-2.9.a 				\
+-lwx_baseu-2.9					\
+-lgtk-x11-2.0 -lgdk-x11-2.0							\
+-lwxregexu-2.9 -lwxtiff-2.9 -lwxjpeg-2.9			\
+-latk-1.0 -lXfixes -lpangoft2-1.0 -lXext -lXi -lXdamage -lXcomposite -lXrandr -lXcursor -lXinerama	\
+-lgdk_pixbuf-2.0 -ljasper -ljpeg -lm -lpangocairo-1.0	\
+-lcairo	-lXrender -lpixman-1 -lgio-2.0 -lselinux	\
+-lpango-1.0 -lthai -ldatrie -lgobject-2.0 -lgmodule-2.0  \
+-lgthread-2.0 -lrt -lpng -lz -lxml2 -lwxnkf -lmk4 \
+-lfontconfig -lfreetype -lexpat -lssl -lcrypto    \
+-lglib-2.0 -lpcre -lX11 -lxcb -lXdmcp -lXau       \
+-lSM -lICE -lpthread -ldl
+
 VPATH    = include src rc
 
 # dummy target

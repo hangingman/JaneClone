@@ -140,7 +140,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(wxString& boardNameAscii,
 #else
 	// それ以外ではパスの区切りは"/"
 	filePath += wxT("/dat/");
-	filePath += boardNboardNameAscii;
+	filePath += boardNameAscii;
 	filePath += wxT("/");
 	filePath += origNumber;
 	filePath += wxT(".dat");
