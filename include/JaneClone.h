@@ -231,6 +231,9 @@ private:
 	// ポップアップウィンドウを出現させる
 	void SetPopUpWindow(wxHtmlCellEvent& event, wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint);
 
+	// テストを行うためだけのメソッド
+	void TestMethod(wxCommandEvent& event);
+
 	DECLARE_EVENT_TABLE()
 };
 // wxGlade: end class

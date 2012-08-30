@@ -22,38 +22,34 @@
 #ifndef ANCHOREDRESPONSEPOPUP_H_
 #define ANCHOREDRESPONSEPOPUP_H_
 
+#include <wx/html/htmlwin.h>
 #include <wx/scrolwin.h>
 #include <wx/popupwin.h>
-#include <wx/html/htmlwin.h>
 #include <wx/sizer.h>
+#include <wx/spinctrl.h>
+#include <wx/stattext.h>
 #include "DataType.h"
 
 class AnchoredResponsePopup: public wxPopupTransientWindow {
 
-public:
-	AnchoredResponsePopup(wxWindow *parent, wxString& htmlSource);
-	~AnchoredResponsePopup(){};
+	public:
+	AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource );
+    virtual ~AnchoredResponsePopup();
 
-	void Popup(wxWindow *focus = NULL);
-	void OnDismiss();
-	bool ProcessLeftDown(wxMouseEvent& event);
-	bool Show(bool show = true);
-
-	wxScrolledWindow* GetChild() {
-		return m_panel;
-	}
+    virtual void Popup(wxWindow *focus = NULL);
+    virtual void OnDismiss();
+    virtual bool ProcessLeftDown(wxMouseEvent& event);
+    virtual bool Show( bool show = true );
 
 private:
-	wxScrolledWindow* m_panel;
-	wxHtmlWindow* m_htmlWin;
+    void OnMouse( wxMouseEvent &event );
+    void OnSize( wxSizeEvent &event );
+    void OnSetFocus( wxFocusEvent &event );
+    void OnKillFocus( wxFocusEvent &event );
 
 private:
-	void OnMouse(wxMouseEvent &event);
-	void OnSize(wxSizeEvent &event);
-	void OnSetFocus(wxFocusEvent &event);
-	void OnKillFocus(wxFocusEvent &event);
-private:
-	DECLARE_CLASS (AnchoredResponsePopup)DECLARE_EVENT_TABLE()
+    DECLARE_CLASS(AnchoredResponsePopup)
+    DECLARE_EVENT_TABLE()
 };
 
 #endif /* ANCHOREDRESPONSEPOPUP_H_ */

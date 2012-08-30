@@ -21,6 +21,10 @@
 
 #include "AnchoredResponsePopup.h"
 
+enum {
+	Minimal_StartSimplePopup, Minimal_StartScrolledPopup, Minimal_LogWindow,
+};
+
 IMPLEMENT_CLASS(AnchoredResponsePopup,wxPopupTransientWindow)
 
 BEGIN_EVENT_TABLE(AnchoredResponsePopup,wxPopupTransientWindow)
@@ -30,55 +34,59 @@ EVT_SET_FOCUS( AnchoredResponsePopup::OnSetFocus )
 EVT_KILL_FOCUS( AnchoredResponsePopup::OnKillFocus )
 END_EVENT_TABLE()
 
-AnchoredResponsePopup::AnchoredResponsePopup(wxWindow* parent, wxString& htmlSource)
+AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource )
 :wxPopupTransientWindow( parent )
 {
-	m_panel = new wxScrolledWindow( this, wxID_ANY );
-	m_panel->SetBackgroundColour( *wxLIGHT_GREY );
-
-	m_panel->Connect(wxEVT_MOTION,
-			wxMouseEventHandler(AnchoredResponsePopup::OnMouse),
-			NULL, this);
-
-	m_htmlWin = new wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO);
+	this->Position(point, size);
+	wxBoxSizer *topsizer;
+	wxHtmlWindow *htmlWin;
 	wxString html = HTML_HEADER;
 	html+=htmlSource;
 	html+=HTML_FOOTER;
-	m_htmlWin->SetPage(html);
 
-	wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
-	topSizer->Add( m_htmlWin, 0, wxEXPAND, 5 );
+	topsizer = new wxBoxSizer(wxVERTICAL);
 
-	m_panel->SetSizer( topSizer );
-	topSizer->Fit(m_panel);
-	topSizer->Fit(this);
+	htmlWin = new wxHtmlWindow(this, wxID_ANY, point, size, wxHW_SCROLLBAR_NEVER);
+	htmlWin->SetBorders(0);
+	htmlWin->SetPage(html);
+	htmlWin->SetSize(htmlWin->GetInternalRepresentation()->GetWidth(),
+			htmlWin->GetInternalRepresentation()->GetHeight());
+
+	topsizer->Add(htmlWin, 1, wxALL, 10);
+	htmlWin->SetSizer(topsizer);
+	topsizer->Fit(this);
 }
 
-void AnchoredResponsePopup::Popup(wxWindow* focus) {
-    wxPopupTransientWindow::Popup();
+AnchoredResponsePopup::~AnchoredResponsePopup() {
+}
+
+void AnchoredResponsePopup::Popup(wxWindow* WXUNUSED(focus)) {
+	wxPopupTransientWindow::Popup();
 }
 
 void AnchoredResponsePopup::OnDismiss() {
-    wxPopupTransientWindow::OnDismiss();
+	wxPopupTransientWindow::OnDismiss();
 }
 
 bool AnchoredResponsePopup::ProcessLeftDown(wxMouseEvent& event) {
-    return wxPopupTransientWindow::ProcessLeftDown(event);
+	return wxPopupTransientWindow::ProcessLeftDown(event);
 }
-
 bool AnchoredResponsePopup::Show(bool show) {
-    return wxPopupTransientWindow::Show(show);
+	return wxPopupTransientWindow::Show(show);
 }
 
-void AnchoredResponsePopup::OnMouse(wxMouseEvent& event) {
+void AnchoredResponsePopup::OnSize(wxSizeEvent &event) {
+	event.Skip();
 }
 
-void AnchoredResponsePopup::OnSize(wxSizeEvent& event) {
+void AnchoredResponsePopup::OnSetFocus(wxFocusEvent &event) {
+	event.Skip();
 }
 
-void AnchoredResponsePopup::OnSetFocus(wxFocusEvent& event) {
+void AnchoredResponsePopup::OnKillFocus(wxFocusEvent &event) {
+	event.Skip();
 }
 
-void AnchoredResponsePopup::OnKillFocus(wxFocusEvent& event) {
+void AnchoredResponsePopup::OnMouse(wxMouseEvent &event) {
+	event.Skip();
 }
-
