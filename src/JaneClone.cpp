@@ -36,7 +36,8 @@ enum {
 	ID_GetBoardList, // 板一覧情報取得
 	ID_GetVersionInfo, // バージョン情報
 	ID_ThreadNoteBook, // スレッド一覧ノートブックに使うID
-	ID_BoardNoteBook // 板一覧用ノートブックに使うID
+	ID_BoardNoteBook
+// 板一覧用ノートブックに使うID
 };
 
 // event table
@@ -533,13 +534,13 @@ void JaneClone::SetProperties() {
 	wxSize client_size = GetClientSize();
 
 	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-	boardNoteBook = new wxAuiNotebook(this, ID_BoardNoteBook,
-			wxPoint(client_size.x, client_size.y), wxDefaultSize,
+	boardNoteBook = new wxAuiNotebook(this, ID_BoardNoteBook, wxPoint(
+			client_size.x, client_size.y), wxDefaultSize,
 			wxAUI_NB_DEFAULT_STYLE);
 
 	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-	threadNoteBook = new wxAuiNotebook(this, ID_ThreadNoteBook,
-			wxPoint(client_size.x, client_size.y), wxDefaultSize,
+	threadNoteBook = new wxAuiNotebook(this, ID_ThreadNoteBook, wxPoint(
+			client_size.x, client_size.y), wxDefaultSize,
 			wxAUI_NB_DEFAULT_STYLE);
 }
 
@@ -681,7 +682,9 @@ JaneClone::~JaneClone() {
 	m_mgr.UnInit();
 	delete config;
 }
-
+/**
+ * JaneCloneを終了させる
+ */
 void JaneClone::OnQuit(wxCommandEvent&) {
 
 	// ツリーコントロールをデリートしてやらないとセグる
@@ -772,18 +775,30 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 			(const wxString) outputPath);
 
 	//　boardName(key),boardTabAndTh(value)としてHashに格納する
-	vbListCtrlHash[(const wxString) boardName] =
-			(const VirtualBoardListCtrl&) vbListCtrl;
+	vbListCtrlHash[(const wxString) boardName]
+			= (const VirtualBoardListCtrl&) vbListCtrl;
 	// listctrl内のリストをJaneCloneのメモリに持たせる
 	vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
 
 	// スレッドリストを表示させる
 	boardNoteBook->AddPage(vbListCtrl, boardName, false);
 	// カラムの幅を最大化
+#ifdef __WXMSW__
 	vbListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE);
 	vbListCtrl->SetColumnWidth(8, wxLIST_AUTOSIZE);
 	vbListCtrl->SetColumnWidth(9, wxLIST_AUTOSIZE);
 	vbListCtrl->SetColumnWidth(10, wxLIST_AUTOSIZE);
+#else
+	// どうやらWindows以外ではリストの幅が適切に調整されないので
+	// フォントの大きさから適切なリストの幅を算出する
+	wxFont font = GetCurrentFont();
+	int pointSize = font.GetPointSize();
+	// 2chのスレタイの文字数制限は全角24文字
+	vbListCtrl->SetColumnWidth(1, pointSize * 52);
+	vbListCtrl->SetColumnWidth(8, pointSize * 12);
+	vbListCtrl->SetColumnWidth(9, pointSize * 10);
+	vbListCtrl->SetColumnWidth(10, pointSize * 12);
+#endif
 
 	// ノートブックの選択処理
 	boardNoteBook->SetSelection(selectedPage);
@@ -811,11 +826,22 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 		VirtualBoardList vbList = vbListHash[(const wxString) boardName];
 		vbListCtrl.m_vBoardList = vbList;
 		// カラムの幅を最大化
+#ifdef __WXMSW__
 		vbListCtrl.SetColumnWidth(1, wxLIST_AUTOSIZE);
 		vbListCtrl.SetColumnWidth(8, wxLIST_AUTOSIZE);
 		vbListCtrl.SetColumnWidth(9, wxLIST_AUTOSIZE);
 		vbListCtrl.SetColumnWidth(10, wxLIST_AUTOSIZE);
-
+#else
+		// どうやらWindows以外ではリストの幅が適切に調整されないので
+		// フォントの大きさから適切なリストの幅を算出する
+		wxFont font = GetCurrentFont();
+		int pointSize = font.GetPointSize();
+		// 2chのスレタイの文字数制限は全角24文字
+		vbListCtrl.SetColumnWidth(1, pointSize * 52);
+		vbListCtrl.SetColumnWidth(8, pointSize * 12);
+		vbListCtrl.SetColumnWidth(9, pointSize * 10);
+		vbListCtrl.SetColumnWidth(10, pointSize * 12);
+#endif
 		// ノートブックの選択処理
 		boardNoteBook->SetSelection(selectedPage);
 		// ノートブックの解放
@@ -824,7 +850,6 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 		m_mgr.Update();
 	}
 }
-
 /**
  * 板一覧更新処理
  */
@@ -864,8 +889,8 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
 	wxHtmlLinkInfo* linkInfo = cell->GetLink(cell->GetPosX(), cell->GetPosY());
 
 	if (linkInfo) {
-		if (linkInfo->GetHref() != wxEmptyString
-				&& linkInfo->GetTarget() == _T("_blank")) {
+		if (linkInfo->GetHref() != wxEmptyString && linkInfo->GetTarget()
+				== _T("_blank")) {
 			// レスアンカーを察知した場合の処理
 			// <a>タグ内サンプル　<a href="../test/read.cgi/poverty/1345636335/20" target="_blank">
 			wxString href = linkInfo->GetHref();
@@ -944,8 +969,8 @@ void JaneClone::SetBoardList() {
 
 		// 正規表現を使ってサーバ名と板名(ascii)を取得する
 		// そこまで難しい正規表現を使う必要はないようです
-		wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
-				wxRE_ADVANCED + wxRE_ICASE);
+		wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED
+				+ wxRE_ICASE);
 
 		// 正規表現のコンパイルにエラーがなければ
 		if (reThreadList.IsValid()) {
@@ -957,25 +982,28 @@ void JaneClone::SetBoardList() {
 		}
 		// Hashに板情報を入れる
 		if (!boardName.IsEmpty())
-			retainHash[(const wxString) boardName] =
-					(const URLvsBoardName&) urlVsName;
+			retainHash[(const wxString) boardName]
+					= (const URLvsBoardName&) urlVsName;
 		// Hashのキー値をインクリメントしておく
 		hashID++;
 	}
 }
-
-// バージョン情報が書かれたダイアログを表示する処理
+/**
+ * バージョン情報が書かれたダイアログを表示する
+ */
 void JaneClone::OnVersionInfo(wxCommandEvent&) {
 	wxAboutDialogInfo info;
 	info.SetName(wxT("Jane Clone - ２ちゃんねるビューア"));
-	info.SetVersion(wxT("0.5.0"));
-	info.SetDescription(wxT("Copyright(C) 2011 Nantonaku-Shiawase"));
-	info.SetCopyright(wxT("http://d.hatena.ne.jp/panzer-jagdironscrap1/"));
+	info.SetVersion(wxT("0.6.0"));
+	info.SetDescription(wxT(
+			"Copyright(C) 2012 Nagata Hiroyuki, All Rights Reserved. "));
+	info.SetCopyright(wxT("http://nantonaku-shiawase.hatenablog.com/"));
 
 	wxAboutBox(info);
 }
-
-// 終了前処理では、保存しておきたいユーザー設定をMetakitに登録しておく
+/**
+ * 終了前処理では、保存しておきたいユーザー設定をMetakitに登録しておく
+ */
 void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
 	// 終了処理中と表示する
@@ -1025,9 +1053,8 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 			boardNoteBook->GetSelection());
 
 	if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
-		wxMessageBox(
-				wxT(
-						"すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
+		wxMessageBox(wxT(
+				"すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
 	} else {
 		// リストコントロールを引き出してくる
 		VirtualBoardListCtrl vbListCtrl =
@@ -1060,7 +1087,6 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 		*m_logCtrl << wxT("　　　　　　(´ん｀/)三\n");
 	}
 }
-
 /**
  * スレッドをノートブックに反映するメソッド
  */
@@ -1081,7 +1107,6 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 
 	m_mgr.Update();
 }
-
 /**
  * 板一覧リスト・またはスレッド一覧タブを変更した時のイベント
  */
@@ -1259,8 +1284,9 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
 /**
  * レスアンカーに対応するレスを表示するポップアップウィンドウを出現させる
  */
-void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
-		wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint) {
+void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event,
+		wxString& boardNameAscii, wxString& origNumber, wxString& resNumber,
+		wxPoint& anchorPoint) {
 
 	// アンカーが指し示すHTMLソースを取得する
 	wxString htmlDOM = JaneCloneUtil::FindAnchoredResponse(boardNameAscii,
@@ -1282,5 +1308,21 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
 
 	popup->Position(mousePoint, popup->GetPopupWindowSize());
 	popup->Popup();
+}
+/**
+ * 現在使用しているフォントの情報を取得する
+ */
+wxFont JaneClone::GetCurrentFont() {
+	// wxFontのサンプルコードを参照
+	wxFont font(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT,
+			wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false /* !underlined */,
+			wxEmptyString /* facename */, wxFONTENCODING_UTF8);
+
+	if (font.IsOk()) {
+		return font;
+	}
+	// フォントが取得できなかった場合
+	return *wxFont::New(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
+			wxFONTWEIGHT_NORMAL, false, wxEmptyString, wxFONTENCODING_UTF8);
 }
 

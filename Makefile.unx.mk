@@ -28,39 +28,8 @@ CXX_DEBUG_FLAGS   =	-gstabs
 CXX_RELEASE_FLAGS = -O2 -s
 
 # compile option
-PREFIX	  = /usr/local/
-CXXFLAGS = -Wall -I$(PREFIX)include -I include \
-`wx-config --cxxflags` `xml2-config --cflags`   \
--I$(NKFDIR)/include
-
-# 足りない静的ライブラリを補充して並び替えた
-LDFLAGS  = -Wl,-Bstatic				\
--L/usr/local/lib -L$(NKFDIR)/		\
--lwx_gtk2u_aui-2.9 					\
--lwx_gtk2u_xrc-2.9 					\
--lwx_gtk2u_qa-2.9 					\
--lwx_baseu_net-2.9 					\
--lwx_gtk2u_html-2.9 				\
--lwx_gtk2u_adv-2.9					\
--lwx_gtk2u_core-2.9 				\
--lwx_baseu_xml-2.9 					\
--lwx_baseu-2.9 						\
--lwxregexu-2.9 						\
--lwxtiff-2.9 						\
--lwxjpeg-2.9						\
--Wl,-Bdynamic -lpangocairo-1.0 -lcairo  -lpango-1.0   \
--Wl,-Bstatic -lthai -ldatrie 						  \
--lexpat -lssl -lcrypto -lwxnkf -lmk4			  \
--latk-1.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0			  \
--Wl,-Bdynamic -ljasper -lpixman-1 -lgio-2.0 -lselinux \
--lgtk-x11-2.0 -lgdk-x11-2.0							  \
--Wl,-Bstatic -lgobject-2.0 -lgmodule-2.0 -lgthread-2.0 -lglib-2.0 -lpcre \
--Wl,-Bdynamic \
--lrt -lpng -ljpeg -lz -lxml2 -lfontconfig -lfreetype \
--lX11 -lxcb -lXdmcp -lXau -lXfixes -lXext -lXi 		  \
--lXdamage -lXcomposite -lXrandr -lXcursor -lXinerama  \
--lXrender -lm -lSM -lICE -lpthread -ldl
-
+CXXFLAGS = -Wall -I/usr/local/include -I include `wx-config --cxxflags` `xml2-config --cflags` -I$(NKFDIR)/include
+LDFLAGS  = -lwx_gtk2u_aui-2.9 `wx-config --libs` `xml2-config --libs` -lmk4 $(NKFDIR)/libwxnkf.a
 VPATH    = include src rc
 
 # dummy target

@@ -64,6 +64,7 @@
 #include <wx/config.h>
 #include <wx/fileconf.h>
 #include <wx/tokenzr.h>
+#include <wx/font.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
@@ -83,8 +84,8 @@
 // 板一覧情報ファイルのパス
 static const wxString BOARD_LIST_PATH = wxT("./dat/boardlist.html");
 // 板一覧情報ファイルのヘッダ情報のパス
-static const wxString BOARD_LIST_HEADER_PATH = wxT(
-		"./dat/boardlistheader.html");
+static const wxString BOARD_LIST_HEADER_PATH =
+		wxT("./dat/boardlistheader.html");
 
 class JaneClone: public wxFrame {
 
@@ -208,10 +209,10 @@ private:
 			const wxString&);
 
 	// ThreadContentWindowのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
-	WX_DECLARE_HASH_MAP( wxString,    // type of the keys
-			ThreadContentWindow*,     // ポインタを詰める
-			wxStringHash ,            // hasher
-			wxStringEqual,            // key equality predicate
+	WX_DECLARE_HASH_MAP( wxString, // type of the keys
+			ThreadContentWindow*, // ポインタを詰める
+			wxStringHash , // hasher
+			wxStringEqual, // key equality predicate
 			ThreadContentWindowHash); // name of the class
 
 	// JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
@@ -230,9 +231,13 @@ private:
 	wxFileConfig* config;
 
 	// ポップアップウィンドウを出現させる
-	void SetPopUpWindow(wxHtmlCellEvent& event,wxString&  boardNameAscii, wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint);
+	void SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
+			wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint);
 
-	DECLARE_EVENT_TABLE()
+	// 現在使用しているフォントの情報を取得する
+	wxFont GetCurrentFont();
+
+DECLARE_EVENT_TABLE()
 };
 // wxGlade: end class
 
