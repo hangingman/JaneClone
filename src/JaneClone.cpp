@@ -30,21 +30,18 @@ using namespace std;
 
 // enum
 enum {
-	ID_Quit = 1, // 終了
-	ID_Restart, // 再起動
-	ID_About, // このソフトについて
-	ID_GetBoardList, // 板一覧情報取得
-	ID_GetVersionInfo, // バージョン情報
-	ID_ThreadNoteBook, // スレッド一覧ノートブックに使うID
-	ID_BoardNoteBook
-// 板一覧用ノートブックに使うID
+	ID_Quit = 1, 			// 終了
+	ID_Restart, 			// 再起動
+	ID_GetBoardList, 		// 板一覧情報取得
+	ID_GetVersionInfo, 	// バージョン情報
+	ID_ThreadNoteBook, 	// スレッド一覧ノートブックに使うID
+	ID_BoardNoteBook		// 板一覧用ノートブックに使うID
 };
 
 // event table
 BEGIN_EVENT_TABLE(JaneClone, wxFrame)
 // メニューバーにあるコマンド入力で起動するメソッドのイベントテーブル
 EVT_MENU(ID_Quit, JaneClone::OnQuit)
-EVT_MENU(ID_About, JaneClone::OnAbout)
 EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
 EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
 // ツリーコントロールのイベント
@@ -472,7 +469,6 @@ void JaneClone::SetJaneCloneManuBar() {
 	 * メニューバー設置終わり
 	 */
 }
-
 /**
  * SetProperties
  * 前回からのデータ引継ぎ等の処理を行う。
@@ -543,7 +539,6 @@ void JaneClone::SetProperties() {
 			client_size.x, client_size.y), wxDefaultSize,
 			wxAUI_NB_DEFAULT_STYLE);
 }
-
 /**
  * DoLayout
  * ユーザーが触る前のアプリのレイアウトを設定する
@@ -694,10 +689,6 @@ void JaneClone::OnQuit(wxCommandEvent&) {
 
 	Close(true);
 }
-
-void JaneClone::OnAbout(wxCommandEvent&) {
-}
-
 /**
  * 板一覧のツリーがクリックされたときに起きるイベント
  */
@@ -723,7 +714,6 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
 		SetBoardNameToNoteBook(boardName, boardURL, boardNameAscii);
 	}
 }
-
 /**
  * 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
  */
