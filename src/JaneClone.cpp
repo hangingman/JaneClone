@@ -949,7 +949,7 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
 				return;
 			}
 			// アンカーの出現位置
-			wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY() + 80);
+			wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
 			// 取得した情報を元に新しいポップアップウィンドウを出現させる
 			SetPopUpWindow(event, boardNameAscii, orgNumber, resNumber,
 					anchorPoint);
@@ -1374,11 +1374,8 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event,
 			anchorPoint, wxSize(640, 300), htmlDOM);
 
 	// マウスカーソルの位置に調整する
-	wxPoint mousePoint = wxGetMousePosition();
-	mousePoint.x -= 400;
-	mousePoint.y += 100;
-
-	popup->Position(mousePoint, popup->GetPopupWindowSize());
+	wxPoint p = ClientToScreen(wxGetMousePosition());
+	popup->Position(anchorPoint, wxSize(p.x + 100, p.y -100));
 	popup->Popup();
 }
 /**
