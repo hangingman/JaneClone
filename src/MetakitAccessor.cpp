@@ -261,26 +261,30 @@ void MetakitAccessor::SetUserLookingThreadList(
 	// dbファイルの初期化
 	wxString dbFile = METAKIT_FILE_PATH;
 	// プロパティを用意する（カラム名）
+	c4_StringProp pThreTitle("THREAD_TITLE");
 	c4_StringProp pOrigNum("THREAD_ORIG_NUM");
 	c4_StringProp pBoardNameAscii("BOARDNAME_ASCII");
 
 	// Viewを得る
 	c4_Storage storage(dbFile.mb_str(), true);
 	// View内のカラムを指定する（コンマとカラム名の間にスペースがあると指定した名前を引けなくなるので注意）
-	c4_View vUserLookingThreadList = storage.GetAs(
-			USER_LOOKING_THREADLIST_STRUCTURE);
+	c4_View vUserLookingThreadList = storage.GetAs(USER_LOOKING_THREADLIST_STRUCTURE);
 
 	// 配列内のレコードを追加する
 	for (unsigned int i = 0; i < userLookingThreadListArray.GetCount(); i++) {
 		c4_Row row;
 
-		if (i % 2 == 0) {
+		if (i % 3 == 0) {
+			// THREAD_TITLEを格納
+			pThreTitle(row) = userLookingThreadListArray[i].mb_str();
+		} else if (i % 3 == 1) {
 			// THREAD_ORIG_NUMを格納
 			pOrigNum(row) = userLookingThreadListArray[i].mb_str();
-		} else {
+		} else if (i % 3 == 2) {
 			// BOARDNAME_ASCIIを格納
 			pBoardNameAscii(row) = userLookingThreadListArray[i].mb_str();
 		}
+
 		vUserLookingThreadList.Add(row);
 	}
 
@@ -291,7 +295,55 @@ void MetakitAccessor::SetUserLookingThreadList(
  * JaneClone開始時に以前ユーザーがタブで開いていたスレッドの情報を取得する
  */
 wxArrayString MetakitAccessor::GetUserLookedThreadList() {
+
+	// dbファイルの初期化
+	wxString dbFile = METAKIT_FILE_PATH;
+	// Viewを得る
+	c4_Storage storage(dbFile.mb_str(), true);
+	c4_View vUserLookingThreadList = storage.GetAs(USER_LOOKING_THREADLIST_STRUCTURE);
+	c4_String types;
+
+	for (int i = 0; i < vUserLookingThreadList.NumProperties(); i++) {
+		c4_Property prop = vUserLookingThreadList.NthProperty(i);
+		char t = prop.Type();
+		types += t;
+	}
+
+	// リザルトセットをArrayStringに設定する
 	wxArrayString array;
+
+	for (int j = 0; j < vUserLookingThreadList.GetSize(); ++j) {
+		c4_RowRef r = vUserLookingThreadList[j];
+
+		for (int k = 0; k < types.GetLength(); k += 3) {
+#ifdef __WXMSW__
+			c4_Property p = vUserLookingThreadList.NthProperty(k);
+			wxString title = (const char*) ((c4_StringProp&) p) (r);
+			array.Add(title);
+
+			p = vUserLookingThreadList.NthProperty(k + 1);
+			wxString origNumber = (const char*) ((c4_StringProp&) p) (r);
+			array.Add(origNumber);
+
+			p = vUserLookingThreadList.NthProperty(k + 2);
+			wxString boardNameAscii = (const char*) ((c4_StringProp&) p) (r);
+			array.Add(boardNameAscii);
+#else
+			c4_Property p = vUserLookingThreadList.NthProperty(k);
+			wxString title = wxString((const char*) ((c4_StringProp&) p)(r), wxConvUTF8);
+			array.Add(title);
+
+			p = vUserLookingThreadList.NthProperty(k + 1);
+			wxString origNumber = wxString((const char*) ((c4_StringProp&) p)(r), wxConvUTF8);
+			array.Add(origNumber);
+
+			p = vUserLookingThreadList.NthProperty(k + 2);
+			wxString boardNameAscii = wxString((const char*) ((c4_StringProp&) p)(r), wxConvUTF8);
+			array.Add(boardNameAscii);
+#endif
+		}
+	}
+
 	return array;
 }
 

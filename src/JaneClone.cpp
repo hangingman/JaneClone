@@ -50,6 +50,8 @@ EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_BoardNoteBook, JaneClone::OnRightClickBoardNoteBook)
 // スレッド一覧ノートブックで右クリックされた時の処理
 EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_ThreadNoteBook, JaneClone::OnRightClickThreadNoteBook)
+// スレッド一覧ノートブックで、タブが消される前の処理
+EVT_AUINOTEBOOK_PAGE_CLOSE(ID_ThreadNoteBook, JaneClone::OnAboutCloseThreadNoteBook)
 // AuiNotebookのタブを変更した時の処理
 EVT_AUINOTEBOOK_PAGE_CHANGING(wxID_ANY, JaneClone::OnChangedTab)
 // スレッド一覧リストでのクリック
@@ -670,6 +672,51 @@ void JaneClone::SetPreviousUserLookedTab() {
 		// 板一覧タブをセットする
 		SetThreadListItemNew(boardName, outputPath, (const size_t) i);
 	}
+
+	wxArrayString userLookedThreadList =
+			MetakitAccessor::GetUserLookedThreadList();
+	wxDir dir(wxGetCwd());
+
+	for (unsigned int i = 0; i < userLookedThreadList.GetCount(); i+= 3) {
+
+		wxString title = userLookedThreadList[i];
+		wxString origNumber = userLookedThreadList[i+1];
+		wxString boardNameAscii = userLookedThreadList[i+2];
+
+		// ファイルパスの組み立て
+		wxString threadContentPath = dir.GetName();
+#ifdef __WXMSW__
+		// Windowsではパスの区切りは"\"
+		threadContentPath += wxT("\\dat\\");
+		threadContentPath += boardNameAscii;
+		threadContentPath += wxT("\\");
+		threadContentPath += origNumber;
+		threadContentPath += wxT(".dat");
+#else
+		// それ以外ではパスの区切りは"/"
+		threadContentPath += wxT("/dat/");
+		threadContentPath += boardNameAscii;
+		threadContentPath += wxT("/");
+		threadContentPath += origNumber;
+		threadContentPath += wxT(".dat");
+#endif
+
+		// ファイルの有無確認
+		if (!wxFile::Exists(threadContentPath)) {
+			// 無ければ警告を出して次へ
+			wxMessageBox(wxT("前回読み込んでいたdatファイルの読み出しに失敗しました"));
+			continue;
+		}
+
+		// スレッドの内容をノートブックに反映する
+		SetThreadContentToNoteBook(threadContentPath, origNumber, title);
+		// ノートブックに登録されたスレッド情報をハッシュに登録する
+		ThreadInfo* info = new ThreadInfo();
+		info->origNumber = origNumber;
+		info->boardNameAscii = boardNameAscii;
+		tiHash[title] = info;
+		delete info;
+	}
 }
 /**
  * デストラクタ
@@ -922,6 +969,16 @@ void JaneClone::OnCellClicked(wxHtmlCellEvent& event) {
 void JaneClone::OnLinkClicked(wxHtmlLinkEvent& event) {
 }
 /**
+ * スレッド一覧ノートブックで、タブが消される前の処理
+ */
+void JaneClone::OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event) {
+
+	// 消されようとしているタブのタイトルを取得
+	wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+	// ハッシュからタイトルのキーを持つデータを削除
+	tiHash.erase(title);
+}
+/**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
@@ -1005,9 +1062,9 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 	 * 開いていた板の名前をmetakitに登録する
 	 */
 	wxArrayString userLookingBoardName;
-	size_t pages = boardNoteBook->GetPageCount();
+	size_t bpages = boardNoteBook->GetPageCount();
 
-	for (unsigned int i = 0; i < pages; i++) {
+	for (unsigned int i = 0; i < bpages; i++) {
 		wxString pageText = boardNoteBook->GetPageText((size_t) i);
 		// 空文字でなければ追加する
 		if (!pageText.IsEmpty()) {
@@ -1021,11 +1078,25 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 	/**
 	 * 開いていたスレッドの情報をmetakitに登録する
 	 */
+	wxArrayString userLookingThreadName;
+	size_t tpages = threadNoteBook->GetPageCount();
 
+	for (unsigned int i = 0; i < tpages; i++) {
+		wxString pageText = threadNoteBook->GetPageText((size_t) i);
+		// 空文字でなければ追加する
+		if (!pageText.IsEmpty()) {
+			ThreadInfo* info = new ThreadInfo();
+			info = tiHash[pageText];
 
-
-
-
+			if (!info) {
+				userLookingThreadName.Add(pageText);
+				userLookingThreadName.Add(info->origNumber);
+				userLookingThreadName.Add(info->boardNameAscii);
+			}
+		}
+	}
+	// 開いていたスレッドの一覧をmetakitに送る
+	MetakitAccessor::SetUserLookingThreadList(userLookingThreadName);
 
 	// wxAuiManagerのレイアウトの情報を保存する
 	const wxString perspective = m_mgr.SavePerspective();

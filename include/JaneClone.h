@@ -120,6 +120,7 @@ private:
 	void OnChangedTab(wxAuiNotebookEvent& event);
 	void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
 	void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
+	void OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event);
 	void OnCellHover(wxHtmlCellEvent& event);
 	void OnCellClicked(wxHtmlCellEvent& event);
 	void OnLinkClicked(wxHtmlLinkEvent& event);
