@@ -21,6 +21,16 @@
 
 #include "MetakitAccessor.h"
 
+// BOARD_INFOのView内構造
+static const char* BOARD_INFO_STRUCTURE =
+		"BOARD_INFO[BOARDNAME_KANJI:S,BOARD_URL:S,CATEGORY:S]";
+// USER_LOOKING_BOARDLISTのView内構造
+static const char* USER_LOOKING_BOARDLIST_STRUCTURE =
+		"USER_LOOKING_BOARDLIST[BOARDNAME_KANJI:S]";
+// USER_LOOKING_THREADLISTのView内構造
+static const char* USER_LOOKING_THREADLIST_STRUCTURE =
+		"USER_LOOKING_THREADLIST[THREAD_TITLE:S,THREAD_ORIG_NUM:S,BOARDNAME_ASCII:S]";
+
 /**
  * データベースの初期化
  */
@@ -173,8 +183,13 @@ void MetakitAccessor::DropView(const wxString viewName) {
 		v.RemoveAll();
 		storage.Commit();
 	} else if (viewName == wxT("USER_LOOKING_BOARDLIST")) {
-		// ユーザーが最後に見ていたテーブルの一覧情報の場合
+		// ユーザーが最後に見ていた板の一覧情報の場合
 		c4_View v = storage.GetAs(USER_LOOKING_BOARDLIST_STRUCTURE);
+		v.RemoveAll();
+		storage.Commit();
+	} else if (viewName == wxT("USER_LOOKING_THREADLIST")) {
+		// ユーザーが最後に見ていたスレッドの一覧情報の場合
+		c4_View v = storage.GetAs(USER_LOOKING_THREADLIST_STRUCTURE);
 		v.RemoveAll();
 		storage.Commit();
 	}
@@ -256,7 +271,7 @@ void MetakitAccessor::SetUserLookingThreadList(
 		wxArrayString& userLookingThreadListArray) {
 
 	// Viewの中身を削除する
-	DropView(wxT("USER_LOOKING_THREADLIST_STRUCTURE"));
+	DropView(wxT("USER_LOOKING_THREADLIST"));
 
 	// dbファイルの初期化
 	wxString dbFile = METAKIT_FILE_PATH;
@@ -271,19 +286,18 @@ void MetakitAccessor::SetUserLookingThreadList(
 	c4_View vUserLookingThreadList = storage.GetAs(USER_LOOKING_THREADLIST_STRUCTURE);
 
 	// 配列内のレコードを追加する
-	for (unsigned int i = 0; i < userLookingThreadListArray.GetCount(); i++) {
+	for (unsigned int i = 0; i < userLookingThreadListArray.GetCount(); i += 3) {
 		c4_Row row;
 
-		if (i % 3 == 0) {
-			// THREAD_TITLEを格納
-			pThreTitle(row) = userLookingThreadListArray[i].mb_str();
-		} else if (i % 3 == 1) {
-			// THREAD_ORIG_NUMを格納
-			pOrigNum(row) = userLookingThreadListArray[i].mb_str();
-		} else if (i % 3 == 2) {
-			// BOARDNAME_ASCIIを格納
-			pBoardNameAscii(row) = userLookingThreadListArray[i].mb_str();
+		unsigned int confirm = i;
+		if (confirm+2 > userLookingThreadListArray.GetCount()) {
+			// インデックスの外まで見に行ってしまうのを防ぐ
+			continue;
 		}
+
+		pThreTitle(row) = userLookingThreadListArray[i].mb_str();
+		pOrigNum(row) = userLookingThreadListArray[i+1].mb_str();
+		pBoardNameAscii(row) = userLookingThreadListArray[i+2].mb_str();
 
 		vUserLookingThreadList.Add(row);
 	}

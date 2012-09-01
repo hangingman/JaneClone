@@ -711,11 +711,10 @@ void JaneClone::SetPreviousUserLookedTab() {
 		// スレッドの内容をノートブックに反映する
 		SetThreadContentToNoteBook(threadContentPath, origNumber, title);
 		// ノートブックに登録されたスレッド情報をハッシュに登録する
-		ThreadInfo* info = new ThreadInfo();
-		info->origNumber = origNumber;
-		info->boardNameAscii = boardNameAscii;
+		ThreadInfo info;
+		info.origNumber = origNumber;
+		info.boardNameAscii = boardNameAscii;
 		tiHash[title] = info;
-		delete info;
 	}
 }
 /**
@@ -905,7 +904,6 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	// 実行コード別のダイアログを出す
 	if (rc != 0) {
 		wxMessageBox(wxT("板一覧情報取得に失敗しました。ネットワークの接続状況を確認してください。"));
-
 	} else {
 		// もし板一覧情報テーブルが空でなければテーブルを削除しておく
 		if (MetakitAccessor::TableHasView(wxT("BOARD_INFO"))) {
@@ -1085,14 +1083,9 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 		wxString pageText = threadNoteBook->GetPageText((size_t) i);
 		// 空文字でなければ追加する
 		if (!pageText.IsEmpty()) {
-			ThreadInfo* info = new ThreadInfo();
-			info = tiHash[pageText];
-
-			if (!info) {
-				userLookingThreadName.Add(pageText);
-				userLookingThreadName.Add(info->origNumber);
-				userLookingThreadName.Add(info->boardNameAscii);
-			}
+			userLookingThreadName.Add(pageText);
+			userLookingThreadName.Add(tiHash[pageText].origNumber);
+			userLookingThreadName.Add(tiHash[pageText].boardNameAscii);
 		}
 	}
 	// 開いていたスレッドの一覧をmetakitに送る
@@ -1157,11 +1150,10 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 		// スレッドの内容をノートブックに反映する
 		SetThreadContentToNoteBook(threadContentPath, origNumber, title);
 		// ノートブックに登録されたスレッド情報をハッシュに登録する
-		ThreadInfo* info = new ThreadInfo();
-		info->origNumber = origNumber;
-		info->boardNameAscii = boardNameAscii;
+		ThreadInfo info;
+		info.origNumber = origNumber;
+		info.boardNameAscii = boardNameAscii;
 		tiHash[title] = info;
-		delete info;
 
 		*m_logCtrl << wxT("完了…　(´ん｀/)三\n");
 	}

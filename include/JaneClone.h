@@ -221,7 +221,7 @@ private:
 
 	// ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
 	WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			ThreadInfo*, 					// ポインタを詰める
+			ThreadInfo, 				// 実体を詰める
 			wxStringHash , 				// hasher
 			wxStringEqual, 				// key equality predicate
 			ThreadInfoHash); 				// name of the class
