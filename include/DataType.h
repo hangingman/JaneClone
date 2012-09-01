@@ -79,10 +79,13 @@ static const wxString HTML_HEADER_POPUP =
 // フッター部分にあたるHTML
 static const wxString HTML_FOOTER = wxT("</body></html>");
 
+// スレッドの１番目を読み込む正規表現
+static const wxRegEx regexThreadFst(_T("^(.+)<>(.*)<>(.+)<>(.*)<>(.+)$"), wxRE_ADVANCED + wxRE_ICASE);
+
 // スレッド読み込み用正規表現
 static const wxRegEx regexThread(_T("^(.+)<>(.*)<>(.+)<>(.*)<>$"), wxRE_ADVANCED + wxRE_ICASE);
 
 // URL検出用正規表現
-static const wxRegEx regexURL(_T("(http|https|ttp|ftp)://([[:alnum:]]|[[:punct:]]|[=]|[~])*"), wxRE_ADVANCED + wxRE_ICASE);
+static const wxRegEx regexURL(_T("(http|https|ttp|ftp)://([[:alnum:]]|[[:punct:]]|[=]|[~]|[+])*"), wxRE_ADVANCED + wxRE_ICASE);
 
 #endif /* DATATYPE_H_ */

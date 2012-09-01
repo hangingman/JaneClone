@@ -57,6 +57,15 @@ private:
 	 * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
 	 */
 	const wxString GetConvertedDatFile(const wxString& threadContentPath);
+	/**
+	 * スレッドの最初の行を処理するメソッド
+	 */
+	wxString ProcessFirstResponse(wxString& threadRecord);
+	/**
+	 * スレッドの１以降を処理するメソッド
+	 */
+	wxString ProcessRestResponse(wxString& threadRecord, int number);
+
 
 	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
 };
