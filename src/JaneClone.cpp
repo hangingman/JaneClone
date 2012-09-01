@@ -97,6 +97,8 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 	m_logCtrl->SetDefaultStyle(attr);
 
 	*m_logCtrl << wxT("(ヽ´ん`)…デバッグ用画面…\n");
+	// ステータスバー設置
+	this->CreateStatusBar(2);
 
 	// わかりやすい画像つき各種処理ボタン
 
@@ -107,9 +109,7 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 
 	// ユーザーが前回までに見ていた板一覧タブとスレッド一覧タブをセットする
 	SetPreviousUserLookedTab();
-
-	this->CreateStatusBar();
-	this->SetStatusText(wxT(" 完了"));
+	SetStatusText(wxT(" 完了"));
 	*m_logCtrl << wxT("(ヽ´ん`)…レイアウト設定終わりです…\n");
 }
 /**

@@ -66,7 +66,7 @@ $(LIBNKF):
 
 # clean
 clean:
-	$(RM) -f *.o $(TARGET)
+	$(RM) -f *.o $(TARGET) makefile.dep
 # all-clean
 all-clean:
 	$(RM) -f *.o $(TARGET) makefile.dep
