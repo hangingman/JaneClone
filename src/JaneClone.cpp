@@ -52,8 +52,8 @@ EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_BoardNoteBook, JaneClone::OnRightClickBoardNot
 EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_ThreadNoteBook, JaneClone::OnRightClickThreadNoteBook)
 // AuiNotebookのタブを変更した時の処理
 EVT_AUINOTEBOOK_PAGE_CHANGING(wxID_ANY, JaneClone::OnChangedTab)
-// 板一覧リスト・またはスレッド一覧リストでのクリック
-EVT_LIST_ITEM_FOCUSED(wxID_ANY, JaneClone::OnLeftClickAtListCtrl)
+// スレッド一覧リストでのクリック
+EVT_LIST_ITEM_SELECTED(wxID_ANY, JaneClone::OnLeftClickAtListCtrl)
 // 終了前処理
 EVT_CLOSE(JaneClone::OnCloseWindow)
 // wxHtmlWindow上でのイベント処理
@@ -1036,15 +1036,13 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
  */
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
-	*m_logCtrl << wxT("　　　　　　 　　三　(　＾ν） \n");
-
+	*m_logCtrl << wxT("スレッド取得　三　(　＾ν）\n");
 	// 現在アクティブになっているタブの板名を取得する
 	wxString boardName = boardNoteBook->GetPageText(
 			boardNoteBook->GetSelection());
 
 	if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
-		wxMessageBox(wxT(
-				"すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
+		wxMessageBox(wxT("すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
 	} else {
 		// リストコントロールを引き出してくる
 		VirtualBoardListCtrl vbListCtrl =
@@ -1073,8 +1071,7 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
 		// スレッドの内容をノートブックに反映する
 		SetThreadContentToNoteBook(threadContentPath, origNumber, title);
-
-		*m_logCtrl << wxT("　　　　　　(´ん｀/)三\n");
+		*m_logCtrl << wxT("完了…　(´ん｀/)三\n");
 	}
 }
 /**
