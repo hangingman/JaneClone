@@ -33,9 +33,10 @@ enum {
 	ID_Quit = 1, 			// 終了
 	ID_Restart, 			// 再起動
 	ID_GetBoardList, 		// 板一覧情報取得
-	ID_GetVersionInfo, 	// バージョン情報
-	ID_ThreadNoteBook, 	// スレッド一覧ノートブックに使うID
-	ID_BoardNoteBook		// 板一覧用ノートブックに使うID
+	ID_GetVersionInfo, 		// バージョン情報
+	ID_ThreadNoteBook, 		// スレッド一覧ノートブックに使うID
+	ID_BoardNoteBook,		// 板一覧用ノートブックに使うID
+	ID_OneBoardTabClose		// スレッド一覧タブをひとつ閉じる
 };
 
 // event table
@@ -44,6 +45,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
 EVT_MENU(ID_Quit, JaneClone::OnQuit)
 EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
 EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
+EVT_MENU(ID_OneBoardTabClose, JaneClone::OneBoardTabClose)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
@@ -167,7 +169,7 @@ void JaneClone::SetJaneCloneManuBar() {
 	 */
 	wxMenu *menu4 = new wxMenu;
 	wxMenu *closeB = new wxMenu;
-	closeB->Append(wxID_ANY, wxT("現在の板を閉じる"));
+	closeB->Append(ID_OneBoardTabClose, wxT("現在の板を閉じる"));
 	closeB->AppendSeparator();
 	closeB->Append(wxID_ANY, wxT("選択されていない板を閉じる"));
 	closeB->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
@@ -977,6 +979,14 @@ void JaneClone::OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event) {
 	tiHash.erase(title);
 }
 /**
+ * アクティブな板タブをひとつ閉じる
+ */
+void JaneClone::OneBoardTabClose(wxCommandEvent & event) {
+
+	// アクティブなタブを選択して閉じる
+	boardNoteBook->DeletePage(boardNoteBook->GetSelection());
+}
+/**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
@@ -1211,7 +1221,7 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
 			event.GetSelection());
 
 	wxMenu* boardTabUtil = new wxMenu();
-	boardTabUtil->Append(wxID_ANY, wxT("このタブを閉じる"));
+	boardTabUtil->Append(ID_OneBoardTabClose, wxT("このタブを閉じる"));
 	boardTabUtil->AppendSeparator();
 	boardTabUtil->Append(wxID_ANY, wxT("このタブ以外を閉じる"));
 	boardTabUtil->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
@@ -1375,7 +1385,7 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event,
 
 	// マウスカーソルの位置に調整する
 	wxPoint p = ClientToScreen(wxGetMousePosition());
-	popup->Position(anchorPoint, wxSize(p.x + 100, p.y -100));
+	popup->Position(anchorPoint, wxSize(p.x + 50, p.y - 50));
 	popup->Popup();
 }
 /**

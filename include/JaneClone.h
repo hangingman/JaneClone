@@ -115,6 +115,7 @@ private:
 	void OnAbout(wxCommandEvent& event);
 	void OnGetBoardList(wxCommandEvent& event);
 	void OnVersionInfo(wxCommandEvent& event);
+	void OneBoardTabClose(wxCommandEvent& event);
 	void OnCloseWindow(wxCloseEvent& event);
 	void OnLeftClickAtListCtrl(wxListEvent& event);
 	void OnChangedTab(wxAuiNotebookEvent& event);
