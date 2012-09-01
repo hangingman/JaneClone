@@ -21,13 +21,6 @@
 
 #include "MetakitAccessor.h"
 
-// BOARD_INFOのView内構造
-static const char* BOARD_INFO_STRUCTURE =
-		"BOARD_INFO[BOARDNAME_KANJI:S,BOARD_URL:S,CATEGORY:S]";
-// USER_LOOKING_BOARDLISTのView内構造
-static const char* USER_LOOKING_BOARDLIST_STRUCTURE =
-		"USER_LOOKING_BOARDLIST[BOARDNAME_KANJI:S]";
-
 /**
  * データベースの初期化
  */
@@ -47,7 +40,6 @@ MetakitAccessor::MetakitAccessor() {
 	c4_View vBoardInfo = storage.GetAs(BOARD_INFO_STRUCTURE);
 	storage.Commit();
 }
-
 /**
  * 板一覧情報をクラス変数の配列に追加する
  */
@@ -60,7 +52,6 @@ void MetakitAccessor::SetBoardInfo(const wxString category, const wxString name,
 		boardInfoArray->Add(category);
 	}
 }
-
 /**
  * 板一覧情報のコミットを行う
  */
@@ -95,11 +86,11 @@ void MetakitAccessor::SetBoardInfoCommit() {
 	storage.Commit();
 	delete boardInfoArray;
 }
-
 /**
  * 板一覧情報をMetakit内のテーブルから取得しArrayStringの形で返す
  */
 wxArrayString MetakitAccessor::GetBoardInfo() {
+
 	// dbファイルの初期化
 	wxString dbFile = METAKIT_FILE_PATH;
 	// Viewを得る
@@ -107,7 +98,6 @@ wxArrayString MetakitAccessor::GetBoardInfo() {
 	c4_View vBoardInfo = storage.GetAs(BOARD_INFO_STRUCTURE);
 	c4_String types;
 
-	// ??? 解析中 ↓　なんでこここれで値がとれているのかよくわからん
 	for (int i = 0; i < vBoardInfo.NumProperties(); i++) {
 		c4_Property prop = vBoardInfo.NthProperty(i);
 		char t = prop.Type();
@@ -167,7 +157,6 @@ bool MetakitAccessor::TableHasView(const wxString viewName) {
 		return false;
 	}
 }
-
 /**
  * 指定されたテーブルを削除する
  */
@@ -190,7 +179,6 @@ void MetakitAccessor::DropView(const wxString viewName) {
 		storage.Commit();
 	}
 }
-
 /**
  * ユーザーがJaneClone終了時にタブで開いていた板の名前を登録する
  */
@@ -223,7 +211,8 @@ void MetakitAccessor::SetUserLookingBoardList(
 /**
  * JaneClone開始時に以前ユーザーがタブで開いていた板の名前を取得する
  */
-wxArrayString MetakitAccessor::GetUserLookingBoardList() {
+wxArrayString MetakitAccessor::GetUserLookedBoardList() {
+
 	// dbファイルの初期化
 	wxString dbFile = METAKIT_FILE_PATH;
 	// Viewを得る
@@ -232,7 +221,6 @@ wxArrayString MetakitAccessor::GetUserLookingBoardList() {
 			USER_LOOKING_BOARDLIST_STRUCTURE);
 	c4_String types;
 
-	// ??? 解析中 ↓　なんでこここれで値がとれているのかよくわからん
 	for (int i = 0; i < vUserLookingBoardList.NumProperties(); i++) {
 		c4_Property prop = vUserLookingBoardList.NthProperty(i);
 		char t = prop.Type();
@@ -261,4 +249,50 @@ wxArrayString MetakitAccessor::GetUserLookingBoardList() {
 
 	return array;
 }
+/**
+ * ユーザーがJaneClone終了時にタブで開いていたスレッドの情報を登録する
+ */
+void MetakitAccessor::SetUserLookingThreadList(
+		wxArrayString& userLookingThreadListArray) {
+
+	// Viewの中身を削除する
+	DropView(wxT("USER_LOOKING_THREADLIST_STRUCTURE"));
+
+	// dbファイルの初期化
+	wxString dbFile = METAKIT_FILE_PATH;
+	// プロパティを用意する（カラム名）
+	c4_StringProp pOrigNum("THREAD_ORIG_NUM");
+	c4_StringProp pBoardNameAscii("BOARDNAME_ASCII");
+
+	// Viewを得る
+	c4_Storage storage(dbFile.mb_str(), true);
+	// View内のカラムを指定する（コンマとカラム名の間にスペースがあると指定した名前を引けなくなるので注意）
+	c4_View vUserLookingThreadList = storage.GetAs(
+			USER_LOOKING_THREADLIST_STRUCTURE);
+
+	// 配列内のレコードを追加する
+	for (unsigned int i = 0; i < userLookingThreadListArray.GetCount(); i++) {
+		c4_Row row;
+
+		if (i % 2 == 0) {
+			// THREAD_ORIG_NUMを格納
+			pOrigNum(row) = userLookingThreadListArray[i].mb_str();
+		} else {
+			// BOARDNAME_ASCIIを格納
+			pBoardNameAscii(row) = userLookingThreadListArray[i].mb_str();
+		}
+		vUserLookingThreadList.Add(row);
+	}
+
+	// コミット実行
+	storage.Commit();
+}
+/**
+ * JaneClone開始時に以前ユーザーがタブで開いていたスレッドの情報を取得する
+ */
+wxArrayString MetakitAccessor::GetUserLookedThreadList() {
+	wxArrayString array;
+	return array;
+}
+
 

@@ -24,7 +24,7 @@
 
 #include <wx/regex.h>
 
-// wxHashMap用のクラス -- 2chの板名とURLを対応させる
+// 2chの板名とURLを対応させるクラス
 class URLvsBoardName {
 public:
 	wxString boardName;
@@ -57,6 +57,15 @@ public:
 	wxString since;
 	// 板
 	wxString boardName;
+};
+
+// 2chの板名(ascii)と固有番号を対応させて保存するクラス
+class ThreadInfo {
+public:
+	// スレッド固有番号
+	wxString origNumber;
+	// 板名(英数)
+	wxString boardNameAscii;
 };
 
 // ヘッダ部分にあたるHTML

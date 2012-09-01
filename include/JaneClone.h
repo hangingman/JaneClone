@@ -182,20 +182,20 @@ private:
 			const wxString outputPath, const size_t selectedPage);
 
 	// VirtualBoardListCtrlのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
-	WX_DECLARE_HASH_MAP( wxString, // type of the keys
-			VirtualBoardListCtrl,// type of the values
-			wxStringHash ,// hasher
-			wxStringEqual,// key equality predicate
-			VirtualBoardListCtrlHash);// name of the class
+	WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
+			VirtualBoardListCtrl,		// type of the values
+			wxStringHash ,				// hasher
+			wxStringEqual,				// key equality predicate
+			VirtualBoardListCtrlHash);	// name of the class
 	// JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
 	VirtualBoardListCtrlHash vbListCtrlHash;
 
 	// VirtualBoardListのHashMap（板名をkeyとしてリストコントロール内部のリストを管理する）
-	WX_DECLARE_HASH_MAP( wxString, // type of the keys
-			VirtualBoardList,// type of the values
-			wxStringHash ,// hasher
-			wxStringEqual,// key equality predicate
-			VirtualBoardListHash);// name of the class
+	WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
+			VirtualBoardList,				// type of the values
+			wxStringHash ,				// hasher
+			wxStringEqual,				// key equality predicate
+			VirtualBoardListHash);		// name of the class
 
 	VirtualBoardListHash vbListHash;
 
@@ -209,14 +209,24 @@ private:
 			const wxString&);
 
 	// ThreadContentWindowのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
-	WX_DECLARE_HASH_MAP( wxString, // type of the keys
-			ThreadContentWindow*, // ポインタを詰める
-			wxStringHash , // hasher
-			wxStringEqual, // key equality predicate
-			ThreadContentWindowHash); // name of the class
+	WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
+			ThreadContentWindow*, 		// ポインタを詰める
+			wxStringHash , 				// hasher
+			wxStringEqual, 				// key equality predicate
+			ThreadContentWindowHash); 	// name of the class
 
 	// JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
 	ThreadContentWindowHash tcwHash;
+
+	// ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
+	WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
+			ThreadInfo*, 					// ポインタを詰める
+			wxStringHash , 				// hasher
+			wxStringEqual, 				// key equality predicate
+			ThreadInfoHash); 				// name of the class
+
+	// ユーザーがタブに保持しているスレッドの情報を保存するHashSet
+	ThreadInfoHash tiHash;
 
 	/**
 	 * その他のオブジェクトとメソッド

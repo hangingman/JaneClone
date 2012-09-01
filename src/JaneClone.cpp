@@ -653,8 +653,10 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
  * ユーザーが前回までに見ていた板一覧タブとスレッド一覧タブをセットする
  */
 void JaneClone::SetPreviousUserLookedTab() {
+
 	wxArrayString userLookedBoardList =
-			MetakitAccessor::GetUserLookingBoardList();
+			MetakitAccessor::GetUserLookedBoardList();
+
 	for (unsigned int i = 0; i < userLookedBoardList.GetCount(); i++) {
 
 		wxString boardName = userLookedBoardList[i];
@@ -998,7 +1000,10 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
 	// 終了処理中と表示する
 	SetStatusText(wxT("終了前処理を実行中..."));
-	// 開いていた板の名前をmetakitに登録する
+
+	/**
+	 * 開いていた板の名前をmetakitに登録する
+	 */
 	wxArrayString userLookingBoardName;
 	size_t pages = boardNoteBook->GetPageCount();
 
@@ -1012,6 +1017,15 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
 	// 開いていた板の一覧をmetakitに送る
 	MetakitAccessor::SetUserLookingBoardList(userLookingBoardName);
+
+	/**
+	 * 開いていたスレッドの情報をmetakitに登録する
+	 */
+
+
+
+
+
 
 	// wxAuiManagerのレイアウトの情報を保存する
 	const wxString perspective = m_mgr.SavePerspective();
@@ -1071,6 +1085,13 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
 		// スレッドの内容をノートブックに反映する
 		SetThreadContentToNoteBook(threadContentPath, origNumber, title);
+		// ノートブックに登録されたスレッド情報をハッシュに登録する
+		ThreadInfo* info = new ThreadInfo();
+		info->origNumber = origNumber;
+		info->boardNameAscii = boardNameAscii;
+		tiHash[title] = info;
+		delete info;
+
 		*m_logCtrl << wxT("完了…　(´ん｀/)三\n");
 	}
 }
@@ -1079,6 +1100,7 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
  */
 void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 		const wxString& origNumber, const wxString& title) {
+
 	// ノートブックの変更中はノートブックに触れないようにする
 	threadNoteBook->Freeze();
 	// Hashに格納する板名タブのオブジェクトのインスタンスを準備する

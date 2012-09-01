@@ -31,6 +31,15 @@
 
 // Metakitのファイルパス
 static const wxString METAKIT_FILE_PATH = wxT("./metakit/JaneClone.dat");
+// BOARD_INFOのView内構造
+static const char* BOARD_INFO_STRUCTURE =
+		"BOARD_INFO[BOARDNAME_KANJI:S,BOARD_URL:S,CATEGORY:S]";
+// USER_LOOKING_BOARDLISTのView内構造
+static const char* USER_LOOKING_BOARDLIST_STRUCTURE =
+		"USER_LOOKING_BOARDLIST[BOARDNAME_KANJI:S]";
+// USER_LOOKING_THREADLISTのView内構造
+static const char* USER_LOOKING_THREADLIST_STRUCTURE =
+		"USER_LOOKING_THREADLIST[THREAD_ORIG_NUM:S,BOARDNAME_ASCII:S]";
 
 class MetakitAccessor {
 public:
@@ -57,7 +66,15 @@ public:
 	/**
 	 * JaneClone開始時に以前ユーザーがタブで開いていた板の名前を取得する
 	 */
-	static wxArrayString GetUserLookingBoardList();
+	static wxArrayString GetUserLookedBoardList();
+	/**
+	 * ユーザーがJaneClone終了時にタブで開いていたスレッドの情報を登録する
+	 */
+	static void SetUserLookingThreadList(wxArrayString& userLookingThreadListArray);
+	/**
+	 * JaneClone開始時に以前ユーザーがタブで開いていたスレッドの情報を取得する
+	 */
+	static wxArrayString GetUserLookedThreadList();
 	/**
 	 * 指定されたテーブルに情報が存在するかどうかを調べるメソッド
 	 */
