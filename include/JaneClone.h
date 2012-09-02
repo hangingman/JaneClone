@@ -118,6 +118,9 @@ private:
 	void OneBoardTabClose(wxCommandEvent& event);
 	void ExcepSelTabClose(wxCommandEvent& event);
 	void AllBoardTabClose(wxCommandEvent& event);
+	void AllLeftBoardTabClose(wxCommandEvent& event);
+	void AllRightBoardTabClose(wxCommandEvent& event);
+
 	void OnCloseWindow(wxCloseEvent& event);
 	void OnLeftClickAtListCtrl(wxListEvent& event);
 	void OnChangedTab(wxAuiNotebookEvent& event);

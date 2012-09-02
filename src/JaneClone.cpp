@@ -30,15 +30,17 @@ using namespace std;
 
 // enum
 enum {
-	ID_Quit = 1, 			// 終了
-	ID_Restart, 			// 再起動
-	ID_GetBoardList, 		// 板一覧情報取得
-	ID_GetVersionInfo, 		// バージョン情報
-	ID_ThreadNoteBook, 		// スレッド一覧ノートブックに使うID
-	ID_BoardNoteBook,		// 板一覧用ノートブックに使うID
-	ID_OneBoardTabClose,	// スレッド一覧タブをひとつ閉じる
-	ID_ExcepSelTabClose,	// 現在選択されていないスレッド一覧タブを閉じる
-	ID_AllBoardTabClose		// すべてのスレッド一覧タブを閉じる
+	ID_Quit = 1, 				// 終了
+	ID_Restart, 				// 再起動
+	ID_GetBoardList, 			// 板一覧情報取得
+	ID_GetVersionInfo, 			// バージョン情報
+	ID_ThreadNoteBook, 			// スレッド一覧ノートブックに使うID
+	ID_BoardNoteBook,			// 板一覧用ノートブックに使うID
+	ID_OneBoardTabClose,		// スレッド一覧タブをひとつ閉じる
+	ID_ExcepSelTabClose,		// 現在選択されていないスレッド一覧タブを閉じる
+	ID_AllBoardTabClose,		// すべてのスレッド一覧タブを閉じる
+	ID_AllLeftBoardTabClose,	// これより左のスレッド一覧タブをを閉じる
+	ID_AllRightBoardTabClose	// これより右のスレッド一覧タブを閉じる
 };
 
 // event table
@@ -50,6 +52,8 @@ EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
 EVT_MENU(ID_OneBoardTabClose, JaneClone::OneBoardTabClose)
 EVT_MENU(ID_ExcepSelTabClose, JaneClone::ExcepSelTabClose)
 EVT_MENU(ID_AllBoardTabClose, JaneClone::AllBoardTabClose)
+EVT_MENU(ID_AllLeftBoardTabClose, JaneClone::AllLeftBoardTabClose)
+EVT_MENU(ID_AllRightBoardTabClose, JaneClone::AllRightBoardTabClose)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
@@ -177,8 +181,8 @@ void JaneClone::SetJaneCloneManuBar() {
 	closeB->AppendSeparator();
 	closeB->Append(ID_ExcepSelTabClose, wxT("選択されていない板を閉じる"));
 	closeB->Append(ID_AllBoardTabClose, wxT("すべてのタブを閉じる"));
-	closeB->Append(wxID_ANY, wxT("これより左を閉じる"));
-	closeB->Append(wxID_ANY, wxT("これより右を閉じる"));
+	closeB->Append(ID_AllLeftBoardTabClose, wxT("これより左を閉じる"));
+	closeB->Append(ID_AllRightBoardTabClose, wxT("これより右を閉じる"));
 	menu4->AppendSubMenu(closeB, wxT("閉じる"));
 	menu4->AppendSeparator();
 	wxMenu *open = new wxMenu;
@@ -1023,6 +1027,32 @@ void JaneClone::AllBoardTabClose(wxCommandEvent& event) {
 	}
 }
 /**
+ *　これより左のスレッド一覧タブをを閉じる
+ */
+void JaneClone::AllLeftBoardTabClose(wxCommandEvent& event) {
+
+	// タブの数を数える
+	size_t select = boardNoteBook->GetSelection();
+
+	for (unsigned int i=0;i<select;i++) {
+		boardNoteBook->DeletePage(0);
+	}
+}
+/**
+ *　これより右のスレッド一覧タブを閉じる
+ */
+void JaneClone::AllRightBoardTabClose(wxCommandEvent& event) {
+
+	// タブの数を数える
+	size_t pages = boardNoteBook->GetPageCount();
+	size_t select = boardNoteBook->GetSelection();
+	for (unsigned int i=0;i<pages;i++) {
+		if (i>select) {
+			boardNoteBook->DeletePage(select+1);
+		}
+	}
+}
+/**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
@@ -1261,8 +1291,8 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
 	boardTabUtil->AppendSeparator();
 	boardTabUtil->Append(ID_ExcepSelTabClose, wxT("このタブ以外を閉じる"));
 	boardTabUtil->Append(ID_AllBoardTabClose, wxT("すべてのタブを閉じる"));
-	boardTabUtil->Append(wxID_ANY, wxT("これより左を閉じる"));
-	boardTabUtil->Append(wxID_ANY, wxT("これより右を閉じる"));
+	boardTabUtil->Append(ID_AllLeftBoardTabClose, wxT("これより左を閉じる"));
+	boardTabUtil->Append(ID_AllRightBoardTabClose, wxT("これより右を閉じる"));
 	boardTabUtil->AppendSeparator();
 	boardTabUtil->Append(wxID_ANY, wxT("新着をすべて開く"));
 	boardTabUtil->Append(wxID_ANY, wxT("お気に入りの新着をすべて開く"));
