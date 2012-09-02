@@ -77,6 +77,14 @@ public:
 	 */
 	wxString DownloadThread(const wxString boardName, const wxString boardURL,
 			const wxString boardNameAscii, const wxString origNumber);
+
+	/**
+	 * ログ出力用のウィンドウを設定する
+	 */
+	void SetLogWindow(wxTextCtrl* logCtrl) {
+		this->m_logCtrl = logCtrl;
+	};
+
 private:
 	/**
 	 * 新規に板一覧情報を取得しに行く
@@ -146,6 +154,10 @@ private:
 	 * HTTPヘッダを書きだす
 	 */
 	void WriteHeaderFile(wxHTTP& http, const wxString headerPath);
+	/**
+	 * ログとして出力するためのテキストコントロールのポインタ
+	 */
+	wxTextCtrl* m_logCtrl;
 };
 
 #endif /* SOCKETCOMMUNICATION_H_ */

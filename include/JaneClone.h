@@ -122,6 +122,7 @@ private:
 	void AllLeftBoardTabClose(wxCommandEvent& event);
 	void AllRightBoardTabClose(wxCommandEvent& event);
 	void OnOpenBoardByBrowser(wxCommandEvent& event);
+	void ReloadOneBoard(wxCommandEvent& event);
 
 	void OnCloseWindow(wxCloseEvent& event);
 	void OnLeftClickAtListCtrl(wxListEvent& event);

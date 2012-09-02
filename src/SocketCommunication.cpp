@@ -796,32 +796,33 @@ void SocketCommunication::WriteHeaderFile(wxHTTP& http,
 	wxString status = wxT("HTTP1.1/ ");
 	switch (http.GetResponse()) {
 	case 200:
-		status + wxString::Format(_T("%d"), http.GetResponse()) + wxT(" OK");
+		status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" OK");
 		break;
 	case 206:
-		status + wxString::Format(_T("%d"), http.GetResponse())
-				+ wxT(" PARTIAL_CONTENT");
+		status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" PARTIAL_CONTENT");
 		break;
 	case 302:
-		status + wxString::Format(_T("%d"), http.GetResponse()) + wxT(" MOVED");
+		status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" MOVED");
 		break;
 	case 304:
-		status + wxString::Format(_T("%d"), http.GetResponse())
-				+ wxT(" NOT_MODIFIED");
+		status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" NOT_MODIFIED");
 		break;
 	case 404:
-		status + wxString::Format(_T("%d"), http.GetResponse())
-				+ wxT(" NOT FOUND");
+		status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" NOT FOUND");
 		break;
 	case 416:
-		status + wxString::Format(_T("%d"), http.GetResponse())
-				+ wxT(" RANGE_NOT_SATISFIABLE");
+		status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" RANGE_NOT_SATISFIABLE");
 		break;
 	default:
 		status = wxT("cannot get HTTP response");
 		break;
 	}
 	headerFile.AddLine(status, TEXT_ENDLINE_TYPE);
+
+	if (m_logCtrl != NULL) {
+		// フレームに結果を出力する
+		*m_logCtrl << status << wxT("\n");
+	}
 
 	/**
 	 * ヘッダの要素と中身を書き出す

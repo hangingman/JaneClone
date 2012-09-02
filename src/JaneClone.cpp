@@ -41,7 +41,8 @@ enum {
 	ID_AllBoardTabClose,		// すべてのスレッド一覧タブを閉じる
 	ID_AllLeftBoardTabClose,	// これより左のスレッド一覧タブをを閉じる
 	ID_AllRightBoardTabClose,	// これより右のスレッド一覧タブを閉じる
-	ID_OnOpenBoardByBrowser		// スレッド一覧をブラウザで開く
+	ID_OnOpenBoardByBrowser,	// スレッド一覧をブラウザで開く
+	ID_ReloadOneBoard			// アクティブなスレッド一覧をひとつ更新する
 };
 
 // event table
@@ -56,6 +57,7 @@ EVT_MENU(ID_AllBoardTabClose, JaneClone::AllBoardTabClose)
 EVT_MENU(ID_AllLeftBoardTabClose, JaneClone::AllLeftBoardTabClose)
 EVT_MENU(ID_AllRightBoardTabClose, JaneClone::AllRightBoardTabClose)
 EVT_MENU(ID_OnOpenBoardByBrowser, JaneClone::OnOpenBoardByBrowser)
+EVT_MENU(ID_ReloadOneBoard, JaneClone::ReloadOneBoard)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
@@ -207,7 +209,7 @@ void JaneClone::SetJaneCloneManuBar() {
 	menu4->Append(wxID_ANY, wxT("お気に入りに追加"));
 	menu4->Append(wxID_ANY, wxT("お気に入りを削除"));
 	menu4->AppendSeparator();
-	menu4->Append(wxID_ANY, wxT("スレ一覧更新"));
+	menu4->Append(ID_ReloadOneBoard, wxT("スレ一覧更新"));
 	menu4->Append(wxID_ANY, wxT("すべてのタブのスレ一覧更新"));
 	menu4->Append(wxID_ANY, wxT("板移転の追尾"));
 	menu4->AppendSeparator();
@@ -1064,6 +1066,24 @@ void JaneClone::OnOpenBoardByBrowser(wxCommandEvent& event) {
 	wxLaunchDefaultBrowser(hash.boardURL);
 }
 /**
+ * アクティブなスレッド一覧をひとつ更新する
+ */
+void JaneClone::ReloadOneBoard(wxCommandEvent& event) {
+
+	size_t page = boardNoteBook->GetSelection();
+	wxString boardName = boardNoteBook->GetPageText(page);
+	URLvsBoardName hash = retainHash[boardName];
+
+	// スレ一覧をダウンロードする
+	SocketCommunication* socketCommunication = new SocketCommunication();
+	socketCommunication->SetLogWindow(m_logCtrl);
+	wxString outputPath = socketCommunication->DownloadThreadList(boardName, hash.boardURL, hash.boardNameAscii);
+	delete socketCommunication;
+
+	// 更新をかける
+	SetThreadListItemUpdate(boardName, outputPath, page);
+}
+/**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
@@ -1305,6 +1325,7 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
 	boardTabUtil->Append(ID_AllLeftBoardTabClose, wxT("これより左を閉じる"));
 	boardTabUtil->Append(ID_AllRightBoardTabClose, wxT("これより右を閉じる"));
 	boardTabUtil->AppendSeparator();
+	boardTabUtil->Append(ID_ReloadOneBoard, wxT("スレ一覧更新"));
 	boardTabUtil->Append(wxID_ANY, wxT("新着をすべて開く"));
 	boardTabUtil->Append(wxID_ANY, wxT("お気に入りの新着をすべて開く"));
 	boardTabUtil->Append(wxID_ANY, wxT("新着スレッドをすべて開く"));
