@@ -33,6 +33,7 @@ enum {
 	ID_Quit = 1, 				// 終了
 	ID_Restart, 				// 再起動
 	ID_GetBoardList, 			// 板一覧情報取得
+	ID_CheckLogDirectory,		// 保存されているログをスレッド一覧に表示する
 	ID_GetVersionInfo, 			// バージョン情報
 	ID_ThreadNoteBook, 			// スレッド一覧ノートブックに使うID
 	ID_BoardNoteBook,			// 板一覧用ノートブックに使うID
@@ -56,6 +57,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
 // メニューバー・ポップアップメニューにあるコマンド入力で起動するメソッドのイベントテーブル
 EVT_MENU(ID_Quit, JaneClone::OnQuit)
 EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
+EVT_MENU(ID_CheckLogDirectory, JaneClone::CheckLogDirectory)
 EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
 EVT_MENU(ID_OneBoardTabClose, JaneClone::OneBoardTabClose)
 EVT_MENU(ID_ExcepSelTabClose, JaneClone::ExcepSelTabClose)
@@ -179,7 +181,7 @@ void JaneClone::SetJaneCloneManuBar() {
 	menu3->Append(wxID_ANY, wxT("最近読み込んだスレッド"));
 	menu3->Append(wxID_ANY, wxT("最近書き込んだスレッド"));
 	menu3->AppendSeparator();
-	menu3->Append(wxID_ANY, wxT("ログフォルダのチェック"));
+	menu3->Append(ID_CheckLogDirectory, wxT("ログフォルダのチェック"));
 	menu3->AppendSeparator();
 	menu3->Append(wxID_ANY, wxT("すべての板のインデックスを再構築"));
 	menu3->Append(wxID_ANY, wxT("ログの再構築"));
@@ -601,11 +603,9 @@ void JaneClone::DoLayout() {
 	this->Move(px, py);
 
 	// ウィンドウの最大化情報
-#if defined(__WXMSW__) || defined(__WXGTK__)
 	bool isMaximized;
 	config->Read(wxT("IsMaximized"), &isMaximized, false);
 	this->Maximize(isMaximized);
-#endif
 
 	// 初期設定はこのLayout()が呼ばれる前に行わなくてはいけない
 	Layout();
@@ -1251,6 +1251,42 @@ void JaneClone::CopyTBothDataToClipBoard(wxCommandEvent& event) {
 	}
 }
 /**
+ * 保存されているログをスレッド一覧に表示する
+ */
+void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
+
+	// ファイルパスの組み立て
+	wxDir dir(wxGetCwd());
+	wxString filePath = dir.GetName();
+
+#ifdef __WXMSW__
+	// Windowsではパスの区切りは"\"
+	filePath += wxT("\\dat");
+#else
+	// それ以外ではパスの区切りは"/"
+	filePath += wxT("/dat");
+#endif
+
+	// datファイルパスを開く
+	wxDir datDir(filePath);
+	if ( !datDir.IsOpened() )
+		return;
+
+	wxString dirName = datDir.GetName();
+	wxArrayString allFileList;
+	datDir.GetAllFiles(dirName, &allFileList, wxEmptyString, wxDIR_DIRS | wxDIR_FILES);
+	allFileList.Shrink();
+
+	// datファイルのみの配列に置き換える
+	wxArrayString datList;
+
+	for (unsigned int i=0;i < allFileList.GetCount();i++) {
+		if (allFileList[i].EndsWith(_T(".dat")))
+			datList.Add(allFileList[i]);
+	}
+	datList.Shrink();
+}
+/**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
@@ -1380,10 +1416,8 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 	config->Write(wxT("FramePy"), py);
 
 	// ウィンドウの最大化情報
-#if defined(__WXMSW__) || defined(__WXGTK__)
 	bool isMaximized = this->IsMaximized();
 	config->Write(wxT("IsMaximized"), isMaximized);
-#endif
 
 	SetStatusText(wxT("終了前処理が終わりました！"));
 

@@ -114,6 +114,7 @@ private:
 	void OnQuit(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
 	void OnGetBoardList(wxCommandEvent& event);
+	void CheckLogDirectory(wxCommandEvent& event);
 	void OnVersionInfo(wxCommandEvent& event);
 	// スレッド一覧タブ処理
 	void OneBoardTabClose(wxCommandEvent& event);
