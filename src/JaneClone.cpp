@@ -600,6 +600,13 @@ void JaneClone::DoLayout() {
 	config->Read(wxT("FramePy"), &py, 0);
 	this->Move(px, py);
 
+	// ウィンドウの最大化情報
+#if defined(__WXMSW__) || defined(__WXGTK__)
+	bool isMaximized;
+	config->Read(wxT("IsMaximized"), &isMaximized, false);
+	this->Maximize(isMaximized);
+#endif
+
 	// 初期設定はこのLayout()が呼ばれる前に行わなくてはいけない
 	Layout();
 	// end wxGlade
@@ -1371,6 +1378,12 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 	this->GetPosition(&px, &py);
 	config->Write(wxT("FramePx"), px);
 	config->Write(wxT("FramePy"), py);
+
+	// ウィンドウの最大化情報
+#if defined(__WXMSW__) || defined(__WXGTK__)
+	bool isMaximized = this->IsMaximized();
+	config->Write(wxT("IsMaximized"), isMaximized);
+#endif
 
 	SetStatusText(wxT("終了前処理が終わりました！"));
 
