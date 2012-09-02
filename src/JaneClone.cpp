@@ -784,8 +784,8 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 
 	// スレ一覧をダウンロードする
 	SocketCommunication* socketCommunication = new SocketCommunication();
-	wxString outputPath = socketCommunication->DownloadThreadList(boardName,
-			boardURL, boardNameAscii);
+	socketCommunication->SetLogWindow(m_logCtrl);
+	wxString outputPath = socketCommunication->DownloadThreadList(boardName, boardURL, boardNameAscii);
 	delete socketCommunication;
 
 	// 新規にセットされる板名かどうかのフラグを用意する
@@ -827,8 +827,7 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 			(const wxString) outputPath);
 
 	//　boardName(key),boardTabAndTh(value)としてHashに格納する
-	vbListCtrlHash[(const wxString) boardName]
-			= (const VirtualBoardListCtrl&) vbListCtrl;
+	vbListCtrlHash[(const wxString) boardName] = (const VirtualBoardListCtrl&) vbListCtrl;
 	// listctrl内のリストをJaneCloneのメモリに持たせる
 	vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
 
@@ -871,28 +870,38 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 		wxMessageBox(wxT("スレッド一覧更新処理に失敗しました。"));
 		boardNoteBook->Thaw();
 	} else {
-		// リストコントロールを呼び出す
-		VirtualBoardListCtrl vbListCtrl =
-				vbListCtrlHash[(const wxString) boardName];
-		// リストコントロールに入るべきリストをリフレッシュする
-		VirtualBoardList vbList = vbListHash[(const wxString) boardName];
-		vbListCtrl.m_vBoardList = vbList;
+		// ハッシュ内部の情報を削除する
+		vbListCtrlHash.erase(boardName);
+		vbListHash.erase(boardName);
+
+		VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
+				(wxWindow*) boardNoteBook, (const wxString) boardName,
+				(const wxString) outputPath);
+
+		//　boardName(key),boardTabAndTh(value)としてHashに格納する
+		vbListCtrlHash[(const wxString) boardName] = (const VirtualBoardListCtrl&) vbListCtrl;
+		// listctrl内のリストをJaneCloneのメモリに持たせる
+		vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
+
+		boardNoteBook->DeletePage(selectedPage);
+		boardNoteBook->InsertPage(selectedPage, vbListCtrl, boardName, false, wxNullBitmap);
+
 		// カラムの幅を最大化
 #ifdef __WXMSW__
-		vbListCtrl.SetColumnWidth(1, wxLIST_AUTOSIZE);
-		vbListCtrl.SetColumnWidth(8, wxLIST_AUTOSIZE);
-		vbListCtrl.SetColumnWidth(9, wxLIST_AUTOSIZE);
-		vbListCtrl.SetColumnWidth(10, wxLIST_AUTOSIZE);
+		vbListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE);
+		vbListCtrl->SetColumnWidth(8, wxLIST_AUTOSIZE);
+		vbListCtrl->SetColumnWidth(9, wxLIST_AUTOSIZE);
+		vbListCtrl->SetColumnWidth(10, wxLIST_AUTOSIZE);
 #else
 		// どうやらWindows以外ではリストの幅が適切に調整されないので
 		// フォントの大きさから適切なリストの幅を算出する
 		wxFont font = GetCurrentFont();
 		int pointSize = font.GetPointSize();
 		// 2chのスレタイの文字数制限は全角24文字
-		vbListCtrl.SetColumnWidth(1, pointSize * 52);
-		vbListCtrl.SetColumnWidth(8, pointSize * 12);
-		vbListCtrl.SetColumnWidth(9, pointSize * 10);
-		vbListCtrl.SetColumnWidth(10, pointSize * 12);
+		vbListCtrl->SetColumnWidth(1, pointSize * 52);
+		vbListCtrl->SetColumnWidth(8, pointSize * 12);
+		vbListCtrl->SetColumnWidth(9, pointSize * 10);
+		vbListCtrl->SetColumnWidth(10, pointSize * 12);
 #endif
 		// ノートブックの選択処理
 		boardNoteBook->SetSelection(selectedPage);

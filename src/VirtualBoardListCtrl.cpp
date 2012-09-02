@@ -112,20 +112,75 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 
 	this->Show();
 }
-
 /**
  * 内部リストの更新処理
- * @param VirtualBoardList
+ * @param wxString boardName   板名
+ * @pram  wxString outputPath  datファイルのパス
+ * @param VirtualBoardList     更新したリストのコンテナ
  */
-void VirtualBoardListCtrl::Refresh(const VirtualBoardList& virtualBoardList) {
-
-	// 内部にデータがあればリストをクリアする
-	if ( ! m_vBoardList.empty())
-		m_vBoardList.clear();
-
-	m_vBoardList = virtualBoardList;
+VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const wxString& outputPath) {
 
 	this->Hide();
+
+	// 内部にデータがあればリストをクリアする
+	if ( ! m_vBoardList.empty()) {
+		m_vBoardList.clear();
+	}
+
+	// テキストファイルの読み込み
+	wxTextFile datfile(outputPath);
+	datfile.Open();
+
+	// スレッド一覧読み込み用正規表現を準備する
+	wxRegEx reThreadLine(_T("([[:digit:]]+).dat<>(.+)\\(([[:digit:]]{1,4})\\)"),
+			wxRE_ADVANCED + wxRE_ICASE);
+	// スレッドに番号をつける
+	int loopNumber = 1;
+
+	// テキストファイルの終端まで読み込む
+	for (wxString line = datfile.GetFirstLine(); !datfile.Eof();
+			line = datfile.GetNextLine()) {
+
+		// アイテム1つ分用意
+		VirtualBoardListItem item;
+
+		// 番号
+		item.number = wxString::Format(wxT("%i"), loopNumber);
+		// 板名
+		item.boardName = boardName;
+
+		// 正規表現で情報を取得する
+		if (reThreadLine.Matches(line)) {
+			// キー値を取得する
+			item.oid = reThreadLine.GetMatch(line, 1);
+			// since
+			item.since = JaneCloneUtil::CalcThreadCreatedTime(item.oid);
+			// スレタイを取得する
+			item.title = reThreadLine.GetMatch(line, 2);
+			// レス数を取得する
+			item.response = reThreadLine.GetMatch(line, 3);
+		}
+
+		/**
+		 * 新規ダウンロードの場合多くは空白となる
+		 */
+		// 取得
+		item.cachedResponseNumber = wxEmptyString;
+		// 新着
+		item.newResponseNumber = wxEmptyString;
+		// 増レス
+		item.increaseResponseNumber = wxEmptyString;
+		// 勢い
+		item.increaseResponseNumber = wxEmptyString;
+		// 最終取得
+		item.lastUpdate = wxEmptyString;
+
+		// リストにアイテムを挿入する
+		m_vBoardList.push_back(item);
+
+		// ループ変数をインクリメント
+		loopNumber++;
+	}
 
 	/**
 	 * データ挿入
@@ -147,6 +202,8 @@ void VirtualBoardListCtrl::Refresh(const VirtualBoardList& virtualBoardList) {
 	InsertColumn(COL_BOARDNAME, wxT("板"));
 
 	this->Show();
+
+	return m_vBoardList;
 }
 
 /**

@@ -59,17 +59,17 @@ typedef std::vector<VirtualBoardListItem> VirtualBoardList;
 class WXDLLEXPORT VirtualBoardListCtrl: public wxListCtrl {
 
 	enum Columns {
-		COL_NUM = 0, // 番号
-		COL_TITLE,// タイトル
-		COL_RESP,// レス
-		COL_CACHEDRES,// 取得
-		COL_NEWRESP,// 新着
-		COL_INCRESP,// 増レス
-		COL_MOMENTUM,// 勢い
-		COL_LASTUP,// 最終取得
-		COL_SINCE,// SINCE
-		COL_OID,// 固有番号
-		COL_BOARDNAME// 板
+		COL_NUM = 0, 	// 番号
+		COL_TITLE,		// タイトル
+		COL_RESP,		// レス
+		COL_CACHEDRES,	// 取得
+		COL_NEWRESP,	// 新着
+		COL_INCRESP,	// 増レス
+		COL_MOMENTUM,	// 勢い
+		COL_LASTUP,		// 最終取得
+		COL_SINCE,		// SINCE
+		COL_OID,		// 固有番号
+		COL_BOARDNAME	// 板
 	};
 
 public:
@@ -79,14 +79,14 @@ public:
 	 * @param wxString boardName   板名
 	 * @param wxString outputPath  datファイルのパス
 	 */
-	VirtualBoardListCtrl(wxWindow* parent, const wxString& boardName,
-			const wxString& outputPath);
-
+	VirtualBoardListCtrl(wxWindow* parent, const wxString& boardName, const wxString& outputPath);
 	/**
 	 * 内部リストの更新処理
-	 * @param VirtualBoardList
+	 * @param wxString boardName   板名
+	 * @pram  wxString outputPath  datファイルのパス
+	 * @param VirtualBoardList     更新したリストのコンテナ
 	 */
-	void Refresh(const VirtualBoardList&);
+	VirtualBoardList Refresh(const wxString& boardName, const wxString& outputPath);
 	/**
 	 * Hash用のコンストラクタ
 	 */
