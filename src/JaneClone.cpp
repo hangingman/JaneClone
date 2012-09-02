@@ -40,7 +40,8 @@ enum {
 	ID_ExcepSelTabClose,		// 現在選択されていないスレッド一覧タブを閉じる
 	ID_AllBoardTabClose,		// すべてのスレッド一覧タブを閉じる
 	ID_AllLeftBoardTabClose,	// これより左のスレッド一覧タブをを閉じる
-	ID_AllRightBoardTabClose	// これより右のスレッド一覧タブを閉じる
+	ID_AllRightBoardTabClose,	// これより右のスレッド一覧タブを閉じる
+	ID_OnOpenBoardByBrowser		// スレッド一覧をブラウザで開く
 };
 
 // event table
@@ -54,6 +55,7 @@ EVT_MENU(ID_ExcepSelTabClose, JaneClone::ExcepSelTabClose)
 EVT_MENU(ID_AllBoardTabClose, JaneClone::AllBoardTabClose)
 EVT_MENU(ID_AllLeftBoardTabClose, JaneClone::AllLeftBoardTabClose)
 EVT_MENU(ID_AllRightBoardTabClose, JaneClone::AllRightBoardTabClose)
+EVT_MENU(ID_OnOpenBoardByBrowser, JaneClone::OnOpenBoardByBrowser)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
@@ -211,7 +213,7 @@ void JaneClone::SetJaneCloneManuBar() {
 	menu4->AppendSeparator();
 	menu4->Append(wxID_ANY, wxT("スレッド新規作成"));
 	menu4->AppendSeparator();
-	menu4->Append(wxID_ANY, wxT("ブラウザで開く"));
+	menu4->Append(ID_OnOpenBoardByBrowser, wxT("ブラウザで開く"));
 	menu4->Append(wxID_ANY, wxT("看板を見る"));
 	menu4->AppendSeparator();
 	wxMenu *selectCopy = new wxMenu;
@@ -1053,6 +1055,15 @@ void JaneClone::AllRightBoardTabClose(wxCommandEvent& event) {
 	}
 }
 /**
+ * スレッド一覧をブラウザで開く
+ */
+void JaneClone::OnOpenBoardByBrowser(wxCommandEvent& event) {
+
+	wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+	URLvsBoardName hash = retainHash[boardName];
+	wxLaunchDefaultBrowser(hash.boardURL);
+}
+/**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
@@ -1308,7 +1319,7 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
 
 	boardTabUtil->Append(wxID_ANY, wxT("スレッド新規作成"));
 	boardTabUtil->AppendSeparator();
-	boardTabUtil->Append(wxID_ANY, wxT("ブラウザで開く"));
+	boardTabUtil->Append(ID_OnOpenBoardByBrowser, wxT("ブラウザで開く"));
 	boardTabUtil->Append(wxID_ANY, wxT("index表示"));
 	boardTabUtil->Append(wxID_ANY, wxT("看板を見る"));
 	boardTabUtil->AppendSeparator();

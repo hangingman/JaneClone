@@ -100,11 +100,11 @@ public:
 
 	// 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
 	// URLvsBoardNameのHashMap（板名をkeyとしてBoardURLとascii文字の固有名を持つ）
-	WX_DECLARE_HASH_MAP( wxString, // type of the keys
-			URLvsBoardName,// type of the values
-			wxStringHash ,// hasher
-			wxStringEqual,// key equality predicate
-			NameURLHash);// name of the class
+	WX_DECLARE_HASH_MAP( wxString, 	// type of the keys
+			URLvsBoardName,			// type of the values
+			wxStringHash ,			// hasher
+			wxStringEqual,			// key equality predicate
+			NameURLHash);			// name of the class
 	// HashMapの本体
 	NameURLHash retainHash;
 
@@ -115,11 +115,13 @@ private:
 	void OnAbout(wxCommandEvent& event);
 	void OnGetBoardList(wxCommandEvent& event);
 	void OnVersionInfo(wxCommandEvent& event);
+	// スレッド一覧タブ処理
 	void OneBoardTabClose(wxCommandEvent& event);
 	void ExcepSelTabClose(wxCommandEvent& event);
 	void AllBoardTabClose(wxCommandEvent& event);
 	void AllLeftBoardTabClose(wxCommandEvent& event);
 	void AllRightBoardTabClose(wxCommandEvent& event);
+	void OnOpenBoardByBrowser(wxCommandEvent& event);
 
 	void OnCloseWindow(wxCloseEvent& event);
 	void OnLeftClickAtListCtrl(wxListEvent& event);
@@ -199,7 +201,7 @@ private:
 
 	// VirtualBoardListのHashMap（板名をkeyとしてリストコントロール内部のリストを管理する）
 	WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			VirtualBoardList,				// type of the values
+			VirtualBoardList,			// type of the values
 			wxStringHash ,				// hasher
 			wxStringEqual,				// key equality predicate
 			VirtualBoardListHash);		// name of the class
@@ -230,7 +232,7 @@ private:
 			ThreadInfo, 				// 実体を詰める
 			wxStringHash , 				// hasher
 			wxStringEqual, 				// key equality predicate
-			ThreadInfoHash); 				// name of the class
+			ThreadInfoHash); 			// name of the class
 
 	// ユーザーがタブに保持しているスレッドの情報を保存するHashSet
 	ThreadInfoHash tiHash;
