@@ -65,6 +65,7 @@
 #include <wx/fileconf.h>
 #include <wx/tokenzr.h>
 #include <wx/font.h>
+#include <wx/clipbrd.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
@@ -84,8 +85,7 @@
 // 板一覧情報ファイルのパス
 static const wxString BOARD_LIST_PATH = wxT("./dat/boardlist.html");
 // 板一覧情報ファイルのヘッダ情報のパス
-static const wxString BOARD_LIST_HEADER_PATH =
-		wxT("./dat/boardlistheader.html");
+static const wxString BOARD_LIST_HEADER_PATH = wxT("./dat/boardlistheader.html");
 
 class JaneClone: public wxFrame {
 
@@ -123,6 +123,13 @@ private:
 	void AllRightBoardTabClose(wxCommandEvent& event);
 	void OnOpenBoardByBrowser(wxCommandEvent& event);
 	void ReloadOneBoard(wxCommandEvent& event);
+	void CopyBURLToClipBoard(wxCommandEvent& event);
+	void CopyBTitleToClipBoard(wxCommandEvent& event);
+	void CopyBBothDataToClipBoard(wxCommandEvent& event);
+	// スレタブでの処理
+	void CopyTURLToClipBoard(wxCommandEvent& event);
+	void CopyTTitleToClipBoard(wxCommandEvent& event);
+	void CopyTBothDataToClipBoard(wxCommandEvent& event);
 
 	void OnCloseWindow(wxCloseEvent& event);
 	void OnLeftClickAtListCtrl(wxListEvent& event);

@@ -42,7 +42,13 @@ enum {
 	ID_AllLeftBoardTabClose,	// これより左のスレッド一覧タブをを閉じる
 	ID_AllRightBoardTabClose,	// これより右のスレッド一覧タブを閉じる
 	ID_OnOpenBoardByBrowser,	// スレッド一覧をブラウザで開く
-	ID_ReloadOneBoard			// アクティブなスレッド一覧をひとつ更新する
+	ID_ReloadOneBoard,			// アクティブなスレッド一覧をひとつ更新する
+	ID_CopyBURLToClipBoard,		// 板のURLをクリップボードにコピーする
+	ID_CopyBTitleToClipBoard,	// 板のタイトルをクリップボードにコピーする
+	ID_CopyBBothDataToClipBoard,// 板のURLとタイトルをクリップボードにコピーする
+	ID_CopyTURLToClipBoard,		// スレッドのURLをクリップボードにコピーする
+	ID_CopyTTitleToClipBoard,	// スレッドのタイトルをクリップボードにコピーする
+	ID_CopyTBothDataToClipBoard // スレッドのURLとタイトルをクリップボードにコピーする
 };
 
 // event table
@@ -58,6 +64,12 @@ EVT_MENU(ID_AllLeftBoardTabClose, JaneClone::AllLeftBoardTabClose)
 EVT_MENU(ID_AllRightBoardTabClose, JaneClone::AllRightBoardTabClose)
 EVT_MENU(ID_OnOpenBoardByBrowser, JaneClone::OnOpenBoardByBrowser)
 EVT_MENU(ID_ReloadOneBoard, JaneClone::ReloadOneBoard)
+EVT_MENU(ID_CopyBURLToClipBoard, JaneClone::CopyBURLToClipBoard)
+EVT_MENU(ID_CopyBTitleToClipBoard, JaneClone::CopyBTitleToClipBoard)
+EVT_MENU(ID_CopyBBothDataToClipBoard, JaneClone::CopyBBothDataToClipBoard)
+EVT_MENU(ID_CopyTURLToClipBoard, JaneClone::CopyTURLToClipBoard)
+EVT_MENU(ID_CopyTTitleToClipBoard, JaneClone::CopyTTitleToClipBoard)
+EVT_MENU(ID_CopyTBothDataToClipBoard, JaneClone::CopyTBothDataToClipBoard)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
@@ -222,9 +234,9 @@ void JaneClone::SetJaneCloneManuBar() {
 	selectCopy->Append(wxID_ANY, wxT("datをクリップボードにコピー"));
 	menu4->AppendSubMenu(selectCopy, wxT("選択中のログをコピー"));
 	wxMenu *copy = new wxMenu;
-	copy->Append(wxID_ANY, wxT("URLをコピー"));
-	copy->Append(wxID_ANY, wxT("タイトルをコピー"));
-	copy->Append(wxID_ANY, wxT("タイトルとURLをコピー"));
+	copy->Append(ID_CopyBURLToClipBoard, wxT("URLをコピー"));
+	copy->Append(ID_CopyBTitleToClipBoard, wxT("タイトルをコピー"));
+	copy->Append(ID_CopyBBothDataToClipBoard, wxT("タイトルとURLをコピー"));
 	menu4->AppendSubMenu(copy, wxT("コピー"));
 	menu4->AppendSeparator();
 	wxMenu *deleteLog = new wxMenu;
@@ -333,9 +345,9 @@ void JaneClone::SetJaneCloneManuBar() {
 	menu5->AppendSubMenu(broadcast, wxT("実況支援"));
 	menu5->AppendSeparator();
 	wxMenu *copyMenu5 = new wxMenu;
-	copyMenu5->Append(wxID_ANY, wxT("URLをコピー"));
-	copyMenu5->Append(wxID_ANY, wxT("タイトルをコピー"));
-	copyMenu5->Append(wxID_ANY, wxT("タイトルとURLをコピー"));
+	copyMenu5->Append(ID_CopyTURLToClipBoard, wxT("URLをコピー"));
+	copyMenu5->Append(ID_CopyTTitleToClipBoard, wxT("タイトルをコピー"));
+	copyMenu5->Append(ID_CopyTBothDataToClipBoard, wxT("タイトルとURLをコピー"));
 	menu5->AppendSubMenu(copyMenu5, wxT("コピー"));
 	menu5->AppendSeparator();
 	menu5->Append(wxID_ANY, wxT("この板を開く"));
@@ -1093,6 +1105,145 @@ void JaneClone::ReloadOneBoard(wxCommandEvent& event) {
 	SetThreadListItemUpdate(boardName, outputPath, page);
 }
 /**
+ * 板のURLをクリップボードにコピーする
+ */
+void JaneClone::CopyBURLToClipBoard(wxCommandEvent& event) {
+
+	wxString boardName = boardNoteBook->GetPageText(
+			boardNoteBook->GetSelection());
+	URLvsBoardName hash = retainHash[boardName];
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(hash.boardURL));
+		wxTheClipboard->Close();
+	}
+}
+/**
+ * 板のタイトルをクリップボードにコピーする
+ */
+void JaneClone::CopyBTitleToClipBoard(wxCommandEvent& event) {
+
+	wxString boardName = boardNoteBook->GetPageText(
+			boardNoteBook->GetSelection());
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(boardName));
+		wxTheClipboard->Close();
+	}
+}
+/**
+ * 板のURLとタイトルをクリップボードにコピーする
+ */
+void JaneClone::CopyBBothDataToClipBoard(wxCommandEvent& event) {
+
+	wxString boardName = boardNoteBook->GetPageText(
+			boardNoteBook->GetSelection());
+	URLvsBoardName hash = retainHash[boardName];
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(boardName + wxT("\n") + hash.boardURL));
+		wxTheClipboard->Close();
+	}
+}
+/**
+ * スレッドのURLをクリップボードにコピーする
+ */
+void JaneClone::CopyTURLToClipBoard(wxCommandEvent& event) {
+
+	wxString title, boardNameAscii, origNumber, boardURL;
+
+	title = threadNoteBook->GetPageText(
+			threadNoteBook->GetSelection());
+	boardNameAscii = tiHash[title].boardNameAscii;
+	origNumber = tiHash[title].origNumber;
+
+	// 仕方がないので総当りでハッシュからURLを探す
+	NameURLHash::iterator it;
+	for (it = retainHash.begin(); it != retainHash.end(); ++it) {
+		wxString key = it->first;
+		URLvsBoardName value = it->second;
+
+		if (value.boardNameAscii == boardNameAscii) {
+			boardURL = value.boardURL;
+			break;
+		}
+	}
+
+	wxString threadURL = boardURL;
+
+	// ホスト名の後の板名を除く
+	int begin = threadURL.Find(boardNameAscii);
+	if (begin == wxNOT_FOUND) {
+		return;
+	}
+	threadURL = threadURL.Mid(0, begin);
+	threadURL += wxT("test/read.cgi/");
+	threadURL += boardNameAscii;
+	threadURL += wxT("/");
+	threadURL += origNumber;
+	threadURL += wxT("/");
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(threadURL));
+		wxTheClipboard->Close();
+	}
+}
+/**
+ * スレッドのタイトルをクリップボードにコピーする
+ */
+void JaneClone::CopyTTitleToClipBoard(wxCommandEvent& event) {
+
+	wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(title));
+		wxTheClipboard->Close();
+	}
+}
+/**
+ * スレッドのURLとタイトルをクリップボードにコピーする
+ */
+void JaneClone::CopyTBothDataToClipBoard(wxCommandEvent& event) {
+
+	wxString title, boardNameAscii, origNumber, boardURL;
+
+	title = threadNoteBook->GetPageText(
+			threadNoteBook->GetSelection());
+	boardNameAscii = tiHash[title].boardNameAscii;
+	origNumber = tiHash[title].origNumber;
+
+	// 仕方がないので総当りでハッシュからURLを探す
+	NameURLHash::iterator it;
+	for (it = retainHash.begin(); it != retainHash.end(); ++it) {
+		wxString key = it->first;
+		URLvsBoardName value = it->second;
+
+		if (value.boardNameAscii == boardNameAscii) {
+			boardURL = value.boardURL;
+			break;
+		}
+	}
+
+	wxString threadURL = boardURL;
+
+	// ホスト名の後の板名を除く
+	int begin = threadURL.Find(boardNameAscii);
+	if (begin == wxNOT_FOUND) {
+		return;
+	}
+	threadURL = threadURL.Mid(0, begin);
+	threadURL += wxT("test/read.cgi/");
+	threadURL += boardNameAscii;
+	threadURL += wxT("/");
+	threadURL += origNumber;
+	threadURL += wxT("/");
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->SetData(new wxTextDataObject(title + wxT("\n") + threadURL));
+		wxTheClipboard->Close();
+	}
+}
+/**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
@@ -1356,9 +1507,9 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
 
 	boardTabUtil->AppendSeparator();
 	wxMenu* copy = new wxMenu();
-	copy->Append(wxID_ANY, wxT("URLをコピー"));
-	copy->Append(wxID_ANY, wxT("タイトルをコピー"));
-	copy->Append(wxID_ANY, wxT("タイトルとURLをコピー"));
+	copy->Append(ID_CopyBURLToClipBoard, wxT("URLをコピー"));
+	copy->Append(ID_CopyBTitleToClipBoard, wxT("タイトルをコピー"));
+	copy->Append(ID_CopyBBothDataToClipBoard, wxT("タイトルとURLをコピー"));
 	boardTabUtil->AppendSubMenu(copy, wxT("コピー"));
 	boardTabUtil->AppendSeparator();
 
@@ -1432,9 +1583,9 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
 	threadTabUtil->AppendSeparator();
 
 	wxMenu* copy = new wxMenu();
-	copy->Append(wxID_ANY, wxT("URLをコピー"));
-	copy->Append(wxID_ANY, wxT("タイトルをコピー"));
-	copy->Append(wxID_ANY, wxT("タイトルとURLをコピー"));
+	copy->Append(ID_CopyTURLToClipBoard, wxT("URLをコピー"));
+	copy->Append(ID_CopyTTitleToClipBoard, wxT("タイトルをコピー"));
+	copy->Append(ID_CopyTBothDataToClipBoard, wxT("タイトルとURLをコピー"));
 	threadTabUtil->AppendSubMenu(copy, wxT("コピー"));
 	threadTabUtil->AppendSeparator();
 
