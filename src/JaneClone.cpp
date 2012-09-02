@@ -36,7 +36,8 @@ enum {
 	ID_GetVersionInfo, 		// バージョン情報
 	ID_ThreadNoteBook, 		// スレッド一覧ノートブックに使うID
 	ID_BoardNoteBook,		// 板一覧用ノートブックに使うID
-	ID_OneBoardTabClose		// スレッド一覧タブをひとつ閉じる
+	ID_OneBoardTabClose,	// スレッド一覧タブをひとつ閉じる
+	ID_ExcepSelTabClose		// 現在選択されていないスレッド一覧タブを閉じる
 };
 
 // event table
@@ -46,6 +47,7 @@ EVT_MENU(ID_Quit, JaneClone::OnQuit)
 EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
 EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
 EVT_MENU(ID_OneBoardTabClose, JaneClone::OneBoardTabClose)
+EVT_MENU(ID_ExcepSelTabClose, JaneClone::ExcepSelTabClose)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
@@ -171,7 +173,7 @@ void JaneClone::SetJaneCloneManuBar() {
 	wxMenu *closeB = new wxMenu;
 	closeB->Append(ID_OneBoardTabClose, wxT("現在の板を閉じる"));
 	closeB->AppendSeparator();
-	closeB->Append(wxID_ANY, wxT("選択されていない板を閉じる"));
+	closeB->Append(ID_ExcepSelTabClose, wxT("選択されていない板を閉じる"));
 	closeB->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
 	closeB->Append(wxID_ANY, wxT("これより左を閉じる"));
 	closeB->Append(wxID_ANY, wxT("これより右を閉じる"));
@@ -987,6 +989,28 @@ void JaneClone::OneBoardTabClose(wxCommandEvent & event) {
 	boardNoteBook->DeletePage(boardNoteBook->GetSelection());
 }
 /**
+ * 現在選択されていないスレッド一覧タブを閉じる
+ */
+void JaneClone::ExcepSelTabClose(wxCommandEvent & event) {
+
+	// タブの数を数える
+	size_t pages = boardNoteBook->GetPageCount();
+	size_t select = boardNoteBook->GetSelection();
+	bool delete_f = false;
+
+	for (unsigned int i=0;i<pages;i++) {
+
+		if (i != select && !delete_f) {
+			boardNoteBook->DeletePage(0);
+		} else if (i == select && !delete_f) {
+			boardNoteBook->DeletePage(1);
+			delete_f = true;
+		} else if (i != select && delete_f) {
+			boardNoteBook->DeletePage(1);
+		}
+	}
+}
+/**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
@@ -1223,7 +1247,7 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
 	wxMenu* boardTabUtil = new wxMenu();
 	boardTabUtil->Append(ID_OneBoardTabClose, wxT("このタブを閉じる"));
 	boardTabUtil->AppendSeparator();
-	boardTabUtil->Append(wxID_ANY, wxT("このタブ以外を閉じる"));
+	boardTabUtil->Append(ID_ExcepSelTabClose, wxT("このタブ以外を閉じる"));
 	boardTabUtil->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
 	boardTabUtil->Append(wxID_ANY, wxT("これより左を閉じる"));
 	boardTabUtil->Append(wxID_ANY, wxT("これより右を閉じる"));
