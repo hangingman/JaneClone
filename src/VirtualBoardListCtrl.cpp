@@ -113,6 +113,100 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 	this->Show();
 }
 /**
+ * コンストラクタ：ログ一覧リスト作成用
+ * @param wxWindow* parent     親ウィンドウ
+ * @param wxString boardName   板名(ログ一覧で固定)
+ * @param wxString outputPath  datファイルのパス
+ */
+VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
+		const wxString& boardName, const wxArrayString& datFileList) :
+		wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+				wxLC_REPORT | wxLC_VIRTUAL) {
+
+	this->Hide();
+
+	/**
+	 * datファイルの数だけ処理を繰り返す
+	 */
+	for (int i = 0; i < datFileList.GetCount(); i++) {
+		// テキストファイルの読み込み
+		wxTextFile datfile(datFileList[i]);
+		datfile.Open();
+
+		// スレッド一覧読み込み用正規表現を準備する
+
+		// スレッドに番号をつける
+		int loopNumber = i + 1;
+
+		// datファイルの１行目だけ読み込む
+		wxString line = datfile.GetFirstLine();
+		// アイテム1つ分用意
+		VirtualBoardListItem item;
+
+		/**
+		 * リストに値を設定する
+		 */
+
+		// 番号
+		item.number = wxString::Format(wxT("%i"), loopNumber);
+		// 板名
+		//item.boardName = boardName;
+		// キー値を取得する
+		wxFileName* filename = new wxFileName(datFileList[i], wxPATH_NATIVE);
+		item.oid = filename->GetName();
+		delete filename;
+		// since
+		item.since = JaneCloneUtil::CalcThreadCreatedTime(item.oid);
+		// スレタイを取得する
+		if (regexThreadFst.Matches(line)) {
+			item.title = regexThreadFst.GetMatch(line, 5);
+		}
+		// レス数を取得する
+		item.response = wxString::Format(wxT("%i"), datfile.GetLineCount());
+
+		/**
+		 *　ログ一覧なのでこの辺は空白でいいんじゃないだろうか
+		 */
+		// 取得
+		item.cachedResponseNumber = wxEmptyString;
+		// 新着
+		item.newResponseNumber = wxEmptyString;
+		// 増レス
+		item.increaseResponseNumber = wxEmptyString;
+		// 勢い
+		item.increaseResponseNumber = wxEmptyString;
+		// 最終取得
+		item.lastUpdate = wxEmptyString;
+
+		// リストにアイテムを挿入する
+		m_vBoardList.push_back(item);
+
+		// ループ変数をインクリメント
+		loopNumber++;
+	}
+
+	/**
+	 * データ挿入
+	 */
+
+	// データを挿入
+	SetItemCount(m_vBoardList.size());
+
+	InsertColumn(COL_NUM, wxT("番号"));
+	InsertColumn(COL_TITLE, wxT("タイトル"));
+	InsertColumn(COL_RESP, wxT("レス"));
+	InsertColumn(COL_CACHEDRES, wxT("取得"));
+	InsertColumn(COL_NEWRESP, wxT("新着"));
+	InsertColumn(COL_INCRESP, wxT("増レス"));
+	InsertColumn(COL_MOMENTUM, wxT("勢い"));
+	InsertColumn(COL_LASTUP, wxT("最終取得"));
+	InsertColumn(COL_SINCE, wxT("SINCE"));
+	InsertColumn(COL_OID, wxT("固有番号"));
+	InsertColumn(COL_BOARDNAME, wxT("板"));
+
+	this->Show();
+}
+/**
  * 内部リストの更新処理
  * @param wxString boardName   板名
  * @pram  wxString outputPath  datファイルのパス

@@ -81,6 +81,13 @@ public:
 	 */
 	VirtualBoardListCtrl(wxWindow* parent, const wxString& boardName, const wxString& outputPath);
 	/**
+	 * コンストラクタ：ログ一覧リスト作成用
+	 * @param wxWindow* parent     親ウィンドウ
+	 * @param wxString boardName   板名(ログ一覧で固定)
+	 * @param wxString outputPath  datファイルのパス
+	 */
+	VirtualBoardListCtrl(wxWindow* parent, const wxString& boardName, const wxArrayString& datFileList);
+	/**
 	 * 内部リストの更新処理
 	 * @param wxString boardName   板名
 	 * @pram  wxString outputPath  datファイルのパス

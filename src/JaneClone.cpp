@@ -1281,10 +1281,95 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
 	wxArrayString datList;
 
 	for (unsigned int i=0;i < allFileList.GetCount();i++) {
-		if (allFileList[i].EndsWith(_T(".dat")))
+		wxFileName* filename = new wxFileName(allFileList[i], wxPATH_NATIVE);
+		if(filename->GetName().IsNumber() && allFileList[i].Contains(wxT(".dat"))) {
+			// ファイル名が数字10桁で拡張子が「.dat」のものを取得する
 			datList.Add(allFileList[i]);
+		}
 	}
 	datList.Shrink();
+
+	// ノートブックの変更中はノートブックに触れないようにする
+	boardNoteBook->Freeze();
+
+	// 新規にセットされる板名かどうかのフラグを用意する
+	bool itIsNewBoardName = true;
+	// 次に選択されるべきタブのページ数を格納する変数
+	size_t selectedPage = 0;
+	// 板名は「ログ一覧」で固定する
+	wxString boardName = wxT("ログ一覧");
+
+	// ユーザーが開いているタブの板名を調べる
+	for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) {
+		if (boardName.Cmp(boardNoteBook->GetPageText(i)) == 0) {
+			itIsNewBoardName = false;
+			selectedPage = i;
+			break;
+		}
+	}
+
+	// 仮想リストのインスタンス（スコープの外で宣言したい）
+	VirtualBoardListCtrl* vbListCtrl;
+
+	if (itIsNewBoardName) {
+		/*
+		 * 新規にログ一覧を作成する場合
+		 */
+
+		// ログ一覧用のインスタンスを準備する
+		vbListCtrl = new VirtualBoardListCtrl(boardNoteBook, boardName, datList);
+
+		//　boardName(key),boardTabAndTh(value)としてHashに格納する
+		vbListCtrlHash[(const wxString) boardName] = (const VirtualBoardListCtrl&) vbListCtrl;
+		// listctrl内のリストをJaneCloneのメモリに持たせる
+		vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
+		// スレッドリストを表示させる
+		boardNoteBook->AddPage(vbListCtrl, boardName, false);
+
+	} else {
+		/*
+		 * 既にログ一覧がタブにある場合
+		 */
+
+		// ハッシュ内部の情報を削除する
+		vbListCtrlHash.erase(boardName);
+		vbListHash.erase(boardName);
+
+		// ログ一覧用のインスタンスを準備する
+		vbListCtrl = new VirtualBoardListCtrl(boardNoteBook, boardName, datList);
+
+		//　boardName(key),boardTabAndTh(value)としてHashに格納する
+		vbListCtrlHash[(const wxString) boardName] = (const VirtualBoardListCtrl&) vbListCtrl;
+		// listctrl内のリストをJaneCloneのメモリに持たせる
+		vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
+
+		boardNoteBook->DeletePage(selectedPage);
+		boardNoteBook->InsertPage(selectedPage, vbListCtrl, boardName, false, wxNullBitmap);
+	}
+
+	// カラムの幅を最大化
+#ifdef __WXMSW__
+	vbListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE);
+	vbListCtrl->SetColumnWidth(8, wxLIST_AUTOSIZE);
+	vbListCtrl->SetColumnWidth(9, wxLIST_AUTOSIZE);
+	vbListCtrl->SetColumnWidth(10, wxLIST_AUTOSIZE);
+#else
+	// どうやらWindows以外ではリストの幅が適切に調整されないので
+	// フォントの大きさから適切なリストの幅を算出する
+	wxFont font = GetCurrentFont();
+	int pointSize = font.GetPointSize();
+	// 2chのスレタイの文字数制限は全角24文字
+	vbListCtrl->SetColumnWidth(1, pointSize * 52);
+	vbListCtrl->SetColumnWidth(8, pointSize * 12);
+	vbListCtrl->SetColumnWidth(9, pointSize * 10);
+	vbListCtrl->SetColumnWidth(10, pointSize * 12);
+#endif
+
+	// ノートブックの選択処理
+	boardNoteBook->SetSelection(selectedPage);
+	boardNoteBook->Thaw();
+
+	m_mgr.Update();
 }
 /**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
