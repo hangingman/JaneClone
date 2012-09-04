@@ -514,6 +514,11 @@ void JaneClone::SetJaneCloneManuBar() {
 	menuBar->Append(menu9, wxT("ツール"));
 	menuBar->Append(menu10, wxT("ヘルプ"));
 
+	// Linuxではファイルごとクリップボードにコピーすることができない
+//#ifndef __WXMSW__
+//	menuBar->Enable(ID_SaveDatFileToClipBoard, false);
+//#endif
+
 	SetMenuBar(menuBar);
 	/**
 	 * メニューバー設置終わり
@@ -1141,6 +1146,7 @@ void JaneClone::CopyBURLToClipBoard(wxCommandEvent& event) {
 	URLvsBoardName hash = retainHash[boardName];
 
 	if (wxTheClipboard->Open()) {
+		wxTheClipboard->Clear();
 		wxTheClipboard->SetData(new wxTextDataObject(hash.boardURL));
 		wxTheClipboard->Close();
 	}
@@ -1154,6 +1160,7 @@ void JaneClone::CopyBTitleToClipBoard(wxCommandEvent& event) {
 			boardNoteBook->GetSelection());
 
 	if (wxTheClipboard->Open()) {
+		wxTheClipboard->Clear();
 		wxTheClipboard->SetData(new wxTextDataObject(boardName));
 		wxTheClipboard->Close();
 	}
@@ -1168,6 +1175,7 @@ void JaneClone::CopyBBothDataToClipBoard(wxCommandEvent& event) {
 	URLvsBoardName hash = retainHash[boardName];
 
 	if (wxTheClipboard->Open()) {
+		wxTheClipboard->Clear();
 		wxTheClipboard->SetData(new wxTextDataObject(boardName + wxT("\n") + hash.boardURL));
 		wxTheClipboard->Close();
 	}
@@ -1211,6 +1219,7 @@ void JaneClone::CopyTURLToClipBoard(wxCommandEvent& event) {
 	threadURL += wxT("/");
 
 	if (wxTheClipboard->Open()) {
+		wxTheClipboard->Clear();
 		wxTheClipboard->SetData(new wxTextDataObject(threadURL));
 		wxTheClipboard->Close();
 	}
@@ -1223,6 +1232,7 @@ void JaneClone::CopyTTitleToClipBoard(wxCommandEvent& event) {
 	wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
 
 	if (wxTheClipboard->Open()) {
+		wxTheClipboard->Clear();
 		wxTheClipboard->SetData(new wxTextDataObject(title));
 		wxTheClipboard->Close();
 	}
@@ -1529,6 +1539,47 @@ void JaneClone::SaveDatFile(wxCommandEvent& event) {
  */
 void JaneClone::SaveDatFileToClipBoard(wxCommandEvent& event) {
 
+	// datファイル名の組み立て
+	wxString title, boardNameAscii, origNumber, boardURL;
+
+	title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+	boardNameAscii = tiHash[title].boardNameAscii;
+	origNumber = tiHash[title].origNumber;
+
+	// ファイルパスの組み立てとファイルの有無確認
+	wxDir dir(wxGetCwd());
+	wxString filePath = dir.GetName();
+
+#ifdef __WXMSW__
+	// Windowsではパスの区切りは"\"
+	filePath += wxT("\\dat\\");
+	filePath += boardNameAscii;
+	filePath += wxT("\\");
+	filePath += origNumber;
+	filePath += wxT(".dat");
+#else
+	// それ以外ではパスの区切りは"/"
+	filePath += wxT("/dat/");
+	filePath += boardNameAscii;
+	filePath += wxT("/");
+	filePath += origNumber;
+	filePath += wxT(".dat");
+#endif
+
+	if (!wxFile::Exists(filePath)) {
+		// 無ければエラーメッセージ表示
+		wxMessageBox(wxT("保存するためのdatファイルが見つかりませんでした"));
+		return;
+	}
+
+	if (wxTheClipboard->Open()) {
+		wxFileDataObject* file = new wxFileDataObject();
+		file->AddFile(filePath);
+
+		wxTheClipboard->Clear();
+		wxTheClipboard->SetData(file);
+		wxTheClipboard->Close();
+	}
 }
 /**
  * このログを削除
@@ -1918,11 +1969,6 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
 	threadTabUtil->AppendSubMenu(saveLog, wxT("このログを保存"));
 	threadTabUtil->Append(ID_DeleteDatFile, wxT("このログを削除"));
 	threadTabUtil->Append(ID_ReloadThisThread, wxT("再読み込み"));
-
-// Windows以外ではクリップボードにコピーは使えない
-#ifndef __WXMSW__
-	saveLog->Enable(ID_SaveDatFileToClipBoard, false);
-#endif
 
 	// ポップアップメニューを表示させる
 	PopupMenu(threadTabUtil);

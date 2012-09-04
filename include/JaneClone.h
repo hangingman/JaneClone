@@ -66,6 +66,7 @@
 #include <wx/tokenzr.h>
 #include <wx/font.h>
 #include <wx/clipbrd.h>
+#include <wx/dataobj.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"

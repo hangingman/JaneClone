@@ -128,7 +128,7 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 	/**
 	 * datファイルの数だけ処理を繰り返す
 	 */
-	for (int i = 0; i < datFileList.GetCount(); i++) {
+	for (unsigned int i = 0; i < datFileList.GetCount(); i++) {
 		// テキストファイルの読み込み
 		wxTextFile datfile(datFileList[i]);
 		datfile.Open();
