@@ -49,7 +49,13 @@ enum {
 	ID_CopyBBothDataToClipBoard,// 板のURLとタイトルをクリップボードにコピーする
 	ID_CopyTURLToClipBoard,		// スレッドのURLをクリップボードにコピーする
 	ID_CopyTTitleToClipBoard,	// スレッドのタイトルをクリップボードにコピーする
-	ID_CopyTBothDataToClipBoard // スレッドのURLとタイトルをクリップボードにコピーする
+	ID_CopyTBothDataToClipBoard,// スレッドのURLとタイトルをクリップボードにコピーする
+	ID_OneThreadTabClose,		// スレタブをひとつ閉じる
+	ID_ExcepSelThreadTabClose,	// 現在選択されていないスレタブを閉じる
+	ID_AllThreadTabClose,		// すべてのスレタブを閉じる
+	ID_AllLeftThreadTabClose,	// これより左のスレタブをを閉じる
+	ID_AllRightThreadTabClose,	// これより右のスレタブを閉じる
+	ID_OnOpenThreadByBrowser	// スレッドをブラウザで開く
 };
 
 // event table
@@ -72,6 +78,12 @@ EVT_MENU(ID_CopyBBothDataToClipBoard, JaneClone::CopyBBothDataToClipBoard)
 EVT_MENU(ID_CopyTURLToClipBoard, JaneClone::CopyTURLToClipBoard)
 EVT_MENU(ID_CopyTTitleToClipBoard, JaneClone::CopyTTitleToClipBoard)
 EVT_MENU(ID_CopyTBothDataToClipBoard, JaneClone::CopyTBothDataToClipBoard)
+EVT_MENU(ID_OneThreadTabClose, JaneClone::OneThreadTabClose)
+EVT_MENU(ID_ExcepSelThreadTabClose, JaneClone::ExcepSelThreadTabClose)
+EVT_MENU(ID_AllThreadTabClose, JaneClone::AllThreadTabClose)
+EVT_MENU(ID_AllLeftThreadTabClose, JaneClone::AllLeftThreadTabClose)
+EVT_MENU(ID_AllRightThreadTabClose, JaneClone::AllRightThreadTabClose)
+EVT_MENU(ID_OnOpenThreadByBrowser, JaneClone::OnOpenThreadByBrowser)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
@@ -286,13 +298,13 @@ void JaneClone::SetJaneCloneManuBar() {
 	 */
 	wxMenu *menu5 = new wxMenu;
 	wxMenu *closeTh = new wxMenu;
-	closeTh->Append(wxID_ANY, wxT("選択中のタブを閉じる"));
+	closeTh->Append(ID_OneThreadTabClose, wxT("選択中のタブを閉じる"));
 	closeTh->Append(wxID_ANY, wxT("未読として閉じる"));
 	closeTh->AppendSeparator();
-	closeTh->Append(wxID_ANY, wxT("選択されていないタブを閉じる"));
-	closeTh->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
-	closeTh->Append(wxID_ANY, wxT("これより左を閉じる"));
-	closeTh->Append(wxID_ANY, wxT("これより右を閉じる"));
+	closeTh->Append(ID_ExcepSelThreadTabClose, wxT("選択されていないタブを閉じる"));
+	closeTh->Append(ID_AllThreadTabClose, wxT("すべてのタブを閉じる"));
+	closeTh->Append(ID_AllLeftThreadTabClose, wxT("これより左を閉じる"));
+	closeTh->Append(ID_AllRightThreadTabClose, wxT("これより右を閉じる"));
 	closeTh->AppendSeparator();
 	closeTh->Append(wxID_ANY, wxT("新着なしのタブを閉じる"));
 	closeTh->Append(wxID_ANY, wxT("dat落ちのタブを閉じる"));
@@ -338,7 +350,7 @@ void JaneClone::SetJaneCloneManuBar() {
 	menu5->Append(wxID_ANY, wxT("中止"));
 	menu5->Append(wxID_ANY, wxT("レス"));
 	menu5->AppendSeparator();
-	menu5->Append(wxID_ANY, wxT("ブラウザで開く"));
+	menu5->Append(ID_OnOpenThreadByBrowser, wxT("ブラウザで開く"));
 	menu5->AppendSeparator();
 	wxMenu *broadcast = new wxMenu;
 	broadcast->Append(wxID_ANY, wxT("オートリロード"));
@@ -1372,6 +1384,87 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
 	m_mgr.Update();
 }
 /**
+ * スレタブをひとつ閉じる
+ */
+void JaneClone::OneThreadTabClose(wxCommandEvent& event) {
+
+	// アクティブなタブを選択して閉じる
+	threadNoteBook->DeletePage(threadNoteBook->GetSelection());
+}
+/**
+ * 現在選択されていないスレタブを閉じる
+ */
+void JaneClone::ExcepSelThreadTabClose(wxCommandEvent& event) {
+
+	// タブの数を数える
+	size_t pages = threadNoteBook->GetPageCount();
+	size_t select = threadNoteBook->GetSelection();
+	bool delete_f = false;
+
+	for (unsigned int i=0;i<pages;i++) {
+
+		if (i != select && !delete_f) {
+			threadNoteBook->DeletePage(0);
+		} else if (i == select && !delete_f) {
+			threadNoteBook->DeletePage(1);
+			delete_f = true;
+		} else if (i != select && delete_f) {
+			threadNoteBook->DeletePage(1);
+		}
+	}
+}
+/**
+ * すべてのスレタブを閉じる
+ */
+void JaneClone::AllThreadTabClose(wxCommandEvent& event) {
+
+	int pages = threadNoteBook->GetPageCount();
+	for (int i=0;i<pages;i++) {
+		threadNoteBook->DeletePage(0);
+	}
+}
+/**
+ * これより左のスレタブをを閉じる
+ */
+void JaneClone::AllLeftThreadTabClose(wxCommandEvent& event) {
+
+	// タブの数を数える
+	size_t select = threadNoteBook->GetSelection();
+
+	for (unsigned int i=0;i<select;i++) {
+		threadNoteBook->DeletePage(0);
+	}
+}
+/**
+ * これより右のスレタブを閉じる
+ */
+void JaneClone::AllRightThreadTabClose(wxCommandEvent& event) {
+
+	// タブの数を数える
+	size_t pages = threadNoteBook->GetPageCount();
+	size_t select = threadNoteBook->GetSelection();
+	for (unsigned int i=0;i<pages;i++) {
+		if (i>select) {
+			threadNoteBook->DeletePage(select+1);
+		}
+	}
+}
+/**
+ * スレッドをブラウザで開く
+ */
+void JaneClone::OnOpenThreadByBrowser(wxCommandEvent& event) {
+
+	CopyTURLToClipBoard(event);
+
+	if (wxTheClipboard->Open()) {
+		wxTextDataObject data;
+		wxTheClipboard->GetData(data);
+		wxString url = data.GetText();
+		wxTheClipboard->Close();
+		wxLaunchDefaultBrowser(url);
+	}
+}
+/**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
@@ -1667,14 +1760,14 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
 			event.GetSelection());
 
 	wxMenu* threadTabUtil = new wxMenu();
-	threadTabUtil->Append(wxID_ANY, wxT("このタブを閉じる"));
+	threadTabUtil->Append(ID_OneThreadTabClose, wxT("このタブを閉じる"));
 	threadTabUtil->Append(wxID_ANY, wxT("未読として閉じる"));
 	threadTabUtil->AppendSeparator();
-	threadTabUtil->Append(wxID_ANY, wxT("このタブ以外を閉じる"));
+	threadTabUtil->Append(ID_ExcepSelThreadTabClose, wxT("このタブ以外を閉じる"));
 	threadTabUtil->Append(wxID_ANY, wxT("新着なしのタブを閉じる"));
-	threadTabUtil->Append(wxID_ANY, wxT("すべてのタブを閉じる"));
-	threadTabUtil->Append(wxID_ANY, wxT("これより左を閉じる"));
-	threadTabUtil->Append(wxID_ANY, wxT("これより右を閉じる"));
+	threadTabUtil->Append(ID_AllThreadTabClose, wxT("すべてのタブを閉じる"));
+	threadTabUtil->Append(ID_AllLeftThreadTabClose, wxT("これより左を閉じる"));
+	threadTabUtil->Append(ID_AllRightThreadTabClose, wxT("これより右を閉じる"));
 	threadTabUtil->AppendSeparator();
 
 	wxMenu *tabLock = new wxMenu;
@@ -1711,7 +1804,7 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
 	threadTabUtil->Append(wxID_ANY, wxT("中止"));
 	threadTabUtil->Append(wxID_ANY, wxT("レス"));
 	threadTabUtil->AppendSeparator();
-	threadTabUtil->Append(wxID_ANY, wxT("ブラウザで開く"));
+	threadTabUtil->Append(ID_OnOpenThreadByBrowser, wxT("ブラウザで開く"));
 	threadTabUtil->AppendSeparator();
 
 	wxMenu* copy = new wxMenu();

@@ -128,6 +128,12 @@ private:
 	void CopyBTitleToClipBoard(wxCommandEvent& event);
 	void CopyBBothDataToClipBoard(wxCommandEvent& event);
 	// スレタブでの処理
+	void OneThreadTabClose(wxCommandEvent& event);
+	void ExcepSelThreadTabClose(wxCommandEvent& event);
+	void AllThreadTabClose(wxCommandEvent& event);
+	void AllLeftThreadTabClose(wxCommandEvent& event);
+	void AllRightThreadTabClose(wxCommandEvent& event);
+	void OnOpenThreadByBrowser(wxCommandEvent& event);
 	void CopyTURLToClipBoard(wxCommandEvent& event);
 	void CopyTTitleToClipBoard(wxCommandEvent& event);
 	void CopyTBothDataToClipBoard(wxCommandEvent& event);
