@@ -137,6 +137,10 @@ private:
 	void CopyTURLToClipBoard(wxCommandEvent& event);
 	void CopyTTitleToClipBoard(wxCommandEvent& event);
 	void CopyTBothDataToClipBoard(wxCommandEvent& event);
+	void SaveDatFile(wxCommandEvent& event);
+	void SaveDatFileToClipBoard(wxCommandEvent& event);
+	void DeleteDatFile(wxCommandEvent& event);
+	void ReloadThisThread(wxCommandEvent& event);
 
 	void OnCloseWindow(wxCloseEvent& event);
 	void OnLeftClickAtListCtrl(wxListEvent& event);

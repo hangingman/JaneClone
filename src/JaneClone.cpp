@@ -55,7 +55,11 @@ enum {
 	ID_AllThreadTabClose,		// すべてのスレタブを閉じる
 	ID_AllLeftThreadTabClose,	// これより左のスレタブをを閉じる
 	ID_AllRightThreadTabClose,	// これより右のスレタブを閉じる
-	ID_OnOpenThreadByBrowser	// スレッドをブラウザで開く
+	ID_OnOpenThreadByBrowser,	// スレッドをブラウザで開く
+	ID_SaveDatFile,				// datファイルに名前を付けて保存
+	ID_SaveDatFileToClipBoard,	// datをクリップボードにコピー
+	ID_DeleteDatFile,			// このログを削除
+	ID_ReloadThisThread			// スレッドの再読み込み
 };
 
 // event table
@@ -84,6 +88,10 @@ EVT_MENU(ID_AllThreadTabClose, JaneClone::AllThreadTabClose)
 EVT_MENU(ID_AllLeftThreadTabClose, JaneClone::AllLeftThreadTabClose)
 EVT_MENU(ID_AllRightThreadTabClose, JaneClone::AllRightThreadTabClose)
 EVT_MENU(ID_OnOpenThreadByBrowser, JaneClone::OnOpenThreadByBrowser)
+EVT_MENU(ID_SaveDatFile, JaneClone::SaveDatFile)
+EVT_MENU(ID_SaveDatFileToClipBoard, JaneClone::SaveDatFileToClipBoard)
+EVT_MENU(ID_DeleteDatFile, JaneClone::DeleteDatFile)
+EVT_MENU(ID_ReloadThisThread, JaneClone::ReloadThisThread)
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
@@ -368,11 +376,11 @@ void JaneClone::SetJaneCloneManuBar() {
 	menu5->Append(wxID_ANY, wxT("この板の看板を見る"));
 	menu5->AppendSeparator();
 	wxMenu *saveLog = new wxMenu;
-	saveLog->Append(wxID_ANY, wxT("datを名前を付けて保存"));
-	saveLog->Append(wxID_ANY, wxT("datをクリップボードにコピー"));
+	saveLog->Append(ID_SaveDatFile, wxT("datを名前を付けて保存"));
+	saveLog->Append(ID_SaveDatFileToClipBoard, wxT("datをクリップボードにコピー"));
 	menu5->AppendSubMenu(saveLog, wxT("このログを保存"));
-	menu5->Append(wxID_ANY, wxT("このログを削除"));
-	menu5->Append(wxID_ANY, wxT("再読み込み"));
+	menu5->Append(ID_DeleteDatFile, wxT("このログを削除"));
+	menu5->Append(ID_ReloadThisThread, wxT("再読み込み"));
 	menu5->AppendSeparator();
 	wxMenu *iReadHere = new wxMenu;
 	iReadHere->Append(wxID_ANY, wxT("この辺まで読んだ"));
@@ -1465,6 +1473,74 @@ void JaneClone::OnOpenThreadByBrowser(wxCommandEvent& event) {
 	}
 }
 /**
+ * datファイルに名前を付けて保存
+ */
+void JaneClone::SaveDatFile(wxCommandEvent& event) {
+
+	wxString caption = wxT("datファイルに名前を付けて保存");
+	wxString defaultDir = wxEmptyString; // OSのデフォルトに合わせる
+	wxString wildCard = wxT("dat files (*.dat) |*.dat");
+
+	// datファイル名の組み立て
+	wxString title, boardNameAscii, origNumber, boardURL;
+
+	title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+	boardNameAscii = tiHash[title].boardNameAscii;
+	origNumber = tiHash[title].origNumber;
+
+	// ファイルパスの組み立てとファイルの有無確認
+	wxDir dir(wxGetCwd());
+	wxString filePath = dir.GetName();
+
+#ifdef __WXMSW__
+	// Windowsではパスの区切りは"\"
+	filePath += wxT("\\dat\\");
+	filePath += boardNameAscii;
+	filePath += wxT("\\");
+	filePath += origNumber;
+	filePath += wxT(".dat");
+#else
+	// それ以外ではパスの区切りは"/"
+	filePath += wxT("/dat/");
+	filePath += boardNameAscii;
+	filePath += wxT("/");
+	filePath += origNumber;
+	filePath += wxT(".dat");
+#endif
+
+	if (!wxFile::Exists(filePath)) {
+		// 無ければエラーメッセージ表示
+		wxMessageBox(wxT("保存するためのdatファイルが見つかりませんでした"));
+		return;
+	}
+
+	wxFileDialog dialog(this, caption, defaultDir, wxEmptyString, wildCard, wxFD_SAVE);
+	dialog.SetPath(filePath);
+
+	if (dialog.ShowModal() == wxID_OK) {
+		bool ret = wxCopyFile(filePath, dialog.GetPath(), true);
+		if (!ret) {
+			wxMessageBox(wxT("datファイルの保存に失敗しました"));
+		}
+	}
+}
+/**
+ * datをクリップボードにコピー
+ */
+void JaneClone::SaveDatFileToClipBoard(wxCommandEvent& event) {
+
+}
+/**
+ * このログを削除
+ */
+void JaneClone::DeleteDatFile(wxCommandEvent& event) {
+}
+/**
+ * スレッドの再読み込み
+ */
+void JaneClone::ReloadThisThread(wxCommandEvent& event) {
+}
+/**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
@@ -1837,11 +1913,16 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
 	threadTabUtil->AppendSeparator();
 
 	wxMenu *saveLog = new wxMenu;
-	saveLog->Append(wxID_ANY, wxT("datを名前を付けて保存"));
-	saveLog->Append(wxID_ANY, wxT("datをクリップボードにコピー"));
+	saveLog->Append(ID_SaveDatFile, wxT("datを名前を付けて保存"));
+	saveLog->Append(ID_SaveDatFileToClipBoard, wxT("datをクリップボードにコピー"));
 	threadTabUtil->AppendSubMenu(saveLog, wxT("このログを保存"));
-	threadTabUtil->Append(wxID_ANY, wxT("このログを削除"));
-	threadTabUtil->Append(wxID_ANY, wxT("再読み込み"));
+	threadTabUtil->Append(ID_DeleteDatFile, wxT("このログを削除"));
+	threadTabUtil->Append(ID_ReloadThisThread, wxT("再読み込み"));
+
+// Windows以外ではクリップボードにコピーは使えない
+#ifndef __WXMSW__
+	saveLog->Enable(ID_SaveDatFileToClipBoard, false);
+#endif
 
 	// ポップアップメニューを表示させる
 	PopupMenu(threadTabUtil);
