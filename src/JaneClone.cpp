@@ -515,9 +515,9 @@ void JaneClone::SetJaneCloneManuBar() {
 	menuBar->Append(menu10, wxT("ヘルプ"));
 
 	// Linuxではファイルごとクリップボードにコピーすることができない
-//#ifndef __WXMSW__
-//	menuBar->Enable(ID_SaveDatFileToClipBoard, false);
-//#endif
+#ifndef __WXMSW__
+	menuBar->Enable(ID_SaveDatFileToClipBoard, false);
+#endif
 
 	SetMenuBar(menuBar);
 	/**
@@ -1585,6 +1585,46 @@ void JaneClone::SaveDatFileToClipBoard(wxCommandEvent& event) {
  * このログを削除
  */
 void JaneClone::DeleteDatFile(wxCommandEvent& event) {
+
+	// datファイル名の組み立て
+	wxString title, boardNameAscii, origNumber, boardURL;
+
+	title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+	boardNameAscii = tiHash[title].boardNameAscii;
+	origNumber = tiHash[title].origNumber;
+
+	// ファイルパスの組み立てとファイルの有無確認
+	wxDir dir(wxGetCwd());
+	wxString filePath = dir.GetName();
+
+#ifdef __WXMSW__
+	// Windowsではパスの区切りは"\"
+	filePath += wxT("\\dat\\");
+	filePath += boardNameAscii;
+	filePath += wxT("\\");
+	filePath += origNumber;
+	filePath += wxT(".dat");
+#else
+	// それ以外ではパスの区切りは"/"
+	filePath += wxT("/dat/");
+	filePath += boardNameAscii;
+	filePath += wxT("/");
+	filePath += origNumber;
+	filePath += wxT(".dat");
+#endif
+
+	if (!wxFile::Exists(filePath)) {
+		// 無ければエラーメッセージ表示
+		wxMessageBox(wxT("削除するためのdatファイルが見つかりませんでした"));
+		return;
+	}
+
+	wxString message = wxString::Format("%s%s%s", wxT("ファイル"), filePath, wxT("を削除してよろしいですか？"));
+	int result = wxMessageBox(message, wxEmptyString, wxOK | wxNO);
+
+	if (result == wxOK) {
+		wxRemoveFile(filePath);
+	}
 }
 /**
  * スレッドの再読み込み
