@@ -1022,6 +1022,9 @@ void JaneClone::OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event) {
 
 	// 消されようとしているタブのタイトルを取得
 	wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+	// 固有番号を取得
+	wxString origNumber = tiHash[title].origNumber;
+	tcwHash.erase(origNumber);
 	// ハッシュからタイトルのキーを持つデータを削除
 	tiHash.erase(title);
 }
@@ -1561,6 +1564,38 @@ void JaneClone::DeleteDatFile(wxCommandEvent& event) {
  * スレッドの再読み込み
  */
 void JaneClone::ReloadThisThread(wxCommandEvent& event) {
+
+	// ノートブックの変更中はノートブックに触れないようにする
+	threadNoteBook->Freeze();
+	// 選択されたスレタブの情報を集める
+	wxString title, origNumber, boardNameAscii;
+	size_t page = threadNoteBook->GetSelection();
+	title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+	ThreadInfo info = tiHash[title];
+	origNumber = info.origNumber;
+	boardNameAscii = info.boardNameAscii;
+
+	// アクティブなタブを選択して閉じる
+	threadNoteBook->DeletePage(threadNoteBook->GetSelection());
+
+	// datファイルへのパスを組み立てる
+	wxString threadContentPath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber);
+	// Hashに格納する板名タブのオブジェクトのインスタンスを準備する
+	ThreadContentWindow* tcw = new ThreadContentWindow((wxWindow*) threadNoteBook, threadContentPath);
+
+	//　origNumber(key),ThreadContentWindow(value)としてHashに格納する
+	tcwHash[origNumber] = tcw;
+	// ノートブックに登録されたスレッド情報をハッシュに登録する
+	info.origNumber = origNumber;
+	info.boardNameAscii = boardNameAscii;
+	tiHash[title] = info;
+
+	// スレッドを表示させる
+	threadNoteBook->InsertPage(page, tcw, title, false, wxNullBitmap);
+	threadNoteBook->SetSelection(page);
+	threadNoteBook->Thaw();
+
+	m_mgr.Update();
 }
 /**
  * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
@@ -1628,8 +1663,7 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
 	wxAboutDialogInfo info;
 	info.SetName(wxT("Jane Clone - ２ちゃんねるビューア"));
 	info.SetVersion(wxT("0.6.0"));
-	info.SetDescription(wxT(
-			"Copyright(C) 2012 Nagata Hiroyuki, All Rights Reserved. "));
+	info.SetDescription(wxT("Copyright(C) 2012 Nagata Hiroyuki, All Rights Reserved. "));
 	info.SetCopyright(wxT("http://nantonaku-shiawase.hatenablog.com/"));
 
 	wxAboutBox(info);
@@ -1940,6 +1974,11 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
 	threadTabUtil->AppendSubMenu(saveLog, wxT("このログを保存"));
 	threadTabUtil->Append(ID_DeleteDatFile, wxT("このログを削除"));
 	threadTabUtil->Append(ID_ReloadThisThread, wxT("再読み込み"));
+
+	// Linuxではファイルごとクリップボードにコピーすることができない
+#ifndef __WXMSW__
+	saveLog->Enable(ID_SaveDatFileToClipBoard, false);
+#endif
 
 	// ポップアップメニューを表示させる
 	PopupMenu(threadTabUtil);

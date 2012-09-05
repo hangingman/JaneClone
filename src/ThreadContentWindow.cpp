@@ -23,6 +23,12 @@
 
 IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
 
+// event table
+BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
+// スレッドのHtmlWindowで右クリックした場合の処理
+EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
+END_EVENT_TABLE()
+
 /**
  * 通常のコンストラクタ
  */
@@ -190,4 +196,17 @@ wxString ThreadContentWindow::ProcessRestResponse(wxString& threadRecord, int nu
 	}
 
 	return lumpOfHTML;
+}
+/**
+ * スレッドのHtmlWindowで右クリックした場合の処理
+ */
+void ThreadContentWindow::OnRightClickHtmlWindow(wxMouseEvent& event) {
+
+	wxMenu* copy = new wxMenu();
+	copy->Append(wxID_ANY, wxT("コピー"));
+	copy->Append(wxID_ANY, wxT("リンクをコピー"));
+	copy->Append(wxID_ANY, wxT("全て選択"));
+
+	// ポップアップメニューを表示させる
+	PopupMenu(copy);
 }

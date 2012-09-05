@@ -23,6 +23,7 @@
 #define THREADCONTENTWINDOW_H_
 
 #include <wx/html/htmlwin.h>
+#include <wx/event.h>
 #include "DataType.h"
 #include "JaneCloneUtil.h"
 
@@ -51,6 +52,10 @@ public:
 	 * 内部で持っているHTMLソースを返す
 	 */
 	wxString GetInternalHtmlSource();
+	/**
+	 * ウィンドウ上で右クリックした場合の処理
+	 */
+	void OnRightClickHtmlWindow(wxMouseEvent& event);
 
 private:
 	/**
@@ -67,6 +72,7 @@ private:
 	wxString ProcessRestResponse(wxString& threadRecord, int number);
 
 
+	DECLARE_EVENT_TABLE()
 	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
 };
 
