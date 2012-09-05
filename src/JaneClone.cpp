@@ -714,8 +714,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
  */
 void JaneClone::SetPreviousUserLookedTab() {
 
-	wxArrayString userLookedBoardList =
-			MetakitAccessor::GetUserLookedBoardList();
+	wxArrayString userLookedBoardList = MetakitAccessor::GetUserLookedBoardList();
 
 	for (unsigned int i = 0; i < userLookedBoardList.GetCount(); i++) {
 
@@ -731,9 +730,7 @@ void JaneClone::SetPreviousUserLookedTab() {
 		SetThreadListItemNew(boardName, outputPath, (const size_t) i);
 	}
 
-	wxArrayString userLookedThreadList =
-			MetakitAccessor::GetUserLookedThreadList();
-	wxDir dir(wxGetCwd());
+	wxArrayString userLookedThreadList = MetakitAccessor::GetUserLookedThreadList();
 
 	for (unsigned int i = 0; i < userLookedThreadList.GetCount(); i+= 3) {
 
@@ -741,23 +738,8 @@ void JaneClone::SetPreviousUserLookedTab() {
 		wxString origNumber = userLookedThreadList[i+1];
 		wxString boardNameAscii = userLookedThreadList[i+2];
 
-		// ファイルパスの組み立て
-		wxString threadContentPath = dir.GetName();
-#ifdef __WXMSW__
-		// Windowsではパスの区切りは"\"
-		threadContentPath += wxT("\\dat\\");
-		threadContentPath += boardNameAscii;
-		threadContentPath += wxT("\\");
-		threadContentPath += origNumber;
-		threadContentPath += wxT(".dat");
-#else
-		// それ以外ではパスの区切りは"/"
-		threadContentPath += wxT("/dat/");
-		threadContentPath += boardNameAscii;
-		threadContentPath += wxT("/");
-		threadContentPath += origNumber;
-		threadContentPath += wxT(".dat");
-#endif
+		// ファイルパスの組み立てとファイルの有無確認
+		wxString threadContentPath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber);
 
 		// ファイルの有無確認
 		if (!wxFile::Exists(threadContentPath)) {
@@ -1499,24 +1481,7 @@ void JaneClone::SaveDatFile(wxCommandEvent& event) {
 	origNumber = tiHash[title].origNumber;
 
 	// ファイルパスの組み立てとファイルの有無確認
-	wxDir dir(wxGetCwd());
-	wxString filePath = dir.GetName();
-
-#ifdef __WXMSW__
-	// Windowsではパスの区切りは"\"
-	filePath += wxT("\\dat\\");
-	filePath += boardNameAscii;
-	filePath += wxT("\\");
-	filePath += origNumber;
-	filePath += wxT(".dat");
-#else
-	// それ以外ではパスの区切りは"/"
-	filePath += wxT("/dat/");
-	filePath += boardNameAscii;
-	filePath += wxT("/");
-	filePath += origNumber;
-	filePath += wxT(".dat");
-#endif
+	wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber);
 
 	if (!wxFile::Exists(filePath)) {
 		// 無ければエラーメッセージ表示
@@ -1547,24 +1512,7 @@ void JaneClone::SaveDatFileToClipBoard(wxCommandEvent& event) {
 	origNumber = tiHash[title].origNumber;
 
 	// ファイルパスの組み立てとファイルの有無確認
-	wxDir dir(wxGetCwd());
-	wxString filePath = dir.GetName();
-
-#ifdef __WXMSW__
-	// Windowsではパスの区切りは"\"
-	filePath += wxT("\\dat\\");
-	filePath += boardNameAscii;
-	filePath += wxT("\\");
-	filePath += origNumber;
-	filePath += wxT(".dat");
-#else
-	// それ以外ではパスの区切りは"/"
-	filePath += wxT("/dat/");
-	filePath += boardNameAscii;
-	filePath += wxT("/");
-	filePath += origNumber;
-	filePath += wxT(".dat");
-#endif
+	wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber);
 
 	if (!wxFile::Exists(filePath)) {
 		// 無ければエラーメッセージ表示
@@ -1594,24 +1542,7 @@ void JaneClone::DeleteDatFile(wxCommandEvent& event) {
 	origNumber = tiHash[title].origNumber;
 
 	// ファイルパスの組み立てとファイルの有無確認
-	wxDir dir(wxGetCwd());
-	wxString filePath = dir.GetName();
-
-#ifdef __WXMSW__
-	// Windowsではパスの区切りは"\"
-	filePath += wxT("\\dat\\");
-	filePath += boardNameAscii;
-	filePath += wxT("\\");
-	filePath += origNumber;
-	filePath += wxT(".dat");
-#else
-	// それ以外ではパスの区切りは"/"
-	filePath += wxT("/dat/");
-	filePath += boardNameAscii;
-	filePath += wxT("/");
-	filePath += origNumber;
-	filePath += wxT(".dat");
-#endif
+	wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber);
 
 	if (!wxFile::Exists(filePath)) {
 		// 無ければエラーメッセージ表示

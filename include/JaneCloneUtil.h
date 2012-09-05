@@ -71,6 +71,10 @@ public:
 	 * レス内にURLがあれば<a>タグを付ける
 	 */
 	static wxString ReplaceURLText(const wxString& responseText);
+	/**
+	 * 指定された文字列でdatファイルへのファイルパスを組み立てる
+	 */
+	static wxString AssembleFilePath(wxString& boardNameAscii, wxString& origNumber);
 
 private:
 	// ディスクからの読取サイズ

@@ -254,3 +254,31 @@ wxString JaneCloneUtil::ReplaceURLText(const wxString& responseText) {
 
 	return result;
 }
+/**
+ * 指定された文字列でdatファイルへのファイルパスを組み立てる
+ */
+wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,
+		wxString& origNumber) {
+
+	wxDir dir(wxGetCwd());
+	wxString filePath = dir.GetName();
+
+#ifdef __WXMSW__
+	// Windowsではパスの区切りは"\"
+	filePath += wxT("\\dat\\");
+	filePath += boardNameAscii;
+	filePath += wxT("\\");
+	filePath += origNumber;
+	filePath += wxT(".dat");
+#else
+	// それ以外ではパスの区切りは"/"
+	filePath += wxT("/dat/");
+	filePath += boardNameAscii;
+	filePath += wxT("/");
+	filePath += origNumber;
+	filePath += wxT(".dat");
+#endif
+
+	return filePath;
+}
+
