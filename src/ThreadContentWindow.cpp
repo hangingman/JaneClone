@@ -25,8 +25,10 @@ IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
 
 // event table
 BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
-// スレッドのHtmlWindowで右クリックした場合の処理
 EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
+EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
+EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
+EVT_MENU(ID_SelectAllTextHtmlWindow, ThreadContentWindow::SelectAllTextHtmlWindow)
 END_EVENT_TABLE()
 
 /**
@@ -68,6 +70,9 @@ const wxString ThreadContentWindow::GetConvertedDatFile(
 	if (datfile.IsOpened()) {
 		for (str = datfile.GetFirstLine(); !datfile.Eof();
 				str = datfile.GetNextLine()) {
+
+			if (str.IsNull())
+				continue;
 
 			if (number == 1) {
 				// 最初の１行目の処理
@@ -203,10 +208,94 @@ wxString ThreadContentWindow::ProcessRestResponse(wxString& threadRecord, int nu
 void ThreadContentWindow::OnRightClickHtmlWindow(wxMouseEvent& event) {
 
 	wxMenu* copy = new wxMenu();
-	copy->Append(wxID_ANY, wxT("コピー"));
-	copy->Append(wxID_ANY, wxT("リンクをコピー"));
-	copy->Append(wxID_ANY, wxT("全て選択"));
+	copy->Append(ID_CopyFromHtmlWindow, wxT("コピー"));
+	copy->Append(ID_CopyURLFromHtmlWindow, wxT("リンクをコピー"));
+	copy->Enable(ID_CopyURLFromHtmlWindow, false); // デフォルトでは使用不能
+	copy->Append(ID_SelectAllTextHtmlWindow, wxT("全て選択"));
+
+	if (this->SelectionToText() != wxEmptyString) {
+		// テキストを選択している場合は追加で選択肢を表示する
+		copy->AppendSeparator();
+		copy->Append(wxID_ANY, wxT("選択範囲をYahooで検索"));
+		copy->Append(wxID_ANY, wxT("選択範囲をGoogleで検索"));
+		copy->Append(wxID_ANY, wxT("選択範囲をamazonで検索"));
+		copy->Append(wxID_ANY, wxT("選択範囲でスレッドタイトル検索"));
+		copy->AppendSeparator();
+		copy->Append(wxID_ANY, wxT("抽出ポップアップ"));
+		copy->Append(wxID_ANY, wxT("この文にレス"));
+		copy->Append(wxID_ANY, wxT("メモ欄に追加"));
+		copy->Append(wxID_ANY, wxT("この文にメモ欄でレス"));
+		copy->Append(wxID_ANY, wxT("選択単語でレス抽出"));
+		wxMenu *ng = new wxMenu;
+		ng->Append(wxID_ANY, wxT("NGWordに追加"));
+		ng->Append(wxID_ANY, wxT("NGNameに追加"));
+		ng->AppendSeparator();
+		ng->Append(wxID_ANY, wxT("選択単語であぼ～ん"));
+		ng->Append(wxID_ANY, wxT("選択単語で透明あぼ～ん"));
+		copy->AppendSubMenu(ng, wxT("NG処理"));
+		copy->AppendSeparator();
+	}
+
+	wxHtmlCell* cell = new wxHtmlCell();
+	wxPoint p = GetPosition();
+	//p = ScreenToClient(p);
+	cell->SetPos(p.x, p.y);
+	wxHtmlLinkInfo* linkInfo = cell->GetLink(cell->GetPosX(), cell->GetPosY());
+	//wxHtmlLinkInfo* linkInfo = cell->GetLink(p.x, p.y);
+
+	if (linkInfo) {
+		wxMessageBox(wxT("きたで"));
+		if (linkInfo->GetHref() != wxEmptyString) {
+			wxMessageBox(wxT("いけるで"));
+			// リンク上で右クリックしたのでなければ使用不能に
+			copy->Enable(ID_CopyURLFromHtmlWindow, true);
+		}
+	}
+
+	delete cell;
 
 	// ポップアップメニューを表示させる
 	PopupMenu(copy);
+}
+/**
+ * HtmlWindowで選択しているテキストをクリップボードにコピーする
+ */
+void ThreadContentWindow::CopyFromHtmlWindow(wxCommandEvent& event) {
+
+	wxString selectText = this->SelectionToText();
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->Clear();
+		wxTheClipboard->SetData(new wxTextDataObject(selectText));
+		wxTheClipboard->Close();
+	}
+}
+/*
+ * HtmlWindowで選択しているURLをクリップボードにコピーする
+ */
+void ThreadContentWindow::CopyURLFromHtmlWindow(wxCommandEvent& event) {
+
+	wxHtmlCell* cell = new wxHtmlCell();
+	wxPoint p = GetPosition();
+	p = ScreenToClient(p);
+	cell->SetPos(p.x, p.y);
+	wxHtmlLinkInfo* linkInfo = cell->GetLink(cell->GetPosX(), cell->GetPosY());
+
+	wxString url;
+
+	if (linkInfo) {
+		url = linkInfo->GetHref();
+	}
+
+	if (wxTheClipboard->Open()) {
+		wxTheClipboard->Clear();
+		wxTheClipboard->SetData(new wxTextDataObject(url));
+		wxTheClipboard->Close();
+	}
+}
+/*
+ * HtmlWindowでテキストを全て選択する
+ */
+void ThreadContentWindow::SelectAllTextHtmlWindow(wxCommandEvent& event) {
+	this->SelectAll();
 }

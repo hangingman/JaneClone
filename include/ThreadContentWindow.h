@@ -24,6 +24,8 @@
 
 #include <wx/html/htmlwin.h>
 #include <wx/event.h>
+#include <wx/clipbrd.h>
+#include <wx/dataobj.h>
 #include "DataType.h"
 #include "JaneCloneUtil.h"
 
@@ -31,6 +33,13 @@
 static const wxString FAIL_TO_READ_PAGE =
 		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
 			charset=UTF-8\"><title></title></head><body><span>ファイルの読み込みに失敗しました・リロードしてみてください</span></body></html>");
+
+// enum
+enum {
+	ID_CopyFromHtmlWindow, 		// HtmlWindowで選択しているテキストをクリップボードにコピーする
+	ID_CopyURLFromHtmlWindow, 	// HtmlWindowで選択しているURLをクリップボードにコピーする
+	ID_SelectAllTextHtmlWindow 	// HtmlWindowでテキストを全て選択する
+};
 
 class WXDLLEXPORT ThreadContentWindow : public wxHtmlWindow {
 
@@ -71,6 +80,12 @@ private:
 	 */
 	wxString ProcessRestResponse(wxString& threadRecord, int number);
 
+	// HtmlWindowで選択しているテキストをクリップボードにコピーする
+	void CopyFromHtmlWindow(wxCommandEvent& event);
+	// HtmlWindowで選択しているURLをクリップボードにコピーする
+	void CopyURLFromHtmlWindow(wxCommandEvent& event);
+	// HtmlWindowでテキストを全て選択する
+	void SelectAllTextHtmlWindow(wxCommandEvent& event);
 
 	DECLARE_EVENT_TABLE()
 	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)

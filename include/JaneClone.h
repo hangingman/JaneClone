@@ -65,8 +65,6 @@
 #include <wx/fileconf.h>
 #include <wx/tokenzr.h>
 #include <wx/font.h>
-#include <wx/clipbrd.h>
-#include <wx/dataobj.h>
 
 // 自作クラスのヘッダ
 #include "ExtractBoardList.h"
@@ -87,6 +85,40 @@
 static const wxString BOARD_LIST_PATH = wxT("./dat/boardlist.html");
 // 板一覧情報ファイルのヘッダ情報のパス
 static const wxString BOARD_LIST_HEADER_PATH = wxT("./dat/boardlistheader.html");
+
+// enum
+enum {
+	ID_Quit = 1, 				// 終了
+	ID_Restart, 				// 再起動
+	ID_GetBoardList, 			// 板一覧情報取得
+	ID_CheckLogDirectory,		// 保存されているログをスレッド一覧に表示する
+	ID_GetVersionInfo, 			// バージョン情報
+	ID_ThreadNoteBook, 			// スレッド一覧ノートブックに使うID
+	ID_BoardNoteBook,			// 板一覧用ノートブックに使うID
+	ID_OneBoardTabClose,		// スレッド一覧タブをひとつ閉じる
+	ID_ExcepSelTabClose,		// 現在選択されていないスレッド一覧タブを閉じる
+	ID_AllBoardTabClose,		// すべてのスレッド一覧タブを閉じる
+	ID_AllLeftBoardTabClose,	// これより左のスレッド一覧タブをを閉じる
+	ID_AllRightBoardTabClose,	// これより右のスレッド一覧タブを閉じる
+	ID_OnOpenBoardByBrowser,	// スレッド一覧をブラウザで開く
+	ID_ReloadOneBoard,			// アクティブなスレッド一覧をひとつ更新する
+	ID_CopyBURLToClipBoard,		// 板のURLをクリップボードにコピーする
+	ID_CopyBTitleToClipBoard,	// 板のタイトルをクリップボードにコピーする
+	ID_CopyBBothDataToClipBoard,// 板のURLとタイトルをクリップボードにコピーする
+	ID_CopyTURLToClipBoard,		// スレッドのURLをクリップボードにコピーする
+	ID_CopyTTitleToClipBoard,	// スレッドのタイトルをクリップボードにコピーする
+	ID_CopyTBothDataToClipBoard,// スレッドのURLとタイトルをクリップボードにコピーする
+	ID_OneThreadTabClose,		// スレタブをひとつ閉じる
+	ID_ExcepSelThreadTabClose,	// 現在選択されていないスレタブを閉じる
+	ID_AllThreadTabClose,		// すべてのスレタブを閉じる
+	ID_AllLeftThreadTabClose,	// これより左のスレタブをを閉じる
+	ID_AllRightThreadTabClose,	// これより右のスレタブを閉じる
+	ID_OnOpenThreadByBrowser,	// スレッドをブラウザで開く
+	ID_SaveDatFile,				// datファイルに名前を付けて保存
+	ID_SaveDatFileToClipBoard,	// datをクリップボードにコピー
+	ID_DeleteDatFile,			// このログを削除
+	ID_ReloadThisThread			// スレッドの再読み込み
+};
 
 class JaneClone: public wxFrame {
 
