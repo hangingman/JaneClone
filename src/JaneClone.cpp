@@ -733,8 +733,10 @@ JaneClone::~JaneClone() {
  */
 void JaneClone::OnQuit(wxCommandEvent&) {
 
+#ifndef __WXMAC__
 	// ツリーコントロールをデリートしてやらないとセグる
 	delete m_tree_ctrl;
+#endif
 	// Auiマネージャーを削除する
 	m_mgr.UnInit();
 
