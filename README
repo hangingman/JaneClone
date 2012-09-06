@@ -29,8 +29,7 @@ gcc 4.5.2, wxWigets 2.9, metakit-2.4.9.7, libxml2はmingw-getのパッケージ
 【Linux(64bit)】
 gcc 4.5.5, wxWidgets 2.9, metakit-2.4.9.7　libxml2はapt-getのパッケージ
 【Mac OSX(64bit)】
-まだ有効な組み合わせを見つけられていません
-一応wxWidgetsの2.9以降の64bit版ビルドに成功しています
+llvm-gcc-4.2 (GCC) 4.2.1, wxWidgets 2.9, metakit-2.4.9.7, libxml2はCommand Line Tools for Xcodeに付属するもの
 
 ◇ ライセンス ◇
 GNU 一般公衆利用許諾契約書のバージョン2に従います
@@ -42,8 +41,7 @@ MinGWのコンソールから「make」または「make -f Makefile」
 (2) Linuxの場合
 コンソールから「make -f Makefile.unx.mk」
 (3) Mac OSXの場合
-Mac用Makefileを用意できていません。もしビルドしたい場合はMakefileをご自分で用意なさってください。
-その場合 Command Line Tools for Xcodeをインストールしていると作業が楽になると思います。
+コンソールから「make -f Makefile.osx.mk」
 
 ◇ アンインストール ◇
 
@@ -65,3 +63,5 @@ Mac用Makefileを用意できていません。もしビルドしたい場合は
 ・64bit Debian, 64bit Fedoraでのビルドに成功した
 2012/08/30
 ・wxStringからchar*への変換でwx-2.9の機能が必要になったため、必要なライブラリの条件を書き換える
+2012/09/06
+・Mac用Makefileを作成
