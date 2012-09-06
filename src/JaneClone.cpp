@@ -1568,27 +1568,49 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
 	// ノートブックの変更中はノートブックに触れないようにする
 	threadNoteBook->Freeze();
 	// 選択されたスレタブの情報を集める
-	wxString title, origNumber, boardNameAscii;
+	wxString boardName,boardURL, title, origNumber, boardNameAscii;
 	size_t page = threadNoteBook->GetSelection();
 	title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
 	ThreadInfo info = tiHash[title];
 	origNumber = info.origNumber;
 	boardNameAscii = info.boardNameAscii;
 
+	// 仕方がないので総当りでハッシュからURLを探す
+	NameURLHash::iterator it;
+	for (it = retainHash.begin(); it != retainHash.end(); ++it) {
+		wxString key = it->first;
+		URLvsBoardName value = it->second;
+
+		if (value.boardNameAscii == boardNameAscii) {
+			boardName = value.boardName;
+			boardURL = value.boardURL;
+			break;
+		}
+	}
+
 	// アクティブなタブを選択して閉じる
 	threadNoteBook->DeletePage(threadNoteBook->GetSelection());
 
-	// datファイルへのパスを組み立てる
-	wxString threadContentPath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber);
+	// ソケット通信を行う
+	SocketCommunication* socketCommunication = new SocketCommunication();
+	const wxString threadContentPath = socketCommunication->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
+	delete socketCommunication;
+	// 無事に通信が終了したならばステータスバーに表示
+	this->SetStatusText(wxT(" スレッドのダウンロード終了"));
+
 	// Hashに格納する板名タブのオブジェクトのインスタンスを準備する
-	ThreadContentWindow* tcw = new ThreadContentWindow((wxWindow*) threadNoteBook, threadContentPath);
+	ThreadContentWindow* tcw = new ThreadContentWindow(
+			(wxWindow*) threadNoteBook, threadContentPath);
 
 	//　origNumber(key),ThreadContentWindow(value)としてHashに格納する
 	tcwHash[origNumber] = tcw;
+
 	// ノートブックに登録されたスレッド情報をハッシュに登録する
 	info.origNumber = origNumber;
 	info.boardNameAscii = boardNameAscii;
 	tiHash[title] = info;
+
+	*m_logCtrl << wxT("完了…　(´ん｀/)三\n");
 
 	// スレッドを表示させる
 	threadNoteBook->InsertPage(page, tcw, title, false, wxNullBitmap);
