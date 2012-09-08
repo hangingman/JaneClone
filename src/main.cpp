@@ -19,26 +19,35 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef EXTRACTBOARDLIST_H
-#define EXTRACTBOARDLIST_H
+//#include <wx/wxprec.h>
 
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
 #include <wx/wx.h>
-#include <libxml/HTMLparser.h>
-#include "MetakitAccessor.h"
+#endif
 
-class ExtractBoardList {
+#include <wx/image.h>
+#include "janeclone.hpp"
+
+
+// OnInitが呼ばれる前にロケールのクラスを継承しておく
+class wxMain: public wxApp {
+	wxLocale m_Locale;
 public:
-	// コンストラクタ
-	ExtractBoardList(const char* file);
-
-private:
-	// 内部の処理関数
-	void FindBoardInfo(xmlNode*& element);
-	// 構造体
-	htmlDocPtr m_doc;
-
-	// SQLiteAccessorのインスタンス
-	MetakitAccessor* accessor;
+	wxMain() : m_Locale(wxLANGUAGE_DEFAULT){}
+    bool OnInit();
 };
 
-#endif // EXTRACTBOARDLIST_H
+IMPLEMENT_APP(wxMain)
+
+bool wxMain::OnInit()
+{
+    wxInitAllImageHandlers();
+    JaneClone* wxJaneClone = new JaneClone(NULL, wxID_ANY, wxEmptyString);
+    SetTopWindow(wxJaneClone);
+    wxJaneClone->Show();
+    return true;
+}

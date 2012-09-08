@@ -35,7 +35,7 @@
 #include <wx/dir.h>
 #include <wx/regex.h>
 #include "wx/wxnkf.h"
-#include "DataType.h"
+#include "datatype.hpp"
 
 class JaneCloneUtil {
 public:

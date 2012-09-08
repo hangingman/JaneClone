@@ -26,8 +26,8 @@
 #include <wx/event.h>
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
-#include "DataType.h"
-#include "JaneCloneUtil.h"
+#include "datatype.hpp"
+#include "janecloneutil.hpp"
 
 // 読み込みに失敗した場合に表示するページ
 static const wxString FAIL_TO_READ_PAGE =

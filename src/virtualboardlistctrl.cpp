@@ -19,7 +19,7 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#include "VirtualBoardListCtrl.h"
+#include "virtualboardlistctrl.hpp"
 
 IMPLEMENT_DYNAMIC_CLASS(VirtualBoardListCtrl, wxListCtrl)
 

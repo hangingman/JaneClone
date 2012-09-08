@@ -19,7 +19,7 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#include "SocketCommunication.h"
+#include "socketcommunication.hpp"
 /**
  * 板一覧ファイルをダウンロードしてくるメソッド 引数は板一覧ファイル保存先、板一覧ファイルヘッダ保存先
  */

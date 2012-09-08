@@ -28,7 +28,7 @@
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
-#include "DataType.h"
+#include "datatype.hpp"
 
 class AnchoredResponsePopup: public wxPopupTransientWindow {
 

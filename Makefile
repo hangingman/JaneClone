@@ -29,10 +29,10 @@ CXX_DEBUG_FLAGS		=	-gstabs
 CXX_RELEASE_FLAGS	=	-s
 
 # compile option
-CXXFLAGS = -Wall -I/c/MinGW/include -I include -I libwxnkf/include `wx-config --cxxflags` `xml2-config --cflags` -I$(NKFDIR)
+CXXFLAGS = -Wall -I/c/MinGW/include -I include -I libwxnkf/include `wx-config --cxxflags` `xml2-config --cflags` -I$(NKFDIR)/src
 RCFLAGS  = $(shell wx-config --cxxflags | awk '{ print $$2 }')  # wx-configからwxのヘッダファイルのルートディレクトリを取り出している
 LDFLAGS  = -static -L/c/MinGW/lib -lwx_mswu_aui-2.9 `wx-config --libs` `xml2-config --libs` $(NKFDIR)/libwxnkf.a -lmk4
-VPATH    = include src rc
+VPATH    = src rc
 
 # dummy target
 .PHONY	: Debug Release clean all-clean

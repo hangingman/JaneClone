@@ -23,10 +23,10 @@ MKDIR	:= mkdir
 MAKE	:= make
 
 # compile option
-CXXFLAGS = -Wall `wx-config --cxxflags` -I./include
-LDFLAGS := -static `wx-config --libs` -lstdc++
+CXXFLAGS = -Wall `wx-config --cxxflags` -I src
+LDFLAGS := -static `wx-config --libs`
 ARFLAG	:= crsv
-VPATH	 = include src
+VPATH	= src
 
 # dummy target
 .PHONY: dep clean
@@ -39,7 +39,7 @@ all:	$(DEP) $(TARGET)
 $(DEP):
 	$(CXX) -MM -MG $(DEPSRCS) >makefile.dep
 # build library
-$(TARGET) : $(OBJECTS) $(SOURCES)
+$(TARGET) : $(OBJECTS)
 		$(AR) $(ARFLAG) $(TARGET) $(OBJECTS)
 # clean
 clean:

@@ -19,7 +19,7 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#include "AnchoredResponsePopup.h"
+#include "anchoredresponsepopup.hpp"
 
 enum {
 	Minimal_StartSimplePopup, Minimal_StartScrolledPopup, Minimal_LogWindow,

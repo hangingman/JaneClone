@@ -27,7 +27,7 @@
 #include <wx/regex.h>
 #include <wx/txtstrm.h>
 #include <vector>
-#include "JaneCloneUtil.h"
+#include "janecloneutil.hpp"
 
 struct VirtualBoardListItem {
 	// 番号(単に取得したdatファイルの順序から)

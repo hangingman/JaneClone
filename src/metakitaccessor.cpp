@@ -19,7 +19,7 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#include "MetakitAccessor.h"
+#include "metakitaccessor.hpp"
 
 // BOARD_INFOのView内構造
 static const char* BOARD_INFO_STRUCTURE =

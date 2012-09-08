@@ -67,15 +67,14 @@
 #include <wx/font.h>
 
 // 自作クラスのヘッダ
-#include "ExtractBoardList.h"
-#include "SocketCommunication.h"
-#include "DataType.h"
-#include "VirtualBoardListCtrl.h"
-#include "MetakitAccessor.h"
-#include "JaneCloneUtil.h"
-#include "VirtualBoardListCtrl.h"
-#include "ThreadContentWindow.h"
-#include "AnchoredResponsePopup.h"
+#include "extractboardlist.hpp"
+#include "socketcommunication.hpp"
+#include "datatype.hpp"
+#include "virtualboardlistctrl.hpp"
+#include "metakitaccessor.hpp"
+#include "janecloneutil.hpp"
+#include "threadcontentwindow.hpp"
+#include "anchoredresponsepopup.hpp"
 
 /*
  * 定数値の宣言

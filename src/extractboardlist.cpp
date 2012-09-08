@@ -19,7 +19,7 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#include "ExtractBoardList.h"
+#include "extractboardlist.hpp"
 
 /**
  * ExtractBoardList

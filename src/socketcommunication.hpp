@@ -22,7 +22,6 @@
 #ifndef SOCKETCOMMUNICATION_H_
 #define SOCKETCOMMUNICATION_H_
 
-#include "JaneCloneUtil.h"
 #include <wx/wx.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
@@ -33,6 +32,7 @@
 #include <wx/regex.h>
 #include <wx/dir.h>
 #include <wx/utils.h>
+#include "janecloneutil.hpp"
 
 class SocketCommunication {
 

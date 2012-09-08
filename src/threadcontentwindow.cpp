@@ -19,7 +19,7 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#include "ThreadContentWindow.h"
+#include "threadcontentwindow.hpp"
 
 IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
 

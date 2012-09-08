@@ -19,7 +19,7 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#include "JaneCloneUtil.h"
+#include "janecloneutil.hpp"
 
 /**
  * gzipファイルを解凍する処理
