@@ -29,6 +29,10 @@ EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
 EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
 EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
 EVT_MENU(ID_SelectAllTextHtmlWindow, ThreadContentWindow::SelectAllTextHtmlWindow)
+EVT_MENU(ID_SearchSelectWordByYahoo,ThreadContentWindow::SearchSelectWordByYahoo)
+EVT_MENU(ID_SearchSelectWordByGoogle,ThreadContentWindow::SearchSelectWordByGoogle)
+EVT_MENU(ID_SearchSelectWordByAmazon,ThreadContentWindow::SearchSelectWordByAmazon)
+EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
 END_EVENT_TABLE()
 
 /**
@@ -213,13 +217,17 @@ void ThreadContentWindow::OnRightClickHtmlWindow(wxMouseEvent& event) {
 	copy->Enable(ID_CopyURLFromHtmlWindow, false); // デフォルトでは使用不能
 	copy->Append(ID_SelectAllTextHtmlWindow, wxT("全て選択"));
 
-	if (this->SelectionToText() != wxEmptyString) {
+	// イベント発生後にあったデータをクリアする
+	m_selectedText.Clear();
+	m_selectedText = this->SelectionToText();
+
+	if (m_selectedText != wxEmptyString) {
 		// テキストを選択している場合は追加で選択肢を表示する
 		copy->AppendSeparator();
-		copy->Append(wxID_ANY, wxT("選択範囲をYahooで検索"));
-		copy->Append(wxID_ANY, wxT("選択範囲をGoogleで検索"));
-		copy->Append(wxID_ANY, wxT("選択範囲をamazonで検索"));
-		copy->Append(wxID_ANY, wxT("選択範囲でスレッドタイトル検索"));
+		copy->Append(ID_SearchSelectWordByYahoo, wxT("選択範囲をYahooで検索"));
+		copy->Append(ID_SearchSelectWordByGoogle, wxT("選択範囲をGoogleで検索"));
+		copy->Append(ID_SearchSelectWordByAmazon, wxT("選択範囲をamazonで検索"));
+		copy->Append(ID_SearchThreadBySelectWord, wxT("選択範囲でスレッドタイトル検索"));
 		copy->AppendSeparator();
 		copy->Append(wxID_ANY, wxT("抽出ポップアップ"));
 		copy->Append(wxID_ANY, wxT("この文にレス"));
@@ -289,4 +297,48 @@ void ThreadContentWindow::CopyURLFromHtmlWindow(wxCommandEvent& event) {
  */
 void ThreadContentWindow::SelectAllTextHtmlWindow(wxCommandEvent& event) {
 	this->SelectAll();
+}
+/**
+ * 選択したテキストでヤフー検索
+ */
+void ThreadContentWindow::SearchSelectWordByYahoo(wxCommandEvent& event) {
+
+	// 検索方法の元ネタは右：http://developer.yahoo.co.jp/other/query_parameters/search/websearch.html
+	wxString url = wxT("http://search.yahoo.co.jp/search?p=");
+	url += m_selectedText;
+	url += wxT("&ei=UTF-8");
+	wxLaunchDefaultBrowser(url);
+}
+/**
+ * 選択したテキストでGoogle検索
+ */
+void ThreadContentWindow::SearchSelectWordByGoogle(wxCommandEvent& event) {
+
+	// ここはHTTPSじゃなくてHTTP通信でいいのかなあ？
+	wxString url = wxT("http://www.google.co.jp/search?q=");
+	url += m_selectedText;
+	url += wxT("&ie=utf-8");
+	wxLaunchDefaultBrowser(url);
+}
+/**
+ * 選択したテキストでAmazon検索
+ */
+void ThreadContentWindow::SearchSelectWordByAmazon(wxCommandEvent& event) {
+
+	// Amazonが一番謎、とりあえずWEBの情報から以下のように設定
+	//wxString url = wxT("http://www.amazon.co.jp/gp/search/?__mk_ja_JP=%83J%83%5E%83J%83i&field-keywords=");
+	//url += m_selectedText;
+
+	// ! Fix Me !
+	// 文字列をutf-8からShift_JISに変換しておく必要があるようだ
+
+	//wxLaunchDefaultBrowser(url);
+}
+/**
+ * 選択したテキストでスレタイ検索
+ */
+void ThreadContentWindow::SearchThreadBySelectWord(wxCommandEvent& event) {
+
+	// ! Fix Me !
+	// 機能がいまいちよくわからない。もうちょっと考える。
 }

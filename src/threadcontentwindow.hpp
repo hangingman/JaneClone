@@ -38,7 +38,11 @@ static const wxString FAIL_TO_READ_PAGE =
 enum {
 	ID_CopyFromHtmlWindow, 		// HtmlWindowで選択しているテキストをクリップボードにコピーする
 	ID_CopyURLFromHtmlWindow, 	// HtmlWindowで選択しているURLをクリップボードにコピーする
-	ID_SelectAllTextHtmlWindow 	// HtmlWindowでテキストを全て選択する
+	ID_SelectAllTextHtmlWindow,	// HtmlWindowでテキストを全て選択する
+	ID_SearchSelectWordByYahoo, // 選択したテキストでヤフー検索
+	ID_SearchSelectWordByGoogle,// 選択したテキストでGoogle検索
+	ID_SearchSelectWordByAmazon,// 選択したテキストでAmazon検索
+	ID_SearchThreadBySelectWord // 選択したテキストでスレタイ検索
 };
 
 class WXDLLEXPORT ThreadContentWindow : public wxHtmlWindow {
@@ -86,10 +90,20 @@ private:
 	void CopyURLFromHtmlWindow(wxCommandEvent& event);
 	// HtmlWindowでテキストを全て選択する
 	void SelectAllTextHtmlWindow(wxCommandEvent& event);
+	// 選択したテキストでヤフー検索
+	void SearchSelectWordByYahoo(wxCommandEvent& event);
+	// 選択したテキストでGoogle検索
+	void SearchSelectWordByGoogle(wxCommandEvent& event);
+	// 選択したテキストでAmazon検索
+	void SearchSelectWordByAmazon(wxCommandEvent& event);
+	// 選択したテキストでスレタイ検索
+	void SearchThreadBySelectWord(wxCommandEvent& event);
 
 private:
 	// 内部でもつリンク情報
 	wxHtmlLinkInfo* m_linkInfo;
+	// 内部でもつテキスト情報
+	wxString m_selectedText;
 
 	DECLARE_EVENT_TABLE()
 	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
