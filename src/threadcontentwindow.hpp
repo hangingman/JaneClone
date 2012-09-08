@@ -87,6 +87,10 @@ private:
 	// HtmlWindowでテキストを全て選択する
 	void SelectAllTextHtmlWindow(wxCommandEvent& event);
 
+private:
+	// 内部でもつリンク情報
+	wxHtmlLinkInfo* m_linkInfo;
+
 	DECLARE_EVENT_TABLE()
 	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
 };

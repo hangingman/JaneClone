@@ -236,23 +236,20 @@ void ThreadContentWindow::OnRightClickHtmlWindow(wxMouseEvent& event) {
 		copy->AppendSeparator();
 	}
 
-	wxHtmlCell* cell = new wxHtmlCell();
-	wxPoint p = GetPosition();
-	//p = ScreenToClient(p);
-	cell->SetPos(p.x, p.y);
-	wxHtmlLinkInfo* linkInfo = cell->GetLink(cell->GetPosX(), cell->GetPosY());
-	//wxHtmlLinkInfo* linkInfo = cell->GetLink(p.x, p.y);
+	int x, y;
+	CalcUnscrolledPosition(event.m_x, event.m_y, &x, &y);
+	wxHtmlCell *cell = GetInternalRepresentation()->FindCellByPos(x, y);
+	m_linkInfo = NULL;
 
-	if (linkInfo) {
-		wxMessageBox(wxT("きたで"));
-		if (linkInfo->GetHref() != wxEmptyString) {
-			wxMessageBox(wxT("いけるで"));
+	if(cell)
+		m_linkInfo = cell->GetLink();
+
+	if (m_linkInfo) {
+		if (m_linkInfo->GetHref() != wxEmptyString) {
 			// リンク上で右クリックしたのでなければ使用不能に
 			copy->Enable(ID_CopyURLFromHtmlWindow, true);
 		}
 	}
-
-	delete cell;
 
 	// ポップアップメニューを表示させる
 	PopupMenu(copy);
@@ -275,16 +272,10 @@ void ThreadContentWindow::CopyFromHtmlWindow(wxCommandEvent& event) {
  */
 void ThreadContentWindow::CopyURLFromHtmlWindow(wxCommandEvent& event) {
 
-	wxHtmlCell* cell = new wxHtmlCell();
-	wxPoint p = GetPosition();
-	p = ScreenToClient(p);
-	cell->SetPos(p.x, p.y);
-	wxHtmlLinkInfo* linkInfo = cell->GetLink(cell->GetPosX(), cell->GetPosY());
-
 	wxString url;
 
-	if (linkInfo) {
-		url = linkInfo->GetHref();
+	if (m_linkInfo) {
+		url = m_linkInfo->GetHref();
 	}
 
 	if (wxTheClipboard->Open()) {
