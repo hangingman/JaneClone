@@ -1,8 +1,6 @@
 ################################################################################
-#
 # JaneCloneビルド用Makefile 
 # Copyright (c) 2012 HIROYUKI Nagata <jagdironscrap@gmail.com>
-#
 ################################################################################
 
 # target and sources
@@ -28,9 +26,9 @@ CXX_DEBUG_FLAGS   =	-gstabs
 CXX_RELEASE_FLAGS = -O2 -s
 
 # compile option
-CXXFLAGS = -Wall -I/usr/local/include -I include `wx-config --cxxflags` `xml2-config --cflags` -I$(NKFDIR)/include
+CXXFLAGS = -Wall -I/usr/local/include -I include -I$(NKFDIR)/src `wx-config --cxxflags` `xml2-config --cflags`
 LDFLAGS  = -lwx_gtk2u_aui-2.9 `wx-config --libs` `xml2-config --libs` -lmk4 $(NKFDIR)/libwxnkf.a
-VPATH    = include src rc
+VPATH    = src rc
 
 # dummy target
 .PHONY	: Debug Release clean all-clean
