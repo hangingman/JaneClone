@@ -42,7 +42,7 @@ class ResponseWindow: public wxDialog {
 public:
     // begin wxGlade: ResponseWindow::ids
     // end wxGlade
-    ResponseWindow(wxWindow* parent, const wxString& title);
+    ResponseWindow(wxWindow* parent, const wxString& title, const wxPoint& point);
 
 private:
     // begin wxGlade: ResponseWindow::methods

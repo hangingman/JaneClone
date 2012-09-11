@@ -30,8 +30,8 @@
 // begin wxGlade: ::extracode
 // end wxGlade
 
-ResponseWindow::ResponseWindow(wxWindow* parent, const wxString& title):
-     wxDialog(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
+ResponseWindow::ResponseWindow(wxWindow* parent, const wxString& title, const wxPoint& point):
+     wxDialog(parent, wxID_ANY, title, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
 
      // アイコンの設定を行う
