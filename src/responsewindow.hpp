@@ -24,25 +24,60 @@
 
 #include <wx/wx.h>
 #include <wx/notebook.h>
+#include <wx/html/htmlwin.h>
 
 /**
  * レス書き込み用の子ウィンドウ
  */
-class ResponseWindow : public wxDialog {
+// begin wxGlade: ::extracode
+// end wxGlade
+
+// enum
+enum {
+     ID_ResponseWindow
+};     
+
+class ResponseWindow: public wxDialog {
 
 public:
-     ResponseWindow(wxWindow* parent, wxString& title);
-     ~ResponseWindow(){};
-
-     void Popup(wxWindow *focus = NULL);
+    // begin wxGlade: ResponseWindow::ids
+    // end wxGlade
+    ResponseWindow(wxWindow* parent, const wxString& title);
 
 private:
-     // ノートブックにタブを設定する
-     void SetTabToNotebook();
+    // begin wxGlade: ResponseWindow::methods
+    void set_properties(const wxString& title);
+    void do_layout();
+    // end wxGlade
 
-     // レス用のウィンドウの基盤にあたるノートブック
-     wxNotebook* responseNoteBook;
-     
-};
+protected:
+    // begin wxGlade: ResponseWindow::attributes
+    wxStaticText* boardNameTitle;
+    wxStaticText* name;
+    wxComboBox* nameCombo;
+    wxStaticText* mail;
+    wxComboBox* mailCombo;
+    wxCheckBox* sageCheck;
+    wxTextCtrl* text_ctrl_1;
+    wxPanel* resPane;
+    wxHtmlWindow* previewWindow;
+    wxPanel* previewPane;
+    wxHtmlWindow* localRuleWindow;
+    wxPanel* localRulePane;
+    wxTextCtrl* settingText;
+    wxPanel* settingPane;
+    wxNotebook* resNoteBook;
+    wxCheckBox* handleCheck;
+    wxCheckBox* frontCheck;
+    wxCheckBox* formatCheck;
+    wxCheckBox* beCheck;
+    wxComboBox* beMailCombo;
+    wxCheckBox* proxyCheck;
+    wxComboBox* proxyCombo;
+    wxPanel* space;
+    wxButton* postButton;
+    wxButton* quitButton;
+    // end wxGlade
+}; // wxGlade: end class
 
 #endif /* RESPONSEWINDOW_HPP_ */
