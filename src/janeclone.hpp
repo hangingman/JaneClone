@@ -180,6 +180,7 @@ private:
 
 	void OnCloseWindow(wxCloseEvent& event);
 	void OnLeftClickAtListCtrl(wxListEvent& event);
+        void OnLeftClickAtListCtrlCol(wxListEvent& event);
 	void OnChangedTab(wxAuiNotebookEvent& event);
 	void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
 	void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
