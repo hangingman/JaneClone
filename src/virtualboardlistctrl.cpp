@@ -31,11 +31,12 @@ IMPLEMENT_DYNAMIC_CLASS(VirtualBoardListCtrl, wxListCtrl)
  */
 VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 					   const wxString& boardName, const wxString& outputPath) :
-wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
 	   wxLC_REPORT | wxLC_VIRTUAL) {
 
      this->Hide();
-
+     // クラス自体の目印を設置する
+     SetLabel(boardName);
      // テキストファイルの読み込み
      wxTextFile datfile(outputPath);
      datfile.Open();
@@ -112,6 +113,19 @@ wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
      InsertColumn(COL_SINCE, wxT("SINCE"));
      InsertColumn(COL_OID, wxT("固有番号"));
      InsertColumn(COL_BOARDNAME, wxT("板"));
+
+     // フラグを全てtrueに設定する
+     f_number = true;
+     f_title = true;
+     f_response = true;
+     f_cachedResponseNumber = true;
+     f_newResponseNumber = true;
+     f_increaseResponseNumber = true;
+     f_momentum = true;
+     f_lastUpdate = true;
+     f_since = true;
+     f_oid = true;
+     f_boardName = true;
 
      this->Show();
 }
@@ -364,8 +378,58 @@ wxString VirtualBoardListCtrl::OnGetItemText(long item, long column) const {
 /**
  * 内部のリストをソートする
  */
-void VirtualBoardListCtrl::SortVectorItems() {
-     wxMessageBox(wxT("test"));
-     //std::sort(m_vBoardList.begin(),m_vBoardList.end());
-     //SetItemCount(m_vBoardList.size());
+void VirtualBoardListCtrl::SortVectorItems(int col) {
+     
+     // ソートをかける
+     wxMessageBox(wxT("ソートをかけます"));
+     wxMessageBox(wxString::Format("%d", col));
+     DeleteAllItems();
+
+     // カラムの位置によって分岐させる
+     switch (col) {
+     
+     case COL_NUM:
+	  wxMessageBox(wxT("ルート入った"));
+	  f_number ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseNumber)
+	           : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardNumber);
+	  f_number ? f_number = false
+	           : f_number = true;
+	  break;
+     case COL_TITLE:
+	  //result = m_vBoardList[item].getTitle();
+	  break;
+     case COL_RESP:
+	  //result = m_vBoardList[item].getResponse();
+	  break;
+     case COL_CACHEDRES:
+	  //result = m_vBoardList[item].getCachedResponseNumber();
+	  break;
+     case COL_NEWRESP:
+	  //result = m_vBoardList[item].getNewResponseNumber();
+	  break;
+     case COL_INCRESP:
+	  //result = m_vBoardList[item].getIncreaseResponseNumber();
+	  break;
+     case COL_MOMENTUM:
+	  //result = m_vBoardList[item].getMomentum();
+	  break;
+     case COL_LASTUP:
+	  //result = m_vBoardList[item].getLastUpdate();
+	  break;
+     case COL_SINCE:
+	  //result = m_vBoardList[item].getSince();
+	  break;
+     case COL_OID:
+	  //result = m_vBoardList[item].getOid();
+	  break;
+     case COL_BOARDNAME:
+	  //result = m_vBoardList[item].getBoardName();
+	  break;
+     default:
+	  //wxFAIL_MSG("板一覧リストからデータを取り出す処理に失敗しました");
+	  wxMessageBox(wxT("failed!"));
+	  break;
+     }
+
+     SetItemCount(m_vBoardList.size());
 }

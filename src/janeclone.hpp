@@ -118,7 +118,8 @@ enum {
 	ID_SaveDatFileToClipBoard,	// datをクリップボードにコピー
 	ID_DeleteDatFile,		// このログを削除
 	ID_ReloadThisThread,    	// スレッドの再読み込み
-	ID_CallResponseWindow           // 書き込み用のウィンドウを呼び出す
+	ID_CallResponseWindow,          // 書き込み用のウィンドウを呼び出す
+	ID_BoardListCtrl                // 板一覧リスト自体を表すID
 };
 
 class JaneClone: public wxFrame {

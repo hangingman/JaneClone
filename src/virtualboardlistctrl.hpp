@@ -84,6 +84,16 @@ public:
 	  return m_boardName;
      };
      
+     // それぞれのカラムをソートするPreidicate関数
+     static bool PredicateForwardNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getNumber()) < wxAtoi(rItem.getNumber());
+     };
+     
+     static bool PredicateReverseNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getNumber()) > wxAtoi(rItem.getNumber());
+     };
+     
+
 
 private:
      // 番号(単に取得したdatファイルの順序から)
@@ -128,6 +138,10 @@ class WXDLLEXPORT VirtualBoardListCtrl: public wxListCtrl {
 	  COL_BOARDNAME	// 板
      };
 
+     enum {
+	  ID_BOARDLISTCTRL
+     };
+
 public:
      /**
       * コンストラクタ：配置するwindowと板名を指定
@@ -169,7 +183,7 @@ public:
      /**
       * 内部のリストをソートする
       */
-     void SortVectorItems();
+     void SortVectorItems(int col);
      /**
       * リスト内部のアイテムの数を返す
       */

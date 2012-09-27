@@ -19,8 +19,8 @@ LIBNKF	= libwxnkf.a
 NKFDIR	= libwxnkf
 
 # basic command
-CXX		:= g++
-RM 		:= rm
+CXX	:= g++
+RM 	:= rm
 WINDRES := windres
 MAKE	:= make
 
