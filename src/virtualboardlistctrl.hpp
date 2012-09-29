@@ -85,6 +85,7 @@ public:
      };
      
      // それぞれのカラムをソートするPreidicate関数
+     // ! Fix Me ! 繰り返しが多すぎる。もう少し効率的に書ける方法を探すべき
      static bool PredicateForwardNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getNumber()) < wxAtoi(rItem.getNumber());
      };
@@ -93,7 +94,85 @@ public:
 	  return wxAtoi(lItem.getNumber()) > wxAtoi(rItem.getNumber());
      };
      
+     static bool PredicateForwardTitle(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return lItem.getTitle() > rItem.getTitle();
+     };
 
+     static bool PredicateReverseTitle(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return lItem.getTitle() < rItem.getTitle();
+     };
+
+     static bool PredicateForwardResponse(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getResponse()) < wxAtoi(rItem.getResponse());
+     };
+     
+     static bool PredicateReverseResponse(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getResponse()) > wxAtoi(rItem.getResponse());
+     };
+
+     static bool PredicateForwardCachedResponseNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getCachedResponseNumber()) < wxAtoi(rItem.getCachedResponseNumber());
+     };
+     
+     static bool PredicateReverseCachedResponseNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getCachedResponseNumber()) > wxAtoi(rItem.getCachedResponseNumber());
+     };
+
+     static bool PredicateForwardNewResponseNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getNewResponseNumber()) < wxAtoi(rItem.getNewResponseNumber());
+     };
+     
+     static bool PredicateReverseNewResponseNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getNewResponseNumber()) > wxAtoi(rItem.getNewResponseNumber());
+     };
+
+     static bool PredicateForwardIncreaseResNum(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getIncreaseResponseNumber()) < wxAtoi(rItem.getIncreaseResponseNumber());
+     };
+     
+     static bool PredicateReverseIncreaseResNum(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getIncreaseResponseNumber()) > wxAtoi(rItem.getIncreaseResponseNumber());
+     };
+
+     static bool PredicateForwardMomentum(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getMomentum()) < wxAtoi(rItem.getMomentum());
+     };
+     
+     static bool PredicateReverseMomentum(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getMomentum()) > wxAtoi(rItem.getMomentum());
+     };
+
+     static bool PredicateForwardLastUpdate(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return lItem.getLastUpdate() < rItem.getLastUpdate();
+     };
+     
+     static bool PredicateReverseLastUpdate(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return lItem.getLastUpdate() > rItem.getLastUpdate();
+     };
+
+     static bool PredicateForwardSince(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return lItem.getSince() < rItem.getSince();
+     };
+     
+     static bool PredicateReverseSince(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return lItem.getSince() > rItem.getSince();
+     };
+
+     static bool PredicateForwardOid(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getOid()) < wxAtoi(rItem.getOid());
+     };
+     
+     static bool PredicateReverseOid(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return wxAtoi(lItem.getOid()) > wxAtoi(rItem.getOid());
+     };
+
+     static bool PredicateForwardBoardName(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return lItem.getBoardName() < rItem.getBoardName();
+     };
+     
+     static bool PredicateReverseBoardName(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return lItem.getBoardName() > rItem.getBoardName();
+     };
 
 private:
      // 番号(単に取得したdatファイルの順序から)

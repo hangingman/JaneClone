@@ -240,8 +240,6 @@ VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const 
 	  m_vBoardList.clear();
      }
 
-     this->Hide();
-
      // テキストファイルの読み込み
      wxTextFile datfile(outputPath);
      datfile.Open();
@@ -380,56 +378,106 @@ wxString VirtualBoardListCtrl::OnGetItemText(long item, long column) const {
  */
 void VirtualBoardListCtrl::SortVectorItems(int col) {
      
-     // ソートをかける
-     wxMessageBox(wxT("ソートをかけます"));
-     wxMessageBox(wxString::Format("%d", col));
+     
+     this->Hide();
+
+     // 要素を一度全て削除する
      DeleteAllItems();
 
      // カラムの位置によって分岐させる
      switch (col) {
      
      case COL_NUM:
-	  wxMessageBox(wxT("ルート入った"));
 	  f_number ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseNumber)
-	           : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardNumber);
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardNumber);
 	  f_number ? f_number = false
-	           : f_number = true;
+	       : f_number = true;
 	  break;
+
      case COL_TITLE:
-	  //result = m_vBoardList[item].getTitle();
+	  f_title ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseTitle)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardTitle);
+	  f_title ? f_title = false
+	       : f_title = true;
 	  break;
+
      case COL_RESP:
-	  //result = m_vBoardList[item].getResponse();
+
+          f_response ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseResponse)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardResponse);
+	  f_response ? f_response = false
+	       : f_response = true; 
+
 	  break;
      case COL_CACHEDRES:
-	  //result = m_vBoardList[item].getCachedResponseNumber();
+	  
+	  f_cachedResponseNumber ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseCachedResponseNumber)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardCachedResponseNumber);
+	  f_cachedResponseNumber ? f_cachedResponseNumber = false
+	       : f_cachedResponseNumber = true;
+
 	  break;
+
      case COL_NEWRESP:
-	  //result = m_vBoardList[item].getNewResponseNumber();
+	  
+	  f_newResponseNumber ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseNewResponseNumber)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardNewResponseNumber);
+	  f_newResponseNumber ? f_newResponseNumber = false
+	       : f_newResponseNumber = true;
+
 	  break;
      case COL_INCRESP:
-	  //result = m_vBoardList[item].getIncreaseResponseNumber();
+	  
+	  f_increaseResponseNumber ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseIncreaseResNum)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardIncreaseResNum);
+	  f_increaseResponseNumber ? f_increaseResponseNumber = false
+	       : f_increaseResponseNumber = true;
+
 	  break;
      case COL_MOMENTUM:
-	  //result = m_vBoardList[item].getMomentum();
+
+	  f_momentum ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseMomentum)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardMomentum);
+	  f_momentum ? f_momentum = false
+	       : f_momentum = true;
+
 	  break;
      case COL_LASTUP:
-	  //result = m_vBoardList[item].getLastUpdate();
+	  
+	  f_lastUpdate ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseLastUpdate)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardLastUpdate);
+	  f_lastUpdate ? f_lastUpdate = false
+	       : f_lastUpdate = true;
+
 	  break;
      case COL_SINCE:
-	  //result = m_vBoardList[item].getSince();
+	  
+	  f_since ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseSince)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardSince);
+	  f_since ? f_since = false
+	       : f_since = true;
+
 	  break;
      case COL_OID:
-	  //result = m_vBoardList[item].getOid();
+	  
+	  f_since ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseOid)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardOid);
+	  f_since ? f_since = false
+	       : f_since = true;
+
 	  break;
      case COL_BOARDNAME:
-	  //result = m_vBoardList[item].getBoardName();
+	  f_boardName ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseSince)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardSince);
+	  f_since ? f_since = false
+	       : f_since = true;
+
 	  break;
      default:
-	  //wxFAIL_MSG("板一覧リストからデータを取り出す処理に失敗しました");
-	  wxMessageBox(wxT("failed!"));
+	  wxFAIL_MSG("板一覧リストのソートに失敗しました");
 	  break;
      }
 
      SetItemCount(m_vBoardList.size());
+     this->Show();
 }
