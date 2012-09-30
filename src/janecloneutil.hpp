@@ -38,46 +38,51 @@
 #include "datatype.hpp"
 
 class JaneCloneUtil {
+
 public:
-	/**
-	 * gzipファイルを解凍する処理
-	 * 引数１は読み込み元gzipファイルのPATH、引数２は解凍先のファイルのPATH
-	 * いずれもファイル名までを記述する
-	 */
-	static void DecommpressFile(wxString& inputPath, wxString& outputPath);
-	/**
-	 * ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
-	 * 引数１は読み込み元のPATH、引数２は出力先ファイルのPATH いずれもファイル名までを記述する
-	 */
-	static void ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath);
-	/**
-	 * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
-	 */
-	static wxString GetHTTPCommTimeFromHeader(wxString& headerPath);
-	/**
-	 * 指定された数字からスレッドの作成された時間を計算する処理
-	 */
-	static wxString CalcThreadCreatedTime(wxString& threadNum);
-	/**
-	 * 指定されたパスにファイルがあればファイルサイズを返す処理
-	 */
-	static size_t GetFileSize(const wxString& filePath);
-	/**
-	 * アンカーで指定されたレスをファイルから読み取ってDOM形式にして送り返す
-	 */
-	static wxString FindAnchoredResponse(wxString& boardNameAscii,
-			wxString& origNumber, wxString& resNumber);
-	/**
-	 * レス内にURLがあれば<a>タグを付ける
-	 */
-	static wxString ReplaceURLText(const wxString& responseText);
-	/**
-	 * 指定された文字列でdatファイルへのファイルパスを組み立てる
-	 */
-	static wxString AssembleFilePath(wxString& boardNameAscii, wxString& origNumber);
+     /**
+      * gzipファイルを解凍する処理
+      * 引数１は読み込み元gzipファイルのPATH、引数２は解凍先のファイルのPATH
+      * いずれもファイル名までを記述する
+      */
+     static void DecommpressFile(wxString& inputPath, wxString& outputPath);
+     /**
+      * ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
+      * 引数１は読み込み元のPATH、引数２は出力先ファイルのPATH いずれもファイル名までを記述する
+      */
+     static void ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath);
+     /**
+      * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
+      */
+     static wxString GetHTTPCommTimeFromHeader(wxString& headerPath);
+     /**
+      * 指定された数字からスレッドの作成された時間を計算する処理
+      */
+     static wxString CalcThreadCreatedTime(wxString& threadNum);
+     /**
+      * 指定されたパスにファイルがあればファイルサイズを返す処理
+      */
+     static size_t GetFileSize(const wxString& filePath);
+     /**
+      * アンカーで指定されたレスをファイルから読み取ってDOM形式にして送り返す
+      */
+     static wxString FindAnchoredResponse(wxString& boardNameAscii,
+					  wxString& origNumber, wxString& resNumber);
+     /**
+      * レス内にURLがあれば<a>タグを付ける
+      */
+     static wxString ReplaceURLText(const wxString& responseText);
+     /**
+      * 指定された文字列でdatファイルへのファイルパスを組み立てる
+      */
+     static wxString AssembleFilePath(wxString& boardNameAscii, wxString& origNumber);
+     /**
+      * 現在時刻をUNIX Timeで返す
+      */
+     static wxString GetTimeNow();
 
 private:
-	// ディスクからの読取サイズ
+     // ディスクからの読取サイズ
 #define S_SIZE (2048)
 
 };

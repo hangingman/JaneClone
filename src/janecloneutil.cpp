@@ -281,4 +281,11 @@ wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,
 
 	return filePath;
 }
+/**
+ * 現在時刻をUNIX Timeで返す
+ */
+wxString JaneCloneUtil::GetTimeNow() {
 
+     long unixTime = wxGetUTCTime();
+     return wxString::Format("%ld", unixTime);
+}

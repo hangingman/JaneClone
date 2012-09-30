@@ -906,10 +906,12 @@ wxString SocketCommunication::PostToThread(URLvsBoardName& boardInfoHash, Thread
      if (cookieIsExist) {
 	  // ２回目以降の書き込みメソッド
 	  wxString result = PostToThreadRest(hostName, boardInfoHash, threadInfoHash);
+	  delete config;
 	  return result;
      } else {
 	  // 初回のクッキー受け取りと確認用ポスト
 	  wxString result = PostToThreadFirst(hostName, boardInfoHash, threadInfoHash);
+	  delete config;
 	  return result;
      }
 }
@@ -934,10 +936,16 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
    参考：http://www.monazilla.org/index.php?e=199
 */
 
+     // 投稿時間を算出する(UNIX Time)
+     wxString timeNow = JaneCloneUtil::GetTimeNow();
+     //wxMessageBox(timeNow);
+     wxString buttonText = wxT("%8F%91%82%AB%8D%9E%82%DE");
+
      // Postする内容のデータサイズを取得する
-
-
-
+     wxString kakikomiInfo = wxT("bbs=") + boardInfoHash.boardNameAscii + wxT("&key=")
+	  + threadInfoHash.origNumber + wxT("&time=") + timeNow + wxT("&FROM=")
+	  + postContent->name + wxT("&mail") + postContent->mail + wxT("&MESSAGE")
+	  + postContent->kakikomi + wxT("&submit=") + buttonText;
 
      // URL
      const wxString boardURL = boardInfoHash.boardURL;
@@ -955,18 +963,18 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      http.SetHeader(_T("Connection"), _T("close"));
      http.SetTimeout(5);
 
-     if (http.Connect(hostName, 80)) {
+     //if (http.Connect(hostName, 80)) {
      
-     } else {
+     //} else {
      
-     }     
-
+     //}    
+     return wxEmptyString;
 }
 /**
  * ２回目以降の書き込みメソッド
  */
 wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoardName& boardInfoHash,
-					       ThreadInfo& threadInfoHas) {
+					       ThreadInfo& threadInfoHash) {
 /**
    要求メッセージの一例（初回投稿時・２回目）
    POST /test/bbs.cgi HTTP/1.1
@@ -981,11 +989,34 @@ wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoa
    bbs=[板名]&key=[スレッド番号]&time=[投稿時間]&FROM=[名前]&mail=[メール]&MESSAGE=[本文]&submit=[ボタンの文字]&[不可視項目名]=[不可視項目値]
 */
 
+     // 投稿時間を算出する(UNIX Time)
+     wxString timeNow = JaneCloneUtil::GetTimeNow();
 
+     wxString buttonText = wxT("%8F%91%82%AB%8D%9E%82%DE");
 
+     // Postする内容のデータサイズを取得する
+     wxString kakikomiInfo = wxT("bbs=") + boardInfoHash.boardNameAscii + wxT("&key=")
+	  + threadInfoHash.origNumber + wxT("&time=") + timeNow + wxT("&FROM=")
+	  + postContent->name + wxT("&mail") + postContent->mail + wxT("&MESSAGE")
+	  + postContent->kakikomi + wxT("&submit=") + buttonText;
 
+     // URL
+     const wxString boardURL = boardInfoHash.boardURL;
+     // リファラを引数から作成する
+     const wxString referer = wxT("http://") + hostName + wxT("/test/read.cgi/")
+	  + boardInfoHash.boardNameAscii + wxT("/") + threadInfoHash.origNumber;
 
+     wxHTTP http;
+     http.SetHeader(_T("POST"), _T("/test/bbs.cgi HTTP/1.1"));
+     http.SetHeader(_T("Host"), hostName);
+     http.SetHeader(_T("Accept"), _T("*/*"));
+     http.SetHeader(_T("Referer"), referer);
+     http.SetHeader(_T("Accept-Language"), _T("ja"));
+     http.SetHeader(_T("User-Agent"), _T("Monazilla/1.00"));
+     http.SetHeader(_T("Connection"), _T("close"));
+     http.SetTimeout(5);
 
+     return wxEmptyString;
 }
 /**
  * COOKIE関連の初期化処理を行う
@@ -1016,4 +1047,11 @@ bool SocketCommunication::InitializeCookie() {
 			       wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
      return false;
+}
+/**
+ * 投稿内容をソケット通信クラスに設定する
+ * @param PostContent構造体
+ */
+void SocketCommunication::SetPostContent(PostContent* postContent) {
+     this->postContent = postContent;
 }

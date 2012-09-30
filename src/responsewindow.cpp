@@ -151,10 +151,19 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
 
      // ソケット通信用のクラスのインスタンスを用意する
      SocketCommunication* socketCommunication = new SocketCommunication();
+
+     // 書き込み内容を構造体に設定する
+     PostContent* post = new PostContent;
+     post->name = nameCombo->GetStringSelection();
+     post->mail = mailCombo->GetStringSelection();
+     post->kakikomi = text_ctrl_1->GetValue();
+
+     socketCommunication->SetPostContent(post);
      wxString result = socketCommunication->PostToThread(m_boardInfo, m_threadInfo);
-     wxMessageBox(result);
+     wxMessageBox(wxT("書き込みのイベント"));
 
      delete socketCommunication;
+     delete post;
 }
 /**
  * レス用ウィンドウを閉じるイベント

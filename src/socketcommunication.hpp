@@ -89,7 +89,11 @@ public:
       * @return 書き込み結果
       */
      wxString PostToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash);
-     
+     /**
+      * 投稿内容をソケット通信クラスに設定する
+      * @param PostContent構造体
+      */
+     void SetPostContent(PostContent* postContent);
      /**
       * ログ出力用のウィンドウを設定する
       */
@@ -188,6 +192,8 @@ private:
 
      // wxFileConfigクラスのインスタンス(書き込みの際のみ確保される)
      wxFileConfig* config;
+     // 投稿内容を保存するクラス(書き込みの際のみ確保される)
+     PostContent* postContent;
 };
 
 #endif /* SOCKETCOMMUNICATION_H_ */
