@@ -36,8 +36,8 @@ EVT_BUTTON(ID_PostResponse, ResponseWindow::PostResponse)
 EVT_BUTTON(ID_QuitResponseWindow, ResponseWindow::QuitResponseWindow)
 END_EVENT_TABLE()
 
-ResponseWindow::ResponseWindow(wxWindow* parent, const wxString& title, const wxPoint& point):
-     wxDialog(parent, wxID_ANY, title, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
+ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash, wxPoint& point):
+wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
 
      // アイコンの設定を行う
@@ -46,6 +46,10 @@ ResponseWindow::ResponseWindow(wxWindow* parent, const wxString& title, const wx
 #else
      SetIcon(wxICON(janeclone));
 #endif
+
+     // 構造体をローカルに格納する
+     m_boardInfo = boardInfoHash;
+     m_threadInfo = threadInfoHash;
 
      // begin wxGlade: ResponseWindow::ResponseWindow
      resNoteBook = new wxNotebook(this, ID_ResponseWindow, wxDefaultPosition, wxDefaultSize, 0);
@@ -145,7 +149,12 @@ void ResponseWindow::do_layout()
  */
 void ResponseWindow::PostResponse(wxCommandEvent &event) {
 
+     // ソケット通信用のクラスのインスタンスを用意する
+     SocketCommunication* socketCommunication = new SocketCommunication();
+     wxString result = socketCommunication->PostToThread(m_boardInfo, m_threadInfo);
+     wxMessageBox(result);
 
+     delete socketCommunication;
 }
 /**
  * レス用ウィンドウを閉じるイベント

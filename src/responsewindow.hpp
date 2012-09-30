@@ -25,6 +25,8 @@
 #include <wx/wx.h>
 #include <wx/notebook.h>
 #include <wx/html/htmlwin.h>
+#include "socketcommunication.hpp"
+#include "datatype.hpp"
 
 /**
  * レス書き込み用の子ウィンドウ
@@ -44,7 +46,8 @@ class ResponseWindow: public wxDialog {
 public:
      // begin wxGlade: ResponseWindow::ids
      // end wxGlade
-     ResponseWindow(wxWindow* parent, const wxString& title, const wxPoint& point);
+     ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName& boardInfoHash,
+		    ThreadInfo& threadInfoHash, wxPoint& point);
 
 private:
      // begin wxGlade: ResponseWindow::methods
@@ -58,6 +61,10 @@ private:
 
      // レス投稿ウィンドウのモード設定
      bool f_threadPost;
+
+     // 内部で保持するスレッドや板情報
+     URLvsBoardName m_boardInfo;
+     ThreadInfo m_threadInfo;
 
 protected:
      // begin wxGlade: ResponseWindow::attributes

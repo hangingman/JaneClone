@@ -32,6 +32,8 @@
 #include <wx/regex.h>
 #include <wx/dir.h>
 #include <wx/utils.h>
+#include <wx/config.h>
+#include <wx/fileconf.h>
 #include "janecloneutil.hpp"
 
 class SocketCommunication {
@@ -48,6 +50,9 @@ class SocketCommunication {
 #ifdef __WXMAC__
 #define TEXT_ENDLINE_TYPE wxTextFileType_Mac
 #endif
+
+     // クッキーの設定ファイル
+#define COOKIE_CONFIG_FILE wxT("cookie.env")
 
 public:
      /**
@@ -83,8 +88,7 @@ public:
       * @param 板名,URL,サーバー名
       * @return 書き込み結果
       */
-     wxString PostToThread(const wxString boardName,
-			   const wxString boardURL, const wxString boardNameAscii);
+     wxString PostToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash);
      
      /**
       * ログ出力用のウィンドウを設定する
@@ -154,11 +158,11 @@ private:
      /**
       * 初回のクッキー受け取りと確認用ポスト
       */
-     wxString PostToThreadFirst(const wxString hostName, const wxString boardURL, const wxString boardNameAscii);
+     wxString PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHas);
      /**
       * ２回目以降の書き込みメソッド
       */
-     wxString PostToThreadRest(const wxString hostName, const wxString boardURL, const wxString boardNameAscii);
+     wxString PostToThreadRest(const wxString hostName, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHas);
      
      /**
       * 通信ログに残っているHTTPレスポンスコードを取得する
@@ -174,9 +178,16 @@ private:
       */
      void WriteHeaderFile(wxHTTP& http, const wxString headerPath);
      /**
+      * COOKIE関連の初期化処理を行う
+      */
+     bool InitializeCookie();
+     /**
       * ログとして出力するためのテキストコントロールのポインタ
       */
      wxTextCtrl* m_logCtrl;
+
+     // wxFileConfigクラスのインスタンス(書き込みの際のみ確保される)
+     wxFileConfig* config;
 };
 
 #endif /* SOCKETCOMMUNICATION_H_ */

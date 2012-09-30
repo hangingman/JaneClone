@@ -12,7 +12,7 @@ OBJECTS = $(SOURCES:.cpp=.o)
 OBJECTS +=$(RCS:.rc=.o)
 # sources for dependency
 DEPSRCS = $(shell find src/ -name '*.cpp')
-DEP		= dep
+DEP	= dep
 
 # depend library
 LIBNKF	= libwxnkf.a

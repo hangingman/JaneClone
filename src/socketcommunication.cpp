@@ -883,74 +883,137 @@ bbs.cgiを呼び出す
 
 /**
  * スレッドに書き込みを行うメソッド
- * @param 板名,URL,サーバー名
+ * @param 板情報の構造体
+ * @param スレッド情報の構造体
  * @return 書き込み結果
  */
-wxString SocketCommunication::PostToThread(const wxString boardName,
-					   const wxString boardURL, const wxString boardNameAscii) {
+wxString SocketCommunication::PostToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash) {
+
      // URLからホスト名を取得する
      wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
 			  wxRE_ADVANCED + wxRE_ICASE);
      // ホスト名
      wxString hostName;
      if (reThreadList.IsValid()) {
-	  if (reThreadList.Matches(boardURL)) {
-	       hostName = reThreadList.GetMatch(boardURL, 2);
+	  if (reThreadList.Matches(boardInfoHash.boardURL)) {
+	       hostName = reThreadList.GetMatch(boardInfoHash.boardURL, 2);
 	  }
      }
 
-     // 初回のクッキー受け取りと確認用ポスト
-     wxString result = PostToThreadFirst(hostName, boardURL, boardNameAscii);
-     // ２回目以降の書き込みメソッド
-     // wxString result = PostToThreadRest(hostName, boardURL, boardNameAscii);
+     // クッキーがファイルとして存在するか確認する
+     bool cookieIsExist = InitializeCookie();
+
+     if (cookieIsExist) {
+	  // ２回目以降の書き込みメソッド
+	  wxString result = PostToThreadRest(hostName, boardInfoHash, threadInfoHash);
+	  return result;
+     } else {
+	  // 初回のクッキー受け取りと確認用ポスト
+	  wxString result = PostToThreadFirst(hostName, boardInfoHash, threadInfoHash);
+	  return result;
+     }
 }
 /**
  * 初回のクッキー受け取りと確認用ポスト
  */
-wxString SocketCommunication::PostToThreadFirst(const wxString hostName,
-						const wxString boardURL, const wxString boardNameAscii) {
+wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash,
+						ThreadInfo& threadInfoHash) {
 /**
-要求メッセージの一例（初回投稿時・１回目）
-POST /test/bbs.cgi HTTP/1.1
-Host: [サーバー]
-Accept: ＊/＊
-Referer: http://[サーバー]/test/read.cgi/[板名]/[スレッド番号]/
-Accept-Language: ja
-User-Agent: Monazilla/1.00 (ブラウザ名/バージョン)
-Content-Length: ポストするデータの合計サイズ(バイト)
-Connection: close
+   要求メッセージの一例（初回投稿時・１回目）
+   POST /test/bbs.cgi HTTP/1.1
+   Host: [サーバー]
+   Accept: ＊/＊
+   Referer: http://[サーバー]/test/read.cgi/[板名]/[スレッド番号]/
+   Accept-Language: ja
+   User-Agent: Monazilla/1.00 (ブラウザ名/バージョン)
+   Content-Length: ポストするデータの合計サイズ(バイト)
+   Connection: close
 
-bbs=[板名]&key=[スレッド番号]&time=[投稿時間]&FROM=[名前]&mail=[メール]&MESSAGE=[本文]&submit=[ボタンの文字]
+   bbs=[板名]&key=[スレッド番号]&time=[投稿時間]&FROM=[名前]&mail=[メール]&MESSAGE=[本文]&submit=[ボタンの文字]
 
-参考：http://www.monazilla.org/index.php?e=199
- */
+   参考：http://www.monazilla.org/index.php?e=199
+*/
+
+     // Postする内容のデータサイズを取得する
 
 
 
+
+     // URL
+     const wxString boardURL = boardInfoHash.boardURL;
+     // リファラを引数から作成する
+     const wxString referer = wxT("http://") + hostName + wxT("/test/read.cgi/")
+	  + boardInfoHash.boardNameAscii + wxT("/") + threadInfoHash.origNumber;
+
+     wxHTTP http;
+     http.SetHeader(_T("POST"), _T("/test/bbs.cgi HTTP/1.1"));
+     http.SetHeader(_T("Host"), hostName);
+     http.SetHeader(_T("Accept"), _T("*/*"));
+     http.SetHeader(_T("Referer"), referer);
+     http.SetHeader(_T("Accept-Language"), _T("ja"));
+     http.SetHeader(_T("User-Agent"), _T("Monazilla/1.00"));
+     http.SetHeader(_T("Connection"), _T("close"));
+     http.SetTimeout(5);
+
+     if (http.Connect(hostName, 80)) {
+     
+     } else {
+     
+     }     
 
 }
 /**
  * ２回目以降の書き込みメソッド
  */
-wxString SocketCommunication::PostToThreadRest(const wxString hostName,
-					       const wxString boardURL, wxString const boardNameAscii) {
+wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoardName& boardInfoHash,
+					       ThreadInfo& threadInfoHas) {
 /**
-要求メッセージの一例（初回投稿時・２回目）
-POST /test/bbs.cgi HTTP/1.1
-Host: [サーバー]
-Accept: ＊/＊
-Referer: http://[サーバー]/test/read.cgi/[板名]/[スレッド番号]/
-Accept-Language: ja
-User-Agent: Monazilla/1.00 (ブラウザ名/バージョン)
-Content-Length: ポストするデータの合計サイズ(バイト)
-Cookie:応答ヘッダのSet-Cookieに記述された内容 Connection: close
+   要求メッセージの一例（初回投稿時・２回目）
+   POST /test/bbs.cgi HTTP/1.1
+   Host: [サーバー]
+   Accept: ＊/＊
+   Referer: http://[サーバー]/test/read.cgi/[板名]/[スレッド番号]/
+   Accept-Language: ja
+   User-Agent: Monazilla/1.00 (ブラウザ名/バージョン)
+   Content-Length: ポストするデータの合計サイズ(バイト)
+   Cookie:応答ヘッダのSet-Cookieに記述された内容 Connection: close
 
-bbs=[板名]&key=[スレッド番号]&time=[投稿時間]&FROM=[名前]&mail=[メール]&MESSAGE=[本文]&submit=[ボタンの文字]&[不可視項目名]=[不可視項目値]
+   bbs=[板名]&key=[スレッド番号]&time=[投稿時間]&FROM=[名前]&mail=[メール]&MESSAGE=[本文]&submit=[ボタンの文字]&[不可視項目名]=[不可視項目値]
+*/
+
+
+
+
+
+
+}
+/**
+ * COOKIE関連の初期化処理を行う
  */
+bool SocketCommunication::InitializeCookie() {
 
+     // カレントディレクトリを設定
+     wxDir dir(wxGetCwd());
+     if (!dir.Exists(wxT("./prop/"))) {
+	  wxMkdir(wxT("./prop/"));
+     }
+     // 設定ファイルの準備をする
+     wxString configFile = wxGetCwd();
+#ifdef __WXMSW__
+     // Windowsではパスの区切りは"\"
+     configFile += wxT("\\prop\\");
+#else
+     // Linuxではパスの区切りは"/"
+     configFile += wxT("/prop/");
+#endif
+     configFile += COOKIE_CONFIG_FILE;
+     
+     if (wxFile::Exists(configFile))
+	  return true;
 
+     // cookieを記録したファイルが無ければ作成する
+     config = new wxFileConfig(wxT("JaneCloneCookie"), wxEmptyString, configFile,
+			       wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
-
-
-
+     return false;
 }
