@@ -225,7 +225,6 @@ wxString SocketCommunication::GetHTTPResponseCode(const wxString headerPath,
 
 	return resCode = wxT("could't read response code");
 }
-
 /**
  * スレッド一覧をダウンロードしてくるメソッド
  * @param 板名,URL,サーバー名
@@ -865,4 +864,93 @@ void SocketCommunication::WriteHeaderFile(wxHTTP& http,
 	headerFile.Write(wxTextFileType_None, wxConvUTF8);
 	headerFile.Close();
 }
+/**
+・bbs.cgiを呼び出すとスレッドにレスの書き込みができます。
 
+・bbs.cgiは荒らし対策・規約承諾チェックなどが施されており、複数回呼び出す必要があります。
+
+＜初回の書き込み＞
+bbs.cgiを呼び出す
+→書き込み確認画面・・・応答メッセージよりクッキー（１）・隠し項目（hana=mogera）を受け取る
+→再度bbs.cgiを呼び出す・・・クッキー（１）と隠し項目を付加する
+→書き込み完了・・・応答メッセージよりクッキー（２）を受け取る
+
+＜２回目以降の書き込み＞
+クッキー（１）（２）を付加してbbs.cgiを呼び出す→書き込み完了
+
+参考：http://www.monazilla.org/index.php?e=199
+*/
+
+/**
+ * スレッドに書き込みを行うメソッド
+ * @param 板名,URL,サーバー名
+ * @return 書き込み結果
+ */
+wxString SocketCommunication::PostToThread(const wxString boardName,
+					   const wxString boardURL, const wxString boardNameAscii) {
+     // URLからホスト名を取得する
+     wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
+			  wxRE_ADVANCED + wxRE_ICASE);
+     // ホスト名
+     wxString hostName;
+     if (reThreadList.IsValid()) {
+	  if (reThreadList.Matches(boardURL)) {
+	       hostName = reThreadList.GetMatch(boardURL, 2);
+	  }
+     }
+
+     // 初回のクッキー受け取りと確認用ポスト
+     wxString result = PostToThreadFirst(hostName, boardURL, boardNameAscii);
+     // ２回目以降の書き込みメソッド
+     // wxString result = PostToThreadRest(hostName, boardURL, boardNameAscii);
+}
+/**
+ * 初回のクッキー受け取りと確認用ポスト
+ */
+wxString SocketCommunication::PostToThreadFirst(const wxString hostName,
+						const wxString boardURL, const wxString boardNameAscii) {
+/**
+要求メッセージの一例（初回投稿時・１回目）
+POST /test/bbs.cgi HTTP/1.1
+Host: [サーバー]
+Accept: ＊/＊
+Referer: http://[サーバー]/test/read.cgi/[板名]/[スレッド番号]/
+Accept-Language: ja
+User-Agent: Monazilla/1.00 (ブラウザ名/バージョン)
+Content-Length: ポストするデータの合計サイズ(バイト)
+Connection: close
+
+bbs=[板名]&key=[スレッド番号]&time=[投稿時間]&FROM=[名前]&mail=[メール]&MESSAGE=[本文]&submit=[ボタンの文字]
+
+参考：http://www.monazilla.org/index.php?e=199
+ */
+
+
+
+
+}
+/**
+ * ２回目以降の書き込みメソッド
+ */
+wxString SocketCommunication::PostToThreadRest(const wxString hostName,
+					       const wxString boardURL, wxString const boardNameAscii) {
+/**
+要求メッセージの一例（初回投稿時・２回目）
+POST /test/bbs.cgi HTTP/1.1
+Host: [サーバー]
+Accept: ＊/＊
+Referer: http://[サーバー]/test/read.cgi/[板名]/[スレッド番号]/
+Accept-Language: ja
+User-Agent: Monazilla/1.00 (ブラウザ名/バージョン)
+Content-Length: ポストするデータの合計サイズ(バイト)
+Cookie:応答ヘッダのSet-Cookieに記述された内容 Connection: close
+
+bbs=[板名]&key=[スレッド番号]&time=[投稿時間]&FROM=[名前]&mail=[メール]&MESSAGE=[本文]&submit=[ボタンの文字]&[不可視項目名]=[不可視項目値]
+ */
+
+
+
+
+
+
+}

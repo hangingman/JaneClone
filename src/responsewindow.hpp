@@ -34,50 +34,60 @@
 
 // enum
 enum {
-     ID_ResponseWindow
+     ID_ResponseWindow,
+     ID_QuitResponseWindow,
+     ID_PostResponse
 };     
 
 class ResponseWindow: public wxDialog {
 
 public:
-    // begin wxGlade: ResponseWindow::ids
-    // end wxGlade
-    ResponseWindow(wxWindow* parent, const wxString& title, const wxPoint& point);
+     // begin wxGlade: ResponseWindow::ids
+     // end wxGlade
+     ResponseWindow(wxWindow* parent, const wxString& title, const wxPoint& point);
 
 private:
-    // begin wxGlade: ResponseWindow::methods
-    void set_properties(const wxString& title);
-    void do_layout();
-    // end wxGlade
+     // begin wxGlade: ResponseWindow::methods
+     void set_properties(const wxString& title);
+     void do_layout();
+     // end wxGlade
+     
+     // レスの投稿
+     void PostResponse(wxCommandEvent &event);
+     void QuitResponseWindow(wxCommandEvent &event);
+
+     // レス投稿ウィンドウのモード設定
+     bool f_threadPost;
 
 protected:
-    // begin wxGlade: ResponseWindow::attributes
-    wxStaticText* boardNameTitle;
-    wxStaticText* name;
-    wxComboBox* nameCombo;
-    wxStaticText* mail;
-    wxComboBox* mailCombo;
-    wxCheckBox* sageCheck;
-    wxTextCtrl* text_ctrl_1;
-    wxPanel* resPane;
-    wxHtmlWindow* previewWindow;
-    wxPanel* previewPane;
-    wxHtmlWindow* localRuleWindow;
-    wxPanel* localRulePane;
-    wxTextCtrl* settingText;
-    wxPanel* settingPane;
-    wxNotebook* resNoteBook;
-    wxCheckBox* handleCheck;
-    wxCheckBox* frontCheck;
-    wxCheckBox* formatCheck;
-    wxCheckBox* beCheck;
-    wxComboBox* beMailCombo;
-    wxCheckBox* proxyCheck;
-    wxComboBox* proxyCombo;
-    wxPanel* space;
-    wxButton* postButton;
-    wxButton* quitButton;
-    // end wxGlade
+     // begin wxGlade: ResponseWindow::attributes
+     wxStaticText* boardNameTitle;
+     wxStaticText* name;
+     wxComboBox* nameCombo;
+     wxStaticText* mail;
+     wxComboBox* mailCombo;
+     wxCheckBox* sageCheck;
+     wxTextCtrl* text_ctrl_1;
+     wxPanel* resPane;
+     wxHtmlWindow* previewWindow;
+     wxPanel* previewPane;
+     wxHtmlWindow* localRuleWindow;
+     wxPanel* localRulePane;
+     wxTextCtrl* settingText;
+     wxPanel* settingPane;
+     wxNotebook* resNoteBook;
+     wxCheckBox* handleCheck;
+     wxCheckBox* frontCheck;
+     wxCheckBox* formatCheck;
+     wxCheckBox* beCheck;
+     wxComboBox* beMailCombo;
+     wxCheckBox* proxyCheck;
+     wxComboBox* proxyCombo;
+     wxPanel* space;
+     wxButton* postButton;
+     wxButton* quitButton;
+     // end wxGlade
+     DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
 
 #endif /* RESPONSEWINDOW_HPP_ */

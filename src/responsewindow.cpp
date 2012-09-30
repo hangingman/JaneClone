@@ -30,6 +30,12 @@
 // begin wxGlade: ::extracode
 // end wxGlade
 
+// event table
+BEGIN_EVENT_TABLE(ResponseWindow, wxDialog)
+EVT_BUTTON(ID_PostResponse, ResponseWindow::PostResponse)
+EVT_BUTTON(ID_QuitResponseWindow, ResponseWindow::QuitResponseWindow)
+END_EVENT_TABLE()
+
 ResponseWindow::ResponseWindow(wxWindow* parent, const wxString& title, const wxPoint& point):
      wxDialog(parent, wxID_ANY, title, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
@@ -69,8 +75,8 @@ ResponseWindow::ResponseWindow(wxWindow* parent, const wxString& title, const wx
      const wxString *proxyCombo_choices = NULL;
      proxyCombo = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, proxyCombo_choices, wxCB_DROPDOWN);
      space = new wxPanel(this, wxID_ANY);
-     postButton = new wxButton(this, wxID_ANY, wxT("書き込み"));
-     quitButton = new wxButton(this, wxID_ANY, wxT("やめる"));
+     postButton = new wxButton(this, ID_PostResponse, wxT("書き込み"));
+     quitButton = new wxButton(this, ID_QuitResponseWindow, wxT("やめる"));
 
      set_properties(title);
      do_layout();
@@ -133,4 +139,18 @@ void ResponseWindow::do_layout()
     SetSizer(vbox);
     Layout();
     // end wxGlade
+}
+/**
+ * レスを投稿するイベント
+ */
+void ResponseWindow::PostResponse(wxCommandEvent &event) {
+
+
+}
+/**
+ * レス用ウィンドウを閉じるイベント
+ */
+void ResponseWindow::QuitResponseWindow(wxCommandEvent &event) {
+
+     Close(true);
 }
