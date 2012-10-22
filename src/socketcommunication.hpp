@@ -34,6 +34,7 @@
 #include <wx/utils.h>
 #include <wx/config.h>
 #include <wx/fileconf.h>
+#include <wx/sstream.h>
 #include "janecloneutil.hpp"
 
 class SocketCommunication {

@@ -154,23 +154,20 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
 
      // 書き込み内容を構造体に設定する
      PostContent* post = new PostContent;
-     post->name = nameCombo->GetValue();
-     post->mail = mailCombo->GetValue();
-     post->kakikomi = text_ctrl_1->GetValue();
+
+     // NKFの準備
+     const wxString option = wxT("--ic=UTF-8 --oc=CP932");
+     wxNKF* nkf = new wxNKF();
+     const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
+     const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
+     const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+     // 投稿用の構造体にURLエンコードされた文字列を格納
+     post->name = wxString(JaneCloneUtil::UrlEncode(stdName));
+     post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail));
+     post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi));
 
      socketCommunication->SetPostContent(post);
      wxString result = socketCommunication->PostToThread(m_boardInfo, m_threadInfo);
-
-     wxMessageBox(wxT("UTF-8文字列をShift-JISのURLエンコード型に変換するテスト"));
-     const wxString option = wxT("--ic=UTF-8 --oc=CP932");
-     wxNKF* nkf = new wxNKF();
-     const std::string stdName = nkf->WxToMultiByte(post->name, option);
-     const std::string stdMail = nkf->WxToMultiByte(post->mail, option);
-     const std::string stdKakikomi = nkf->WxToMultiByte(post->kakikomi, option);
-     
-     wxMessageBox(wxString(JaneCloneUtil::UrlEncode(stdName)));
-     wxMessageBox(wxString(JaneCloneUtil::UrlEncode(stdMail)));
-     wxMessageBox(wxString(JaneCloneUtil::UrlEncode(stdKakikomi)));
 
      delete socketCommunication;
      delete post;

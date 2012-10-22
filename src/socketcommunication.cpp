@@ -960,15 +960,35 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      http.SetHeader(_T("Referer"), referer);
      http.SetHeader(_T("Accept-Language"), _T("ja"));
      http.SetHeader(_T("User-Agent"), _T("Monazilla/1.00"));
+     http.SetHeader(_T("Content-Length"), wxString::Format("%d", kakikomiInfo.Len()));
      http.SetHeader(_T("Connection"), _T("close"));
      http.SetTimeout(5);
 
-     //if (http.Connect(hostName, 80)) {
+     // パラメーターの設定
+     const wxString server = hostName;
+     const wxString path = wxT("/test/bbs.cgi");
+
+     if (!http.Connect(server, 80)) {
+	  // 接続失敗
+	  return wxEmptyString;
+     }
+
+     wxInputStream *stream;
+     stream = http.GetInputStream(path);
+
+     // 保存先を決める
+     wxStringOutputStream output;
+    
+     if (stream == NULL) {
+	  output.Close();
+	  return wxEmptyString;
+     } else if (200 == http.GetResponse()) {
+	  // 正常処理
+	  
+     }
      
-     //} else {
-     
-     //}    
-     return wxEmptyString;
+
+     return output.GetString();
 }
 /**
  * ２回目以降の書き込みメソッド
