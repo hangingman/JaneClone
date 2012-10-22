@@ -8,12 +8,15 @@
 #ifndef WXNKF_H_
 #define WXNKF_H_
 
+#include <vector>
+#include <algorithm>
 #include <wx/wx.h>
 #include <wx/app.h>
 #include <wx/stream.h>
 #include <wx/filesys.h>
 #include <wx/datstrm.h>
 #include <wx/wfstream.h>
+#include <wx/sstream.h>
 #include "flagset.h"
 #include "utf8table.h"
 #include "wxnkfencoding.h"
@@ -51,105 +54,113 @@ static const struct {
 
 class wxNKF {
 
-public:
-	/**
-	 * constructor
-	 */
-	wxNKF();
-	/**
-	 * destructor
-	 */
-	~wxNKF();
-	/**
-	 * convert charcter code in file, with option
-	 *
-	 * path example
-	 *
-	 * msw : C:\\Users\\foo\\bar\\etc.txt
-	 * gtk, osx : /usr/foo/bar/etc.txt
-	 */
-	int Convert(const wxString inputFilePath, const wxString outputFilePath,
-			const wxString option);
-	/**
-	 * convert charcter code in string, with option
-	 */
-	wxString Convert(const wxString inputFilePath, const wxString option);
-	/**
-	 * show usage
-	 */
-	void ShowUsage();
-	/**
-	 * show version
-	 */
-	void ShowVersion();
+ public:
+  /**
+   * constructor
+   */
+  wxNKF();
+  /**
+   * destructor
+   */
+  ~wxNKF();
+  /**
+   * convert charcter code in file, with option
+   *
+   * path example
+   *
+   * msw : C:\\Users\\foo\\bar\\etc.txt
+   * gtk, osx : /usr/foo/bar/etc.txt
+   */
+  int Convert(const wxString inputFilePath, const wxString outputFilePath, const wxString option);
+  /**
+   * convert charcter code in string to string, with option
+   * 
+   * wxString to Multibyte String(Shift_JIS, EUC-JP, UTF-8, and so on.)
+   */
+  std::string WxToMultiByte(const wxString inputString, const wxString option);	
+  /**
+   * convert charcter code in string to string, with option
+   * 
+   * wxString to Multibyte String(Shift_JIS, EUC-JP, ISO-2022-JP, and so on.)
+   * UTF-8 is officially supported by wxString. You should use wxString::ToUTF-8.  
+   */
+  wxString MultiByteToWx(const std::string inputString, const std::string option);
+  /**
+   * show usage
+   */
+  void ShowUsage();
+  /**
+   * show version
+   */
+  void ShowVersion();
 
-private:
-	/**
-	 * macro for KanjiConvert method
-	 */
-	#define NEXT continue        /* no output, get next */
-	#define SKIP c2=0;continue   /* no output, get next */
-	#define MORE c2=c1;continue  /* need one more byte */
-	#define SEND (void)0         /* output c1 and c2, get next */
-	#define LAST break           /* end of loop, go closing  */
-	/**
-	 * set of nkf flag
-	 */
-	std::bitset<nkf_flag_num> nkfFlags;
-	/**
-	 * string for output
-	 */
-	std::wstring* oConvStr;
-	/**
-	 * Instance of class for IO char code setting and process
-	 */
-	wxNKFEncoding* wxEnc;
-	/**
-	 * SetOption : setting and judge options
-	 *
-	 * return values:
-	 *    0: success
-	 *   -1: ArgumentError
-	 */
-	int SetOption(const wxString option);
-	/**
-	 * define charcter code convert method by set flags
-	 */
-	int ModuleConnection();
-	/**
-	 * main method of this class convert char to file
-	 */
-	int KanjiConvert(wxInputStream* in, wxDataOutputStream* out);
-	/**
-	 * main method of this class convert char to string
-	 */
-	wxString KanjiConvert(wxInputStream* in);
-	/**
-	 * setting input encode
-	 */
-	void SetInputMode(int mode);
-	/**
-	 * check BOM existence. If it exist, ignore
-	 */
-	void CheckBom(wxInputStream* in);
-	/**
-	 * search character code
-	 */
-	void CodeStatus(nkf_char c);
-	/**
-	 * set flag for Input & Output
-	 */
-	void SetInputEncoding(wxNKFEncoding *enc);
-	void SetOutputEncoding(wxNKFEncoding *enc);
-	/**
-	 * other class value etc.
-	 */
-	unsigned char prefix_table[256];
-	char* backup_suffix;
-	int fold_len;
-	int fold_margin;
-	int mimeout_mode; /* 0, -1, 'Q', 'B', 1, 2 */
-	int shift_mode;/* 0 or 1 */
+ private:
+  /**
+   * macro for KanjiConvert method
+   */
+#define NEXT continue        /* no output, get next */
+#define SKIP c2=0;continue   /* no output, get next */
+#define MORE c2=c1;continue  /* need one more byte */
+#define SEND (void)0         /* output c1 and c2, get next */
+#define LAST break           /* end of loop, go closing  */
+ /**
+  * set of nkf flag
+  */
+ std::bitset<nkf_flag_num> nkfFlags;
+ /**
+  * string for output
+  */
+ std::wstring* oConvStr;
+ /**
+  * Instance of class for IO char code setting and process
+  */
+ wxNKFEncoding* wxEnc;
+ /**
+  * SetOption : setting and judge options
+  *
+  * return values:
+  *    0: success
+  *   -1: ArgumentError
+  */
+ int SetOption(const wxString option);
+ /**
+  * define charcter code convert method by set flags
+  */
+ int ModuleConnection();
+ /**
+  * main method of this class convert char to file
+  */
+ int KanjiConvert(wxInputStream* in, wxDataOutputStream* out);
+ /**
+  * main method of this class convert char to string
+  */
+ int KanjiConvert(wxStringInputStream* in, std::string* oConv);
+ /**
+  * setting input encode
+  */
+ void SetInputMode(int mode);
+ /**
+  * check BOM existence. If it exist, ignore
+  */
+ void CheckBom(wxInputStream* in);
+ /**
+  * search character code
+  */
+ void CodeStatus(nkf_char c);
+ /**
+  * set flag for Input & Output
+  */
+ void SetInputEncoding(wxNKFEncoding *enc);
+ void SetOutputEncoding(wxNKFEncoding *enc);
+ /**
+  * other class value etc.
+  */
+ unsigned char prefix_table[256];
+ char* backup_suffix;
+ int fold_len;
+ int fold_margin;
+ int mimeout_mode; /* 0, -1, 'Q', 'B', 1, 2 */
+ int shift_mode;/* 0 or 1 */
 };
 
 #endif /* WXNKF_H_ */

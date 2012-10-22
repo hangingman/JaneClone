@@ -9,6 +9,7 @@
 #define WXNKFENCODING_H_
 
 #include <wx/datstrm.h>
+#include <iostream>
 #include "wxnkfbaseconfig.h"
 #include "flagset.h"
 #include "utf8table.h"
@@ -55,14 +56,14 @@ public:
 	 * According to inputMode, convert input char
 	 */
 	nkf_char Iconv(nkf_char c2, nkf_char c1, nkf_char c0,
-			std::bitset<nkf_flag_num> nkfFlags, std::wstring* oConvStr);
+			std::bitset<nkf_flag_num> nkfFlags, std::string* oConvStr);
 	nkf_char Iconv(nkf_char c2, nkf_char c1, nkf_char c0,
 			std::bitset<nkf_flag_num> nkfFlags, wxDataOutputStream* out);
 	/**
 	 * According to outputMode, convert output char
 	 */
 	void Oconv(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
-			std::wstring* oConvStr);
+			std::string* oConvStr);
 	void Oconv(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
 			wxDataOutputStream* out);
 
@@ -71,83 +72,83 @@ private:
 	 * s_iconv
 	 */
 	nkf_char SIconv(nkf_char c2, nkf_char c1, nkf_char c0,
-			std::bitset<nkf_flag_num> nkfFlags, std::wstring* oConvStr);
+			std::bitset<nkf_flag_num> nkfFlags, std::string* oConvStr);
 	nkf_char SIconv(nkf_char c2, nkf_char c1, nkf_char c0,
 			std::bitset<nkf_flag_num> nkfFlags, wxDataOutputStream* out);
 	/**
 	 * e_iconv
 	 */
 	nkf_char EIconv(nkf_char c2, nkf_char c1, nkf_char c0,
-			std::bitset<nkf_flag_num> nkfFlags, std::wstring* oConvStr);
+			std::bitset<nkf_flag_num> nkfFlags, std::string* oConvStr);
 	nkf_char EIconv(nkf_char c2, nkf_char c1, nkf_char c0,
 			std::bitset<nkf_flag_num> nkfFlags, wxDataOutputStream* out);
 	/**
 	 * w_iconv
 	 */
 	nkf_char WIconv(nkf_char c1, nkf_char c2, nkf_char c3,
-			std::bitset<nkf_flag_num> nkfFlags, std::wstring* oConvStr);
+			std::bitset<nkf_flag_num> nkfFlags, std::string* oConvStr);
 	nkf_char WIconv(nkf_char c1, nkf_char c2, nkf_char c3,
 			std::bitset<nkf_flag_num> nkfFlags, wxDataOutputStream* out);
 	/**
 	 * w_iconv16
 	 */
 	nkf_char WIconv16(nkf_char c2, nkf_char c1, nkf_char c0,
-			std::bitset<nkf_flag_num> nkfFlags, std::wstring* oConvStr);
+			std::bitset<nkf_flag_num> nkfFlags, std::string* oConvStr);
 	nkf_char WIconv16(nkf_char c2, nkf_char c1, nkf_char c0,
 			std::bitset<nkf_flag_num> nkfFlags, wxDataOutputStream* out);
 	/**
 	 * w_iconv32
 	 */
 	nkf_char WIconv32(nkf_char c2, nkf_char c1, nkf_char c0,
-			std::bitset<nkf_flag_num> nkfFlags, std::wstring* oConvStr);
+			std::bitset<nkf_flag_num> nkfFlags, std::string* oConvStr);
 	nkf_char WIconv32(nkf_char c2, nkf_char c1, nkf_char c0,
 			std::bitset<nkf_flag_num> nkfFlags, wxDataOutputStream* out);
 	/**
 	 * j_oconv
 	 */
 	void JOconv(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
-			std::wstring* oConvStr);
+			std::string* oConvStr);
 	void JOconv(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
 			wxDataOutputStream* out);
 	/**
 	 * s_oconv
 	 */
 	void SOconv(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
-			std::wstring* oConvStr);
+			std::string* oConvStr);
 	void SOconv(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
 			wxDataOutputStream* out);
 	/**
 	 * e_oconv
 	 */
 	void EOconv(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
-			std::wstring* oConvStr);
+			std::string* oConvStr);
 	void EOconv(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
 			wxDataOutputStream* out);
 	/**
 	 * w_oconv
 	 */
 	void WOconv(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
-			std::wstring* oConvStr);
+			std::string* oConvStr);
 	void WOconv(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
 			wxDataOutputStream* out);
 	/**
 	 * w_oconv16
 	 */
 	void WOconv16(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
-			std::wstring* oConvStr);
+			std::string* oConvStr);
 	void WOconv16(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
 			wxDataOutputStream* out);
 	/**
 	 * w_oconv32
 	 */
 	void WOconv32(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
-			std::wstring* oConvStr);
+			std::string* oConvStr);
 	void WOconv32(nkf_char c2, nkf_char c1, std::bitset<nkf_flag_num> nkfFlags,
 			wxDataOutputStream* out);
 	/**
 	 * escape sequence for mixing Ascii code
 	 */
-	void OutputAsciiEscapeSequence(int mode, std::wstring* oConvStr);
+	void OutputAsciiEscapeSequence(int mode, std::string* oConvStr);
 	void OutputAsciiEscapeSequence(int mode, wxDataOutputStream* out);
 };
 
