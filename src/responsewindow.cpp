@@ -154,16 +154,27 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
 
      // 書き込み内容を構造体に設定する
      PostContent* post = new PostContent;
-     post->name = nameCombo->GetStringSelection();
-     post->mail = mailCombo->GetStringSelection();
+     post->name = nameCombo->GetValue();
+     post->mail = mailCombo->GetValue();
      post->kakikomi = text_ctrl_1->GetValue();
 
      socketCommunication->SetPostContent(post);
      wxString result = socketCommunication->PostToThread(m_boardInfo, m_threadInfo);
-     wxMessageBox(wxT("書き込みのイベント"));
+
+     wxMessageBox(wxT("UTF-8文字列をShift-JISのURLエンコード型に変換するテスト"));
+     const wxString option = wxT("--ic=UTF-8 --oc=CP932");
+     wxNKF* nkf = new wxNKF();
+     const std::string stdName = nkf->WxToMultiByte(post->name, option);
+     const std::string stdMail = nkf->WxToMultiByte(post->mail, option);
+     const std::string stdKakikomi = nkf->WxToMultiByte(post->kakikomi, option);
+     
+     wxMessageBox(wxString(JaneCloneUtil::UrlEncode(stdName)));
+     wxMessageBox(wxString(JaneCloneUtil::UrlEncode(stdMail)));
+     wxMessageBox(wxString(JaneCloneUtil::UrlEncode(stdKakikomi)));
 
      delete socketCommunication;
      delete post;
+     delete nkf;
 }
 /**
  * レス用ウィンドウを閉じるイベント

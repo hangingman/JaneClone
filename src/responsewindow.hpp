@@ -27,6 +27,8 @@
 #include <wx/html/htmlwin.h>
 #include "socketcommunication.hpp"
 #include "datatype.hpp"
+#include "janecloneutil.hpp"
+#include "wx/wxnkf.h"
 
 /**
  * レス書き込み用の子ウィンドウ

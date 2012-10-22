@@ -11,13 +11,13 @@ OBJECTS = $(notdir $(SOURCES:.cpp=.o))
 
 # sources for dependency
 DEPSRCS = $(shell find src/ -name '*.cpp')
-DEP		= dep
+DEP	= dep
 
 # basic command
-CXX		:= g++ -gstabs
+CXX	:= g++ -O2 -s
 AR      := ar
-RM		:= rm
-MV		:= mv
+RM	:= rm
+MV	:= mv
 VERSION := 2.1.2
 MKDIR	:= mkdir
 MAKE	:= make
