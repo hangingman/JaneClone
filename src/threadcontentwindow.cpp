@@ -325,14 +325,16 @@ void ThreadContentWindow::SearchSelectWordByGoogle(wxCommandEvent& event) {
  */
 void ThreadContentWindow::SearchSelectWordByAmazon(wxCommandEvent& event) {
 
-	// Amazonが一番謎、とりあえずWEBの情報から以下のように設定
-	//wxString url = wxT("http://www.amazon.co.jp/gp/search/?__mk_ja_JP=%83J%83%5E%83J%83i&field-keywords=");
-	//url += m_selectedText;
-
-	// ! Fix Me !
+	// AmazonはShift_JISによるURLエンコードしか受け付けないようだ
+	wxString url = wxT("http://www.amazon.co.jp/gp/search/?__mk_ja_JP=%83J%83%5E%83J%83i&field-keywords=");
+	wxNKF* nkf = new wxNKF();
+	const std::string buffer = nkf->WxToMultiByte(m_selectedText, wxT("--ic=UTF-8 --oc=CP932"));
+	const wxString urlEncode = JaneCloneUtil::UrlEncode(buffer);
+	url += urlEncode;
+	delete nkf;
+	
 	// 文字列をutf-8からShift_JISに変換しておく必要があるようだ
-
-	//wxLaunchDefaultBrowser(url);
+	wxLaunchDefaultBrowser(url);
 }
 /**
  * 選択したテキストでスレタイ検索
