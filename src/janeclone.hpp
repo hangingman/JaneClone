@@ -65,6 +65,7 @@
 #include <wx/fileconf.h>
 #include <wx/tokenzr.h>
 #include <wx/font.h>
+#include <wx/fontdlg.h>
 
 // 自作クラスのヘッダ
 #include "extractboardlist.hpp"
@@ -119,201 +120,206 @@ enum {
 	ID_DeleteDatFile,		// このログを削除
 	ID_ReloadThisThread,    	// スレッドの再読み込み
 	ID_CallResponseWindow,          // 書き込み用のウィンドウを呼び出す
-	ID_BoardListCtrl                // 板一覧リスト自体を表すID
+	ID_BoardListCtrl,               // 板一覧リスト自体を表すID
+	ID_FontDialogMain,              // JaneClone本体のフォント設定を呼び出す
+	ID_FontDialogThread             // スレッド画面部分のフォント設定を呼び出す
 };
 
 class JaneClone: public wxFrame {
 
 public:
-	// begin wxGlade: JaneClone::ids
-	// end wxGlade
+     // begin wxGlade: JaneClone::ids
+     // end wxGlade
 
-	JaneClone(wxWindow* parent, int id, const wxString& title,
-			const wxPoint& pos = wxDefaultPosition, const wxSize& size =
-					wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
-	~JaneClone();
+     JaneClone(wxWindow* parent, int id, const wxString& title,
+	       const wxPoint& pos = wxDefaultPosition, const wxSize& size =
+	       wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
+     ~JaneClone();
 
-	// 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
-	// URLvsBoardNameのHashMap（板名をkeyとしてBoardURLとascii文字の固有名を持つ）
-	WX_DECLARE_HASH_MAP( wxString, 	// type of the keys
-			URLvsBoardName,			// type of the values
-			wxStringHash ,			// hasher
-			wxStringEqual,			// key equality predicate
-			NameURLHash);			// name of the class
-	// HashMapの本体
-	NameURLHash retainHash;
+     // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
+     // URLvsBoardNameのHashMap（板名をkeyとしてBoardURLとascii文字の固有名を持つ）
+     WX_DECLARE_HASH_MAP( wxString, 	// type of the keys
+			  URLvsBoardName,			// type of the values
+			  wxStringHash ,			// hasher
+			  wxStringEqual,			// key equality predicate
+			  NameURLHash);			// name of the class
+     // HashMapの本体
+     NameURLHash retainHash;
 
 private:
-	// begin wxGlade: JaneClone::methods
-	// イベントテーブル系
-	void OnQuit(wxCommandEvent& event);
-	void OnAbout(wxCommandEvent& event);
-	void OnGetBoardList(wxCommandEvent& event);
-	void CheckLogDirectory(wxCommandEvent& event);
-	void OnVersionInfo(wxCommandEvent& event);
-	// スレッド一覧タブ処理
-	void OneBoardTabClose(wxCommandEvent& event);
-	void ExcepSelTabClose(wxCommandEvent& event);
-	void AllBoardTabClose(wxCommandEvent& event);
-	void AllLeftBoardTabClose(wxCommandEvent& event);
-	void AllRightBoardTabClose(wxCommandEvent& event);
-	void OnOpenBoardByBrowser(wxCommandEvent& event);
-	void ReloadOneBoard(wxCommandEvent& event);
-	void CopyBURLToClipBoard(wxCommandEvent& event);
-	void CopyBTitleToClipBoard(wxCommandEvent& event);
-	void CopyBBothDataToClipBoard(wxCommandEvent& event);
-        void CallResponseWindow(wxCommandEvent& event);
+     // begin wxGlade: JaneClone::methods
+     // イベントテーブル系
+     void OnQuit(wxCommandEvent& event);
+     void OnAbout(wxCommandEvent& event);
+     void OnGetBoardList(wxCommandEvent& event);
+     void CheckLogDirectory(wxCommandEvent& event);
+     void OnVersionInfo(wxCommandEvent& event);
+     void FontDialogMain(wxCommandEvent& event);
+     void FontDialogThread(wxCommandEvent& event);
+
+     // スレッド一覧タブ処理
+     void OneBoardTabClose(wxCommandEvent& event);
+     void ExcepSelTabClose(wxCommandEvent& event);
+     void AllBoardTabClose(wxCommandEvent& event);
+     void AllLeftBoardTabClose(wxCommandEvent& event);
+     void AllRightBoardTabClose(wxCommandEvent& event);
+     void OnOpenBoardByBrowser(wxCommandEvent& event);
+     void ReloadOneBoard(wxCommandEvent& event);
+     void CopyBURLToClipBoard(wxCommandEvent& event);
+     void CopyBTitleToClipBoard(wxCommandEvent& event);
+     void CopyBBothDataToClipBoard(wxCommandEvent& event);
+     void CallResponseWindow(wxCommandEvent& event);
      
-	// スレタブでの処理
-	void OneThreadTabClose(wxCommandEvent& event);
-	void ExcepSelThreadTabClose(wxCommandEvent& event);
-	void AllThreadTabClose(wxCommandEvent& event);
-	void AllLeftThreadTabClose(wxCommandEvent& event);
-	void AllRightThreadTabClose(wxCommandEvent& event);
-	void OnOpenThreadByBrowser(wxCommandEvent& event);
-	void CopyTURLToClipBoard(wxCommandEvent& event);
-	void CopyTTitleToClipBoard(wxCommandEvent& event);
-	void CopyTBothDataToClipBoard(wxCommandEvent& event);
-	void SaveDatFile(wxCommandEvent& event);
-	void SaveDatFileToClipBoard(wxCommandEvent& event);
-	void DeleteDatFile(wxCommandEvent& event);
-	void ReloadThisThread(wxCommandEvent& event);
+     // スレタブでの処理
+     void OneThreadTabClose(wxCommandEvent& event);
+     void ExcepSelThreadTabClose(wxCommandEvent& event);
+     void AllThreadTabClose(wxCommandEvent& event);
+     void AllLeftThreadTabClose(wxCommandEvent& event);
+     void AllRightThreadTabClose(wxCommandEvent& event);
+     void OnOpenThreadByBrowser(wxCommandEvent& event);
+     void CopyTURLToClipBoard(wxCommandEvent& event);
+     void CopyTTitleToClipBoard(wxCommandEvent& event);
+     void CopyTBothDataToClipBoard(wxCommandEvent& event);
+     void SaveDatFile(wxCommandEvent& event);
+     void SaveDatFileToClipBoard(wxCommandEvent& event);
+     void DeleteDatFile(wxCommandEvent& event);
+     void ReloadThisThread(wxCommandEvent& event);
 
-	void OnCloseWindow(wxCloseEvent& event);
-	void OnLeftClickAtListCtrl(wxListEvent& event);
-        void OnLeftClickAtListCtrlCol(wxListEvent& event);
-	void OnChangedTab(wxAuiNotebookEvent& event);
-	void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
-	void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
-	void OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event);
-	void OnCellHover(wxHtmlCellEvent& event);
-	void OnCellClicked(wxHtmlCellEvent& event);
-	void OnLinkClicked(wxHtmlLinkEvent& event);
+     void OnCloseWindow(wxCloseEvent& event);
+     void OnLeftClickAtListCtrl(wxListEvent& event);
+     void OnLeftClickAtListCtrlCol(wxListEvent& event);
+     void OnChangedTab(wxAuiNotebookEvent& event);
+     void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
+     void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
+     void OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event);
+     void OnCellHover(wxHtmlCellEvent& event);
+     void OnCellClicked(wxHtmlCellEvent& event);
+     void OnLinkClicked(wxHtmlLinkEvent& event);
 
-	// 各種GUI上の設定
-	void SetJaneCloneManuBar();
-	void SetProperties();
-	void DoLayout();
-	void SetJaneCloneAuiPaneInfo();
-	void SetPreviousUserLookedTab();
+     // 各種GUI上の設定
+     void SetJaneCloneManuBar();
+     void SetProperties();
+     void DoLayout();
+     void SetJaneCloneAuiPaneInfo();
+     void SetPreviousUserLookedTab();
 
-	// 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
-	void SetBoardList();
+     // 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
+     void SetBoardList();
 
-	// すべてのウィジェットが載るAuiマネージャー
-	wxAuiManager m_mgr;
-	// ステータスバー表示用文字列
-	wxStatusBar* statusBarStr;
+     // すべてのウィジェットが載るAuiマネージャー
+     wxAuiManager m_mgr;
+     // ステータスバー表示用文字列
+     wxStatusBar* statusBarStr;
 
-	/**
-	 * 画面上部のオブジェクトとメソッド
-	 */
-	// 検索バー
-	wxSearchCtrl* m_search_ctrl;
-	// URL入力欄が載るパネル
-	wxPanel* m_url_input_panel;
-	// URL入力欄
-	wxTextCtrl* m_url_input;
-	// URL入力欄の画像つきボタン
-	wxBitmapButton* m_url_input_button;
-	// URLを表すString
-	wxString m_url_text;
+     /**
+      * 画面上部のオブジェクトとメソッド
+      */
+     // 検索バー
+     wxSearchCtrl* m_search_ctrl;
+     // URL入力欄が載るパネル
+     wxPanel* m_url_input_panel;
+     // URL入力欄
+     wxTextCtrl* m_url_input;
+     // URL入力欄の画像つきボタン
+     wxBitmapButton* m_url_input_button;
+     // URLを表すString
+     wxString m_url_text;
 
-	/**
-	 * 画面左側のオブジェクトとメソッド
-	 */
-	// ツリーコントロールは内部からならいじれるようにしておく
-	wxTreeCtrl* m_tree_ctrl;
-	wxTreeItemData* m_treeData;
-	wxTreeItemId m_rootId;
+     /**
+      * 画面左側のオブジェクトとメソッド
+      */
+     // ツリーコントロールは内部からならいじれるようにしておく
+     wxTreeCtrl* m_tree_ctrl;
+     wxTreeItemData* m_treeData;
+     wxTreeItemId m_rootId;
 
-	// ログ出力画面
-	wxTextCtrl* m_logCtrl;
+     // ログ出力画面
+     wxTextCtrl* m_logCtrl;
 
-	//　ツリーコントロールにクリックした時のイベント
-	void OnGetBoardInfo(wxTreeEvent& event);
+     //　ツリーコントロールにクリックした時のイベント
+     void OnGetBoardInfo(wxTreeEvent& event);
 
-	/**
-	 * 右上のオブジェクトとメソッド
-	 */
-	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-	wxAuiNotebook* boardNoteBook;
-	// 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
-	void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
-			wxString& boardNameAscii);
-	// ノートブックに反映する際のコールバック
-	void SetThreadListItemNew(const wxString boardName,
-			const wxString outputPath, const size_t selectedPage);
-	void SetThreadListItemUpdate(const wxString boardName,
-			const wxString outputPath, const size_t selectedPage);
+     /**
+      * 右上のオブジェクトとメソッド
+      */
+     // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
+     wxAuiNotebook* boardNoteBook;
+     // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
+     void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
+				 wxString& boardNameAscii);
+     // ノートブックに反映する際のコールバック
+     void SetThreadListItemNew(const wxString boardName,
+			       const wxString outputPath, const size_t selectedPage);
+     void SetThreadListItemUpdate(const wxString boardName,
+				  const wxString outputPath, const size_t selectedPage);
 
-	// VirtualBoardListCtrlのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
-	WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			VirtualBoardListCtrl,		// type of the values
-			wxStringHash ,				// hasher
-			wxStringEqual,				// key equality predicate
-			VirtualBoardListCtrlHash);	// name of the class
-	// JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
-	VirtualBoardListCtrlHash vbListCtrlHash;
+     // VirtualBoardListCtrlのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
+     WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
+			  VirtualBoardListCtrl,		// type of the values
+			  wxStringHash ,				// hasher
+			  wxStringEqual,				// key equality predicate
+			  VirtualBoardListCtrlHash);	// name of the class
+     // JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
+     VirtualBoardListCtrlHash vbListCtrlHash;
 
-	// VirtualBoardListのHashMap（板名をkeyとしてリストコントロール内部のリストを管理する）
-	WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			VirtualBoardList,			// type of the values
-			wxStringHash ,				// hasher
-			wxStringEqual,				// key equality predicate
-			VirtualBoardListHash);		// name of the class
+     // VirtualBoardListのHashMap（板名をkeyとしてリストコントロール内部のリストを管理する）
+     WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
+			  VirtualBoardList,			// type of the values
+			  wxStringHash ,				// hasher
+			  wxStringEqual,				// key equality predicate
+			  VirtualBoardListHash);		// name of the class
 
-	VirtualBoardListHash vbListHash;
+     VirtualBoardListHash vbListHash;
 
-	/**
-	 * 右下のオブジェクトとメソッド
-	 */
-	// 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-	wxAuiNotebook* threadNoteBook;
-	// スレッド一覧をクリックすると、それをスレ表示画面に反映するメソッド
-	void SetThreadContentToNoteBook(const wxString&, const wxString&,
-			const wxString&);
+     /**
+      * 右下のオブジェクトとメソッド
+      */
+     // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
+     wxAuiNotebook* threadNoteBook;
+     // スレッド一覧をクリックすると、それをスレ表示画面に反映するメソッド
+     void SetThreadContentToNoteBook(const wxString&, const wxString&,
+				     const wxString&);
 
-	// ThreadContentWindowのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
-	WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			ThreadContentWindow*, 		// ポインタを詰める
-			wxStringHash , 				// hasher
-			wxStringEqual, 				// key equality predicate
-			ThreadContentWindowHash); 	// name of the class
+     // ThreadContentWindowのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
+     WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
+			  ThreadContentWindow*, 		// ポインタを詰める
+			  wxStringHash , 				// hasher
+			  wxStringEqual, 				// key equality predicate
+			  ThreadContentWindowHash); 	// name of the class
 
-	// JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
-	ThreadContentWindowHash tcwHash;
+     // JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
+     ThreadContentWindowHash tcwHash;
 
-	// ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
-	WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			ThreadInfo, 				// 実体を詰める
-			wxStringHash , 				// hasher
-			wxStringEqual, 				// key equality predicate
-			ThreadInfoHash); 			// name of the class
+     // ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
+     WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
+			  ThreadInfo, 				// 実体を詰める
+			  wxStringHash , 				// hasher
+			  wxStringEqual, 				// key equality predicate
+			  ThreadInfoHash); 			// name of the class
 
-	// ユーザーがタブに保持しているスレッドの情報を保存するHashSet
-	ThreadInfoHash tiHash;
+     // ユーザーがタブに保持しているスレッドの情報を保存するHashSet
+     ThreadInfoHash tiHash;
 
-	/**
-	 * その他のオブジェクトとメソッド
-	 */
-	// スレッド一覧の情報を保持するwxHashMap　ユーザが板名をクリックするたびに作られる
-	// ThreadListクラスについてはDataType.h参照
-	WX_DECLARE_HASH_MAP( int, ThreadList*, wxIntegerHash, wxIntegerEqual, ThreadListHash );
-	// ThreadListHashの本体
-	ThreadListHash m_threadListHash;
+     /**
+      * その他のオブジェクトとメソッド
+      */
+     // スレッド一覧の情報を保持するwxHashMap　ユーザが板名をクリックするたびに作られる
+     // ThreadListクラスについてはDataType.h参照
+     WX_DECLARE_HASH_MAP( int, ThreadList*, wxIntegerHash, wxIntegerEqual, ThreadListHash );
+     // ThreadListHashの本体
+     ThreadListHash m_threadListHash;
 
-	// wxFileConfigクラスのインスタンス
-	wxFileConfig* config;
+     // wxFileConfigクラスのインスタンス
+     wxFileConfig* config;
 
-	// ポップアップウィンドウを出現させる
-	void SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
-			wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint);
+     // ポップアップウィンドウを出現させる
+     void SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
+			 wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint);
 
-	// 現在使用しているフォントの情報を取得する
-	wxFont GetCurrentFont();
+     // 現在使用しているフォントの情報を取得する
+     wxFont GetCurrentFont();
 
-DECLARE_EVENT_TABLE()
+     DECLARE_EVENT_TABLE()
 };
 // wxGlade: end class
 
