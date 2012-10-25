@@ -26,6 +26,7 @@
 #include <wx/event.h>
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
+#include <wx/image.h>
 #include "datatype.hpp"
 #include "janecloneutil.hpp"
 
