@@ -121,8 +121,11 @@ enum {
 	ID_ReloadThisThread,    	// スレッドの再読み込み
 	ID_CallResponseWindow,          // 書き込み用のウィンドウを呼び出す
 	ID_BoardListCtrl,               // 板一覧リスト自体を表すID
-	ID_FontDialogMain,              // JaneClone本体のフォント設定を呼び出す
-	ID_FontDialogThread             // スレッド画面部分のフォント設定を呼び出す
+	ID_FontDialogMainMenu,          // JaneClone本体のフォント設定を呼び出す
+	ID_FontDialogBoardTree,
+	ID_FontDialogLogWindow,
+	ID_FontDialogBoardNotebook,
+	ID_FontDialogThreadNotebook     // スレッド画面部分のフォント設定を呼び出す
 };
 
 class JaneClone: public wxFrame {
@@ -154,8 +157,12 @@ private:
      void OnGetBoardList(wxCommandEvent& event);
      void CheckLogDirectory(wxCommandEvent& event);
      void OnVersionInfo(wxCommandEvent& event);
-     void FontDialogMain(wxCommandEvent& event);
-     void FontDialogThread(wxCommandEvent& event);
+     void FontDialogMainMenu(wxCommandEvent& event);
+     void FontDialogBoardTree(wxCommandEvent& event);
+     void FontDialogLogWindow(wxCommandEvent& event);
+     void FontDialogBoardNotebook(wxCommandEvent& event);
+     void FontDialogThreadNotebook(wxCommandEvent& event);
+     void SetFontDialog(const int enumType);
 
      // スレッド一覧タブ処理
      void OneBoardTabClose(wxCommandEvent& event);
