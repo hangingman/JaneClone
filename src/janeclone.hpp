@@ -121,12 +121,19 @@ enum {
 	ID_ReloadThisThread,    	// スレッドの再読み込み
 	ID_CallResponseWindow,          // 書き込み用のウィンドウを呼び出す
 	ID_BoardListCtrl,               // 板一覧リスト自体を表すID
-	ID_FontDialogMainMenu,          // JaneClone本体のフォント設定を呼び出す
 	ID_FontDialogBoardTree,
 	ID_FontDialogLogWindow,
 	ID_FontDialogBoardNotebook,
 	ID_FontDialogThreadNotebook     // スレッド画面部分のフォント設定を呼び出す
 };
+
+/** 各ウィジェットの名前を表す定数値 */
+#define SEARCH_BAR wxT("m_search_ctrl")
+#define URL_BAR wxT("m_url_input_panel")
+#define BOARD_TREE wxT("m_tree_ctrl")
+#define LOG_WINDOW wxT("m_logCtrl")
+#define BOARD_NOTEBOOK wxT("boardNoteBook")
+#define THREAD_NOTEBOOK wxT("threadNoteBook")
 
 class JaneClone: public wxFrame {
 
@@ -150,6 +157,7 @@ public:
      NameURLHash retainHash;
 
 private:
+
      // begin wxGlade: JaneClone::methods
      // イベントテーブル系
      void OnQuit(wxCommandEvent& event);
@@ -157,7 +165,6 @@ private:
      void OnGetBoardList(wxCommandEvent& event);
      void CheckLogDirectory(wxCommandEvent& event);
      void OnVersionInfo(wxCommandEvent& event);
-     void FontDialogMainMenu(wxCommandEvent& event);
      void FontDialogBoardTree(wxCommandEvent& event);
      void FontDialogLogWindow(wxCommandEvent& event);
      void FontDialogBoardNotebook(wxCommandEvent& event);
@@ -325,7 +332,10 @@ private:
 
      // 現在使用しているフォントの情報を取得する
      wxFont GetCurrentFont();
-
+     // フォント情報をコンフィグファイルに書き出す
+     void WriteFontInfo(wxWindow* current);
+     wxFont ReadFontInfo(const wxString& widgetName);
+     
      DECLARE_EVENT_TABLE()
 };
 // wxGlade: end class
