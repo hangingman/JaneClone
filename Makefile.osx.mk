@@ -40,7 +40,7 @@ RM 		:= rm
 MAKE	:= make
 
 # オプション
-CXXFLAGS = -Wall -I include `wx-config --cxxflags` `xml2-config --cflags` -I$(NKFDIR)/include
+CXXFLAGS = -Wall -I include `wx-config --cxxflags` `xml2-config --cflags` -I$(NKFDIR)/src
 LDFLAGS  = /usr/lib/libwx_osx_cocoau_aui-2.9.a `wx-config --libs` `xml2-config --libs` -lmk4 $(NKFDIR)/libwxnkf.a -L/usr/lib
 VPATH    = include src rc
 
