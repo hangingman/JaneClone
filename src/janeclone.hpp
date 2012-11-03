@@ -121,9 +121,9 @@ enum {
 	ID_ReloadThisThread,    	// スレッドの再読み込み
 	ID_CallResponseWindow,          // 書き込み用のウィンドウを呼び出す
 	ID_BoardListCtrl,               // 板一覧リスト自体を表すID
-	ID_FontDialogBoardTree,
-	ID_FontDialogLogWindow,
-	ID_FontDialogBoardNotebook,
+	ID_FontDialogBoardTree,         // 板一覧ツリー部分のフォントの指定を行う
+	ID_FontDialogLogWindow,         // ログ出力画面部分のフォントの指定を行う
+	ID_FontDialogBoardNotebook,     // スレッド一覧部分のフォントの指定を行う
 	ID_FontDialogThreadNotebook     // スレッド画面部分のフォント設定を呼び出す
 };
 
@@ -202,7 +202,8 @@ private:
      void OnCloseWindow(wxCloseEvent& event);
      void OnLeftClickAtListCtrl(wxListEvent& event);
      void OnLeftClickAtListCtrlCol(wxListEvent& event);
-     void OnChangedTab(wxAuiNotebookEvent& event);
+     void OnChangeBoardTab(wxAuiNotebookEvent& event);
+     void OnChangeThreadTab(wxAuiNotebookEvent& event);
      void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
      void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
      void OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event);
@@ -295,10 +296,10 @@ private:
 				     const wxString&);
 
      // ThreadContentWindowのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
-     WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			  ThreadContentWindow*, 		// ポインタを詰める
-			  wxStringHash , 				// hasher
-			  wxStringEqual, 				// key equality predicate
+     WX_DECLARE_HASH_MAP( wxString, 		        // type of the keys
+			  ThreadContentWindow*,         // ポインタを詰める
+			  wxStringHash ,                // hasher
+			  wxStringEqual,                // key equality predicate
 			  ThreadContentWindowHash); 	// name of the class
 
      // JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
@@ -306,10 +307,10 @@ private:
 
      // ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
      WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			  ThreadInfo, 				// 実体を詰める
-			  wxStringHash , 				// hasher
-			  wxStringEqual, 				// key equality predicate
-			  ThreadInfoHash); 			// name of the class
+			  ThreadInfo,           // 実体を詰める
+			  wxStringHash ,        // hasher
+			  wxStringEqual,        // key equality predicate
+			  ThreadInfoHash);      // name of the class
 
      // ユーザーがタブに保持しているスレッドの情報を保存するHashSet
      ThreadInfoHash tiHash;
@@ -325,16 +326,25 @@ private:
 
      // wxFileConfigクラスのインスタンス
      wxFileConfig* config;
-
      // ポップアップウィンドウを出現させる
      void SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
 			 wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint);
-
+     /**
+      *  フォント読み出し系の処理
+      */
      // 現在使用しているフォントの情報を取得する
      wxFont GetCurrentFont();
      // フォント情報をコンフィグファイルに書き出す
      void WriteFontInfo(wxWindow* current);
+     // ウィジェットの名前ごとにコンフィグファイルから設定を取り出す
      wxFont ReadFontInfo(const wxString& widgetName);
+
+     /**
+      *  よく使う処理のコールバック関数
+      */
+     // スレタブ上に存在するスレッドのURLを返す
+     wxString GetThreadURL(const wxString title,const wxString boardNameAscii,const wxString origNumber);
+
      
      DECLARE_EVENT_TABLE()
 };
