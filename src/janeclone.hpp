@@ -124,7 +124,8 @@ enum {
 	ID_FontDialogBoardTree,         // 板一覧ツリー部分のフォントの指定を行う
 	ID_FontDialogLogWindow,         // ログ出力画面部分のフォントの指定を行う
 	ID_FontDialogBoardNotebook,     // スレッド一覧部分のフォントの指定を行う
-	ID_FontDialogThreadNotebook     // スレッド画面部分のフォント設定を呼び出す
+	ID_FontDialogThreadNotebook,    // スレッド画面部分のフォント設定を呼び出す
+	ID_URLWindowButton              // URL入力ウィンドウのボタンを表すID
 };
 
 /** 各ウィジェットの名前を表す定数値 */
@@ -210,6 +211,7 @@ private:
      void OnCellHover(wxHtmlCellEvent& event);
      void OnCellClicked(wxHtmlCellEvent& event);
      void OnLinkClicked(wxHtmlLinkEvent& event);
+     void OnClickURLWindowButton(wxCommandEvent& event);
 
      // 各種GUI上の設定
      void SetJaneCloneManuBar();

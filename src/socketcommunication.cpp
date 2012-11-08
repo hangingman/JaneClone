@@ -976,61 +976,67 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      const wxString referer = wxT("http://") + hostName + wxT("/test/read.cgi/")
 	  + boardInfoHash.boardNameAscii + wxT("/") + threadInfoHash.origNumber;
 
-     wxHTTP http;
-     http.SetHeader(_T("POST"), _T("/test/bbs.cgi HTTP/1.1"));
-     http.SetHeader(_T("Host"), hostName);
-     http.SetHeader(_T("Accept"), _T("*/*"));
-     http.SetHeader(_T("Referer"), referer);
-     http.SetHeader(_T("Accept-Language"), _T("ja"));
-     http.SetHeader(_T("User-Agent"), _T("Monazilla/1.00"));
-     http.SetHeader(_T("Content-Length"), wxString::Format("%d", kakikomiInfo.Len()));
-     http.SetHeader(_T("Connection"), _T("close"));
-     http.SetTimeout(5);
+     // wxHTTPはまだ発展途上のクラスのようで、2012年現在POST用メソッドが安定版に
+     // 登録されていないので、代わりにwxSocketClientを使う
+     // ソースの統一性を持たせるため、後で全てwxSocketClientに変えるかもしれない
+     wxSocketClient* socket = new wxSocketClient();
+     socket->SetTimeout(5);
 
-     // POSTする内容を設定する
-     // !CHECK! it is since wx-2.9.4
-     http.SetPostText(wxT("text/html; charset=shift_jis"), kakikomiInfo);
+     /**
+      * ヘッダを設定する
+      */
+     wxString header = "";
+     // POST
+     header += wxT("POST /test/bbs.cgi HTTP/1.1\n");
+     // hostname
+     header += wxT("Host ");
+     header += hostName;
+     header += wxT("\n");
+     // Accept
+     header += wxT("Accept */*\n");
+     // Referer
+     header += wxT("Referer ");
+     header += referer;
+     header += wxT("\n");
+     // Accept-Language
+     header += wxT("Accept-Language ja\n");
+     // User-Agent
+     header += wxT("User-Agent Monazilla/1.00\n");
+     // Content-Length
+     header += wxT("Content-Length ");
+     header += wxString::Format("%d", kakikomiInfo.Len());
+     header += wxT("\n");
+     // Connection close
+     header += wxT("Connection close\n");
 
-     // パラメーターの設定
-     const wxString server = hostName;
-     const wxString path = wxT("/test/bbs.cgi");
+     // Debug
+     wxMessageBox(header);
 
-     if (!http.Connect(server, 80)) {
+     // ホストに接続する
+     wxIPV4address* address = new wxIPV4address();
+     address->Hostname(hostName);
+     address->Service(80);
+
+     if (!socket->Connect(*address)) {
 	  // 接続失敗
+	  *m_logCtrl << wxT("　(ﾟ)(ﾟ) ") << wxT("\n");
+	  *m_logCtrl << wxT("彡　　と ＜　書込失敗、ち～ん") << wxT("\n");
+	  delete socket;
+	  delete address;
 	  return wxEmptyString;
      }
 
-     wxInputStream* stream;
-     stream = http.GetInputStream(path);
+     //Write header
+     socket->Write(header.c_str(),header.Len());
+     wxString wHeaderLog = wxString::Format("Wrote %d out of %d bytes",socket->LastCount(),header.Len());
+     *m_logCtrl << wHeaderLog << wxT("\n");
 
-     // 保存先を決める
-     wxStringOutputStream output;
+     //Write data
+     socket->Write(kakikomiInfo.c_str(), kakikomiInfo.Len());
+     wxString wDataLog = wxString::Format("Wrote %d out of %d bytes",socket->LastCount(),data.Len());
+     *m_logCtrl << wDataLog << wxT("\n");
 
-     if (stream == NULL) {
-	  output.Close();
-	  return wxEmptyString;
-     } else if (200 == http.GetResponse()) {
-	  // 正常処理
-	  unsigned char buffer[1024];
-	  int byteRead;
-
-	  // ヘッダを書きだす
-	  WriteHeaderFile(http, (const wxString) headerPath);
-
-	  // ストリームを受け取るループ部分
-	  while (!stream->Eof()) {
-	       stream->Read(buffer, sizeof(buffer));
-	       output.Write(buffer, sizeof(buffer));
-	       byteRead = stream->LastRead();
-	       if (byteRead <= 0) {
-		    break;
-	       }
-	  }
-	  output.Close();	  
-     }
-     
-     wxMessageBox(output.GetString());
-     return output.GetString();
+     return wxEmptyString;
 }
 /**
  * ２回目以降の書き込みメソッド
