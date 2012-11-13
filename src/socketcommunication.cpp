@@ -20,6 +20,8 @@
  */
 
 #include "socketcommunication.hpp"
+
+
 /**
  * 板一覧ファイルをダウンロードしてくるメソッド 引数は板一覧ファイル保存先、板一覧ファイルヘッダ保存先
  */
@@ -989,28 +991,28 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      // POST
      header += wxT("POST /test/bbs.cgi HTTP/1.1\n");
      // hostname
-     header += wxT("Host ");
+     header += wxT("Host: ");
      header += hostName;
      header += wxT("\n");
      // Accept
-     header += wxT("Accept */*\n");
+     header += wxT("Accept: */*\n");
      // Referer
-     header += wxT("Referer ");
+     header += wxT("Referer: ");
      header += referer;
      header += wxT("\n");
      // Accept-Language
-     header += wxT("Accept-Language ja\n");
+     header += wxT("Accept-Language: ja\n");
      // User-Agent
-     header += wxT("User-Agent Monazilla/1.00\n");
+     header += wxT("User-Agent: Monazilla/1.00\n");
      // Content-Length
-     header += wxT("Content-Length ");
+     header += wxT("Content-Length: ");
      header += wxString::Format("%d", kakikomiInfo.Len());
      header += wxT("\n");
      // Connection close
-     header += wxT("Connection close\n");
-
-     // Debug
-     wxMessageBox(header);
+     header += wxT("Connection: close\n");
+     // POST
+     header += wxT("\n");
+     header += kakikomiInfo;
 
      // ホストに接続する
      wxIPV4address* address = new wxIPV4address();
@@ -1026,17 +1028,19 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
 	  return wxEmptyString;
      }
 
-     //Write header
+     // ヘッダ情報を書き込む
      socket->Write(header.c_str(),header.Len());
-     wxString wHeaderLog = wxString::Format("Wrote %d out of %d bytes",socket->LastCount(),header.Len());
+     wxString wHeaderLog = wxString::Format("Wrote %d out of %d bytes",socket->LastCount(), header.Len());
      *m_logCtrl << wHeaderLog << wxT("\n");
+     
+     // レスポンスを受け取る
+     wxString buf;
+     socket->Read(wxStringBuffer(buf, 1024), 1024);
 
-     //Write data
-     socket->Write(kakikomiInfo.c_str(), kakikomiInfo.Len());
-     wxString wDataLog = wxString::Format("Wrote %d out of %d bytes",socket->LastCount(),data.Len());
-     *m_logCtrl << wDataLog << wxT("\n");
+     // Trim response to what was read from stream
+     buf = buf.SubString(0,socket->LastCount()-1);
 
-     return wxEmptyString;
+     return buf;
 }
 /**
  * ２回目以降の書き込みメソッド

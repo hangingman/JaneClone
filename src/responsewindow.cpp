@@ -151,6 +151,7 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
 
      // ソケット通信用のクラスのインスタンスを用意する
      SocketCommunication* socketCommunication = new SocketCommunication();
+     socketCommunication->SetLogWindow(m_logCtrl);
 
      // 書き込み内容を構造体に設定する
      PostContent* post = new PostContent;

@@ -23,6 +23,7 @@
 #define SOCKETCOMMUNICATION_H_
 
 #include <wx/wx.h>
+#include <wx/string.h>
 #include <wx/filefn.h>
 #include <wx/filename.h>
 #include <wx/textfile.h>
@@ -56,6 +57,8 @@ class SocketCommunication {
 #define COOKIE_CONFIG_FILE wxT("cookie.env")
 
 public:
+
+
      /**
       * 板一覧ファイルをダウンロードしてくるメソッド
       * もし前回通信した際のログが残っていれば更新の確認のみ行う

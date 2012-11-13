@@ -50,6 +50,12 @@ public:
      // end wxGlade
      ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName& boardInfoHash,
 		    ThreadInfo& threadInfoHash, wxPoint& point);
+     /**
+      * ログ出力用のウィンドウを設定する
+      */
+     void SetLogWindow(wxTextCtrl* logCtrl) {
+	  this->m_logCtrl = logCtrl;
+     };
 
 private:
      // begin wxGlade: ResponseWindow::methods
@@ -67,6 +73,10 @@ private:
      // 内部で保持するスレッドや板情報
      URLvsBoardName m_boardInfo;
      ThreadInfo m_threadInfo;
+     /**
+      * ログとして出力するためのテキストコントロールのポインタ
+      */
+     wxTextCtrl* m_logCtrl;
 
 protected:
      // begin wxGlade: ResponseWindow::attributes
