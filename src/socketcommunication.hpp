@@ -28,6 +28,7 @@
 #include <wx/filename.h>
 #include <wx/textfile.h>
 #include <wx/protocol/http.h>
+#include <wx/protocol/protocol.h>
 #include <wx/wfstream.h>
 #include <wx/datstrm.h>
 #include <wx/regex.h>

@@ -975,8 +975,8 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      // URL
      const wxString boardURL = boardInfoHash.boardURL;
      // リファラを引数から作成する
-     const wxString referer = wxT("http://") + hostName + wxT("/test/read.cgi/")
-	  + boardInfoHash.boardNameAscii + wxT("/") + threadInfoHash.origNumber;
+     const wxString referer = wxT("http://") + hostName + wxT("/") + boardInfoHash.boardNameAscii + wxT("/");
+     //+ wxT("/test/read.cgi/") + boardInfoHash.boardNameAscii + wxT("/") + threadInfoHash.origNumber;
 
      // wxHTTPはまだ発展途上のクラスのようで、2012年現在POST用メソッドが安定版に
      // 登録されていないので、代わりにwxSocketClientを使う
@@ -990,12 +990,20 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      wxString header = "";
      // POST
      header += wxT("POST /test/bbs.cgi HTTP/1.1\n");
+     // Connection close
+     header += wxT("Connection: close\n");
+     // Content-Type
+     header += wxT("Content-Type: application/x-www-form-urlencoded\n");
+     // Content-Length
+     header += wxT("Content-Length: ");
+     header += wxString::Format("%d", kakikomiInfo.Len());
+     header += wxT("\n");
      // hostname
      header += wxT("Host: ");
      header += hostName;
      header += wxT("\n");
      // Accept
-     header += wxT("Accept: */*\n");
+     header += wxT("Accept: text/html, */*\n");
      // Referer
      header += wxT("Referer: ");
      header += referer;
@@ -1003,13 +1011,7 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      // Accept-Language
      header += wxT("Accept-Language: ja\n");
      // User-Agent
-     header += wxT("User-Agent: Monazilla/1.00\n");
-     // Content-Length
-     header += wxT("Content-Length: ");
-     header += wxString::Format("%d", kakikomiInfo.Len());
-     header += wxT("\n");
-     // Connection close
-     header += wxT("Connection: close\n");
+     header += wxT("User-Agent: Monazilla/1.00 (JaneClone/0.80)\n");
      // POST
      header += wxT("\n");
      header += kakikomiInfo;
@@ -1035,10 +1037,7 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      
      // レスポンスを受け取る
      wxString buf;
-     socket->Read(wxStringBuffer(buf, 1024), 1024);
-
-     // Trim response to what was read from stream
-     buf = buf.SubString(0,socket->LastCount()-1);
+     socket->Read(wxStringBuffer(buf, 2048), 2048);
 
      return buf;
 }
