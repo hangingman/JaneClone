@@ -1034,12 +1034,37 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      socket->Write(header.c_str(),header.Len());
      wxString wHeaderLog = wxString::Format("Wrote %d out of %d bytes",socket->LastCount(), header.Len());
      *m_logCtrl << wHeaderLog << wxT("\n");
-     
-     // レスポンスを受け取る
-     wxString buf;
-     socket->Read(wxStringBuffer(buf, 2048), 2048);
 
-     return buf;
+     // レスポンスを受け取る
+     wxString resPath = headerPath;
+     wxFileOutputStream output(headerPath);
+     wxDataOutputStream out(output);
+
+     wxInputStream *stream = new wxSocketInputStream(*socket);
+     if (!stream) {
+	  // ERROR
+	  *m_logCtrl << wxT("内部エラー：ストリームの作成に失敗") << wxT("\n");
+	  delete stream;
+	  return wxEmptyString;
+     }
+
+     unsigned char ch[1];
+     int byteRead;
+
+     // ストリームを受け取るループ部分
+     while (!stream->Eof()) {
+	  stream->Read(ch, 1);
+	  out.Write8(ch, 1);
+	  byteRead = stream->LastRead();
+	  if (byteRead < 0) {
+	       break;
+	  }
+     }
+
+     delete stream;
+     output.Close();
+
+     return wxEmptyString;
 }
 /**
  * ２回目以降の書き込みメソッド
