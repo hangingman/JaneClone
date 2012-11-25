@@ -62,6 +62,10 @@ public:
 
 
      /**
+      * デストラクタ
+      */
+     ~SocketCommunication();
+     /**
       * 板一覧ファイルをダウンロードしてくるメソッド
       * もし前回通信した際のログが残っていれば更新の確認のみ行う
       * @param  板一覧datファイル保存先
@@ -168,7 +172,7 @@ private:
      /**
       * 初回のクッキー受け取りと確認用ポスト
       */
-     wxString PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHas);
+     bool PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHas);
      /**
       * ２回目以降の書き込みメソッド
       */
@@ -191,6 +195,10 @@ private:
       * COOKIE関連の初期化処理を行う
       */
      bool InitializeCookie();
+     /**
+      * COOKIEのデータ書き出しを行う
+      */
+     void WriteCookieData(wxString dataFilePath);
      /**
       * ログとして出力するためのテキストコントロールのポインタ
       */

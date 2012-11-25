@@ -21,7 +21,12 @@
 
 #include "socketcommunication.hpp"
 
-
+/**
+ * デストラクタ
+ */
+SocketCommunication::~SocketCommunication() {
+     delete config;
+}
 /**
  * 板一覧ファイルをダウンロードしてくるメソッド 引数は板一覧ファイル保存先、板一覧ファイルヘッダ保存先
  */
@@ -908,20 +913,18 @@ wxString SocketCommunication::PostToThread(URLvsBoardName& boardInfoHash, Thread
      if (cookieIsExist) {
 	  // ２回目以降の書き込みメソッド
 	  wxString result = PostToThreadRest(hostName, boardInfoHash, threadInfoHash);
-	  delete config;
 	  return result;
      } else {
 	  // 初回のクッキー受け取りと確認用ポスト
-	  wxString result = PostToThreadFirst(hostName, boardInfoHash, threadInfoHash);
-	  delete config;
-	  return result;
+	  bool ret = PostToThreadFirst(hostName, boardInfoHash, threadInfoHash);     
+	  return wxEmptyString;
      }
 }
 /**
  * 初回のクッキー受け取りと確認用ポスト
  */
-wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash,
-						ThreadInfo& threadInfoHash) {
+bool SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash,
+					    ThreadInfo& threadInfoHash) {
      /**
 	要求メッセージの一例（初回投稿時・１回目）
 	POST /test/bbs.cgi HTTP/1.1
@@ -1027,7 +1030,7 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
 	  *m_logCtrl << wxT("彡　　と ＜　書込失敗、ち～ん") << wxT("\n");
 	  delete socket;
 	  delete address;
-	  return wxEmptyString;
+	  return false;
      }
 
      // ヘッダ情報を書き込む
@@ -1045,7 +1048,7 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
 	  // ERROR
 	  *m_logCtrl << wxT("内部エラー：ストリームの作成に失敗") << wxT("\n");
 	  delete stream;
-	  return wxEmptyString;
+	  return false;
      }
 
      unsigned char ch[1];
@@ -1064,7 +1067,19 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      delete stream;
      output.Close();
 
-     return wxEmptyString;
+     // Shift_JIS から UTF-8への変換処理
+     wxNKF* nkf = new wxNKF();
+     wxString tmpPath = headerPath;
+     tmpPath.Replace(wxT(".header"), wxT(".tmp"));
+     nkf->Convert(headerPath, tmpPath, wxT("--ic=CP932 --oc=UTF-8"));
+     delete nkf;
+
+     // ファイルのリネーム
+     wxRenameFile(tmpPath, headerPath);
+     // COOKIEのデータをコンフィグファイルに書き出す
+     WriteCookieData(headerPath);
+
+     return true;
 }
 /**
  * ２回目以降の書き込みメソッド
@@ -1141,6 +1156,7 @@ bool SocketCommunication::InitializeCookie() {
      // cookieを記録したファイルが無ければ作成する
      config = new wxFileConfig(wxT("JaneCloneCookie"), wxEmptyString, configFile,
 			       wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+     wxMessageBox(wxT("コンフィグファイルはここ：") + configFile);
 
      return false;
 }
@@ -1150,4 +1166,29 @@ bool SocketCommunication::InitializeCookie() {
  */
 void SocketCommunication::SetPostContent(PostContent* postContent) {
      this->postContent = postContent;
+}
+/**
+ * COOKIEのデータ書き出しを行う
+ */
+void SocketCommunication::WriteCookieData(wxString dataFilePath) {
+
+     // HTTPヘッダファイルを読み込む
+     wxTextFile cookieFile;
+     cookieFile.Open(dataFilePath, wxConvUTF8);
+     wxString str;
+     wxString cookie;
+
+     // ファイルがオープンされているならば
+     if (cookieFile.IsOpened()) {
+	  for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine()) {
+	       // Set-Cookieに当たる部分を読み取る
+	       if (str.StartsWith(wxT("Set-Cookie: "), &cookie)) {
+		    break;
+	       }
+	  }
+     }
+     // クッキー情報をコンフィグファイルに書き出す
+     config->Write(wxT("Cookie"), cookie);
+     config->Flush();
+     cookieFile.Close();
 }
