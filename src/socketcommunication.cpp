@@ -916,7 +916,7 @@ wxString SocketCommunication::PostToThread(URLvsBoardName& boardInfoHash, Thread
 	  return result;
      } else {
 	  // 初回のクッキー受け取りと確認用ポスト
-	  bool ret = PostToThreadFirst(hostName, boardInfoHash, threadInfoHash);     
+	  PostToThreadFirst(hostName, boardInfoHash, threadInfoHash);     
 	  return wxEmptyString;
      }
 }
@@ -1156,7 +1156,6 @@ bool SocketCommunication::InitializeCookie() {
      // cookieを記録したファイルが無ければ作成する
      config = new wxFileConfig(wxT("JaneCloneCookie"), wxEmptyString, configFile,
 			       wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
-     wxMessageBox(wxT("コンフィグファイルはここ：") + configFile);
 
      return false;
 }
@@ -1175,20 +1174,40 @@ void SocketCommunication::WriteCookieData(wxString dataFilePath) {
      // HTTPヘッダファイルを読み込む
      wxTextFile cookieFile;
      cookieFile.Open(dataFilePath, wxConvUTF8);
-     wxString str;
-     wxString cookie;
+     wxString str, cookie, hiddenName, hiddenVal;
 
      // ファイルがオープンされているならば
      if (cookieFile.IsOpened()) {
 	  for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine()) {
 	       // Set-Cookieに当たる部分を読み取る
-	       if (str.StartsWith(wxT("Set-Cookie: "), &cookie)) {
+	       if (str.StartsWith(wxT("Set-Cookie: "), &cookie))
 		    break;
-	       }
 	  }
      }
+
+     if (cookieFile.IsOpened()) {
+	  for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine()) {
+	       // hidden要素を抜き出す
+	       if (str.Contains(wxT("<html>"))) {
+		    // hidden要素正規表現
+		    //                                     <input type=hidden name="yuki" value="akari">
+		    static const wxRegEx hiddenElement(_T("<input type=hidden name=\"(.+?)\" value=\"(.+?)\">"), wxRE_ADVANCED + wxRE_ICASE);
+
+		    if (hiddenElement.IsValid()) {
+			 if (hiddenElement.Matches(str)) {
+			      // マッチさせたそれぞれの要素を取得する
+			      hiddenName = hiddenElement.GetMatch(str, 1);
+			      hiddenVal = hiddenElement.GetMatch(str, 2);
+			 }
+		    }
+	       }	       
+	  }
+     }
+
      // クッキー情報をコンフィグファイルに書き出す
      config->Write(wxT("Cookie"), cookie);
+     config->Write(wxT("HiddenName"), hiddenName);
+     config->Write(wxT("HiddenValue"), hiddenVal);
      config->Flush();
      cookieFile.Close();
 }
