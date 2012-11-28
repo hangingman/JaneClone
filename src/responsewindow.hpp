@@ -25,6 +25,9 @@
 #include <wx/wx.h>
 #include <wx/notebook.h>
 #include <wx/html/htmlwin.h>
+#include <wx/html/htmlwin.h>
+#include <wx/html/winpars.h>
+#include <wx/valgen.h>
 #include "socketcommunication.hpp"
 #include "datatype.hpp"
 #include "janecloneutil.hpp"
@@ -77,6 +80,12 @@ private:
       * ログとして出力するためのテキストコントロールのポインタ
       */
      wxTextCtrl* m_logCtrl;
+
+     /** 定数化されたページ数 */
+#define KAKIKO_PAGE     1
+#define PREVIEW_PAGE    2
+#define LOCAL_RULE_PAGE 3
+#define SETTING_PAGE    4
 
 protected:
      // begin wxGlade: ResponseWindow::attributes

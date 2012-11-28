@@ -172,7 +172,7 @@ private:
      /**
       * 初回のクッキー受け取りと確認用ポスト
       */
-     bool PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHas);
+     wxString PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHas);
      /**
       * ２回目以降の書き込みメソッド
       */

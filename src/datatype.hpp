@@ -76,6 +76,10 @@ static const wxString HTML_HEADER =
 static const wxString HTML_HEADER_POPUP =
 		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body bgcolor=#eedcb3 text=black link=blue alink=red vlink=#660099>");
 
+// 投稿失敗時のHTML
+static const wxString FAIL_TO_POST = wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
+			charset=UTF-8\"><title></title></head><body><span>レスの投稿に失敗しました</span></body></html>");
+
 // フッター部分にあたるHTML
 static const wxString HTML_FOOTER = wxT("</body></html>");
 

@@ -20,6 +20,7 @@
  */
 
 #include "responsewindow.hpp"
+#include "wx/html/m_templ.h"
 
 #ifndef __WXMSW__
 #include"../rc/janeclone.xpm"
@@ -36,9 +37,118 @@ EVT_BUTTON(ID_PostResponse, ResponseWindow::PostResponse)
 EVT_BUTTON(ID_QuitResponseWindow, ResponseWindow::QuitResponseWindow)
 END_EVENT_TABLE()
 
+
+/** カスタムタグをここで設定する */
+
+// I refered custom tags implementation
+// here https://groups.google.com/forum/?fromgroups=#!topic/wx-users/brDgsxuuR0k
+// Thanks!
+
+// <form> tags
+TAG_HANDLER_BEGIN(FORM, "FORM")
+TAG_HANDLER_CONSTR(FORM){}
+TAG_HANDLER_PROC(tag) {
+     m_WParser->CloseContainer();
+     m_WParser->OpenContainer();
+     ParseInner(tag);
+     return true;
+}
+TAG_HANDLER_END(FORM)
+
+// <select> tags
+TAG_HANDLER_BEGIN(SELECT, "SELECT, OPTION")
+     TAG_HANDLER_CONSTR(SELECT) {
+     m_pComboBox = NULL;
+     m_iNumber = 0;
+}
+
+TAG_HANDLER_VARS
+wxComboBox *m_pComboBox;
+int m_iNumber;
+
+TAG_HANDLER_PROC(tag) {
+     if (m_pComboBox && tag.GetName() == wxT("OPTION")) {
+	  if (tag.HasParam(wxT("VALUE"))) {
+	       wxString strValue = tag.GetParam(wxT("VALUE"));
+	       wxString strName;
+	       strName = m_WParser->GetSource()->Mid(
+		    tag.GetBeginPos(),
+		    tag.GetEndPos1()-tag.GetBeginPos());
+#if !wxUSE_UNICODE
+	       wxCSConv conv(m_WParser->GetInputEncoding());
+	       strName = wxString(strName.wc_str(conv), wxConvLocal);
+#endif
+
+	       m_WParser->GetEntitiesParser()->Parse(strName);
+
+	       m_pComboBox->Append(strName, &strValue);
+	       if (!m_iNumber) m_pComboBox->SetValue(strName);
+	       m_iNumber++;
+	  }
+	  return true;
+     } else if (tag.GetName() == wxT("SELECT")) {
+	  int fl = 0;
+	  wxComboBox *pOldBox = m_pComboBox;
+	  int iOldNumber = m_iNumber;
+
+	  m_pComboBox = new wxComboBox(m_WParser->GetWindowInterface()->GetHTMLWindow(), wxID_ANY, "", wxPoint(0,0), wxDefaultSize, 0, NULL, wxCB_READONLY  | wxCB_DROPDOWN);
+	  m_pComboBox->Show(true);
+
+	  ParseInner(tag);
+
+
+	  m_WParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(m_pComboBox, fl));
+
+	  m_pComboBox = pOldBox;
+	  m_iNumber = iOldNumber;
+	  return true;
+
+     }
+     return false;
+}
+
+TAG_HANDLER_END(SELECT)
+
+// <input> tags
+TAG_HANDLER_BEGIN(INPUT, "INPUT")
+     TAG_HANDLER_CONSTR(INPUT){}
+
+TAG_HANDLER_PROC(tag) {
+     if (tag.HasParam(wxT("TYPE"))) {
+	  if (!tag.GetParam(wxT("TYPE")).CmpNoCase(wxT("SUBMIT"))) {
+	       int fl = 0;
+	       wxButton *pButton;
+
+	       pButton = new wxButton(m_WParser->GetWindowInterface()->GetHTMLWindow(), wxID_ANY, tag.GetParam(wxT("VALUE")), wxPoint(0,0), wxDefaultSize);
+	       pButton->Show(true);
+
+	       m_WParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(pButton, fl));
+	  } else if (!tag.GetParam(wxT("TYPE")).CmpNoCase(wxT("TEXT"))) {
+	       int fl = 0;
+	       wxTextCtrl *pText;
+
+	       pText = new wxTextCtrl(m_WParser->GetWindowInterface()->GetHTMLWindow(), wxID_ANY, tag.GetParam(wxT("VALUE")), wxPoint(0,0), wxDefaultSize);
+	       pText->Show(true);
+
+	       m_WParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(pText, fl));
+	  }
+     }
+     return true;
+}
+
+TAG_HANDLER_END(SELECT)
+
+// <form> tags
+TAGS_MODULE_BEGIN(Form)
+
+     TAGS_MODULE_ADD(FORM)
+     TAGS_MODULE_ADD(SELECT)
+     TAGS_MODULE_ADD(INPUT)
+
+TAGS_MODULE_END(Form)
+
 ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash, wxPoint& point):
-wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
-{
+wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE) {
 
      // アイコンの設定を行う
 #ifdef __WXMSW__
@@ -88,8 +198,7 @@ wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG
 }
 
 
-void ResponseWindow::set_properties(const wxString& title)
-{
+void ResponseWindow::set_properties(const wxString& title) {
     // begin wxGlade: ResponseWindow::set_properties
     SetTitle(wxT("『") + title + wxT("』にレス"));
     SetSize(wxSize(640, 480));
@@ -97,8 +206,7 @@ void ResponseWindow::set_properties(const wxString& title)
 }
 
 
-void ResponseWindow::do_layout()
-{
+void ResponseWindow::do_layout() {
     // begin wxGlade: ResponseWindow::do_layout
     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* hboxOther2 = new wxBoxSizer(wxHORIZONTAL);
@@ -170,9 +278,60 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
      socketCommunication->SetPostContent(post);
      wxString result = socketCommunication->PostToThread(m_boardInfo, m_threadInfo);
 
-     delete socketCommunication;
+     // メモリの解放
      delete post;
      delete nkf;
+
+     if (result.StartsWith(wxT("<html>"))) {
+	  // 返り値が<html>タグから始まっていれば書込は失敗
+	  // wxHtmlWindowに結果を表示する
+	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  previewWindow->SetPage(result);
+	  delete socketCommunication;
+	  return;
+     }
+     
+     // 失敗でなければ確認画面を表すヘッダファイルへのパスなので
+     // ユーザーに確認させるため表示する
+     // wxStringにバッファするサイズを計測する
+     size_t fileSize = JaneCloneUtil::GetFileSize(result);
+     if (fileSize == 0) {
+	  // wxHtmlWindowに結果を表示する
+	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  previewWindow->SetPage(FAIL_TO_POST);
+	  delete socketCommunication;
+	  return;
+     }
+     // 取得サイズ分だけwxStringを確保する
+     wxString htmlSource;
+     htmlSource.Alloc(fileSize);
+
+     // テキストファイルの読み込み
+     wxTextFile confirmFile;
+     confirmFile.Open(result, wxConvUTF8);
+     wxString str;
+
+     // ファイルがオープンされているならば
+     if (confirmFile.IsOpened()) {
+	  for (str = confirmFile.GetFirstLine(); !confirmFile.Eof();
+	       str = confirmFile.GetNextLine()) {
+
+	       if (str.IsNull() || !str.StartsWith(wxT("<html>"))) {
+		    continue;
+	       } else {
+		    str.Replace(wxT("charset=x-sjis"), wxT("charset=utf-8"));
+	       }
+
+	       htmlSource += str;
+	  }
+     }
+
+     confirmFile.Close();
+     // wxHtmlWindowに結果を表示する
+     resNoteBook->SetSelection(KAKIKO_PAGE);
+     previewWindow->SetPage(htmlSource);
+
+     delete socketCommunication;
 }
 /**
  * レス用ウィンドウを閉じるイベント

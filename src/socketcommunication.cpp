@@ -916,14 +916,13 @@ wxString SocketCommunication::PostToThread(URLvsBoardName& boardInfoHash, Thread
 	  return result;
      } else {
 	  // 初回のクッキー受け取りと確認用ポスト
-	  PostToThreadFirst(hostName, boardInfoHash, threadInfoHash);     
-	  return wxEmptyString;
+	  return PostToThreadFirst(hostName, boardInfoHash, threadInfoHash);
      }
 }
 /**
  * 初回のクッキー受け取りと確認用ポスト
  */
-bool SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash,
+wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash,
 					    ThreadInfo& threadInfoHash) {
      /**
 	要求メッセージの一例（初回投稿時・１回目）
@@ -1030,7 +1029,7 @@ bool SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBoardN
 	  *m_logCtrl << wxT("彡　　と ＜　書込失敗、ち～ん") << wxT("\n");
 	  delete socket;
 	  delete address;
-	  return false;
+	  return FAIL_TO_POST;
      }
 
      // ヘッダ情報を書き込む
@@ -1048,7 +1047,7 @@ bool SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBoardN
 	  // ERROR
 	  *m_logCtrl << wxT("内部エラー：ストリームの作成に失敗") << wxT("\n");
 	  delete stream;
-	  return false;
+	  return FAIL_TO_POST;
      }
 
      unsigned char ch[1];
@@ -1079,7 +1078,7 @@ bool SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBoardN
      // COOKIEのデータをコンフィグファイルに書き出す
      WriteCookieData(headerPath);
 
-     return true;
+     return headerPath;
 }
 /**
  * ２回目以降の書き込みメソッド
