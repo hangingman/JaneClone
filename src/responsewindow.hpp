@@ -43,7 +43,8 @@
 enum {
      ID_ResponseWindow,
      ID_QuitResponseWindow,
-     ID_PostResponse
+     ID_PostResponse,
+     ID_PostConfirmForm
 };     
 
 class ResponseWindow: public wxDialog {
@@ -69,6 +70,8 @@ private:
      // レスの投稿
      void PostResponse(wxCommandEvent &event);
      void QuitResponseWindow(wxCommandEvent &event);
+     // 投稿内容の確認ボタン
+     void PostConfirmForm(wxCommandEvent &event);
 
      // レス投稿ウィンドウのモード設定
      bool f_threadPost;
@@ -80,6 +83,11 @@ private:
       * ログとして出力するためのテキストコントロールのポインタ
       */
      wxTextCtrl* m_logCtrl;
+     /**
+      * 投稿内容を保持するオブジェクトのインスタンス
+      */
+     PostContent* m_postContent;
+
 
      /** 定数化されたページ数 */
 #define KAKIKO_PAGE     1

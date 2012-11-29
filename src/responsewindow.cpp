@@ -35,6 +35,7 @@
 BEGIN_EVENT_TABLE(ResponseWindow, wxDialog)
 EVT_BUTTON(ID_PostResponse, ResponseWindow::PostResponse)
 EVT_BUTTON(ID_QuitResponseWindow, ResponseWindow::QuitResponseWindow)
+EVT_BUTTON(ID_PostConfirmForm, ResponseWindow::PostConfirmForm)
 END_EVENT_TABLE()
 
 
@@ -112,14 +113,17 @@ TAG_HANDLER_END(SELECT)
 // <input> tags
 TAG_HANDLER_BEGIN(INPUT, "INPUT")
      TAG_HANDLER_CONSTR(INPUT){}
-
+/**
+ * 本来はHTMLのsubmitボタンは一般的なものであるが
+ * ここではクッキー情報が得られていない状態での投稿確認ボタン専用とする
+ */
 TAG_HANDLER_PROC(tag) {
      if (tag.HasParam(wxT("TYPE"))) {
 	  if (!tag.GetParam(wxT("TYPE")).CmpNoCase(wxT("SUBMIT"))) {
 	       int fl = 0;
 	       wxButton *pButton;
-
-	       pButton = new wxButton(m_WParser->GetWindowInterface()->GetHTMLWindow(), wxID_ANY, tag.GetParam(wxT("VALUE")), wxPoint(0,0), wxDefaultSize);
+	       // 投稿時のボタン専用として使う
+	       pButton = new wxButton(m_WParser->GetWindowInterface()->GetHTMLWindow(), ID_PostConfirmForm, tag.GetParam(wxT("VALUE")), wxPoint(0,0), wxDefaultSize);
 	       pButton->Show(true);
 
 	       m_WParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(pButton, fl));
@@ -270,6 +274,8 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
      const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
      const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
      const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+     delete nkf;
+
      // 投稿用の構造体にURLエンコードされた文字列を格納
      post->name = wxString(JaneCloneUtil::UrlEncode(stdName));
      post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail));
@@ -278,15 +284,13 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
      socketCommunication->SetPostContent(post);
      wxString result = socketCommunication->PostToThread(m_boardInfo, m_threadInfo);
 
-     // メモリの解放
-     delete post;
-     delete nkf;
-
      if (result.StartsWith(wxT("<html>"))) {
 	  // 返り値が<html>タグから始まっていれば書込は失敗
 	  // wxHtmlWindowに結果を表示する
 	  resNoteBook->SetSelection(KAKIKO_PAGE);
 	  previewWindow->SetPage(result);
+	  // メモリの解放
+	  delete post;
 	  delete socketCommunication;
 	  return;
      }
@@ -299,6 +303,10 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
 	  // wxHtmlWindowに結果を表示する
 	  resNoteBook->SetSelection(KAKIKO_PAGE);
 	  previewWindow->SetPage(FAIL_TO_POST);
+
+	  // 一旦投稿内容をクラス変数に保存する
+	  m_postContent = post;
+	  delete post;
 	  delete socketCommunication;
 	  return;
      }
@@ -339,4 +347,26 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
 void ResponseWindow::QuitResponseWindow(wxCommandEvent &event) {
 
      Close(true);
+}
+/**
+ *  投稿確認ボタンイベント
+ */
+void ResponseWindow::PostConfirmForm(wxCommandEvent &event) {
+
+     // 投稿内容
+     PostContent* post = m_postContent;
+
+     if (!post) {
+	  // 内容が無ければエラー
+	  *m_logCtrl << wxT("内部エラー…(ヽ´ん`)…やり直してみて…\n");
+	  return;
+     }
+
+     // ソケット通信用のクラスのインスタンスを用意する
+     SocketCommunication* socketCommunication = new SocketCommunication();
+     socketCommunication->SetLogWindow(m_logCtrl);
+     socketCommunication->SetPostContent(post);
+     wxString result = socketCommunication->PostConfirmToThread(m_boardInfo, m_threadInfo);
+     
+     wxMessageBox(result);
 }

@@ -100,6 +100,12 @@ public:
       */
      wxString PostToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash);
      /**
+      * 投稿確認ボタンイベントの後にスレッドに書き込むメソッド
+      * @param 板名,URL,サーバー名
+      * @return 書き込み結果
+      */
+     wxString PostConfirmToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash);
+     /**
       * 投稿内容をソケット通信クラスに設定する
       * @param PostContent構造体
       */
