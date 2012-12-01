@@ -305,6 +305,7 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
 	  previewWindow->SetPage(FAIL_TO_POST);
 
 	  // 一旦投稿内容をクラス変数に保存する
+	  m_postContent = new PostContent;
 	  m_postContent = post;
 	  delete post;
 	  delete socketCommunication;
@@ -354,9 +355,13 @@ void ResponseWindow::QuitResponseWindow(wxCommandEvent &event) {
 void ResponseWindow::PostConfirmForm(wxCommandEvent &event) {
 
      // 投稿内容
-     PostContent* post = m_postContent;
+     wxMessageBox(wxT("投稿確認ボタンイベント"));
+     PostContent* post = new PostContent;
+     post->name = m_postContent->name;
+     post->mail = m_postContent->mail;
+     post->kakikomi = m_postContent->kakikomi;
 
-     if (!post) {
+     if (post->kakikomi.IsEmpty()) {
 	  // 内容が無ければエラー
 	  *m_logCtrl << wxT("内部エラー…(ヽ´ん`)…やり直してみて…\n");
 	  return;
@@ -367,6 +372,7 @@ void ResponseWindow::PostConfirmForm(wxCommandEvent &event) {
      socketCommunication->SetLogWindow(m_logCtrl);
      socketCommunication->SetPostContent(post);
      wxString result = socketCommunication->PostConfirmToThread(m_boardInfo, m_threadInfo);
-     
+     delete post;
+
      wxMessageBox(result);
 }

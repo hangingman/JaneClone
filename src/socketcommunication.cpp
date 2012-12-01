@@ -1134,13 +1134,12 @@ wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoa
      headerPath += wxT(".header");
 #endif
 
-     //wxMessageBox(timeNow);
      wxString buttonText = wxT("%8F%91%82%AB%8D%9E%82%DE");
 
      // Postする内容のデータサイズを取得する
      wxString kakikomiInfo = wxT("bbs=") + boardInfoHash.boardNameAscii + wxT("&key=")
 	  + threadInfoHash.origNumber + wxT("&time=") + timeNow + wxT("&FROM=")
-	  + postContent->name + wxT("&mail") + postContent->mail + wxT("&MESSAGE")
+	  + postContent->name + wxT("&mail=") + postContent->mail + wxT("&MESSAGE=")
 	  + postContent->kakikomi + wxT("&submit=") + buttonText + wxT("&")
 	  + hiddenName + wxT("=") + hiddenVal;
 
