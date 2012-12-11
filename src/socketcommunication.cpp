@@ -1103,14 +1103,19 @@ wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoa
      wxString timeNow = JaneCloneUtil::GetTimeNow();
 
      // 不可視項目値をコンフィグファイルから取得する
-     wxString hiddenName, hiddenVal, cookie;
+     wxString hiddenName, hiddenVal, cookie, pern;
      config->Read(wxT("HiddenName"), &hiddenName, wxT("ERROR"));
      config->Read(wxT("HiddenValue"), &hiddenVal, wxT("ERROR"));
      config->Read(wxT("Cookie"), &cookie, wxT("ERROR"));
+     config->Read(wxT("PERNSTR"), &pern, wxT(""));
 
      // 読み取り失敗ならば書込失敗
      if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR") || cookie == wxT("ERROR"))
 	  return FAIL_TO_POST;
+     // PERN要素があるかないか
+     bool f_pern = true;
+     if (pern.IsEmpty())
+	  f_pern = false;
 
      wxDir dir(wxGetCwd());
      wxString headerPath = dir.GetName();
@@ -1143,8 +1148,6 @@ wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoa
 	  + postContent->kakikomi + wxT("&submit=") + buttonText + wxT("&")
 	  + hiddenName + wxT("=") + hiddenVal;
 
-     wxMessageBox(kakikomiInfo);
-
      // URL
      const wxString boardURL = boardInfoHash.boardURL;
      // リファラを引数から作成する
@@ -1173,6 +1176,11 @@ wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoa
      // Cookie
      header += wxT("Cookie: ");
      header += cookie;
+     if (f_pern) {
+	  // PERN要素があるならば
+	  header += wxT("; ");
+	  header += pern;
+     }
      header += wxT("\n");
      // hostname
      header += wxT("Host: ");
@@ -1304,13 +1312,25 @@ void SocketCommunication::WriteCookieData(wxString dataFilePath) {
      // HTTPヘッダファイルを読み込む
      wxTextFile cookieFile;
      cookieFile.Open(dataFilePath, wxConvUTF8);
-     wxString str, cookie, hiddenName, hiddenVal;
+     wxString str, cookie, pern, hiddenName, hiddenVal;
 
      // ファイルがオープンされているならば
      if (cookieFile.IsOpened()) {
 	  for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine()) {
 	       // Set-Cookieに当たる部分を読み取る
-	       if (str.StartsWith(wxT("Set-Cookie: "), &cookie))
+	       // Set-Cookieは２種類あるので留意
+	       wxString tmp;
+	       if (str.StartsWith(wxT("Set-Cookie: "), &tmp)) {
+		    if (tmp.StartsWith(wxT("Set-Cookie: PREN"))) {
+			 pern = wxT("PERN=") + tmp;
+			 tmp.Clear();
+		    } else {
+			 cookie = tmp;
+			 tmp.Clear();
+		    }
+	       }
+
+	       if (str.IsEmpty())
 		    break;
 	  }
      }
@@ -1336,6 +1356,7 @@ void SocketCommunication::WriteCookieData(wxString dataFilePath) {
 
      // クッキー情報をコンフィグファイルに書き出す
      config->Write(wxT("Cookie"), cookie);
+     config->Write(wxT("PERNSTR"), pern);
      config->Write(wxT("HiddenName"), hiddenName);
      config->Write(wxT("HiddenValue"), hiddenVal);
      config->Flush();

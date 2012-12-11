@@ -47,6 +47,30 @@ enum {
      ID_PostConfirmForm
 };     
 
+/**
+
+ 書き込みの流れ
+
+ 1. COOKIEファイルがあるかどうか確認する(start)
+
+ ・確認する要素
+  ・COOKIE (日付等)
+  ・HIDDEN (隠し要素１)
+  ・PERN   (隠し要素２)
+
+ ・システム上あり得る状態(これ以外の状態はイレギュラー)
+ (a). 全てない                       (2)へ
+ (b). COOKIEとHIDDENのみある         (3)へ
+ (c). COOKIE, HIDDEN, PERNすべてある (4)へ
+
+ 2. 初回書き込み用電文を投げてCOOKIEとHIDDENをもらう (1)へ
+
+ 3. 書き込み同意画面にて「同意する」をクリックして書き込み成功, PERNをもらう(end)
+
+ 4. COOKIE, HIDDEN, PERNを添えて書き込み成功(end)
+
+ */
+
 class ResponseWindow: public wxDialog {
 
 public:
@@ -72,6 +96,8 @@ private:
      void QuitResponseWindow(wxCommandEvent &event);
      // 投稿内容の確認ボタン
      void PostConfirmForm(wxCommandEvent &event);
+     // クッキーの状態チェック
+     int CheckCookie();
 
      // レス投稿ウィンドウのモード設定
      bool f_threadPost;
@@ -94,6 +120,11 @@ private:
 #define PREVIEW_PAGE    2
 #define LOCAL_RULE_PAGE 3
 #define SETTING_PAGE    4
+
+     /** 定数化された書き込み前のCOOKIEの状態 */
+#define NO_COOKIE         10
+#define HAS_COOKIE_HIDDEN 11
+#define HAS_PERN          12
 
 protected:
      // begin wxGlade: ResponseWindow::attributes

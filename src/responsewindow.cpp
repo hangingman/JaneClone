@@ -264,83 +264,19 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
      // ソケット通信用のクラスのインスタンスを用意する
      SocketCommunication* socketCommunication = new SocketCommunication();
      socketCommunication->SetLogWindow(m_logCtrl);
+     // クッキーの状態チェック
+     int cookieStatus = CheckCookie();
 
-     // 書き込み内容を構造体に設定する
-     PostContent* post = new PostContent;
-
-     // NKFの準備
-     const wxString option = wxT("--ic=UTF-8 --oc=CP932");
-     wxNKF* nkf = new wxNKF();
-     const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
-     const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
-     const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
-     delete nkf;
-
-     // 投稿用の構造体にURLエンコードされた文字列を格納
-     post->name = wxString(JaneCloneUtil::UrlEncode(stdName));
-     post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail));
-     post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi));
-
-     socketCommunication->SetPostContent(post);
-     wxString result = socketCommunication->PostToThread(m_boardInfo, m_threadInfo);
-
-     if (result.StartsWith(wxT("<html>"))) {
-	  // 返り値が<html>タグから始まっていれば書込は失敗
-	  // wxHtmlWindowに結果を表示する
-	  resNoteBook->SetSelection(KAKIKO_PAGE);
-	  previewWindow->SetPage(result);
-	  // メモリの解放
-	  delete post;
-	  delete socketCommunication;
-	  return;
+     if (cookieStatus == NO_COOKIE) {
+	  // クッキーがない状態
+	  PostFirstResponse();
+     } else if (cookieStatus == HAS_COOKIE_HIDDEN) {
+	  // 最初のレスの後クッキーのみもらった状態
+	  PostConfirmForm();
+     } else if (cookieStatus == HAS_PERN) {
+	  // PERNをもらった状態；通常の書き込み
+	  PostResponse();
      }
-     
-     // 失敗でなければ確認画面を表すヘッダファイルへのパスなので
-     // ユーザーに確認させるため表示する
-     // wxStringにバッファするサイズを計測する
-     size_t fileSize = JaneCloneUtil::GetFileSize(result);
-     if (fileSize == 0) {
-	  // wxHtmlWindowに結果を表示する
-	  resNoteBook->SetSelection(KAKIKO_PAGE);
-	  previewWindow->SetPage(FAIL_TO_POST);
-
-	  // 一旦投稿内容をクラス変数に保存する
-	  m_postContent = new PostContent;
-	  m_postContent = post;
-	  delete post;
-	  delete socketCommunication;
-	  return;
-     }
-     // 取得サイズ分だけwxStringを確保する
-     wxString htmlSource;
-     htmlSource.Alloc(fileSize);
-
-     // テキストファイルの読み込み
-     wxTextFile confirmFile;
-     confirmFile.Open(result, wxConvUTF8);
-     wxString str;
-
-     // ファイルがオープンされているならば
-     if (confirmFile.IsOpened()) {
-	  for (str = confirmFile.GetFirstLine(); !confirmFile.Eof();
-	       str = confirmFile.GetNextLine()) {
-
-	       if (str.IsNull() || !str.StartsWith(wxT("<html>"))) {
-		    continue;
-	       } else {
-		    str.Replace(wxT("charset=x-sjis"), wxT("charset=utf-8"));
-	       }
-
-	       htmlSource += str;
-	  }
-     }
-
-     confirmFile.Close();
-     // wxHtmlWindowに結果を表示する
-     resNoteBook->SetSelection(KAKIKO_PAGE);
-     previewWindow->SetPage(htmlSource);
-
-     delete socketCommunication;
 }
 /**
  * レス用ウィンドウを閉じるイベント
@@ -367,12 +303,58 @@ void ResponseWindow::PostConfirmForm(wxCommandEvent &event) {
 	  return;
      }
 
+     *m_logCtrl << post->kakikomi;
+
      // ソケット通信用のクラスのインスタンスを用意する
      SocketCommunication* socketCommunication = new SocketCommunication();
      socketCommunication->SetLogWindow(m_logCtrl);
      socketCommunication->SetPostContent(post);
-     wxString result = socketCommunication->PostConfirmToThread(m_boardInfo, m_threadInfo);
-     delete post;
+     socketCommunication->PostConfirmToThread(m_boardInfo, m_threadInfo);
+     //delete post;
+}
+/**
+ * クッキーの状態チェック
+ */
+int ResponseWindow::CheckCookie() {
 
-     wxMessageBox(result);
+     // カレントディレクトリを設定
+     wxDir dir(wxGetCwd());
+     if (!dir.Exists(wxT("./prop/"))) {
+	  wxMkdir(wxT("./prop/"));
+     }
+     // 設定ファイルの準備をする
+     wxString configFile = wxGetCwd();
+#ifdef __WXMSW__
+     // Windowsではパスの区切りは"\"
+     configFile += wxT("\\prop\\");
+#else
+     // Linuxではパスの区切りは"/"
+     configFile += wxT("/prop/");
+#endif
+     configFile += COOKIE_CONFIG_FILE;
+
+     if (!wxFile::Exists(configFile))
+	  return NO_COOKIE;
+
+     wxFileConfig* config = new wxFileConfig(wxT("JaneCloneCookie"), wxEmptyString, configFile,
+					    wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+     // 内部にある要素を調べる
+     wxString hiddenName, hiddenVal, cookie, pern;
+     config->Read(wxT("HiddenName"), &hiddenName, wxEmptyString);
+     config->Read(wxT("HiddenValue"), &hiddenVal, wxEmptyString);
+     config->Read(wxT("Cookie"), &cookie, wxEmptyString);
+     config->Read(wxT("PERNSTR"), &pern, wxEmptyString);
+     delete config;
+
+     // もしクッキーと隠し要素１がなければクッキーがないのと同じなのでNO_COOKIEを返す
+     if (hiddenName.IsEmpty() || hiddenVal.IsEmpty() || cookie.IsEmpty()) {
+	  return NO_COOKIE;
+     }
+	  
+     // PERNがあればHAS_PERN、なければHAS_COOKIE_HIDDEN
+     if (!pern.IsEmpty()) {
+	  return HAS_PERN;
+     }
+
+     return HAS_COOKIE_HIDDEN;
 }
