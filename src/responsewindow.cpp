@@ -447,6 +447,57 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
 
      sock->SetPostContent(post);
      wxString result = sock->PostResponseToThread(m_boardInfo, m_threadInfo, HAS_PERN);
+     delete post;
+
+     if (result.StartsWith(wxT("<html>"))) {
+	  // 返り値が<html>タグから始まっていれば書込は失敗
+	  // wxHtmlWindowに結果を表示する
+	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  previewWindow->SetPage(result);
+	  // メモリの解放
+	  delete sock;
+	  return;
+     }
+     
+     // 失敗でなければ確認画面を表すヘッダファイルへのパスなので
+     // ユーザーに確認させるため表示する
+     // wxStringにバッファするサイズを計測する
+     size_t fileSize = JaneCloneUtil::GetFileSize(result);
+     if (fileSize == 0) {
+	  // wxHtmlWindowに結果を表示する
+	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  previewWindow->SetPage(FAIL_TO_POST);
+	  delete sock;
+	  return;
+     }
+     // 取得サイズ分だけwxStringを確保する
+     wxString htmlSource;
+     htmlSource.Alloc(fileSize);
+
+     // テキストファイルの読み込み
+     wxTextFile confirmFile;
+     confirmFile.Open(result, wxConvUTF8);
+     wxString str;
+
+     // ファイルがオープンされているならば
+     if (confirmFile.IsOpened()) {
+	  for (str = confirmFile.GetFirstLine(); !confirmFile.Eof();
+	       str = confirmFile.GetNextLine()) {
+
+	       if (str.IsNull() || !str.StartsWith(wxT("<html>"))) {
+		    continue;
+	       } else {
+		    str.Replace(wxT("charset=x-sjis"), wxT("charset=utf-8"));
+	       }
+
+	       htmlSource += str;
+	  }
+     }
+
+     confirmFile.Close();
+     // wxHtmlWindowに結果を表示する
+     resNoteBook->SetSelection(KAKIKO_PAGE);
+     previewWindow->SetPage(htmlSource);
 }
 /**
  * レス用ウィンドウを閉じるイベント
@@ -494,7 +545,7 @@ int ResponseWindow::CheckCookie() {
      config->Read(wxT("HiddenName"), &hiddenName, wxEmptyString);
      config->Read(wxT("HiddenValue"), &hiddenVal, wxEmptyString);
      config->Read(wxT("Cookie"), &cookie, wxEmptyString);
-     config->Read(wxT("PERNSTR"), &pern, wxEmptyString);
+     config->Read(wxT("PERN"), &pern, wxEmptyString);
      delete config;
 
      // もしクッキーと隠し要素１がなければクッキーがないのと同じなのでNO_COOKIEを返す
