@@ -92,7 +92,7 @@ private:
      // end wxGlade
      
      // レスの投稿
-     void PostResponse(wxCommandEvent &event);
+     void OnPostResponse(wxCommandEvent &event);
      void QuitResponseWindow(wxCommandEvent &event);
      // 投稿内容の確認ボタン
      void PostConfirmForm(wxCommandEvent &event);

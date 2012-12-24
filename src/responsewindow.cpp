@@ -33,7 +33,7 @@
 
 // event table
 BEGIN_EVENT_TABLE(ResponseWindow, wxDialog)
-EVT_BUTTON(ID_PostResponse, ResponseWindow::PostResponse)
+EVT_BUTTON(ID_PostResponse, ResponseWindow::OnPostResponse)
 EVT_BUTTON(ID_QuitResponseWindow, ResponseWindow::QuitResponseWindow)
 EVT_BUTTON(ID_PostConfirmForm, ResponseWindow::PostConfirmForm)
 END_EVENT_TABLE()
@@ -259,7 +259,7 @@ void ResponseWindow::do_layout() {
 /**
  * レスを投稿するイベント
  */
-void ResponseWindow::PostResponse(wxCommandEvent &event) {
+void ResponseWindow::OnPostResponse(wxCommandEvent &event) {
 
      // ソケット通信用のクラスのインスタンスを用意する
      SocketCommunication* socketCommunication = new SocketCommunication();
@@ -512,7 +512,7 @@ void ResponseWindow::QuitResponseWindow(wxCommandEvent &event) {
 void ResponseWindow::PostConfirmForm(wxCommandEvent &event) {
 
      // 書き込みイベントに制御を渡す
-     PostResponse(event);
+     OnPostResponse(event);
  }
 /**
  * クッキーの状態チェック
