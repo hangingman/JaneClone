@@ -269,14 +269,184 @@ void ResponseWindow::PostResponse(wxCommandEvent &event) {
 
      if (cookieStatus == NO_COOKIE) {
 	  // クッキーがない状態
-	  PostFirstResponse();
+	  PostFirstResponse(socketCommunication);
+	  delete socketCommunication;
      } else if (cookieStatus == HAS_COOKIE_HIDDEN) {
 	  // 最初のレスの後クッキーのみもらった状態
-	  PostConfirmForm();
+	  PostConfirm(socketCommunication);
+	  delete socketCommunication;
      } else if (cookieStatus == HAS_PERN) {
 	  // PERNをもらった状態；通常の書き込み
-	  PostResponse();
+	  PostResponse(socketCommunication);
+	  delete socketCommunication;
      }
+}
+/**
+ * クッキーがない状態
+ */
+void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
+
+     // 書き込み内容を構造体に設定する
+     PostContent* post = new PostContent;
+     // NKFの準備
+     const wxString option = wxT("--ic=UTF-8 --oc=CP932");
+     wxNKF* nkf = new wxNKF();
+     const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
+     const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
+     const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+     delete nkf;
+
+     // 投稿用の構造体にURLエンコードされた文字列を格納
+     post->name = wxString(JaneCloneUtil::UrlEncode(stdName));
+     post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail));
+     post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi));
+
+     sock->SetPostContent(post);
+     wxString result = sock->PostFirstToThread(m_boardInfo, m_threadInfo, NO_COOKIE);
+
+     // m_postContentにデータを設定する
+     m_postContent = post;
+
+     if (result.StartsWith(wxT("<html>"))) {
+	  // 返り値が<html>タグから始まっていれば書込は失敗
+	  // wxHtmlWindowに結果を表示する	  
+	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  previewWindow->SetPage(result);
+	  // メモリの解放
+	  delete post;
+	  delete sock;
+	  return;
+     }
+     
+     // 失敗でなければ確認画面を表すヘッダファイルへのパスなので
+     // ユーザーに確認させるため表示する
+     // wxStringにバッファするサイズを計測する
+     size_t fileSize = JaneCloneUtil::GetFileSize(result);
+     if (fileSize == 0) {
+	  // wxHtmlWindowに結果を表示する
+	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  previewWindow->SetPage(FAIL_TO_POST);
+	  delete post;
+	  delete sock;
+	  return;
+     }
+     // 取得サイズ分だけwxStringを確保する
+     wxString htmlSource;
+     htmlSource.Alloc(fileSize);
+
+     // テキストファイルの読み込み
+     wxTextFile confirmFile;
+     confirmFile.Open(result, wxConvUTF8);
+     wxString str;
+
+     // ファイルがオープンされているならば
+     if (confirmFile.IsOpened()) {
+	  for (str = confirmFile.GetFirstLine(); !confirmFile.Eof();
+	       str = confirmFile.GetNextLine()) {
+
+	       if (str.IsNull() || !str.StartsWith(wxT("<html>"))) {
+		    continue;
+	       } else {
+		    str.Replace(wxT("charset=x-sjis"), wxT("charset=utf-8"));
+	       }
+
+	       htmlSource += str;
+	  }
+     }
+
+     confirmFile.Close();
+     // wxHtmlWindowに結果を表示する
+     resNoteBook->SetSelection(KAKIKO_PAGE);
+     previewWindow->SetPage(htmlSource);
+}
+/**
+ * 最初のレスの後クッキーのみもらった状態
+ */
+void ResponseWindow::PostConfirm(SocketCommunication* sock) {
+
+     if (m_postContent->kakikomi.IsEmpty()) {
+     	  // 内容が無ければエラー
+     	  *m_logCtrl << wxT("内部エラー…(ヽ´ん`)…やり直してみて…\n");
+     	  return;
+     }
+
+     sock->SetPostContent(m_postContent);
+     wxString result = sock->PostConfirmToThread(m_boardInfo, m_threadInfo, HAS_COOKIE_HIDDEN);
+
+     if (result.StartsWith(wxT("<html>"))) {
+	  // 返り値が<html>タグから始まっていれば書込は失敗
+	  // wxHtmlWindowに結果を表示する
+	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  previewWindow->SetPage(result);
+	  // メモリの解放
+	  //delete post;
+	  delete sock;
+	  return;
+     }
+     
+     // 失敗でなければ確認画面を表すヘッダファイルへのパスなので
+     // ユーザーに確認させるため表示する
+     // wxStringにバッファするサイズを計測する
+     size_t fileSize = JaneCloneUtil::GetFileSize(result);
+     if (fileSize == 0) {
+	  // wxHtmlWindowに結果を表示する
+	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  previewWindow->SetPage(FAIL_TO_POST);
+	  //delete post;
+	  delete sock;
+	  return;
+     }
+     // 取得サイズ分だけwxStringを確保する
+     wxString htmlSource;
+     htmlSource.Alloc(fileSize);
+
+     // テキストファイルの読み込み
+     wxTextFile confirmFile;
+     confirmFile.Open(result, wxConvUTF8);
+     wxString str;
+
+     // ファイルがオープンされているならば
+     if (confirmFile.IsOpened()) {
+	  for (str = confirmFile.GetFirstLine(); !confirmFile.Eof();
+	       str = confirmFile.GetNextLine()) {
+
+	       if (str.IsNull() || !str.StartsWith(wxT("<html>"))) {
+		    continue;
+	       } else {
+		    str.Replace(wxT("charset=x-sjis"), wxT("charset=utf-8"));
+	       }
+
+	       htmlSource += str;
+	  }
+     }
+
+     confirmFile.Close();
+     // wxHtmlWindowに結果を表示する
+     resNoteBook->SetSelection(KAKIKO_PAGE);
+     previewWindow->SetPage(htmlSource);
+}
+/**
+ * PERNをもらった状態；通常の書き込み
+ */
+void ResponseWindow::PostResponse(SocketCommunication* sock) {
+
+     // 書き込み内容を構造体に設定する
+     PostContent* post = new PostContent;
+     // NKFの準備
+     const wxString option = wxT("--ic=UTF-8 --oc=CP932");
+     wxNKF* nkf = new wxNKF();
+     const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
+     const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
+     const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+     delete nkf;
+
+     // 投稿用の構造体にURLエンコードされた文字列を格納
+     post->name = wxString(JaneCloneUtil::UrlEncode(stdName));
+     post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail));
+     post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi));
+
+     sock->SetPostContent(post);
+     wxString result = sock->PostResponseToThread(m_boardInfo, m_threadInfo, HAS_PERN);
 }
 /**
  * レス用ウィンドウを閉じるイベント
@@ -290,28 +460,9 @@ void ResponseWindow::QuitResponseWindow(wxCommandEvent &event) {
  */
 void ResponseWindow::PostConfirmForm(wxCommandEvent &event) {
 
-     // 投稿内容
-     wxMessageBox(wxT("投稿確認ボタンイベント"));
-     PostContent* post = new PostContent;
-     post->name = m_postContent->name;
-     post->mail = m_postContent->mail;
-     post->kakikomi = m_postContent->kakikomi;
-
-     if (post->kakikomi.IsEmpty()) {
-	  // 内容が無ければエラー
-	  *m_logCtrl << wxT("内部エラー…(ヽ´ん`)…やり直してみて…\n");
-	  return;
-     }
-
-     *m_logCtrl << post->kakikomi;
-
-     // ソケット通信用のクラスのインスタンスを用意する
-     SocketCommunication* socketCommunication = new SocketCommunication();
-     socketCommunication->SetLogWindow(m_logCtrl);
-     socketCommunication->SetPostContent(post);
-     socketCommunication->PostConfirmToThread(m_boardInfo, m_threadInfo);
-     //delete post;
-}
+     // 書き込みイベントに制御を渡す
+     PostResponse(event);
+ }
 /**
  * クッキーの状態チェック
  */

@@ -58,6 +58,11 @@ class SocketCommunication {
      // クッキーの設定ファイル
 #define COOKIE_CONFIG_FILE wxT("cookie.env")
 
+     /** 定数化された書き込み前のCOOKIEの状態 */
+#define NO_COOKIE         10
+#define HAS_COOKIE_HIDDEN 11
+#define HAS_PERN          12
+
 public:
 
 
@@ -94,17 +99,24 @@ public:
 			     const wxString boardNameAscii, const wxString origNumber);
 
      /**
-      * スレッドに書き込みを行うメソッド
+      * スレッドへの初回書き込みを行うメソッド
       * @param 板名,URL,サーバー名
       * @return 書き込み結果
       */
-     wxString PostToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash);
+     wxString PostFirstToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash, const int status);
      /**
       * 投稿確認ボタンイベントの後にスレッドに書き込むメソッド
       * @param 板名,URL,サーバー名
       * @return 書き込み結果
       */
-     wxString PostConfirmToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash);
+     wxString PostConfirmToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash, const int status);
+     /**
+      * 通常の書き込みメソッド
+      * @param 板名,URL,サーバー名
+      * @return 書き込み結果
+      */
+     wxString PostResponseToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash, const int status);
+
      /**
       * 投稿内容をソケット通信クラスに設定する
       * @param PostContent構造体
@@ -174,15 +186,6 @@ private:
      int DownloadThreadMod(const wxString gzipPath, const wxString headerPath,
 			   const wxString boardNameAscii, const wxString origNumber,
 			   const wxString hostName);
-
-     /**
-      * 初回のクッキー受け取りと確認用ポスト
-      */
-     wxString PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHas);
-     /**
-      * ２回目以降の書き込みメソッド
-      */
-     wxString PostToThreadRest(const wxString hostName, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHas);
      
      /**
       * 通信ログに残っているHTTPレスポンスコードを取得する
@@ -205,6 +208,10 @@ private:
       * COOKIEのデータ書き出しを行う
       */
      void WriteCookieData(wxString dataFilePath);
+     /*
+      * PERNのデータ書き出しを行う
+      */
+     void WritePernData(wxString dataFilePath);
      /**
       * ログとして出力するためのテキストコントロールのポインタ
       */

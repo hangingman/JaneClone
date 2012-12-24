@@ -25,7 +25,7 @@
  * デストラクタ
  */
 SocketCommunication::~SocketCommunication() {
-     delete config;
+     //delete config;
 }
 /**
  * 板一覧ファイルをダウンロードしてくるメソッド 引数は板一覧ファイル保存先、板一覧ファイルヘッダ保存先
@@ -889,12 +889,11 @@ void SocketCommunication::WriteHeaderFile(wxHTTP& http,
 */
 
 /**
- * スレッドに書き込みを行うメソッド
- * @param 板情報の構造体
- * @param スレッド情報の構造体
+ * スレッドへの初回書き込みを行うメソッド
+ * @param 板名,URL,サーバー名
  * @return 書き込み結果
  */
-wxString SocketCommunication::PostToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash) {
+wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash, const int status) {
 
      // URLからホスト名を取得する
      wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
@@ -906,39 +905,6 @@ wxString SocketCommunication::PostToThread(URLvsBoardName& boardInfoHash, Thread
 	       hostName = reThreadList.GetMatch(boardInfoHash.boardURL, 2);
 	  }
      }
-
-     // クッキーがファイルとして存在するか確認する
-     bool cookieIsExist = InitializeCookie();
-
-     if (cookieIsExist) {
-	  // ２回目以降の書き込みメソッド
-	  wxString result = PostToThreadRest(hostName, boardInfoHash, threadInfoHash);
-	  return result;
-     } else {
-	  // 初回のクッキー受け取りと確認用ポスト
-	  return PostToThreadFirst(hostName, boardInfoHash, threadInfoHash);
-     }
-}
-/**
- * 初回のクッキー受け取りと確認用ポスト
- */
-wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBoardName& boardInfoHash,
-					    ThreadInfo& threadInfoHash) {
-     /**
-	要求メッセージの一例（初回投稿時・１回目）
-	POST /test/bbs.cgi HTTP/1.1
-	Host: [サーバー]
-	Accept: ＊/＊
-	Referer: http://[サーバー]/test/read.cgi/[板名]/[スレッド番号]/
-	Accept-Language: ja
-	User-Agent: Monazilla/1.00 (ブラウザ名/バージョン)
-	Content-Length: ポストするデータの合計サイズ(バイト)
-	Connection: close
-
-	bbs=[板名]&key=[スレッド番号]&time=[投稿時間]&FROM=[名前]&mail=[メール]&MESSAGE=[本文]&submit=[ボタンの文字]
-
-	参考：http://www.monazilla.org/index.php?e=199
-     */
 
      // 投稿時間を算出する(UNIX Time)
      wxString timeNow = JaneCloneUtil::GetTimeNow();
@@ -978,7 +944,6 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      const wxString boardURL = boardInfoHash.boardURL;
      // リファラを引数から作成する
      const wxString referer = wxT("http://") + hostName + wxT("/") + boardInfoHash.boardNameAscii + wxT("/");
-     //+ wxT("/test/read.cgi/") + boardInfoHash.boardNameAscii + wxT("/") + threadInfoHash.origNumber;
 
      // wxHTTPはまだ発展途上のクラスのようで、2012年現在POST用メソッドが安定版に
      // 登録されていないので、代わりにwxSocketClientを使う
@@ -1081,41 +1046,37 @@ wxString SocketCommunication::PostToThreadFirst(const wxString hostName, URLvsBo
      return headerPath;
 }
 /**
- * ２回目以降の書き込みメソッド
+ * 投稿確認ボタンイベントの後にスレッドに書き込むメソッド
+ * @param 板名,URL,サーバー名
+ * @return 書き込み結果
  */
-wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoardName& boardInfoHash,
-					       ThreadInfo& threadInfoHash) {
-/**
-   要求メッセージの一例（初回投稿時・２回目）
-   POST /test/bbs.cgi HTTP/1.1
-   Host: [サーバー]
-   Accept: ＊/＊
-   Referer: http://[サーバー]/test/read.cgi/[板名]/[スレッド番号]/
-   Accept-Language: ja
-   User-Agent: Monazilla/1.00 (ブラウザ名/バージョン)
-   Content-Length: ポストするデータの合計サイズ(バイト)
-   Cookie:応答ヘッダのSet-Cookieに記述された内容 Connection: close
-
-   bbs=[板名]&key=[スレッド番号]&time=[投稿時間]&FROM=[名前]&mail=[メール]&MESSAGE=[本文]&submit=[ボタンの文字]&[不可視項目名]=[不可視項目値]
-*/
-
-     // 投稿時間を算出する(UNIX Time)
-     wxString timeNow = JaneCloneUtil::GetTimeNow();
+wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash, const int status) {
 
      // 不可視項目値をコンフィグファイルから取得する
-     wxString hiddenName, hiddenVal, cookie, pern;
+     InitializeCookie();
+     wxString hiddenName, hiddenVal, cookie;
      config->Read(wxT("HiddenName"), &hiddenName, wxT("ERROR"));
      config->Read(wxT("HiddenValue"), &hiddenVal, wxT("ERROR"));
      config->Read(wxT("Cookie"), &cookie, wxT("ERROR"));
-     config->Read(wxT("PERNSTR"), &pern, wxT(""));
+     delete config;
 
      // 読み取り失敗ならば書込失敗
      if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR") || cookie == wxT("ERROR"))
 	  return FAIL_TO_POST;
-     // PERN要素があるかないか
-     bool f_pern = true;
-     if (pern.IsEmpty())
-	  f_pern = false;
+
+     // URLからホスト名を取得する
+     wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
+			  wxRE_ADVANCED + wxRE_ICASE);
+     // ホスト名
+     wxString hostName;
+     if (reThreadList.IsValid()) {
+	  if (reThreadList.Matches(boardInfoHash.boardURL)) {
+	       hostName = reThreadList.GetMatch(boardInfoHash.boardURL, 2);
+	  }
+     }
+
+     // 投稿時間を算出する(UNIX Time)
+     wxString timeNow = JaneCloneUtil::GetTimeNow();
 
      wxDir dir(wxGetCwd());
      wxString headerPath = dir.GetName();
@@ -1139,6 +1100,7 @@ wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoa
      headerPath += wxT(".header");
 #endif
 
+     //wxMessageBox(timeNow);
      wxString buttonText = wxT("%8F%91%82%AB%8D%9E%82%DE");
 
      // Postする内容のデータサイズを取得する
@@ -1165,8 +1127,20 @@ wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoa
      wxString header = "";
      // POST
      header += wxT("POST /test/bbs.cgi HTTP/1.1\n");
-     // Connection close
-     header += wxT("Connection: close\n");
+     // hostname
+     header += wxT("Host: ");
+     header += hostName;
+     header += wxT("\n");
+     // Accept
+     header += wxT("Accept: */*\n");
+     // Referer
+     header += wxT("Referer: ");
+     header += referer;
+     header += wxT("\n");
+     // Accept-Language
+     header += wxT("Accept-Language: ja\n");
+     // User-Agent
+     header += wxT("User-Agent: Monazilla/1.00 (JaneClone/0.80)\n");
      // Content-Type
      header += wxT("Content-Type: application/x-www-form-urlencoded\n");
      // Content-Length
@@ -1176,26 +1150,7 @@ wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoa
      // Cookie
      header += wxT("Cookie: ");
      header += cookie;
-     if (f_pern) {
-	  // PERN要素があるならば
-	  header += wxT("; ");
-	  header += pern;
-     }
-     header += wxT("\n");
-     // hostname
-     header += wxT("Host: ");
-     header += hostName;
-     header += wxT("\n");
-     // Accept
-     header += wxT("Accept: text/html, */*\n");
-     // Referer
-     header += wxT("Referer: ");
-     header += referer;
-     header += wxT("\n");
-     // Accept-Language
-     header += wxT("Accept-Language: ja\n");
-     // User-Agent
-     header += wxT("User-Agent: Monazilla/1.00 (JaneClone/0.80)\n");
+     header += wxT(" Connection: close\n");
      // POST
      header += wxT("\n");
      header += kakikomiInfo;
@@ -1204,6 +1159,9 @@ wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoa
      wxIPV4address* address = new wxIPV4address();
      address->Hostname(hostName);
      address->Service(80);
+
+     // サーバ時間よりローカル端末の時間が進んでいる場合が多いので一度スリープ
+     wxSleep(2); // とりあえず２秒
 
      if (!socket->Connect(*address)) {
 	  // 接続失敗
@@ -1257,11 +1215,31 @@ wxString SocketCommunication::PostToThreadRest(const wxString hostName, URLvsBoa
 
      // ファイルのリネーム
      wxRenameFile(tmpPath, headerPath);
-     // COOKIEのデータをコンフィグファイルに書き出す
-     WriteCookieData(headerPath);
+     // PERNのデータをコンフィグファイルに書き出す
+     WritePernData(headerPath);
 
      return headerPath;
 }
+/**
+ * 通常の書き込みメソッド
+ * @param 板名,URL,サーバー名
+ * @return 書き込み結果
+ */
+wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash, const int status) {
+
+     // URLからホスト名を取得する
+     wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
+			  wxRE_ADVANCED + wxRE_ICASE);
+     // ホスト名
+     wxString hostName;
+     if (reThreadList.IsValid()) {
+	  if (reThreadList.Matches(boardInfoHash.boardURL)) {
+	       hostName = reThreadList.GetMatch(boardInfoHash.boardURL, 2);
+	  }
+     }
+}
+
+
 /**
  * COOKIE関連の初期化処理を行う
  */
@@ -1310,24 +1288,19 @@ void SocketCommunication::SetPostContent(PostContent* postContent) {
 void SocketCommunication::WriteCookieData(wxString dataFilePath) {
 
      // HTTPヘッダファイルを読み込む
+     InitializeCookie();
      wxTextFile cookieFile;
      cookieFile.Open(dataFilePath, wxConvUTF8);
-     wxString str, cookie, pern, hiddenName, hiddenVal;
+     wxString str, cookie, hiddenName, hiddenVal;
 
      // ファイルがオープンされているならば
      if (cookieFile.IsOpened()) {
 	  for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine()) {
 	       // Set-Cookieに当たる部分を読み取る
-	       // Set-Cookieは２種類あるので留意
 	       wxString tmp;
 	       if (str.StartsWith(wxT("Set-Cookie: "), &tmp)) {
-		    if (tmp.StartsWith(wxT("Set-Cookie: PREN"))) {
-			 pern = wxT("PERN=") + tmp;
-			 tmp.Clear();
-		    } else {
-			 cookie = tmp;
-			 tmp.Clear();
-		    }
+		    cookie = tmp;
+		    tmp.Clear();
 	       }
 
 	       if (str.IsEmpty())
@@ -1356,39 +1329,42 @@ void SocketCommunication::WriteCookieData(wxString dataFilePath) {
 
      // クッキー情報をコンフィグファイルに書き出す
      config->Write(wxT("Cookie"), cookie);
-     config->Write(wxT("PERNSTR"), pern);
      config->Write(wxT("HiddenName"), hiddenName);
      config->Write(wxT("HiddenValue"), hiddenVal);
      config->Flush();
      cookieFile.Close();
+     delete config;
 }
-/**
- * 投稿確認ボタンイベントの後にスレッドに書き込むメソッド
- * @param 板名,URL,サーバー名
- * @return 書き込み結果
+/*
+ * PERNのデータ書き出しを行う
  */
-wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash) {
+void SocketCommunication::WritePernData(wxString dataFilePath) {
 
-     // URLからホスト名を取得する
-     wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
-			  wxRE_ADVANCED + wxRE_ICASE);
-     // ホスト名
-     wxString hostName;
-     if (reThreadList.IsValid()) {
-	  if (reThreadList.Matches(boardInfoHash.boardURL)) {
-	       hostName = reThreadList.GetMatch(boardInfoHash.boardURL, 2);
+     // HTTPヘッダファイルを読み込む
+     InitializeCookie();
+     wxTextFile cookieFile;
+     cookieFile.Open(dataFilePath, wxConvUTF8);
+     wxString str, pern;
+
+     // ファイルがオープンされているならば
+     if (cookieFile.IsOpened()) {
+	  for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine()) {
+	       // Set-Cookieに当たる部分を読み取る
+	       wxString tmp;
+	       if (str.StartsWith(wxT("Set-Cookie: PREN="), &tmp)) {
+		    pern = tmp;
+	       }
 	  }
      }
 
-     // クッキーがファイルとして存在するか確認する
-     bool cookieIsExist = InitializeCookie();
+     // ";"が最初に出てくる部分を求める
+     int index = pern.Find(wxT(";"));
+     wxString tmp = pern.Mid(0, index - 1);
+     pern = tmp;
 
-     if (cookieIsExist) {
-	  // ２回目以降の書き込みメソッド
-	  wxString result = PostToThreadRest(hostName, boardInfoHash, threadInfoHash);
-	  return result;
-     } else {
-	  // 投稿確認なのにクッキーがなければおかしいので書込失敗とする
-	  return FAIL_TO_POST;
-     }     
+     // クッキー情報をコンフィグファイルに書き出す
+     config->Write(wxT("PERNSTR"), pern);
+     config->Flush();
+     cookieFile.Close();
+     delete config;
 }

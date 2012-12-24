@@ -99,6 +99,13 @@ private:
      // クッキーの状態チェック
      int CheckCookie();
 
+     void PostFirstResponse(SocketCommunication* sock);
+     
+     void PostConfirm(SocketCommunication* sock);
+     
+     void PostResponse(SocketCommunication* sock);
+     
+
      // レス投稿ウィンドウのモード設定
      bool f_threadPost;
 
@@ -120,11 +127,6 @@ private:
 #define PREVIEW_PAGE    2
 #define LOCAL_RULE_PAGE 3
 #define SETTING_PAGE    4
-
-     /** 定数化された書き込み前のCOOKIEの状態 */
-#define NO_COOKIE         10
-#define HAS_COOKIE_HIDDEN 11
-#define HAS_PERN          12
 
 protected:
      // begin wxGlade: ResponseWindow::attributes
