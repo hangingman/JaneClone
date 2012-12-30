@@ -18,7 +18,8 @@ DEP		= dep
 OUTPUTPATH	= .
 PROGRAM		= $(TARGET)
 PROGVER		= 1.0
-ICONFILE	= rc/janeclone.icns
+ICONPATH	= rc/janeclone.icns
+ICON		= janeclone.icns
 
 # Info.plist用の設定
 COMPANY			= Hiroyuki Nagata
@@ -60,19 +61,19 @@ $(BUNDLE):
 
 # Copying icon file into bundle
 	$(MACICON):
-	cp -p $(ICONFILE) $(BUNDLE)/Contents/Resources/$(nodir $(ICONFILE))
+	cp -f $(ICONPATH) $(BUNDLE)/Contents/Resources/$(ICONFILE)
 
 #  This creates the Contents/PkgInfo file.
 $(MACPKGINFO):
 	touch $(MACPKGINFO)
-	@echo -n "$(BUNDLEPACKAGE)$(BUNDLESIGNATURE)" > $(MACPKGINFO)
+	@echo "$(BUNDLEPACKAGE)$(BUNDLESIGNATURE)" > $(MACPKGINFO)
 
 #  This creates the Contents/Info.plist file.
 $(MACINFOPLIST):
 	touch $(MACINFOPLIST)
 	@echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" >> $(MACINFOPLIST)
-	@echo -n "<!DOCTYPE plist PUBLIC " >> $(MACINFOPLIST)
-	@echo -n "\"-//Apple Computer//DTD PLIST 1.0//EN\" " >> $(MACINFOPLIST)
+	@echo "<!DOCTYPE plist PUBLIC " >> $(MACINFOPLIST)
+	@echo "\"-//Apple Computer//DTD PLIST 1.0//EN\" " >> $(MACINFOPLIST)
 	@echo "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">" >> $(MACINFOPLIST)
 	@echo "<plist version=\"1.0\">" >> $(MACINFOPLIST)
 	@echo "<dict>" >> $(MACINFOPLIST)
@@ -81,7 +82,7 @@ $(MACINFOPLIST):
 	@echo "   <key>CFBundleExecutable</key>" >> $(MACINFOPLIST)
 	@echo "   <string>$(PROGRAM)</string>" >> $(MACINFOPLIST)
 	@echo "   <key>CFBundleIconFile</key>" >> $(MACINFOPLIST)
-	@echo "   <string>$(ICONFILE)</string>" >> $(MACINFOPLIST)
+	@echo "   <string>$(ICON)</string>" >> $(MACINFOPLIST)
 	@echo "   <key>CFBundleName</key>" >> $(MACINFOPLIST)
 	@echo "   <string>$(PROGRAM)</string>" >> $(MACINFOPLIST)
 	@echo "   <key>CFBundleIdentifier</key>" >> $(MACINFOPLIST)
@@ -111,7 +112,8 @@ all : $(LIBNKF) $(BUNDLE) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) $(TARGET)
 
 $(TARGET): $(OBJECTS)
 		$(CXX) $^ -o $@ $(LDFLAGS)
-		cp -p $(TARGET) $(BUNDLE)/Contents/MacOS/$(PROGRAM)
+		SetFile -t APPL $(PROGRAM)
+		cp -f $(TARGET) $(BUNDLE)/Contents/MacOS/$(PROGRAM)
 
 # debug
 .PHONY	: Debug
