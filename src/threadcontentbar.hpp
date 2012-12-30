@@ -30,48 +30,63 @@
 // begin wxGlade: ::dependencies
 // end wxGlade
 
-// begin wxGlade: ::extracode
+// 各ボタンに貼り付けられる画像
+static const wxString autoReloadImg = wxT("rc/appointment-new.png");
+static const wxString redResExtractImg = wxT("rc/system-search.png");
+static const wxString refreshImg = wxT("rc/view-refresh.png");
+static const wxString scrollToNewResImg = wxT("rc/go-bottom.png");
+static const wxString stopImg = wxT("rc/dialog-error.png");
+static const wxString resExtractImg = wxT("rc/edit-find-replace.png");
+static const wxString newThreadImg = wxT("rc/go-last.png");
+static const wxString responseImg = wxT("rc/format-justify-left.png");
+static const wxString bookMarkImg = wxT("rc/bookmark-new.png");
+static const wxString deleteLogImg = wxT("rc/edit-delete.png");
+static const wxString closeImg = wxT("rc/emblem-unreadble.png");
+static const wxString nomalSearchImg = wxT("rc/system-search.png");
+static const wxString hideSearchBarImg = wxT("rc/emblem-unreadble.png");
 
-// end wxGlade
+class ThreadContentBar: public wxPanel {
 
-
-class ThreadContentBar: public wxWindow {
 public:
-    // begin wxGlade: ThreadContentBar::ids
-    // end wxGlade
+     // begin wxGlade: ThreadContentBar::ids
+     // end wxGlade
 
-    ThreadContentBar(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_FRAME_STYLE);
+     ThreadContentBar(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, 
+		      long style=wxDEFAULT_FRAME_STYLE);
 
 private:
-    // begin wxGlade: ThreadContentBar::methods
-    void set_properties();
-    void do_layout();
-    // end wxGlade
+     // begin wxGlade: ThreadContentBar::methods
+     void set_properties();
+     void do_layout();
+     // end wxGlade
+
+     // このウィンドウのタイトル
+     wxString m_threadTitle;
 
 protected:
-    // begin wxGlade: ThreadContentBar::attributes
-    wxStaticText* threadName;
-    wxPanel* spacePanel1;
-    wxBitmapButton* autoReloadButton;
-    wxBitmapButton* redResExtractButton;
-    wxBitmapButton* refleshButton;
-    wxBitmapButton* scrollToNewResponseButton;
-    wxBitmapButton* stopButton;
-    wxBitmapButton* resExtractButton;
-    wxBitmapButton* newThreadButton;
-    wxBitmapButton* responseButton;
-    wxBitmapButton* bookMarkButton;
-    wxBitmapButton* deleteLogButton;
-    wxBitmapButton* closeButton;
-    wxPanel* threadContentsBarUpperSizer;
-    wxBitmapButton* nomalSearchButton;
-    wxComboBox* searchWordCombo;
-    wxButton* backwordButton;
-    wxButton* forwardButton;
-    wxPanel* panel_2;
-    wxBitmapButton* hideSearchBarButton;
-    wxPanel* panel_1;
-    // end wxGlade
+     // begin wxGlade: ThreadContentBar::attributes
+     wxStaticText* threadName;
+     wxPanel* spacePanel1;
+     wxBitmapButton* autoReloadButton;
+     wxBitmapButton* redResExtractButton;
+     wxBitmapButton* refreshButton;
+     wxBitmapButton* scrollToNewResponseButton;
+     wxBitmapButton* stopButton;
+     wxBitmapButton* resExtractButton;
+     wxBitmapButton* newThreadButton;
+     wxBitmapButton* responseButton;
+     wxBitmapButton* bookMarkButton;
+     wxBitmapButton* deleteLogButton;
+     wxBitmapButton* closeButton;
+     wxPanel* threadContentsBarUpperSizer;
+     wxBitmapButton* nomalSearchButton;
+     wxComboBox* searchWordCombo;
+     wxButton* backwordButton;
+     wxButton* forwardButton;
+     wxPanel* panel_2;
+     wxBitmapButton* hideSearchBarButton;
+     wxPanel* panel_1;
+     // end wxGlade
 }; // wxGlade: end class
 
 
