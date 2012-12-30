@@ -40,10 +40,10 @@ enum {
 	ID_CopyFromHtmlWindow, 		// HtmlWindowで選択しているテキストをクリップボードにコピーする
 	ID_CopyURLFromHtmlWindow, 	// HtmlWindowで選択しているURLをクリップボードにコピーする
 	ID_SelectAllTextHtmlWindow,	// HtmlWindowでテキストを全て選択する
-	ID_SearchSelectWordByYahoo, // 選択したテキストでヤフー検索
-	ID_SearchSelectWordByGoogle,// 選択したテキストでGoogle検索
-	ID_SearchSelectWordByAmazon,// 選択したテキストでAmazon検索
-	ID_SearchThreadBySelectWord // 選択したテキストでスレタイ検索
+	ID_SearchSelectWordByYahoo,     // 選択したテキストでヤフー検索
+	ID_SearchSelectWordByGoogle,    // 選択したテキストでGoogle検索
+	ID_SearchSelectWordByAmazon,    // 選択したテキストでAmazon検索
+	ID_SearchThreadBySelectWord     // 選択したテキストでスレタイ検索
 };
 
 class WXDLLEXPORT ThreadContentWindow : public wxHtmlWindow {

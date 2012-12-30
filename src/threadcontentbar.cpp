@@ -33,43 +33,60 @@ ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoi
 {
      // begin wxGlade: ThreadContentBar::ThreadContentBar
      threadContentsBarUpperSizer = new wxPanel(this, wxID_ANY);
+     threadContentsBarUpperSizer->SetBackgroundColour(*wxLIGHT_GREY);
 
      // スレッドタイトルを保持する
-     m_threadTitle = wxT("");
-     threadName = new wxStaticText(threadContentsBarUpperSizer, wxID_ANY, m_threadTitle);
+     threadName = new wxStaticText(threadContentsBarUpperSizer, wxID_ANY, wxEmptyString);
      spacePanel1 = new wxPanel(threadContentsBarUpperSizer, wxID_ANY);
      // オートリロード
-     autoReloadButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(autoReloadImg, wxBITMAP_TYPE_ANY));
+     autoReloadButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(autoReloadImg, wxBITMAP_TYPE_ANY),
+	                                   wxDefaultPosition, threadContentBarImgSize);
      // 赤レス抽出
-     redResExtractButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY));
+     redResExtractButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY),
+					      wxDefaultPosition, threadContentBarImgSize);
      // 画面更新
-     refreshButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(refreshImg, wxBITMAP_TYPE_ANY));
+     refreshButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(refreshImg, wxBITMAP_TYPE_ANY),
+					wxDefaultPosition, threadContentBarImgSize);
      // 新着レスまで移動
-     scrollToNewResponseButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(scrollToNewResImg, wxBITMAP_TYPE_ANY));
+     scrollToNewResponseButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(scrollToNewResImg, wxBITMAP_TYPE_ANY),
+						    wxDefaultPosition, threadContentBarImgSize);
      // 中止
-     stopButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(stopImg, wxBITMAP_TYPE_ANY));
+     stopButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(stopImg, wxBITMAP_TYPE_ANY),
+				     wxDefaultPosition, threadContentBarImgSize);
      // レス抽出
-     resExtractButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(resExtractImg, wxBITMAP_TYPE_ANY));
+     resExtractButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(resExtractImg, wxBITMAP_TYPE_ANY),
+					   wxDefaultPosition, threadContentBarImgSize);
      // 新しいスレに移動
-     newThreadButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(newThreadImg, wxBITMAP_TYPE_ANY));
+     newThreadButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(newThreadImg, wxBITMAP_TYPE_ANY),
+					  wxDefaultPosition, threadContentBarImgSize);
      // レス
-     responseButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(responseImg, wxBITMAP_TYPE_ANY));
+     responseButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(responseImg, wxBITMAP_TYPE_ANY),
+					 wxDefaultPosition, threadContentBarImgSize);
      // お気に入り
-     bookMarkButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(bookMarkImg, wxBITMAP_TYPE_ANY));
+     bookMarkButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(bookMarkImg, wxBITMAP_TYPE_ANY),
+					 wxDefaultPosition, threadContentBarImgSize);
      // ログ削除
-     deleteLogButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(deleteLogImg, wxBITMAP_TYPE_ANY));
+     deleteLogButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(deleteLogImg, wxBITMAP_TYPE_ANY),
+					  wxDefaultPosition, threadContentBarImgSize);
      // 閉じる
-     closeButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(closeImg, wxBITMAP_TYPE_ANY));
+     closeButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(closeImg, wxBITMAP_TYPE_ANY),
+				      wxDefaultPosition, threadContentBarImgSize);
      // 通常検索
-     nomalSearchButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(nomalSearchImg, wxBITMAP_TYPE_ANY));
+     nomalSearchButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(nomalSearchImg, wxBITMAP_TYPE_ANY),
+					    wxDefaultPosition, threadContentBarImgSize);
 
      const wxString *searchWordCombo_choices = NULL;
      searchWordCombo = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
-     backwordButton = new wxButton(this, wxID_ANY, wxT("前へ"));
+     backwardButton = new wxButton(this, wxID_ANY, wxT("前へ"));
+     backwardButton->SetBitmap(wxBitmap(backwardImg, wxBITMAP_TYPE_ANY));
      forwardButton = new wxButton(this, wxID_ANY, wxT("次へ"));
+     forwardButton->SetBitmap(wxBitmap(forwardImg, wxBITMAP_TYPE_ANY));
      panel_2 = new wxPanel(this, wxID_ANY);
+
      // 検索バーを隠す
-     hideSearchBarButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(hideSearchBarImg, wxBITMAP_TYPE_ANY));
+     hideSearchBarButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(hideSearchBarImg, wxBITMAP_TYPE_ANY),
+					      wxDefaultPosition, threadContentBarImgSize);
+
      panel_1 = new wxPanel(this, wxID_ANY);
 
      set_properties();
@@ -81,8 +98,6 @@ ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoi
 void ThreadContentBar::set_properties()
 {
     // begin wxGlade: ThreadContentBar::set_properties
-    // SetTitle(wxT("frame_1"));
-    // SetSize(wxSize(1001, 480));
     threadName->SetFont(wxFont(12, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
     autoReloadButton->SetSize(autoReloadButton->GetBestSize());
     redResExtractButton->SetSize(redResExtractButton->GetBestSize());
@@ -124,7 +139,7 @@ void ThreadContentBar::do_layout()
     threadContentsBarSizer->Add(threadContentsBarUpperSizer, 0, wxEXPAND, 0);
     horizonalSizer2->Add(nomalSearchButton, 0, 0, 0);
     horizonalSizer2->Add(searchWordCombo, 0, 0, 0);
-    horizonalSizer2->Add(backwordButton, 0, 0, 0);
+    horizonalSizer2->Add(backwardButton, 0, 0, 0);
     horizonalSizer2->Add(forwardButton, 0, 0, 0);
     horizonalSizer2->Add(panel_2, 1, wxEXPAND, 0);
     horizonalSizer2->Add(hideSearchBarButton, 0, wxALIGN_RIGHT, 0);
@@ -133,5 +148,14 @@ void ThreadContentBar::do_layout()
     SetSizer(threadContentsBarSizer);
     Layout();
     // end wxGlade
+}
+
+void ThreadContentBar::SetTitle(const wxString& title) {
+     // スレッドタイトルを設定する
+     threadName->SetLabel(wxT("　") + title);
+}
+
+void ThreadContentBar::SetThreadContentWindow(ThreadContentWindow* threadContentWindow) {
+
 }
 

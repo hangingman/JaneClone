@@ -23,6 +23,7 @@
 
 #include <wx/wx.h>
 #include <wx/image.h>
+#include "threadcontentwindow.hpp"
 
 #ifndef THREADCONTENTBAR_H
 #define THREADCONTENTBAR_H
@@ -41,9 +42,12 @@ static const wxString newThreadImg = wxT("rc/go-last.png");
 static const wxString responseImg = wxT("rc/format-justify-left.png");
 static const wxString bookMarkImg = wxT("rc/bookmark-new.png");
 static const wxString deleteLogImg = wxT("rc/edit-delete.png");
-static const wxString closeImg = wxT("rc/emblem-unreadble.png");
+static const wxString closeImg = wxT("rc/emblem-unreadable.png");
 static const wxString nomalSearchImg = wxT("rc/system-search.png");
-static const wxString hideSearchBarImg = wxT("rc/emblem-unreadble.png");
+static const wxString hideSearchBarImg = wxT("rc/emblem-unreadable.png");
+static const wxString forwardImg = wxT("rc/go-down.png");
+static const wxString backwardImg = wxT("rc/go-up.png");
+static const wxSize   threadContentBarImgSize = wxSize(32, 32);
 
 class ThreadContentBar: public wxPanel {
 
@@ -54,14 +58,16 @@ public:
      ThreadContentBar(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, 
 		      long style=wxDEFAULT_FRAME_STYLE);
 
+     // スレッドタイトルをクラスに設定する
+     void SetTitle(const wxString& title);
+     // スレッドの内容を設定する
+     void SetThreadContentWindow(ThreadContentWindow* tcw);
+
 private:
      // begin wxGlade: ThreadContentBar::methods
      void set_properties();
      void do_layout();
      // end wxGlade
-
-     // このウィンドウのタイトル
-     wxString m_threadTitle;
 
 protected:
      // begin wxGlade: ThreadContentBar::attributes
@@ -81,11 +87,14 @@ protected:
      wxPanel* threadContentsBarUpperSizer;
      wxBitmapButton* nomalSearchButton;
      wxComboBox* searchWordCombo;
-     wxButton* backwordButton;
+     wxButton* backwardButton;
      wxButton* forwardButton;
      wxPanel* panel_2;
      wxBitmapButton* hideSearchBarButton;
+
+     // スレッドの内容を描画するクラス
      wxPanel* panel_1;
+
      // end wxGlade
 }; // wxGlade: end class
 

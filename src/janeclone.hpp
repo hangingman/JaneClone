@@ -75,6 +75,7 @@
 #include "metakitaccessor.hpp"
 #include "janecloneutil.hpp"
 #include "threadcontentwindow.hpp"
+#include "threadcontentbar.hpp"
 #include "anchoredresponsepopup.hpp"
 #include "responsewindow.hpp"
 
