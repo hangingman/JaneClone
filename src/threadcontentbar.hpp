@@ -43,11 +43,34 @@ static const wxString responseImg = wxT("rc/format-justify-left.png");
 static const wxString bookMarkImg = wxT("rc/bookmark-new.png");
 static const wxString deleteLogImg = wxT("rc/edit-delete.png");
 static const wxString closeImg = wxT("rc/emblem-unreadable.png");
-static const wxString nomalSearchImg = wxT("rc/system-search.png");
+static const wxString normalSearchImg = wxT("rc/system-search.png");
 static const wxString hideSearchBarImg = wxT("rc/emblem-unreadable.png");
 static const wxString forwardImg = wxT("rc/go-down.png");
 static const wxString backwardImg = wxT("rc/go-up.png");
+
+// 各ウィジェットのサイズなど
 static const wxSize   threadContentBarImgSize = wxSize(32, 32);
+static const wxSize   searchWordComboSize = wxSize(320, 32);
+
+// enum
+enum {
+     // ThreadContentBar => TCB
+     ID_TCBAutoReload = 101,
+     ID_TCBRedResExtract,
+     ID_TCBRefresh,
+     ID_TCBScrollToNewRes,
+     ID_TCBStop,
+     ID_TCBResExtract,
+     ID_TCBNewThread,
+     ID_TCBResponse,
+     ID_TCBBookMark,
+     ID_TCBDeleteLog,
+     ID_TCBClose,
+     ID_TCBNormalSearch,
+     ID_TCBHideSearchBar,
+     ID_TCBForward,
+     ID_TCBBackward
+};
 
 class ThreadContentBar: public wxPanel {
 
@@ -61,13 +84,35 @@ public:
      // スレッドタイトルをクラスに設定する
      void SetTitle(const wxString& title);
      // スレッドの内容を設定する
-     void SetThreadContentWindow(ThreadContentWindow* tcw);
+     void SetThreadContentWindow(const wxString& threadContentPath);
 
 private:
      // begin wxGlade: ThreadContentBar::methods
      void set_properties();
      void do_layout();
      // end wxGlade
+
+     // ボタン上にマウスがホバーした場合の処理
+     void OnHoverTCBAutoReload(wxMouseEvent& event);
+     void OnHoverTCBRedResExtract(wxMouseEvent event);
+     void OnHoverTCBRefresh(wxMouseEvent event);
+     void OnHoverTCBScrollToNewRes(wxMouseEvent event);
+     void OnHoverTCBStop(wxMouseEvent event);
+     void OnHoverTCBResExtract(wxMouseEvent event);
+     void OnHoverTCBNewThread(wxMouseEvent event);
+     void OnHoverTCBResponse(wxMouseEvent event);
+     void OnHoverTCBBookMark(wxMouseEvent event);
+     void OnHoverTCBDeleteLog(wxMouseEvent event);
+     void OnHoverTCBClose(wxMouseEvent event);
+     void OnHoverTCBNormalSearch(wxMouseEvent event);
+     void OnHoverTCBHideSearchBar(wxMouseEvent event);
+     void OnHoverTCBForward(wxMouseEvent event);
+     void OnHoverTCBBackward(wxMouseEvent event);
+
+     // スレッドの内容を描画するクラス
+     wxPanel* threadContentPanel;
+     // 検索ワードの履歴管理用文字列
+     wxString* searchWordCombo_choices;
 
 protected:
      // begin wxGlade: ThreadContentBar::attributes
@@ -92,9 +137,7 @@ protected:
      wxPanel* panel_2;
      wxBitmapButton* hideSearchBarButton;
 
-     // スレッドの内容を描画するクラス
-     wxPanel* panel_1;
-
+     DECLARE_EVENT_TABLE()
      // end wxGlade
 }; // wxGlade: end class
 

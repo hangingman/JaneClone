@@ -298,16 +298,6 @@ private:
      void SetThreadContentToNoteBook(const wxString&, const wxString&,
 				     const wxString&);
 
-     // ThreadContentWindowのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
-     WX_DECLARE_HASH_MAP( wxString, 		        // type of the keys
-			  ThreadContentWindow*,         // ポインタを詰める
-			  wxStringHash ,                // hasher
-			  wxStringEqual,                // key equality predicate
-			  ThreadContentWindowHash); 	// name of the class
-
-     // JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
-     ThreadContentWindowHash tcwHash;
-
      // ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
      WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
 			  ThreadInfo,           // 実体を詰める

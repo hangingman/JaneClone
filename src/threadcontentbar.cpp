@@ -23,9 +23,25 @@
 
 #include "threadcontentbar.hpp"
 
-// begin wxGlade: ::extracode
-
-// end wxGlade
+// event table
+BEGIN_EVENT_TABLE(ThreadContentBar, wxPanel)
+// マウスホバー時のイベントテーブル
+// EVT_MOUSE_EVENTS(ThreadContentBar::OnHoverTCBAutoReload)
+// EVT_ENTER_WINDOW(ID_TCBRedResExtract, ThreadContentBar::OnHoverTCBRedResExtract)
+// EVT_ENTER_WINDOW(ID_TCBRefresh, ThreadContentBar::OnHoverTCBRefresh)
+// EVT_ENTER_WINDOW(ID_TCBScrollToNewRes,  ThreadContentBar::OnHoverTCBScrollToNewRes)
+// EVT_ENTER_WINDOW(ID_TCBStop,            ThreadContentBar::OnHoverTCBStop)
+// EVT_ENTER_WINDOW(ID_TCBResExtract,      ThreadContentBar::OnHoverTCBResExtract)
+// EVT_ENTER_WINDOW(ID_TCBNewThread,       ThreadContentBar::OnHoverTCBNewThread)
+// EVT_ENTER_WINDOW(ID_TCBResponse,        ThreadContentBar::OnHoverTCBResponse)
+// EVT_ENTER_WINDOW(ID_TCBBookMark,        ThreadContentBar::OnHoverTCBBookMark)
+// EVT_ENTER_WINDOW(ID_TCBDeleteLog,       ThreadContentBar::OnHoverTCBDeleteLog)
+// EVT_ENTER_WINDOW(ID_TCBClose,           ThreadContentBar::OnHoverTCBClose)
+// EVT_ENTER_WINDOW(ID_TCBNormalSearch,    ThreadContentBar::OnHoverTCBNormalSearch)
+// EVT_ENTER_WINDOW(ID_TCBHideSearchBar,   ThreadContentBar::OnHoverTCBHideSearchBar)
+// EVT_ENTER_WINDOW(ID_TCBForward,         ThreadContentBar::OnHoverTCBForward)
+// EVT_ENTER_WINDOW(ID_TCBBackward,        ThreadContentBar::OnHoverTCBBackward)
+END_EVENT_TABLE()
 
 
 ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoint& pos, const wxSize& size, long style):
@@ -39,7 +55,7 @@ ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoi
      threadName = new wxStaticText(threadContentsBarUpperSizer, wxID_ANY, wxEmptyString);
      spacePanel1 = new wxPanel(threadContentsBarUpperSizer, wxID_ANY);
      // オートリロード
-     autoReloadButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(autoReloadImg, wxBITMAP_TYPE_ANY),
+     autoReloadButton = new wxBitmapButton(threadContentsBarUpperSizer, ID_TCBAutoReload, wxBitmap(autoReloadImg, wxBITMAP_TYPE_ANY),
 	                                   wxDefaultPosition, threadContentBarImgSize);
      // 赤レス抽出
      redResExtractButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY),
@@ -72,11 +88,15 @@ ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoi
      closeButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(closeImg, wxBITMAP_TYPE_ANY),
 				      wxDefaultPosition, threadContentBarImgSize);
      // 通常検索
-     nomalSearchButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(nomalSearchImg, wxBITMAP_TYPE_ANY),
+     nomalSearchButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(normalSearchImg, wxBITMAP_TYPE_ANY),
 					    wxDefaultPosition, threadContentBarImgSize);
 
-     const wxString *searchWordCombo_choices = NULL;
-     searchWordCombo = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
+     // スレッド内検索用コンボボックス
+     searchWordCombo_choices = NULL;
+     searchWordCombo = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition, searchWordComboSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
+     searchWordCombo->SetFont(wxFont(12, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
+
+     // 引っかかった検索ワードを前後させる
      backwardButton = new wxButton(this, wxID_ANY, wxT("前へ"));
      backwardButton->SetBitmap(wxBitmap(backwardImg, wxBITMAP_TYPE_ANY));
      forwardButton = new wxButton(this, wxID_ANY, wxT("次へ"));
@@ -86,8 +106,8 @@ ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoi
      // 検索バーを隠す
      hideSearchBarButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(hideSearchBarImg, wxBITMAP_TYPE_ANY),
 					      wxDefaultPosition, threadContentBarImgSize);
-
-     panel_1 = new wxPanel(this, wxID_ANY);
+     // スレッドの内容が乗るパネル
+     threadContentPanel = new wxPanel(this, wxID_ANY);
 
      set_properties();
      do_layout();
@@ -144,7 +164,7 @@ void ThreadContentBar::do_layout()
     horizonalSizer2->Add(panel_2, 1, wxEXPAND, 0);
     horizonalSizer2->Add(hideSearchBarButton, 0, wxALIGN_RIGHT, 0);
     threadContentsBarSizer->Add(horizonalSizer2, 0, wxEXPAND, 0);
-    threadContentsBarSizer->Add(panel_1, 1, wxEXPAND, 0);
+    threadContentsBarSizer->Add(threadContentPanel, 1, wxEXPAND | wxBOTTOM, 5);
     SetSizer(threadContentsBarSizer);
     Layout();
     // end wxGlade
@@ -155,7 +175,42 @@ void ThreadContentBar::SetTitle(const wxString& title) {
      threadName->SetLabel(wxT("　") + title);
 }
 
-void ThreadContentBar::SetThreadContentWindow(ThreadContentWindow* threadContentWindow) {
-
+void ThreadContentBar::SetThreadContentWindow(const wxString& threadContentPath) {
+     // スレッドの内容を表すウィンドウをthreadContentPanelを親として宣言する
+     ThreadContentWindow* tcw = new ThreadContentWindow(threadContentPanel, threadContentPath);
+     wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
+     vbox->Add(tcw, 1, wxEXPAND | wxALL, 5);
+     threadContentPanel->SetSizer(vbox);
 }
 
+void ThreadContentBar::OnHoverTCBAutoReload(wxMouseEvent& event) {
+     wxMessageBox(wxT("test"));
+}
+void ThreadContentBar::OnHoverTCBRedResExtract(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBRefresh(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBScrollToNewRes(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBStop(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBResExtract(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBNewThread(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBResponse(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBBookMark(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBDeleteLog(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBClose(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBNormalSearch(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBHideSearchBar(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBForward(wxMouseEvent event) {
+}
+void ThreadContentBar::OnHoverTCBBackward(wxMouseEvent event) {
+}
