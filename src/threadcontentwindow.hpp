@@ -32,82 +32,82 @@
 
 // 読み込みに失敗した場合に表示するページ
 static const wxString FAIL_TO_READ_PAGE =
-		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
+     wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
 			charset=UTF-8\"><title></title></head><body><span>ファイルの読み込みに失敗しました・リロードしてみてください</span></body></html>");
 
 // enum
 enum {
-	ID_CopyFromHtmlWindow, 		// HtmlWindowで選択しているテキストをクリップボードにコピーする
-	ID_CopyURLFromHtmlWindow, 	// HtmlWindowで選択しているURLをクリップボードにコピーする
-	ID_SelectAllTextHtmlWindow,	// HtmlWindowでテキストを全て選択する
-	ID_SearchSelectWordByYahoo,     // 選択したテキストでヤフー検索
-	ID_SearchSelectWordByGoogle,    // 選択したテキストでGoogle検索
-	ID_SearchSelectWordByAmazon,    // 選択したテキストでAmazon検索
-	ID_SearchThreadBySelectWord     // 選択したテキストでスレタイ検索
+     ID_CopyFromHtmlWindow,          // HtmlWindowで選択しているテキストをクリップボードにコピーする
+     ID_CopyURLFromHtmlWindow, 	     // HtmlWindowで選択しているURLをクリップボードにコピーする
+     ID_SelectAllTextHtmlWindow,     // HtmlWindowでテキストを全て選択する
+     ID_SearchSelectWordByYahoo,     // 選択したテキストでヤフー検索
+     ID_SearchSelectWordByGoogle,    // 選択したテキストでGoogle検索
+     ID_SearchSelectWordByAmazon,    // 選択したテキストでAmazon検索
+     ID_SearchThreadBySelectWord     // 選択したテキストでスレタイ検索
 };
 
 class WXDLLEXPORT ThreadContentWindow : public wxHtmlWindow {
 
 public:
-	/**
-	 * 通常のコンストラクタ
-	 */
-	ThreadContentWindow(wxWindow* parent, const wxString& threadContentPath);
-	/**
-	 * Hash用のコンストラクタ
-	 */
-	ThreadContentWindow() {}
-	ThreadContentWindow(const ThreadContentWindow&) {}
-	/**
-	 * オペレーターに対する参照返し
-	 */
-	ThreadContentWindow& operator=(const ThreadContentWindow&) {return *this;}
-	/**
-	 * 内部で持っているHTMLソースを返す
-	 */
-	wxString GetInternalHtmlSource();
-	/**
-	 * ウィンドウ上で右クリックした場合の処理
-	 */
-	void OnRightClickHtmlWindow(wxMouseEvent& event);
+     /**
+      * 通常のコンストラクタ
+      */
+     ThreadContentWindow(wxWindow* parent, const wxString& threadContentPath);
+     /**
+      * Hash用のコンストラクタ
+      */
+     ThreadContentWindow() {}
+     ThreadContentWindow(const ThreadContentWindow&) {}
+     /**
+      * オペレーターに対する参照返し
+      */
+     ThreadContentWindow& operator=(const ThreadContentWindow&) {return *this;}
+     /**
+      * 内部で持っているHTMLソースを返す
+      */
+     wxString GetInternalHtmlSource();
+     /**
+      * ウィンドウ上で右クリックした場合の処理
+      */
+     void OnRightClickHtmlWindow(wxMouseEvent& event);
 
 private:
-	/**
-	 * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
-	 */
-	const wxString GetConvertedDatFile(const wxString& threadContentPath);
-	/**
-	 * スレッドの最初の行を処理するメソッド
-	 */
-	wxString ProcessFirstResponse(wxString& threadRecord);
-	/**
-	 * スレッドの１以降を処理するメソッド
-	 */
-	wxString ProcessRestResponse(wxString& threadRecord, int number);
+     /**
+      * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
+      */
+     const wxString GetConvertedDatFile(const wxString& threadContentPath);
+     /**
+      * スレッドの最初の行を処理するメソッド
+      */
+     wxString ProcessFirstResponse(wxString& threadRecord);
+     /**
+      * スレッドの１以降を処理するメソッド
+      */
+     wxString ProcessRestResponse(wxString& threadRecord, int number);
 
-	// HtmlWindowで選択しているテキストをクリップボードにコピーする
-	void CopyFromHtmlWindow(wxCommandEvent& event);
-	// HtmlWindowで選択しているURLをクリップボードにコピーする
-	void CopyURLFromHtmlWindow(wxCommandEvent& event);
-	// HtmlWindowでテキストを全て選択する
-	void SelectAllTextHtmlWindow(wxCommandEvent& event);
-	// 選択したテキストでヤフー検索
-	void SearchSelectWordByYahoo(wxCommandEvent& event);
-	// 選択したテキストでGoogle検索
-	void SearchSelectWordByGoogle(wxCommandEvent& event);
-	// 選択したテキストでAmazon検索
-	void SearchSelectWordByAmazon(wxCommandEvent& event);
-	// 選択したテキストでスレタイ検索
-	void SearchThreadBySelectWord(wxCommandEvent& event);
+     // HtmlWindowで選択しているテキストをクリップボードにコピーする
+     void CopyFromHtmlWindow(wxCommandEvent& event);
+     // HtmlWindowで選択しているURLをクリップボードにコピーする
+     void CopyURLFromHtmlWindow(wxCommandEvent& event);
+     // HtmlWindowでテキストを全て選択する
+     void SelectAllTextHtmlWindow(wxCommandEvent& event);
+     // 選択したテキストでヤフー検索
+     void SearchSelectWordByYahoo(wxCommandEvent& event);
+     // 選択したテキストでGoogle検索
+     void SearchSelectWordByGoogle(wxCommandEvent& event);
+     // 選択したテキストでAmazon検索
+     void SearchSelectWordByAmazon(wxCommandEvent& event);
+     // 選択したテキストでスレタイ検索
+     void SearchThreadBySelectWord(wxCommandEvent& event);
 
 private:
-	// 内部でもつリンク情報
-	wxHtmlLinkInfo* m_linkInfo;
-	// 内部でもつテキスト情報
-	wxString m_selectedText;
+     // 内部でもつリンク情報
+     wxHtmlLinkInfo* m_linkInfo;
+     // 内部でもつテキスト情報
+     wxString m_selectedText;
 
-	DECLARE_EVENT_TABLE()
-	DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
+     DECLARE_EVENT_TABLE()
+     DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
 };
 
 #endif /* THREADCONTENTWINDOW_H_ */
