@@ -26,26 +26,27 @@
 // event table
 BEGIN_EVENT_TABLE(ThreadContentBar, wxPanel)
 // マウスホバー時のイベントテーブル
-// EVT_MOUSE_EVENTS(ThreadContentBar::OnHoverTCBAutoReload)
-// EVT_ENTER_WINDOW(ID_TCBRedResExtract, ThreadContentBar::OnHoverTCBRedResExtract)
-// EVT_ENTER_WINDOW(ID_TCBRefresh, ThreadContentBar::OnHoverTCBRefresh)
-// EVT_ENTER_WINDOW(ID_TCBScrollToNewRes,  ThreadContentBar::OnHoverTCBScrollToNewRes)
-// EVT_ENTER_WINDOW(ID_TCBStop,            ThreadContentBar::OnHoverTCBStop)
-// EVT_ENTER_WINDOW(ID_TCBResExtract,      ThreadContentBar::OnHoverTCBResExtract)
-// EVT_ENTER_WINDOW(ID_TCBNewThread,       ThreadContentBar::OnHoverTCBNewThread)
-// EVT_ENTER_WINDOW(ID_TCBResponse,        ThreadContentBar::OnHoverTCBResponse)
-// EVT_ENTER_WINDOW(ID_TCBBookMark,        ThreadContentBar::OnHoverTCBBookMark)
-// EVT_ENTER_WINDOW(ID_TCBDeleteLog,       ThreadContentBar::OnHoverTCBDeleteLog)
-// EVT_ENTER_WINDOW(ID_TCBClose,           ThreadContentBar::OnHoverTCBClose)
-// EVT_ENTER_WINDOW(ID_TCBNormalSearch,    ThreadContentBar::OnHoverTCBNormalSearch)
-// EVT_ENTER_WINDOW(ID_TCBHideSearchBar,   ThreadContentBar::OnHoverTCBHideSearchBar)
-// EVT_ENTER_WINDOW(ID_TCBForward,         ThreadContentBar::OnHoverTCBForward)
-// EVT_ENTER_WINDOW(ID_TCBBackward,        ThreadContentBar::OnHoverTCBBackward)
+//EVT_MOUSE_EVENTS(ThreadContentBar::OnHoverTCBAutoReload)
+//EVT_BUTTON(ID_TCBAutoReload, ThreadContentBar::OnClickTCBAutoReload)
+// EVT_ENTER_WINDOW(ID_TCBRedResExtract, ThreadContentBar::OnClickTCBRedResExtract)
+// EVT_ENTER_WINDOW(ID_TCBRefresh, ThreadContentBar::OnClickTCBRefresh)
+// EVT_ENTER_WINDOW(ID_TCBScrollToNewRes,  ThreadContentBar::OnClickTCBScrollToNewRes)
+// EVT_ENTER_WINDOW(ID_TCBStop,            ThreadContentBar::OnClickTCBStop)
+// EVT_ENTER_WINDOW(ID_TCBResExtract,      ThreadContentBar::OnClickTCBResExtract)
+// EVT_ENTER_WINDOW(ID_TCBNewThread,       ThreadContentBar::OnClickTCBNewThread)
+// EVT_ENTER_WINDOW(ID_TCBResponse,        ThreadContentBar::OnClickTCBResponse)
+// EVT_ENTER_WINDOW(ID_TCBBookMark,        ThreadContentBar::OnClickTCBBookMark)
+// EVT_ENTER_WINDOW(ID_TCBDeleteLog,       ThreadContentBar::OnClickTCBDeleteLog)
+// EVT_ENTER_WINDOW(ID_TCBClose,           ThreadContentBar::OnClickTCBClose)
+// EVT_ENTER_WINDOW(ID_TCBNormalSearch,    ThreadContentBar::OnClickTCBNormalSearch)
+// EVT_ENTER_WINDOW(ID_TCBHideSearchBar,   ThreadContentBar::OnClickTCBHideSearchBar)
+// EVT_ENTER_WINDOW(ID_TCBForward,         ThreadContentBar::OnClickTCBForward)
+// EVT_ENTER_WINDOW(ID_TCBBackward,        ThreadContentBar::OnClickTCBBackward)
 END_EVENT_TABLE()
 
 
 ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoint& pos, const wxSize& size, long style):
-     wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
+wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 {
      // begin wxGlade: ThreadContentBar::ThreadContentBar
      threadContentsBarUpperSizer = new wxPanel(this, wxID_ANY);
@@ -54,39 +55,126 @@ ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoi
      // スレッドタイトルを保持する
      threadName = new wxStaticText(threadContentsBarUpperSizer, wxID_ANY, wxEmptyString);
      spacePanel1 = new wxPanel(threadContentsBarUpperSizer, wxID_ANY);
-     // オートリロード
-     autoReloadButton = new wxBitmapButton(threadContentsBarUpperSizer, ID_TCBAutoReload, wxBitmap(autoReloadImg, wxBITMAP_TYPE_ANY),
-	                                   wxDefaultPosition, threadContentBarImgSize);
-     // 赤レス抽出
-     redResExtractButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY),
-					      wxDefaultPosition, threadContentBarImgSize);
-     // 画面更新
-     refreshButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(refreshImg, wxBITMAP_TYPE_ANY),
-					wxDefaultPosition, threadContentBarImgSize);
-     // 新着レスまで移動
-     scrollToNewResponseButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(scrollToNewResImg, wxBITMAP_TYPE_ANY),
-						    wxDefaultPosition, threadContentBarImgSize);
-     // 中止
-     stopButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(stopImg, wxBITMAP_TYPE_ANY),
-				     wxDefaultPosition, threadContentBarImgSize);
-     // レス抽出
-     resExtractButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(resExtractImg, wxBITMAP_TYPE_ANY),
-					   wxDefaultPosition, threadContentBarImgSize);
-     // 新しいスレに移動
-     newThreadButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(newThreadImg, wxBITMAP_TYPE_ANY),
-					  wxDefaultPosition, threadContentBarImgSize);
-     // レス
-     responseButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(responseImg, wxBITMAP_TYPE_ANY),
-					 wxDefaultPosition, threadContentBarImgSize);
-     // お気に入り
-     bookMarkButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(bookMarkImg, wxBITMAP_TYPE_ANY),
-					 wxDefaultPosition, threadContentBarImgSize);
-     // ログ削除
-     deleteLogButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(deleteLogImg, wxBITMAP_TYPE_ANY),
-					  wxDefaultPosition, threadContentBarImgSize);
-     // 閉じる
-     closeButton = new wxBitmapButton(threadContentsBarUpperSizer, wxID_ANY, wxBitmap(closeImg, wxBITMAP_TYPE_ANY),
-				      wxDefaultPosition, threadContentBarImgSize);
+
+     // wxAuiToolBar1を宣言する
+     threadToolbar1 = new wxAuiToolBar(threadContentsBarUpperSizer, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+				       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW | wxAUI_TB_HORIZONTAL);
+     threadToolbar1->SetToolBitmapSize(wxSize(32,32));
+     threadToolbar1->AddTool(ID_TCBAutoReload, wxT("autoreload"), 
+			     wxBitmap(autoReloadImg, wxBITMAP_TYPE_ANY), 
+			     wxT("オートリロード・スクロール"));
+     threadToolbar1->AddTool(ID_TCBRedResExtract, wxT("redresextract"), 
+			     wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), 
+			     wxT("赤レス抽出"));
+     // 新着チェックボタンは▼ボタンを押すとメニューが出る
+     threadToolbar1->AddSeparator();
+     threadToolbar1->AddTool(ID_TCBRefresh, wxT("refresh"), 
+			     wxBitmap(refreshImg, wxBITMAP_TYPE_ANY), 
+			     wxT("新着チェック/表示レス数/スレの再描画"));
+     // メニューの設定
+     wxAuiToolBarItemArray prepend_items1;
+     wxAuiToolBarItemArray append_items1;
+     wxAuiToolBarItem item;
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("新着チェック"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("すべてのタブの新着チェック"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("全てのタブの更新チェック"));
+     append_items1.Add(item);
+     threadToolbar1->SetCustomOverflowItems(prepend_items1, append_items1);
+     threadToolbar1->Realize();
+
+     // wxAuiToolBar2を宣言する
+     threadToolbar2 = new wxAuiToolBar(threadContentsBarUpperSizer, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+				       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW | wxAUI_TB_HORIZONTAL);
+     threadToolbar2->SetToolBitmapSize(wxSize(32,32));
+     threadToolbar2->AddTool(ID_TCBScrollToNewRes, wxT("scrolltonewres"), 
+			     wxBitmap(scrollToNewResImg, wxBITMAP_TYPE_ANY), 
+			     wxT("新着までスクロール"));
+     threadToolbar2->AddTool(ID_TCBStop, wxT("stop"), 
+			     wxBitmap(stopImg, wxBITMAP_TYPE_ANY), 
+			     wxT("中止"));
+     threadToolbar2->AddTool(ID_TCBResExtract, wxT("resextract"), 
+			     wxBitmap(resExtractImg, wxBITMAP_TYPE_ANY), 
+			     wxT("レス抽出"));
+     threadToolbar2->AddTool(ID_TCBNewThread, wxT("newthread"), 
+			     wxBitmap(newThreadImg, wxBITMAP_TYPE_ANY), 
+			     wxT("次スレ候補検索/次スレ候補を開く"));
+     threadToolbar2->AddTool(ID_TCBResponse, wxT("response"), 
+			     wxBitmap(responseImg, wxBITMAP_TYPE_ANY), 
+			     wxT("レス"));
+     threadToolbar2->AddTool(ID_TCBBookMark, wxT("bookmark"), 
+			     wxBitmap(bookMarkImg, wxBITMAP_TYPE_ANY), 
+			     wxT("ブックマークに追加"));
+     threadToolbar2->AddTool(ID_TCBDeleteLog, wxT("deletelog"), 
+			     wxBitmap(deleteLogImg, wxBITMAP_TYPE_ANY), 
+			     wxT("ログ削除"));
+     threadToolbar2->AddTool(ID_TCBClose, wxT("close"), 
+			     wxBitmap(closeImg, wxBITMAP_TYPE_ANY), 
+			     wxT("タブを閉じる/新着なしのタブを閉じる"));
+
+     // メニューの設定
+     wxAuiToolBarItemArray prepend_items2;
+     wxAuiToolBarItemArray append_items2;
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("このタブを閉じる"));
+     append_items2.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("未読として閉じる"));
+     append_items2.Add(item);
+
+     item.SetKind(wxITEM_SEPARATOR);
+     append_items2.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("このタブ以外を閉じる"));
+     append_items2.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("全てのタブを閉じる"));
+     append_items2.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("これより左を閉じる"));
+     append_items2.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("これより右を閉じる"));
+     append_items2.Add(item);
+
+     item.SetKind(wxITEM_SEPARATOR);
+     append_items2.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("新着なしのタブを閉じる"));
+     append_items2.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("dat落ちのタブを閉じる"));
+     append_items2.Add(item);
+
+     threadToolbar2->SetCustomOverflowItems(prepend_items2, append_items2);
+     threadToolbar2->AddSeparator();
+
+     threadToolbar2->Realize();
+
      // 通常検索
      nomalSearchButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(normalSearchImg, wxBITMAP_TYPE_ANY),
 					    wxDefaultPosition, threadContentBarImgSize);
@@ -119,17 +207,7 @@ void ThreadContentBar::set_properties()
 {
     // begin wxGlade: ThreadContentBar::set_properties
     threadName->SetFont(wxFont(12, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
-    autoReloadButton->SetSize(autoReloadButton->GetBestSize());
-    redResExtractButton->SetSize(redResExtractButton->GetBestSize());
-    refreshButton->SetSize(refreshButton->GetBestSize());
-    scrollToNewResponseButton->SetSize(scrollToNewResponseButton->GetBestSize());
-    stopButton->SetSize(stopButton->GetBestSize());
-    resExtractButton->SetSize(resExtractButton->GetBestSize());
-    newThreadButton->SetSize(newThreadButton->GetBestSize());
-    responseButton->SetSize(responseButton->GetBestSize());
-    bookMarkButton->SetSize(bookMarkButton->GetBestSize());
-    deleteLogButton->SetSize(deleteLogButton->GetBestSize());
-    closeButton->SetSize(closeButton->GetBestSize());
+
     nomalSearchButton->SetSize(nomalSearchButton->GetBestSize());
     hideSearchBarButton->SetSize(hideSearchBarButton->GetBestSize());
     // end wxGlade
@@ -144,19 +222,14 @@ void ThreadContentBar::do_layout()
     wxBoxSizer* horizonalSizer1 = new wxBoxSizer(wxHORIZONTAL);
     horizonalSizer1->Add(threadName, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     horizonalSizer1->Add(spacePanel1, 1, wxEXPAND, 0);
-    horizonalSizer1->Add(autoReloadButton, 0, wxALIGN_RIGHT, 0);
-    horizonalSizer1->Add(redResExtractButton, 0, wxALIGN_RIGHT, 0);
-    horizonalSizer1->Add(refreshButton, 0, wxALIGN_RIGHT, 0);
-    horizonalSizer1->Add(scrollToNewResponseButton, 0, wxALIGN_RIGHT, 0);
-    horizonalSizer1->Add(stopButton, 0, 0, 0);
-    horizonalSizer1->Add(resExtractButton, 0, 0, 0);
-    horizonalSizer1->Add(newThreadButton, 0, 0, 0);
-    horizonalSizer1->Add(responseButton, 0, 0, 0);
-    horizonalSizer1->Add(bookMarkButton, 0, 0, 0);
-    horizonalSizer1->Add(deleteLogButton, 0, 0, 0);
-    horizonalSizer1->Add(closeButton, 0, 0, 0);
+
+    // スレッド内容バー右上のボタン群
+    horizonalSizer1->Add(threadToolbar1, 0, wxALIGN_RIGHT, 0);
+    horizonalSizer1->Add(threadToolbar2, 0, wxALIGN_RIGHT, 0);
+
     threadContentsBarUpperSizer->SetSizer(horizonalSizer1);
     threadContentsBarSizer->Add(threadContentsBarUpperSizer, 0, wxEXPAND, 0);
+
     horizonalSizer2->Add(nomalSearchButton, 0, 0, 0);
     horizonalSizer2->Add(searchWordCombo, 0, 0, 0);
     horizonalSizer2->Add(backwardButton, 0, 0, 0);
@@ -183,34 +256,37 @@ void ThreadContentBar::SetThreadContentWindow(const wxString& threadContentPath)
      threadContentPanel->SetSizer(vbox);
 }
 
-void ThreadContentBar::OnHoverTCBAutoReload(wxMouseEvent& event) {
-     wxMessageBox(wxT("test"));
-}
-void ThreadContentBar::OnHoverTCBRedResExtract(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBRefresh(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBScrollToNewRes(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBStop(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBResExtract(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBNewThread(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBResponse(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBBookMark(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBDeleteLog(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBClose(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBNormalSearch(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBHideSearchBar(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBForward(wxMouseEvent event) {
-}
-void ThreadContentBar::OnHoverTCBBackward(wxMouseEvent event) {
-}
+// void ThreadContentBar::OnClickTCBAutoReload(wxCommandEvent& event) {
+//      wxMessageBox(wxT("click!"));
+// }
+// void ThreadContentBar::OnHoverTCBAutoReload(wxMouseEvent& event) {
+//      wxMessageBox(wxT("hover!"));
+// }
+// void ThreadContentBar::OnClickTCBRedResExtract(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBRefresh(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBScrollToNewRes(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBStop(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBResExtract(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBNewThread(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBResponse(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBBookMark(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBDeleteLog(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBClose(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBNormalSearch(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBHideSearchBar(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBForward(wxCommandEvent event) {
+// }
+// void ThreadContentBar::OnClickTCBBackward(wxCommandEvent event) {
+// }

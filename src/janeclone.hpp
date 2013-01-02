@@ -160,6 +160,8 @@ public:
 
 private:
 
+     void Test(wxMouseEvent& event);
+
      // begin wxGlade: JaneClone::methods
      // イベントテーブル系
      void OnQuit(wxCommandEvent& event);

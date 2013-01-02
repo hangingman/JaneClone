@@ -23,6 +23,7 @@
 
 #include <wx/wx.h>
 #include <wx/image.h>
+#include <wx/aui/aui.h>
 #include "threadcontentwindow.hpp"
 
 #ifndef THREADCONTENTBAR_H
@@ -55,7 +56,7 @@ static const wxSize   searchWordComboSize = wxSize(320, 32);
 // enum
 enum {
      // ThreadContentBar => TCB
-     ID_TCBAutoReload = 101,
+     ID_TCBAutoReload = 1,
      ID_TCBRedResExtract,
      ID_TCBRefresh,
      ID_TCBScrollToNewRes,
@@ -92,22 +93,25 @@ private:
      void do_layout();
      // end wxGlade
 
-     // ボタン上にマウスがホバーした場合の処理
-     void OnHoverTCBAutoReload(wxMouseEvent& event);
-     void OnHoverTCBRedResExtract(wxMouseEvent event);
-     void OnHoverTCBRefresh(wxMouseEvent event);
-     void OnHoverTCBScrollToNewRes(wxMouseEvent event);
-     void OnHoverTCBStop(wxMouseEvent event);
-     void OnHoverTCBResExtract(wxMouseEvent event);
-     void OnHoverTCBNewThread(wxMouseEvent event);
-     void OnHoverTCBResponse(wxMouseEvent event);
-     void OnHoverTCBBookMark(wxMouseEvent event);
-     void OnHoverTCBDeleteLog(wxMouseEvent event);
-     void OnHoverTCBClose(wxMouseEvent event);
-     void OnHoverTCBNormalSearch(wxMouseEvent event);
-     void OnHoverTCBHideSearchBar(wxMouseEvent event);
-     void OnHoverTCBForward(wxMouseEvent event);
-     void OnHoverTCBBackward(wxMouseEvent event);
+     // ボタン上をマウスがホバーした場合の処理
+     //void OnHoverTCBAutoReload(wxMouseEvent& event);
+
+     // ボタンをマウスがクリックした場合の処理
+     // void OnClickTCBAutoReload(wxCommandEvent& event);
+     // void OnClickTCBRedResExtract(wxCommandEvent event);
+     // void OnClickTCBRefresh(wxCommandEvent event);
+     // void OnClickTCBScrollToNewRes(wxCommandEvent event);
+     // void OnClickTCBStop(wxCommandEvent event);
+     // void OnClickTCBResExtract(wxCommandEvent event);
+     // void OnClickTCBNewThread(wxCommandEvent event);
+     // void OnClickTCBResponse(wxCommandEvent event);
+     // void OnClickTCBBookMark(wxCommandEvent event);
+     // void OnClickTCBDeleteLog(wxCommandEvent event);
+     // void OnClickTCBClose(wxCommandEvent event);
+     // void OnClickTCBNormalSearch(wxCommandEvent event);
+     // void OnClickTCBHideSearchBar(wxCommandEvent event);
+     // void OnClickTCBForward(wxCommandEvent event);
+     // void OnClickTCBBackward(wxCommandEvent event);
 
      // スレッドの内容を描画するクラス
      wxPanel* threadContentPanel;
@@ -118,17 +122,10 @@ protected:
      // begin wxGlade: ThreadContentBar::attributes
      wxStaticText* threadName;
      wxPanel* spacePanel1;
-     wxBitmapButton* autoReloadButton;
-     wxBitmapButton* redResExtractButton;
-     wxBitmapButton* refreshButton;
-     wxBitmapButton* scrollToNewResponseButton;
-     wxBitmapButton* stopButton;
-     wxBitmapButton* resExtractButton;
-     wxBitmapButton* newThreadButton;
-     wxBitmapButton* responseButton;
-     wxBitmapButton* bookMarkButton;
-     wxBitmapButton* deleteLogButton;
-     wxBitmapButton* closeButton;
+
+     wxAuiToolBar* threadToolbar1;
+     wxAuiToolBar* threadToolbar2;
+
      wxPanel* threadContentsBarUpperSizer;
      wxBitmapButton* nomalSearchButton;
      wxComboBox* searchWordCombo;
