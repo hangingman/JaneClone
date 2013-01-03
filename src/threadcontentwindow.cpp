@@ -25,7 +25,11 @@ IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
 
 // event table
 BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
+
+// 右クリック時のイベント
 EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
+
+// 右クリックメニューイベント
 EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
 EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
 EVT_MENU(ID_SelectAllTextHtmlWindow, ThreadContentWindow::SelectAllTextHtmlWindow)
@@ -33,6 +37,10 @@ EVT_MENU(ID_SearchSelectWordByYahoo,ThreadContentWindow::SearchSelectWordByYahoo
 EVT_MENU(ID_SearchSelectWordByGoogle,ThreadContentWindow::SearchSelectWordByGoogle)
 EVT_MENU(ID_SearchSelectWordByAmazon,ThreadContentWindow::SearchSelectWordByAmazon)
 EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
+
+// リサイズがかかった際のイベント
+EVT_SIZE(ThreadContentWindow::OnSize)
+
 END_EVENT_TABLE()
 
 /**
@@ -45,6 +53,10 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
      wxString htmlSource = GetConvertedDatFile(threadContentPath);
      // メモリに読み込んだHTMLを表示する
      this->SetPage(htmlSource);
+
+     // クラス変数にHMTL情報を格納する
+     //this->m_htmlSource.Alloc(htmlSource.Len());
+     this->m_htmlSource = htmlSource;
 }
 /**
  * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
@@ -372,4 +384,26 @@ void ThreadContentWindow::SearchThreadBySelectWord(wxCommandEvent& event) {
 
      // ! Fix Me !
      // 機能がいまいちよくわからない。もうちょっと考える。
+}
+/**
+ * リサイズ時のイベント
+ */
+void ThreadContentWindow::OnSize(wxSizeEvent& event) {
+
+     // int x, y;
+     // // 現在の位置を保存する
+     // wxString currpage = GetOpenedPage();
+     // GetViewStart(&x, &y);
+     // wxMessageBox(wxT("リサイズ発生:") + wxString::Format("%d, %d", x, y));
+
+     wxHtmlWindow::OnSize(event);
+     //wxMessageBox(m_htmlSource);
+
+     // if ( !currpage.IsEmpty() ) {
+     // 	  wxMessageBox(wxT("右記の位置までスクロール実行") + wxString::Format("%d, %d", x, y));
+     // 	  LoadPage(currpage);
+     // 	  Scroll(x, y);
+     // }
+     //wxHtmlWindow::Scroll(x, y);
+     //wxScrolledWindow::Scroll(x, y);
 }

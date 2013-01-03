@@ -63,10 +63,6 @@ public:
       */
      ThreadContentWindow& operator=(const ThreadContentWindow&) {return *this;}
      /**
-      * 内部で持っているHTMLソースを返す
-      */
-     wxString GetInternalHtmlSource();
-     /**
       * ウィンドウ上で右クリックした場合の処理
       */
      void OnRightClickHtmlWindow(wxMouseEvent& event);
@@ -105,6 +101,12 @@ private:
      wxHtmlLinkInfo* m_linkInfo;
      // 内部でもつテキスト情報
      wxString m_selectedText;
+     // 内部でもつHTML情報
+     wxString m_htmlSource;
+
+protected:
+     // リサイズ時のイベント
+     void OnSize(wxSizeEvent& event);
 
      DECLARE_EVENT_TABLE()
      DECLARE_DYNAMIC_CLASS(ThreadContentWindow)

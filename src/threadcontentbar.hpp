@@ -63,7 +63,6 @@ enum {
      ID_TCBStop,
      ID_TCBResExtract,
      ID_TCBNewThread,
-     ID_TCBResponse,
      ID_TCBBookMark,
      ID_TCBDeleteLog,
      ID_TCBClose,
