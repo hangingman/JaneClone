@@ -55,8 +55,9 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
      this->SetPage(htmlSource);
 
      // クラス変数にHMTL情報を格納する
-     //this->m_htmlSource.Alloc(htmlSource.Len());
-     this->m_htmlSource = htmlSource;
+     //this->m_htmlSource = htmlSource;
+     // スクロールのフラグ
+     fNeedScroll = false;
 }
 /**
  * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
@@ -390,20 +391,23 @@ void ThreadContentWindow::SearchThreadBySelectWord(wxCommandEvent& event) {
  */
 void ThreadContentWindow::OnSize(wxSizeEvent& event) {
 
-     // int x, y;
-     // // 現在の位置を保存する
-     // wxString currpage = GetOpenedPage();
-     // GetViewStart(&x, &y);
-     // wxMessageBox(wxT("リサイズ発生:") + wxString::Format("%d, %d", x, y));
-
+     // 現在の位置を保存する
+     GetViewStart(&m_x, &m_y);
+     fNeedScroll = true;
      wxHtmlWindow::OnSize(event);
-     //wxMessageBox(m_htmlSource);
-
-     // if ( !currpage.IsEmpty() ) {
-     // 	  wxMessageBox(wxT("右記の位置までスクロール実行") + wxString::Format("%d, %d", x, y));
-     // 	  LoadPage(currpage);
-     // 	  Scroll(x, y);
-     // }
-     //wxHtmlWindow::Scroll(x, y);
-     //wxScrolledWindow::Scroll(x, y);
+}
+/**
+ * 他のクラスからの強制スクロール命令
+ */
+int ThreadContentWindow::ForceScroll() {
+     
+     if (!fNeedScroll) {
+	  // スクロールしない
+	  return 0;
+     }
+     
+     // スクロール実行
+     Scroll(wxDefaultCoord, GetViewStart().y + m_y);
+     fNeedScroll = false;
+     return 0;
 }

@@ -1,3 +1,4 @@
+
 /* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012 Hiroyuki Nagata
  *
@@ -22,7 +23,7 @@
 #include "anchoredresponsepopup.hpp"
 
 enum {
-	Minimal_StartSimplePopup, Minimal_StartScrolledPopup, Minimal_LogWindow,
+     Minimal_StartSimplePopup, Minimal_StartScrolledPopup, Minimal_LogWindow,
 };
 
 IMPLEMENT_CLASS(AnchoredResponsePopup,wxPopupTransientWindow)
@@ -34,58 +35,70 @@ EVT_SET_FOCUS( AnchoredResponsePopup::OnSetFocus )
 EVT_KILL_FOCUS( AnchoredResponsePopup::OnKillFocus )
 END_EVENT_TABLE()
 
+/**
+ * ポップアップ用ウィンドウのコンストラクタ
+ *
+ * @param wxWindow* parent     親ウィンドウのインスタンス
+ * @param wxPoint&  point      ウィンドウの出現位置
+ * @param wxSize    size       ウィンドウのサイズ
+ * @raram wxString& htmlSource 表示させるHTMLソース
+ */
 AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource )
-:wxPopupTransientWindow( parent )
-{
-	wxBoxSizer *topsizer;
-	wxString html = HTML_HEADER;
-	html+=htmlSource;
-	html+=HTML_FOOTER;
+:wxPopupTransientWindow( parent ) {
+     wxBoxSizer *topsizer;
 
-	topsizer = new wxBoxSizer(wxVERTICAL);
-	// ここでサイズ指定してやらないと異常終了します
-	htmlWin = new wxHtmlWindow(this, wxID_ANY, point, size, wxHW_SCROLLBAR_NEVER);
-	htmlWin->SetBorders(0);
-	htmlWin->SetPage(html);
-	htmlWin->SetSize(htmlWin->GetInternalRepresentation()->GetWidth(),
-			htmlWin->GetInternalRepresentation()->GetHeight());
-
-	topsizer->Add(htmlWin, 1, wxALL, 10);
-	htmlWin->SetSizer(topsizer);
-	topsizer->Fit(this);
+     // HTMLのソース
+     wxString html = HTML_HEADER;
+     html+=htmlSource;
+     html+=HTML_FOOTER;
+     topsizer = new wxBoxSizer(wxVERTICAL);
+     // wxHtmlWindowにHTMLソースを設定する
+     htmlWin = new wxHtmlWindow(this, wxID_ANY, point, size, wxHW_SCROLLBAR_AUTO);
+     htmlWin->SetBorders(0);
+     htmlWin->SetPage(html);
+     // wxHtmlWindow内部での実質サイズを取得する
+     int hx = htmlWin->GetInternalRepresentation()->GetWidth();
+     int hy = htmlWin->GetInternalRepresentation()->GetHeight();
+     htmlWin->SetSize(hx, hy);
+     // このウィンドウ(popup)にサイザーをセットして最小の大きさに設定する
+     topsizer->Add(htmlWin, 1, wxALL, 10);
+     htmlWin->SetSizer(topsizer);
+     this->SetSize(hx, hy);
 }
 
 wxSize AnchoredResponsePopup::GetPopupWindowSize() {
-	return wxSize(htmlWin->GetInternalRepresentation()->GetWidth(), htmlWin->GetInternalRepresentation()->GetHeight());
+     return wxSize(htmlWin->GetInternalRepresentation()->GetWidth(), htmlWin->GetInternalRepresentation()->GetHeight());
 }
 
 void AnchoredResponsePopup::Popup(wxWindow* WXUNUSED(focus)) {
-	wxPopupTransientWindow::Popup();
+     wxPopupTransientWindow::Popup();
 }
 
 void AnchoredResponsePopup::OnDismiss() {
-	wxPopupTransientWindow::OnDismiss();
+     wxPopupTransientWindow::OnDismiss();
+     //wxMessageBox(wxT("on dismiss"));
 }
 
 bool AnchoredResponsePopup::ProcessLeftDown(wxMouseEvent& event) {
-	return wxPopupTransientWindow::ProcessLeftDown(event);
+     return wxPopupTransientWindow::ProcessLeftDown(event);
 }
 bool AnchoredResponsePopup::Show(bool show) {
-	return wxPopupTransientWindow::Show(show);
+     return wxPopupTransientWindow::Show(show);
 }
 
 void AnchoredResponsePopup::OnSize(wxSizeEvent &event) {
-	event.Skip();
+     event.Skip();
 }
 
 void AnchoredResponsePopup::OnSetFocus(wxFocusEvent &event) {
-	event.Skip();
+     event.Skip();
 }
 
 void AnchoredResponsePopup::OnKillFocus(wxFocusEvent &event) {
-	event.Skip();
+     //wxMessageBox(wxT("kill focus"));
+     event.Skip();
 }
 
 void AnchoredResponsePopup::OnMouse(wxMouseEvent &event) {
-	event.Skip();
+     event.Skip();
 }

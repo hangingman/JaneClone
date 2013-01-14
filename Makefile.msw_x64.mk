@@ -71,7 +71,7 @@ $(LIBNKF):
 		echo "libwxnkf found"; \
 	else \
 		echo "libwxnkf not found, so now build"; \
-		$(MAKE) -C $(NKFDIR) ; \
+		$(MAKE) -C $(NKFDIR) -f Makefile.msw_x64.mk ; \
 	fi
 
 # clean
@@ -80,4 +80,4 @@ clean:
 # all-clean
 all-clean:
 	$(RM) -f *.o $(TARGET).exe makefile.dep
-	$(MAKE) -C $(NKFDIR) clean
+	$(MAKE) -C $(NKFDIR) -f Makefile.msw_x64.mk clean

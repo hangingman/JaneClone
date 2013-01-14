@@ -22,6 +22,7 @@
 #ifndef ANCHOREDRESPONSEPOPUP_H_
 #define ANCHOREDRESPONSEPOPUP_H_
 
+#include <wx/msgdlg.h>
 #include <wx/html/htmlwin.h>
 #include <wx/scrolwin.h>
 #include <wx/popupwin.h>
@@ -32,27 +33,35 @@
 
 class AnchoredResponsePopup: public wxPopupTransientWindow {
 
-	public:
-	AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource );
-    virtual ~AnchoredResponsePopup(){};
+public:
+     /**
+      * ポップアップ用ウィンドウのコンストラクタ
+      *
+      * @param wxWindow* parent     親ウィンドウのインスタンス
+      * @param wxPoint&  point      ウィンドウの出現位置
+      * @param wxSize    size       ウィンドウのサイズ
+      * @raram wxString& htmlSource 表示させるHTMLソース
+      */
+     AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource );
+     virtual ~AnchoredResponsePopup(){};
 
-    void Popup(wxWindow *focus = NULL);
-    void OnDismiss();
-    bool ProcessLeftDown(wxMouseEvent& event);
-    bool Show( bool show = true );
-    wxSize GetPopupWindowSize();
+     void Popup(wxWindow *focus = NULL);
+     void OnDismiss();
+     bool ProcessLeftDown(wxMouseEvent& event);
+     bool Show( bool show = true );
+     wxSize GetPopupWindowSize();
 
 private:
-    void OnMouse( wxMouseEvent &event );
-    void OnSize( wxSizeEvent &event );
-    void OnSetFocus( wxFocusEvent &event );
-    void OnKillFocus( wxFocusEvent &event );
+     void OnMouse( wxMouseEvent &event );
+     void OnSize( wxSizeEvent &event );
+     void OnSetFocus( wxFocusEvent &event );
+     void OnKillFocus( wxFocusEvent &event );
 
 private:
-    wxHtmlWindow *htmlWin;
+     wxHtmlWindow *htmlWin;
 
-    DECLARE_CLASS(AnchoredResponsePopup)
-    DECLARE_EVENT_TABLE()
+     DECLARE_CLASS(AnchoredResponsePopup)
+     DECLARE_EVENT_TABLE()
 };
 
 #endif /* ANCHOREDRESPONSEPOPUP_H_ */

@@ -66,6 +66,10 @@ public:
       * ウィンドウ上で右クリックした場合の処理
       */
      void OnRightClickHtmlWindow(wxMouseEvent& event);
+     /**
+      * 他のクラスからの強制スクロール命令
+      */
+     int ForceScroll();
 
 private:
      /**
@@ -96,6 +100,12 @@ private:
      // 選択したテキストでスレタイ検索
      void SearchThreadBySelectWord(wxCommandEvent& event);
 
+     // リサイズ時のイベント
+     void OnSize(wxSizeEvent& event);
+
+     DECLARE_EVENT_TABLE()
+     DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
+
 private:
      // 内部でもつリンク情報
      wxHtmlLinkInfo* m_linkInfo;
@@ -103,13 +113,13 @@ private:
      wxString m_selectedText;
      // 内部でもつHTML情報
      wxString m_htmlSource;
+     // リサイズ前のスクロール座標
+     int m_x, m_y;
+     // スクロールさせる必要があるかどうか
+     boolean fNeedScroll;
 
 protected:
-     // リサイズ時のイベント
-     void OnSize(wxSizeEvent& event);
 
-     DECLARE_EVENT_TABLE()
-     DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
 };
 
 #endif /* THREADCONTENTWINDOW_H_ */

@@ -66,6 +66,7 @@
 #include <wx/tokenzr.h>
 #include <wx/font.h>
 #include <wx/fontdlg.h>
+#include <wx/mousemanager.h>
 
 // 自作クラスのヘッダ
 #include "extractboardlist.hpp"
@@ -126,6 +127,7 @@ enum {
 	ID_FontDialogLogWindow,         // ログ出力画面部分のフォントの指定を行う
 	ID_FontDialogBoardNotebook,     // スレッド一覧部分のフォントの指定を行う
 	ID_FontDialogThreadNotebook,    // スレッド画面部分のフォント設定を呼び出す
+	ID_FontDialogThreadContents,    // スレッド内で使用するフォント設定を呼び出す
 	ID_URLWindowButton              // URL入力ウィンドウのボタンを表すID
 };
 
@@ -137,7 +139,11 @@ enum {
 #define BOARD_NOTEBOOK wxT("boardNoteBook")
 #define THREAD_NOTEBOOK wxT("threadNoteBook")
 
-class JaneClone: public wxFrame {
+/**
+ * JaneClone本体はGUI構築用のwxFrameと
+ * マウスモーション管理用のwxMouseEventsManagerを継承する
+ */
+class JaneClone : public wxFrame {
 
 public:
      // begin wxGlade: JaneClone::ids
@@ -150,17 +156,17 @@ public:
 
      // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
      // URLvsBoardNameのHashMap（板名をkeyとしてBoardURLとascii文字の固有名を持つ）
-     WX_DECLARE_HASH_MAP( wxString, 	// type of the keys
-			  URLvsBoardName,			// type of the values
-			  wxStringHash ,			// hasher
-			  wxStringEqual,			// key equality predicate
-			  NameURLHash);			// name of the class
+     WX_DECLARE_HASH_MAP( wxString, 	 // type of the keys
+			  URLvsBoardName,// type of the values
+			  wxStringHash , // hasher
+			  wxStringEqual, // key equality predicate
+			  NameURLHash);  // name of the class
      // HashMapの本体
      NameURLHash retainHash;
 
 private:
 
-     void Test(wxMouseEvent& event);
+     void Test(wxAuiNotebookEvent& event);
 
      // begin wxGlade: JaneClone::methods
      // イベントテーブル系
@@ -173,6 +179,7 @@ private:
      void FontDialogLogWindow(wxCommandEvent& event);
      void FontDialogBoardNotebook(wxCommandEvent& event);
      void FontDialogThreadNotebook(wxCommandEvent& event);
+     void FontDialogThreadContents(wxCommandEvent& event);
      void SetFontDialog(const int enumType);
 
      // スレッド一覧タブ処理
@@ -216,6 +223,11 @@ private:
      void OnLinkClicked(wxHtmlLinkEvent& event);
      void OnClickURLWindowButton(wxCommandEvent& event);
 
+     // マウスモーション
+     // void OnMouseDown(wxMouseEvent& event);
+     // void OnMouseUp(wxMouseEvent& event);
+     // void OnMove(wxMouseEvent& event);
+
      // 各種GUI上の設定
      void SetJaneCloneManuBar();
      void SetProperties();
@@ -230,6 +242,11 @@ private:
      wxAuiManager m_mgr;
      // ステータスバー表示用文字列
      wxStatusBar* statusBarStr;
+
+     // マウスクリックしているかどうか
+     bool isClicking;
+     // ドラッグしているかどうか
+     bool isDragging;
 
      /**
       * 画面上部のオブジェクトとメソッド
@@ -340,7 +357,6 @@ private:
      // スレタブ上に存在するスレッドのURLを返す
      wxString GetThreadURL(const wxString title,const wxString boardNameAscii,const wxString origNumber);
 
-     
      DECLARE_EVENT_TABLE()
 };
 // wxGlade: end class

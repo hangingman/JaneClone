@@ -84,7 +84,7 @@ static const wxString FAIL_TO_POST = wxT("<html><head><meta http-equiv=\"Content
 static const wxString HTML_FOOTER = wxT("</body></html>");
 
 // スレッドの１番目を読み込む正規表現
-static const wxRegEx regexThreadFst(_T("^(.+)<>(.*)<>(.+)<>(.*)<>(.+)$"), wxRE_ADVANCED + wxRE_ICASE);
+static const wxRegEx regexThreadFst(_T("^(.+)<>(.*)<>(.+)<>(.*)<>(.+)"), wxRE_ADVANCED + wxRE_ICASE);
 
 // スレッド読み込み用正規表現
 static const wxRegEx regexThread(_T("^(.+)<>(.*)<>(.+)<>(.*)<>$"), wxRE_ADVANCED + wxRE_ICASE);
