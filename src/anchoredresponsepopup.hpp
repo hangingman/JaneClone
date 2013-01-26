@@ -52,7 +52,8 @@ public:
      wxSize GetPopupWindowSize();
 
 private:
-     void OnMouse( wxMouseEvent &event );
+     void EnterWindow(wxMouseEvent &event);
+     void LeaveWindow(wxMouseEvent &event);
      void OnSize( wxSizeEvent &event );
      void OnSetFocus( wxFocusEvent &event );
      void OnKillFocus( wxFocusEvent &event );

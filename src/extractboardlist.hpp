@@ -22,7 +22,6 @@
 #ifndef EXTRACTBOARDLIST_H
 #define EXTRACTBOARDLIST_H
 
-#include <wx/wx.h>
 #include <libxml/HTMLparser.h>
 #include "metakitaccessor.hpp"
 

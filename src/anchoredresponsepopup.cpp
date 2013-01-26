@@ -29,7 +29,8 @@ enum {
 IMPLEMENT_CLASS(AnchoredResponsePopup,wxPopupTransientWindow)
 
 BEGIN_EVENT_TABLE(AnchoredResponsePopup,wxPopupTransientWindow)
-EVT_MOUSE_EVENTS( AnchoredResponsePopup::OnMouse )
+EVT_ENTER_WINDOW( AnchoredResponsePopup::EnterWindow )
+EVT_LEAVE_WINDOW( AnchoredResponsePopup::LeaveWindow )
 EVT_SIZE( AnchoredResponsePopup::OnSize )
 EVT_SET_FOCUS( AnchoredResponsePopup::OnSetFocus )
 EVT_KILL_FOCUS( AnchoredResponsePopup::OnKillFocus )
@@ -76,7 +77,6 @@ void AnchoredResponsePopup::Popup(wxWindow* WXUNUSED(focus)) {
 
 void AnchoredResponsePopup::OnDismiss() {
      wxPopupTransientWindow::OnDismiss();
-     //wxMessageBox(wxT("on dismiss"));
 }
 
 bool AnchoredResponsePopup::ProcessLeftDown(wxMouseEvent& event) {
@@ -95,10 +95,13 @@ void AnchoredResponsePopup::OnSetFocus(wxFocusEvent &event) {
 }
 
 void AnchoredResponsePopup::OnKillFocus(wxFocusEvent &event) {
-     //wxMessageBox(wxT("kill focus"));
      event.Skip();
 }
 
-void AnchoredResponsePopup::OnMouse(wxMouseEvent &event) {
-     event.Skip();
+void AnchoredResponsePopup::EnterWindow(wxMouseEvent &event) {
+     wxMessageBox(wxT("エンターミッション～"));
+}
+
+void AnchoredResponsePopup::LeaveWindow(wxMouseEvent &event) {
+     wxMessageBox(wxT("離れちゃ嫌です西住殿～"));
 }

@@ -20,6 +20,7 @@
  */
 
 #include "extractboardlist.hpp"
+#include <wx/wx.h>
 
 /**
  * ExtractBoardList
