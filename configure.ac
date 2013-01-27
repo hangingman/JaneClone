@@ -56,11 +56,13 @@ AC_MSG_CHECKING(for special libxml2 includes)
 if test "x$XML2CONFIG" = "x"; then 
    AC_MSG_RESULT(libxml2 config not found) 
    else 
-   XML2CXXFLAGS=`$XML2CONFIG --cflags` 
-   AC_MSG_RESULT($XML2CXXFLAGS)
+   XML2CFLAGS=`$XML2CONFIG --cflags` 
+   AC_MSG_RESULT($XML2CFLAGS)
+   AC_SUBST(XML2CFLAGS)
    AC_CHECK_LIB(xml2, xmlReadMemory)
    XML2LIBS=`$XML2CONFIG --libs`
    AC_MSG_RESULT($XML2LIBS)
+   AC_SUBST(XML2LIBS)
 fi 
 
 # Checks for wxWidgets.
@@ -84,10 +86,6 @@ CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
 CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
 CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
 LIBS="$LIBS $WX_LIBS"
-
-# Check build library
-#AC_CHECK_LIB([mk4], [c4_View::c4_View()])
-#AC_CHECK_LIB([wxnkf], [wxNKF::Convert()])
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h langinfo.h locale.h stdlib.h string.h strings.h unistd.h])

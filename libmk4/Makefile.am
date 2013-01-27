@@ -1,2 +1,2 @@
-SUBDIRS = include libmk4
-ACLOCAL_AMFLAGS = -I m4
+SUBDIRS             = include libmk4
+ACLOCAL_AMFLAGS     = -I m4

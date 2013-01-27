@@ -61,7 +61,8 @@ am_JaneClone_OBJECTS = JaneClone-main.$(OBJEXT) \
 	JaneClone-extractboardlist.$(OBJEXT) \
 	JaneClone-threadcontentwindow.$(OBJEXT)
 JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
-JaneClone_DEPENDENCIES = $(am__append_1)
+JaneClone_DEPENDENCIES = ../libmk4/libmk4/libmk4.la \
+	../libmk4/libmk4/libmk4.la $(am__append_1)
 JaneClone_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(JaneClone_CXXFLAGS) \
 	$(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -171,7 +172,9 @@ WX_VERSION = @WX_VERSION@
 WX_VERSION_MAJOR = @WX_VERSION_MAJOR@
 WX_VERSION_MICRO = @WX_VERSION_MICRO@
 WX_VERSION_MINOR = @WX_VERSION_MINOR@
+XML2CFLAGS = @XML2CFLAGS@
 XML2CONFIG = @XML2CONFIG@
+XML2LIBS = @XML2LIBS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -252,9 +255,9 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 					responsewindow.hpp          \
 					threadcontentwindow.cpp
 
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CXXFLAGS@ -I../libwxnkf/include -I../libmk4/include -I../rc
-JaneClone_LDADD = @LIBS@ -L../libwxnkf -lwxnkf -L../libmk4 -lmk4 \
-	@XML2LIBS@ $(am__append_1)
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I../libwxnkf/libwxnkf -I../libwxnkf/include -I../libmk4/include -I../rc
+JaneClone_LDADD = @LIBS@ @XML2LIBS@ ../libmk4/libmk4/libmk4.la \
+	../libmk4/libmk4/libmk4.la $(am__append_1)
 ACLOCAL_AMFLAGS = -I m4
 all: all-am
 

@@ -1,2 +1,2 @@
-SUBDIRS = include libwxnkf
-ACLOCAL_AMFLAGS = -I m4
+SUBDIRS             = include libwxnkf
+ACLOCAL_AMFLAGS     = -I m4

@@ -30,7 +30,7 @@
 #define HAVE_MEMORY_H 1
 
 /* Define to 1 if you have the `memset' function. */
-/* #undef HAVE_MEMSET */
+#define HAVE_MEMSET 1
 
 /* Define to 1 if you have a working `mmap' system call. */
 /* #undef HAVE_MMAP */

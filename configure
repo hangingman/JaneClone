@@ -630,6 +630,8 @@ WX_CXXFLAGS
 WX_CFLAGS
 WX_CPPFLAGS
 WX_CONFIG_PATH
+XML2LIBS
+XML2CFLAGS
 XML2CONFIG
 USE_WINDRES_FALSE
 USE_WINDRES_TRUE
@@ -15304,9 +15306,10 @@ if test "x$XML2CONFIG" = "x"; then
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: libxml2 config not found" >&5
 $as_echo "libxml2 config not found" >&6; }
    else
-   XML2CXXFLAGS=`$XML2CONFIG --cflags`
-   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $XML2CXXFLAGS" >&5
-$as_echo "$XML2CXXFLAGS" >&6; }
+   XML2CFLAGS=`$XML2CONFIG --cflags`
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $XML2CFLAGS" >&5
+$as_echo "$XML2CFLAGS" >&6; }
+
    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for xmlReadMemory in -lxml2" >&5
 $as_echo_n "checking for xmlReadMemory in -lxml2... " >&6; }
 if ${ac_cv_lib_xml2_xmlReadMemory+:} false; then :
@@ -15355,6 +15358,7 @@ fi
    XML2LIBS=`$XML2CONFIG --libs`
    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $XML2LIBS" >&5
 $as_echo "$XML2LIBS" >&6; }
+
 fi
 
 # Checks for wxWidgets.
@@ -15672,10 +15676,6 @@ CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
 CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
 CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
 LIBS="$LIBS $WX_LIBS"
-
-# Check build library
-#AC_CHECK_LIB([mk4], [c4_View::c4_View()])
-#AC_CHECK_LIB([wxnkf], [wxNKF::Convert()])
 
 # Checks for header files.
 for ac_header in fcntl.h langinfo.h locale.h stdlib.h string.h strings.h unistd.h

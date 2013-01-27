@@ -69,9 +69,12 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libmk4_la_LIBADD =
-am_libmk4_la_OBJECTS = libmk4_la-column.lo libmk4_la-derived.lo \
-	libmk4_la-fileio.lo libmk4_la-handler.lo libmk4_la-remap.lo \
-	libmk4_la-store.lo libmk4_la-table.lo libmk4_la-view.lo
+am_libmk4_la_OBJECTS = libmk4_la-column.lo libmk4_la-custom.lo \
+	libmk4_la-derived.lo libmk4_la-field.lo libmk4_la-fileio.lo \
+	libmk4_la-format.lo libmk4_la-handler.lo libmk4_la-persist.lo \
+	libmk4_la-remap.lo libmk4_la-std.lo libmk4_la-store.lo \
+	libmk4_la-string.lo libmk4_la-table.lo libmk4_la-univ.lo \
+	libmk4_la-view.lo libmk4_la-viewx.lo
 libmk4_la_OBJECTS = $(am_libmk4_la_OBJECTS)
 libmk4_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
@@ -173,7 +176,9 @@ WX_VERSION = @WX_VERSION@
 WX_VERSION_MAJOR = @WX_VERSION_MAJOR@
 WX_VERSION_MICRO = @WX_VERSION_MICRO@
 WX_VERSION_MINOR = @WX_VERSION_MINOR@
+XML2CFLAGS = @XML2CFLAGS@
 XML2CONFIG = @XML2CONFIG@
+XML2LIBS = @XML2LIBS@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
@@ -235,13 +240,21 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libmk4.la
 # Sources for libmk4
 libmk4_la_SOURCES = column.cpp   \
+					custom.cpp   \
 				    derived.cpp  \
+				    field.cpp    \
 				    fileio.cpp   \
+				    format.cpp   \
 				    handler.cpp  \
+				    persist.cpp  \
 				    remap.cpp    \
+				    std.cpp      \
 				    store.cpp    \
+				    string.cpp   \
 				    table.cpp    \
-				    view.cpp
+				    univ.cpp     \
+				    view.cpp     \
+				    viewx.cpp
 
 # Linker options
 libmk4_la_LDFLAGS = 
@@ -323,13 +336,21 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-column.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-custom.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-derived.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-field.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-fileio.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-format.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-handler.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-persist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-remap.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-std.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-store.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-string.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-table.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-univ.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-view.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_la-viewx.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -359,12 +380,26 @@ libmk4_la-column.lo: column.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-column.lo `test -f 'column.cpp' || echo '$(srcdir)/'`column.cpp
 
+libmk4_la-custom.lo: custom.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-custom.lo -MD -MP -MF $(DEPDIR)/libmk4_la-custom.Tpo -c -o libmk4_la-custom.lo `test -f 'custom.cpp' || echo '$(srcdir)/'`custom.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-custom.Tpo $(DEPDIR)/libmk4_la-custom.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='custom.cpp' object='libmk4_la-custom.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-custom.lo `test -f 'custom.cpp' || echo '$(srcdir)/'`custom.cpp
+
 libmk4_la-derived.lo: derived.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-derived.lo -MD -MP -MF $(DEPDIR)/libmk4_la-derived.Tpo -c -o libmk4_la-derived.lo `test -f 'derived.cpp' || echo '$(srcdir)/'`derived.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-derived.Tpo $(DEPDIR)/libmk4_la-derived.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='derived.cpp' object='libmk4_la-derived.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-derived.lo `test -f 'derived.cpp' || echo '$(srcdir)/'`derived.cpp
+
+libmk4_la-field.lo: field.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-field.lo -MD -MP -MF $(DEPDIR)/libmk4_la-field.Tpo -c -o libmk4_la-field.lo `test -f 'field.cpp' || echo '$(srcdir)/'`field.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-field.Tpo $(DEPDIR)/libmk4_la-field.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='field.cpp' object='libmk4_la-field.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-field.lo `test -f 'field.cpp' || echo '$(srcdir)/'`field.cpp
 
 libmk4_la-fileio.lo: fileio.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-fileio.lo -MD -MP -MF $(DEPDIR)/libmk4_la-fileio.Tpo -c -o libmk4_la-fileio.lo `test -f 'fileio.cpp' || echo '$(srcdir)/'`fileio.cpp
@@ -373,12 +408,26 @@ libmk4_la-fileio.lo: fileio.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-fileio.lo `test -f 'fileio.cpp' || echo '$(srcdir)/'`fileio.cpp
 
+libmk4_la-format.lo: format.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-format.lo -MD -MP -MF $(DEPDIR)/libmk4_la-format.Tpo -c -o libmk4_la-format.lo `test -f 'format.cpp' || echo '$(srcdir)/'`format.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-format.Tpo $(DEPDIR)/libmk4_la-format.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='format.cpp' object='libmk4_la-format.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-format.lo `test -f 'format.cpp' || echo '$(srcdir)/'`format.cpp
+
 libmk4_la-handler.lo: handler.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-handler.lo -MD -MP -MF $(DEPDIR)/libmk4_la-handler.Tpo -c -o libmk4_la-handler.lo `test -f 'handler.cpp' || echo '$(srcdir)/'`handler.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-handler.Tpo $(DEPDIR)/libmk4_la-handler.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='handler.cpp' object='libmk4_la-handler.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-handler.lo `test -f 'handler.cpp' || echo '$(srcdir)/'`handler.cpp
+
+libmk4_la-persist.lo: persist.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-persist.lo -MD -MP -MF $(DEPDIR)/libmk4_la-persist.Tpo -c -o libmk4_la-persist.lo `test -f 'persist.cpp' || echo '$(srcdir)/'`persist.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-persist.Tpo $(DEPDIR)/libmk4_la-persist.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='persist.cpp' object='libmk4_la-persist.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-persist.lo `test -f 'persist.cpp' || echo '$(srcdir)/'`persist.cpp
 
 libmk4_la-remap.lo: remap.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-remap.lo -MD -MP -MF $(DEPDIR)/libmk4_la-remap.Tpo -c -o libmk4_la-remap.lo `test -f 'remap.cpp' || echo '$(srcdir)/'`remap.cpp
@@ -387,12 +436,26 @@ libmk4_la-remap.lo: remap.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-remap.lo `test -f 'remap.cpp' || echo '$(srcdir)/'`remap.cpp
 
+libmk4_la-std.lo: std.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-std.lo -MD -MP -MF $(DEPDIR)/libmk4_la-std.Tpo -c -o libmk4_la-std.lo `test -f 'std.cpp' || echo '$(srcdir)/'`std.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-std.Tpo $(DEPDIR)/libmk4_la-std.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='std.cpp' object='libmk4_la-std.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-std.lo `test -f 'std.cpp' || echo '$(srcdir)/'`std.cpp
+
 libmk4_la-store.lo: store.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-store.lo -MD -MP -MF $(DEPDIR)/libmk4_la-store.Tpo -c -o libmk4_la-store.lo `test -f 'store.cpp' || echo '$(srcdir)/'`store.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-store.Tpo $(DEPDIR)/libmk4_la-store.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='store.cpp' object='libmk4_la-store.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-store.lo `test -f 'store.cpp' || echo '$(srcdir)/'`store.cpp
+
+libmk4_la-string.lo: string.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-string.lo -MD -MP -MF $(DEPDIR)/libmk4_la-string.Tpo -c -o libmk4_la-string.lo `test -f 'string.cpp' || echo '$(srcdir)/'`string.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-string.Tpo $(DEPDIR)/libmk4_la-string.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='string.cpp' object='libmk4_la-string.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-string.lo `test -f 'string.cpp' || echo '$(srcdir)/'`string.cpp
 
 libmk4_la-table.lo: table.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-table.lo -MD -MP -MF $(DEPDIR)/libmk4_la-table.Tpo -c -o libmk4_la-table.lo `test -f 'table.cpp' || echo '$(srcdir)/'`table.cpp
@@ -401,12 +464,26 @@ libmk4_la-table.lo: table.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-table.lo `test -f 'table.cpp' || echo '$(srcdir)/'`table.cpp
 
+libmk4_la-univ.lo: univ.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-univ.lo -MD -MP -MF $(DEPDIR)/libmk4_la-univ.Tpo -c -o libmk4_la-univ.lo `test -f 'univ.cpp' || echo '$(srcdir)/'`univ.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-univ.Tpo $(DEPDIR)/libmk4_la-univ.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='univ.cpp' object='libmk4_la-univ.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-univ.lo `test -f 'univ.cpp' || echo '$(srcdir)/'`univ.cpp
+
 libmk4_la-view.lo: view.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-view.lo -MD -MP -MF $(DEPDIR)/libmk4_la-view.Tpo -c -o libmk4_la-view.lo `test -f 'view.cpp' || echo '$(srcdir)/'`view.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-view.Tpo $(DEPDIR)/libmk4_la-view.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='view.cpp' object='libmk4_la-view.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-view.lo `test -f 'view.cpp' || echo '$(srcdir)/'`view.cpp
+
+libmk4_la-viewx.lo: viewx.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_la-viewx.lo -MD -MP -MF $(DEPDIR)/libmk4_la-viewx.Tpo -c -o libmk4_la-viewx.lo `test -f 'viewx.cpp' || echo '$(srcdir)/'`viewx.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_la-viewx.Tpo $(DEPDIR)/libmk4_la-viewx.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='viewx.cpp' object='libmk4_la-viewx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_la-viewx.lo `test -f 'viewx.cpp' || echo '$(srcdir)/'`viewx.cpp
 
 mostlyclean-libtool:
 	-rm -f *.lo

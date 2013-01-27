@@ -1,4 +1,4 @@
-bin_PROGRAMS=JaneClone
+bin_PROGRAMS      = JaneClone
 JaneClone_SOURCES = extractboardlist.hpp        \
 					main.cpp                    \
 					socketcommunication.cpp     \
@@ -22,9 +22,9 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 					responsewindow.hpp          \
 					threadcontentwindow.cpp
 
-JaneClone_CXXFLAGS=@CXXFLAGS@ @XML2CXXFLAGS@ -I../libwxnkf/include -I../libmk4/include -I../rc
-JaneClone_LDADD=@LIBS@ -L../libwxnkf -lwxnkf -L../libmk4 -lmk4 @XML2LIBS@
-ACLOCAL_AMFLAGS=-I m4
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I../libwxnkf/libwxnkf -I../libwxnkf/include -I../libmk4/include -I../rc
+JaneClone_LDADD    = @LIBS@ @XML2LIBS@ ../libmk4/libmk4/libmk4.la ../libmk4/libmk4/libmk4.la
+ACLOCAL_AMFLAGS    = -I m4
 
 if USE_WINDRES
 JaneClone_LDADD += JaneClone_rc.o
