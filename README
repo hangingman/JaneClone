@@ -1,26 +1,27 @@
-========== ========== ==========
-  JaneClone  ver.0.6
-========== ========== ==========
+========== ========== ==========  
+  JaneClone  ver.0.7  
+========== ========== ==========  
+  
+【 ソフト名 】JaneClone  
+【 製 作 者 】永田　裕之  
+【  種  別  】２ちゃんねる専用ブラウザ  
+【 動作環境 】  
+  
+  Windows XP, Vista, 7  
+  Linux    (GTK2 or 3)  
+  Mac OSX  (Lion~)  
+  BSD      (GTK2 or 3)  
+  
+【バージョン】0.7
+【最終更新日】2013/02/10
 
-【 ソフト名 】	JaneClone
-【 製 作 者 】　　永田　裕之
-【  種  別  】 ２ちゃんねる専用ブラウザ
-【 動作環境 （予定）】
-Windows or Linux or *BSD or Mac OSX
-
-wxWidgets2.9.* がインストールされていて「wx-config」コマンドが使える
-libxml2がインストールされていて「xml2-config」コマンドが使える
-
-【バージョン】		0.6
-【最終更新日】	2012/08/30
-
-【 ウ ェ ブ 】	http://nantonaku-shiawase.hatenablog.com/
-【 E - mail 】 newserver002@gmail.com
+【 ウ ェ ブ 】http://nantonaku-shiawase.hatenablog.com/
+【 E - mail 】newserver002@gmail.com
 
 ---------- ----------
 ◇ 概要 ◇
 
-２ちゃんねるの専ブラ作成が目的です。wxWidgets,libxml2,libnkf,metakit を使っています。
+２ちゃんねる専用ブラウザです.クロスプラットフォームで使用出来ます.
 
 ◇ 開発環境 ◇
 
@@ -35,28 +36,19 @@ llvm-gcc-4.2 (GCC) 4.2.1, wxWidgets 2.9, metakit-2.4.9.7, libxml2はCommand Line
 GNU 一般公衆利用許諾契約書のバージョン2に従います
 
 ◇ インストール ◇
-
-(1) Windowsの場合
-MinGWのコンソールから「make」または「make -f Makefile」
-(2) Linuxの場合
-コンソールから「make -f Makefile.unx.mk」
-(3) Mac OSXの場合
-コンソールから「make -f Makefile.osx.mk」
+同梱されているINSTALLのファイルを参照してください
 
 ◇ アンインストール ◇
-
 ファイルを削除してください
 
 ----------
 
 ◇ 履歴 ◇
 
+主な変更のみ記載
+
 2011/12/19
 ・READMEをきっちり書く
-2011/12/23
-・LinuxバージョンのMakefileを書いてみる
-2012/01/03
-・gitをどれで使うか正直自分でも混乱してきたのでいろいろ整理した
 2012/05/04
 ・SQLiteを導入し情報取得処理をフレームクラスから分けた。とりあえず板一覧情報取得までテスト確認済。
 2012/05/24

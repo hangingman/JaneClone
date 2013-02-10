@@ -18,7 +18,7 @@ libmk4_la_SOURCES = column.cpp   \
 				    view.cpp     \
 				    viewx.cpp
 # Linker options
-libmk4_la_LDFLAGS = 
+libmk4_la_LDFLAGS = -static -O2 -s
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
 libmk4_la_CPPFLAGS = -I../include
