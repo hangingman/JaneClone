@@ -81,6 +81,9 @@ if test "$wxWin" != 1; then
 		])
 fi
 
+# Checks for zlib
+AC_CHECK_LIB(z, gzopen)
+
 # Add Flags
 CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
 CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"

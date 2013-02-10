@@ -53,6 +53,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   + #if !defined(LIBXML_STATIC)
 
   $ cd /usr/local/src
+  $ wget http://xmlsoft.org/sources/libxml2-2.9.0.tar.gz
   $ cd libxml2-2.9.0
   $ ./configure --prefix=/mingw --disable-shared
   $ make
@@ -95,7 +96,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ wx-config --version
   $ 2.9.4
 
-  MinGW64ではインクルードファイルの一部を修正する必要がある
+  !!! MinGW64ではインクルードファイルの一部を修正する必要がある !!!
   $ cd /mingw/include/wx/msw
   $ mv amd64.manifest wx.manifest
 
@@ -107,6 +108,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   + #if !defined(LIBXML_STATIC)
 
   $ cd /usr/local/src
+  $ wget http://xmlsoft.org/sources/libxml2-2.9.0.tar.gz
   $ cd libxml2-2.9.0
   $ ./configure --prefix=/mingw --disable-shared
   $ make
@@ -121,7 +123,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   [JaneCloneのコンパイル]
   $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
   $ cd /path/to/JaneClone
-  $ ./configure
+  $ CXX="x86_64-w64-mingw32-g++ -O2 -s" CC="x86_64-w64-mingw32-gcc -O2 -s" ./configure
   $ make
   $ make install
 

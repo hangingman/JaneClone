@@ -36,7 +36,6 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = JaneClone$(EXEEXT)
-@USE_WINDRES_TRUE@am__append_1 = JaneClone_rc.o
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -61,8 +60,12 @@ am_JaneClone_OBJECTS = JaneClone-main.$(OBJEXT) \
 	JaneClone-extractboardlist.$(OBJEXT) \
 	JaneClone-threadcontentwindow.$(OBJEXT)
 JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
-JaneClone_DEPENDENCIES = ../libmk4/libmk4/libmk4.la \
-	../libwxnkf/libwxnkf/libwxnkf.la $(am__append_1)
+@USE_WINDRES_FALSE@JaneClone_DEPENDENCIES =  \
+@USE_WINDRES_FALSE@	../libmk4/libmk4/libmk4.la \
+@USE_WINDRES_FALSE@	../libwxnkf/libwxnkf/libwxnkf.la
+@USE_WINDRES_TRUE@JaneClone_DEPENDENCIES = ../libmk4/libmk4/libmk4.la \
+@USE_WINDRES_TRUE@	../libwxnkf/libwxnkf/libwxnkf.la \
+@USE_WINDRES_TRUE@	JaneClone_rc.o
 JaneClone_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(JaneClone_CXXFLAGS) \
 	$(CXXFLAGS) $(JaneClone_LDFLAGS) $(LDFLAGS) -o $@
@@ -233,34 +236,41 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 JaneClone_SOURCES = extractboardlist.hpp        \
-					main.cpp                    \
-					socketcommunication.cpp     \
-					threadcontentwindow.hpp     \
-					anchoredresponsepopup.cpp   \
-					janeclone.cpp               \
-					metakitaccessor.cpp         \
-					socketcommunication.hpp     \
-					virtualboardlistctrl.cpp    \
-					anchoredresponsepopup.hpp   \
-					janeclone.hpp               \
-					metakitaccessor.hpp         \
-					threadcontentbar.cpp        \
-					virtualboardlistctrl.hpp    \
-					datatype.hpp                \
-					janecloneutil.cpp           \
-					responsewindow.cpp          \
-					threadcontentbar.hpp        \
-					extractboardlist.cpp        \
-					janecloneutil.hpp           \
-					responsewindow.hpp          \
-					threadcontentwindow.cpp
+		    main.cpp                    \
+		    socketcommunication.cpp     \
+		    threadcontentwindow.hpp     \
+		    anchoredresponsepopup.cpp   \
+		    janeclone.cpp               \
+		    metakitaccessor.cpp         \
+		    socketcommunication.hpp     \
+		    virtualboardlistctrl.cpp    \
+		    anchoredresponsepopup.hpp   \
+		    janeclone.hpp               \
+		    metakitaccessor.hpp         \
+		    threadcontentbar.cpp        \
+		    virtualboardlistctrl.hpp    \
+		    datatype.hpp                \
+		    janecloneutil.cpp           \
+		    responsewindow.cpp          \
+		    threadcontentbar.hpp        \
+		    extractboardlist.cpp        \
+		    janecloneutil.hpp           \
+		    responsewindow.hpp          \
+		    threadcontentwindow.cpp
 
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I../libwxnkf/libwxnkf -I../libwxnkf/include -I../libmk4/include -I../rc
-JaneClone_LDADD = ../libmk4/libmk4/libmk4.la \
-	../libwxnkf/libwxnkf/libwxnkf.la -lwx_mswu_aui-2.9 \
-	$(am__append_1)
-JaneClone_LDFLAGS = -O2 -s -static -Wl,--allow-multiple-definition @LIBS@ @XML2LIBS@
-ACLOCAL_AMFLAGS = -I m4
+# Platform is not Windows
+@USE_WINDRES_FALSE@JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I../libwxnkf/libwxnkf -I../libwxnkf/include -I../libmk4/include -I../rc
+
+# Platform is Windows
+@USE_WINDRES_TRUE@JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I../libwxnkf/libwxnkf -I../libwxnkf/include -I../libmk4/include -I../rc
+@USE_WINDRES_FALSE@JaneClone_LDADD = ../libmk4/libmk4/libmk4.la ../libwxnkf/libwxnkf/libwxnkf.la
+@USE_WINDRES_TRUE@JaneClone_LDADD = ../libmk4/libmk4/libmk4.la ../libwxnkf/libwxnkf/libwxnkf.la JaneClone_rc.o
+@USE_WINDRES_FALSE@JaneClone_LDFLAGS = -static @LIBS@ @XML2LIBS@
+
+# library for JaneClone
+@USE_WINDRES_TRUE@JaneClone_LDFLAGS = -static `wx-config --version=2.9 --static=yes --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
+@USE_WINDRES_FALSE@ACLOCAL_AMFLAGS = -I m4
+@USE_WINDRES_TRUE@ACLOCAL_AMFLAGS = -I m4
 all: all-am
 
 .SUFFIXES:
