@@ -72,6 +72,8 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ make
   $ make install
 
+  プロジェクト内部にbinディレクトリができていればビルド成功です
+
  [A.Windows(MinGW64)]
  B-1. 依存するライブラリのインストール
 
@@ -126,6 +128,8 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ CXX="x86_64-w64-mingw32-g++ -O2 -s" CC="x86_64-w64-mingw32-gcc -O2 -s" ./configure
   $ make
   $ make install
+
+  プロジェクト内部にbinディレクトリができていればビルド成功です
 
  [D.Linux(RedHat系)]
  D-1. 依存するライブラリのインストール

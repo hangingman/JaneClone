@@ -22,15 +22,17 @@ case "$host" in
         *-*-mingw*|*-*-cygwin*)
                 AC_DEFINE(PLATFORM_WIN32, 1, [Platform is Win32])
                 PLATFORM_STRING="Win32"
+		AC_SUBST(PLATFORM_STRING)
                 ;;
         *-*-linux*)
                 AC_DEFINE(PLATFORM_LINUX, 1, [Platform is Linux])
                 PLATFORM_STRING="Linux"
+		AC_SUBST(PLATFORM_STRING)
                 ;;
         *-*-darwin*)
-		AC_MSG_WARN([Hello])
                 AC_DEFINE(PLATFORM_APPLE, 1, [Platform is Apple])
                 PLATFORM_STRING="Apple"
+		AC_SUBST(PLATFORM_STRING)
                 ;;
         *)
                 AC_MSG_WARN([*** Please add $host to configure.ac checks!])

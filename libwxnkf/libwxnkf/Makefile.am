@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-lib_LTLIBRARIES = libwxnkf.la
+noinst_LTLIBRARIES = libwxnkf.la
 # Sources for libwxnkf
 libwxnkf_la_SOURCES = flagset.cpp   \
 	   	      utf8table.cpp \

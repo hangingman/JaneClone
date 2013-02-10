@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-lib_LTLIBRARIES = libmk4.la
+noinst_LTLIBRARIES = libmk4.la
 # Sources for libmk4
 libmk4_la_SOURCES = column.cpp   \
 	   	    custom.cpp   \
