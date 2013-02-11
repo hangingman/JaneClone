@@ -95,6 +95,12 @@ LIBS="$LIBS $WX_LIBS"
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h langinfo.h locale.h stdlib.h string.h strings.h unistd.h])
 
+# Checks for long value
+AC_CHECK_SIZEOF([long])
+if test ac_cv_sizeof_long = 8; then
+	AC_DEFINE(SIZEOF_LONG, 8)
+fi
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_INLINE

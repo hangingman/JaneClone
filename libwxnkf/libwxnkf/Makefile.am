@@ -1,17 +1,17 @@
 ACLOCAL_AMFLAGS = -I m4
-noinst_LTLIBRARIES = libwxnkf.la
+noinst_LIBRARIES = libwxnkf.a
 # Sources for libwxnkf
-libwxnkf_la_SOURCES = flagset.cpp   \
+libwxnkf_a_SOURCES = flagset.cpp   \
 	   	      utf8table.cpp \
 		      utf16util.cpp \
 		      util.cpp      \
 		      wxnkf.cpp     \
 		      wxnkfencoding.cpp
 # Linker options
-libwxnkf_la_LDFLAGS = -static
-libwxnkf_la_LIBADD  = @LIBS@
+libwxnkf_a_LDFLAG = -static
+#libwxnkf_a_LIBADD = @LIBS@
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
-libwxnkf_la_CXXFLAGS = -I../include @CXXFLAGS@
-libwxnkf_la_CPPFLAGS = -I../include @CPPFLAGS@
+libwxnkf_a_CXXFLAGS = -I$(top_builddir)/libwxnkf/include @CXXFLAGS@
+libwxnkf_a_CPPFLAGS = -I$(top_builddir)/libwxnkf/include @CPPFLAGS@
 

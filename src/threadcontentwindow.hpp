@@ -116,7 +116,7 @@ private:
      // リサイズ前のスクロール座標
      int m_x, m_y;
      // スクロールさせる必要があるかどうか
-     boolean fNeedScroll;
+     bool fNeedScroll;
 
 protected:
 

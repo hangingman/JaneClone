@@ -25,8 +25,8 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 # For Icon build and library dependency
 if USE_WINDRES
 # Platform is Windows
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I../libwxnkf/libwxnkf -I../libwxnkf/include -I../libmk4/include -I../rc
-JaneClone_LDADD    = ../libmk4/libmk4/libmk4.la ../libwxnkf/libwxnkf/libwxnkf.la JaneClone_rc.o
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf/libwxnkf -I$(top_builddir)/libwxnkf/include -I$(top_builddir)/libmk4/include -I$(top_builddir)/rc
+JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf/libwxnkf.la JaneClone_rc.o
 
 JaneClone_rc.o : ../rc/icon.rc
 	@WX_RESCOMP@ -i $^ -O coff -o $@
@@ -36,8 +36,8 @@ JaneClone_LDFLAGS  = -static `wx-config --version=2.9 --static=yes --libs aui,qa
 ACLOCAL_AMFLAGS    = -I m4
 else
 # Platform is not Windows
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I../libwxnkf/libwxnkf -I../libwxnkf/include -I../libmk4/include -I../rc
-JaneClone_LDADD    = ../libmk4/libmk4/libmk4.la ../libwxnkf/libwxnkf/libwxnkf.la
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf/libwxnkf -I$(top_builddir)/libwxnkf/include -I$(top_builddir)/libmk4/include -I$(top_builddir)/rc
+JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf/libwxnkf.a
 JaneClone_LDFLAGS  = @LIBS@ @XML2LIBS@
 ACLOCAL_AMFLAGS    = -I m4
 endif
