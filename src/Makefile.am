@@ -81,11 +81,6 @@ install :
 		echo "platform is Win32"; \
 		cp -rp $(rcdir) $(top_builddir)/$(packagedir); \
 		cp -p $(bin_PROGRAMS) $(top_builddir)/$(packagedir); \
-		@if [ -f $(top_builddir)/$(packagedir)/$(bin_PROGRAMS) ]; then \
-		@echo "===============================================";\
-		@echo "JaneClone Installation Completed Successfully !";\
-		@echo "===============================================";\
-		fi
 	fi
 #
 # install target for Linux
@@ -138,4 +133,14 @@ install :
 		echo "   <string>$(PROGRAM), Version $(PROGVER), $(COMPANY)</string>" >> $(MACINFOPLIST);	\
 		echo "</dict>" >> $(MACINFOPLIST);								\
 		echo "</plist>" >> $(MACINFOPLIST);								\
+	fi
+#
+# install is success ?
+#
+	@if [ -f $(top_builddir)/$(packagedir)/$(bin_PROGRAMS) ]; then \
+		echo "                                               ";\
+		echo "===============================================";\
+		echo "JaneClone Installation Completed Successfully !";\
+		echo "===============================================";\
+		echo "                                               ";\
 	fi
