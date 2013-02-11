@@ -26,9 +26,9 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 if USE_WINDRES
 # Platform is Windows
 JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf/libwxnkf -I$(top_builddir)/libwxnkf/include -I$(top_builddir)/libmk4/include -I$(top_builddir)/rc
-JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf/libwxnkf.la JaneClone_rc.o
+JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf/libwxnkf.a JaneClone_rc.o
 
-JaneClone_rc.o : ../rc/icon.rc
+JaneClone_rc.o : $(top_builddir)/rc/icon.rc
 	@WX_RESCOMP@ -i $^ -O coff -o $@
 
 # library for JaneClone
@@ -60,10 +60,10 @@ COMPANY		= Hiroyuki Nagata
 BUNDLEPACKAGE	= APPL
 BUNDLESIGNATURE	= ????
 
-# application bundle用の設定
+# application bundle
 BUNDLE		=$(OUTPUTPATH)/$(PROGRAM).app
 MACPKGINFO	=$(BUNDLE)/Contents/PkgInfo
-MACINFOPLIST	=$(BUNDLE)/Contents/Info.plist
+MACINFOPLIST=$(BUNDLE)/Contents/Info.plist
 
 ################################ install script #############################################
 
@@ -81,6 +81,11 @@ install :
 		echo "platform is Win32"; \
 		cp -rp $(rcdir) $(top_builddir)/$(packagedir); \
 		cp -p $(bin_PROGRAMS) $(top_builddir)/$(packagedir); \
+		@if [ -f $(top_builddir)/$(packagedir)/$(bin_PROGRAMS) ]; then \
+		@echo "===============================================";\
+		@echo "JaneClone Installation Completed Successfully !";\
+		@echo "===============================================";\
+		fi
 	fi
 #
 # install target for Linux

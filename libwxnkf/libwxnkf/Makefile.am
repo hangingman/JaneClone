@@ -9,7 +9,6 @@ libwxnkf_a_SOURCES = flagset.cpp   \
 		      wxnkfencoding.cpp
 # Linker options
 libwxnkf_a_LDFLAG = -static
-#libwxnkf_a_LIBADD = @LIBS@
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
 libwxnkf_a_CXXFLAGS = -I$(top_builddir)/libwxnkf/include @CXXFLAGS@
