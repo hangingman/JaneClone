@@ -38,7 +38,7 @@ else
 # Platform is not Windows
 JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf/libwxnkf -I$(top_builddir)/libwxnkf/include -I$(top_builddir)/libmk4/include -I$(top_builddir)/rc
 JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf/libwxnkf.a
-JaneClone_LDFLAGS  = @LIBS@ @XML2LIBS@
+JaneClone_LDFLAGS  = `wx-config --version=2.9 --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
 ACLOCAL_AMFLAGS    = -I m4
 endif
 
