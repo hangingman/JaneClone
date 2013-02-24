@@ -29,6 +29,9 @@ BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
 // 右クリック時のイベント
 EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
 
+// リンク押下時のイベント
+EVT_HTML_LINK_CLICKED(wxID_ANY, ThreadContentWindow::OnLeftClickHtmlWindow)
+
 // 右クリックメニューイベント
 EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
 EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
@@ -53,9 +56,6 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
      wxString htmlSource = GetConvertedDatFile(threadContentPath);
      // メモリに読み込んだHTMLを表示する
      this->SetPage(htmlSource);
-
-     // クラス変数にHMTL情報を格納する
-     //this->m_htmlSource = htmlSource;
      // スクロールのフラグ
      fNeedScroll = false;
 }
@@ -411,3 +411,41 @@ int ThreadContentWindow::ForceScroll() {
      fNeedScroll = false;
      return 0;
 }
+/**
+ * 左クリック時に起こるイベント
+ */
+void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
+     
+     const wxHtmlLinkInfo linkInfo = event.GetLinkInfo();
+     const wxString href = linkInfo.GetHref();
+     const wxString target = linkInfo.GetTarget();
+     
+     // bmp,jpg,jpeg,png,gifなどの拡張子が末尾に付いている場合ダウンロードを行う
+
+     if (regexImage.IsValid()) {
+	  wxMessageBox(wxT("426"));
+	  // 正規表現のコンパイルにエラーがなければマッチさせる
+	  if (regexURL.Matches(target)) {
+	       // 画像ファイルをクリックしたのでダウンロードする
+	       wxMessageBox(wxT("430"));
+	       wxWindow* window = this->GetParent();
+	       while (true) {
+		    if (window->GetLabel() == wxT("janeclone_window")) {
+			 wxMessageBox(window->GetLabel());
+			 SetJaneCloneImageViewer(window);
+			 break;
+		    } else {
+			 window = window->GetParent();
+		    }		    
+	       }
+	  }
+     }
+}
+/*
+ * 画像ビューアの状態を確認し、設定する
+ */
+void ThreadContentWindow::SetJaneCloneImageViewer(wxWindow* window) {
+
+     // 画像ビューアのインスタンスを確認して、nullであればインスタンスを作る
+}
+

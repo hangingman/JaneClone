@@ -89,8 +89,6 @@ EVT_LIST_COL_CLICK(wxID_ANY, JaneClone::OnLeftClickAtListCtrlCol)
 EVT_CLOSE(JaneClone::OnCloseWindow)
 // wxHtmlWindow上でのイベント処理
 EVT_HTML_CELL_HOVER(wxID_ANY, JaneClone::OnCellHover)
-EVT_HTML_CELL_CLICKED(wxID_ANY, JaneClone::OnCellClicked)
-EVT_HTML_LINK_CLICKED(wxID_ANY, JaneClone::OnLinkClicked)
 // URL入力ウィンドウのボタンイベント処理
 EVT_BUTTON(ID_URLWindowButton, JaneClone::OnClickURLWindowButton)
 
@@ -533,14 +531,17 @@ void JaneClone::SetProperties() {
 
      // カレントディレクトリを設定
      wxDir dir(wxGetCwd());
-     // datフォルダ、propフォルダが存在するか確認。無ければ確認＆フォルダを作成
+     // datフォルダ、propフォルダ、cacheフォルダが存在するか確認。無ければ確認＆フォルダを作成
      if (!dir.Exists(wxT("./dat/"))) {
 	  ::wxMkdir(wxT("./dat/"));
      }
-
      if (!dir.Exists(wxT("./prop/"))) {
 	  wxMkdir(wxT("./prop/"));
      }
+     if (!dir.Exists(wxT("./dat/cache/"))) {
+	  ::wxMkdir(wxT("./dat/cache/"));
+     }
+
      // 設定ファイルの準備をする
      wxString configFile = wxGetCwd();
 #ifdef __WXMSW__
@@ -693,6 +694,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
 #endif
      // 各ウィンドウで識別用のラベルを設定する
+     this->SetLabel(JANECLONE_WINDOW);
      m_search_ctrl->SetLabel(SEARCH_BAR);
      m_url_input_panel->SetLabel(URL_BAR);
      m_tree_ctrl->SetLabel(BOARD_TREE);
@@ -1004,16 +1006,6 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
 			      anchorPoint);
 	  }
      }
-}
-/**
- * 特定のセルがクリックされた場合の処理
- */
-void JaneClone::OnCellClicked(wxHtmlCellEvent& event) {
-}
-/*
- * 特定のリンクがクリックされた場合の処理
- */
-void JaneClone::OnLinkClicked(wxHtmlLinkEvent& event) {
 }
 /**
  * スレッド一覧ノートブックで、タブが消される前の処理

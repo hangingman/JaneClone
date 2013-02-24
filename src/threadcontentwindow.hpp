@@ -90,6 +90,11 @@ private:
      // 選択したテキストでスレタイ検索
      void SearchThreadBySelectWord(wxCommandEvent& event);
 
+     // linkを左クリックした時に起こるイベント
+     void OnLeftClickHtmlWindow(wxHtmlLinkEvent& event);
+     // 画像ビューアの状態を確認し、設定する
+     void SetJaneCloneImageViewer(wxWindow* window);
+
      // リサイズ時のイベント
      void OnSize(wxSizeEvent& event);
 

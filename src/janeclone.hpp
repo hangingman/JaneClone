@@ -80,6 +80,7 @@
 #include "threadcontentbar.hpp"
 #include "anchoredresponsepopup.hpp"
 #include "responsewindow.hpp"
+#include "janecloneimageviewer.hpp"
 
 /*
  * 定数値の宣言
@@ -91,12 +92,13 @@ static const wxString BOARD_LIST_PATH = wxT("./dat/boardlist.html");
 static const wxString BOARD_LIST_HEADER_PATH = wxT("./dat/boardlistheader.html");
 
 /** 各ウィジェットの名前を表す定数値 */
-#define SEARCH_BAR wxT("m_search_ctrl")
-#define URL_BAR wxT("m_url_input_panel")
-#define BOARD_TREE wxT("m_tree_ctrl")
-#define LOG_WINDOW wxT("m_logCtrl")
-#define BOARD_NOTEBOOK wxT("boardNoteBook")
-#define THREAD_NOTEBOOK wxT("threadNoteBook")
+#define JANECLONE_WINDOW       wxT("janeclone_window")
+#define SEARCH_BAR             wxT("m_search_ctrl")
+#define URL_BAR                wxT("m_url_input_panel")
+#define BOARD_TREE             wxT("m_tree_ctrl")
+#define LOG_WINDOW             wxT("m_logCtrl")
+#define BOARD_NOTEBOOK         wxT("boardNoteBook")
+#define THREAD_NOTEBOOK        wxT("threadNoteBook")
 
 /**
  * JaneClone本体はGUI構築用のwxFrameと
@@ -122,6 +124,9 @@ public:
 			  NameURLHash);  // name of the class
      // HashMapの本体
      NameURLHash retainHash;
+
+     // JaneClone内部のイメージビューアのインスタンス
+     static JaneCloneImageViewer* imageViewer;
 
 private:
 
@@ -178,8 +183,6 @@ private:
      void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
      void OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event);
      void OnCellHover(wxHtmlCellEvent& event);
-     void OnCellClicked(wxHtmlCellEvent& event);
-     void OnLinkClicked(wxHtmlLinkEvent& event);
      void OnClickURLWindowButton(wxCommandEvent& event);
 
      // マウスモーション
