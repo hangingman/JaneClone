@@ -28,6 +28,7 @@
 #include <wx/html/htmlwin.h>
 #include <wx/html/winpars.h>
 #include <wx/valgen.h>
+#include "enums.hpp"
 #include "socketcommunication.hpp"
 #include "datatype.hpp"
 #include "janecloneutil.hpp"
@@ -38,14 +39,6 @@
  */
 // begin wxGlade: ::extracode
 // end wxGlade
-
-// enum
-enum {
-     ID_ResponseWindow,
-     ID_QuitResponseWindow,
-     ID_PostResponse,
-     ID_PostConfirmForm
-};     
 
 /**
 

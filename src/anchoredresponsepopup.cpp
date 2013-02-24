@@ -99,9 +99,7 @@ void AnchoredResponsePopup::OnKillFocus(wxFocusEvent &event) {
 }
 
 void AnchoredResponsePopup::EnterWindow(wxMouseEvent &event) {
-     wxMessageBox(wxT("エンターミッション～"));
 }
 
 void AnchoredResponsePopup::LeaveWindow(wxMouseEvent &event) {
-     wxMessageBox(wxT("離れちゃ嫌です西住殿～"));
 }

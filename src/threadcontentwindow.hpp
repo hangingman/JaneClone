@@ -27,6 +27,7 @@
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 #include <wx/image.h>
+#include "enums.hpp"
 #include "datatype.hpp"
 #include "janecloneutil.hpp"
 
@@ -34,17 +35,6 @@
 static const wxString FAIL_TO_READ_PAGE =
      wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
 			charset=UTF-8\"><title></title></head><body><span>ファイルの読み込みに失敗しました・リロードしてみてください</span></body></html>");
-
-// enum
-enum {
-     ID_CopyFromHtmlWindow,          // HtmlWindowで選択しているテキストをクリップボードにコピーする
-     ID_CopyURLFromHtmlWindow, 	     // HtmlWindowで選択しているURLをクリップボードにコピーする
-     ID_SelectAllTextHtmlWindow,     // HtmlWindowでテキストを全て選択する
-     ID_SearchSelectWordByYahoo,     // 選択したテキストでヤフー検索
-     ID_SearchSelectWordByGoogle,    // 選択したテキストでGoogle検索
-     ID_SearchSelectWordByAmazon,    // 選択したテキストでAmazon検索
-     ID_SearchThreadBySelectWord     // 選択したテキストでスレタイ検索
-};
 
 class WXDLLEXPORT ThreadContentWindow : public wxHtmlWindow {
 

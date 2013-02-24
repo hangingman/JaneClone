@@ -120,5 +120,4 @@ AC_CONFIG_FILES([Makefile
                  libwxnkf/include/Makefile
                  libwxnkf/libwxnkf/Makefile
                  src/Makefile])
-LT_INIT
 AC_OUTPUT

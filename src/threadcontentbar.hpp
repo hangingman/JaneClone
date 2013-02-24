@@ -24,6 +24,7 @@
 #include <wx/wx.h>
 #include <wx/image.h>
 #include <wx/aui/aui.h>
+#include "enums.hpp"
 #include "threadcontentwindow.hpp"
 
 #ifndef THREADCONTENTBAR_H
@@ -52,25 +53,6 @@ static const wxString backwardImg = wxT("rc/go-up.png");
 // 各ウィジェットのサイズなど
 static const wxSize   threadContentBarImgSize = wxSize(32, 32);
 static const wxSize   searchWordComboSize = wxSize(320, 32);
-
-// enum
-enum {
-     // ThreadContentBar => TCB
-     ID_TCBAutoReload = 1,
-     ID_TCBRedResExtract,
-     ID_TCBRefresh,
-     ID_TCBScrollToNewRes,
-     ID_TCBStop,
-     ID_TCBResExtract,
-     ID_TCBNewThread,
-     ID_TCBBookMark,
-     ID_TCBDeleteLog,
-     ID_TCBClose,
-     ID_TCBNormalSearch,
-     ID_TCBHideSearchBar,
-     ID_TCBForward,
-     ID_TCBBackward
-};
 
 class ThreadContentBar: public wxPanel {
 
