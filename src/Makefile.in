@@ -58,7 +58,8 @@ am_JaneClone_OBJECTS = JaneClone-main.$(OBJEXT) \
 	JaneClone-janecloneutil.$(OBJEXT) \
 	JaneClone-responsewindow.$(OBJEXT) \
 	JaneClone-extractboardlist.$(OBJEXT) \
-	JaneClone-threadcontentwindow.$(OBJEXT)
+	JaneClone-threadcontentwindow.$(OBJEXT) \
+	JaneClone-janecloneimageviewer.$(OBJEXT)
 JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
 @USE_WINDRES_FALSE@JaneClone_DEPENDENCIES =  \
 @USE_WINDRES_FALSE@	$(top_builddir)/libmk4/libmk4/libmk4.a \
@@ -258,7 +259,9 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    extractboardlist.cpp        \
 		    janecloneutil.hpp           \
 		    responsewindow.hpp          \
-		    threadcontentwindow.cpp
+		    threadcontentwindow.cpp	\
+		    janecloneimageviewer.cpp	\
+		    janecloneimageviewer.hpp
 
 # Platform is not Windows
 @USE_WINDRES_FALSE@JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf/libwxnkf -I$(top_builddir)/libwxnkf/include -I$(top_builddir)/libmk4/include -I$(top_builddir)/rc
@@ -385,6 +388,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-anchoredresponsepopup.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-extractboardlist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-janeclone.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-janecloneimageviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-janecloneutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-metakitaccessor.Po@am__quote@
@@ -568,6 +572,20 @@ JaneClone-threadcontentwindow.obj: threadcontentwindow.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='threadcontentwindow.cpp' object='JaneClone-threadcontentwindow.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-threadcontentwindow.obj `if test -f 'threadcontentwindow.cpp'; then $(CYGPATH_W) 'threadcontentwindow.cpp'; else $(CYGPATH_W) '$(srcdir)/threadcontentwindow.cpp'; fi`
+
+JaneClone-janecloneimageviewer.o: janecloneimageviewer.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-janecloneimageviewer.o -MD -MP -MF $(DEPDIR)/JaneClone-janecloneimageviewer.Tpo -c -o JaneClone-janecloneimageviewer.o `test -f 'janecloneimageviewer.cpp' || echo '$(srcdir)/'`janecloneimageviewer.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-janecloneimageviewer.Tpo $(DEPDIR)/JaneClone-janecloneimageviewer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='janecloneimageviewer.cpp' object='JaneClone-janecloneimageviewer.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-janecloneimageviewer.o `test -f 'janecloneimageviewer.cpp' || echo '$(srcdir)/'`janecloneimageviewer.cpp
+
+JaneClone-janecloneimageviewer.obj: janecloneimageviewer.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-janecloneimageviewer.obj -MD -MP -MF $(DEPDIR)/JaneClone-janecloneimageviewer.Tpo -c -o JaneClone-janecloneimageviewer.obj `if test -f 'janecloneimageviewer.cpp'; then $(CYGPATH_W) 'janecloneimageviewer.cpp'; else $(CYGPATH_W) '$(srcdir)/janecloneimageviewer.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-janecloneimageviewer.Tpo $(DEPDIR)/JaneClone-janecloneimageviewer.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='janecloneimageviewer.cpp' object='JaneClone-janecloneimageviewer.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-janecloneimageviewer.obj `if test -f 'janecloneimageviewer.cpp'; then $(CYGPATH_W) 'janecloneimageviewer.cpp'; else $(CYGPATH_W) '$(srcdir)/janecloneimageviewer.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

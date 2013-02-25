@@ -30,6 +30,7 @@
 #include "enums.hpp"
 #include "datatype.hpp"
 #include "janecloneutil.hpp"
+#include "janecloneimageviewer.hpp"
 
 // 読み込みに失敗した場合に表示するページ
 static const wxString FAIL_TO_READ_PAGE =
@@ -93,7 +94,7 @@ private:
      // linkを左クリックした時に起こるイベント
      void OnLeftClickHtmlWindow(wxHtmlLinkEvent& event);
      // 画像ビューアの状態を確認し、設定する
-     void SetJaneCloneImageViewer(wxWindow* window);
+     void SetJaneCloneImageViewer(wxWindow* window, const wxString& href);
 
      // リサイズ時のイベント
      void OnSize(wxSizeEvent& event);

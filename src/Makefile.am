@@ -20,7 +20,9 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    extractboardlist.cpp        \
 		    janecloneutil.hpp           \
 		    responsewindow.hpp          \
-		    threadcontentwindow.cpp
+		    threadcontentwindow.cpp	\
+		    janecloneimageviewer.cpp	\
+		    janecloneimageviewer.hpp
 
 # For Icon build and library dependency
 if USE_WINDRES

@@ -423,29 +423,20 @@ void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
      // bmp,jpg,jpeg,png,gifなどの拡張子が末尾に付いている場合ダウンロードを行う
 
      if (regexImage.IsValid()) {
-	  wxMessageBox(wxT("426"));
 	  // 正規表現のコンパイルにエラーがなければマッチさせる
-	  if (regexURL.Matches(target)) {
+	  if (regexImage.Matches(href)) {
 	       // 画像ファイルをクリックしたのでダウンロードする
-	       wxMessageBox(wxT("430"));
-	       wxWindow* window = this->GetParent();
-	       while (true) {
-		    if (window->GetLabel() == wxT("janeclone_window")) {
-			 wxMessageBox(window->GetLabel());
-			 SetJaneCloneImageViewer(window);
-			 break;
-		    } else {
-			 window = window->GetParent();
-		    }		    
-	       }
+	       this->SetJaneCloneImageViewer(this, href);
 	  }
      }
 }
 /*
  * 画像ビューアの状態を確認し、設定する
  */
-void ThreadContentWindow::SetJaneCloneImageViewer(wxWindow* window) {
+void ThreadContentWindow::SetJaneCloneImageViewer(wxWindow* window, const wxString& href) {
 
-     // 画像ビューアのインスタンスを確認して、nullであればインスタンスを作る
+     JaneCloneImageViewer* imageViewer = JaneCloneImageViewer::GetInstance();
+     //imageViewer->JaneCloneImageViewer(window, wxBORDER_SIMPLE);
+     imageViewer->Position(wxDefaultPosition, wxSize(430, 300));
 }
 

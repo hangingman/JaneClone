@@ -31,8 +31,7 @@ JaneCloneImageViewer::JaneCloneImageViewer() {
 /**
  * Default constructor
  */
-JaneCloneImageViewer(wxWindow *parent, int flags=wxBORDER_SIMPLE ) {
-
+JaneCloneImageViewer::JaneCloneImageViewer(wxWindow *parent, int flags) {
 }
 /**
  * Default destructor
@@ -44,9 +43,7 @@ JaneCloneImageViewer::~JaneCloneImageViewer() {
  * Copy constructor
  */
 JaneCloneImageViewer::JaneCloneImageViewer(const JaneCloneImageViewer& rhs) {
-
 }
-
 /**
  * Assignment operator
  */

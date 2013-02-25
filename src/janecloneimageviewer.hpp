@@ -20,14 +20,25 @@
  * Contributor:
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
-#ifndef JANECLONEIMAGEVIEWER_H_
-#define JANECLONEIMAGEVIEWER_H_
+#ifndef JANECLONEIMAGEVIEWER_HPP_
+#define JANECLONEIMAGEVIEWER_HPP_
 
 #include <wx/popupwin.h>
 
+/**
+ * インスタンスが、プログラム全体でただ１つしか存在しない
+ * Singletonパターンを採用する
+ */
 class JaneCloneImageViewer : public wxPopupWindow {
 
 public:
+
+     static JaneCloneImageViewer* GetInstance() {
+	  static JaneCloneImageViewer instance;
+	  return &instance;
+     }
+
+private:
      /// Default constructor
      JaneCloneImageViewer();
      /// Destructor
@@ -42,4 +53,4 @@ public:
 };
 
 
-#endif /* JANECLONEIMAGEVIEWER_H_ */
+#endif /* JANECLONEIMAGEVIEWER_HPP_ */
