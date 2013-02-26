@@ -1573,3 +1573,74 @@ void SocketCommunication::WritePernData(wxString dataFilePath) {
      cookieFile.Close();
      delete config;
 }
+/**
+ * 指定されたURLからデータをダウンロードする
+ */
+void SocketCommunication::DownloadImageFile(const wxString& href, DownloadImageResult* result) {
+
+     // http or ftp
+     if (href.StartsWith(wxT("http")) || href.StartsWith(wxT("ttp"))) {
+	  // http もしくは ttpの場合
+	  DownloadImageFileByHttp(href, result);
+
+     } else if (href.StartsWith(wxT("ftp"))) {
+	  // ftp の場合(これってあんまり無くね？)
+	  DownloadImageFileByFtp(href, result);
+
+     } else {
+	  wxMessageBox(wxT("ダウンロード対象のURLがhttp, ftpいずれでもありません."), wxT("画像ダウンロード"), wxICON_ERROR);
+     }
+}
+/**
+ * HTTPでのダウンロード
+ */
+void SocketCommunication::DownloadImageFileByHttp(const wxString& href, DownloadImageResult* result) {
+
+     // 画像の保存先をコンフィグファイルから取得する
+     // デフォルトは ./dat/cache
+     InitializeCookie();
+     wxString imageFilePath = wxGetCwd();
+
+#ifdef __WXMSW__
+     // Windowsではパスの区切りは"\"
+     wxString tmp;
+     config->Read(wxT("CachePath"), &tmp, wxT("\\dat\\cache"));
+     imageFilePath += tmp;
+#else
+     // Linuxではパスの区切りは"/"
+     wxString tmp;
+     config->Read(wxT("CachePath"), &tmp, wxT("/dat/cache"));
+     imageFilePath += tmp;
+#endif
+     delete config;
+
+     /** Content-typeの判別 */
+     wxString contentType = JaneCloneUtil::DetermineContentType(href);
+
+     /** ダウンロード処理の開始 */
+     wxHTTP http; 
+     http.SetHeader(_T("Content-type"), contentType); 
+     http.SetTimeout(10);
+}
+/**
+ * FTPでのダウンロード
+ */
+void SocketCommunication::DownloadImageFileByFtp(const wxString& href, DownloadImageResult* result) {
+
+     // 画像の保存先をコンフィグファイルから取得する
+     // デフォルトは ./dat/cache
+     InitializeCookie();
+     wxString imageFilePath = wxGetCwd();
+#ifdef __WXMSW__
+     // Windowsではパスの区切りは"\"
+     wxString tmp;
+     config->Read(wxT("CachePath"), &tmp, wxT("\\dat\\cache"));
+     imageFilePath += tmp;
+#else
+     // Linuxではパスの区切りは"/"
+     wxString tmp;
+     config->Read(wxT("CachePath"), &tmp, wxT("/dat/cache"));
+     imageFilePath += tmp;
+#endif
+     delete config;
+}

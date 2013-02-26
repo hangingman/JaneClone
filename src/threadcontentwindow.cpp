@@ -435,8 +435,17 @@ void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
  */
 void ThreadContentWindow::SetJaneCloneImageViewer(wxWindow* window, const wxString& href) {
 
-     JaneCloneImageViewer* imageViewer = JaneCloneImageViewer::GetInstance();
-     //imageViewer->JaneCloneImageViewer(window, wxBORDER_SIMPLE);
-     imageViewer->Position(wxDefaultPosition, wxSize(430, 300));
+     // 画像をダウンロードする
+     SocketCommunication* sock = new SocketCommunication();
+     DownloadImageResult* result = new DownloadImageResult;
+     sock->DownloadImageFile(href, result);
+     delete sock;
+
+     // 画像ビューアに表示させる
+     wxString title = wxT("1/1");
+     JaneCloneImageViewer* imageViewer = new JaneCloneImageViewer(window, title);
+     imageViewer->Show(true);
+
+     delete result;
 }
 

@@ -31,6 +31,7 @@
 #include "datatype.hpp"
 #include "janecloneutil.hpp"
 #include "janecloneimageviewer.hpp"
+#include "socketcommunication.hpp"
 
 // 読み込みに失敗した場合に表示するページ
 static const wxString FAIL_TO_READ_PAGE =

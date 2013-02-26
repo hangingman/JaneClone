@@ -31,7 +31,31 @@ JaneCloneImageViewer::JaneCloneImageViewer() {
 /**
  * Default constructor
  */
-JaneCloneImageViewer::JaneCloneImageViewer(wxWindow *parent, int flags) {
+JaneCloneImageViewer::JaneCloneImageViewer(wxWindow* parent, wxString& title):
+     wxDialog(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE) {
+
+     // アイコンの設定を行う
+#ifdef __WXMSW__
+     SetIcon(wxICON(wxicon));
+#else
+     SetIcon(wxICON(janeclone));
+#endif
+
+     set_properties(title);
+     do_layout();
+}
+/**
+ * タイトルとサイズを設定
+ */
+void JaneCloneImageViewer::set_properties(const wxString& title) {
+    SetTitle(title);
+    SetSize(wxSize(640, 480));
+}
+/**
+ * レイアウトを設定する
+ */
+void JaneCloneImageViewer::do_layout() {
+    Layout();
 }
 /**
  * Default destructor

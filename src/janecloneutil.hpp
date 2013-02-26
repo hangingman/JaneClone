@@ -84,7 +84,10 @@ public:
       * 文字列をURLエンコードする
       */
      static std::string UrlEncode(const std::string& str);
-
+     /**
+      * URLの末尾にある拡張子が何か判別し、Content-Typeを返す
+      */
+     static wxString DetermineContentType(const wxString& href);
 
 private:
      // ディスクからの読取サイズ

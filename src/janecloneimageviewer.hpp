@@ -23,29 +23,31 @@
 #ifndef JANECLONEIMAGEVIEWER_HPP_
 #define JANECLONEIMAGEVIEWER_HPP_
 
-#include <wx/popupwin.h>
+#include <wx/wx.h>
 
 /**
- * インスタンスが、プログラム全体でただ１つしか存在しない
- * Singletonパターンを採用する
+ * 
  */
-class JaneCloneImageViewer : public wxPopupWindow {
+class JaneCloneImageViewer : public wxDialog {
 
 public:
 
-     static JaneCloneImageViewer* GetInstance() {
-	  static JaneCloneImageViewer instance;
-	  return &instance;
-     }
+     /// constructor
+     JaneCloneImageViewer(wxWindow* parent, wxString& title);
+     // static JaneCloneImageViewer* GetInstance() {
+     // 	  static JaneCloneImageViewer instance;
+     // 	  return &instance;
+     // }
 
 private:
      /// Default constructor
      JaneCloneImageViewer();
      /// Destructor
      ~JaneCloneImageViewer();
-     /// constructor
-     JaneCloneImageViewer(wxWindow *parent, int flags=wxBORDER_SIMPLE );
-     
+   
+     void set_properties(const wxString& title);
+     void do_layout();
+  
      /// Copy constructor
      JaneCloneImageViewer(const JaneCloneImageViewer& rhs);
      /// Assignment operator

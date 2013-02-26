@@ -344,3 +344,22 @@ std::string JaneCloneUtil::UrlEncode(const std::string& str) {
   
      return retStr;  
 }
+/**
+ * URLの末尾にある拡張子が何か判別し、Content-Typeを返す
+ */
+wxString JaneCloneUtil::DetermineContentType(const wxString& href) {
+
+     // ex) image/png; charset=utf-8
+     if (href.EndsWith(wxT(".jpg")) || href.EndsWith(wxT(".JPG"))) {
+	  return wxT("image/jpg; charset=utf-8");
+     } else if (href.EndsWith(wxT(".jpeg")) || href.EndsWith(wxT(".JPEG"))) {
+	  return wxT("image/jpeg; charset=utf-8");
+     } else if (href.EndsWith(wxT(".png")) || href.EndsWith(wxT(".PNG"))) {
+	  return wxT("image/png; charset=utf-8");
+     } else if (href.EndsWith(wxT(".gif")) || href.EndsWith(wxT(".GIF"))) {
+	  return wxT("image/gif; charset=utf-8");
+     } else if (href.EndsWith(wxT(".bmp")) || href.EndsWith(wxT(".BMP"))) {
+	  return wxT("image/bmp; charset=utf-8");
+     }
+     
+}

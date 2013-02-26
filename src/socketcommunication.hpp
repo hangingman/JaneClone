@@ -128,6 +128,19 @@ public:
      void SetLogWindow(wxTextCtrl* logCtrl) {
 	  this->m_logCtrl = logCtrl;
      };
+     /**
+      * 指定されたURLからデータをダウンロードする
+      */
+     void DownloadImageFile(const wxString& href, DownloadImageResult* result);
+     /**
+      * HTTPでのダウンロード
+      */
+     void DownloadImageFileByHttp(const wxString& href, DownloadImageResult* result);
+     /**
+      * FTPでのダウンロード
+      */
+     void DownloadImageFileByFtp(const wxString& href, DownloadImageResult* result);
+
 
 private:
      /**

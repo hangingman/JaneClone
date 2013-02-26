@@ -102,4 +102,11 @@ typedef struct {
      wxString kakikomi;
 } PostContent;
 
+// 画像をダウンロードした後の結果
+typedef struct {
+     wxString imagePath;
+     wxString imageURL;
+     bool     result;
+} DownloadImageResult;
+
 #endif /* DATATYPE_H_ */
