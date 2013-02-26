@@ -1289,8 +1289,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      wxString cookieString = cookie + wxT("; ") + hiddenName + wxT("=") + hiddenVal + wxT("; PREN=") + pern;
 
      // URLからホスト名を取得する
-     wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
-			  wxRE_ADVANCED + wxRE_ICASE);
+     wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
      // ホスト名
      wxString hostName;
      if (reThreadList.IsValid()) {
@@ -1614,13 +1613,59 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
 #endif
      delete config;
 
+     imageFilePath += wxT("\\test.jpg");
+
      /** Content-typeの判別 */
      wxString contentType = JaneCloneUtil::DetermineContentType(href);
+
+     /** hostname, pathの検出 */
+     PartOfURI* uri = new PartOfURI;
+     wxString url = href;
+     bool ret = JaneCloneUtil::SubstringURI(url, uri);
+     wxString server = uri->hostname;
+     wxString path = uri->path;
+     wxString msg = wxT("");
+     delete uri;
 
      /** ダウンロード処理の開始 */
      wxHTTP http; 
      http.SetHeader(_T("Content-type"), contentType); 
      http.SetTimeout(10);
+
+     // 保存先を決める
+     wxFileOutputStream output(imageFilePath);
+     wxDataOutputStream store(output);
+
+     if (http.Connect(server, 80)) {
+	  wxInputStream *stream;
+	  stream = http.GetInputStream(path);
+
+	  if (stream == NULL) {
+	       output.Close();
+	       //return -1;
+	  } else {
+	       unsigned char buffer[1024];
+	       int byteRead;
+
+	       // ヘッダを書きだす
+	       //WriteHeaderFile(http, headerPath);
+
+	       // ストリームを受け取るループ部分
+	       while (!stream->Eof()) {
+		    stream->Read(buffer, sizeof(buffer));
+		    store.Write8(buffer, sizeof(buffer));
+		    byteRead = stream->LastRead();
+		    if (byteRead <= 0) {
+			 break;
+		    }
+	       }
+
+	       output.Close();
+	  }
+     } else {
+	  output.Close();
+	  //return -1;
+     }
 }
 /**
  * FTPでのダウンロード

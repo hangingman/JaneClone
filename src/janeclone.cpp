@@ -1658,8 +1658,7 @@ void JaneClone::SetBoardList() {
 
 	  // 正規表現を使ってサーバ名と板名(ascii)を取得する
 	  // そこまで難しい正規表現を使う必要はないようです
-	  wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED
-			       + wxRE_ICASE);
+	  wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
 
 	  // 正規表現のコンパイルにエラーがなければ
 	  if (reThreadList.IsValid()) {

@@ -19,10 +19,14 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef DATATYPE_H_
-#define DATATYPE_H_
+#ifndef DATATYPE_HPP_
+#define DATATYPE_HPP_
 
 #include <wx/regex.h>
+
+/**
+ * クラス
+ */
 
 // 2chの板名とURLを対応させるクラス
 class URLvsBoardName {
@@ -68,6 +72,36 @@ public:
 	wxString boardNameAscii;
 };
 
+/**
+ * 構造体
+ */
+
+// 書き込みを行う際の投稿内容
+typedef struct {
+     wxString name;
+     wxString mail;
+     wxString kakikomi;
+} PostContent;
+
+// 画像をダウンロードした後の結果
+typedef struct {
+     wxString imagePath;
+     wxString imageURL;
+     bool     result;
+} DownloadImageResult;
+
+// URIを分解した時の各要素
+typedef struct {
+     wxString protocol;
+     wxString hostname;
+     wxString port;
+     wxString path;
+} PartOfURI;
+
+/**
+ * 変数
+ */
+
 // ヘッダ部分にあたるHTML
 static const wxString HTML_HEADER =
 		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body bgcolor=#efefef text=black link=blue alink=red vlink=#660099>");
@@ -95,18 +129,7 @@ static const wxRegEx regexURL(_T("(http|https|ttp|ftp)://([[:alnum:]]|[[:punct:]
 // 画像リンク検出用正規表現
 static const wxRegEx regexImage(_T("(http|https|ttp|ftp)://([[:alnum:]]|[[:punct:]]|[=]|[~]|[+])*.(jpg|jpeg|png|gif|bmp)"), wxRE_ADVANCED + wxRE_ICASE);
 
-// 書き込みを行う際の投稿内容
-typedef struct {
-     wxString name;
-     wxString mail;
-     wxString kakikomi;
-} PostContent;
+// URIマッチング用正規表現
+static const wxRegEx regexURI(_T("(http|https|ttp|ftp)://([-0-9a-zA-Z\\._]*)(:[0-9]+)?([-/\\.a-zA-Z0-9_#~:.?+=&%!@]*)"), wxRE_ADVANCED + wxRE_ICASE);
 
-// 画像をダウンロードした後の結果
-typedef struct {
-     wxString imagePath;
-     wxString imageURL;
-     bool     result;
-} DownloadImageResult;
-
-#endif /* DATATYPE_H_ */
+#endif /* DATATYPE_HPP_ */

@@ -363,3 +363,21 @@ wxString JaneCloneUtil::DetermineContentType(const wxString& href) {
      }
      
 }
+/**
+ * URIから各パラメーターを抜き取る
+ */
+bool JaneCloneUtil::SubstringURI(wxString uri, PartOfURI* partOfUri) {
+
+     // 正規表現のコンパイルにエラーがなければ
+     if (regexURI.IsValid()) {
+	  // マッチさせる
+	  if (regexURI.Matches(uri)) {
+	       partOfUri->protocol = regexURI.GetMatch(uri, 1);
+	       partOfUri->hostname = regexURI.GetMatch(uri, 2);
+	       partOfUri->port = regexURI.GetMatch(uri, 3);
+	       partOfUri->path = regexURI.GetMatch(uri, 4);
+	       return true;
+	  }
+     }
+     return false;
+}

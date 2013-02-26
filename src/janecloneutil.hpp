@@ -88,6 +88,10 @@ public:
       * URLの末尾にある拡張子が何か判別し、Content-Typeを返す
       */
      static wxString DetermineContentType(const wxString& href);
+     /**
+      * URIから各パラメーターを抜き取る
+      */
+     static bool SubstringURI(wxString uri, PartOfURI* partOfUri);
 
 private:
      // ディスクからの読取サイズ
