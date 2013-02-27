@@ -19,8 +19,8 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef METAKITACCESSOR_H_
-#define METAKITACCESSOR_H_
+#ifndef METAKITACCESSOR_HPP_
+#define METAKITACCESSOR_HPP_
 
 #include <iostream>
 #include <wx/wx.h>
@@ -79,4 +79,4 @@ private:
 	wxArrayString* boardInfoArray;
 };
 
-#endif /* METAKITACCESSOR_H_ */
+#endif /* METAKITACCESSOR_HPP_ */

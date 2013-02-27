@@ -14,6 +14,7 @@
 # PARTICULAR PURPOSE.
 
 @SET_MAKE@
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkgincludedir = $(includedir)/@PACKAGE@
@@ -44,49 +45,38 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-SOURCES =
-DIST_SOURCES =
-RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
-	html-recursive info-recursive install-data-recursive \
-	install-dvi-recursive install-exec-recursive \
-	install-html-recursive install-info-recursive \
-	install-pdf-recursive install-ps-recursive install-recursive \
-	installcheck-recursive installdirs-recursive pdf-recursive \
-	ps-recursive uninstall-recursive
-RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
-  distclean-recursive maintainer-clean-recursive
-AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
-	$(RECURSIVE_CLEAN_TARGETS:-recursive=) tags TAGS ctags CTAGS \
-	distdir
+LIBRARIES = $(noinst_LIBRARIES)
+ARFLAGS = cru
+libmk4_a_AR = $(AR) $(ARFLAGS)
+libmk4_a_LIBADD =
+am_libmk4_a_OBJECTS = libmk4_a-column.$(OBJEXT) \
+	libmk4_a-custom.$(OBJEXT) libmk4_a-derived.$(OBJEXT) \
+	libmk4_a-field.$(OBJEXT) libmk4_a-fileio.$(OBJEXT) \
+	libmk4_a-format.$(OBJEXT) libmk4_a-handler.$(OBJEXT) \
+	libmk4_a-persist.$(OBJEXT) libmk4_a-remap.$(OBJEXT) \
+	libmk4_a-std.$(OBJEXT) libmk4_a-store.$(OBJEXT) \
+	libmk4_a-string.$(OBJEXT) libmk4_a-table.$(OBJEXT) \
+	libmk4_a-univ.$(OBJEXT) libmk4_a-view.$(OBJEXT) \
+	libmk4_a-viewx.$(OBJEXT)
+libmk4_a_OBJECTS = $(am_libmk4_a_OBJECTS)
+DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
+depcomp = $(SHELL) $(top_srcdir)/depcomp
+am__depfiles_maybe = depfiles
+am__mv = mv -f
+CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+CXXLD = $(CXX)
+CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
+	$(LDFLAGS) -o $@
+SOURCES = $(libmk4_a_SOURCES)
+DIST_SOURCES = $(libmk4_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-am__relativize = \
-  dir0=`pwd`; \
-  sed_first='s,^\([^/]*\)/.*$$,\1,'; \
-  sed_rest='s,^[^/]*/*,,'; \
-  sed_last='s,^.*/\([^/]*\)$$,\1,'; \
-  sed_butlast='s,/*[^/]*$$,,'; \
-  while test -n "$$dir1"; do \
-    first=`echo "$$dir1" | sed -e "$$sed_first"`; \
-    if test "$$first" != "."; then \
-      if test "$$first" = ".."; then \
-        dir2=`echo "$$dir0" | sed -e "$$sed_last"`/"$$dir2"; \
-        dir0=`echo "$$dir0" | sed -e "$$sed_butlast"`; \
-      else \
-        first2=`echo "$$dir2" | sed -e "$$sed_first"`; \
-        if test "$$first2" = "$$first"; then \
-          dir2=`echo "$$dir2" | sed -e "$$sed_rest"`; \
-        else \
-          dir2="../$$dir2"; \
-        fi; \
-        dir0="$$dir0"/"$$first"; \
-      fi; \
-    fi; \
-    dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
-  done; \
-  reldir="$$dir2"
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AR = @AR@
@@ -227,11 +217,35 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = include libmk4
 ACLOCAL_AMFLAGS = -I m4
-all: all-recursive
+noinst_LIBRARIES = libmk4.a
+# Sources for libmk4
+libmk4_a_SOURCES = column.cpp   \
+	   	    custom.cpp   \
+		    derived.cpp  \
+		    field.cpp    \
+		    fileio.cpp   \
+		    format.cpp   \
+		    handler.cpp  \
+		    persist.cpp  \
+		    remap.cpp    \
+		    std.cpp      \
+		    store.cpp    \
+		    string.cpp   \
+		    table.cpp    \
+		    univ.cpp     \
+		    view.cpp     \
+		    viewx.cpp
+
+# Linker options
+libmk4_a_LDFLAG = -static
+# Compiler options. Here we are adding the include directory
+# to be searched for headers included in the source code.
+libmk4_a_CPPFLAGS = -I$(top_builddir)/libmk4
+all: all-am
 
 .SUFFIXES:
+.SUFFIXES: .cpp .lo .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -263,81 +277,286 @@ $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
 
+clean-noinstLIBRARIES:
+	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
+libmk4.a: $(libmk4_a_OBJECTS) $(libmk4_a_DEPENDENCIES) 
+	-rm -f libmk4.a
+	$(libmk4_a_AR) libmk4.a $(libmk4_a_OBJECTS) $(libmk4_a_LIBADD)
+	$(RANLIB) libmk4.a
+
+mostlyclean-compile:
+	-rm -f *.$(OBJEXT)
+
+distclean-compile:
+	-rm -f *.tab.c
+
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-column.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-custom.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-derived.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-field.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-fileio.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-format.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-handler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-persist.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-remap.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-std.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-store.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-string.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-table.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-univ.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-view.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmk4_a-viewx.Po@am__quote@
+
+.cpp.o:
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
+
+.cpp.obj:
+@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.cpp.lo:
+@am__fastdepCXX_TRUE@	$(LTCXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
+
+libmk4_a-column.o: column.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-column.o -MD -MP -MF $(DEPDIR)/libmk4_a-column.Tpo -c -o libmk4_a-column.o `test -f 'column.cpp' || echo '$(srcdir)/'`column.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-column.Tpo $(DEPDIR)/libmk4_a-column.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='column.cpp' object='libmk4_a-column.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-column.o `test -f 'column.cpp' || echo '$(srcdir)/'`column.cpp
+
+libmk4_a-column.obj: column.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-column.obj -MD -MP -MF $(DEPDIR)/libmk4_a-column.Tpo -c -o libmk4_a-column.obj `if test -f 'column.cpp'; then $(CYGPATH_W) 'column.cpp'; else $(CYGPATH_W) '$(srcdir)/column.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-column.Tpo $(DEPDIR)/libmk4_a-column.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='column.cpp' object='libmk4_a-column.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-column.obj `if test -f 'column.cpp'; then $(CYGPATH_W) 'column.cpp'; else $(CYGPATH_W) '$(srcdir)/column.cpp'; fi`
+
+libmk4_a-custom.o: custom.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-custom.o -MD -MP -MF $(DEPDIR)/libmk4_a-custom.Tpo -c -o libmk4_a-custom.o `test -f 'custom.cpp' || echo '$(srcdir)/'`custom.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-custom.Tpo $(DEPDIR)/libmk4_a-custom.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='custom.cpp' object='libmk4_a-custom.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-custom.o `test -f 'custom.cpp' || echo '$(srcdir)/'`custom.cpp
+
+libmk4_a-custom.obj: custom.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-custom.obj -MD -MP -MF $(DEPDIR)/libmk4_a-custom.Tpo -c -o libmk4_a-custom.obj `if test -f 'custom.cpp'; then $(CYGPATH_W) 'custom.cpp'; else $(CYGPATH_W) '$(srcdir)/custom.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-custom.Tpo $(DEPDIR)/libmk4_a-custom.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='custom.cpp' object='libmk4_a-custom.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-custom.obj `if test -f 'custom.cpp'; then $(CYGPATH_W) 'custom.cpp'; else $(CYGPATH_W) '$(srcdir)/custom.cpp'; fi`
+
+libmk4_a-derived.o: derived.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-derived.o -MD -MP -MF $(DEPDIR)/libmk4_a-derived.Tpo -c -o libmk4_a-derived.o `test -f 'derived.cpp' || echo '$(srcdir)/'`derived.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-derived.Tpo $(DEPDIR)/libmk4_a-derived.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='derived.cpp' object='libmk4_a-derived.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-derived.o `test -f 'derived.cpp' || echo '$(srcdir)/'`derived.cpp
+
+libmk4_a-derived.obj: derived.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-derived.obj -MD -MP -MF $(DEPDIR)/libmk4_a-derived.Tpo -c -o libmk4_a-derived.obj `if test -f 'derived.cpp'; then $(CYGPATH_W) 'derived.cpp'; else $(CYGPATH_W) '$(srcdir)/derived.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-derived.Tpo $(DEPDIR)/libmk4_a-derived.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='derived.cpp' object='libmk4_a-derived.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-derived.obj `if test -f 'derived.cpp'; then $(CYGPATH_W) 'derived.cpp'; else $(CYGPATH_W) '$(srcdir)/derived.cpp'; fi`
+
+libmk4_a-field.o: field.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-field.o -MD -MP -MF $(DEPDIR)/libmk4_a-field.Tpo -c -o libmk4_a-field.o `test -f 'field.cpp' || echo '$(srcdir)/'`field.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-field.Tpo $(DEPDIR)/libmk4_a-field.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='field.cpp' object='libmk4_a-field.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-field.o `test -f 'field.cpp' || echo '$(srcdir)/'`field.cpp
+
+libmk4_a-field.obj: field.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-field.obj -MD -MP -MF $(DEPDIR)/libmk4_a-field.Tpo -c -o libmk4_a-field.obj `if test -f 'field.cpp'; then $(CYGPATH_W) 'field.cpp'; else $(CYGPATH_W) '$(srcdir)/field.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-field.Tpo $(DEPDIR)/libmk4_a-field.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='field.cpp' object='libmk4_a-field.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-field.obj `if test -f 'field.cpp'; then $(CYGPATH_W) 'field.cpp'; else $(CYGPATH_W) '$(srcdir)/field.cpp'; fi`
+
+libmk4_a-fileio.o: fileio.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-fileio.o -MD -MP -MF $(DEPDIR)/libmk4_a-fileio.Tpo -c -o libmk4_a-fileio.o `test -f 'fileio.cpp' || echo '$(srcdir)/'`fileio.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-fileio.Tpo $(DEPDIR)/libmk4_a-fileio.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='fileio.cpp' object='libmk4_a-fileio.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-fileio.o `test -f 'fileio.cpp' || echo '$(srcdir)/'`fileio.cpp
+
+libmk4_a-fileio.obj: fileio.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-fileio.obj -MD -MP -MF $(DEPDIR)/libmk4_a-fileio.Tpo -c -o libmk4_a-fileio.obj `if test -f 'fileio.cpp'; then $(CYGPATH_W) 'fileio.cpp'; else $(CYGPATH_W) '$(srcdir)/fileio.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-fileio.Tpo $(DEPDIR)/libmk4_a-fileio.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='fileio.cpp' object='libmk4_a-fileio.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-fileio.obj `if test -f 'fileio.cpp'; then $(CYGPATH_W) 'fileio.cpp'; else $(CYGPATH_W) '$(srcdir)/fileio.cpp'; fi`
+
+libmk4_a-format.o: format.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-format.o -MD -MP -MF $(DEPDIR)/libmk4_a-format.Tpo -c -o libmk4_a-format.o `test -f 'format.cpp' || echo '$(srcdir)/'`format.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-format.Tpo $(DEPDIR)/libmk4_a-format.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='format.cpp' object='libmk4_a-format.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-format.o `test -f 'format.cpp' || echo '$(srcdir)/'`format.cpp
+
+libmk4_a-format.obj: format.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-format.obj -MD -MP -MF $(DEPDIR)/libmk4_a-format.Tpo -c -o libmk4_a-format.obj `if test -f 'format.cpp'; then $(CYGPATH_W) 'format.cpp'; else $(CYGPATH_W) '$(srcdir)/format.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-format.Tpo $(DEPDIR)/libmk4_a-format.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='format.cpp' object='libmk4_a-format.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-format.obj `if test -f 'format.cpp'; then $(CYGPATH_W) 'format.cpp'; else $(CYGPATH_W) '$(srcdir)/format.cpp'; fi`
+
+libmk4_a-handler.o: handler.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-handler.o -MD -MP -MF $(DEPDIR)/libmk4_a-handler.Tpo -c -o libmk4_a-handler.o `test -f 'handler.cpp' || echo '$(srcdir)/'`handler.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-handler.Tpo $(DEPDIR)/libmk4_a-handler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='handler.cpp' object='libmk4_a-handler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-handler.o `test -f 'handler.cpp' || echo '$(srcdir)/'`handler.cpp
+
+libmk4_a-handler.obj: handler.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-handler.obj -MD -MP -MF $(DEPDIR)/libmk4_a-handler.Tpo -c -o libmk4_a-handler.obj `if test -f 'handler.cpp'; then $(CYGPATH_W) 'handler.cpp'; else $(CYGPATH_W) '$(srcdir)/handler.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-handler.Tpo $(DEPDIR)/libmk4_a-handler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='handler.cpp' object='libmk4_a-handler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-handler.obj `if test -f 'handler.cpp'; then $(CYGPATH_W) 'handler.cpp'; else $(CYGPATH_W) '$(srcdir)/handler.cpp'; fi`
+
+libmk4_a-persist.o: persist.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-persist.o -MD -MP -MF $(DEPDIR)/libmk4_a-persist.Tpo -c -o libmk4_a-persist.o `test -f 'persist.cpp' || echo '$(srcdir)/'`persist.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-persist.Tpo $(DEPDIR)/libmk4_a-persist.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='persist.cpp' object='libmk4_a-persist.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-persist.o `test -f 'persist.cpp' || echo '$(srcdir)/'`persist.cpp
+
+libmk4_a-persist.obj: persist.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-persist.obj -MD -MP -MF $(DEPDIR)/libmk4_a-persist.Tpo -c -o libmk4_a-persist.obj `if test -f 'persist.cpp'; then $(CYGPATH_W) 'persist.cpp'; else $(CYGPATH_W) '$(srcdir)/persist.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-persist.Tpo $(DEPDIR)/libmk4_a-persist.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='persist.cpp' object='libmk4_a-persist.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-persist.obj `if test -f 'persist.cpp'; then $(CYGPATH_W) 'persist.cpp'; else $(CYGPATH_W) '$(srcdir)/persist.cpp'; fi`
+
+libmk4_a-remap.o: remap.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-remap.o -MD -MP -MF $(DEPDIR)/libmk4_a-remap.Tpo -c -o libmk4_a-remap.o `test -f 'remap.cpp' || echo '$(srcdir)/'`remap.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-remap.Tpo $(DEPDIR)/libmk4_a-remap.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='remap.cpp' object='libmk4_a-remap.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-remap.o `test -f 'remap.cpp' || echo '$(srcdir)/'`remap.cpp
+
+libmk4_a-remap.obj: remap.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-remap.obj -MD -MP -MF $(DEPDIR)/libmk4_a-remap.Tpo -c -o libmk4_a-remap.obj `if test -f 'remap.cpp'; then $(CYGPATH_W) 'remap.cpp'; else $(CYGPATH_W) '$(srcdir)/remap.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-remap.Tpo $(DEPDIR)/libmk4_a-remap.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='remap.cpp' object='libmk4_a-remap.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-remap.obj `if test -f 'remap.cpp'; then $(CYGPATH_W) 'remap.cpp'; else $(CYGPATH_W) '$(srcdir)/remap.cpp'; fi`
+
+libmk4_a-std.o: std.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-std.o -MD -MP -MF $(DEPDIR)/libmk4_a-std.Tpo -c -o libmk4_a-std.o `test -f 'std.cpp' || echo '$(srcdir)/'`std.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-std.Tpo $(DEPDIR)/libmk4_a-std.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='std.cpp' object='libmk4_a-std.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-std.o `test -f 'std.cpp' || echo '$(srcdir)/'`std.cpp
+
+libmk4_a-std.obj: std.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-std.obj -MD -MP -MF $(DEPDIR)/libmk4_a-std.Tpo -c -o libmk4_a-std.obj `if test -f 'std.cpp'; then $(CYGPATH_W) 'std.cpp'; else $(CYGPATH_W) '$(srcdir)/std.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-std.Tpo $(DEPDIR)/libmk4_a-std.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='std.cpp' object='libmk4_a-std.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-std.obj `if test -f 'std.cpp'; then $(CYGPATH_W) 'std.cpp'; else $(CYGPATH_W) '$(srcdir)/std.cpp'; fi`
+
+libmk4_a-store.o: store.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-store.o -MD -MP -MF $(DEPDIR)/libmk4_a-store.Tpo -c -o libmk4_a-store.o `test -f 'store.cpp' || echo '$(srcdir)/'`store.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-store.Tpo $(DEPDIR)/libmk4_a-store.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='store.cpp' object='libmk4_a-store.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-store.o `test -f 'store.cpp' || echo '$(srcdir)/'`store.cpp
+
+libmk4_a-store.obj: store.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-store.obj -MD -MP -MF $(DEPDIR)/libmk4_a-store.Tpo -c -o libmk4_a-store.obj `if test -f 'store.cpp'; then $(CYGPATH_W) 'store.cpp'; else $(CYGPATH_W) '$(srcdir)/store.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-store.Tpo $(DEPDIR)/libmk4_a-store.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='store.cpp' object='libmk4_a-store.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-store.obj `if test -f 'store.cpp'; then $(CYGPATH_W) 'store.cpp'; else $(CYGPATH_W) '$(srcdir)/store.cpp'; fi`
+
+libmk4_a-string.o: string.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-string.o -MD -MP -MF $(DEPDIR)/libmk4_a-string.Tpo -c -o libmk4_a-string.o `test -f 'string.cpp' || echo '$(srcdir)/'`string.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-string.Tpo $(DEPDIR)/libmk4_a-string.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='string.cpp' object='libmk4_a-string.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-string.o `test -f 'string.cpp' || echo '$(srcdir)/'`string.cpp
+
+libmk4_a-string.obj: string.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-string.obj -MD -MP -MF $(DEPDIR)/libmk4_a-string.Tpo -c -o libmk4_a-string.obj `if test -f 'string.cpp'; then $(CYGPATH_W) 'string.cpp'; else $(CYGPATH_W) '$(srcdir)/string.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-string.Tpo $(DEPDIR)/libmk4_a-string.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='string.cpp' object='libmk4_a-string.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-string.obj `if test -f 'string.cpp'; then $(CYGPATH_W) 'string.cpp'; else $(CYGPATH_W) '$(srcdir)/string.cpp'; fi`
+
+libmk4_a-table.o: table.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-table.o -MD -MP -MF $(DEPDIR)/libmk4_a-table.Tpo -c -o libmk4_a-table.o `test -f 'table.cpp' || echo '$(srcdir)/'`table.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-table.Tpo $(DEPDIR)/libmk4_a-table.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='table.cpp' object='libmk4_a-table.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-table.o `test -f 'table.cpp' || echo '$(srcdir)/'`table.cpp
+
+libmk4_a-table.obj: table.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-table.obj -MD -MP -MF $(DEPDIR)/libmk4_a-table.Tpo -c -o libmk4_a-table.obj `if test -f 'table.cpp'; then $(CYGPATH_W) 'table.cpp'; else $(CYGPATH_W) '$(srcdir)/table.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-table.Tpo $(DEPDIR)/libmk4_a-table.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='table.cpp' object='libmk4_a-table.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-table.obj `if test -f 'table.cpp'; then $(CYGPATH_W) 'table.cpp'; else $(CYGPATH_W) '$(srcdir)/table.cpp'; fi`
+
+libmk4_a-univ.o: univ.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-univ.o -MD -MP -MF $(DEPDIR)/libmk4_a-univ.Tpo -c -o libmk4_a-univ.o `test -f 'univ.cpp' || echo '$(srcdir)/'`univ.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-univ.Tpo $(DEPDIR)/libmk4_a-univ.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='univ.cpp' object='libmk4_a-univ.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-univ.o `test -f 'univ.cpp' || echo '$(srcdir)/'`univ.cpp
+
+libmk4_a-univ.obj: univ.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-univ.obj -MD -MP -MF $(DEPDIR)/libmk4_a-univ.Tpo -c -o libmk4_a-univ.obj `if test -f 'univ.cpp'; then $(CYGPATH_W) 'univ.cpp'; else $(CYGPATH_W) '$(srcdir)/univ.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-univ.Tpo $(DEPDIR)/libmk4_a-univ.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='univ.cpp' object='libmk4_a-univ.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-univ.obj `if test -f 'univ.cpp'; then $(CYGPATH_W) 'univ.cpp'; else $(CYGPATH_W) '$(srcdir)/univ.cpp'; fi`
+
+libmk4_a-view.o: view.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-view.o -MD -MP -MF $(DEPDIR)/libmk4_a-view.Tpo -c -o libmk4_a-view.o `test -f 'view.cpp' || echo '$(srcdir)/'`view.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-view.Tpo $(DEPDIR)/libmk4_a-view.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='view.cpp' object='libmk4_a-view.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-view.o `test -f 'view.cpp' || echo '$(srcdir)/'`view.cpp
+
+libmk4_a-view.obj: view.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-view.obj -MD -MP -MF $(DEPDIR)/libmk4_a-view.Tpo -c -o libmk4_a-view.obj `if test -f 'view.cpp'; then $(CYGPATH_W) 'view.cpp'; else $(CYGPATH_W) '$(srcdir)/view.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-view.Tpo $(DEPDIR)/libmk4_a-view.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='view.cpp' object='libmk4_a-view.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-view.obj `if test -f 'view.cpp'; then $(CYGPATH_W) 'view.cpp'; else $(CYGPATH_W) '$(srcdir)/view.cpp'; fi`
+
+libmk4_a-viewx.o: viewx.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-viewx.o -MD -MP -MF $(DEPDIR)/libmk4_a-viewx.Tpo -c -o libmk4_a-viewx.o `test -f 'viewx.cpp' || echo '$(srcdir)/'`viewx.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-viewx.Tpo $(DEPDIR)/libmk4_a-viewx.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='viewx.cpp' object='libmk4_a-viewx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-viewx.o `test -f 'viewx.cpp' || echo '$(srcdir)/'`viewx.cpp
+
+libmk4_a-viewx.obj: viewx.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libmk4_a-viewx.obj -MD -MP -MF $(DEPDIR)/libmk4_a-viewx.Tpo -c -o libmk4_a-viewx.obj `if test -f 'viewx.cpp'; then $(CYGPATH_W) 'viewx.cpp'; else $(CYGPATH_W) '$(srcdir)/viewx.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libmk4_a-viewx.Tpo $(DEPDIR)/libmk4_a-viewx.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='viewx.cpp' object='libmk4_a-viewx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libmk4_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libmk4_a-viewx.obj `if test -f 'viewx.cpp'; then $(CYGPATH_W) 'viewx.cpp'; else $(CYGPATH_W) '$(srcdir)/viewx.cpp'; fi`
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
 clean-libtool:
 	-rm -rf .libs _libs
-
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
-$(RECURSIVE_TARGETS):
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    dot_seen=yes; \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	  || eval $$failcom; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
-$(RECURSIVE_CLEAN_TARGETS):
-	@fail= failcom='exit 1'; \
-	for f in x $$MAKEFLAGS; do \
-	  case $$f in \
-	    *=* | --[!k]*);; \
-	    *k*) failcom='fail=yes';; \
-	  esac; \
-	done; \
-	dot_seen=no; \
-	case "$@" in \
-	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
-	  *) list='$(SUBDIRS)' ;; \
-	esac; \
-	rev=''; for subdir in $$list; do \
-	  if test "$$subdir" = "."; then :; else \
-	    rev="$$subdir $$rev"; \
-	  fi; \
-	done; \
-	rev="$$rev ."; \
-	target=`echo $@ | sed s/-recursive//`; \
-	for subdir in $$rev; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	  || eval $$failcom; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
-	done
-ctags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) ctags); \
-	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -349,23 +568,10 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	mkid -fID $$unique
 tags: TAGS
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	set x; \
 	here=`pwd`; \
-	if ($(ETAGS) --etags-include --version) >/dev/null 2>&1; then \
-	  include_option=--etags-include; \
-	  empty_fix=.; \
-	else \
-	  include_option=--include; \
-	  empty_fix=; \
-	fi; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test ! -f $$subdir/TAGS || \
-	      set "$$@" "$$include_option=$$here/$$subdir/TAGS"; \
-	  fi; \
-	done; \
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
@@ -384,7 +590,7 @@ TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 	  fi; \
 	fi
 ctags: CTAGS
-CTAGS: ctags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+CTAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
@@ -434,48 +640,19 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    test -d "$(distdir)/$$subdir" \
-	    || $(MKDIR_P) "$(distdir)/$$subdir" \
-	    || exit 1; \
-	  fi; \
-	done
-	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
-	  if test "$$subdir" = .; then :; else \
-	    dir1=$$subdir; dir2="$(distdir)/$$subdir"; \
-	    $(am__relativize); \
-	    new_distdir=$$reldir; \
-	    dir1=$$subdir; dir2="$(top_distdir)"; \
-	    $(am__relativize); \
-	    new_top_distdir=$$reldir; \
-	    echo " (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir="$$new_top_distdir" distdir="$$new_distdir" \\"; \
-	    echo "     am__remove_distdir=: am__skip_length_check=: am__skip_mode_fix=: distdir)"; \
-	    ($(am__cd) $$subdir && \
-	      $(MAKE) $(AM_MAKEFLAGS) \
-	        top_distdir="$$new_top_distdir" \
-	        distdir="$$new_distdir" \
-		am__remove_distdir=: \
-		am__skip_length_check=: \
-		am__skip_mode_fix=: \
-	        distdir) \
-	      || exit 1; \
-	  fi; \
-	done
 check-am: all-am
-check: check-recursive
-all-am: Makefile
-installdirs: installdirs-recursive
-installdirs-am:
-install: install-recursive
-install-exec: install-exec-recursive
-install-data: install-data-recursive
-uninstall: uninstall-recursive
+check: check-am
+all-am: Makefile $(LIBRARIES)
+installdirs:
+install: install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
 	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
@@ -492,88 +669,91 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-recursive
+clean: clean-am
 
-clean-am: clean-generic clean-libtool mostlyclean-am
+clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
+	mostlyclean-am
 
-distclean: distclean-recursive
+distclean: distclean-am
+	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic distclean-tags
+distclean-am: clean-am distclean-compile distclean-generic \
+	distclean-tags
 
-dvi: dvi-recursive
+dvi: dvi-am
 
 dvi-am:
 
-html: html-recursive
+html: html-am
 
 html-am:
 
-info: info-recursive
+info: info-am
 
 info-am:
 
 install-data-am:
 
-install-dvi: install-dvi-recursive
+install-dvi: install-dvi-am
 
 install-dvi-am:
 
 install-exec-am:
 
-install-html: install-html-recursive
+install-html: install-html-am
 
 install-html-am:
 
-install-info: install-info-recursive
+install-info: install-info-am
 
 install-info-am:
 
 install-man:
 
-install-pdf: install-pdf-recursive
+install-pdf: install-pdf-am
 
 install-pdf-am:
 
-install-ps: install-ps-recursive
+install-ps: install-ps-am
 
 install-ps-am:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
+	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-generic mostlyclean-libtool
+mostlyclean-am: mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool
 
-pdf: pdf-recursive
+pdf: pdf-am
 
 pdf-am:
 
-ps: ps-recursive
+ps: ps-am
 
 ps-am:
 
 uninstall-am:
 
-.MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \
-	install-am install-strip tags-recursive
+.MAKE: install-am install-strip
 
-.PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
-	all all-am check check-am clean clean-generic clean-libtool \
-	ctags ctags-recursive distclean distclean-generic \
-	distclean-libtool distclean-tags distdir dvi dvi-am html \
-	html-am info info-am install install-am install-data \
-	install-data-am install-dvi install-dvi-am install-exec \
-	install-exec-am install-html install-html-am install-info \
-	install-info-am install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am
+.PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
+	clean-libtool clean-noinstLIBRARIES ctags distclean \
+	distclean-compile distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
+	install install-am install-data install-data-am install-dvi \
+	install-dvi-am install-exec install-exec-am install-html \
+	install-html-am install-info install-info-am install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags uninstall uninstall-am
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

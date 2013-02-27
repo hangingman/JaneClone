@@ -575,7 +575,7 @@ PACKAGE_STRING='JaneClone 1.0.0'
 PACKAGE_BUGREPORT='newserver002@gmail.com'
 PACKAGE_URL=''
 
-ac_unique_file="libmk4/include/mk4.h"
+ac_unique_file="libmk4/mk4.h"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -16454,7 +16454,7 @@ fi
 done
 
 
-ac_config_files="$ac_config_files Makefile libmk4/Makefile libmk4/include/Makefile libmk4/libmk4/Makefile libwxnkf/Makefile libwxnkf/include/Makefile libwxnkf/libwxnkf/Makefile src/Makefile"
+ac_config_files="$ac_config_files Makefile libmk4/Makefile libwxnkf/Makefile libwxuuid/Makefile src/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -17579,11 +17579,8 @@ do
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "libmk4/Makefile") CONFIG_FILES="$CONFIG_FILES libmk4/Makefile" ;;
-    "libmk4/include/Makefile") CONFIG_FILES="$CONFIG_FILES libmk4/include/Makefile" ;;
-    "libmk4/libmk4/Makefile") CONFIG_FILES="$CONFIG_FILES libmk4/libmk4/Makefile" ;;
     "libwxnkf/Makefile") CONFIG_FILES="$CONFIG_FILES libwxnkf/Makefile" ;;
-    "libwxnkf/include/Makefile") CONFIG_FILES="$CONFIG_FILES libwxnkf/include/Makefile" ;;
-    "libwxnkf/libwxnkf/Makefile") CONFIG_FILES="$CONFIG_FILES libwxnkf/libwxnkf/Makefile" ;;
+    "libwxuuid/Makefile") CONFIG_FILES="$CONFIG_FILES libwxuuid/Makefile" ;;
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5 ;;

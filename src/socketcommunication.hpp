@@ -19,8 +19,8 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef SOCKETCOMMUNICATION_H_
-#define SOCKETCOMMUNICATION_H_
+#ifndef SOCKETCOMMUNICATION_HPP_
+#define SOCKETCOMMUNICATION_HPP_
 
 #include <wx/wx.h>
 #include <wx/string.h>
@@ -236,4 +236,4 @@ private:
      PostContent* postContent;
 };
 
-#endif /* SOCKETCOMMUNICATION_H_ */
+#endif /* SOCKETCOMMUNICATION_HPP_ */

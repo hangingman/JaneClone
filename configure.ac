@@ -6,7 +6,7 @@ AC_INIT([JaneClone], [1.0.0], [newserver002@gmail.com])
 #AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([libmk4/include/mk4.h])
+AC_CONFIG_SRCDIR([libmk4/mk4.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -114,10 +114,7 @@ AC_CHECK_FUNCS([memset munmap nl_langinfo strcasecmp strchr strcspn strpbrk strr
 
 AC_CONFIG_FILES([Makefile
                  libmk4/Makefile
-                 libmk4/include/Makefile
-                 libmk4/libmk4/Makefile
                  libwxnkf/Makefile
-                 libwxnkf/include/Makefile
-                 libwxnkf/libwxnkf/Makefile
+		 libwxuuid/Makefile
                  src/Makefile])
 AC_OUTPUT

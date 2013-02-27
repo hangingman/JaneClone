@@ -19,8 +19,8 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef JANECLONEUTIL_H_
-#define JANECLONEUTIL_H_
+#ifndef JANECLONEUTIL_HPP_
+#define JANECLONEUTIL_HPP_
 
 #include <zlib.h>
 #include <vector>
@@ -35,6 +35,7 @@
 #include <wx/dir.h>
 #include <wx/regex.h>
 #include "wx/wxnkf.h"
+#include "wxUUID.h"
 #include "datatype.hpp"
 
 class JaneCloneUtil {
@@ -92,11 +93,16 @@ public:
       * URIから各パラメーターを抜き取る
       */
      static bool SubstringURI(wxString uri, PartOfURI* partOfUri);
+     /**
+      * UUIDを生成する
+      */
+     static wxString GenerateUUIDString();
 
 private:
+
      // ディスクからの読取サイズ
 #define S_SIZE (2048)
 
 };
 
-#endif /* JANECLONEUTIL_H_ */
+#endif /* JANECLONEUTIL_HPP_ */

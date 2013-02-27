@@ -19,8 +19,8 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef THREADCONTENTWINDOW_H_
-#define THREADCONTENTWINDOW_H_
+#ifndef THREADCONTENTWINDOW_HPP_
+#define THREADCONTENTWINDOW_HPP_
 
 #include <wx/html/htmlwin.h>
 #include <wx/event.h>
@@ -119,4 +119,4 @@ protected:
 
 };
 
-#endif /* THREADCONTENTWINDOW_H_ */
+#endif /* THREADCONTENTWINDOW_HPP_ */

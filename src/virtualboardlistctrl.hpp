@@ -19,8 +19,8 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef VIRTUALBOARDLISTCTRL_H_
-#define VIRTUALBOARDLISTCTRL_H_
+#ifndef VIRTUALBOARDLISTCTRL_HPP_
+#define VIRTUALBOARDLISTCTRL_HPP_
 
 #include <wx/wx.h>
 #include <wx/listctrl.h>
@@ -307,4 +307,4 @@ private:
      DECLARE_DYNAMIC_CLASS(VirtualBoardListCtrl)
 };
 
-#endif /* VIRTUALBOARDLISTCTRL_H_ */
+#endif /* VIRTUALBOARDLISTCTRL_HPP_ */

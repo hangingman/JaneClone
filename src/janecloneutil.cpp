@@ -381,3 +381,10 @@ bool JaneCloneUtil::SubstringURI(wxString uri, PartOfURI* partOfUri) {
      }
      return false;
 }
+/**
+ * UUIDを生成する
+ */     
+wxString JaneCloneUtil::GenerateUUIDString() {
+     return wxUUID::GetUUID();
+}
+

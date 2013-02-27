@@ -19,8 +19,8 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef ANCHOREDRESPONSEPOPUP_H_
-#define ANCHOREDRESPONSEPOPUP_H_
+#ifndef ANCHOREDRESPONSEPOPUP_HPP_
+#define ANCHOREDRESPONSEPOPUP_HPP_
 
 #include <wx/msgdlg.h>
 #include <wx/html/htmlwin.h>
@@ -65,4 +65,4 @@ private:
      DECLARE_EVENT_TABLE()
 };
 
-#endif /* ANCHOREDRESPONSEPOPUP_H_ */
+#endif /* ANCHOREDRESPONSEPOPUP_HPP_ */

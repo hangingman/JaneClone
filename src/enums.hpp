@@ -21,8 +21,8 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef ENUMS_H_
-#define ENUMS_H_
+#ifndef ENUMS_HPP_
+#define ENUMS_HPP_
 
 // enum
 enum {
@@ -95,4 +95,4 @@ enum {
 	ID_SearchThreadBySelectWord     // 選択したテキストでスレタイ検索
 };
 
-#endif /* ENUMS_H_ */
+#endif /* ENUMS_HPP_ */

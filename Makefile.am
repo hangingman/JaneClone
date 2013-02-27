@@ -1,1 +1,1 @@
-SUBDIRS = libmk4 libwxnkf src
+SUBDIRS = libmk4 libwxnkf libwxuuid src
