@@ -41,14 +41,15 @@
 
 wxUUID::wxUUID(const int& iVersion /*= 0*/, const wxString& szNameOrHash /*= wxEmptyString*/)
 {
-	m_szNameOrHash = szNameOrHash;
+     m_szNameOrHash = szNameOrHash;
 
-	if(iVersion==0)
-		DoV1();
-	else if(iVersion==1)
-		DoVName();
-	else if(iVersion==2)
-		DoV3();
+     if(iVersion==0) {
+	  DoV1();
+     } else if(iVersion==1) {
+	  DoVName();
+     } else if(iVersion==2) {
+	  DoV3();
+     }
 }
 
 wxUUID::~wxUUID()
@@ -65,16 +66,16 @@ wxUUID::~wxUUID()
 
 wxString wxUUID::ToString() const
 {
-	wxString szRetVal = wxString::Format("{%8.8x-%4.4x-%4.4x-%2.2x%2.2x-", m_lTimeLow, m_sTimeMid, m_sTimeHiAndVersion, m_cClockHiAndReserved, m_cClockLow);
+     wxString szRetVal = wxString::Format("{%8.8x-%4.4x-%4.4x-%2.2x%2.2x-", m_lTimeLow, m_sTimeMid, m_sTimeHiAndVersion, m_cClockHiAndReserved, m_cClockLow);
 
-	for(unsigned int i = 0; i < 6; i++)
-	{
-		szRetVal += wxString::Format("%2.2x", m_IEEENode[i]);
-	}
+     for(unsigned int i = 0; i < 6; i++)
+     {
+	  szRetVal += wxString::Format("%2.2x", m_IEEENode[i]);
+     }
 
-	szRetVal += _T("}");
+     szRetVal += _T("}");
 
-	return szRetVal.MakeUpper();
+     return szRetVal.MakeUpper();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -83,16 +84,16 @@ wxString wxUUID::ToString() const
 
 wxString wxUUID::GetUUID()
 {
-	wxUUID uuid;
+     wxUUID uuid;
 
-	return uuid.ToString();
+     return uuid.ToString();
 }
 
 wxUUID wxUUID::ParseUUID(const wxString& szUUID)
 {
-	wxUUID uuid;
+     wxUUID uuid;
 
-	return uuid;
+     return uuid;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -101,63 +102,62 @@ wxUUID wxUUID::ParseUUID(const wxString& szUUID)
 
 void wxUUID::GetTimeStamp(wxLongLong* pLLTime)
 {
-	wxLongLong llBaseTime = wxGetLocalTimeMillis();
+     wxLongLong llBaseTime = wxGetLocalTimeMillis();
 
-	// Offset between UUID formatted times and Unix formatted times.
-	// UUID UTC base time is October 15, 1582.
-	// Unix UTC base time is January 1, 1970.
+     // Offset between UUID formatted times and Unix formatted times.
+     // UUID UTC base time is October 15, 1582.
+     // Unix UTC base time is January 1, 1970.
 
-	*pLLTime = llBaseTime.GetLo() * 10000000 + llBaseTime.GetHi() * 10 + wxLongLong(0x01B21DD213814000LL);
+     *pLLTime = llBaseTime.GetLo() * 10000000 + llBaseTime.GetHi() * 10 + wxLongLong(0x01B21DD213814000LL);
 }
 
 void wxUUID::GetIEEENode(unsigned char pIEEENode[6])
 {
-	char seed[16] = "\0";
+     char seed[16] = "\0";
 
-	GetRandomInfo(seed);
+     GetRandomInfo(seed);
 
-	seed[0] |= 0x80;
+     seed[0] |= 0x80;
 
-	memcpy(pIEEENode, seed, sizeof(pIEEENode));
+     memcpy(pIEEENode, seed, sizeof(pIEEENode));
 }
 
 void wxUUID::GetRandomInfo(char pSeed[16])
 {
-	wxString	szSystemInfo = wxGetOsDescription();
-	wxString	szHostName = wxGetFullHostName();
-	wxLongLong	llTime;
+     wxString	szSystemInfo = wxGetOsDescription();
+     wxString	szHostName = wxGetFullHostName();
+     wxLongLong	llTime;
 
-	GetTimeStamp(&llTime);
+     GetTimeStamp(&llTime);
 
-	wxString	szToHash = szSystemInfo + llTime.ToString() + szHostName;
-
-	wxString	szHash = wxMD5::GetDigest(szToHash);
-
-	for(unsigned int i = 0; i < 16; i++)
-	{
-		pSeed[i] = szHash[i];
-	}
+     wxString	szToHash = szSystemInfo + llTime.ToString() + szHostName;
+     wxString	szHash = wxMD5::GetDigest(szToHash);
+     const char* szHashChar = szHash.c_str();
+     
+     for(unsigned int i = 0; i < 16; i++)
+     {
+	  pSeed[i] = *szHashChar;
+	  ++szHashChar;
+     }
 }
 
 short wxUUID::GetRandomNumber()
 {
-	long iSeed = wxGetUTCTime();
+     long iSeed = wxGetUTCTime();
 
-	srand(iSeed);
+     srand(iSeed);
 
-	return rand();
+     return rand();
 }
 
 void wxUUID::DoV1()
 {
-	unsigned char	ieeeNode[6] = "\0";
-	wxLongLong		llTime;
-	short			sClock = GetRandomNumber();
-
-	GetTimeStamp(&llTime);
-	GetIEEENode(ieeeNode);
-
-	GenerateUUIDv1(sClock, llTime, ieeeNode);
+     unsigned char	ieeeNode[6] = "\0";
+     wxLongLong		llTime;
+     short              sClock = GetRandomNumber();
+     GetTimeStamp(&llTime);
+     GetIEEENode(ieeeNode); // bug
+     GenerateUUIDv1(sClock, llTime, ieeeNode);
 }
 
 void wxUUID::DoVName()
@@ -170,14 +170,14 @@ void wxUUID::DoV3()
 
 void wxUUID::GenerateUUIDv1(const short& sClock, const wxLongLong& llTime, const unsigned char pIEEENode[6])
 {
-	m_lTimeLow = llTime.GetLo();
-	m_sTimeMid = (unsigned short)((llTime >> 32) & 0xFFFF).GetLo();
-	m_sTimeHiAndVersion = (unsigned short)((llTime >> 48) & 0x0FFF).GetLo();
-	m_sTimeHiAndVersion |= (1 << 12);
-	m_cClockLow = sClock & 0xFF;
-	m_cClockHiAndReserved = (sClock & 0x3F00) >> 8;
-	m_cClockHiAndReserved |= 0x80;
-	memcpy(m_IEEENode, pIEEENode, sizeof(pIEEENode));
+     m_lTimeLow = llTime.GetLo();
+     m_sTimeMid = (unsigned short)((llTime >> 32) & 0xFFFF).GetLo();
+     m_sTimeHiAndVersion = (unsigned short)((llTime >> 48) & 0x0FFF).GetLo();
+     m_sTimeHiAndVersion |= (1 << 12);
+     m_cClockLow = sClock & 0xFF;
+     m_cClockHiAndReserved = (sClock & 0x3F00) >> 8;
+     m_cClockHiAndReserved |= 0x80;
+     memcpy(m_IEEENode, pIEEENode, sizeof(pIEEENode));
 }
 
 void wxUUID::GenerateUUIDv3(const wxString& szHash)

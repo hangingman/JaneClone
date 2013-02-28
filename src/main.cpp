@@ -30,24 +30,54 @@
 #endif
 
 #include <wx/image.h>
+#include <wx/snglinst.h>
 #include "janeclone.hpp"
 
 
-// OnInitが呼ばれる前にロケールのクラスを継承しておく
+/*
+ * wxAppを継承したwxMainを宣言
+ */
 class wxMain: public wxApp {
-	wxLocale m_Locale;
+
+     wxLocale m_Locale;
+
 public:
-	wxMain() : m_Locale(wxLANGUAGE_DEFAULT){}
-    bool OnInit();
+     wxMain() : m_Locale(wxLANGUAGE_DEFAULT){}
+     bool OnInit();
+     int OnExit();
+
+private:
+     wxSingleInstanceChecker* m_checker;
+     JaneClone* wxJaneClone;
 };
 
 IMPLEMENT_APP(wxMain)
 
-bool wxMain::OnInit()
-{
-    wxInitAllImageHandlers();
-    JaneClone* wxJaneClone = new JaneClone(NULL, wxID_ANY, wxEmptyString);
-    SetTopWindow(wxJaneClone);
-    wxJaneClone->Show();
-    return true;
+/**
+ * wxMainの実装
+ */
+bool wxMain::OnInit() {
+
+     // JaneClone起動前に複数起動をチェックする
+     const wxString name = wxString::Format("JaneClone-%s", wxGetUserId().c_str());
+     m_checker = new wxSingleInstanceChecker(name);
+     if ( m_checker->IsAnotherRunning() ) {
+	  wxMessageBox(wxT("誤作動防止のためJaneCloneは複数起動できません。終了します。"), wxT("JaneClone起動"), wxOK | wxICON_ERROR);
+	  return false;
+     }
+
+     wxInitAllImageHandlers();
+     wxJaneClone = new JaneClone(NULL, wxID_ANY, wxEmptyString);
+
+     SetTopWindow(wxJaneClone);
+     wxJaneClone->Show();
+     return true;
+}
+/**
+ * 終了後の後始末
+ */
+int wxMain::OnExit() {
+    delete m_checker;
+    delete wxJaneClone;
+    return 0;
 }
