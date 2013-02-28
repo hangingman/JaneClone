@@ -33,7 +33,6 @@ class WXDLLEXPORT wxUUID
 {
 public:
 	wxUUID(const int& iVersion = 0, const wxString& szNameOrHash = wxEmptyString);
-	virtual ~wxUUID();
 
 	// Data Access Methods
 	long		GetTimeLow() const				{ return m_lTimeLow; }

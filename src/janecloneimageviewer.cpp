@@ -23,6 +23,10 @@
 
 #include "janecloneimageviewer.hpp"
 
+#ifndef __WXMSW__
+#include"../rc/janeclone.xpm"
+#endif
+
 /**
  * Default constructor
  */

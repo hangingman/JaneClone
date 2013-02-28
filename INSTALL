@@ -134,11 +134,54 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
  [D.Linux(RedHat系)]
  D-1. 依存するライブラリのインストール
 
-  準備中
+  FedoraもしくはCentosの環境を想定します.
+  i386, x86_64の環境どちらでもコンパイルできると思います。
+　筆者はFedora17 x86_64の環境でビルドを行いました。
+
+  ライブラリを静的リンクします.
+  必要なライブラリはwxWidgets-2.9.*, libxml2です.
+
+  [wxWidgetsのインストール]
+  $ cd /usr/local/src
+  $ tar xvf wxWidgets-2.9.*.tar.bz2
+  $ cd wxWidgets-2.9.*/
+
+  静的ライブラリをビルド、/usr 以下へのインストールとします
+  ・/usr 以下にインストールされるのが不満な場合 --prefix=/hoge を指定してください
+　・Linuxに入っているGTKのバージョンが2の場合「--with-gtk2」、バージョンが3の場合
+　　「--with-gtk2」を指定するといいでしょう。
+
+  $ ./configure --with-gtk3 --disable-shared
+  $ make
+  $ make install
+
+  wx-configコマンドが使用出来れば成功
+  $ wx-config --version
+  $ 2.9.4
+
+  [libxml2のインストール]
+  libxml2をyumを使ってインストールしてください
+  # yum install libxml2 libxml2-devel
+
+  xml2-configコマンドが使用出来れば成功
+  $ xml2-config --version
+  $ 2.7.8
 
  D-2. パッケージング
 
-  準備中
+  [JaneCloneのコンパイル]
+
+  ・Fedora17ではlibtoolのバージョンが合わないのでautoreconfを使います
+　　LinuxのパッケージよりもMinGWのlibtoolのほうがバージョンが上なんですね
+
+  $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
+  $ cd /path/to/JaneClone
+  $ autoreconf -ifv
+  $ ./configure
+  $ make
+  $ make install
+
+  プロジェクト内部にpackageディレクトリができていればビルド成功です
 
  [E.Linux(Debian系)]
  E-1. 依存するライブラリのインストール

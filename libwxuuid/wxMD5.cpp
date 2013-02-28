@@ -31,7 +31,7 @@
 #endif
 
 #include "wxMD5.h"
-#include "MD5.h"
+#include "md5.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
