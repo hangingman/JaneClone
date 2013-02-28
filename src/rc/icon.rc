@@ -1,0 +1,2 @@
+wxicon ICON "janeclone.ico"
+#include "wx/msw/wx.rc"
