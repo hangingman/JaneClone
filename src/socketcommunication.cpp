@@ -404,8 +404,7 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
      int rc = 0;
 
      // 最終更新日時をヘッダ情報から取得する
-     wxString lastModifiedTime = GetHTTPResponseCode(headerPath,
-						     wxT("Last-Modified:"));
+     wxString lastModifiedTime = GetHTTPResponseCode(headerPath, wxT("Last-Modified:"));
      // バイナリとヘッダは前回取得した名前と同じでは困るのでtmpファイルとして作成しておく
      wxString tmpOutputPath(gzipPath);
      tmpOutputPath.Replace(wxT(".gzip"), wxT(".tmp"));
@@ -729,8 +728,16 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 
 	       // ストリームを受け取るループ部分
 	       while (!stream->Eof()) {
-		    stream->Read(buffer, sizeof(buffer));
+		    // 残りバイト数のチェック
+		    byteRead = stream->LastRead();
+		    if (byteRead < 1024) {
+			 stream->Read(buffer, byteRead);
+		    } else {
+			 stream->Read(buffer, sizeof(buffer));
+		    }
+		    // 行を追加する(ここでNULL文字が追加されてしまうことが多い)
 		    modifFile.AddLine(wxString::FromUTF8((const char*)buffer), TEXT_ENDLINE_TYPE);
+
 		    byteRead = stream->LastRead();
 		    if (byteRead <= 0) {
 			 break;
