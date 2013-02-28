@@ -62,8 +62,9 @@ am_JaneClone_OBJECTS = JaneClone-main.$(OBJEXT) \
 	JaneClone-janecloneimageviewer.$(OBJEXT)
 JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
 @USE_WINDRES_FALSE@JaneClone_DEPENDENCIES =  \
-@USE_WINDRES_FALSE@	$(top_builddir)/libmk4/libmk4/libmk4.a \
-@USE_WINDRES_FALSE@	$(top_builddir)/libwxnkf/libwxnkf/libwxnkf.a
+@USE_WINDRES_FALSE@	$(top_builddir)/libmk4/libmk4.a \
+@USE_WINDRES_FALSE@	$(top_builddir)/libwxnkf/libwxnkf.a \
+@USE_WINDRES_FALSE@	$(top_builddir)/libwxuuid/libwxuuid.a
 @USE_WINDRES_TRUE@JaneClone_DEPENDENCIES =  \
 @USE_WINDRES_TRUE@	$(top_builddir)/libmk4/libmk4.a \
 @USE_WINDRES_TRUE@	$(top_builddir)/libwxnkf/libwxnkf.a \
@@ -118,7 +119,6 @@ CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
-DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -142,7 +142,6 @@ LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAKEINFO = @MAKEINFO@
-MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 NM = @NM@
 NMEDIT = @NMEDIT@
@@ -186,7 +185,6 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
-ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -220,6 +218,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -270,7 +269,7 @@ JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_
 ACLOCAL_AMFLAGS = -I m4
 
 # Platform is not Windows
-@USE_WINDRES_FALSE@JaneClone_LDADD = $(top_builddir)/libmk4/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf/libwxnkf.a
+@USE_WINDRES_FALSE@JaneClone_LDADD = $(top_builddir)/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a
 
 # For Icon build and library dependency
 # Platform is Windows

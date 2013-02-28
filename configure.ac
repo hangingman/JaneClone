@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.68])
+AC_PREREQ([2.67])
 AC_INIT([JaneClone], [1.0.0], [newserver002@gmail.com])
 #AC_CANONICAL_HOST
 AC_CANONICAL_TARGET

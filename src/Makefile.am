@@ -41,7 +41,7 @@ JaneClone_rc.o : $(top_builddir)/rc/icon.rc
 
 else
 # Platform is not Windows
-JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf/libwxnkf.a
+JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a
 JaneClone_LDFLAGS  = `wx-config --version=2.9 --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
 endif
 
