@@ -1,1 +1,1 @@
-SUBDIRS = libmk4 libwxnkf libwxuuid src
+SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 src

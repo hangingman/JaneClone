@@ -6,7 +6,7 @@ AC_INIT([JaneClone], [1.0.0], [newserver002@gmail.com])
 #AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([libmk4/mk4.h])
+AC_CONFIG_SRCDIR([libwxnkf/flagset.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -95,12 +95,6 @@ LIBS="$LIBS $WX_LIBS"
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h langinfo.h locale.h stdlib.h string.h strings.h unistd.h])
 
-# Checks for long value
-AC_CHECK_SIZEOF([long])
-if test ac_cv_sizeof_long = 8; then
-	AC_DEFINE(SIZEOF_LONG, 8)
-fi
-
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_C_INLINE
@@ -113,8 +107,9 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset munmap nl_langinfo strcasecmp strchr strcspn strpbrk strrchr strspn strstr])
 
 AC_CONFIG_FILES([Makefile
-                 libmk4/Makefile
                  libwxnkf/Makefile
 		 libwxuuid/Makefile
+		 sqlite3/Makefile
+		 wxsqlite3/Makefile
                  src/Makefile])
 AC_OUTPUT

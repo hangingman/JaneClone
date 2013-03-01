@@ -132,9 +132,6 @@
 /* Platform is Win32 */
 #undef PLATFORM_WIN32
 
-/* The size of `long', as computed by sizeof. */
-#undef SIZEOF_LONG
-
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 

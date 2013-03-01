@@ -5,7 +5,7 @@ libwxuuid_a_SOURCES = wxUUID.cpp \
 		      wxGUID.cpp \
 		      md5c.c
 # Linker options
-libwxuuid_a_LDFLAG = -static
+libwxuuid_a_LDFLAG = -static -s
 # Compiler options. Here we are adding the include directory
 # to be searched for headers included in the source code.
 libwxuuid_a_CXXFLAGS = -I$(top_builddir)/libwxuuid @CXXFLAGS@
