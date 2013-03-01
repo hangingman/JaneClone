@@ -121,7 +121,7 @@ void wxGUID::Clear()
 wxString wxGUID::ToString() const
 {
 	wxString uid;
-	uid.Printf("{%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x}",
+	uid.Printf(_("{%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x}"),
 			   guid[0], guid[1], guid[2],  guid[3],  guid[4],  guid[5],  guid[6],  guid[7],
 			   guid[8], guid[9], guid[10], guid[11], guid[12], guid[13], guid[14], guid[15]);
 
@@ -137,7 +137,7 @@ void wxGUID::Copy(const wxGUID &value)
 bool wxGUID::StrToGuid(const char *value)
 {
 	unsigned char number;
-	wxString str(value);
+	wxString str(value, wxConvUTF8);
 
 	Clear();
 

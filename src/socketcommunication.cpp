@@ -125,8 +125,7 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
      // 実行コード
      int rc = 0;
      // 最終更新日時をヘッダ情報から取得する
-     wxString lastModifiedTime = GetHTTPResponseCode(headerPath,
-						     wxT("Last-Modified:"));
+     wxString lastModifiedTime = GetHTTPResponseCode(headerPath,wxT("Last-Modified:"));
      // バイナリとヘッダは前回取得した名前と同じでは困るのでtmpファイルとして作成しておく
      wxString tmpOutputPath = outputPath;
      tmpOutputPath += wxT(".tmp");
@@ -973,7 +972,7 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      /**
       * ヘッダを設定する
       */
-     wxString header = "";
+     wxString header = wxT("");
      // POST
      header += wxT("POST /test/bbs.cgi HTTP/1.1\n");
      // Connection close
@@ -982,7 +981,7 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      header += wxT("Content-Type: application/x-www-form-urlencoded\n");
      // Content-Length
      header += wxT("Content-Length: ");
-     header += wxString::Format("%zd", kakikomiInfo.Len());
+     header += wxString::Format(_("%zd"), kakikomiInfo.Len());
      header += wxT("\n");
      // hostname
      header += wxT("Host: ");
@@ -1018,7 +1017,7 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
 
      // ヘッダ情報を書き込む
      socket->Write(header.c_str(),header.Len());
-     wxString wHeaderLog = wxString::Format("Wrote %u out of %zd bytes",socket->LastCount(), header.Len());
+     wxString wHeaderLog = wxString::Format(_("Wrote %u out of %zd bytes"),socket->LastCount(), header.Len());
      *m_logCtrl << wHeaderLog << wxT("\n");
 
      // レスポンスを受け取る
@@ -1157,7 +1156,7 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      /**
       * ヘッダを設定する
       */
-     wxString header = "";
+     wxString header = wxT("");
      // POST
      header += wxT("POST /test/bbs.cgi HTTP/1.1\n");
      // hostname
@@ -1178,7 +1177,7 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      header += wxT("Content-Type: application/x-www-form-urlencoded\n");
      // Content-Length
      header += wxT("Content-Length: ");
-     header += wxString::Format("%zd", kakikomiInfo.Len());
+     header += wxString::Format(_("%zd"), kakikomiInfo.Len());
      header += wxT("\n");
      // Cookie
      header += wxT("Cookie: ");
@@ -1207,7 +1206,7 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 
      // ヘッダ情報を書き込む
      socket->Write(header.c_str(),header.Len());
-     wxString wHeaderLog = wxString::Format("Wrote %u out of %zd bytes",socket->LastCount(), header.Len());
+     wxString wHeaderLog = wxString::Format(_("Wrote %u out of %zd bytes"),socket->LastCount(), header.Len());
      *m_logCtrl << wHeaderLog << wxT("\n");
 
      // レスポンスを受け取る
@@ -1353,7 +1352,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      /**
       * ヘッダを設定する
       */
-     wxString header = "";
+     wxString header = wxT("");
      // POST
      header += wxT("POST /test/bbs.cgi HTTP/1.1\n");
      // hostname
@@ -1374,7 +1373,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      header += wxT("Content-Type: application/x-www-form-urlencoded\n");
      // Content-Length
      header += wxT("Content-Length: ");
-     header += wxString::Format("%zd", kakikomiInfo.Len());
+     header += wxString::Format(_("%zd"), kakikomiInfo.Len());
      header += wxT("\n");
      // Cookie
      header += wxT("Cookie: ");
@@ -1405,7 +1404,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 
      // ヘッダ情報を書き込む
      socket->Write(header.c_str(),header.Len());
-     wxString wHeaderLog = wxString::Format("Wrote %u out of %zd bytes",socket->LastCount(), header.Len());
+     wxString wHeaderLog = wxString::Format(_("Wrote %u out of %zd bytes"),socket->LastCount(), header.Len());
      *m_logCtrl << wHeaderLog << wxT("\n");
 
      // レスポンスを受け取る

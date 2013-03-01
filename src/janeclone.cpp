@@ -1517,7 +1517,7 @@ void JaneClone::DeleteDatFile(wxCommandEvent& event) {
 	  return;
      }
 
-     wxString message = wxString::Format("%s%s%s", wxT("ファイル"), filePath, wxT("を削除してよろしいですか？"));
+     wxString message = wxT("ファイル") + filePath + wxT("を削除してよろしいですか？");
      int result = wxMessageBox(message, wxEmptyString, wxOK | wxNO);
 
      if (result == wxOK) {
@@ -2190,7 +2190,7 @@ wxFont JaneClone::ReadFontInfo(const wxString& widgetName) {
 	  : result = wxT("NG");
 
      // ログを出力する
-     *m_logCtrl << wxString::Format("%s:%s\n", nativeFontInfo, result);
+     *m_logCtrl << nativeFontInfo + wxT(":") + result;
 
      return f;
 }
@@ -2314,23 +2314,3 @@ void JaneClone::OnClickURLWindowButton(wxCommandEvent& event) {
 void JaneClone::Test(wxAuiNotebookEvent& event) {
      wxMessageBox(wxT("test"));
 }
-// void JaneClone::OnMouseDown(wxMouseEvent& event) {
-//      // クリック用フラグをオンに
-//      isClicking = true;
-// }
-// void JaneClone::OnMouseUp(wxMouseEvent& event) {
-//      // クリック用フラグをオフに
-//      isClicking = false;
-
-//      if (isDragging) {
-// 	  isDragging = false;
-// 	  wxMessageBox(wxT("ドラッグ終わり"));
-//      }
-// }
-// void JaneClone::OnMove(wxMouseEvent& event) {
-
-//      if (isClicking) {
-// 	  // クリック状態の場合ドラッグ状態
-// 	  isDragging = true;
-//      }
-// }

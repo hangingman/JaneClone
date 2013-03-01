@@ -20,112 +20,96 @@
  */
 
 #include "extractboardlist.hpp"
-#include <wx/wx.h>
 
 /**
  * ExtractBoardList
  * コンストラクタ
  */
 ExtractBoardList::ExtractBoardList(const char* file) {
-	// HTML読み込み用構造体
-	htmlDocPtr m_doc;
-	// インスタンスを用意する
-	accessor = new MetakitAccessor();
+     // HTML読み込み用構造体
+     htmlDocPtr m_doc;
+     // インスタンスを用意する
+     accessor = new MetakitAccessor();
 
-	// ファイル名とエンコードの設定
-	const char* enc = "utf-8";
+     // ファイル名とエンコードの設定
+     const char* enc = "utf-8";
 
-	// HTMLの読み込み
-	m_doc = htmlReadFile(file, enc, HTML_PARSE_RECOVER );
+     // HTMLの読み込み
+     m_doc = htmlReadFile(file, enc, HTML_PARSE_RECOVER );
 
-	if (NULL == m_doc) {
-		// NULLが返された場合その時点で終了する
-		xmlCleanupParser();
-		xmlCleanupCharEncodingHandlers();
-		delete accessor;
-		return;
-	}
+     if (NULL == m_doc) {
+	  // NULLが返された場合その時点で終了する
+	  xmlCleanupParser();
+	  xmlCleanupCharEncodingHandlers();
+	  delete accessor;
+	  return;
+     }
 
-	// htmlNodePtrに変換する
-	htmlNodePtr root = xmlDocGetRootElement(m_doc);
+     // htmlNodePtrに変換する
+     htmlNodePtr root = xmlDocGetRootElement(m_doc);
 
-	if (NULL == root) {
-		// NULLが返された場合その時点で終了する
-		xmlCleanupParser();
-		xmlCleanupCharEncodingHandlers();
-		delete accessor;
-		return;
-	} else {
-		// 正常処理
-		FindBoardInfo(root);
-		xmlCleanupParser();
-		xmlCleanupCharEncodingHandlers();
-	}
+     if (NULL == root) {
+	  // NULLが返された場合その時点で終了する
+	  xmlCleanupParser();
+	  xmlCleanupCharEncodingHandlers();
+	  delete accessor;
+	  return;
+     } else {
+	  // 正常処理
+	  FindBoardInfo(root);
+	  xmlCleanupParser();
+	  xmlCleanupCharEncodingHandlers();
+     }
 
-	accessor->SetBoardInfoCommit();
-	delete accessor;
+     accessor->SetBoardInfoCommit();
+     delete accessor;
 }
 
 /**
  *  FindBoardInfo
- *  板一覧情報を収集しSQLiteに格納する
+ *  板一覧情報を収集しMetakitに格納する
  */
 void ExtractBoardList::FindBoardInfo(xmlNode*& element) {
 
-	wxString lsCategory;
-	wxString lsName;
-	wxString lsUrl;
+     wxString lsCategory;
+     wxString lsName;
+     wxString lsUrl;
 
-	// 板一覧の配列
-	for (htmlNodePtr node = element; node != NULL; node = node->next) {
-		if (node->type == XML_ELEMENT_NODE) {
-			/** もしノードの中身が「B」タグだったら:カテゴリ名 */
-			if (xmlStrcasecmp(node->name, (const xmlChar*) "B") == 0) {
-				// 配列に要素を詰め込む
-				if (sizeof(node->children->content) > 0) {
-#if defined(__WXMSW__)
-					wxString category(node->children->content, wxConvUTF8);
-#else
-					wxString category((const char*) node->children->content,
-							wxConvUTF8);
-#endif
-					lsCategory = category;
-				}
-			}
-			/** もしノードの中身が「A」タグだったら：板名 */
-			if (xmlStrcasecmp(node->name, (const xmlChar*) "A") == 0) {
-				for (xmlAttrPtr attr = node->properties; attr != NULL; attr =
-						attr->next) {
-					if (xmlStrcasecmp(attr->name, (const xmlChar*) "HREF")
-							== 0) {
-						// 配列に要素を詰め込む
-						if (sizeof(node->children->content) > 0
-								&& sizeof(node->properties[0].children->content)
-										> 0) {
-#if defined(__WXMSW__)
-							wxString name(node->children->content, wxConvUTF8);
-							wxString url(node->properties[0].children->content, wxConvUTF8);
-#else
-							wxString name((const char*) node->children->content,
-									wxConvUTF8);
-							wxString url(
-									(const char*) node->properties[0].children->content,
-									wxConvUTF8);
-#endif
+     // 板一覧の配列
+     for (htmlNodePtr node = element; node != NULL; node = node->next) {
+	  if (node->type == XML_ELEMENT_NODE) {
+	       /** もしノードの中身が「B」タグだったら:カテゴリ名 */
+	       if (xmlStrcasecmp(node->name, (const xmlChar*) "B") == 0) {
+		    // 配列に要素を詰め込む
+		    if (sizeof(node->children->content) > 0) {
+			 // wx-2.8ではキャストの方法がこれしかない
+			 wxString category((const char*) node->children->content,wxConvUTF8);
+			 lsCategory = category;
+		    }
+	       }
+	       /** もしノードの中身が「A」タグだったら：板名 */
+	       if (xmlStrcasecmp(node->name, (const xmlChar*) "A") == 0) {
+		    for (xmlAttrPtr attr = node->properties; attr != NULL; attr = attr->next) {
+			 if (xmlStrcasecmp(attr->name, (const xmlChar*) "HREF") == 0) {
+			      // 配列に要素を詰め込む
+			      if (sizeof(node->children->content) > 0 && 
+				  sizeof(node->properties[0].children->content) > 0) {
+				   // wx-2.8ではキャストの方法がこれしかない
+				   wxString name((const char*) node->children->content, wxConvUTF8);
+				   wxString url((const char*) node->properties[0].children->content, wxConvUTF8);
+				   lsName = name;
+				   lsUrl = url;
 
-							lsName = name;
-							lsUrl = url;
-
-							// 格納した情報をMetakitに配置する
-							accessor->SetBoardInfo(lsCategory, lsName, lsUrl);
-						}
-					}
-				}
-			}
-			// 再帰的に処理する
-			if (node->children != NULL) {
-				ExtractBoardList::FindBoardInfo(node->children);
-			}
-		}
-	}
+				   // 格納した情報をMetakitに配置する
+				   accessor->SetBoardInfo(lsCategory, lsName, lsUrl);
+			      }
+			 }
+		    }
+	       }
+	       // 再帰的に処理する
+	       if (node->children != NULL) {
+		    ExtractBoardList::FindBoardInfo(node->children);
+	       }
+	  }
+     }
 }

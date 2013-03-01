@@ -59,7 +59,7 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 
      // wxAuiToolBar1を宣言する
      threadToolbar1 = new wxAuiToolBar(threadContentsBarUpperSizer, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-				       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW | wxAUI_TB_HORIZONTAL);
+				       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
      threadToolbar1->SetToolBitmapSize(wxSize(32,32));
      threadToolbar1->AddTool(ID_TCBAutoReload, wxT("autoreload"), 
 			     wxBitmap(autoReloadImg, wxBITMAP_TYPE_ANY), 
@@ -95,7 +95,7 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 
      // wxAuiToolBar2を宣言する
      threadToolbar2 = new wxAuiToolBar(threadContentsBarUpperSizer, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-				       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW | wxAUI_TB_HORIZONTAL);
+				       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
      threadToolbar2->SetToolBitmapSize(wxSize(32,32));
      threadToolbar2->AddTool(ID_TCBScrollToNewRes, wxT("scrolltonewres"), 
 			     wxBitmap(scrollToNewResImg, wxBITMAP_TYPE_ANY), 
@@ -186,10 +186,10 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
      searchWordCombo->SetFont(wxFont(12, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
 
      // 引っかかった検索ワードを前後させる
-     backwardButton = new wxButton(this, wxID_ANY, wxT("前へ"));
-     backwardButton->SetBitmap(wxBitmap(backwardImg, wxBITMAP_TYPE_ANY));
-     forwardButton = new wxButton(this, wxID_ANY, wxT("次へ"));
-     forwardButton->SetBitmap(wxBitmap(forwardImg, wxBITMAP_TYPE_ANY));
+     backwardButton = new wxBitmapButton(this, wxID_ANY, backwardImg, wxDefaultPosition, wxDefaultSize,
+					 wxBU_AUTODRAW, wxDefaultValidator, wxT("前へ"));
+     forwardButton = new wxBitmapButton(this, wxID_ANY, forwardImg, wxDefaultPosition, wxDefaultSize,
+					 wxBU_AUTODRAW, wxDefaultValidator, wxT("次へ"));
      panel_2 = new wxPanel(this, wxID_ANY);
 
      // 検索バーを隠す

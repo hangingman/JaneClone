@@ -58,10 +58,6 @@ public:
       * ウィンドウ上で右クリックした場合の処理
       */
      void OnRightClickHtmlWindow(wxMouseEvent& event);
-     /**
-      * 他のクラスからの強制スクロール命令
-      */
-     int ForceScroll();
 
 private:
      /**

@@ -66,7 +66,6 @@
 #include <wx/tokenzr.h>
 #include <wx/font.h>
 #include <wx/fontdlg.h>
-#include <wx/mousemanager.h>
 
 // 自作クラスのヘッダ
 #include "enums.hpp"

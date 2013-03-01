@@ -62,11 +62,13 @@ wxUUID::wxUUID(const int& iVersion /*= 0*/, const wxString& szNameOrHash /*= wxE
 
 wxString wxUUID::ToString() const
 {
-     wxString szRetVal = wxString::Format("{%8.8x-%4.4x-%4.4x-%2.2x%2.2x-", m_lTimeLow, m_sTimeMid, m_sTimeHiAndVersion, m_cClockHiAndReserved, m_cClockLow);
+     wxString szRetVal = 
+	  wxString::Format(_("{%8.8x-%4.4x-%4.4x-%2.2x%2.2x-"), 
+			   m_lTimeLow, m_sTimeMid, m_sTimeHiAndVersion, m_cClockHiAndReserved, m_cClockLow);
 
      for(unsigned int i = 0; i < 6; i++)
      {
-	  szRetVal += wxString::Format("%2.2x", m_IEEENode[i]);
+	  szRetVal += wxString::Format(_("%2.2x"), m_IEEENode[i]);
      }
 
      szRetVal += _T("}");
@@ -128,7 +130,7 @@ void wxUUID::GetRandomInfo(char pSeed[16])
 
      wxString	szToHash = szSystemInfo + llTime.ToString() + szHostName;
      wxString	szHash = wxMD5::GetDigest(szToHash);
-     const char* szHashChar = szHash.c_str();
+     const char* szHashChar = szHash.mb_str();
      
      for(unsigned int i = 0; i < 16; i++)
      {

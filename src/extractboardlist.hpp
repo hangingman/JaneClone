@@ -23,6 +23,7 @@
 #define EXTRACTBOARDLIST_H
 
 #include <libxml/HTMLparser.h>
+#include <wx/wx.h>
 #include "metakitaccessor.hpp"
 
 class ExtractBoardList {

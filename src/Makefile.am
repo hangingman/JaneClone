@@ -24,8 +24,6 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    janecloneimageviewer.cpp	\
 		    janecloneimageviewer.hpp
 
-
-
 # common build rule
 JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/libmk4 -I$(top_builddir)/rc -I$(top_builddir)/libwxuuid
 ACLOCAL_AMFLAGS    = -I m4
@@ -34,7 +32,7 @@ ACLOCAL_AMFLAGS    = -I m4
 if USE_WINDRES
 # Platform is Windows
 JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a JaneClone_rc.o
-JaneClone_LDFLAGS  = -static `wx-config --version=2.9 --static=yes --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
+JaneClone_LDFLAGS  = -static `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
 
 JaneClone_rc.o : $(top_builddir)/rc/icon.rc
 	@WX_RESCOMP@ -i $^ -O coff -o $@
@@ -42,7 +40,7 @@ JaneClone_rc.o : $(top_builddir)/rc/icon.rc
 else
 # Platform is not Windows
 JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a
-JaneClone_LDFLAGS  = `wx-config --version=2.9 --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
+JaneClone_LDFLAGS  = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
 endif
 
 ################################ install target for JaneClone ###############################

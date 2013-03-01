@@ -110,8 +110,8 @@ protected:
      wxPanel* threadContentsBarUpperSizer;
      wxBitmapButton* nomalSearchButton;
      wxComboBox* searchWordCombo;
-     wxButton* backwardButton;
-     wxButton* forwardButton;
+     wxBitmapButton* backwardButton;
+     wxBitmapButton* forwardButton;
      wxPanel* panel_2;
      wxBitmapButton* hideSearchBarButton;
 

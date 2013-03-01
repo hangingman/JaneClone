@@ -312,7 +312,7 @@ wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,
 wxString JaneCloneUtil::GetTimeNow() {
 
      long unixTime = wxGetUTCTime();
-     return wxString::Format("%ld", unixTime);
+     return wxString::Format(_("%ld"), unixTime);
 }
 /**
  * 文字列をURLエンコードする

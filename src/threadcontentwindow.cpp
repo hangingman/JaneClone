@@ -371,7 +371,7 @@ void ThreadContentWindow::SearchSelectWordByAmazon(wxCommandEvent& event) {
      wxString url = wxT("http://www.amazon.co.jp/gp/search/?__mk_ja_JP=%83J%83%5E%83J%83i&field-keywords=");
      wxNKF* nkf = new wxNKF();
      const std::string buffer = nkf->WxToMultiByte(m_selectedText, wxT("--ic=UTF-8 --oc=CP932"));
-     const wxString urlEncode = JaneCloneUtil::UrlEncode(buffer);
+     const wxString urlEncode(JaneCloneUtil::UrlEncode(buffer).c_str(), wxConvUTF8);
      url += urlEncode;
      delete nkf;
 	
@@ -395,21 +395,6 @@ void ThreadContentWindow::OnSize(wxSizeEvent& event) {
      GetViewStart(&m_x, &m_y);
      fNeedScroll = true;
      wxHtmlWindow::OnSize(event);
-}
-/**
- * 他のクラスからの強制スクロール命令
- */
-int ThreadContentWindow::ForceScroll() {
-     
-     if (!fNeedScroll) {
-	  // スクロールしない
-	  return 0;
-     }
-     
-     // スクロール実行
-     Scroll(wxDefaultCoord, GetViewStart().y + m_y);
-     fNeedScroll = false;
-     return 0;
 }
 /**
  * 左クリック時に起こるイベント

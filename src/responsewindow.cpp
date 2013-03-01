@@ -92,7 +92,7 @@ TAG_HANDLER_PROC(tag) {
 	  wxComboBox *pOldBox = m_pComboBox;
 	  int iOldNumber = m_iNumber;
 
-	  m_pComboBox = new wxComboBox(m_WParser->GetWindowInterface()->GetHTMLWindow(), wxID_ANY, "", wxPoint(0,0), wxDefaultSize, 0, NULL, wxCB_READONLY  | wxCB_DROPDOWN);
+	  m_pComboBox = new wxComboBox(m_WParser->GetWindowInterface()->GetHTMLWindow(), wxID_ANY, _(""), wxPoint(0,0), wxDefaultSize, 0, NULL, wxCB_READONLY  | wxCB_DROPDOWN);
 	  m_pComboBox->Show(true);
 
 	  ParseInner(tag);
@@ -297,9 +297,9 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
      delete nkf;
 
      // 投稿用の構造体にURLエンコードされた文字列を格納
-     post->name = wxString(JaneCloneUtil::UrlEncode(stdName));
-     post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail));
-     post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi));
+     post->name = wxString(JaneCloneUtil::UrlEncode(stdName).c_str(), wxConvUTF8);
+     post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail).c_str(), wxConvUTF8);
+     post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
 
      sock->SetPostContent(post);
      wxString result = sock->PostFirstToThread(m_boardInfo, m_threadInfo, NO_COOKIE);
@@ -441,9 +441,9 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
      delete nkf;
 
      // 投稿用の構造体にURLエンコードされた文字列を格納
-     post->name = wxString(JaneCloneUtil::UrlEncode(stdName));
-     post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail));
-     post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi));
+     post->name = wxString(JaneCloneUtil::UrlEncode(stdName).c_str(), wxConvUTF8);
+     post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail).c_str(), wxConvUTF8);
+     post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
 
      sock->SetPostContent(post);
      wxString result = sock->PostResponseToThread(m_boardInfo, m_threadInfo, HAS_PERN);

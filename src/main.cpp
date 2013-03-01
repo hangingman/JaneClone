@@ -59,7 +59,7 @@ IMPLEMENT_APP(wxMain)
 bool wxMain::OnInit() {
 
      // JaneClone起動前に複数起動をチェックする
-     const wxString name = wxString::Format("JaneClone-%s", wxGetUserId().c_str());
+     const wxString name = wxString::Format(_("JaneClone-%s"), wxGetUserId().c_str());
      m_checker = new wxSingleInstanceChecker(name);
      if ( m_checker->IsAnotherRunning() ) {
 	  wxMessageBox(wxT("誤作動防止のためJaneCloneは複数起動できません。終了します。"), wxT("JaneClone起動"), wxOK | wxICON_ERROR);
