@@ -69,11 +69,11 @@ public:
 	/**
 	 * 指定されたテーブルに情報が存在するかどうかを調べるメソッド
 	 */
-	static bool TableHasView(const wxString);
+	static bool TableHasData(const wxString);
 	/**
 	 * 指定されたテーブルを削除する
 	 */
-	static void DropView(const wxString);
+	static void DropTable(const wxString);
 
 private:
 	wxArrayString* boardInfoArray;

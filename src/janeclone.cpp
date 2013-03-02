@@ -560,7 +560,7 @@ void JaneClone::SetProperties() {
      delete sqliteAccessor;
 
      // もしSqlite上に板一覧情報が存在するならば板一覧設定に飛ぶ
-     if (SQLiteAccessor::TableHasView(wxT("BOARD_INFO"))) {
+     if (SQLiteAccessor::TableHasData(wxT("BOARD_INFO"))) {
 	  SetBoardList();
      }
      // アプリ上部URL入力欄の画像つきボタンのサイズ調整
@@ -957,8 +957,8 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	  wxMessageBox(wxT("板一覧情報取得に失敗しました。ネットワークの接続状況を確認してください。"));
      } else {
 	  // もし板一覧情報テーブルが空でなければテーブルを削除しておく
-	  if (SQLiteAccessor::TableHasView(wxT("BOARD_INFO"))) {
-	       SQLiteAccessor::DropView(wxT("BOARD_INFO"));
+	  if (SQLiteAccessor::TableHasData(wxT("BOARD_INFO"))) {
+	       SQLiteAccessor::DropTable(wxT("BOARD_INFO"));
 	  }
 	  // 板一覧情報を展開し、Sqliteに設定する
 	  new ExtractBoardList(BOARD_LIST_PATH.mb_str());
