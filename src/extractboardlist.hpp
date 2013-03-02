@@ -24,7 +24,7 @@
 
 #include <libxml/HTMLparser.h>
 #include <wx/wx.h>
-#include "metakitaccessor.hpp"
+#include "sqliteaccessor.hpp"
 
 class ExtractBoardList {
 public:
@@ -38,7 +38,7 @@ private:
 	htmlDocPtr m_doc;
 
 	// SQLiteAccessorのインスタンス
-	MetakitAccessor* accessor;
+	SQLiteAccessor* accessor;
 };
 
 #endif // EXTRACTBOARDLIST_H

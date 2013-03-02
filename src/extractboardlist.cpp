@@ -29,7 +29,7 @@ ExtractBoardList::ExtractBoardList(const char* file) {
      // HTML読み込み用構造体
      htmlDocPtr m_doc;
      // インスタンスを用意する
-     accessor = new MetakitAccessor();
+     accessor = new SQLiteAccessor();
 
      // ファイル名とエンコードの設定
      const char* enc = "utf-8";

@@ -555,12 +555,12 @@ void JaneClone::SetProperties() {
      config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile,
 			       wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
-     // metakitの初期化を行う
-     MetakitAccessor* metakitAccessor = new MetakitAccessor();
-     delete metakitAccessor;
+     // sqliteの初期化を行う
+     SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
+     delete sqliteAccessor;
 
-     // もしMetakit上に板一覧情報が存在するならば板一覧設定に飛ぶ
-     if (MetakitAccessor::TableHasView(wxT("BOARD_INFO"))) {
+     // もしSqlite上に板一覧情報が存在するならば板一覧設定に飛ぶ
+     if (SQLiteAccessor::TableHasView(wxT("BOARD_INFO"))) {
 	  SetBoardList();
      }
      // アプリ上部URL入力欄の画像つきボタンのサイズ調整
@@ -718,7 +718,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
  */
 void JaneClone::SetPreviousUserLookedTab() {
 
-     wxArrayString userLookedBoardList = MetakitAccessor::GetUserLookedBoardList();
+     wxArrayString userLookedBoardList = SQLiteAccessor::GetUserLookedBoardList();
 
      for (unsigned int i = 0; i < userLookedBoardList.GetCount(); i++) {
 
@@ -734,7 +734,7 @@ void JaneClone::SetPreviousUserLookedTab() {
 	  SetThreadListItemNew(boardName, outputPath, (const size_t) i);
      }
 
-     wxArrayString userLookedThreadList = MetakitAccessor::GetUserLookedThreadList();
+     wxArrayString userLookedThreadList = SQLiteAccessor::GetUserLookedThreadList();
 
      for (unsigned int i = 0; i < userLookedThreadList.GetCount(); i+= 3) {
 
@@ -957,10 +957,10 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	  wxMessageBox(wxT("板一覧情報取得に失敗しました。ネットワークの接続状況を確認してください。"));
      } else {
 	  // もし板一覧情報テーブルが空でなければテーブルを削除しておく
-	  if (MetakitAccessor::TableHasView(wxT("BOARD_INFO"))) {
-	       MetakitAccessor::DropView(wxT("BOARD_INFO"));
+	  if (SQLiteAccessor::TableHasView(wxT("BOARD_INFO"))) {
+	       SQLiteAccessor::DropView(wxT("BOARD_INFO"));
 	  }
-	  // 板一覧情報を展開し、Metakitに設定する
+	  // 板一覧情報を展開し、Sqliteに設定する
 	  new ExtractBoardList(BOARD_LIST_PATH.mb_str());
 	  // 板一覧情報をセットする
 	  JaneClone::SetBoardList();
@@ -1616,11 +1616,11 @@ void JaneClone::CallResponseWindow(wxCommandEvent& event) {
      response->Show(true);
 }
 /**
- * Metakitから板一覧情報を抽出してレイアウトに反映するメソッド
+ * Sqliteから板一覧情報を抽出してレイアウトに反映するメソッド
  */
 void JaneClone::SetBoardList() {
      // ArrayStringの形で板一覧情報を取得する
-     wxArrayString boardInfoArray = MetakitAccessor::GetBoardInfo();
+     wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
      // カテゴリ名一時格納用
      wxString categoryName;
      // 板名一時格納用
@@ -1689,7 +1689,7 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
      wxAboutBox(info);
 }
 /**
- * 終了前処理では、保存しておきたいユーザー設定をMetakitに登録しておく
+ * 終了前処理では、保存しておきたいユーザー設定をSqliteに登録しておく
  */
 void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
@@ -1697,7 +1697,7 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
      SetStatusText(wxT("終了前処理を実行中..."));
 
      /**
-      * 開いていた板の名前をmetakitに登録する
+      * 開いていた板の名前をsqliteに登録する
       */
      wxArrayString userLookingBoardName;
      size_t bpages = boardNoteBook->GetPageCount();
@@ -1710,11 +1710,11 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 	  }
      }
 
-     // 開いていた板の一覧をmetakitに送る
-     MetakitAccessor::SetUserLookingBoardList(userLookingBoardName);
+     // 開いていた板の一覧をsqliteに送る
+     SQLiteAccessor::SetUserLookingBoardList(userLookingBoardName);
 
      /**
-      * 開いていたスレッドの情報をmetakitに登録する
+      * 開いていたスレッドの情報をsqliteに登録する
       */
      wxArrayString userLookingThreadName;
      size_t tpages = threadNoteBook->GetPageCount();
@@ -1728,8 +1728,8 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 	       userLookingThreadName.Add(tiHash[pageText].boardNameAscii);
 	  }
      }
-     // 開いていたスレッドの一覧をmetakitに送る
-     MetakitAccessor::SetUserLookingThreadList(userLookingThreadName);
+     // 開いていたスレッドの一覧をsqliteに送る
+     SQLiteAccessor::SetUserLookingThreadList(userLookingThreadName);
 
      // wxAuiManagerのレイアウトの情報を保存する
      const wxString perspective = m_mgr.SavePerspective();

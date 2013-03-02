@@ -19,25 +19,25 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef METAKITACCESSOR_HPP_
-#define METAKITACCESSOR_HPP_
+#ifndef SQLITEACCESSOR_HPP_
+#define SQLITEACCESSOR_HPP_
 
 #include <iostream>
 #include <wx/wx.h>
 #include <wx/dir.h>
 #include <wx/file.h>
-#include <mk4.h>
-#include <mk4str.h>
+#include <wx/wxsqlite3.h>
 
-// Metakitのファイルパス
-static const wxString METAKIT_FILE_PATH = wxT("./metakit/JaneClone.dat");
+// SQLiteのデータベースファイルのパス
+static const wxString SQLITE_FILE_PATH = wxT("./dat/janeclone.db");
 
-class MetakitAccessor {
+class SQLiteAccessor {
+
 public:
 	/**
 	 * Metakitデータベースの初期化・トランザクションあり
 	 */
-	MetakitAccessor();
+	SQLiteAccessor();
 	/**
 	 * 板一覧情報をクラス変数の配列に追加する
 	 */
@@ -79,4 +79,4 @@ private:
 	wxArrayString* boardInfoArray;
 };
 
-#endif /* METAKITACCESSOR_HPP_ */
+#endif /* SQLITEACCESSOR_HPP_ */

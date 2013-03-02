@@ -52,7 +52,7 @@ am_JaneClone_OBJECTS = JaneClone-main.$(OBJEXT) \
 	JaneClone-socketcommunication.$(OBJEXT) \
 	JaneClone-anchoredresponsepopup.$(OBJEXT) \
 	JaneClone-janeclone.$(OBJEXT) \
-	JaneClone-metakitaccessor.$(OBJEXT) \
+	JaneClone-sqliteaccessor.$(OBJEXT) \
 	JaneClone-virtualboardlistctrl.$(OBJEXT) \
 	JaneClone-threadcontentbar.$(OBJEXT) \
 	JaneClone-janecloneutil.$(OBJEXT) \
@@ -62,13 +62,15 @@ am_JaneClone_OBJECTS = JaneClone-main.$(OBJEXT) \
 	JaneClone-janecloneimageviewer.$(OBJEXT)
 JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
 @USE_WINDRES_FALSE@JaneClone_DEPENDENCIES =  \
-@USE_WINDRES_FALSE@	$(top_builddir)/libmk4/libmk4.a \
 @USE_WINDRES_FALSE@	$(top_builddir)/libwxnkf/libwxnkf.a \
-@USE_WINDRES_FALSE@	$(top_builddir)/libwxuuid/libwxuuid.a
+@USE_WINDRES_FALSE@	$(top_builddir)/libwxuuid/libwxuuid.a \
+@USE_WINDRES_FALSE@	$(top_builddir)/wxsqlite3/libwxsqlite3.a \
+@USE_WINDRES_FALSE@	$(top_builddir)/sqlite3/libsqlite3.a
 @USE_WINDRES_TRUE@JaneClone_DEPENDENCIES =  \
-@USE_WINDRES_TRUE@	$(top_builddir)/libmk4/libmk4.a \
 @USE_WINDRES_TRUE@	$(top_builddir)/libwxnkf/libwxnkf.a \
 @USE_WINDRES_TRUE@	$(top_builddir)/libwxuuid/libwxuuid.a \
+@USE_WINDRES_TRUE@	$(top_builddir)/wxsqlite3/libwxsqlite3.a \
+@USE_WINDRES_TRUE@	$(top_builddir)/sqlite3/libsqlite3.a \
 @USE_WINDRES_TRUE@	JaneClone_rc.o
 JaneClone_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(JaneClone_CXXFLAGS) \
@@ -243,12 +245,12 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    threadcontentwindow.hpp     \
 		    anchoredresponsepopup.cpp   \
 		    janeclone.cpp               \
-		    metakitaccessor.cpp         \
+		    sqliteaccessor.cpp          \
 		    socketcommunication.hpp     \
 		    virtualboardlistctrl.cpp    \
 		    anchoredresponsepopup.hpp   \
 		    janeclone.hpp               \
-		    metakitaccessor.hpp         \
+		    sqliteaccessor.hpp          \
 		    threadcontentbar.cpp        \
 		    virtualboardlistctrl.hpp    \
 		    datatype.hpp                \
@@ -264,15 +266,15 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 
 
 # common build rule
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/libmk4 -I$(top_builddir)/rc -I$(top_builddir)/libwxuuid
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/rc -I$(top_builddir)/libwxuuid
 ACLOCAL_AMFLAGS = -I m4
 
 # Platform is not Windows
-@USE_WINDRES_FALSE@JaneClone_LDADD = $(top_builddir)/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a
+@USE_WINDRES_FALSE@JaneClone_LDADD = $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a $(top_builddir)/wxsqlite3/libwxsqlite3.a $(top_builddir)/sqlite3/libsqlite3.a
 
 # For Icon build and library dependency
 # Platform is Windows
-@USE_WINDRES_TRUE@JaneClone_LDADD = $(top_builddir)/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a JaneClone_rc.o
+@USE_WINDRES_TRUE@JaneClone_LDADD = $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a $(top_builddir)/wxsqlite3/libwxsqlite3.a $(top_builddir)/sqlite3/libsqlite3.a JaneClone_rc.o
 @USE_WINDRES_FALSE@JaneClone_LDFLAGS = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
 @USE_WINDRES_TRUE@JaneClone_LDFLAGS = -static `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
 
@@ -389,9 +391,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-janecloneimageviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-janecloneutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-main.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-metakitaccessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-responsewindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-socketcommunication.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-sqliteaccessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-threadcontentbar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-threadcontentwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-virtualboardlistctrl.Po@am__quote@
@@ -473,19 +475,19 @@ JaneClone-janeclone.obj: janeclone.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-janeclone.obj `if test -f 'janeclone.cpp'; then $(CYGPATH_W) 'janeclone.cpp'; else $(CYGPATH_W) '$(srcdir)/janeclone.cpp'; fi`
 
-JaneClone-metakitaccessor.o: metakitaccessor.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-metakitaccessor.o -MD -MP -MF $(DEPDIR)/JaneClone-metakitaccessor.Tpo -c -o JaneClone-metakitaccessor.o `test -f 'metakitaccessor.cpp' || echo '$(srcdir)/'`metakitaccessor.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-metakitaccessor.Tpo $(DEPDIR)/JaneClone-metakitaccessor.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='metakitaccessor.cpp' object='JaneClone-metakitaccessor.o' libtool=no @AMDEPBACKSLASH@
+JaneClone-sqliteaccessor.o: sqliteaccessor.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-sqliteaccessor.o -MD -MP -MF $(DEPDIR)/JaneClone-sqliteaccessor.Tpo -c -o JaneClone-sqliteaccessor.o `test -f 'sqliteaccessor.cpp' || echo '$(srcdir)/'`sqliteaccessor.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-sqliteaccessor.Tpo $(DEPDIR)/JaneClone-sqliteaccessor.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='sqliteaccessor.cpp' object='JaneClone-sqliteaccessor.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-metakitaccessor.o `test -f 'metakitaccessor.cpp' || echo '$(srcdir)/'`metakitaccessor.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-sqliteaccessor.o `test -f 'sqliteaccessor.cpp' || echo '$(srcdir)/'`sqliteaccessor.cpp
 
-JaneClone-metakitaccessor.obj: metakitaccessor.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-metakitaccessor.obj -MD -MP -MF $(DEPDIR)/JaneClone-metakitaccessor.Tpo -c -o JaneClone-metakitaccessor.obj `if test -f 'metakitaccessor.cpp'; then $(CYGPATH_W) 'metakitaccessor.cpp'; else $(CYGPATH_W) '$(srcdir)/metakitaccessor.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-metakitaccessor.Tpo $(DEPDIR)/JaneClone-metakitaccessor.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='metakitaccessor.cpp' object='JaneClone-metakitaccessor.obj' libtool=no @AMDEPBACKSLASH@
+JaneClone-sqliteaccessor.obj: sqliteaccessor.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-sqliteaccessor.obj -MD -MP -MF $(DEPDIR)/JaneClone-sqliteaccessor.Tpo -c -o JaneClone-sqliteaccessor.obj `if test -f 'sqliteaccessor.cpp'; then $(CYGPATH_W) 'sqliteaccessor.cpp'; else $(CYGPATH_W) '$(srcdir)/sqliteaccessor.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-sqliteaccessor.Tpo $(DEPDIR)/JaneClone-sqliteaccessor.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='sqliteaccessor.cpp' object='JaneClone-sqliteaccessor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-metakitaccessor.obj `if test -f 'metakitaccessor.cpp'; then $(CYGPATH_W) 'metakitaccessor.cpp'; else $(CYGPATH_W) '$(srcdir)/metakitaccessor.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-sqliteaccessor.obj `if test -f 'sqliteaccessor.cpp'; then $(CYGPATH_W) 'sqliteaccessor.cpp'; else $(CYGPATH_W) '$(srcdir)/sqliteaccessor.cpp'; fi`
 
 JaneClone-virtualboardlistctrl.o: virtualboardlistctrl.cpp
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-virtualboardlistctrl.o -MD -MP -MF $(DEPDIR)/JaneClone-virtualboardlistctrl.Tpo -c -o JaneClone-virtualboardlistctrl.o `test -f 'virtualboardlistctrl.cpp' || echo '$(srcdir)/'`virtualboardlistctrl.cpp

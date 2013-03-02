@@ -5,12 +5,12 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    threadcontentwindow.hpp     \
 		    anchoredresponsepopup.cpp   \
 		    janeclone.cpp               \
-		    metakitaccessor.cpp         \
+		    sqliteaccessor.cpp          \
 		    socketcommunication.hpp     \
 		    virtualboardlistctrl.cpp    \
 		    anchoredresponsepopup.hpp   \
 		    janeclone.hpp               \
-		    metakitaccessor.hpp         \
+		    sqliteaccessor.hpp          \
 		    threadcontentbar.cpp        \
 		    virtualboardlistctrl.hpp    \
 		    datatype.hpp                \
@@ -25,13 +25,13 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    janecloneimageviewer.hpp
 
 # common build rule
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/libmk4 -I$(top_builddir)/rc -I$(top_builddir)/libwxuuid
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/rc -I$(top_builddir)/libwxuuid
 ACLOCAL_AMFLAGS    = -I m4
 
 # For Icon build and library dependency
 if USE_WINDRES
 # Platform is Windows
-JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a JaneClone_rc.o
+JaneClone_LDADD    = $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a $(top_builddir)/wxsqlite3/libwxsqlite3.a $(top_builddir)/sqlite3/libsqlite3.a JaneClone_rc.o
 JaneClone_LDFLAGS  = -static `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
 
 JaneClone_rc.o : $(top_builddir)/rc/icon.rc
@@ -39,7 +39,7 @@ JaneClone_rc.o : $(top_builddir)/rc/icon.rc
 
 else
 # Platform is not Windows
-JaneClone_LDADD    = $(top_builddir)/libmk4/libmk4.a $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a
+JaneClone_LDADD    = $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a $(top_builddir)/wxsqlite3/libwxsqlite3.a $(top_builddir)/sqlite3/libsqlite3.a
 JaneClone_LDFLAGS  = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
 endif
 
