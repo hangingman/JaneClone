@@ -29,7 +29,11 @@
 #include <wx/wxsqlite3.h>
 
 // SQLiteのデータベースファイルのパス
-static const wxString SQLITE_FILE_PATH = wxT("./dat/janeclone.db");
+#ifdef __WXMSW__
+static const wxString SQLITE_FILE_PATH = wxT("\\janeclone.db");
+#else
+static const wxString SQLITE_FILE_PATH = wxT("/janeclone.db");
+#endif
 
 class SQLiteAccessor {
 

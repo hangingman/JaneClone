@@ -1,4 +1,4 @@
-AM_CXXFLAGS = -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_RTREE -I$(top_builddir)/sqlite3
+AM_CXXFLAGS = -I$(top_builddir)/sqlite3
 ACLOCAL_AMFLAGS = -I m4
 
 lib_LTLIBRARIES = libwxsqlite3.la

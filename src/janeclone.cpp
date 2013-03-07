@@ -556,13 +556,13 @@ void JaneClone::SetProperties() {
 			       wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
      // sqliteの初期化を行う
-     //SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
-     //delete sqliteAccessor;
+     SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
+     delete sqliteAccessor;
 
      // もしSqlite上に板一覧情報が存在するならば板一覧設定に飛ぶ
-     //if (SQLiteAccessor::TableHasData(wxT("BOARD_INFO"))) {
-     //  SetBoardList();
-     //}
+     if (SQLiteAccessor::TableHasData(wxT("BOARD_INFO"))) {
+       SetBoardList();
+     }
      // アプリ上部URL入力欄の画像つきボタンのサイズ調整
      m_url_input_button->SetSize(m_url_input_button->GetBestSize());
      // アプリ上部URL入力欄のフォント調整

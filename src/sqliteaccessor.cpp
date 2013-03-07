@@ -25,25 +25,30 @@
  * データベースの初期化、トランザクションあり
  */
 SQLiteAccessor::SQLiteAccessor() {
-     // カレントディレクトリを設定
-     wxDir dir(wxGetCwd());
-     // datフォルダが存在するか確認。無ければ確認＆フォルダを作成
-     if (!dir.Exists(wxT("./dat/")))
-	  ::wxMkdir(wxT("./dat/"));
      
      // dbファイルの初期化
-     wxString dbFile = SQLITE_FILE_PATH;
-     wxSQLite3Database* db = new wxSQLite3Database();
-     db->InitializeSQLite();
-     db->Open(dbFile);
-     db->Begin(WXSQLITE_TRANSACTION_DEFAULT);
-     // 必要なテーブルが無ければ作成
-     db->ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO(BOARDNAME_KANJI TEXT, BOARD_URL TEXT, CATEGORY TEXT)"));
-     db->ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_BOARDLIST(BOARDNAME_KANJI TEXT)"));
-     db->ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_THREADLIST(THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT])"));
-     db->Commit();
-     db->Close();
-     delete db;
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+
+     try {
+	  wxMessageBox(dbFile + wxT(" :InitializeSQLite()"));
+	  wxSQLite3Database::InitializeSQLite();
+	  wxMessageBox(dbFile + wxT(" :db"));
+	  wxSQLite3Database db;
+	  wxMessageBox(dbFile + wxT(" :db.Open"));
+	  db.Open(dbFile);
+	  wxMessageBox(dbFile + wxT(" :db.Open Success"));
+	  db.Begin();
+	  // 必要なテーブルが無ければ作成
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO(BOARDNAME_KANJI TEXT, BOARD_URL TEXT, CATEGORY TEXT)"));
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_BOARDLIST(BOARDNAME_KANJI TEXT)"));
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_THREADLIST(THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
+	  db.Commit();
+	  db.Close();
+	  wxMessageBox(wxT("db.Close"));
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
 }
 /**
  * 板一覧情報をクラス変数の配列に追加する
@@ -65,20 +70,20 @@ void SQLiteAccessor::SetBoardInfo(const wxString category, const wxString name,
  */
 void SQLiteAccessor::SetBoardInfoCommit() {
      // dbファイルの初期化
-     wxString dbFile = SQLITE_FILE_PATH;
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
      // もしすでにdatファイルが存在していれば削除
      if (wxFile::Exists(dbFile)) {
 	  wxRemoveFile(dbFile);
      }
      // dbファイルの初期化
-     wxSQLite3Database* db = new wxSQLite3Database();
-     db->InitializeSQLite();
-     db->Open(dbFile);
-     db->Begin(WXSQLITE_TRANSACTION_DEFAULT);
+     wxSQLite3Database::InitializeSQLite();
+     wxSQLite3Database db;
+     db.Open(dbFile);
+     db.Begin();
 
      // PreparedStatementを準備する
      const wxString sqlIn = wxT("INSERT INTO BOARD_INFO (BOARDNAME_KANJI, BOARD_URL, CATEGORY) VALUES (?, ?, ?)");
-     wxSQLite3Statement stmt = db->PrepareStatement (sqlIn);
+     wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
 
      // 配列内のレコードを追加する
      for (unsigned int i = 0; i < boardInfoArray->GetCount(); i += 3) {
@@ -90,9 +95,9 @@ void SQLiteAccessor::SetBoardInfoCommit() {
      	  stmt.ExecuteUpdate();
      }
      // コミット実行
-     db->Commit();
-     db->Close();
-     delete db;
+     db.Commit();
+     db.Close();
+     
 }
 /**
  * 板一覧情報をMetakit内のテーブルから取得しArrayStringの形で返す
@@ -100,11 +105,11 @@ void SQLiteAccessor::SetBoardInfoCommit() {
 wxArrayString SQLiteAccessor::GetBoardInfo() {
 
      // dbファイルの初期化
-     wxString dbFile = SQLITE_FILE_PATH;
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
      // dbファイルの初期化
-     wxSQLite3Database* db = new wxSQLite3Database();
-     db->InitializeSQLite();
-     db->Open(dbFile);
+     wxSQLite3Database::InitializeSQLite();
+     wxSQLite3Database db;
+     db.Open(dbFile);
 
      // リザルトセットをArrayStringに設定する
      wxArrayString array;
@@ -113,9 +118,9 @@ wxArrayString SQLiteAccessor::GetBoardInfo() {
      const wxString sqlSe = wxT("SELECT SELECT BOARDNAME_KANJI, BOARD_URL, CATEGORY FROM BOARD_INFO");
 
      // SQL文を実行する
-     rs = db->ExecuteQuery(sqlSe);
-     db->Close();
-     delete db;
+     rs = db.ExecuteQuery(sqlSe);
+     db.Close();
+     
 
      while (!rs.Eof()) {
 	  wxString boardName = rs.GetAsString(wxT("BOARDNAME_KANJI"));
@@ -138,10 +143,10 @@ wxArrayString SQLiteAccessor::GetBoardInfo() {
 bool SQLiteAccessor::TableHasData(const wxString tableName) {
 
      // dbファイルの初期化
-     wxString dbFile = SQLITE_FILE_PATH;
-     wxSQLite3Database* db = new wxSQLite3Database();
-     db->InitializeSQLite();
-     db->Open(dbFile);
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxSQLite3Database::InitializeSQLite();
+     wxSQLite3Database db;
+     db.Open(dbFile);
 
      // リザルトセットを用意する
      wxSQLite3ResultSet rs;
@@ -149,9 +154,9 @@ bool SQLiteAccessor::TableHasData(const wxString tableName) {
      wxString SQL_QUERY = wxT("SELECT COUNT(*) from ") + tableName;
 
      // SQL文を実行する
-     rs = db->ExecuteQuery(SQL_QUERY);
-     db->Close();
-     delete db;
+     rs = db.ExecuteQuery(SQL_QUERY);
+     db.Close();
+     
 
      // SQL文を実行し結果を受け取る
      if (!rs.IsNull(0)) {
@@ -171,24 +176,24 @@ bool SQLiteAccessor::TableHasData(const wxString tableName) {
  */
 void SQLiteAccessor::DropTable(const wxString tableName) {
      // dbファイルの初期化
-     wxString dbFile = SQLITE_FILE_PATH;
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
 
      // dbファイルの初期化
-     wxSQLite3Database* db = new wxSQLite3Database();
-     db->InitializeSQLite();
-     db->Open(dbFile);
-     db->Begin(WXSQLITE_TRANSACTION_DEFAULT);
+     wxSQLite3Database::InitializeSQLite();
+     wxSQLite3Database db;
+     db.Open(dbFile);
+     db.Begin();
 
      // PreparedStatementを準備する
      const wxString sql = wxT("DROP TABLE ?");
-     wxSQLite3Statement stmt = db->PrepareStatement (sql);
+     wxSQLite3Statement stmt = db.PrepareStatement (sql);
      stmt.Bind(0, tableName);
      stmt.ExecuteUpdate();
 
      // コミット実行
-     db->Commit();
-     db->Close();
-     delete db;
+     db.Commit();
+     db.Close();
+     
 }
 /**
  * ユーザーがJaneClone終了時にタブで開いていた板の名前を登録する
@@ -199,15 +204,15 @@ void SQLiteAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardList
      DropTable(wxT("USER_LOOKING_BOARDLIST"));
 
      // dbファイルの初期化
-     wxString dbFile = SQLITE_FILE_PATH;
-     wxSQLite3Database* db = new wxSQLite3Database();
-     db->InitializeSQLite();
-     db->Open(dbFile);
-     db->Begin(WXSQLITE_TRANSACTION_DEFAULT);
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxSQLite3Database::InitializeSQLite();
+     wxSQLite3Database db;
+     db.Open(dbFile);
+     db.Begin();
 
      // PreparedStatementを準備する
      const wxString sqlIn = wxT("INSERT INTO USER_LOOKING_BOARDLIST (BOARDNAME_KANJI) VALUES (?)");
-     wxSQLite3Statement stmt = db->PrepareStatement (sqlIn);
+     wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
 
      // 配列内のレコードを追加する
      for (unsigned int i = 0; i < userLookingBoardListArray.GetCount();i++) {
@@ -217,9 +222,9 @@ void SQLiteAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardList
 	  stmt.ExecuteUpdate();
      }
      // コミット実行
-     db->Commit();
-     db->Close();
-     delete db;
+     db.Commit();
+     db.Close();
+     
 }
 /**
  * JaneClone開始時に以前ユーザーがタブで開いていた板の名前を取得する
@@ -227,10 +232,10 @@ void SQLiteAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardList
 wxArrayString SQLiteAccessor::GetUserLookedBoardList() {
 
      // dbファイルの初期化
-     wxString dbFile = SQLITE_FILE_PATH;
-     wxSQLite3Database* db = new wxSQLite3Database();
-     db->InitializeSQLite();
-     db->Open(dbFile);
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxSQLite3Database::InitializeSQLite();
+     wxSQLite3Database db;
+     db.Open(dbFile);
 
      // リザルトセットを用意する
      wxSQLite3ResultSet rs;
@@ -238,9 +243,9 @@ wxArrayString SQLiteAccessor::GetUserLookedBoardList() {
      wxString sqlSe = wxT("SELECT BOARDNAME_KANJI from USER_LOOKING_BOARDLIST");
 
      // SQL文を実行する
-     rs = db->ExecuteQuery(sqlSe);
-     db->Close();
-     delete db;
+     rs = db.ExecuteQuery(sqlSe);
+     db.Close();
+     
      // リザルトセットをArrayStringに設定する
      wxArrayString array;
 
@@ -264,16 +269,16 @@ void SQLiteAccessor::SetUserLookingThreadList(wxArrayString& userLookingThreadLi
      DropTable(wxT("USER_LOOKING_THREADLIST"));
 
      // dbファイルの初期化
-     wxString dbFile = SQLITE_FILE_PATH;
-     wxSQLite3Database* db = new wxSQLite3Database();
-     db->InitializeSQLite();
-     db->Open(dbFile);
-     db->Begin(WXSQLITE_TRANSACTION_DEFAULT);
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxSQLite3Database::InitializeSQLite();
+     wxSQLite3Database db;
+     db.Open(dbFile);
+     db.Begin();
 
      // PreparedStatementを準備する
      const wxString sqlIn 
 	  = wxT("INSERT INTO USER_LOOKING_THREADLIST (THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII) VALUES (?, ?, ?)");
-     wxSQLite3Statement stmt = db->PrepareStatement (sqlIn);
+     wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
 
      // 配列内のレコードを追加する
      for (unsigned int i = 0; i < userLookingThreadListArray.GetCount();i+=3) {
@@ -285,9 +290,9 @@ void SQLiteAccessor::SetUserLookingThreadList(wxArrayString& userLookingThreadLi
 	  stmt.ExecuteUpdate();
      }
      // コミット実行
-     db->Commit();
-     db->Close();
-     delete db;
+     db.Commit();
+     db.Close();
+     
 }
 /**
  * JaneClone開始時に以前ユーザーがタブで開いていたスレッドの情報を取得する
@@ -295,10 +300,10 @@ void SQLiteAccessor::SetUserLookingThreadList(wxArrayString& userLookingThreadLi
 wxArrayString SQLiteAccessor::GetUserLookedThreadList() {
 
      // dbファイルの初期化
-     wxString dbFile = SQLITE_FILE_PATH;
-     wxSQLite3Database* db = new wxSQLite3Database();
-     db->InitializeSQLite();
-     db->Open(dbFile);
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxSQLite3Database::InitializeSQLite();
+     wxSQLite3Database db;
+     db.Open(dbFile);
 
      // リザルトセットを用意する
      wxSQLite3ResultSet rs;
@@ -306,9 +311,9 @@ wxArrayString SQLiteAccessor::GetUserLookedThreadList() {
      wxString sqlSe = wxT("SELECT THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII from USER_LOOKING_THREADLIST");
 
      // SQL文を実行する
-     rs = db->ExecuteQuery(sqlSe);
-     db->Close();
-     delete db;
+     rs = db.ExecuteQuery(sqlSe);
+     db.Close();
+     
      // リザルトセットをArrayStringに設定する
      wxArrayString array;
 
