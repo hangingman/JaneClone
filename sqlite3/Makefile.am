@@ -1,9 +1,13 @@
-noinst_LIBRARIES = libsqlite3.a
-# Sources for libsqlite3
-libsqlite3_a_SOURCES = shell.c sqlite3.c
-# Linker options
-libsqlite3_a_LDFLAG = -static -s
-# Compiler options. Here we are adding the include directory
-# to be searched for headers included in the source code.
-libsqlite3_a_CXXFLAGS = -I$(top_builddir)/sqlite3 @CXXFLAGS@
+AM_CFLAGS = @THREADSAFE_FLAGS@ @DYNAMIC_EXTENSION_FLAGS@ -DSQLITE_ENABLE_FTS3 -DSQLITE_ENABLE_RTREE
 ACLOCAL_AMFLAGS = -I m4
+
+lib_LTLIBRARIES = libsqlite3.la
+libsqlite3_la_SOURCES = sqlite3.c
+libsqlite3_la_LDFLAGS = -no-undefined -version-info 8:6:8
+
+bin_PROGRAMS = sqlite3
+sqlite3_SOURCES = shell.c sqlite3.h
+sqlite3_LDADD = $(top_builddir)/sqlite3/libsqlite3.la @READLINE_LIBS@
+sqlite3_DEPENDENCIES = $(top_builddir)/sqlite3/libsqlite3.la
+
+include_HEADERS = sqlite3.h sqlite3ext.h

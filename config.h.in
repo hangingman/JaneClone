@@ -1,13 +1,26 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
+   don't. */
+#undef HAVE_DECL_STRERROR_R
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
 
+/* Define to 1 if you have the `fdatasync' function. */
+#undef HAVE_FDATASYNC
+
+/* Define to 1 if you have the `fullfsync' function. */
+#undef HAVE_FULLFSYNC
+
 /* Define to 1 if you have the `getpagesize' function. */
 #undef HAVE_GETPAGESIZE
+
+/* Define to 1 if you have the `gmtime_r' function. */
+#undef HAVE_GMTIME_R
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -18,11 +31,11 @@
 /* Define to 1 if you have the `xml2' library (-lxml2). */
 #undef HAVE_LIBXML2
 
-/* Define to 1 if you have the `z' library (-lz). */
-#undef HAVE_LIBZ
-
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
+
+/* Define to 1 if you have the `localtime_r' function. */
+#undef HAVE_LOCALTIME_R
 
 /* Define to 1 if your system has a GNU libc compatible `malloc' function, and
    to 0 otherwise. */
@@ -42,6 +55,9 @@
 
 /* Define to 1 if you have the `nl_langinfo' function. */
 #undef HAVE_NL_LANGINFO
+
+/* Define to 1 if you have the `readline' function. */
+#undef HAVE_READLINE
 
 /* Define to 1 if your system has a GNU libc compatible `realloc' function,
    and to 0 otherwise. */
@@ -64,6 +80,9 @@
 
 /* Define to 1 if you have the `strcspn' function. */
 #undef HAVE_STRCSPN
+
+/* Define to 1 if you have the `strerror_r' function. */
+#undef HAVE_STRERROR_R
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
@@ -94,6 +113,9 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
+
+/* Define to 1 if you have the `usleep' function. */
+#undef HAVE_USLEEP
 
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
@@ -135,8 +157,17 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
+/* Define to 1 if strerror_r returns char *. */
+#undef STRERROR_R_CHAR_P
+
 /* Version number of package */
 #undef VERSION
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+#undef _FILE_OFFSET_BITS
+
+/* Define for large files, on AIX-style hosts. */
+#undef _LARGE_FILES
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */

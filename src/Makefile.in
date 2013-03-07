@@ -66,12 +66,7 @@ JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
 @USE_WINDRES_FALSE@	$(top_builddir)/libwxuuid/libwxuuid.a \
 @USE_WINDRES_FALSE@	$(top_builddir)/wxsqlite3/libwxsqlite3.a \
 @USE_WINDRES_FALSE@	$(top_builddir)/sqlite3/libsqlite3.a
-@USE_WINDRES_TRUE@JaneClone_DEPENDENCIES =  \
-@USE_WINDRES_TRUE@	$(top_builddir)/libwxnkf/libwxnkf.a \
-@USE_WINDRES_TRUE@	$(top_builddir)/libwxuuid/libwxuuid.a \
-@USE_WINDRES_TRUE@	$(top_builddir)/wxsqlite3/libwxsqlite3.a \
-@USE_WINDRES_TRUE@	$(top_builddir)/sqlite3/libsqlite3.a \
-@USE_WINDRES_TRUE@	JaneClone_rc.o
+@USE_WINDRES_TRUE@JaneClone_DEPENDENCIES = JaneClone_rc.o
 JaneClone_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(JaneClone_CXXFLAGS) \
 	$(CXXFLAGS) $(JaneClone_LDFLAGS) $(LDFLAGS) -o $@
@@ -105,6 +100,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AR = @AR@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -124,6 +120,7 @@ DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
+DYNAMIC_EXTENSION_FLAGS = @DYNAMIC_EXTENSION_FLAGS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -163,10 +160,12 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PLATFORM_STRING = @PLATFORM_STRING@
 RANLIB = @RANLIB@
+READLINE_LIBS = @READLINE_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+THREADSAFE_FLAGS = @THREADSAFE_FLAGS@
 VERSION = @VERSION@
 WINDRES = @WINDRES@
 WX_CFLAGS = @WX_CFLAGS@
@@ -274,9 +273,9 @@ ACLOCAL_AMFLAGS = -I m4
 
 # For Icon build and library dependency
 # Platform is Windows
-@USE_WINDRES_TRUE@JaneClone_LDADD = $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a $(top_builddir)/wxsqlite3/libwxsqlite3.a $(top_builddir)/sqlite3/libsqlite3.a JaneClone_rc.o
+@USE_WINDRES_TRUE@JaneClone_LDADD = JaneClone_rc.o 
 @USE_WINDRES_FALSE@JaneClone_LDFLAGS = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
-@USE_WINDRES_TRUE@JaneClone_LDFLAGS = -static `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
+@USE_WINDRES_TRUE@JaneClone_LDFLAGS = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3
 
 ################################ install target for JaneClone ###############################
 packagedir = package

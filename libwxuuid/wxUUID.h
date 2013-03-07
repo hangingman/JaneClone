@@ -21,62 +21,60 @@
 	#pragma interface "wxUUID.h"
 #endif
 
-#include "wx/timer.h"
-#include "wx/longlong.h"
-#include "wx/string.h"
+#include <wx/timer.h>
+#include <wx/longlong.h>
+#include <wx/string.h>
 
-#define WXUUID_V1		0
+#define WXUUID_V1	0
 #define WXUUID_VNAME	1
-#define WXUUID_V3		2
+#define WXUUID_V3	2
 
-class WXDLLEXPORT wxUUID
+class wxUUID
 {
-public:
-	wxUUID(const int& iVersion = 0, const wxString& szNameOrHash = wxEmptyString);
+ public:
+  wxUUID(const int& iVersion = 0, const wxString& szNameOrHash = wxEmptyString);
 
-	// Data Access Methods
-	long		GetTimeLow() const				{ return m_lTimeLow; }
-	short		GetTimeMid() const				{ return m_sTimeMid; }
-	short		GetTimeHiAndVersion() const		{ return m_sTimeHiAndVersion; }
-	char		GetClockHiAndReserved() const	{ return m_cClockHiAndReserved; }
-	char		GetClockLow() const				{ return m_cClockLow; }
-	const char*	GetIEEENode() const				{ return (const char*)m_IEEENode; }
+  // Data Access Methods
+  long		GetTimeLow() const				{ return m_lTimeLow; }
+  short		GetTimeMid() const				{ return m_sTimeMid; }
+  short		GetTimeHiAndVersion() const		{ return m_sTimeHiAndVersion; }
+  char		GetClockHiAndReserved() const	{ return m_cClockHiAndReserved; }
+  char		GetClockLow() const				{ return m_cClockLow; }
+  const char*	GetIEEENode() const				{ return (const char*)m_IEEENode; }
 
-	// Operator Overloading
+  // Operator Overloading
 
-	// Other Methods
-	wxString ToString() const;
+  // Other Methods
+  wxString ToString() const;
 
-	// Static Methods
-	static wxString GetUUID();
-	static wxUUID ParseUUID(const wxString& szUUID);
+  // Static Methods
+  static wxString GetUUID();
+  static wxUUID ParseUUID(const wxString& szUUID);
 
-protected:
+ protected:
 
-	// UUID Generation Utility Methods
-	void	GetTimeStamp(wxLongLong* pLLTime);
-	void	GetIEEENode(unsigned char pIEEENode[6]);
-	void	GetRandomInfo(char pSeed[16]);
-	short	GetRandomNumber();
+  // UUID Generation Utility Methods
+  void	GetTimeStamp(wxLongLong* pLLTime);
+  void	GetIEEENode(unsigned char pIEEENode[6]);
+  void	GetRandomInfo(char pSeed[16]);
+  short	GetRandomNumber();
 
-	void	DoV1();
-	void	DoVName();
-	void	DoV3();
+  void	DoV1();
+  void	DoVName();
+  void	DoV3();
 
-	void	GenerateUUIDv1(const short& sClock, const wxLongLong& llTime, const unsigned char pIEEENode[6]);
-	void	GenerateUUIDv3(const wxString& szHash);
-	void	GenerateUUIDvName(const wxString& szName);
+  void	GenerateUUIDv1(const short& sClock, const wxLongLong& llTime, const unsigned char pIEEENode[6]);
+  void	GenerateUUIDv3(const wxString& szHash);
+  void	GenerateUUIDvName(const wxString& szName);
 
-	wxString			m_szNameOrHash;
+  wxString			m_szNameOrHash;
 
-	unsigned long		m_lTimeLow;
-	unsigned short		m_sTimeMid;
-	unsigned short		m_sTimeHiAndVersion;
-	unsigned char		m_cClockHiAndReserved;
-	unsigned char		m_cClockLow;
-	unsigned char		m_IEEENode[6];
-
-private:
+  unsigned long		m_lTimeLow;
+  unsigned short	m_sTimeMid;
+  unsigned short	m_sTimeHiAndVersion;
+  unsigned char		m_cClockHiAndReserved;
+  unsigned char		m_cClockLow;
+  unsigned char		m_IEEENode[6];
 
 };
 

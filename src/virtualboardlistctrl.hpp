@@ -201,7 +201,7 @@ private:
 
 typedef std::vector<VirtualBoardListItem> VirtualBoardList;
 
-class WXDLLEXPORT VirtualBoardListCtrl: public wxListCtrl {
+class VirtualBoardListCtrl: public wxListCtrl {
 
      enum Columns {
 	  COL_NUM = 0, 	// 番号

@@ -15,22 +15,22 @@
 //////////////////////////////////////////////////////////////////////
 
 #ifdef __GNUG__
-	#pragma implementation "wxMD5.h"
+#pragma implementation "wxMD5.h"
 #endif
 
 // for compilers that support precompilation, includes "wx.h"
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-	#pragma hdrstop
+#pragma hdrstop
 #endif
 
 // for all others
 #ifndef WX_PRECOMP
-	#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/utils.h"
+#include <wx/utils.h>
 
 #include "wxMD5.h"
 #include "wxUUID.h"
@@ -129,7 +129,7 @@ void wxUUID::GetRandomInfo(char pSeed[16])
      GetTimeStamp(&llTime);
 
      wxString	szToHash = szSystemInfo + llTime.ToString() + szHostName;
-     wxString	szHash = wxMD5::GetDigest(szToHash);
+     wxString	szHash = wxMD5::GetDigestStatic(szToHash);
      const char* szHashChar = szHash.mb_str();
      
      for(unsigned int i = 0; i < 16; i++)

@@ -23,30 +23,29 @@
     #pragma interface "wxMD5.h"
 #endif
 
-#include "wx/string.h"
+#include <wx/string.h>
 
-class WXDLLEXPORT wxMD5  
-{
-public:
-	wxMD5();
-	wxMD5(const wxString& szText);
-	virtual ~wxMD5();
 
-	// Other Methods
-	void SetText(const wxString& szText);
+class wxMD5 {
 
-	const wxString GetDigest();
+ public:
+  wxMD5();
+  wxMD5(const wxString& szText);
 
-	// Static Methods
-	static const wxString GetDigest(const wxString& szText);
+  // Other Methods
+  void SetText(const wxString& szText);
 
-protected:
-	bool		m_bCalculatedDigest;
-	wxUint8		m_arrDigest[16];
-	wxChar		m_pszDigestString[33];
-	wxString	m_szText;
+  const wxString GetDigest();
 
-private:
+  // Static Methods
+  static const wxString GetDigestStatic(const wxString& szText);
+
+ protected:
+  bool		m_bCalculatedDigest;
+  wxUint8       m_arrDigest[16];
+  wxChar        m_pszDigestString[33];
+  wxString	m_szText;
+
 };
 
 #endif // _WXMD5_H__

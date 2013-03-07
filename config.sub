@@ -771,6 +771,10 @@ case $basic_machine in
 	ms1-*)
 		basic_machine=`echo $basic_machine | sed -e 's/ms1-/mt-/'`
 		;;
+	msys)
+		basic_machine=i386-pc
+		os=-msys
+		;;
 	mvs)
 		basic_machine=i370-ibm
 		os=-mvs
@@ -1293,7 +1297,7 @@ case $os in
 	      | -ptx* | -coff* | -ecoff* | -winnt* | -domain* | -vsta* \
 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
 	      | -chorusos* | -chorusrdb* | -cegcc* \
-	      | -cygwin* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+	      | -cygwin* | -msys* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
 	      | -mingw32* | -linux-gnu* | -linux-newlib* | -linux-uclibc* \
 	      | -uxpv* | -beos* | -mpeix* | -udk* \
 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \

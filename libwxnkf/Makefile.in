@@ -45,15 +45,36 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-LIBRARIES = $(noinst_LIBRARIES)
-ARFLAGS = cru
-libwxnkf_a_AR = $(AR) $(ARFLAGS)
-libwxnkf_a_LIBADD =
-am_libwxnkf_a_OBJECTS = libwxnkf_a-flagset.$(OBJEXT) \
-	libwxnkf_a-utf8table.$(OBJEXT) libwxnkf_a-utf16util.$(OBJEXT) \
-	libwxnkf_a-util.$(OBJEXT) libwxnkf_a-wxnkf.$(OBJEXT) \
-	libwxnkf_a-wxnkfencoding.$(OBJEXT)
-libwxnkf_a_OBJECTS = $(am_libwxnkf_a_OBJECTS)
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__installdirs = "$(DESTDIR)$(libdir)"
+LTLIBRARIES = $(lib_LTLIBRARIES)
+libwxnkf_la_LIBADD =
+am_libwxnkf_la_OBJECTS = flagset.lo utf8table.lo utf16util.lo util.lo \
+	wxnkf.lo wxnkfencoding.lo
+libwxnkf_la_OBJECTS = $(am_libwxnkf_la_OBJECTS)
+libwxnkf_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(libwxnkf_la_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -67,14 +88,15 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(libwxnkf_a_SOURCES)
-DIST_SOURCES = $(libwxnkf_a_SOURCES)
+SOURCES = $(libwxnkf_la_SOURCES)
+DIST_SOURCES = $(libwxnkf_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AR = @AR@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -94,6 +116,7 @@ DEPDIR = @DEPDIR@
 DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
+DYNAMIC_EXTENSION_FLAGS = @DYNAMIC_EXTENSION_FLAGS@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
@@ -133,10 +156,12 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PLATFORM_STRING = @PLATFORM_STRING@
 RANLIB = @RANLIB@
+READLINE_LIBS = @READLINE_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+THREADSAFE_FLAGS = @THREADSAFE_FLAGS@
 VERSION = @VERSION@
 WINDRES = @WINDRES@
 WX_CFLAGS = @WX_CFLAGS@
@@ -209,21 +234,11 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LIBRARIES = libwxnkf.a
-# Sources for libwxnkf
-libwxnkf_a_SOURCES = flagset.cpp   \
-	   	      utf8table.cpp \
-		      utf16util.cpp \
-		      util.cpp      \
-		      wxnkf.cpp     \
-		      wxnkfencoding.cpp
-
-# Linker options
-libwxnkf_a_LDFLAG = -static -s
-# Compiler options. Here we are adding the include directory
-# to be searched for headers included in the source code.
-libwxnkf_a_CXXFLAGS = -I$(top_builddir)/libwxnkf @CXXFLAGS@
 ACLOCAL_AMFLAGS = -I m4
+lib_LTLIBRARIES = libwxnkf.la
+AM_CXXFLAGS = -I$(top_builddir)/libwxnkf
+libwxnkf_la_SOURCES = flagset.cpp utf8table.cpp utf16util.cpp util.cpp wxnkf.cpp wxnkfencoding.cpp
+libwxnkf_la_LDFLAGS = -no-undefined -version-info 8:6:8
 all: all-am
 
 .SUFFIXES:
@@ -258,13 +273,39 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	test -z "$(libdir)" || $(MKDIR_P) "$(DESTDIR)$(libdir)"
+	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	list2=; for p in $$list; do \
+	  if test -f $$p; then \
+	    list2="$$list2 $$p"; \
+	  else :; fi; \
+	done; \
+	test -z "$$list2" || { \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 '$(DESTDIR)$(libdir)'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) $$list2 "$(DESTDIR)$(libdir)"; \
+	}
 
-clean-noinstLIBRARIES:
-	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
-libwxnkf.a: $(libwxnkf_a_OBJECTS) $(libwxnkf_a_DEPENDENCIES) 
-	-rm -f libwxnkf.a
-	$(libwxnkf_a_AR) libwxnkf.a $(libwxnkf_a_OBJECTS) $(libwxnkf_a_LIBADD)
-	$(RANLIB) libwxnkf.a
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lib_LTLIBRARIES)'; test -n "$(libdir)" || list=; \
+	for p in $$list; do \
+	  $(am__strip_dir) \
+	  echo " $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f '$(DESTDIR)$(libdir)/$$f'"; \
+	  $(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=uninstall rm -f "$(DESTDIR)$(libdir)/$$f"; \
+	done
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  dir="`echo $$p | sed -e 's|/[^/]*$$||'`"; \
+	  test "$$dir" != "$$p" || dir=.; \
+	  echo "rm -f \"$${dir}/so_locations\""; \
+	  rm -f "$${dir}/so_locations"; \
+	done
+libwxnkf.la: $(libwxnkf_la_OBJECTS) $(libwxnkf_la_DEPENDENCIES) 
+	$(libwxnkf_la_LINK) -rpath $(libdir) $(libwxnkf_la_OBJECTS) $(libwxnkf_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -272,12 +313,12 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwxnkf_a-flagset.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwxnkf_a-utf16util.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwxnkf_a-utf8table.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwxnkf_a-util.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwxnkf_a-wxnkf.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libwxnkf_a-wxnkfencoding.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/flagset.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utf16util.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utf8table.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wxnkf.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wxnkfencoding.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -299,90 +340,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LTCXXCOMPILE) -c -o $@ $<
-
-libwxnkf_a-flagset.o: flagset.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-flagset.o -MD -MP -MF $(DEPDIR)/libwxnkf_a-flagset.Tpo -c -o libwxnkf_a-flagset.o `test -f 'flagset.cpp' || echo '$(srcdir)/'`flagset.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-flagset.Tpo $(DEPDIR)/libwxnkf_a-flagset.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='flagset.cpp' object='libwxnkf_a-flagset.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-flagset.o `test -f 'flagset.cpp' || echo '$(srcdir)/'`flagset.cpp
-
-libwxnkf_a-flagset.obj: flagset.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-flagset.obj -MD -MP -MF $(DEPDIR)/libwxnkf_a-flagset.Tpo -c -o libwxnkf_a-flagset.obj `if test -f 'flagset.cpp'; then $(CYGPATH_W) 'flagset.cpp'; else $(CYGPATH_W) '$(srcdir)/flagset.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-flagset.Tpo $(DEPDIR)/libwxnkf_a-flagset.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='flagset.cpp' object='libwxnkf_a-flagset.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-flagset.obj `if test -f 'flagset.cpp'; then $(CYGPATH_W) 'flagset.cpp'; else $(CYGPATH_W) '$(srcdir)/flagset.cpp'; fi`
-
-libwxnkf_a-utf8table.o: utf8table.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-utf8table.o -MD -MP -MF $(DEPDIR)/libwxnkf_a-utf8table.Tpo -c -o libwxnkf_a-utf8table.o `test -f 'utf8table.cpp' || echo '$(srcdir)/'`utf8table.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-utf8table.Tpo $(DEPDIR)/libwxnkf_a-utf8table.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='utf8table.cpp' object='libwxnkf_a-utf8table.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-utf8table.o `test -f 'utf8table.cpp' || echo '$(srcdir)/'`utf8table.cpp
-
-libwxnkf_a-utf8table.obj: utf8table.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-utf8table.obj -MD -MP -MF $(DEPDIR)/libwxnkf_a-utf8table.Tpo -c -o libwxnkf_a-utf8table.obj `if test -f 'utf8table.cpp'; then $(CYGPATH_W) 'utf8table.cpp'; else $(CYGPATH_W) '$(srcdir)/utf8table.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-utf8table.Tpo $(DEPDIR)/libwxnkf_a-utf8table.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='utf8table.cpp' object='libwxnkf_a-utf8table.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-utf8table.obj `if test -f 'utf8table.cpp'; then $(CYGPATH_W) 'utf8table.cpp'; else $(CYGPATH_W) '$(srcdir)/utf8table.cpp'; fi`
-
-libwxnkf_a-utf16util.o: utf16util.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-utf16util.o -MD -MP -MF $(DEPDIR)/libwxnkf_a-utf16util.Tpo -c -o libwxnkf_a-utf16util.o `test -f 'utf16util.cpp' || echo '$(srcdir)/'`utf16util.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-utf16util.Tpo $(DEPDIR)/libwxnkf_a-utf16util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='utf16util.cpp' object='libwxnkf_a-utf16util.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-utf16util.o `test -f 'utf16util.cpp' || echo '$(srcdir)/'`utf16util.cpp
-
-libwxnkf_a-utf16util.obj: utf16util.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-utf16util.obj -MD -MP -MF $(DEPDIR)/libwxnkf_a-utf16util.Tpo -c -o libwxnkf_a-utf16util.obj `if test -f 'utf16util.cpp'; then $(CYGPATH_W) 'utf16util.cpp'; else $(CYGPATH_W) '$(srcdir)/utf16util.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-utf16util.Tpo $(DEPDIR)/libwxnkf_a-utf16util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='utf16util.cpp' object='libwxnkf_a-utf16util.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-utf16util.obj `if test -f 'utf16util.cpp'; then $(CYGPATH_W) 'utf16util.cpp'; else $(CYGPATH_W) '$(srcdir)/utf16util.cpp'; fi`
-
-libwxnkf_a-util.o: util.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-util.o -MD -MP -MF $(DEPDIR)/libwxnkf_a-util.Tpo -c -o libwxnkf_a-util.o `test -f 'util.cpp' || echo '$(srcdir)/'`util.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-util.Tpo $(DEPDIR)/libwxnkf_a-util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util.cpp' object='libwxnkf_a-util.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-util.o `test -f 'util.cpp' || echo '$(srcdir)/'`util.cpp
-
-libwxnkf_a-util.obj: util.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-util.obj -MD -MP -MF $(DEPDIR)/libwxnkf_a-util.Tpo -c -o libwxnkf_a-util.obj `if test -f 'util.cpp'; then $(CYGPATH_W) 'util.cpp'; else $(CYGPATH_W) '$(srcdir)/util.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-util.Tpo $(DEPDIR)/libwxnkf_a-util.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util.cpp' object='libwxnkf_a-util.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-util.obj `if test -f 'util.cpp'; then $(CYGPATH_W) 'util.cpp'; else $(CYGPATH_W) '$(srcdir)/util.cpp'; fi`
-
-libwxnkf_a-wxnkf.o: wxnkf.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-wxnkf.o -MD -MP -MF $(DEPDIR)/libwxnkf_a-wxnkf.Tpo -c -o libwxnkf_a-wxnkf.o `test -f 'wxnkf.cpp' || echo '$(srcdir)/'`wxnkf.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-wxnkf.Tpo $(DEPDIR)/libwxnkf_a-wxnkf.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='wxnkf.cpp' object='libwxnkf_a-wxnkf.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-wxnkf.o `test -f 'wxnkf.cpp' || echo '$(srcdir)/'`wxnkf.cpp
-
-libwxnkf_a-wxnkf.obj: wxnkf.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-wxnkf.obj -MD -MP -MF $(DEPDIR)/libwxnkf_a-wxnkf.Tpo -c -o libwxnkf_a-wxnkf.obj `if test -f 'wxnkf.cpp'; then $(CYGPATH_W) 'wxnkf.cpp'; else $(CYGPATH_W) '$(srcdir)/wxnkf.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-wxnkf.Tpo $(DEPDIR)/libwxnkf_a-wxnkf.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='wxnkf.cpp' object='libwxnkf_a-wxnkf.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-wxnkf.obj `if test -f 'wxnkf.cpp'; then $(CYGPATH_W) 'wxnkf.cpp'; else $(CYGPATH_W) '$(srcdir)/wxnkf.cpp'; fi`
-
-libwxnkf_a-wxnkfencoding.o: wxnkfencoding.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-wxnkfencoding.o -MD -MP -MF $(DEPDIR)/libwxnkf_a-wxnkfencoding.Tpo -c -o libwxnkf_a-wxnkfencoding.o `test -f 'wxnkfencoding.cpp' || echo '$(srcdir)/'`wxnkfencoding.cpp
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-wxnkfencoding.Tpo $(DEPDIR)/libwxnkf_a-wxnkfencoding.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='wxnkfencoding.cpp' object='libwxnkf_a-wxnkfencoding.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-wxnkfencoding.o `test -f 'wxnkfencoding.cpp' || echo '$(srcdir)/'`wxnkfencoding.cpp
-
-libwxnkf_a-wxnkfencoding.obj: wxnkfencoding.cpp
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -MT libwxnkf_a-wxnkfencoding.obj -MD -MP -MF $(DEPDIR)/libwxnkf_a-wxnkfencoding.Tpo -c -o libwxnkf_a-wxnkfencoding.obj `if test -f 'wxnkfencoding.cpp'; then $(CYGPATH_W) 'wxnkfencoding.cpp'; else $(CYGPATH_W) '$(srcdir)/wxnkfencoding.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/libwxnkf_a-wxnkfencoding.Tpo $(DEPDIR)/libwxnkf_a-wxnkfencoding.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='wxnkfencoding.cpp' object='libwxnkf_a-wxnkfencoding.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libwxnkf_a_CXXFLAGS) $(CXXFLAGS) -c -o libwxnkf_a-wxnkfencoding.obj `if test -f 'wxnkfencoding.cpp'; then $(CYGPATH_W) 'wxnkfencoding.cpp'; else $(CYGPATH_W) '$(srcdir)/wxnkfencoding.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -474,8 +431,11 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES)
+all-am: Makefile $(LTLIBRARIES)
 installdirs:
+	for dir in "$(DESTDIR)$(libdir)"; do \
+	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
+	done
 install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
@@ -503,7 +463,7 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
+clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 	mostlyclean-am
 
 distclean: distclean-am
@@ -530,7 +490,7 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am:
+install-exec-am: install-libLTLIBRARIES
 
 install-html: install-html-am
 
@@ -570,22 +530,23 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am:
+uninstall-am: uninstall-libLTLIBRARIES
 
 .MAKE: install-am install-strip
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
-	clean-libtool clean-noinstLIBRARIES ctags distclean \
+	clean-libLTLIBRARIES clean-libtool ctags distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
-	pdf pdf-am ps ps-am tags uninstall uninstall-am
+	install-html-am install-info install-info-am \
+	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-compile \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	tags uninstall uninstall-am uninstall-libLTLIBRARIES
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
