@@ -46,53 +46,40 @@ SQLiteAccessor::SQLiteAccessor() {
      }
 }
 /**
- * 板一覧情報をクラス変数の配列に追加する
- */
-void SQLiteAccessor::SetBoardInfo(const wxString category, const wxString name,
-				  const wxString url) {
-
-     // それぞれの中身が空でなければ配列に板一覧情報を設定する
-     this->boardInfoArray = new wxArrayString();
-
-     if (name.Length() > 0 && url.Length() > 0 && category.Length() > 0) {
-	  boardInfoArray->Add(name);
-	  boardInfoArray->Add(url);
-	  boardInfoArray->Add(category);
-     }
-}
-/**
  * 板一覧情報のコミットを行う
  */
-void SQLiteAccessor::SetBoardInfoCommit() {
+void SQLiteAccessor::SetBoardInfoCommit(wxArrayString* boardInfoArray) {
+
      // dbファイルの初期化
      wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
-     // もしすでにdatファイルが存在していれば削除
-     if (wxFile::Exists(dbFile)) {
-	  wxRemoveFile(dbFile);
-     }
-     // dbファイルの初期化
-     wxSQLite3Database::InitializeSQLite();
-     wxSQLite3Database db;
-     db.Open(dbFile);
-     db.Begin();
 
-     // PreparedStatementを準備する
-     const wxString sqlIn = wxT("INSERT INTO BOARD_INFO (BOARDNAME_KANJI, BOARD_URL, CATEGORY) VALUES (?, ?, ?)");
-     wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+     try {
+	  
+	  // dbファイルの初期化
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+	  db.Begin();
 
-     // 配列内のレコードを追加する
-     for (unsigned int i = 0; i < boardInfoArray->GetCount(); i += 3) {
-     	  // レコードを追加する
-	  stmt.ClearBindings();
-	  stmt.Bind(0, boardInfoArray->Item(i));
-	  stmt.Bind(1, boardInfoArray->Item(i+1));
-	  stmt.Bind(2, boardInfoArray->Item(i+2));
-     	  stmt.ExecuteUpdate();
+	  // PreparedStatementを準備する
+	  const wxString sqlIn = wxT("INSERT INTO BOARD_INFO (BOARDNAME_KANJI, BOARD_URL, CATEGORY) VALUES (?, ?, ?)");
+	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+
+	  for (unsigned int i = 0; i < boardInfoArray->GetCount(); i += 3) {
+	       // レコードを追加する
+	       stmt.ClearBindings();
+	       stmt.Bind(1, boardInfoArray->Item(i));
+	       stmt.Bind(2, boardInfoArray->Item(i+1));
+	       stmt.Bind(3, boardInfoArray->Item(i+2));
+	       stmt.ExecuteUpdate();
+	  }
+	  // コミット実行
+	  db.Commit();
+	  db.Close();
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
      }
-     // コミット実行
-     db.Commit();
-     db.Close();
-     
 }
 /**
  * 板一覧情報をMetakit内のテーブルから取得しArrayStringの形で返す
@@ -101,36 +88,41 @@ wxArrayString SQLiteAccessor::GetBoardInfo() {
 
      // dbファイルの初期化
      wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
-     // dbファイルの初期化
-     wxSQLite3Database::InitializeSQLite();
-     wxSQLite3Database db;
-     db.Open(dbFile);
 
-     // リザルトセットをArrayStringに設定する
-     wxArrayString array;
-     // リザルトセットを用意する
-     wxSQLite3ResultSet rs;
-     const wxString sqlSe = wxT("SELECT BOARDNAME_KANJI, BOARD_URL, CATEGORY FROM BOARD_INFO");
+     try {	  
+	  // dbファイルの初期化
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
 
-     // SQL文を実行する
-     rs = db.ExecuteQuery(sqlSe);
-     db.Close();
-     
+	  // リザルトセットをArrayStringに設定する
+	  wxArrayString array;
+	  // リザルトセットを用意する
+	  wxSQLite3ResultSet rs;
+	  const wxString sqlSe = wxT("SELECT BOARDNAME_KANJI, BOARD_URL, CATEGORY FROM BOARD_INFO");
 
-     while (!rs.Eof()) {
-	  wxString boardName = rs.GetAsString(wxT("BOARDNAME_KANJI"));
-	  wxString url = rs.GetAsString(wxT("BOARD_URL"));
-	  wxString category = rs.GetAsString(wxT("CATEGORY"));
+	  // SQL文を実行する
+	  rs = db.ExecuteQuery(sqlSe);
+	  db.Close();
 
-	  // 各項目がNULLで無ければArrayStringに詰める
-	  if (boardName.Length() > 0 && url.Length() > 0 && category.Length() > 0) {
-	       array.Add(boardName);
-	       array.Add(url);
-	       array.Add(category);
+	  while (!rs.Eof()) {
+	       wxString boardName = rs.GetAsString(wxT("BOARDNAME_KANJI"));
+	       wxString url = rs.GetAsString(wxT("BOARD_URL"));
+	       wxString category = rs.GetAsString(wxT("CATEGORY"));
+
+	       // 各項目がNULLで無ければArrayStringに詰める
+	       if (boardName.Length() > 0 && url.Length() > 0 && category.Length() > 0) {
+		    array.Add(boardName);
+		    array.Add(url);
+		    array.Add(category);
+	       }
+	       rs.NextRow();
 	  }
-	  rs.NextRow();
+	  return array;
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
      }
-     return array;
 }
 /**
  * 指定されたテーブルに情報が存在するかどうか聞く(トランザクション処理なし単独)
@@ -176,25 +168,58 @@ bool SQLiteAccessor::TableHasData(const wxString tableName) {
  * 指定されたテーブルを削除する
  */
 void SQLiteAccessor::DropTable(const wxString tableName) {
+
      // dbファイルの初期化
      wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
 
+     try {
+	  
+	  // dbファイルの初期化
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+	  db.Begin();
+
+	  // PreparedStatementを準備する
+	  const wxString sql = wxT("DROP TABLE ?");
+	  wxSQLite3Statement stmt = db.PrepareStatement (sql);
+	  stmt.Bind(1, tableName);
+	  stmt.ExecuteUpdate();
+
+	  // コミット実行
+	  db.Commit();
+	  db.Close();
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+}
+/**
+ * 指定されたテーブルのデータを削除する
+ */
+void SQLiteAccessor::DeleteTableData(const wxString tableName) {
+
      // dbファイルの初期化
-     wxSQLite3Database::InitializeSQLite();
-     wxSQLite3Database db;
-     db.Open(dbFile);
-     db.Begin();
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
 
-     // PreparedStatementを準備する
-     const wxString sql = wxT("DROP TABLE ?");
-     wxSQLite3Statement stmt = db.PrepareStatement (sql);
-     stmt.Bind(0, tableName);
-     stmt.ExecuteUpdate();
+     try {
+	  
+	  // dbファイルの初期化
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+	  db.Begin();
+	  // PreparedStatementを準備する
+	  const wxString sql = wxT("DELETE FROM ") + tableName;
+	  wxSQLite3Statement stmt = db.PrepareStatement(sql);
+	  stmt.ExecuteUpdate();
+	  // コミット実行
+	  db.Commit();
+	  db.Close();
 
-     // コミット実行
-     db.Commit();
-     db.Close();
-     
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
 }
 /**
  * ユーザーがJaneClone終了時にタブで開いていた板の名前を登録する
@@ -202,7 +227,7 @@ void SQLiteAccessor::DropTable(const wxString tableName) {
 void SQLiteAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardListArray) {
 
      // Tableの中身を削除する
-     DropTable(wxT("USER_LOOKING_BOARDLIST"));
+     DeleteTableData(wxT("USER_LOOKING_BOARDLIST"));
 
      // dbファイルの初期化
      wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
@@ -219,13 +244,12 @@ void SQLiteAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardList
      for (unsigned int i = 0; i < userLookingBoardListArray.GetCount();i++) {
 	  // レコードを追加する
 	  stmt.ClearBindings();
-	  stmt.Bind(0, userLookingBoardListArray.Item(i));
+	  stmt.Bind(1, userLookingBoardListArray.Item(i));
 	  stmt.ExecuteUpdate();
      }
      // コミット実行
      db.Commit();
      db.Close();
-     
 }
 /**
  * JaneClone開始時に以前ユーザーがタブで開いていた板の名前を取得する
@@ -250,14 +274,13 @@ wxArrayString SQLiteAccessor::GetUserLookedBoardList() {
      // リザルトセットをArrayStringに設定する
      wxArrayString array;
 
-     while (!rs.Eof()) {
+     while (rs.NextRow()) {
 	  wxString boardName = rs.GetAsString(wxT("BOARDNAME_KANJI"));
 
 	  // 各項目がNULLで無ければArrayStringに詰める
 	  if (boardName.Length() > 0) {
 	       array.Add(boardName);
 	  }
-	  rs.NextRow();
      }
      return array;
 }
@@ -267,7 +290,7 @@ wxArrayString SQLiteAccessor::GetUserLookedBoardList() {
 void SQLiteAccessor::SetUserLookingThreadList(wxArrayString& userLookingThreadListArray) {
 
      // Tableの中身を削除する
-     DropTable(wxT("USER_LOOKING_THREADLIST"));
+     DeleteTableData(wxT("USER_LOOKING_THREADLIST"));
 
      // dbファイルの初期化
      wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
@@ -285,9 +308,9 @@ void SQLiteAccessor::SetUserLookingThreadList(wxArrayString& userLookingThreadLi
      for (unsigned int i = 0; i < userLookingThreadListArray.GetCount();i+=3) {
 	  // レコードを追加する
 	  stmt.ClearBindings();
-	  stmt.Bind(0, userLookingThreadListArray.Item(i));
-	  stmt.Bind(1, userLookingThreadListArray.Item(i+1));
-	  stmt.Bind(2, userLookingThreadListArray.Item(i+2));
+	  stmt.Bind(1, userLookingThreadListArray.Item(i));
+	  stmt.Bind(2, userLookingThreadListArray.Item(i+1));
+	  stmt.Bind(3, userLookingThreadListArray.Item(i+2));
 	  stmt.ExecuteUpdate();
      }
      // コミット実行
@@ -318,7 +341,7 @@ wxArrayString SQLiteAccessor::GetUserLookedThreadList() {
      // リザルトセットをArrayStringに設定する
      wxArrayString array;
 
-     while (!rs.Eof()) {
+     while (rs.NextRow()) {
 	  wxString title = rs.GetAsString(wxT("THREAD_TITLE"));
 	  wxString origNumber = rs.GetAsString(wxT("THREAD_ORIG_NUM"));
 	  wxString boardNameAscii = rs.GetAsString(wxT("BOARDNAME_ASCII"));
@@ -329,9 +352,6 @@ wxArrayString SQLiteAccessor::GetUserLookedThreadList() {
 	       array.Add(origNumber);
 	       array.Add(boardNameAscii);
 	  }
-	  rs.NextRow();
      }
      return array;
 }
-
-

@@ -26,10 +26,12 @@
  * コンストラクタ
  */
 ExtractBoardList::ExtractBoardList(const char* file) {
+
      // HTML読み込み用構造体
      htmlDocPtr m_doc;
-     // インスタンスを用意する
-     accessor = new SQLiteAccessor();
+     // SQLiteAccessorのインスタンスを準備する
+     SQLiteAccessor* accessor = new SQLiteAccessor();
+     boardInfoArray = new wxArrayString();
 
      // ファイル名とエンコードの設定
      const char* enc = "utf-8";
@@ -42,6 +44,7 @@ ExtractBoardList::ExtractBoardList(const char* file) {
 	  xmlCleanupParser();
 	  xmlCleanupCharEncodingHandlers();
 	  delete accessor;
+	  delete boardInfoArray;
 	  return;
      }
 
@@ -53,6 +56,7 @@ ExtractBoardList::ExtractBoardList(const char* file) {
 	  xmlCleanupParser();
 	  xmlCleanupCharEncodingHandlers();
 	  delete accessor;
+	  delete boardInfoArray;
 	  return;
      } else {
 	  // 正常処理
@@ -61,13 +65,12 @@ ExtractBoardList::ExtractBoardList(const char* file) {
 	  xmlCleanupCharEncodingHandlers();
      }
 
-     accessor->SetBoardInfoCommit();
+     accessor->SetBoardInfoCommit(boardInfoArray);
      delete accessor;
+     delete boardInfoArray;
 }
-
 /**
- *  FindBoardInfo
- *  板一覧情報を収集しMetakitに格納する
+ *  板一覧情報を収集しSQLiteに格納する
  */
 void ExtractBoardList::FindBoardInfo(xmlNode*& element) {
 
@@ -101,7 +104,7 @@ void ExtractBoardList::FindBoardInfo(xmlNode*& element) {
 				   lsUrl = url;
 
 				   // 格納した情報をMetakitに配置する
-				   accessor->SetBoardInfo(lsCategory, lsName, lsUrl);
+				   this->SetBoardInfo(lsCategory, lsName, lsUrl);
 			      }
 			 }
 		    }
@@ -111,5 +114,17 @@ void ExtractBoardList::FindBoardInfo(xmlNode*& element) {
 		    ExtractBoardList::FindBoardInfo(node->children);
 	       }
 	  }
+     }
+}
+/**
+ * 板一覧情報をクラス変数の配列に追加する
+ */
+void ExtractBoardList::SetBoardInfo(const wxString category, const wxString name, const wxString url) {
+
+     // それぞれの中身が空でなければ配列に板一覧情報を設定する
+     if (name.Length() > 0 && url.Length() > 0 && category.Length() > 0) {
+	  boardInfoArray->Add(name);
+	  boardInfoArray->Add(url);
+	  boardInfoArray->Add(category);
      }
 }

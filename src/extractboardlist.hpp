@@ -19,26 +19,29 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-#ifndef EXTRACTBOARDLIST_H
-#define EXTRACTBOARDLIST_H
+#ifndef EXTRACTBOARDLIST_HPP_
+#define EXTRACTBOARDLIST_HPP_
 
 #include <libxml/HTMLparser.h>
 #include <wx/wx.h>
 #include "sqliteaccessor.hpp"
 
 class ExtractBoardList {
+
 public:
-	// コンストラクタ
-	ExtractBoardList(const char* file);
+     // コンストラクタ
+     ExtractBoardList(const char* file);
 
 private:
-	// 内部の処理関数
-	void FindBoardInfo(xmlNode*& element);
-	// 構造体
-	htmlDocPtr m_doc;
-
-	// SQLiteAccessorのインスタンス
-	SQLiteAccessor* accessor;
+     // 内部の処理関数
+     void FindBoardInfo(xmlNode*& element);
+     void SetBoardInfo(const wxString category, const wxString name, const wxString url);
+     
+     // 構造体
+     htmlDocPtr m_doc;
+     // 板情報を含む配列
+     wxArrayString* boardInfoArray;
+     
 };
 
-#endif // EXTRACTBOARDLIST_H
+#endif // EXTRACTBOARDLIST_HPP
