@@ -30,13 +30,9 @@ SQLiteAccessor::SQLiteAccessor() {
      wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
 
      try {
-	  wxMessageBox(dbFile + wxT(" :InitializeSQLite()"));
 	  wxSQLite3Database::InitializeSQLite();
-	  wxMessageBox(dbFile + wxT(" :db"));
 	  wxSQLite3Database db;
-	  wxMessageBox(dbFile + wxT(" :db.Open"));
 	  db.Open(dbFile);
-	  wxMessageBox(dbFile + wxT(" :db.Open Success"));
 	  db.Begin();
 	  // 必要なテーブルが無ければ作成
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO(BOARDNAME_KANJI TEXT, BOARD_URL TEXT, CATEGORY TEXT)"));
@@ -44,7 +40,6 @@ SQLiteAccessor::SQLiteAccessor() {
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_THREADLIST(THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
 	  db.Commit();
 	  db.Close();
-	  wxMessageBox(wxT("db.Close"));
 
      } catch (wxSQLite3Exception& e) {
 	  wxMessageBox(e.GetMessage());
@@ -115,7 +110,7 @@ wxArrayString SQLiteAccessor::GetBoardInfo() {
      wxArrayString array;
      // リザルトセットを用意する
      wxSQLite3ResultSet rs;
-     const wxString sqlSe = wxT("SELECT SELECT BOARDNAME_KANJI, BOARD_URL, CATEGORY FROM BOARD_INFO");
+     const wxString sqlSe = wxT("SELECT BOARDNAME_KANJI, BOARD_URL, CATEGORY FROM BOARD_INFO");
 
      // SQL文を実行する
      rs = db.ExecuteQuery(sqlSe);
@@ -144,28 +139,34 @@ bool SQLiteAccessor::TableHasData(const wxString tableName) {
 
      // dbファイルの初期化
      wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
-     wxSQLite3Database::InitializeSQLite();
-     wxSQLite3Database db;
-     db.Open(dbFile);
 
-     // リザルトセットを用意する
-     wxSQLite3ResultSet rs;
-     // SQL文を用意する
-     wxString SQL_QUERY = wxT("SELECT COUNT(*) from ") + tableName;
+     try {
+	  
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
 
-     // SQL文を実行する
-     rs = db.ExecuteQuery(SQL_QUERY);
-     db.Close();
-     
+	  // リザルトセットを用意する
+	  wxSQLite3ResultSet rs;
+	  // SQL文を用意する
+	  wxString SQL_QUERY = wxT("SELECT COUNT(*) from ") + tableName;
 
-     // SQL文を実行し結果を受け取る
-     if (!rs.IsNull(0)) {
-	  int recordNum = rs.GetInt(0);
-	  if ( 0 == recordNum) {
-	       return false;
-	  } else {
-	       return true;
+	  // SQL文を実行する
+	  rs = db.ExecuteQuery(SQL_QUERY);
+	  db.Close();
+
+	  // SQL文を実行し結果を受け取る
+	  if (!rs.IsNull(0)) {
+	       int recordNum = rs.GetInt(0);
+	       if ( 0 == recordNum) {
+		    return false;
+	       } else {
+		    return true;
+	       }
 	  }
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
      }
 
      // ここまで来てしまうとエラーなのでfalse
