@@ -5,7 +5,7 @@ AC_PREREQ([2.67])
 AC_INIT([JaneClone], [1.0.0], [newserver002@gmail.com])
 #AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([-Wno-portability])
 AC_CONFIG_SRCDIR([libwxnkf/flagset.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
