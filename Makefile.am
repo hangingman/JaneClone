@@ -12,6 +12,10 @@ JANEEXE = $(top_builddir)/src/.libs/$(PACKAGE_NAME)
 NSIS_NSI_IN = $(top_builddir)/janeclone.nsi.in
 NSIS_NSI    = $(top_builddir)/extras/janeclone.nsi
 
+# RPM用設定ファイル
+RPM_MACRO   = $(top_builddir)/extras/package/.rpmmacros
+
+
 # Windows(x86)向けのインストーラ作成
 package-win32-msi: prepare-package
 	touch $(NSIS_NSI)
@@ -44,7 +48,15 @@ package-win64-msi: prepare-package
 	cp -p $(JANEEXE) $(top_builddir)/extras/package
 
 # RH系ディストリビューション向けのインストーラ作成
-package-rpm: prepare-package
+package-rpm: package-clean
+	@echo 'RPM package create start...'
+	mkdir -p $(top_builddir)/extras/package/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+	touch $(RPM_MACRO)
+	echo "%_topdir $(top_builddir)/extras/package" >> $(RPM_MACRO)
+	echo "%packager Hiroyuki Nagata <$(PACKAGE_BUGREPORT)>" >> $(RPM_MACRO)
+	echo "%_sysconfdir /etc" >> $(RPM_MACRO)
+	$(MAKE) dist
+	mv $(distdir).tar.gz $(top_builddir)/extras/package/SOURCES
 
 # Debian系ディストリビューション向けのインストーラ作成
 package-deb: prepare-package
