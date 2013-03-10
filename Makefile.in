@@ -252,6 +252,10 @@ WXDLLS = $(shell find `wx-config --prefix`/lib -type f -name 'wx*.dll')
 STDCDLL = $(shell find /mingw/bin -type f -name 'libstdc++*.dll')
 RESTDLL = $(MINGWBIN)/libjpeg-*.dll $(MINGWBIN)/libpng*.dll $(MINGWBIN)/libtiff-*.dll $(MINGWBIN)/libxml2*.dll $(MINGWBIN)/zlib*.dll 
 JANEEXE = $(top_builddir)/src/.libs/$(PACKAGE_NAME)
+
+# NSISの設定ファイル
+NSIS_NSI_IN = $(top_builddir)/janeclone.nsi.in
+NSIS_NSI = $(top_builddir)/extras/janeclone.nsi
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -749,7 +753,7 @@ uninstall-am:
 
 # Windows(x86)向けのインストーラ作成
 package-win32-msi: prepare-package
-	touch $(top_builddir)/extras/janeclone.nsi
+	touch $(NSIS_NSI)
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/rc $(top_builddir)/extras/package
@@ -759,10 +763,15 @@ package-win32-msi: prepare-package
 	cp -p $(STDCDLL) $(top_builddir)/extras/package
 	cp -p $(RESTDLL) $(top_builddir)/extras/package
 	cp -p $(JANEEXE) $(top_builddir)/extras/package
+# add line to NSIS script
+	cp -p $(NSIS_NSI_IN) $(NSIS_NSI)
+	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(NSIS_NSI)
+	@echo 'makensis start...'
+	$(MAKENSIS) $(NSIS_NSI)
 
 # Windows(x64)向けのインストーラ作成
 package-win64-msi: prepare-package
-	touch $(top_builddir)/extras/janeclone.nsi
+	touch $(NSIS_NSI)
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/rc $(top_builddir)/extras/package
