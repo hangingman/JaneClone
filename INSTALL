@@ -28,25 +28,25 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
  [A.Windows(MinGW32)]
  A-1. 依存するライブラリのインストール
   
-  前提としてWindows環境ではライブラリを静的リンクします.
-  必要なライブラリはwxWidgets-2.9.*, libxml2です.
+  ライブラリは動的リンクにて作成します。
+  必要なライブラリはwxWidgets-2.8.12, libxml2です.
 
   [wxWidgetsのインストール]
   $ cd /usr/local/src
-  $ tar xvf wxWidgets-2.9.*.tar.bz2
-  $ cd wxWidgets-2.9.*/
+  $ tar xvf wxWidgets-2.8.12.tar.bz2
+  $ cd wxWidgets-2.8.12/
 
-  静的ライブラリをビルド、/mingw 以下へのインストールとします
-  $ ./configure --prefix=/mingw --with-msw --disable-shared
+  動的ライブラリをビルド、/mingw 以下へのインストールとします
+  $ ./configure --prefix=/mingw --with-msw --enable-unicode
   $ make
   $ make install
 
   wx-configコマンドが使用出来れば成功
   $ wx-config --version
-  $ 2.9.4
+  $ 2.8.12
 
   [libxml2のインストール]
-  libxml2をmingwで静的ライブラリとしてコンパイルする
+  libxml2をmingwでコンパイルする
   その際 libxml/xmlexports.h line.116 を以下の通り修正する
 
   - #if defined(IN_LIBXML) && !defined(LIBXML_STATIC)
@@ -55,7 +55,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ cd /usr/local/src
   $ wget http://xmlsoft.org/sources/libxml2-2.9.0.tar.gz
   $ cd libxml2-2.9.0
-  $ ./configure --prefix=/mingw --disable-shared
+  $ ./configure --prefix=/mingw
   $ make
   $ make install
 
@@ -82,28 +82,28 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   MinGW64環境を想定します.
 
   前提としてWindows環境ではライブラリを静的リンクします.
-  必要なライブラリはwxWidgets-2.9.*, libxml2です.
+  必要なライブラリはwxWidgets-2.8.12, libxml2です.
 
   [wxWidgetsのインストール]
   $ cd /usr/local/src
-  $ tar xvf wxWidgets-2.9.*.tar.bz2
-  $ cd wxWidgets-2.9.*/
+  $ tar xvf wxWidgets-2.8.12.tar.bz2
+  $ cd wxWidgets-2.8.12/
 
   静的ライブラリをビルド、/mingw 以下へのインストールとします
-  $ ./configure --prefix=/mingw --with-msw --disable-shared
+  $ ./configure --prefix=/mingw --with-msw --enable-unicode
   $ make
   $ make install
 
   wx-configコマンドが使用出来れば成功
   $ wx-config --version
-  $ 2.9.4
+  $ 2.8.12
 
   !!! MinGW64ではインクルードファイルの一部を修正する必要がある !!!
   $ cd /mingw/include/wx/msw
   $ mv amd64.manifest wx.manifest
 
   [libxml2のインストール]
-  libxml2をmingwで静的ライブラリとしてコンパイルする
+  libxml2をmingwでコンパイルする
   その際 libxml/xmlexports.h line.116 を以下の通り修正する
 
   - #if defined(IN_LIBXML) && !defined(LIBXML_STATIC)
@@ -112,7 +112,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ cd /usr/local/src
   $ wget http://xmlsoft.org/sources/libxml2-2.9.0.tar.gz
   $ cd libxml2-2.9.0
-  $ ./configure --prefix=/mingw --disable-shared
+  $ ./configure --prefix=/mingw
   $ make
   $ make install
 
@@ -137,27 +137,25 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   FedoraもしくはCentosの環境を想定します.
   i386, x86_64の環境どちらでもコンパイルできると思います。
 　筆者はFedora17 x86_64の環境でビルドを行いました。
-
-  ライブラリを静的リンクします.
-  必要なライブラリはwxWidgets-2.9.*, libxml2です.
+  必要なライブラリはwxWidgets-2.8.12, libxml2です.
 
   [wxWidgetsのインストール]
   $ cd /usr/local/src
-  $ tar xvf wxWidgets-2.9.*.tar.bz2
-  $ cd wxWidgets-2.9.*/
+  $ tar xvf wxWidgets-2.8.12.tar.bz2
+  $ cd wxWidgets-2.8.12/
 
   静的ライブラリをビルド、/usr 以下へのインストールとします
   ・/usr 以下にインストールされるのが不満な場合 --prefix=/hoge を指定してください
 　・Linuxに入っているGTKのバージョンが2の場合「--with-gtk2」、バージョンが3の場合
 　　「--with-gtk2」を指定するといいでしょう。
 
-  $ ./configure --with-gtk3 --disable-shared
+  $ ./configure --with-gtk3 --enable-unicode
   $ make
   $ make install
 
   wx-configコマンドが使用出来れば成功
   $ wx-config --version
-  $ 2.9.4
+  $ 2.8.12
 
   [libxml2のインストール]
   libxml2をyumを使ってインストールしてください
@@ -171,12 +169,9 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
 
   [JaneCloneのコンパイル]
 
-  ・Fedora17ではlibtoolのバージョンが合わないのでautoreconfを使います
-　　LinuxのパッケージよりもMinGWのlibtoolのほうがバージョンが上なんですね
-
   $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
   $ cd /path/to/JaneClone
-  $ autoreconf -ifv
+  $ ./bootstrap
   $ ./configure
   $ make
   $ make install

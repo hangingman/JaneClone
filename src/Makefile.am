@@ -39,8 +39,7 @@ JaneClone_rc.o : $(top_builddir)/rc/icon.rc
 
 else
 # Platform is not Windows
-JaneClone_LDADD    = $(top_builddir)/libwxnkf/libwxnkf.a $(top_builddir)/libwxuuid/libwxuuid.a $(top_builddir)/wxsqlite3/libwxsqlite3.a $(top_builddir)/sqlite3/libsqlite3.a
-JaneClone_LDFLAGS  = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@
+JaneClone_LDFLAGS  = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3
 endif
 
 ################################ install target for JaneClone ###############################
