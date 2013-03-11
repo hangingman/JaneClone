@@ -9,19 +9,19 @@ RESTDLL = $(MINGWBIN)/libjpeg-*.dll $(MINGWBIN)/libpng*.dll $(MINGWBIN)/libtiff-
 JANEEXE = $(top_builddir)/src/.libs/$(PACKAGE_NAME)
 
 # NSISの設定ファイル
+MAKENSIS    = makensis
 NSIS_NSI_IN = $(top_builddir)/janeclone.nsi.in
 NSIS_NSI    = $(top_builddir)/extras/janeclone.nsi
 
 # RPM用設定ファイル
 RPM_MACRO   = $(top_builddir)/extras/package/.rpmmacros
 
-
 # Windows(x86)向けのインストーラ作成
 package-win32-msi: prepare-package
 	touch $(NSIS_NSI)
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
-	cp -rp $(top_builddir)/rc $(top_builddir)/extras/package
+	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
 # find dlls and copy to package directory
 	cp -p $(DEPDLLS) $(top_builddir)/extras/package
 	cp -p $(WXDLLS) $(top_builddir)/extras/package
@@ -86,6 +86,9 @@ prepare-package: package-clean
 	    echo 'Error: cannot locate makensis tool'; exit 1; \
 	fi; \
 	echo 'NSIS is exist'
+
+# 独自設定のクリーン用ターゲット
+clean-local: package-clean
 # パッケージディレクトリを削除するだけ
 package-clean:
 # rm packagedir and crate packagedir

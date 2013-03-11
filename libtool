@@ -81,22 +81,22 @@ build=i686-pc-mingw32
 build_os=mingw32
 
 # A sed program that does not truncate output.
-SED="/usr/bin/sed"
+SED="/usr/bin//sed"
 
 # Sed that helps us avoid accidentally triggering echo(1) options like -n.
 Xsed="$SED -e 1s/^X//"
 
 # A grep program that handles long lines.
-GREP="/usr/bin/grep"
+GREP="/usr/bin//grep"
 
 # An ERE matcher.
-EGREP="/usr/bin/grep -E"
+EGREP="/usr/bin//grep -E"
 
 # A literal string matcher.
-FGREP="/usr/bin/grep -F"
+FGREP="/usr/bin//grep -F"
 
 # A BSD- or MS-compatible name lister.
-NM="/mingw/bin/nm"
+NM="/mingw/bin//nm"
 
 # Whether we need soft or hard links.
 LN_S="cp -p"

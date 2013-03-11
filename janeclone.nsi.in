@@ -38,7 +38,6 @@ RequestExecutionLevel admin
 !insertmacro MUI_UNPAGE_INSTFILES
 !insertmacro MUI_UNPAGE_FINISH
 
-!insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "Japanese"
 
 Section
@@ -46,8 +45,7 @@ Section
   SectionIn RO
 
   SetOutPath $INSTDIR
-  File "${APPDIR}\README.txt"
-  File /r "${APPDIR}\sample"
+  File /r "${APPDIR}\*"
   
   SetShellVarContext all
   CreateDirectory "$SMPROGRAMS\${PACKAGE}"

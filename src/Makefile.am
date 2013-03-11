@@ -25,7 +25,7 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    janecloneimageviewer.hpp
 
 # common build rule
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/rc -I$(top_builddir)/libwxuuid
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid
 ACLOCAL_AMFLAGS    = -I m4
 
 # For Icon build and library dependency
@@ -35,7 +35,7 @@ JaneClone_LDADD    = JaneClone_rc.o $(top_builddir)/libwxnkf/libwxnkf.la $(top_b
 JaneClone_LDFLAGS  = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ JaneClone_rc.o
 #-L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3
 
-JaneClone_rc.o : $(top_builddir)/rc/icon.rc
+JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 	@WX_RESCOMP@ -i $^ -O coff -o $@
 
 else
