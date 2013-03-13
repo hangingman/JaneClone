@@ -70,7 +70,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ cd /path/to/JaneClone
   $ ./configure
   $ make
-  $ make install
+  $ make install package-win32-msi
 
   プロジェクト内部にpackageディレクトリができていればビルド成功です
 
@@ -81,55 +81,83 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   使用する環境はTDM-GCC(http://tdm-gcc.tdragon.net/)にて配布されている
   MinGW64環境を想定します.
 
-  前提としてWindows環境ではライブラリを静的リンクします.
-  必要なライブラリはwxWidgets-2.8.12, libxml2です.
+  ライブラリを動的リンクします.
+  必要なライブラリはpthread, zlib, libxml2, nasm, libjpeg, libpng, tiff, wxWidgets-2.8.12です.
 
-  [wxWidgetsのインストール]
-  $ cd /usr/local/src
-  $ tar xvf wxWidgets-2.8.12.tar.bz2
-  $ cd wxWidgets-2.8.12/
+  MinGWの環境は C:/MinGW64 を /mingw にマウントしている前提です
 
-  静的ライブラリをビルド、/mingw 以下へのインストールとします
-  $ ./configure --prefix=/mingw --with-msw --enable-unicode
+  $ x86_64-w64-mingw32-gcc --version
+  x86_64-w64-mingw32-gcc.exe (tdm64-1) 4.7.1
+  Copyright (C) 2012 Free Software Foundation, Inc.
+  This is free software; see the source for copying conditions.  There is NO
+  warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+  0. pthread
+  $ wget http://sourceforge.net/settings/mirror_choices?projectname=tdm-gcc&filename=TDM-GCC%204.7%20series/4.7.1-tdm64-1/gcc-4.7.1-tdm64-1-openmp.tar.lzma
+  $ tar xvf gcc-4.7.1-tdm64-1-openmp.tar.lzma --lzma -C /mingw
+
+  1. zlib-1.2.7
+  $ cd /usr/local/src/zlib-1.2.7/
+  $ make -f win32/Makefile.gcc CC=x86_64-w64-mingw32-gcc
+  $ make -f win32/Makefile.gcc install BINARY_PATH=/mingw/bin INCLUDE_PATH=/mingw/include LIBRARY_PATH=/mingw/lib SHARED_MODE=1
+
+  2. libxml2-2.9.0
+  $ wget ftp://xmlsoft.org/libxml2/libxml2-2.9.0.tar.gz
+  $ ./configure --prefix=/mingw --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --enable-shared --with-threads=no  CFLAGS=-O2
   $ make
   $ make install
+
+  3. nasm-2.10.07
+  $ cd /usr/local/src/nasm-2.10.07
+  $ ./configure --prefix=/mingw --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32
+  $ make
+  $ make install
+
+  4. libjpeg-turbo-1.2.1
+  $ cd /usr/local/src/libjpeg-turbo-1.2.1
+  $ ./configure --prefix=/mingw --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32
+  $ make 
+  $ make install
+
+  5. libpng-1.5.13
+  $ cd /usr/local/src/libpng-1.5.13
+  $ ./configure --prefix=/mingw --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32
+  $ make
+  $ make install
+
+  6. tiff-4.0.3
+  $ cd /usr/local/src/tiff-4.0.3
+  $ ./configure --prefix=/mingw --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32
+  $ make
+  $ make install 
+
+  7. wxWidgets-2.8.12
+  $ wget http://prdownloads.sourceforge.net/wxwindows/wxWidgets-2.8.12.tar.bz2
+  $ tar xvf wxWidgets-2.8.12.tar.bz2
+  $ cd wxWidgets-2.8.12
+  $ wget --no-check-certificate https://mingw-w64-dgn.googlecode.com/svn/trunk/patch/wxWidgets-2.8.12-w64.patch
+  $ patch -p0 < wxWidgets-2.8.12-w64.patch
+  $ ./configure --prefix=/mingw --with-msw --enable-unicode --disable-debug --enable-gl --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32
+  $ make
+  $ make install
+  $ sed -i 's/--define __WIN32__ --define __WIN95__ --define __GNUWIN32__/--define WX_CPU_AMD64/g' /mingw/bin/wx-config
+  $ cd /mingw/include/wx-2.8/wx/msw
+  $ mv amd64.manifest wx.manifest
 
   wx-configコマンドが使用出来れば成功
   $ wx-config --version
   $ 2.8.12
-
-  !!! MinGW64ではインクルードファイルの一部を修正する必要がある !!!
-  $ cd /mingw/include/wx/msw
-  $ mv amd64.manifest wx.manifest
-
-  [libxml2のインストール]
-  libxml2をmingwでコンパイルする
-  その際 libxml/xmlexports.h line.116 を以下の通り修正する
-
-  - #if defined(IN_LIBXML) && !defined(LIBXML_STATIC)
-  + #if !defined(LIBXML_STATIC)
-
-  $ cd /usr/local/src
-  $ wget http://xmlsoft.org/sources/libxml2-2.9.0.tar.gz
-  $ cd libxml2-2.9.0
-  $ ./configure --prefix=/mingw
-  $ make
-  $ make install
-
-  xml2-configコマンドが使用出来れば成功
-  $ xml2-config --version
-  $ 2.9.0
 
  B-2. パッケージング
 
   [JaneCloneのコンパイル]
   $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
   $ cd /path/to/JaneClone
-  $ CXX="x86_64-w64-mingw32-g++" CC="x86_64-w64-mingw32-gcc" ./configure
+  $ ./configure --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32
   $ make
-  $ make install
+  $ make package-win64-msi
 
-  プロジェクト内部にpackageディレクトリができていればビルド成功です
+  プロジェクト内部にextras/packageディレクトリができていればビルド成功です
 
  [D.Linux(RedHat系)]
  D-1. 依存するライブラリのインストール
