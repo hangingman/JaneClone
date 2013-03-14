@@ -30,6 +30,7 @@
 BEGIN_EVENT_TABLE(JaneClone, wxFrame)
 // メニューバー・ポップアップメニューにあるコマンド入力で起動するメソッドのイベントテーブル
 EVT_MENU(ID_Quit, JaneClone::OnQuit)
+EVT_MENU(ID_Restart, JaneClone::OnRestart)
 EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
 EVT_MENU(ID_CheckLogDirectory, JaneClone::CheckLogDirectory)
 EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
@@ -154,16 +155,16 @@ void JaneClone::SetJaneCloneManuBar() {
      wxMenu *menu1 = new wxMenu;
      menu1->AppendSeparator();
      wxMenu *closeT = new wxMenu;
-     closeT->Append(wxID_ANY, wxT("最後に閉じたスレを開く"));
+     closeT->Append(wxID_ANY, wxT("最後に閉じたスレを開く"), wxT("最後に閉じたスレを開きます"));
      closeT->AppendSeparator();
-     menu1->AppendSubMenu(closeT, wxT("最近閉じたスレ"));
+     menu1->AppendSubMenu(closeT, wxT("最近閉じたスレ"), wxT("最近閉じたスレを開きます"));
      wxMenu *closeRec = new wxMenu;
-     closeRec->Append(wxID_ANY, wxT("最後に閉じた板を開く"));
+     closeRec->Append(wxID_ANY, wxT("最後に閉じた板を開く"), wxT("最後に閉じた板を開きます"));
      closeRec->AppendSeparator();
      menu1->AppendSubMenu(closeRec, wxT("最近閉じた板"));
      menu1->AppendSeparator();
-     menu1->Append(ID_Restart, wxT("再起動"));
-     menu1->Append(ID_Quit, wxT("終了"));
+     menu1->Append(ID_Restart, wxT("再起動"), wxT("JaneCloneを再起動します"));
+     menu1->Append(ID_Quit, wxT("終了"), wxT("JaneCloneを終了します"));
      /**
       * 表示部分
       */
@@ -776,7 +777,14 @@ void JaneClone::OnQuit(wxCommandEvent&) {
 
      // Auiマネージャーを削除する
      m_mgr.UnInit();
+     Close(true);
+}
+/**
+ * JaneCloneを再起動する
+ */
+void JaneClone::OnRestart(wxCommandEvent& event) {
 
+     this->pid = wxGetProcessId();
      Close(true);
 }
 /**

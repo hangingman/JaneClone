@@ -29,11 +29,19 @@
 #include <wx/wx.h>
 #endif
 
+#include <wx/cmdline.h>
 #include <wx/image.h>
 #include <wx/snglinst.h>
 #include "janeclone.hpp"
 
-
+/** 再起動処理のために引数が与えられた場合使用する */
+static const wxCmdLineEntryDesc gCmdLineDesc[] =
+{
+     // コマンドラインオプションに -p or pid=xxx と入力された場合
+     { wxCMD_LINE_OPTION, wxT("p"), wxT("pid"), wxT("past worked JaneClone pid"), 
+       wxCMD_LINE_VAL_NUMBER, wxCMD_LINE_PARAM_OPTIONAL },
+     { wxCMD_LINE_NONE }
+};
 /*
  * wxAppを継承したwxMainを宣言
  */
@@ -43,12 +51,17 @@ class wxMain: public wxApp {
 
 public:
      wxMain() : m_Locale(wxLANGUAGE_DEFAULT){}
-     bool OnInit();
-     int OnExit();
+     virtual bool OnInit();
+     virtual int OnExit();
+     virtual int OnRun();
+     // 再起動時のコマンドライン読み込み用
+     virtual void OnInitCmdLine(wxCmdLineParser& parser);
+     virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
 
 private:
      wxSingleInstanceChecker* m_checker;
      JaneClone* wxJaneClone;
+     long m_pid;
 };
 
 IMPLEMENT_APP(wxMain)
@@ -58,17 +71,27 @@ IMPLEMENT_APP(wxMain)
  */
 bool wxMain::OnInit() {
 
+     if (!wxApp::OnInit())
+	  return false;
+
+     // コマンドラインで与えられた引数を取得する
+     if (m_pid != 0 && m_pid == wxGetProcessId()) {
+	  // このプロセスをしばらく待機
+	  // ! Fix Me ! なんかここ実装しなくても動作してるけど…
+     }
+
      // JaneClone起動前に複数起動をチェックする
      const wxString name = wxString::Format(_("JaneClone-%s"), wxGetUserId().c_str());
      m_checker = new wxSingleInstanceChecker(name);
-     if ( m_checker->IsAnotherRunning() ) {
-	  wxMessageBox(wxT("誤作動防止のためJaneCloneは複数起動できません。終了します。"), wxT("JaneClone起動"), wxOK | wxICON_ERROR);
+     if ( m_checker->IsAnotherRunning()) {
+	  wxMessageBox(wxT("誤作動防止のためJaneCloneは複数起動できません。終了します。"), 
+		       wxT("JaneClone起動"), wxOK | wxICON_ERROR);
 	  return false;
      }
 
      wxInitAllImageHandlers();
      wxJaneClone = new JaneClone(NULL, wxID_ANY, wxEmptyString);
-
+     wxJaneClone->pid = 0;
      SetTopWindow(wxJaneClone);
      wxJaneClone->Show();
      return true;
@@ -77,7 +100,42 @@ bool wxMain::OnInit() {
  * 終了後の後始末
  */
 int wxMain::OnExit() {
-    delete m_checker;
-    delete wxJaneClone;
-    return 0;
+
+     unsigned long pid = wxJaneClone->pid;
+
+     if (pid != 0) {
+	  // 0でなければ再起動処理を行う & このプロセスは殺す
+	  wxString execute = wxGetCwd() + wxFileSeparator + wxT("JaneClone") + wxExt;
+	  ::wxExecute(execute + wxString::Format(_(" -p %lu"), pid), wxEXEC_ASYNC, NULL);
+     }
+
+     delete m_checker;
+     delete wxJaneClone;
+
+     return 0;
+}
+/**
+ * コンソールを走らせるために必要？
+ */
+int wxMain::OnRun()
+{
+    int exitcode = wxApp::OnRun();
+    if (exitcode!=0)
+        return exitcode;
+}
+/**
+ * コマンドライン読み取りを初期化する
+ */
+void wxMain::OnInitCmdLine(wxCmdLineParser& parser) {
+     // オプションの始まりはハイフン
+     parser.SetDesc(gCmdLineDesc);
+     parser.SetSwitchChars(wxT("-"));
+}
+/**
+ * コマンドラインからパラメーターを読み取る
+ */
+bool wxMain::OnCmdLineParsed(wxCmdLineParser& parser) {
+     // JaneCloneがPIDつきで呼び出された場合
+     parser.Found(wxT("p"), &m_pid);
+     return true;
 }

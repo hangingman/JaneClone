@@ -99,6 +99,20 @@ static const wxString BOARD_LIST_HEADER_PATH = wxT("./dat/boardlistheader.html")
 #define BOARD_NOTEBOOK         wxT("boardNoteBook")
 #define THREAD_NOTEBOOK        wxT("threadNoteBook")
 
+// ファイルの区切り文字
+#ifdef __WXMSW__
+  #define wxFileSeparator wxT("\\") 
+#else
+  #define wxFileSeparator wxT("/") 
+#endif
+
+// 実行ファイルの拡張子
+#ifdef __WXMSW__
+  #define wxExt wxT(".exe") 
+#else
+  #define wxExt wxT("") 
+#endif
+
 /**
  * JaneClone本体はGUI構築用のwxFrameと
  * マウスモーション管理用のwxMouseEventsManagerを継承する
@@ -126,6 +140,8 @@ public:
 
      // JaneClone内部のイメージビューアのインスタンス
      static JaneCloneImageViewer* imageViewer;
+     // 再起動処理のためのPID
+     unsigned long pid;
 
 private:
 
@@ -135,6 +151,7 @@ private:
      // イベントテーブル系
      void OnQuit(wxCommandEvent& event);
      void OnAbout(wxCommandEvent& event);
+     void OnRestart(wxCommandEvent& event);
      void OnGetBoardList(wxCommandEvent& event);
      void CheckLogDirectory(wxCommandEvent& event);
      void OnVersionInfo(wxCommandEvent& event);
