@@ -27,8 +27,8 @@
 #include "enums.hpp"
 #include "threadcontentwindow.hpp"
 
-#ifndef THREADCONTENTBAR_H
-#define THREADCONTENTBAR_H
+#ifndef THREADCONTENTBAR_HPP_
+#define THREADCONTENTBAR_HPP_
 
 // begin wxGlade: ::dependencies
 // end wxGlade
@@ -120,4 +120,4 @@ protected:
 }; // wxGlade: end class
 
 
-#endif // THREADCONTENTBAR_H
+#endif // THREADCONTENTBAR_HPP_

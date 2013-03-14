@@ -186,9 +186,9 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
      searchWordCombo->SetFont(wxFont(12, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
 
      // 引っかかった検索ワードを前後させる
-     backwardButton = new wxBitmapButton(this, wxID_ANY, backwardImg, wxDefaultPosition, wxDefaultSize,
+     backwardButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(backwardImg, wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize,
 					 wxBU_AUTODRAW, wxDefaultValidator, wxT("前へ"));
-     forwardButton = new wxBitmapButton(this, wxID_ANY, forwardImg, wxDefaultPosition, wxDefaultSize,
+     forwardButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(forwardImg,wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize,
 					 wxBU_AUTODRAW, wxDefaultValidator, wxT("次へ"));
      panel_2 = new wxPanel(this, wxID_ANY);
 
