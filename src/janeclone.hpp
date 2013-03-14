@@ -195,6 +195,8 @@ private:
      void OnLeftClickAtListCtrlCol(wxListEvent& event);
      void OnChangeBoardTab(wxAuiNotebookEvent& event);
      void OnChangeThreadTab(wxAuiNotebookEvent& event);
+     void OnChangedBoardTab(wxAuiNotebookEvent& event);
+     void OnChangedThreadTab(wxAuiNotebookEvent& event);
      void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
      void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
      void OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event);

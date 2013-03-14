@@ -72,9 +72,12 @@ EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_ThreadNoteBook, JaneClone::OnRightClickThreadN
 // スレッド一覧ノートブックで、タブが消される前の処理
 EVT_AUINOTEBOOK_PAGE_CLOSE(ID_ThreadNoteBook, JaneClone::OnAboutCloseThreadNoteBook)
 
-// AuiNotebookのタブを変更した時の処理
+// AuiNotebookのタブを変更中の処理
 EVT_AUINOTEBOOK_PAGE_CHANGING(ID_BoardNoteBook, JaneClone::OnChangeBoardTab)
 EVT_AUINOTEBOOK_PAGE_CHANGING(ID_ThreadNoteBook, JaneClone::OnChangeThreadTab)
+// AuiNotebookのタブを変更し終わった時の処理
+EVT_AUINOTEBOOK_PAGE_CHANGED(ID_BoardNoteBook, JaneClone::OnChangedBoardTab)
+EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ThreadNoteBook, JaneClone::OnChangedThreadTab)
 // AuiNotebookをドラッグし終わった際のイベント
 EVT_AUINOTEBOOK_DRAG_DONE(wxID_ANY, JaneClone::Test)
 
@@ -2234,7 +2237,6 @@ wxString JaneClone::GetThreadURL(const wxString title,const wxString boardNameAs
 
      return threadURL;
 }
-
 /**
  * 板一覧リストタブを変更した時のイベント
  */
@@ -2274,7 +2276,8 @@ void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
 	       break;
 	  }	       
      }
-
+     // タイトルを設定する
+     SetTitle(selectedBoardName + wxT(" - JaneClone"));
      // ノートブックの解放
      boardNoteBook->Thaw();
      m_mgr.Update();
@@ -2309,6 +2312,27 @@ void JaneClone::OnChangeThreadTab(wxAuiNotebookEvent& event) {
      threadNoteBook->Thaw();
      m_mgr.Update();
 }
+/**
+ * 板一覧リストタブを変更した後のイベント
+ */
+void JaneClone::OnChangedBoardTab(wxAuiNotebookEvent& event) {
+
+     // 選択したタブの板名を取得する
+     wxString selectedBoardName = boardNoteBook->GetPageText(event.GetSelection());
+     // タイトルを設定する
+     SetTitle(selectedBoardName + wxT(" - JaneClone"));
+}
+/**
+ * スレッド一覧タブを変更した後のイベント
+ */
+void JaneClone::OnChangedThreadTab(wxAuiNotebookEvent& event) {
+
+     // 選択したタブのスレッド名を取得する
+     wxString selectedThreadName = threadNoteBook->GetPageText(event.GetSelection());
+     // タイトルを設定する
+     SetTitle(selectedThreadName + wxT(" - JaneClone"));
+}
+
 void JaneClone::OnClickURLWindowButton(wxCommandEvent& event) {
 
      const wxString inputURL = m_url_input->GetValue();
