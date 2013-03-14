@@ -48,9 +48,11 @@ wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
      int loopNumber = 1;
 
      // テキストファイルの終端まで読み込む
-     for (wxString line = datfile.GetFirstLine(); !datfile.Eof();
-	  line = datfile.GetNextLine()) {
+     for (wxString line = datfile.GetFirstLine(); !datfile.Eof(); line = datfile.GetNextLine()) {
 
+	  if (line.Contains(_("&"))) { 
+	       line = convCharacterReference(line);
+	  }
 	  // アイテム用の文字列を先に宣言する
 	  wxString itemNumber, itemBoardName, itemOid, itemSince, itemTitle, itemResponse, itemCachedResponseNumber,
 	       itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum, itemLastUpdate;
@@ -160,6 +162,9 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 	  // datファイルの１行目だけ読み込む
 	  wxString line = datfile.GetFirstLine();
 
+	  if (line.Contains(_("&"))) { 
+	       line = convCharacterReference(line);
+	  }
 	  /**
 	   * リストに値を設定する
 	   */
@@ -251,8 +256,11 @@ VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const 
      int loopNumber = 1;
 
      // テキストファイルの終端まで読み込む
-     for (wxString line = datfile.GetFirstLine(); !datfile.Eof();
-	  line = datfile.GetNextLine()) {
+     for (wxString line = datfile.GetFirstLine(); !datfile.Eof(); line = datfile.GetNextLine()) {
+
+	  if (line.Contains(_("&"))) { 
+	       line = convCharacterReference(line);
+	  }
 
 	  // アイテム用の文字列を先に宣言する
 	  wxString itemNumber, itemBoardName, itemOid, itemSince, itemTitle, itemResponse, itemCachedResponseNumber,
@@ -480,4 +488,18 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
 
      SetItemCount(m_vBoardList.size());
      this->Show();
+}
+/**
+ * 文字列中の実体参照文字を変換する
+ */
+wxString VirtualBoardListCtrl::convCharacterReference(wxString& inputString) {
+
+     wxString buffer = inputString;
+     buffer.Replace(_T("&nbsp;"), _T(" "), true);
+     buffer.Replace(_T("&lt;"), _T("<"), true);
+     buffer.Replace(_T("&gt;"), _T(">"), true);
+     buffer.Replace(_T("&amp;"), _T("&"), true);
+     buffer.Replace(_T("&quot;"), _T("\""), true);
+     buffer.Replace(_T("&apos;"), _T("'"), true);
+     return buffer;
 }

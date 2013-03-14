@@ -281,6 +281,11 @@ public:
 
 private:
 
+     /**
+      * 文字列中の実体参照文字を変換する
+      */
+     static wxString convCharacterReference(wxString& inputString);
+
      bool f_number;
      // タイトル
      bool f_title;
