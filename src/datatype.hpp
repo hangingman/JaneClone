@@ -31,45 +31,47 @@
 // 2chの板名とURLを対応させるクラス
 class URLvsBoardName {
 public:
-	wxString boardName;
-	wxString boardURL;
-	wxString boardNameAscii;
+     wxString boardName;
+     wxString boardURL;
+     wxString boardNameAscii;
 };
 
 // スレッド一覧用のクラス
 class ThreadList {
 public:
-	// キー値(ホスト名にこの番号をつけることでスレッドのURLになる)
-	wxString oid;
-	// 番号(単に取得したdatファイルの順序から)
-	int number;
-	// タイトル
-	wxString title;
-	// レス
-	int response;
-	// 取得
-	int cachedResponseNumber;
-	// 新着
-	int newResponseNumber;
-	// 増レス
-	int increaseResponseNumber;
-	// 勢い
-	int momentum;
-	// 最終取得
-	wxString lastUpdate;
-	// since
-	wxString since;
-	// 板
-	wxString boardName;
+     // キー値(ホスト名にこの番号をつけることでスレッドのURLになる)
+     wxString oid;
+     // 番号(単に取得したdatファイルの順序から)
+     int number;
+     // タイトル
+     wxString title;
+     // レス
+     int response;
+     // 取得
+     int cachedResponseNumber;
+     // 新着
+     int newResponseNumber;
+     // 増レス
+     int increaseResponseNumber;
+     // 勢い
+     int momentum;
+     // 最終取得
+     wxString lastUpdate;
+     // since
+     wxString since;
+     // 板
+     wxString boardName;
 };
 
 // 2chの板名(ascii)と固有番号を対応させて保存するクラス
 class ThreadInfo {
 public:
-	// スレッド固有番号
-	wxString origNumber;
-	// 板名(英数)
-	wxString boardNameAscii;
+     // スレッドタイトル
+     wxString title;
+     // スレッド固有番号
+     wxString origNumber;
+     // 板名(英数)
+     wxString boardNameAscii;
 };
 
 /**

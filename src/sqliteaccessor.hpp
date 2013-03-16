@@ -26,7 +26,9 @@
 #include <wx/wx.h>
 #include <wx/dir.h>
 #include <wx/file.h>
+#include <wx/datetime.h>
 #include <wx/wxsqlite3.h>
+#include "datatype.hpp"
 
 // SQLiteのデータベースファイルのパス
 #ifdef __WXMSW__
@@ -67,9 +69,29 @@ public:
       */
      static wxArrayString GetUserLookedThreadList();
      /**
+      * スレタブを閉じた際に情報をSQLiteに格納する
+      */
+     static void SetClosedThreadInfo(ThreadInfo* t);
+     /**
+      * 最近閉じたスレッドタブ名を取得する
+      */
+     static wxArrayString GetClosedThreadInfo();
+     /**
+      * 板タブを閉じた際に情報をSQLiteに格納する
+      */
+     static void SetClosedBoardInfo(URLvsBoardName* hash);
+     /**
+      * 最近閉じた板タブ名リストを取得する
+      */
+     static wxArrayString GetClosedBoardInfo();
+     /**
       * 指定されたテーブルに情報が存在するかどうかを調べるメソッド
       */
      static bool TableHasData(const wxString);
+     /**
+      * 指定されたテーブルにレコードが何件が存在するかどうかを調べるメソッド
+      */
+     static int HowManyRecord(const wxString);
      /**
       * 指定されたテーブルを削除する
       */

@@ -65,6 +65,10 @@ enum {
 	ID_FontDialogThreadNotebook,    // スレッド画面部分のフォント設定を呼び出す
 	ID_FontDialogThreadContents,    // スレッド内で使用するフォント設定を呼び出す
 	ID_URLWindowButton,             // URL入力ウィンドウのボタンを表すID
+	ID_UserLastClosedThreadMenuUp,  // ユーザーが最後に閉じたスレッドの情報を項目に補充する
+	ID_UserLastClosedBoardMenuUp,   // ユーザーが最後に閉じた板の情報を項目に補充する
+	ID_UserLastClosedThreadClick,   // ユーザーが最後に閉じたスレッドの情報をクリックした
+	ID_UserLastClosedBoardClick,    // ユーザーが最後に閉じた板の情報をクリックした
 	// responsewindow.hpp
 	ID_ResponseWindow,
 	ID_QuitResponseWindow,

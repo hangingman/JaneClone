@@ -25,12 +25,19 @@
 
 ◇ 開発環境 ◇
 
-【Windows(64bit) + MinGW(32bit)】:
-gcc 4.5.2, wxWigets 2.9, metakit-2.4.9.7, libxml2はmingw-getのパッケージ
+【Windows(64bit) + MinGW(32bit)】
+[32bit]
+gcc.exe (tdm-1) 4.7.1
+wxWidgets-2.8.12
+
+[64bit]
+x86_64-w64-mingw32-gcc.exe (tdm64-1) 4.7.1
+wxWidgets-2.8.12
+
 【Linux(64bit)】
-gcc 4.5.5, wxWidgets 2.9, metakit-2.4.9.7　libxml2はapt-getのパッケージ
+
 【Mac OSX(64bit)】
-llvm-gcc-4.2 (GCC) 4.2.1, wxWidgets 2.9, metakit-2.4.9.7, libxml2はCommand Line Tools for Xcodeに付属するもの
+
 
 ◇ ライセンス ◇
 GNU 一般公衆利用許諾契約書のバージョン2に従います

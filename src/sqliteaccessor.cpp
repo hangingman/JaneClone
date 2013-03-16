@@ -34,10 +34,16 @@ SQLiteAccessor::SQLiteAccessor() {
 	  wxSQLite3Database db;
 	  db.Open(dbFile);
 	  db.Begin();
-	  // 必要なテーブルが無ければ作成
+	  // 2chのすべての板一覧情報
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO(BOARDNAME_KANJI TEXT, BOARD_URL TEXT, CATEGORY TEXT)"));
+	  // ユーザーが前回見ていたタブについての情報
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_BOARDLIST(BOARDNAME_KANJI TEXT)"));
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_THREADLIST(THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
+	  // ユーザーが最近閉じたタブについての情報
+	  db.ExecuteUpdate(
+	       wxT("CREATE TABLE IF NOT EXISTS USER_CLOSED_BOARDLIST(TIMEINFO TIMESTAMP, BOARDNAME_KANJI TEXT, BOARD_URL TEXT, BOARDNAME_ASCII TEXT)"));
+	  db.ExecuteUpdate(
+	       wxT("CREATE TABLE IF NOT EXISTS USER_CLOSED_THREADLIST(TIMEINFO TIMESTAMP, THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
 	  db.Commit();
 	  db.Close();
 
@@ -355,3 +361,194 @@ wxArrayString SQLiteAccessor::GetUserLookedThreadList() {
      }
      return array;
 }
+/**
+ * スレタブを閉じた際に情報をSQLiteに格納する
+ */
+void SQLiteAccessor::SetClosedThreadInfo(ThreadInfo* t) {
+
+     // ユーザが閉じたスレッドのうち、データベースに保存されている数
+     int userClosedThreadListNum = SQLiteAccessor::HowManyRecord(wxT("USER_CLOSED_THREADLIST"));
+     // 現在時間timestamp
+     wxDateTime now = wxDateTime::Now();
+
+     // dbファイルの初期化
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxSQLite3Database::InitializeSQLite();
+
+     try {
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+	  db.Begin();
+	  /** 閉じられたスレタブの情報をインサート */
+	  const wxString sqlIn = 
+	       wxT("INSERT INTO USER_CLOSED_THREADLIST(TIMEINFO, THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII) VALUES (?,?,?,?)");
+	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+	  stmt.ClearBindings();
+	  stmt.BindTimestamp(1, now);
+	  stmt.Bind(2,t->title);
+	  stmt.Bind(3,t->origNumber);
+	  stmt.Bind(4,t->boardNameAscii);
+	  stmt.ExecuteUpdate();
+
+	  // コミット実行
+	  db.Commit();
+	  db.Close();
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+}
+/**
+ * 最近閉じた板タブ名リストを取得する
+ */
+wxArrayString SQLiteAccessor::GetClosedBoardInfo() {
+
+     // dbファイルの初期化
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxArrayString array;
+
+     try {
+	  
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+
+	  // リザルトセットを用意する
+	  wxSQLite3ResultSet rs;
+	  // SQL文を用意する
+	  wxString SQL_QUERY = wxT("SELECT BOARDNAME_KANJI from USER_CLOSED_BOARDLIST");
+
+	  // SQL文を実行する
+	  rs = db.ExecuteQuery(SQL_QUERY);
+	  db.Close();
+
+	  while (rs.NextRow()) {
+	       wxString boardName = rs.GetAsString(wxT("BOARDNAME_KANJI"));
+
+	       // 各項目がNULLで無ければArrayStringに詰める
+	       if (boardName.Length() > 0) {
+		    array.Add(boardName);
+	       }
+	  }
+
+	  return array;
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+
+     return NULL;
+}
+/**
+ * 板タブを閉じた際に情報をSQLiteに格納する
+ */
+void SQLiteAccessor::SetClosedBoardInfo(URLvsBoardName* hash) {
+
+     // ユーザが閉じた板のうち、データベースに保存されている数
+     int userClosedBoardListNum = SQLiteAccessor::HowManyRecord(wxT("USER_CLOSED_BOARDLIST"));
+     // 現在時間timestamp
+     wxDateTime now = wxDateTime::Now();
+
+     // dbファイルの初期化
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxSQLite3Database::InitializeSQLite();
+
+     try {
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+	  db.Begin();
+	  /** 閉じられたスレタブの情報をインサート */
+	  const wxString sqlIn = 
+	       wxT("INSERT INTO USER_CLOSED_BOARDLIST(TIMEINFO, BOARDNAME_KANJI, BOARD_URL, BOARDNAME_ASCII) VALUES (?,?,?,?)");
+	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+	  stmt.ClearBindings();
+	  stmt.BindTimestamp(1, now);
+	  stmt.Bind(2,hash->boardName);
+	  stmt.Bind(3,hash->boardURL);
+	  stmt.Bind(4,hash->boardNameAscii);
+	  stmt.ExecuteUpdate();
+
+	  // コミット実行
+	  db.Commit();
+	  db.Close();
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+}
+/**
+ * 最近閉じたスレタブ名リストを取得する
+ */
+wxArrayString SQLiteAccessor::GetClosedThreadInfo() {
+
+     // dbファイルの初期化
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxArrayString array;
+
+     try {
+	  
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+
+	  // リザルトセットを用意する
+	  wxSQLite3ResultSet rs;
+	  // SQL文を用意する
+	  wxString SQL_QUERY = wxT("SELECT THREAD_TITLE from USER_CLOSED_THREADLIST");
+
+	  // SQL文を実行する
+	  rs = db.ExecuteQuery(SQL_QUERY);
+	  db.Close();
+
+	  while (rs.NextRow()) {
+	       wxString title = rs.GetAsString(wxT("THREAD_TITLE"));
+
+	       // 各項目がNULLで無ければArrayStringに詰める
+	       if (title.Length() > 0) {
+		    array.Add(title);
+	       }
+	  }
+
+	  return array;
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+
+     return NULL;
+}
+/**
+ * 指定されたテーブルにレコードが何件存在するかどうかを調べるメソッド
+ */
+int SQLiteAccessor::HowManyRecord(const wxString tableName) {
+
+     // dbファイルの初期化
+     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+
+     try {
+	  
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+
+	  // リザルトセットを用意する
+	  wxSQLite3ResultSet rs;
+	  // SQL文を用意する
+	  wxString SQL_QUERY = wxT("SELECT COUNT(*) from ") + tableName;
+
+	  // SQL文を実行する
+	  rs = db.ExecuteQuery(SQL_QUERY);
+	  db.Close();
+
+	  // SQL文を実行し結果を受け取る
+	  if (!rs.IsNull(0)) {
+	       int recordNum = rs.GetInt(0);
+	       return recordNum;
+	  }
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+
+     return 0;
+} 

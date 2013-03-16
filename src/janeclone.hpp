@@ -66,6 +66,7 @@
 #include <wx/tokenzr.h>
 #include <wx/font.h>
 #include <wx/fontdlg.h>
+#include <wx/menu.h>
 
 // 自作クラスのヘッダ
 #include "enums.hpp"
@@ -145,8 +146,6 @@ public:
 
 private:
 
-     void Test(wxAuiNotebookEvent& event);
-
      // begin wxGlade: JaneClone::methods
      // イベントテーブル系
      void OnQuit(wxCommandEvent& event);
@@ -161,6 +160,12 @@ private:
      void FontDialogThreadNotebook(wxCommandEvent& event);
      void FontDialogThreadContents(wxCommandEvent& event);
      void SetFontDialog(const int enumType);
+
+     // 動的に要素を確保するメニュー
+     wxMenu* closeT;
+     wxMenu* closeB;
+     void UserLastClosedThreadMenuUp(wxUpdateUIEvent& event);
+     void UserLastClosedBoardMenuUp(wxUpdateUIEvent& event);
 
      // スレッド一覧タブ処理
      void OneBoardTabClose(wxCommandEvent& event);
@@ -200,6 +205,7 @@ private:
      void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
      void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
      void OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event);
+     void OnAboutCloseBoardNoteBook(wxAuiNotebookEvent& event);
      void OnCellHover(wxHtmlCellEvent& event);
      void OnClickURLWindowButton(wxCommandEvent& event);
 

@@ -63,12 +63,19 @@ EVT_MENU(ID_FontDialogLogWindow, JaneClone::FontDialogLogWindow)
 EVT_MENU(ID_FontDialogBoardNotebook, JaneClone::FontDialogBoardNotebook)
 EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
 
+// 動的に項目を追加するメニューでのイベント
+EVT_UPDATE_UI(ID_UserLastClosedThreadMenuUp, JaneClone::UserLastClosedThreadMenuUp)
+EVT_UPDATE_UI(ID_UserLastClosedBoardMenuUp, JaneClone::UserLastClosedBoardMenuUp)
+
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
 // 板一覧ノートブックで右クリックされた時の処理
 EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_BoardNoteBook, JaneClone::OnRightClickBoardNoteBook)
 // スレッド一覧ノートブックで右クリックされた時の処理
 EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_ThreadNoteBook, JaneClone::OnRightClickThreadNoteBook)
+
+// 板一覧ノートブックで、タブが消される前の処理
+EVT_AUINOTEBOOK_PAGE_CLOSE(ID_BoardNoteBook, JaneClone::OnAboutCloseBoardNoteBook)
 // スレッド一覧ノートブックで、タブが消される前の処理
 EVT_AUINOTEBOOK_PAGE_CLOSE(ID_ThreadNoteBook, JaneClone::OnAboutCloseThreadNoteBook)
 
@@ -78,8 +85,6 @@ EVT_AUINOTEBOOK_PAGE_CHANGING(ID_ThreadNoteBook, JaneClone::OnChangeThreadTab)
 // AuiNotebookのタブを変更し終わった時の処理
 EVT_AUINOTEBOOK_PAGE_CHANGED(ID_BoardNoteBook, JaneClone::OnChangedBoardTab)
 EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ThreadNoteBook, JaneClone::OnChangedThreadTab)
-// AuiNotebookをドラッグし終わった際のイベント
-EVT_AUINOTEBOOK_DRAG_DONE(wxID_ANY, JaneClone::Test)
 
 // マウスモーションの監視
 //EVT_LEFT_DOWN(JaneClone::OnMouseDown)
@@ -157,14 +162,18 @@ void JaneClone::SetJaneCloneManuBar() {
       */
      wxMenu *menu1 = new wxMenu;
      menu1->AppendSeparator();
-     wxMenu *closeT = new wxMenu;
-     closeT->Append(wxID_ANY, wxT("最後に閉じたスレを開く"), wxT("最後に閉じたスレを開きます"));
+     this->closeT = new wxMenu;
+     // 動的に項目を補充する
+     closeT->Append(ID_UserLastClosedThreadMenuUp, wxT("最後に閉じたスレを開く"), wxT("最後に閉じたスレを開きます"));
      closeT->AppendSeparator();
+
      menu1->AppendSubMenu(closeT, wxT("最近閉じたスレ"), wxT("最近閉じたスレを開きます"));
-     wxMenu *closeRec = new wxMenu;
-     closeRec->Append(wxID_ANY, wxT("最後に閉じた板を開く"), wxT("最後に閉じた板を開きます"));
-     closeRec->AppendSeparator();
-     menu1->AppendSubMenu(closeRec, wxT("最近閉じた板"));
+     this->closeB = new wxMenu;
+     // 動的に項目を補充する
+     closeB->Append(ID_UserLastClosedBoardMenuUp, wxT("最後に閉じた板を開く"), wxT("最後に閉じた板を開きます"));
+     closeB->AppendSeparator();
+
+     menu1->AppendSubMenu(closeB, wxT("最近閉じた板"));
      menu1->AppendSeparator();
      menu1->Append(ID_Restart, wxT("再起動"), wxT("JaneCloneを再起動します"));
      menu1->Append(ID_Quit, wxT("終了"), wxT("JaneCloneを終了します"));
@@ -1027,8 +1036,26 @@ void JaneClone::OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event) {
      wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
      // 固有番号を取得
      wxString origNumber = tiHash[title].origNumber;
+     // スレッドの情報をSQLiteに格納する
+     ThreadInfo t;
+     t.title = title;
+     t.origNumber = origNumber;
+     t.boardNameAscii = tiHash[title].boardNameAscii;
+     SQLiteAccessor::SetClosedThreadInfo(&t);
      // ハッシュからタイトルのキーを持つデータを削除
      tiHash.erase(title);
+}
+/**
+ * 板一覧ノートブックで、タブが消される前の処理
+ */
+void JaneClone::OnAboutCloseBoardNoteBook(wxAuiNotebookEvent& event) {
+
+     // 消されようとしているタブのタイトルを取得
+     wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+     URLvsBoardName hash = retainHash[boardName];
+     SQLiteAccessor::SetClosedBoardInfo(&hash);
+     // ハッシュからタイトルのキーをもつデータを削除
+     retainHash.erase(boardName);
 }
 /**
  * アクティブな板タブをひとつ閉じる
@@ -2343,6 +2370,57 @@ void JaneClone::OnClickURLWindowButton(wxCommandEvent& event) {
 	  // 板名を表すURLの可能性がある場合
      }
 }
-void JaneClone::Test(wxAuiNotebookEvent& event) {
-     wxMessageBox(wxT("test"));
+/**
+ * ユーザーが最近閉じたスレタブの情報をSQLiteから取得して設定する
+ */
+void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
+
+     // メニューアイテムを順次消していく
+     wxMenuItemList::Node* current_menuitem_node;
+     wxMenuItem* current_menuitem;
+     current_menuitem_node = closeT->GetMenuItems().GetLast();
+
+     while ( current_menuitem_node ) {
+	  current_menuitem = current_menuitem_node->GetData();
+	  if (!current_menuitem->IsSeparator()) {
+	       // menuの区切りでなければ削除する
+	       closeT->Delete( current_menuitem );
+	  } else {
+	       // そうでなければ削除は終わりなので脱出
+	       break;
+	  }
+	  current_menuitem_node = current_menuitem_node->GetPrevious();
+     }
+     // ユーザが閉じたスレッドのうち、データベースに保存されている数
+     wxArrayString array = SQLiteAccessor::GetClosedThreadInfo();
+     for (unsigned int i = 0; i < array.GetCount(); i++ ) {
+	  closeT->Append(ID_UserLastClosedThreadClick, array[i]);
+     }
+}
+/**
+ * ユーザーが最近閉じた板タブの情報をSQLiteから取得して設定する
+ */
+void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
+
+     // メニューアイテムを順次消していく
+     wxMenuItemList::Node* current_menuitem_node;
+     wxMenuItem* current_menuitem;
+     current_menuitem_node = closeB->GetMenuItems().GetLast();
+
+     while ( current_menuitem_node ) {
+	  current_menuitem = current_menuitem_node->GetData();
+	  if (!current_menuitem->IsSeparator()) {
+	       // menuの区切りでなければ削除する
+	       closeB->Delete( current_menuitem );
+	  } else {
+	       // そうでなければ削除は終わりなので脱出
+	       break;
+	  }
+	  current_menuitem_node = current_menuitem_node->GetPrevious();
+     }
+     // ユーザが閉じたスレッドのうち、データベースに保存されている数
+     wxArrayString array = SQLiteAccessor::GetClosedBoardInfo();
+     for (unsigned int i = 0; i < array.GetCount(); i++ ) {
+	  closeB->Append(ID_UserLastClosedBoardClick, array[i]);
+     }
 }
