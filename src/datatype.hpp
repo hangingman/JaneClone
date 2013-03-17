@@ -24,6 +24,38 @@
 
 #include <wx/regex.h>
 
+/*
+ * 定数値の宣言
+ */
+#define APP_CONFIG_FILE wxT("janeclone.env")
+// 板一覧情報ファイルのパス
+static const wxString BOARD_LIST_PATH = wxT("./dat/boardlist.html");
+// 板一覧情報ファイルのヘッダ情報のパス
+static const wxString BOARD_LIST_HEADER_PATH = wxT("./dat/boardlistheader.html");
+
+/** 各ウィジェットの名前を表す定数値 */
+#define JANECLONE_WINDOW       wxT("janeclone_window")
+#define SEARCH_BAR             wxT("m_search_ctrl")
+#define URL_BAR                wxT("m_url_input_panel")
+#define BOARD_TREE             wxT("m_tree_ctrl")
+#define LOG_WINDOW             wxT("m_logCtrl")
+#define BOARD_NOTEBOOK         wxT("boardNoteBook")
+#define THREAD_NOTEBOOK        wxT("threadNoteBook")
+
+// ファイルの区切り文字
+#ifdef __WXMSW__
+  #define wxFileSeparator wxT("\\") 
+#else
+  #define wxFileSeparator wxT("/") 
+#endif
+
+// 実行ファイルの拡張子
+#ifdef __WXMSW__
+  #define wxExt wxT(".exe") 
+#else
+  #define wxExt wxT("") 
+#endif
+
 /**
  * クラス
  */

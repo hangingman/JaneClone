@@ -54,6 +54,49 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
 
      // 指定されたパスからHTMLファイルを読み出す
      wxString htmlSource = GetConvertedDatFile(threadContentPath);
+
+     // 設定ファイルの準備をする
+     wxString configFile = wxGetCwd() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+
+     // フォント設定を読み出し
+     wxString fontName;
+     config->Read(wxT("HTML.Font"), &fontName, wxEmptyString);
+     int pointSize, realSize;
+     config->Read(wxT("HTML.PointSize"), &pointSize, 0);
+     delete config;
+     
+#ifdef __WXMSW__ 
+     static int f_sizes[5][7] = 
+	  { 
+	       { 5,  6, 8, 9, 10, 12, 16}, 
+	       { 6,  7, 9, 10, 12, 14, 18}, 
+	       { 7,  8, 10, 12, 16, 22, 30}, 
+	       { 9, 10, 12, 14, 18, 20, 34}, 
+	       { 10, 12, 14, 16, 20, 24, 38} 
+	  }; 
+#elif defined(__WXMAC__) 
+     static int f_sizes[5][7] = 
+	  { 
+	       { 6,  7,  9, 12, 14, 16, 19}, 
+	       { 8,  9, 12, 14, 16, 19, 22}, 
+	       { 9, 12, 14, 18, 24, 30, 36}, 
+	       {14, 16, 18, 24, 32, 38, 45}, 
+	       {16, 20, 24, 32, 38, 45, 50} 
+	  }; 
+#else 
+     static int f_sizes[5][7] = 
+	  { 
+	       { 6,  7,  9, 12, 14, 16, 19}, 
+	       { 8,  9, 12, 14, 16, 19, 22}, 
+	       {10, 12, 14, 16, 19, 24, 32}, 
+	       {14, 16, 18, 24, 32, 38, 45}, 
+	       {16, 20, 24, 32, 38, 45, 50} 
+	  }; 
+#endif
+
+     this->SetFonts(fontName, wxEmptyString, f_sizes[3]);
+
      // メモリに読み込んだHTMLを表示する
      this->SetPage(htmlSource);
      // スクロールのフラグ
@@ -62,8 +105,7 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
 /**
  * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
  */
-const wxString ThreadContentWindow::GetConvertedDatFile(
-     const wxString& threadContentPath) {
+const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadContentPath) {
 
      // wxStringにバッファするサイズを計測する
      size_t fileSize = JaneCloneUtil::GetFileSize(threadContentPath);

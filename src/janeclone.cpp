@@ -62,6 +62,7 @@ EVT_MENU(ID_FontDialogBoardTree, JaneClone::FontDialogBoardTree)
 EVT_MENU(ID_FontDialogLogWindow, JaneClone::FontDialogLogWindow)
 EVT_MENU(ID_FontDialogBoardNotebook, JaneClone::FontDialogBoardNotebook)
 EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
+EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
 
 // 動的に項目を追加するメニューでのイベント
 EVT_MENU_OPEN(JaneClone::OnMenuOpen)
@@ -2134,7 +2135,30 @@ void JaneClone::FontDialogThreadNotebook(wxCommandEvent& event) {
  * スレッド内で使用するフォント設定を呼び出す
  */
 void JaneClone::FontDialogThreadContents(wxCommandEvent& event) {
-     SetFontDialog(ID_FontDialogThreadContents);
+     
+     wxFontData data;
+     wxFont font;
+     wxColour canvasTextColour;
+
+     data.SetInitialFont(font);
+     data.SetColour(canvasTextColour);
+      
+     wxFontDialog dialog((wxWindow*)this, data);
+     if (dialog.ShowModal() == wxID_OK) {
+	  // フォント設定用データを用意する
+	  wxFontData retData = dialog.GetFontData();
+	  font = retData.GetChosenFont();
+     }
+
+     // ex) Osaka
+     wxString faceName = font.GetFaceName();
+     config->Write(wxT("HTML.Font"), faceName);
+     // ex) 10
+     wxString pointSize = wxString::Format(_("%d"), font.GetPointSize());
+     config->Write(wxT("HTML.PointSize"), pointSize);
+     // 設定を反映するため再起動させる
+     this->pid = wxGetProcessId();
+     Close(true);
 }
 /**
  * フォント設定処理の本体
@@ -2174,7 +2198,6 @@ void JaneClone::SetFontDialog(const int enumType) {
 	  case ID_FontDialogThreadNotebook:
 	       wannaChange = THREAD_NOTEBOOK;
 	       break;
-	       
 	  }
 
 	  for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) {

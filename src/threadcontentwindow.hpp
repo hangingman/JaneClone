@@ -23,6 +23,7 @@
 #define THREADCONTENTWINDOW_HPP_
 
 #include <wx/html/htmlwin.h>
+#include <wx/html/htmldefs.h>
 #include <wx/event.h>
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
