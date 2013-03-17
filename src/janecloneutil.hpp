@@ -27,6 +27,7 @@
 #include <iostream>
 #include <fstream>
 #include <iterator>
+#include <stdexcept>
 #include <wx/wx.h>
 #include <wx/textfile.h>
 #include <wx/file.h>
@@ -97,6 +98,14 @@ public:
       * UUIDを生成する
       */
      static wxString GenerateUUIDString();
+     /**
+      * スレッドの勢い値を計算する
+      * 勢い = 書き込み数 / スレが立ってからの秒数 * 86400
+      * @param  itemResponse レス数
+      * @param  itemOid      スレがたった時間を表すUNIX Time
+      * @return momentum     勢い
+      */
+     static wxString CalcThreadMomentum(wxString& itemResponse, wxString& itemOid);
 
 private:
 

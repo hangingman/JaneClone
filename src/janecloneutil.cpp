@@ -387,4 +387,37 @@ bool JaneCloneUtil::SubstringURI(wxString uri, PartOfURI* partOfUri) {
 wxString JaneCloneUtil::GenerateUUIDString() {
      return wxUUID::GetUUID();
 }
+/**
+ * スレッドの勢い値を計算する
+ * 勢い＝書き込み数÷（スレが立ってからの秒数÷86400）
+ * @param itemResponse レス数
+ * @param itemOid      スレがたった時間を表すUNIX Time
+ * @return momentum    勢い
+ */
+wxString JaneCloneUtil::CalcThreadMomentum(wxString& itemResponse, wxString& itemOid) {
+
+     unsigned long response;
+     unsigned long oid;
+     unsigned long now;
+     itemResponse.ToULong(&response);
+     itemOid.ToULong(&oid);
+     now = ::wxGetUTCTime();
+
+     // レス数が1の場合勢い値は1
+     if (response == 1) return wxT("1");
+
+     // 勢い値の計算
+     try {
+	  double elapsed = now - oid;
+	  double momentum = response / elapsed * 86400;
+	  return wxString::Format(wxT("%.1f"), momentum);
+
+     } catch (std::range_error& e) {
+	  return wxT("std::range_error");
+     } catch (std::overflow_error& e) {
+	  return wxT("std::overflow_error");
+     } catch (std::underflow_error& e) {
+	  return wxT("std::underflow_error");
+     }
+}
 

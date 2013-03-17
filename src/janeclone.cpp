@@ -145,6 +145,9 @@ wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 
      // ユーザーが前回までに見ていた板一覧タブとスレッド一覧タブをセットする
      SetPreviousUserLookedTab();
+     boardNoteBook->Update();
+     threadNoteBook->Update();
+
      SetStatusText(wxT(" 完了"));
      *m_logCtrl << wxT("(ヽ´ん`)…レイアウト設定終わりです…\n");
 }
@@ -902,7 +905,6 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
      // ノートブックの選択処理
      boardNoteBook->SetSelection(selectedPage);
      boardNoteBook->Thaw();
-
      m_mgr.Update();
 }
 /**

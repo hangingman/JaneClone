@@ -84,7 +84,7 @@ wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
 	  // 増レス
 	  itemIncreaseResponseNumber = wxEmptyString;
 	  // 勢い
-	  itemMomentum = wxEmptyString;
+	  itemMomentum = JaneCloneUtil::CalcThreadMomentum(itemResponse, itemOid);
 	  // 最終取得
 	  itemLastUpdate = wxEmptyString;
 
@@ -196,7 +196,7 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 	  // 増レス
 	  itemIncreaseResponseNumber = wxEmptyString;
 	  // 勢い
-	  itemMomentum = wxEmptyString;
+	  itemMomentum = JaneCloneUtil::CalcThreadMomentum(itemResponse, itemOid);
 	  // 最終取得
 	  itemLastUpdate = wxEmptyString;
 
@@ -294,7 +294,7 @@ VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const 
 	  // 増レス
 	  itemIncreaseResponseNumber = wxEmptyString;
 	  // 勢い
-	  itemMomentum = wxEmptyString;
+	  itemMomentum = JaneCloneUtil::CalcThreadMomentum(itemResponse, itemOid);
 	  // 最終取得
 	  itemLastUpdate = wxEmptyString;
 
