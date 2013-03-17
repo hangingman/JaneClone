@@ -29,6 +29,7 @@ enum {
         // janeclone.hpp
         ID_Quit = 1,                    // 終了
 	ID_Restart,      		// 再起動
+	ID_WindowMinimize,              // ウィンドウを最小化する
 	ID_GetBoardList,        	// 板一覧情報取得
 	ID_CheckLogDirectory,           // 保存されているログをスレッド一覧に表示する
 	ID_GetVersionInfo,              // バージョン情報
@@ -67,8 +68,10 @@ enum {
 	ID_URLWindowButton,             // URL入力ウィンドウのボタンを表すID
 	ID_UserLastClosedThreadMenuUp,  // ユーザーが最後に閉じたスレッドの情報を項目に補充する
 	ID_UserLastClosedBoardMenuUp,   // ユーザーが最後に閉じた板の情報を項目に補充する
+	ID_UserLookingTabsMenuUp,       // ユーザーが現在見ているスレタブ・板タブの情報を項目に補充する
 	ID_UserLastClosedThreadClick,   // ユーザーが最後に閉じたスレッドの情報をクリックした
 	ID_UserLastClosedBoardClick,    // ユーザーが最後に閉じた板の情報をクリックした
+	ID_UserLookingTabsMenuClick,    // ユーザーが現在見ているスレタブ・板タブの情報をメニューからクリックした
 	// responsewindow.hpp
 	ID_ResponseWindow,
 	ID_QuitResponseWindow,

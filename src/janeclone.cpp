@@ -64,8 +64,10 @@ EVT_MENU(ID_FontDialogBoardNotebook, JaneClone::FontDialogBoardNotebook)
 EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
 
 // 動的に項目を追加するメニューでのイベント
+EVT_MENU_OPEN(JaneClone::OnMenuOpen)
 EVT_UPDATE_UI(ID_UserLastClosedThreadMenuUp, JaneClone::UserLastClosedThreadMenuUp)
 EVT_UPDATE_UI(ID_UserLastClosedBoardMenuUp, JaneClone::UserLastClosedBoardMenuUp)
+EVT_UPDATE_UI(ID_UserLookingTabsMenuUp, JaneClone::UserLookingTabsMenuUp)
 
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
@@ -442,7 +444,7 @@ void JaneClone::SetJaneCloneManuBar() {
      /**
       * ウィンドウ部分
       */
-     wxMenu *menu8 = new wxMenu;
+     wxMenu* menu8 = new wxMenu;
      menu8->Append(wxID_ANY, wxT("閉じる"));
      menu8->AppendSeparator();
      menu8->Append(wxID_ANY, wxT("次のタブ"));
@@ -454,11 +456,12 @@ void JaneClone::SetJaneCloneManuBar() {
      menu8->Append(wxID_ANY, wxT("すべて元のサイズに戻す"));
      menu8->Append(wxID_ANY, wxT("すべて最大化"));
      menu8->AppendSeparator();
-     menu8->Append(wxID_ANY, wxT("最小化"));
+     menu8->Append(ID_WindowMinimize, wxT("最小化"));
      menu8->AppendSeparator();
-
-     // ！ここは開いているスレを動的に確保する！
-
+     this->lookingTB = new wxMenu();
+     lookingTB->Append(ID_UserLookingTabsMenuUp, wxT("現在開いている板とスレッド"), wxT("現在開いている板とスレッドを開きます"));
+     lookingTB->AppendSeparator();
+     menu8->AppendSubMenu(lookingTB, wxT("現在開いている板とスレッド"), wxT("現在開いている板とスレッドを開きます"));
      /**
       * ツール部分
       */
@@ -505,16 +508,27 @@ void JaneClone::SetJaneCloneManuBar() {
      menu10->Append(wxID_ANY, wxT("バグレポート"));
      menu10->Append(ID_GetVersionInfo, wxT("バージョン情報を開く"));
 
+     /** メニューバーにメニューをセットしてタイトルを付けておく */
      menuBar->Append(menu1, wxT("ファイル"));
+     menu1->SetTitle(wxT("ファイル"));
      menuBar->Append(menu2, wxT("表示"));
+     menu2->SetTitle(wxT("表示"));
      menuBar->Append(menu3, wxT("板覧"));
+     menu3->SetTitle(wxT("板覧"));
      menuBar->Append(menu4, wxT("スレ覧"));
+     menu4->SetTitle(wxT("スレ覧"));
      menuBar->Append(menu5, wxT("スレッド"));
+     menu5->SetTitle(wxT("スレッド"));
      menuBar->Append(menu6, wxT("お気に入り"));
+     menu6->SetTitle(wxT("お気に入り"));
      menuBar->Append(menu7, wxT("検索"));
+     menu7->SetTitle(wxT("検索"));
      menuBar->Append(menu8, wxT("ウィンドウ"));
+     menu8->SetTitle(wxT("ウィンドウ"));
      menuBar->Append(menu9, wxT("ツール"));
+     menu9->SetTitle(wxT("ツール"));
      menuBar->Append(menu10, wxT("ヘルプ"));
+     menu10->SetTitle(wxT("ヘルプ"));
 
      // Linuxではファイルごとクリップボードにコピーすることができない
 #ifndef __WXMSW__
@@ -2373,6 +2387,12 @@ void JaneClone::OnClickURLWindowButton(wxCommandEvent& event) {
      }
 }
 /**
+ * メニューアイテムが開かれた場合呼ばれるイベント
+ */
+void JaneClone::OnMenuOpen(wxMenuEvent& event) {
+     event.Skip();
+}
+/**
  * ユーザーが最近閉じたスレタブの情報をSQLiteから取得して設定する
  */
 void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
@@ -2424,5 +2444,40 @@ void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
      wxArrayString array = SQLiteAccessor::GetClosedBoardInfo();
      for (unsigned int i = 0; i < array.GetCount(); i++ ) {
 	  closeB->Append(ID_UserLastClosedBoardClick, array[i]);
+     }
+}
+/**
+ * ユーザーが現在開いているスレタブ、板タブの一覧を作成する
+ */
+void JaneClone::UserLookingTabsMenuUp(wxUpdateUIEvent& event) {
+     
+     // メニューアイテムを順次消していく
+     wxMenuItemList::Node* current_menuitem_node;
+     wxMenuItem* current_menuitem;
+     current_menuitem_node = lookingTB->GetMenuItems().GetLast();
+
+     while ( current_menuitem_node ) {
+	  current_menuitem = current_menuitem_node->GetData();
+	  if (!current_menuitem->IsSeparator()) {
+	       // menuの区切りでなければ削除する
+	       lookingTB->Delete( current_menuitem );
+	  } else {
+	       // そうでなければ削除は終わりなので脱出
+	       break;
+	  }
+	  current_menuitem_node = current_menuitem_node->GetPrevious();
+     }
+
+     // menu8に現在ユーザーが開いているタブの名前を追加する
+     wxArrayString array;
+
+     for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) {
+	  array.Add(boardNoteBook->GetPageText(i));
+     }
+     for (unsigned int i = 0; i < threadNoteBook->GetPageCount(); i++) {
+	  array.Add(threadNoteBook->GetPageText(i));
+     }
+     for (unsigned int i = 0; i < array.GetCount(); i++ ) {
+	  lookingTB->Append(ID_UserLookingTabsMenuClick, array[i]);
      }
 }

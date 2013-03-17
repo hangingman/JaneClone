@@ -42,8 +42,7 @@ wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
      datfile.Open();
 
      // スレッド一覧読み込み用正規表現を準備する
-     wxRegEx reThreadLine(_T("([[:digit:]]+).dat<>(.+)\\(([[:digit:]]{1,4})\\)"),
-			  wxRE_ADVANCED + wxRE_ICASE);
+     wxRegEx reThreadLine(_T("([[:digit:]]+).dat<>(.+)\\(([[:digit:]]{1,4})\\)"), wxRE_ADVANCED + wxRE_ICASE);
      // スレッドに番号をつける
      int loopNumber = 1;
 
@@ -104,13 +103,13 @@ wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
      // データを挿入
      SetItemCount(m_vBoardList.size());
 
-     InsertColumn(COL_NUM, wxT("番号"));
+     InsertColumn(COL_NUM, wxT("番号"), wxLIST_FORMAT_RIGHT);
      InsertColumn(COL_TITLE, wxT("タイトル"));
-     InsertColumn(COL_RESP, wxT("レス"));
-     InsertColumn(COL_CACHEDRES, wxT("取得"));
-     InsertColumn(COL_NEWRESP, wxT("新着"));
-     InsertColumn(COL_INCRESP, wxT("増レス"));
-     InsertColumn(COL_MOMENTUM, wxT("勢い"));
+     InsertColumn(COL_RESP, wxT("レス"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_CACHEDRES, wxT("取得"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_NEWRESP, wxT("新着"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_INCRESP, wxT("増レス"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_MOMENTUM, wxT("勢い"), wxLIST_FORMAT_RIGHT);
      InsertColumn(COL_LASTUP, wxT("最終取得"));
      InsertColumn(COL_SINCE, wxT("SINCE"));
      InsertColumn(COL_OID, wxT("固有番号"));
@@ -216,13 +215,13 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
      // データを挿入
      SetItemCount(m_vBoardList.size());
 
-     InsertColumn(COL_NUM, wxT("番号"));
+     InsertColumn(COL_NUM, wxT("番号"), wxLIST_FORMAT_RIGHT);
      InsertColumn(COL_TITLE, wxT("タイトル"));
-     InsertColumn(COL_RESP, wxT("レス"));
-     InsertColumn(COL_CACHEDRES, wxT("取得"));
-     InsertColumn(COL_NEWRESP, wxT("新着"));
-     InsertColumn(COL_INCRESP, wxT("増レス"));
-     InsertColumn(COL_MOMENTUM, wxT("勢い"));
+     InsertColumn(COL_RESP, wxT("レス"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_CACHEDRES, wxT("取得"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_NEWRESP, wxT("新着"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_INCRESP, wxT("増レス"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_MOMENTUM, wxT("勢い"), wxLIST_FORMAT_RIGHT);
      InsertColumn(COL_LASTUP, wxT("最終取得"));
      InsertColumn(COL_SINCE, wxT("SINCE"));
      InsertColumn(COL_OID, wxT("固有番号"));
@@ -314,13 +313,13 @@ VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const 
      // データを挿入
      SetItemCount(m_vBoardList.size());
 
-     InsertColumn(COL_NUM, wxT("番号"));
+     InsertColumn(COL_NUM, wxT("番号"), wxLIST_FORMAT_RIGHT);
      InsertColumn(COL_TITLE, wxT("タイトル"));
-     InsertColumn(COL_RESP, wxT("レス"));
-     InsertColumn(COL_CACHEDRES, wxT("取得"));
-     InsertColumn(COL_NEWRESP, wxT("新着"));
-     InsertColumn(COL_INCRESP, wxT("増レス"));
-     InsertColumn(COL_MOMENTUM, wxT("勢い"));
+     InsertColumn(COL_RESP, wxT("レス"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_CACHEDRES, wxT("取得"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_NEWRESP, wxT("新着"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_INCRESP, wxT("増レス"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_MOMENTUM, wxT("勢い"), wxLIST_FORMAT_RIGHT);
      InsertColumn(COL_LASTUP, wxT("最終取得"));
      InsertColumn(COL_SINCE, wxT("SINCE"));
      InsertColumn(COL_OID, wxT("固有番号"));

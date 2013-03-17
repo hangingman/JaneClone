@@ -404,7 +404,7 @@ wxString JaneCloneUtil::CalcThreadMomentum(wxString& itemResponse, wxString& ite
      now = ::wxGetUTCTime();
 
      // レス数が1の場合勢い値は1
-     if (response == 1) return wxT("1");
+     if (response == 1) return wxT("1.0");
 
      // 勢い値の計算
      try {

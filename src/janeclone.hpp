@@ -164,8 +164,11 @@ private:
      // 動的に要素を確保するメニュー
      wxMenu* closeT;
      wxMenu* closeB;
+     wxMenu* lookingTB;
+     void OnMenuOpen(wxMenuEvent& event);
      void UserLastClosedThreadMenuUp(wxUpdateUIEvent& event);
      void UserLastClosedBoardMenuUp(wxUpdateUIEvent& event);
+     void UserLookingTabsMenuUp(wxUpdateUIEvent& event);
 
      // スレッド一覧タブ処理
      void OneBoardTabClose(wxCommandEvent& event);
