@@ -62,41 +62,12 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
      // フォント設定を読み出し
      wxString fontName;
      config->Read(wxT("HTML.Font"), &fontName, wxEmptyString);
-     int pointSize, realSize;
-     config->Read(wxT("HTML.PointSize"), &pointSize, 0);
+     int p, realSize;
+     config->Read(wxT("HTML.PointSize"), &p, 0);
      delete config;
-     
-#ifdef __WXMSW__ 
-     static int f_sizes[5][7] = 
-	  { 
-	       { 5,  6, 8, 9, 10, 12, 16}, 
-	       { 6,  7, 9, 10, 12, 14, 18}, 
-	       { 7,  8, 10, 12, 16, 22, 30}, 
-	       { 9, 10, 12, 14, 18, 20, 34}, 
-	       { 10, 12, 14, 16, 20, 24, 38} 
-	  }; 
-#elif defined(__WXMAC__) 
-     static int f_sizes[5][7] = 
-	  { 
-	       { 6,  7,  9, 12, 14, 16, 19}, 
-	       { 8,  9, 12, 14, 16, 19, 22}, 
-	       { 9, 12, 14, 18, 24, 30, 36}, 
-	       {14, 16, 18, 24, 32, 38, 45}, 
-	       {16, 20, 24, 32, 38, 45, 50} 
-	  }; 
-#else 
-     static int f_sizes[5][7] = 
-	  { 
-	       { 6,  7,  9, 12, 14, 16, 19}, 
-	       { 8,  9, 12, 14, 16, 19, 22}, 
-	       {10, 12, 14, 16, 19, 24, 32}, 
-	       {14, 16, 18, 24, 32, 38, 45}, 
-	       {16, 20, 24, 32, 38, 45, 50} 
-	  }; 
-#endif
-
-     this->SetFonts(fontName, wxEmptyString, f_sizes[3]);
-
+     // HTMLソース中のテキストの種類とサイズを決定する
+     static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };     
+     this->SetFonts(fontName, wxEmptyString, f_size);
      // メモリに読み込んだHTMLを表示する
      this->SetPage(htmlSource);
      // スクロールのフラグ
