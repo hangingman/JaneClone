@@ -1619,7 +1619,13 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
 #endif
      delete config;
 
-     imageFilePath += wxT("\\test.jpg");
+     // 画像ファイルパスを決定する
+     wxString uuid = JaneCloneUtil::GenerateUUIDString();
+     uuid.Replace(wxT("{"), wxT(""), true);
+     uuid.Replace(wxT("}"), wxT(""), true);
+
+     wxString ext  = wxT(".") + result->ext;
+     imageFilePath = imageFilePath + wxFileSeparator + uuid + ext;
 
      /** Content-typeの判別 */
      wxString contentType = JaneCloneUtil::DetermineContentType(href);
@@ -1652,9 +1658,6 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
 	  } else {
 	       unsigned char buffer[1024];
 	       int byteRead;
-
-	       // ヘッダを書きだす
-	       //WriteHeaderFile(http, headerPath);
 
 	       // ストリームを受け取るループ部分
 	       while (!stream->Eof()) {

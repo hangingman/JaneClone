@@ -83,14 +83,12 @@ wxString wxUUID::ToString() const
 wxString wxUUID::GetUUID()
 {
      wxUUID uuid;
-
      return uuid.ToString();
 }
 
 wxUUID wxUUID::ParseUUID(const wxString& szUUID)
 {
      wxUUID uuid;
-
      return uuid;
 }
 
@@ -112,11 +110,8 @@ void wxUUID::GetTimeStamp(wxLongLong* pLLTime)
 void wxUUID::GetIEEENode(unsigned char pIEEENode[6])
 {
      char seed[16] = "\0";
-
      GetRandomInfo(seed);
-
      seed[0] |= 0x80;
-
      memcpy(pIEEENode, seed, sizeof(pIEEENode));
 }
 
@@ -129,13 +124,14 @@ void wxUUID::GetRandomInfo(char pSeed[16])
      GetTimeStamp(&llTime);
 
      wxString	szToHash = szSystemInfo + llTime.ToString() + szHostName;
-     wxString	szHash = wxMD5::GetDigestStatic(szToHash);
-     const char* szHashChar = szHash.mb_str();
-     
+     wxString	szHash = wxMD5::GetDigest(szToHash);
+
+     char szHashChar[16];
+     strcpy( szHashChar, (const char*)szHash.mb_str(wxConvUTF8) );
+
      for(unsigned int i = 0; i < 16; i++)
      {
-	  pSeed[i] = *szHashChar;
-	  ++szHashChar;
+	  pSeed[i] = szHashChar[i];
      }
 }
 

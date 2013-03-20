@@ -89,10 +89,15 @@ EVT_AUINOTEBOOK_PAGE_CHANGING(ID_ThreadNoteBook, JaneClone::OnChangeThreadTab)
 EVT_AUINOTEBOOK_PAGE_CHANGED(ID_BoardNoteBook, JaneClone::OnChangedBoardTab)
 EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ThreadNoteBook, JaneClone::OnChangedThreadTab)
 
+// フォーカスの監視
+EVT_SET_FOCUS(JaneClone::OnSetFocus)
+
 // マウスモーションの監視
 //EVT_LEFT_DOWN(JaneClone::OnMouseDown)
 //EVT_LEFT_UP(JaneClone::OnMouseUp)
 //EVT_MOTION(JaneClone::OnMove)
+EVT_ENTER_WINDOW(JaneClone::MotionEnterWindow)
+EVT_LEAVE_WINDOW(JaneClone::MotionLeaveWindow)
 
 // スレッド一覧リストでのクリック
 EVT_LIST_ITEM_SELECTED(wxID_ANY, JaneClone::OnLeftClickAtListCtrl)
@@ -446,7 +451,7 @@ void JaneClone::SetJaneCloneManuBar() {
       * ウィンドウ部分
       */
      wxMenu* menu8 = new wxMenu;
-     menu8->Append(wxID_ANY, wxT("閉じる"));
+     menu8->Append(ID_UserLookingTabsControl, wxT("閉じる"));
      menu8->AppendSeparator();
      menu8->Append(wxID_ANY, wxT("次のタブ"));
      menu8->Append(wxID_ANY, wxT("前のタブ"));
@@ -1735,6 +1740,7 @@ void JaneClone::SetBoardList() {
  * バージョン情報が書かれたダイアログを表示する
  */
 void JaneClone::OnVersionInfo(wxCommandEvent&) {
+
      wxAboutDialogInfo info;
      info.SetName(wxT("Jane Clone - ２ちゃんねるビューア"));
      info.SetVersion(wxT("0.6.0"));
@@ -2503,4 +2509,22 @@ void JaneClone::UserLookingTabsMenuUp(wxUpdateUIEvent& event) {
      for (unsigned int i = 0; i < array.GetCount(); i++ ) {
 	  lookingTB->Append(ID_UserLookingTabsMenuClick, array[i]);
      }
+}
+/**
+ * ユーザーが現在フォーカスしているウィンドウの操作を行う
+ */
+void JaneClone::UserLookingTabsControl(wxUpdateUIEvent& event) {
+     event.Skip();
+}
+/**
+ * フォーカスを変更した際に反応するイベント
+ */
+void JaneClone::OnSetFocus(wxFocusEvent& event) {
+     event.Skip();
+}
+void JaneClone::MotionEnterWindow(wxMouseEvent& event) {
+     event.Skip();
+}
+void JaneClone::MotionLeaveWindow(wxMouseEvent& event) {
+     event.Skip();
 }

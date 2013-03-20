@@ -20,8 +20,15 @@
  */
 
 #include "virtualboardlistctrl.hpp"
+#include "janeclone.hpp"
 
 IMPLEMENT_DYNAMIC_CLASS(VirtualBoardListCtrl, wxListCtrl)
+
+BEGIN_EVENT_TABLE(VirtualBoardListCtrl, wxListCtrl)
+   EVT_ENTER_WINDOW(VirtualBoardListCtrl::MotionEnterWindow)
+   EVT_LEAVE_WINDOW(VirtualBoardListCtrl::MotionLeaveWindow)
+   EVT_SET_FOCUS(VirtualBoardListCtrl::SetFocus)
+END_EVENT_TABLE()
 
 /**
  * コンストラクタ：配置するwindowと板名を指定
@@ -502,3 +509,24 @@ wxString VirtualBoardListCtrl::convCharacterReference(wxString& inputString) {
      buffer.Replace(_T("&apos;"), _T("'"), true);
      return buffer;
 }
+void VirtualBoardListCtrl::MotionEnterWindow(wxMouseEvent& event) {
+
+     SetFocus((wxFocusEvent&) event);
+     //wxMessageBox(wxT("virtual boardlist enter"))
+     //JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(this->GetGrandParent());
+     //wxMessageBox(wxJaneClone->boardNoteBook->SetSelection(0));
+     //wxJaneClone->boardNoteBook->SetSelection(0);
+     //wxAuiNotebook* note = (JaneClone->boardNoteBook)gParent->boardNoteBook;
+     //wxMessageBox(gParent->GetLabel());
+     //wxAuiNotebook* boardNoteBook(JaneClone->boardNoteBook);
+     //boardNoteBook->SetSelection(0);
+     event.Skip();
+}
+void VirtualBoardListCtrl::MotionLeaveWindow(wxMouseEvent& event) {
+     //wxMessageBox(wxT("virtual boardlist leave"));
+     event.Skip();
+}
+void VirtualBoardListCtrl::SetFocus(wxFocusEvent& event) {
+     event.Skip();
+}
+

@@ -286,6 +286,10 @@ private:
       */
      static wxString convCharacterReference(wxString& inputString);
 
+     void MotionEnterWindow(wxMouseEvent& event);
+     void MotionLeaveWindow(wxMouseEvent& event);
+     void SetFocus(wxFocusEvent& event);
+
      bool f_number;
      // タイトル
      bool f_title;
@@ -309,6 +313,7 @@ private:
      bool f_boardName;
 
 
+     DECLARE_EVENT_TABLE()
      DECLARE_DYNAMIC_CLASS(VirtualBoardListCtrl)
 };
 

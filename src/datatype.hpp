@@ -119,9 +119,10 @@ typedef struct {
 
 // 画像をダウンロードした後の結果
 typedef struct {
-     wxString imagePath;
-     wxString imageURL;
-     bool     result;
+     wxString imagePath; // 画像ファイルのパス
+     wxString imageURL;  // 画像ファイルのURL
+     wxString ext;       // 画像ファイルの拡張子
+     bool     result;    // 取得の成否
 } DownloadImageResult;
 
 // URIを分解した時の各要素

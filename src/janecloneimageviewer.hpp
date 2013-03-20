@@ -24,9 +24,10 @@
 #define JANECLONEIMAGEVIEWER_HPP_
 
 #include <wx/wx.h>
+#include "datatype.hpp"
 
 /**
- * 
+ * 画像のサムネイルと本体の表示を行うウィンドウ
  */
 class JaneCloneImageViewer : public wxDialog {
 
@@ -34,10 +35,9 @@ public:
 
      /// constructor
      JaneCloneImageViewer(wxWindow* parent, wxString& title);
-     // static JaneCloneImageViewer* GetInstance() {
-     // 	  static JaneCloneImageViewer instance;
-     // 	  return &instance;
-     // }
+     
+     // 画像ファイルの情報を設定する
+     void SetImageFile(DownloadImageResult* result);
 
 private:
      /// Default constructor
@@ -47,7 +47,7 @@ private:
    
      void set_properties(const wxString& title);
      void do_layout();
-  
+
      /// Copy constructor
      JaneCloneImageViewer(const JaneCloneImageViewer& rhs);
      /// Assignment operator

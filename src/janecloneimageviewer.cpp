@@ -81,5 +81,9 @@ JaneCloneImageViewer& JaneCloneImageViewer::operator=(const JaneCloneImageViewer
     }
     return *this;
 }
+/**
+ *  画像ファイルの情報を設定する
+ */
+void JaneCloneImageViewer::SetImageFile(DownloadImageResult* result) {
 
-
+}

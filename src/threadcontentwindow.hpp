@@ -92,7 +92,7 @@ private:
      // linkを左クリックした時に起こるイベント
      void OnLeftClickHtmlWindow(wxHtmlLinkEvent& event);
      // 画像ビューアの状態を確認し、設定する
-     void SetJaneCloneImageViewer(wxWindow* window, const wxString& href);
+     void SetJaneCloneImageViewer(const wxString& href, const wxString& ext);
 
      // リサイズ時のイベント
      void OnSize(wxSizeEvent& event);

@@ -38,7 +38,7 @@ class wxMD5 {
   const wxString GetDigest();
 
   // Static Methods
-  static const wxString GetDigestStatic(const wxString& szText);
+  static const wxString GetDigest(const wxString& szText);
 
  protected:
   bool		m_bCalculatedDigest;

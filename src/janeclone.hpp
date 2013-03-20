@@ -106,9 +106,13 @@ public:
 			  NameURLHash);  // name of the class
      // HashMapの本体
      NameURLHash retainHash;
+     // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
+     wxAuiNotebook* boardNoteBook;
+     // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
+     wxAuiNotebook* threadNoteBook;
 
      // JaneClone内部のイメージビューアのインスタンス
-     static JaneCloneImageViewer* imageViewer;
+     JaneCloneImageViewer* imageViewer;
      // 再起動処理のためのPID
      unsigned long pid;
 
@@ -137,6 +141,7 @@ private:
      void UserLastClosedThreadMenuUp(wxUpdateUIEvent& event);
      void UserLastClosedBoardMenuUp(wxUpdateUIEvent& event);
      void UserLookingTabsMenuUp(wxUpdateUIEvent& event);
+     void UserLookingTabsControl(wxUpdateUIEvent& event);
 
      // スレッド一覧タブ処理
      void OneBoardTabClose(wxCommandEvent& event);
@@ -165,7 +170,7 @@ private:
      void SaveDatFileToClipBoard(wxCommandEvent& event);
      void DeleteDatFile(wxCommandEvent& event);
      void ReloadThisThread(wxCommandEvent& event);
-
+     // いろいろなイベント処理
      void OnCloseWindow(wxCloseEvent& event);
      void OnLeftClickAtListCtrl(wxListEvent& event);
      void OnLeftClickAtListCtrlCol(wxListEvent& event);
@@ -179,11 +184,11 @@ private:
      void OnAboutCloseBoardNoteBook(wxAuiNotebookEvent& event);
      void OnCellHover(wxHtmlCellEvent& event);
      void OnClickURLWindowButton(wxCommandEvent& event);
+     void OnSetFocus(wxFocusEvent& event);
 
      // マウスモーション
-     // void OnMouseDown(wxMouseEvent& event);
-     // void OnMouseUp(wxMouseEvent& event);
-     // void OnMove(wxMouseEvent& event);
+     void MotionEnterWindow(wxMouseEvent& event);
+     void MotionLeaveWindow(wxMouseEvent& event);
 
      // 各種GUI上の設定
      void SetJaneCloneManuBar();
@@ -236,8 +241,6 @@ private:
      /**
       * 右上のオブジェクトとメソッド
       */
-     // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-     wxAuiNotebook* boardNoteBook;
      // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
      void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 				 wxString& boardNameAscii);
@@ -268,8 +271,7 @@ private:
      /**
       * 右下のオブジェクトとメソッド
       */
-     // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-     wxAuiNotebook* threadNoteBook;
+
      // スレッド一覧をクリックすると、それをスレ表示画面に反映するメソッド
      void SetThreadContentToNoteBook(const wxString&, const wxString&,
 				     const wxString&);

@@ -1,4 +1,4 @@
-/* JaneClone - a text board site viewer for 2ch
+/**JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or

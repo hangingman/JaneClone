@@ -20,6 +20,7 @@
  */
 
 #include "threadcontentwindow.hpp"
+#include "janeclone.hpp"
 
 IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
 
@@ -424,26 +425,34 @@ void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
 	  // 正規表現のコンパイルにエラーがなければマッチさせる
 	  if (regexImage.Matches(href)) {
 	       // 画像ファイルをクリックしたのでダウンロードする
-	       this->SetJaneCloneImageViewer(this, href);
+	       const wxString ext = regexImage.GetMatch(href, 3);
+	       this->SetJaneCloneImageViewer(href, ext);
 	  }
      }
 }
 /*
  * 画像ビューアの状態を確認し、設定する
  */
-void ThreadContentWindow::SetJaneCloneImageViewer(wxWindow* window, const wxString& href) {
+void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wxString& ext) {
 
      // 画像をダウンロードする
      SocketCommunication* sock = new SocketCommunication();
      DownloadImageResult* result = new DownloadImageResult;
+     result->ext = ext;
      sock->DownloadImageFile(href, result);
      delete sock;
 
      // 画像ビューアに表示させる
-     wxString title = wxT("1/1");
-     JaneCloneImageViewer* imageViewer = new JaneCloneImageViewer(window, title);
-     imageViewer->Show(true);
+     JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(this->GetGrandParent());
+     JaneCloneImageViewer* imageViewer = wxJaneClone->imageViewer;
+     wxString title = wxT("test");
 
+     if (!imageViewer) {
+	  imageViewer = new JaneCloneImageViewer((wxWindow*)wxJaneClone, title);
+     }
+     
+     imageViewer->SetImageFile(result);
+     imageViewer->Show(true);
      delete result;
 }
 

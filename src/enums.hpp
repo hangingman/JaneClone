@@ -69,6 +69,7 @@ enum {
 	ID_UserLastClosedThreadMenuUp,  // ユーザーが最後に閉じたスレッドの情報を項目に補充する
 	ID_UserLastClosedBoardMenuUp,   // ユーザーが最後に閉じた板の情報を項目に補充する
 	ID_UserLookingTabsMenuUp,       // ユーザーが現在見ているスレタブ・板タブの情報を項目に補充する
+	ID_UserLookingTabsControl,      // ユーザーが現在フォーカスしているウィンドウの操作を行う
 	ID_UserLastClosedThreadClick,   // ユーザーが最後に閉じたスレッドの情報をクリックした
 	ID_UserLastClosedBoardClick,    // ユーザーが最後に閉じた板の情報をクリックした
 	ID_UserLookingTabsMenuClick,    // ユーザーが現在見ているスレタブ・板タブの情報をメニューからクリックした

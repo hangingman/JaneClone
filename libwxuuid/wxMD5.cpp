@@ -75,13 +75,13 @@ const wxString wxMD5::GetDigest()
      {
 	  MD5_CTX md5Context;
 	  MD5Init(&md5Context);
-		
-	  // ! CAUTION !
+
 	  const char* szText = m_szText.ToAscii();
 	  MD5Update(&md5Context, (unsigned char*) szText, m_szText.Len());
 	  MD5Final(m_arrDigest, &md5Context);
 
 	  int j = 0;
+	  
 	  for(int i = 0; i < 16; i++)
 	  {
 	       sprintf((char*)&m_pszDigestString[j], "%02x", m_arrDigest[j]);
@@ -89,6 +89,12 @@ const wxString wxMD5::GetDigest()
 	  }
 
 	  const wxString szRetVal = m_pszDigestString;
+
+	  // wxString dump;
+	  // for (int k = 0; k < szRetVal.Len();k++) {
+	  //      dump += wxString::Format(wxT("%02x"), szRetVal[k]);
+	  // }
+	  // wxMessageBox(dump);
 
 	  return szRetVal;
      }
@@ -98,7 +104,7 @@ const wxString wxMD5::GetDigest()
 // Static Methods
 //////////////////////////////////////////////////////////////////////
 
-const wxString wxMD5::GetDigestStatic(const wxString& szText)
+const wxString wxMD5::GetDigest(const wxString& szText)
 {
      wxMD5 md5(szText);
      return md5.GetDigest();
