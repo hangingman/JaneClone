@@ -443,16 +443,7 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      delete sock;
 
      // 画像ビューアに表示させる
-     JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(this->GetGrandParent());
-     JaneCloneImageViewer* imageViewer = wxJaneClone->imageViewer;
-     wxString title = wxT("test");
-
-     if (!imageViewer) {
-	  imageViewer = new JaneCloneImageViewer((wxWindow*)wxJaneClone, title);
-     }
-     
-     imageViewer->SetImageFile(result);
-     imageViewer->Show(true);
+     JaneClone::GetJaneCloneImageViewer()->Show(true);
      delete result;
 }
 

@@ -111,6 +111,9 @@ EVT_BUTTON(ID_URLWindowButton, JaneClone::OnClickURLWindowButton)
 
 END_EVENT_TABLE()
 
+// 画像ビューアのインスタンスを初期化
+JaneCloneImageViewer* JaneClone::imageViewer = NULL;
+
 JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
 wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 {
@@ -614,6 +617,11 @@ void JaneClone::SetProperties() {
      // 板名のツリーコントロールをクリックした場合表示されるwxAuiNoteBook
      threadNoteBook = new wxAuiNotebook(this, ID_ThreadNoteBook, wxPoint(client_size.x, client_size.y), 
 					wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON);
+
+     // 画像ビューアのインスタンスを作る
+     imageViewer = new JaneCloneImageViewer(this, (wxString&)wxT(""));
+     // 通常は隠しておく
+     imageViewer->Show(false);
 }
 /**
  * DoLayout
@@ -924,6 +932,9 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
      boardNoteBook->SetSelection(selectedPage);
      boardNoteBook->Thaw();
      m_mgr.Update();
+     // ノートブックの更新処理
+     boardNoteBook->Update();
+     threadNoteBook->Update();
 }
 /**
  * ノートブックに、スレッド一覧情報の更新を反映するメソッド
@@ -977,6 +988,9 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	  boardNoteBook->Thaw();
 
 	  m_mgr.Update();
+	  // ノートブックの更新処理
+	  vbListCtrl->Update();
+	  boardNoteBook->Update();
      }
 }
 /**

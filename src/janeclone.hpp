@@ -112,7 +112,11 @@ public:
      wxAuiNotebook* threadNoteBook;
 
      // JaneClone内部のイメージビューアのインスタンス
-     JaneCloneImageViewer* imageViewer;
+     static JaneCloneImageViewer* imageViewer;
+     static JaneCloneImageViewer* GetJaneCloneImageViewer () {
+	  return imageViewer;
+     };
+     
      // 再起動処理のためのPID
      unsigned long pid;
 
