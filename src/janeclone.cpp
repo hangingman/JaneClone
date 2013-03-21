@@ -607,15 +607,13 @@ void JaneClone::SetProperties() {
      // ノートブックのサイズ調整
      wxSize client_size = GetClientSize();
 
-     // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-     boardNoteBook = new wxAuiNotebook(this, ID_BoardNoteBook, wxPoint(
-					    client_size.x, client_size.y), wxDefaultSize,
-				       wxAUI_NB_DEFAULT_STYLE);
-
-     // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
-     threadNoteBook = new wxAuiNotebook(this, ID_ThreadNoteBook, wxPoint(
-					     client_size.x, client_size.y), wxDefaultSize,
-					wxAUI_NB_DEFAULT_STYLE);
+     // 板名のツリーコントロールをクリックした場合表示されるwxAuiNoteBook
+     boardNoteBook = new wxAuiNotebook(this, ID_BoardNoteBook, wxPoint(client_size.x, client_size.y), 
+				       wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON);
+     
+     // 板名のツリーコントロールをクリックした場合表示されるwxAuiNoteBook
+     threadNoteBook = new wxAuiNotebook(this, ID_ThreadNoteBook, wxPoint(client_size.x, client_size.y), 
+					wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON);
 }
 /**
  * DoLayout
