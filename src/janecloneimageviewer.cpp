@@ -68,7 +68,7 @@ JaneCloneImageViewer::JaneCloneImageViewer(wxWindow* parent, int id, const wxStr
      wxSize client_size = GetClientSize();
      // 画像を表示させるパネルの宣言
      thumbnailNoteBook = new wxAuiNotebook(this, ID_ThumbnailNoteBook, wxPoint(client_size.x, client_size.y), 
-					   wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON);
+					   wxDefaultSize, wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_WINDOWLIST_BUTTON);
      // ステータスバー設置
      CreateStatusBar(3);
 
@@ -167,7 +167,10 @@ void JaneCloneImageViewer::SetImageFile(DownloadImageResult* result) {
      }
      // 読み取った画像をパネルに載せる
      wxImagePanel* panel = new wxImagePanel(thumbnailNoteBook, result->imagePath, type);
-     thumbnailNoteBook->AddPage(panel, wxT("画像パネル"), true);
+
+     // サムネイルを作る
+     wxBitmap thumbnail = wxBitmap(image.Scale(64, 64));
+     thumbnailNoteBook->AddPage(panel, wxEmptyString, false, thumbnail);
      result->result = true;
 
      thumbnailNoteBook->Thaw();
