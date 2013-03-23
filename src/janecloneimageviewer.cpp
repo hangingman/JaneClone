@@ -29,7 +29,17 @@
 
 BEGIN_EVENT_TABLE(JaneCloneImageViewer, wxFrame)
    EVT_CLOSE(JaneCloneImageViewer::OnClose)
+   EVT_RIGHT_DOWN(JaneCloneImageViewer::OnRightClickImageViewer)
    EVT_MOUSEWHEEL(JaneCloneImageViewer::OnMouseWheel)
+
+   EVT_MENU(ID_OneThumbnailTabClose,JaneCloneImageViewer::OneThumbnailTabClose)
+   EVT_MENU(ID_AllThumbnailTabClose,JaneCloneImageViewer::AllThumbnailTabClose)
+   EVT_MENU(ID_AllLeftThumbnailTabClose,JaneCloneImageViewer::AllLeftThumbnailTabClose)
+   EVT_MENU(ID_AllRightThumbnailTabClose,JaneCloneImageViewer::AllRightThumbnailTabClose)
+   EVT_MENU(ID_SelectLeftThumbnailTab,JaneCloneImageViewer::SelectLeftThumbnailTab)
+   EVT_MENU(ID_SelectRightThumbnailTab,JaneCloneImageViewer::SelectRightThumbnailTab)
+   EVT_MENU(ID_OnOpenImageByBrowser,JaneCloneImageViewer::OnOpenImageByBrowser)
+   EVT_MENU(ID_HideThumbnailTab,JaneCloneImageViewer::HideThumbnailTab)
 END_EVENT_TABLE()
 
 /**
@@ -59,6 +69,8 @@ JaneCloneImageViewer::JaneCloneImageViewer(wxWindow* parent, int id, const wxStr
      // 画像を表示させるパネルの宣言
      thumbnailNoteBook = new wxAuiNotebook(this, ID_ThumbnailNoteBook, wxPoint(client_size.x, client_size.y), 
 					   wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON);
+     // ステータスバー設置
+     CreateStatusBar(3);
 
      set_properties(title);
      do_layout();
@@ -199,4 +211,129 @@ void JaneCloneImageViewer::OnMouseWheel(wxMouseEvent& event) {
      }
 
      event.Skip();
+}
+/**
+ * 画像ビューアで右クリックした場合の処理
+ */
+void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
+
+     wxMenu* tabs = new wxMenu();
+     tabs->Append(ID_OneThumbnailTabClose, wxT("このタブを閉じる"));
+     tabs->Append(wxID_ANY, wxT("エラーのタブを閉じる"));
+     tabs->AppendSeparator();
+     tabs->Append(wxID_ANY, wxT("このタブ以外を閉じる"));
+     tabs->Append(ID_AllThumbnailTabClose, wxT("すべてのタブを閉じる"));
+     tabs->Append(ID_AllLeftThumbnailTabClose, wxT("これより左を閉じる"));
+     tabs->Append(ID_AllRightThumbnailTabClose, wxT("これより右を閉じる"));
+     tabs->AppendSeparator();
+     //tabs->Append(wxID_ANY, wxT(""));
+     tabs->Append(wxID_ANY, wxT("マーク/解除"));
+     tabs->Append(wxID_ANY, wxT("すべてマーク"));
+     tabs->Append(wxID_ANY, wxT("すべてマーク解除"));
+     tabs->AppendSeparator();
+     tabs->Append(wxID_ANY, wxT("名前を付けて保存"));
+     tabs->Append(wxID_ANY, wxT("全て保存"));
+     tabs->AppendSeparator();
+     tabs->Append(wxID_ANY, wxT("再読み込み"));
+     tabs->Append(ID_OnOpenImageByBrowser, wxT("ブラウザで開く"));
+     tabs->Append(wxID_ANY, wxT("外部ビューアで開く"));
+     tabs->Append(wxID_ANY, wxT("Windowsの関連付けで開く"));
+     tabs->Append(wxID_ANY, wxT("参照元スレッドを開く"));
+     tabs->Append(wxID_ANY, wxT("URLをコピー"));
+     tabs->AppendSeparator();
+     //tabs->Append(wxID_ANY, wxT("外部ビューアで開く"));
+     tabs->AppendSeparator();
+     tabs->Append(wxID_ANY, wxT("左回転"));
+     tabs->Append(wxID_ANY, wxT("右回転"));
+     tabs->AppendSeparator();
+     tabs->Append(wxID_ANY, wxT("ズームイン"));
+     tabs->Append(wxID_ANY, wxT("ズームアウト"));
+     tabs->Append(wxID_ANY, wxT("ズーム変更"));
+     tabs->Append(wxID_ANY, wxT("元のサイズに戻す"));
+     tabs->AppendSeparator();
+     tabs->Append(wxID_ANY, wxT("ウィンドウに合わせて表示"));
+     //tabs->Append(wxID_ANY, wxT("ズームアウト"));
+     tabs->Append(wxID_ANY, wxT("ビューア設定"));
+     tabs->AppendSeparator();
+     tabs->Append(ID_SelectRightThumbnailTab, wxT("次のタブ"));
+     tabs->Append(ID_SelectLeftThumbnailTab, wxT("前のタブ"));
+     tabs->AppendSeparator();
+     tabs->Append(ID_HideThumbnailTab, wxT("ビューアを隠す"));
+
+     // ポップアップメニューを表示させる
+     PopupMenu(tabs);
+}
+/**
+ * 画像タブをひとつ閉じる
+ */
+void JaneCloneImageViewer::OneThumbnailTabClose(wxCommandEvent& event) {
+
+     // アクティブなタブを選択して閉じる
+     thumbnailNoteBook->DeletePage(thumbnailNoteBook->GetSelection());
+}
+/**
+ * すべての画像タブを閉じる
+ */
+void JaneCloneImageViewer::AllThumbnailTabClose(wxCommandEvent& event) {
+
+     int pages = thumbnailNoteBook->GetPageCount();
+     for (int i=0;i<pages;i++) {
+	  thumbnailNoteBook->DeletePage(0);
+     }
+}
+/**
+ * これより左の画像タブをを閉じる
+ */
+void JaneCloneImageViewer::AllLeftThumbnailTabClose(wxCommandEvent& event) {
+
+     // タブの数を数える
+     size_t select = thumbnailNoteBook->GetSelection();
+
+     for (unsigned int i=0;i<select;i++) {
+	  thumbnailNoteBook->DeletePage(0);
+     }
+}
+/**
+ * これより右の画像タブを閉じる
+ */
+void JaneCloneImageViewer::AllRightThumbnailTabClose(wxCommandEvent& event) {
+
+     // タブの数を数える
+     size_t pages = thumbnailNoteBook->GetPageCount();
+     size_t select = thumbnailNoteBook->GetSelection();
+     for (unsigned int i=0;i<pages;i++) {
+	  if (i>select) {
+	       thumbnailNoteBook->DeletePage(select+1);
+	  }
+     }
+}
+/**
+ * 左の画像タブに移動
+ */
+void JaneCloneImageViewer::SelectLeftThumbnailTab(wxCommandEvent& event) {
+
+     const int current = thumbnailNoteBook->GetSelection();
+     // プラス値 ←
+     if (current != 0) thumbnailNoteBook->SetSelection(current - 1);
+}
+/**
+ * 右の画像タブに移動
+ */
+void JaneCloneImageViewer::SelectRightThumbnailTab(wxCommandEvent& event) {
+
+     const int current = thumbnailNoteBook->GetSelection();		    
+     const int max     = thumbnailNoteBook->GetPageCount();
+     if (current != max) thumbnailNoteBook->SetSelection(current + 1);
+}
+/**
+ * 画像をブラウザで開く
+ */
+void JaneCloneImageViewer::OnOpenImageByBrowser(wxCommandEvent& event) {
+}
+/**
+ * 画像ビューアを隠す
+ */
+void JaneCloneImageViewer::HideThumbnailTab(wxCommandEvent& event) {
+
+     this->Hide();
 }

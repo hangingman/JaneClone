@@ -22,8 +22,11 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 #include "imagepanel.hpp"
+#include "janecloneimageviewer.hpp"
 
 BEGIN_EVENT_TABLE(wxImagePanel, wxPanel)
+
+EVT_RIGHT_DOWN(wxImagePanel::RightClick)
 // some useful events
 /*
   EVT_MOTION(wxImagePanel::mouseMoved)
@@ -92,3 +95,12 @@ void wxImagePanel::PaintNow() {
 void wxImagePanel::Render(wxDC&  dc) {
      dc.DrawBitmap( image, 0, 0, false );
 }
+/**
+ * パネル上で右クリックされた場合の処理
+ */
+void wxImagePanel::RightClick(wxMouseEvent& event) {
+
+     // 親クラスのイベントを呼ぶ・戻ってこない
+     return ((JaneCloneImageViewer*)this->GetParent())->OnRightClickImageViewer(event);
+}
+

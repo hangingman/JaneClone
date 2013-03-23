@@ -42,6 +42,7 @@ public:
      void PaintEvent(wxPaintEvent & evt);
      void PaintNow();
      void Render(wxDC& dc);
+     void RightClick(wxMouseEvent& event);
 
      DECLARE_EVENT_TABLE()
 };

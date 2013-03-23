@@ -46,6 +46,8 @@ public:
      
      // 画像ファイルの情報を設定する
      void SetImageFile(DownloadImageResult* result);
+     // ウィンドウ上で右クリックした場合の処理
+     void OnRightClickImageViewer(wxMouseEvent& event);
 
 private:
      /// Default constructor
@@ -69,6 +71,22 @@ private:
      void OnClose(wxCloseEvent& event);
      // 画像ビューアを開いた状態でマウスホイールを動かした場合のイベント
      void OnMouseWheel(wxMouseEvent& event);
+     // 画像タブをひとつ閉じる
+     void OneThumbnailTabClose(wxCommandEvent& event);
+     // すべての画像タブを閉じる
+     void AllThumbnailTabClose(wxCommandEvent& event);
+     // これより左の画像タブをを閉じる
+     void AllLeftThumbnailTabClose(wxCommandEvent& event);
+     // これより右の画像タブを閉じる
+     void AllRightThumbnailTabClose(wxCommandEvent& event);
+     // 左の画像タブに移動
+     void SelectLeftThumbnailTab(wxCommandEvent& event);
+     // 右の画像タブに移動
+     void SelectRightThumbnailTab(wxCommandEvent& event);
+     // 画像をブラウザで開く
+     void OnOpenImageByBrowser(wxCommandEvent& event);
+     // 画像ビューアを隠す
+     void HideThumbnailTab(wxCommandEvent& event);
 
      DECLARE_EVENT_TABLE()
 };

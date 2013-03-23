@@ -101,7 +101,16 @@ enum {
 	ID_SearchSelectWordByYahoo,     // 選択したテキストでヤフー検索
 	ID_SearchSelectWordByGoogle,    // 選択したテキストでGoogle検索
 	ID_SearchSelectWordByAmazon,    // 選択したテキストでAmazon検索
-	ID_SearchThreadBySelectWord     // 選択したテキストでスレタイ検索
+	ID_SearchThreadBySelectWord,    // 選択したテキストでスレタイ検索
+	// janecloneimageviewer.hpp
+	ID_OneThumbnailTabClose,        // 画像タブをひとつ閉じる
+	ID_AllThumbnailTabClose,        // すべての画像タブを閉じる
+	ID_AllLeftThumbnailTabClose,	// これより左の画像タブをを閉じる
+	ID_AllRightThumbnailTabClose,	// これより右の画像タブを閉じる
+	ID_SelectLeftThumbnailTab,	// 左の画像タブに移動
+	ID_SelectRightThumbnailTab,	// 右の画像タブに移動
+	ID_OnOpenImageByBrowser,	// 画像をブラウザで開く
+	ID_HideThumbnailTab	        // 画像ビューアを隠す
 };
 
 #endif /* ENUMS_HPP_ */
