@@ -35,6 +35,7 @@ enum {
 	ID_GetVersionInfo,              // バージョン情報
 	ID_ThreadNoteBook,		// スレッド一覧ノートブックに使うID
 	ID_BoardNoteBook,       	// 板一覧用ノートブックに使うID
+	ID_ThumbnailNoteBook,           // 画像ビューア用ID
 	ID_OneBoardTabClose,		// スレッド一覧タブをひとつ閉じる
 	ID_ExcepSelTabClose,		// 現在選択されていないスレッド一覧タブを閉じる
 	ID_AllBoardTabClose,		// すべてのスレッド一覧タブを閉じる

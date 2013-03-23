@@ -24,17 +24,25 @@
 #define JANECLONEIMAGEVIEWER_HPP_
 
 #include <wx/wx.h>
+#include <wx/aui/auibook.h>
+#include <wx/dc.h>
+#include <wx/dcclient.h>
+#include "enums.hpp"
 #include "datatype.hpp"
+#include "imagepanel.hpp"
 
 /**
  * 画像のサムネイルと本体の表示を行うウィンドウ
  */
-class JaneCloneImageViewer : public wxDialog {
+//class JaneCloneImageViewer : public wxDialog {
+class JaneCloneImageViewer : public wxFrame {
 
 public:
 
      /// constructor
-     JaneCloneImageViewer(wxWindow* parent, wxString& title);
+     JaneCloneImageViewer(wxWindow* parent, int id, const wxString& title,
+			  const wxPoint& pos = wxDefaultPosition, const wxSize& size =
+			  wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
      
      // 画像ファイルの情報を設定する
      void SetImageFile(DownloadImageResult* result);
@@ -42,11 +50,15 @@ public:
 private:
      /// Default constructor
      JaneCloneImageViewer();
-     /// Destructor
      ~JaneCloneImageViewer();
    
      void set_properties(const wxString& title);
      void do_layout();
+
+     // Auiの管理オブジェクト
+     wxAuiManager m_mgr;
+     // 画像を載せるノートブック
+     wxAuiNotebook* thumbnailNoteBook;
 
      /// Copy constructor
      JaneCloneImageViewer(const JaneCloneImageViewer& rhs);

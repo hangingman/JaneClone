@@ -1626,6 +1626,7 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
 
      wxString ext  = wxT(".") + result->ext;
      imageFilePath = imageFilePath + wxFileSeparator + uuid + ext;
+     result->imagePath = imageFilePath;
 
      /** Content-typeの判別 */
      wxString contentType = JaneCloneUtil::DetermineContentType(href);
@@ -1673,7 +1674,6 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
 	  }
      } else {
 	  output.Close();
-	  //return -1;
      }
 }
 /**

@@ -409,6 +409,7 @@ void ThreadContentWindow::OnSize(wxSizeEvent& event) {
      GetViewStart(&m_x, &m_y);
      fNeedScroll = true;
      wxHtmlWindow::OnSize(event);
+     event.Skip();
 }
 /**
  * 左クリック時に起こるイベント
@@ -444,6 +445,7 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
 
      // 画像ビューアに表示させる
      JaneClone::GetJaneCloneImageViewer()->Show(true);
+     JaneClone::GetJaneCloneImageViewer()->SetImageFile(result);
      delete result;
 }
 

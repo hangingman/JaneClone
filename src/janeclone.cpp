@@ -619,7 +619,7 @@ void JaneClone::SetProperties() {
 					wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON);
 
      // 画像ビューアのインスタンスを作る
-     imageViewer = new JaneCloneImageViewer(this, (wxString&)wxT(""));
+     imageViewer = new JaneCloneImageViewer(this, wxID_ANY, wxT("画像ビューア"));
      // 通常は隠しておく
      imageViewer->Show(false);
 }
