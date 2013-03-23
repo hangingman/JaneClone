@@ -114,6 +114,21 @@ END_EVENT_TABLE()
 // 画像ビューアのインスタンスを初期化
 JaneCloneImageViewer* JaneClone::imageViewer = NULL;
 
+// インスタンスを渡す処理
+JaneCloneImageViewer* JaneClone::GetJaneCloneImageViewer () {
+
+     if (imageViewer != NULL) {
+	  return imageViewer;
+     }
+     // !! ここ以下のコードは多分動かない !!
+     // 画像ビューアのインスタンスを作る
+     imageViewer = new JaneCloneImageViewer(NULL, wxID_ANY, wxT("画像ビューア"));
+     // 通常は隠しておく
+     imageViewer->Show(false);     
+     return imageViewer;
+}
+
+
 JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
 wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 {

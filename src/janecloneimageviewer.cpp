@@ -27,6 +27,11 @@
 #include"../rc/janeclone.xpm"
 #endif
 
+BEGIN_EVENT_TABLE(JaneCloneImageViewer, wxFrame)
+   EVT_CLOSE(JaneCloneImageViewer::OnClose)
+   EVT_MOUSEWHEEL(JaneCloneImageViewer::OnMouseWheel)
+END_EVENT_TABLE()
+
 /**
  * Default constructor
  */
@@ -62,6 +67,7 @@ JaneCloneImageViewer::JaneCloneImageViewer(wxWindow* parent, int id, const wxStr
  * フレームクラスのデストラクタ
  */
 JaneCloneImageViewer::~JaneCloneImageViewer() {
+
      // wxAuiManagerはデストラクタで破棄しなければいけない
      m_mgr.UnInit();
 }
@@ -85,8 +91,7 @@ void JaneCloneImageViewer::do_layout() {
 /**
  * Copy constructor
  */
-JaneCloneImageViewer::JaneCloneImageViewer(const JaneCloneImageViewer& rhs) {
-}
+JaneCloneImageViewer::JaneCloneImageViewer(const JaneCloneImageViewer& rhs) {}
 /**
  * Assignment operator
  */
@@ -155,4 +160,43 @@ void JaneCloneImageViewer::SetImageFile(DownloadImageResult* result) {
 
      thumbnailNoteBook->Thaw();
      m_mgr.Update();
+}
+/**
+ * ウィンドウを閉じるイベント
+ */
+void JaneCloneImageViewer::OnClose(wxCloseEvent& event) {
+
+     // wxAuiNotebookがもっていたデータは落とす
+     size_t pages = thumbnailNoteBook->GetPageCount();
+     for (size_t i = 0; i < pages; i++) {
+	  thumbnailNoteBook->DeletePage(0);
+     }
+     
+     // 画像ビューアはJaneClone本体が落ちるまで閉じない
+     this->Hide();
+     event.Skip(false);
+}
+/**
+ * 画像ビューアを開いた状態でマウスホイールを動かした場合のイベント
+ */
+void JaneCloneImageViewer::OnMouseWheel(wxMouseEvent& event) {
+     
+     if (event.m_controlDown) {
+	  // コントロールキーが押されている => 画像の拡大縮小
+
+     } else {
+	  const int current = thumbnailNoteBook->GetSelection();		    
+	  const int max     = thumbnailNoteBook->GetPageCount();
+
+	  // 画像の切り替え
+	  if (event.m_wheelRotation > 0) {
+	       // プラス値 ←
+	       if (current != 0) thumbnailNoteBook->SetSelection(current - 1);
+	  } else {
+	       // マイナス値 →
+	       if (current != max) thumbnailNoteBook->SetSelection(current + 1);
+	  }	  
+     }
+
+     event.Skip();
 }

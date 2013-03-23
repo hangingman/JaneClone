@@ -64,6 +64,13 @@ private:
      JaneCloneImageViewer(const JaneCloneImageViewer& rhs);
      /// Assignment operator
      JaneCloneImageViewer& operator=(const JaneCloneImageViewer& rhs);
+
+     // ウィンドウを閉じるイベント
+     void OnClose(wxCloseEvent& event);
+     // 画像ビューアを開いた状態でマウスホイールを動かした場合のイベント
+     void OnMouseWheel(wxMouseEvent& event);
+
+     DECLARE_EVENT_TABLE()
 };
 
 

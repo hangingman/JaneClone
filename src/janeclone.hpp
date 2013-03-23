@@ -113,9 +113,7 @@ public:
 
      // JaneClone内部のイメージビューアのインスタンス
      static JaneCloneImageViewer* imageViewer;
-     static JaneCloneImageViewer* GetJaneCloneImageViewer () {
-	  return imageViewer;
-     };
+     static JaneCloneImageViewer* GetJaneCloneImageViewer();
      
      // 再起動処理のためのPID
      unsigned long pid;
