@@ -32,7 +32,7 @@
 #include <wx/cmdline.h>
 #include <wx/image.h>
 #include <wx/snglinst.h>
-#include <wx/fs_inet.h>
+#include <wx/fs_mem.h>
 #include "janeclone.hpp"
 
 /** 再起動処理のために引数が与えられた場合使用する */
@@ -91,7 +91,7 @@ bool wxMain::OnInit() {
      }
 
      wxInitAllImageHandlers();
-     wxFileSystem::AddHandler(new wxInternetFSHandler);
+     wxFileSystem::AddHandler(new wxMemoryFSHandler);
      wxJaneClone = new JaneClone(NULL, wxID_ANY, wxEmptyString);
      wxJaneClone->pid = 0;
      SetTopWindow(wxJaneClone);

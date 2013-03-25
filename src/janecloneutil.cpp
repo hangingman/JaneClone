@@ -290,6 +290,29 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 	  wxString text = responseText;
 	  wxString tmp;
 	  size_t start, len;
+
+	  // デフォルト画像の読み込み
+	  wxString imagePath = wxGetCwd() + wxFileSeparator + wxT("rc") + wxFileSeparator + wxT("image-x-generic.png");
+	  wxImage image;
+	  wxBitmap bitmap;
+
+          // load wxImage
+	  if (!image.LoadFile(imagePath)) {
+	       wxMessageBox(wxT("画像ファイルの読み出しに失敗しました"),
+			    wxT("wxMemoryFSHandler"),
+			    wxICON_ERROR);
+	       return;
+	  }
+	  // wxImage to wxBitmap
+	  bitmap = wxBitmap(image);
+
+	  if (!bitmap.Ok()) {
+	       wxMessageBox(wxT("画像ファイルの読み出しに失敗しました"),
+			    wxT("wxMemoryFSHandler"),
+			    wxICON_ERROR);
+	       return;
+	  }
+
 	  // HTMLに改行を加える
 	  responseText.Append(wxT("<br>"));
 
@@ -301,9 +324,12 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 	  }
 
 	  for (int i = 0; i < array.GetCount();i++) {
-	       // ex) <a href="http://jointhegame.kde.org"><img src="/images/teaser/jointhegame.gif" alt="Join the Game" /></a>
-	       responseText.Append(wxT("<p><img src=\"") + array[i] + wxT("\" width=200 height=200 /></p>"));
-	       //wxMessageBox(responseText);
+	       // ex) <img src=\"memory:logo.pcx\">
+	       wxString filename = wxFileSystem::URLToFileName(array[i]).GetFullName();
+	       wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
+	       responseText.Append(wxT("<p><img src=\"memory:") + filename + wxT("\" width=16 height=16 /></p>"));
+	       //wxMemoryFSHandler::AddFile(wxT("test.png"), bitmap, wxBITMAP_TYPE_PNG);
+	       //responseText.Append(wxT("<p><img src=\"memory:test.png\" width=200 height=200 /></p>"));
 	  }
 	  // HTMLに改行を加える
 	  responseText.Append(wxT("<br>"));
