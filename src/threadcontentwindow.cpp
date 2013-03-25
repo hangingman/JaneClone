@@ -23,16 +23,12 @@
 #include "janeclone.hpp"
 
 IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
-
 // event table
 BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
-
 // 右クリック時のイベント
 EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
-
 // リンク押下時のイベント
 EVT_HTML_LINK_CLICKED(wxID_ANY, ThreadContentWindow::OnLeftClickHtmlWindow)
-
 // 右クリックメニューイベント
 EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
 EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
@@ -41,10 +37,13 @@ EVT_MENU(ID_SearchSelectWordByYahoo,ThreadContentWindow::SearchSelectWordByYahoo
 EVT_MENU(ID_SearchSelectWordByGoogle,ThreadContentWindow::SearchSelectWordByGoogle)
 EVT_MENU(ID_SearchSelectWordByAmazon,ThreadContentWindow::SearchSelectWordByAmazon)
 EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
-
 // リサイズがかかった際のイベント
 EVT_SIZE(ThreadContentWindow::OnSize)
 
+#ifdef DEBUG
+// HTMLのデバッグ用イベント
+EVT_MENU(ID_HtmlSourceDebug, ThreadContentWindow::HtmlSourceDebug)
+#endif
 END_EVENT_TABLE()
 
 /**
@@ -55,7 +54,6 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
 
      // 指定されたパスからHTMLファイルを読み出す
      wxString htmlSource = GetConvertedDatFile(threadContentPath);
-
      // 設定ファイルの準備をする
      wxString configFile = wxGetCwd() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
      wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
@@ -71,6 +69,8 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
      this->SetFonts(fontName, wxEmptyString, f_size);
      // メモリに読み込んだHTMLを表示する
      this->SetPage(htmlSource);
+     // 外部から参照可能なHTML
+     this->m_htmlSource = htmlSource;
      // スクロールのフラグ
      fNeedScroll = false;
 }
@@ -145,8 +145,9 @@ wxString ThreadContentWindow::ProcessFirstResponse(wxString& threadRecord) {
 	       // レスの最初に<table>タグを入れる
 	       res.Append(wxT("<table border=0 id=\"1\">"));
 	       res.Append(regexThreadFst.GetMatch(threadRecord, 4));
+	       // 画像があれば<img>タグをつける
+	       JaneCloneUtil::AddImgTag(res);
 	       res.Append(wxT("</table>"));
-
 	       // レス内部のURLに<a>タグをつける
 	       res = JaneCloneUtil::ReplaceURLText(res);
 	       // レスの最後に改行
@@ -197,13 +198,13 @@ wxString ThreadContentWindow::ProcessRestResponse(wxString& threadRecord, int nu
 	       // マッチさせたそれぞれの要素を取得する
 	       default_nanashi = regexThread.GetMatch(threadRecord, 1);
 	       mail = regexThread.GetMatch(threadRecord, 2);
-	       day_and_ID = regexThread.GetMatch(threadRecord, 3);
-
+	       day_and_ID = regexThread.GetMatch(threadRecord, 3);	       
 	       // レスの最初に<table>タグを入れる
 	       res.Append(wxT("<table border=0 id=\"") + num + wxT("\">"));
 	       res.Append(regexThread.GetMatch(threadRecord, 4));
+	       // 画像があれば<img>タグをつける
+	       JaneCloneUtil::AddImgTag(res);
 	       res.Append(wxT("</table>"));
-
 	       // レス内部のURLに<a>タグをつける
 	       res = JaneCloneUtil::ReplaceURLText(res);
 	       // レスの最後に改行
@@ -234,6 +235,16 @@ wxString ThreadContentWindow::ProcessRestResponse(wxString& threadRecord, int nu
      return lumpOfHTML;
 }
 /**
+ * URLを開いた時の状態
+ */
+// wxHtmlOpeningStatus ThreadContentWindow::OnOpeningURL(wxHtmlURLType WXUNUSED(type),
+// 						      const wxString& url,
+// 						      wxString *WXUNUSED(redirect)) const {
+
+//      //GetRelatedFrame()->SetStatusText(url + _T(" lately opened"),1);
+//      return wxHTML_OPEN;
+// }
+/**
  * スレッドのHtmlWindowで右クリックした場合の処理
  */
 void ThreadContentWindow::OnRightClickHtmlWindow(wxMouseEvent& event) {
@@ -243,6 +254,10 @@ void ThreadContentWindow::OnRightClickHtmlWindow(wxMouseEvent& event) {
      copy->Append(ID_CopyURLFromHtmlWindow, wxT("リンクをコピー"));
      copy->Enable(ID_CopyURLFromHtmlWindow, false); // デフォルトでは使用不能
      copy->Append(ID_SelectAllTextHtmlWindow, wxT("全て選択"));
+#ifdef DEBUG
+     // デバッグ用メニュー
+     copy->Append(ID_HtmlSourceDebug, wxT("HTMLソース表示"));
+#endif
 
      // イベント発生後にあったデータをクリアする
      m_selectedText.Clear();
@@ -421,13 +436,15 @@ void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
      const wxString target = linkInfo.GetTarget();
      
      // bmp,jpg,jpeg,png,gifなどの拡張子が末尾に付いている場合ダウンロードを行う
-
      if (regexImage.IsValid()) {
 	  // 正規表現のコンパイルにエラーがなければマッチさせる
 	  if (regexImage.Matches(href)) {
 	       // 画像ファイルをクリックしたのでダウンロードする
 	       const wxString ext = regexImage.GetMatch(href, 3);
 	       this->SetJaneCloneImageViewer(href, ext);
+	  } else {
+	       // マッチしなければそのままデフォルトのブラウザで開く
+	       wxLaunchDefaultBrowser(href);
 	  }
      }
 }
@@ -448,4 +465,9 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      JaneClone::GetJaneCloneImageViewer()->SetImageFile(result);
      delete result;
 }
-
+/*
+ * HTMLのデバッグ用イベント
+ */
+void ThreadContentWindow::HtmlSourceDebug(wxCommandEvent& event) {
+     wxMessageBox(this->m_htmlSource);
+}

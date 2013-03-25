@@ -59,7 +59,13 @@ public:
       * ウィンドウ上で右クリックした場合の処理
       */
      void OnRightClickHtmlWindow(wxMouseEvent& event);
-
+     /**
+      * URLを開いた時の状態
+      */
+     // virtual wxHtmlOpeningStatus OnOpeningURL (wxHtmlURLType WXUNUSED(type),
+     //                                           const wxString& url,
+     // 					       wxString *WXUNUSED(redirect)) const;
+     
 private:
      /**
       * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
@@ -88,6 +94,8 @@ private:
      void SearchSelectWordByAmazon(wxCommandEvent& event);
      // 選択したテキストでスレタイ検索
      void SearchThreadBySelectWord(wxCommandEvent& event);
+     // HTMLのデバッグ用イベント
+     void HtmlSourceDebug(wxCommandEvent& event);
 
      // linkを左クリックした時に起こるイベント
      void OnLeftClickHtmlWindow(wxHtmlLinkEvent& event);

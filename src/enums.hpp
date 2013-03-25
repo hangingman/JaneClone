@@ -102,6 +102,9 @@ enum {
 	ID_SearchSelectWordByGoogle,    // 選択したテキストでGoogle検索
 	ID_SearchSelectWordByAmazon,    // 選択したテキストでAmazon検索
 	ID_SearchThreadBySelectWord,    // 選択したテキストでスレタイ検索
+#ifdef DEBUG
+	ID_HtmlSourceDebug,             // HTMLのデバッグ用命令
+#endif
 	// janecloneimageviewer.hpp
 	ID_OneThumbnailTabClose,        // 画像タブをひとつ閉じる
 	ID_AllThumbnailTabClose,        // すべての画像タブを閉じる

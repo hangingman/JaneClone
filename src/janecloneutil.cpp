@@ -280,6 +280,36 @@ wxString JaneCloneUtil::ReplaceURLText(const wxString& responseText) {
      return result;
 }
 /**
+ * レス内に画像があれば<img>タグを付ける
+ */
+void JaneCloneUtil::AddImgTag(wxString& responseText) {
+
+     if (regexImage.IsValid() && regexImage.Matches(responseText)) {
+	  // 画像URLを保存する配列
+	  wxArrayString array;
+	  wxString text = responseText;
+	  wxString tmp;
+	  size_t start, len;
+	  // HTMLに改行を加える
+	  responseText.Append(wxT("<br>"));
+
+	  for (tmp = text; regexImage.Matches(tmp);
+	       tmp = tmp.SubString(start + len, tmp.Len())) {
+	       // ex) tmp = http://hogehoge.jpg
+	       regexImage.GetMatch(&start, &len, 0);
+	       array.Add(tmp.SubString(start, start + len - 1));
+	  }
+
+	  for (int i = 0; i < array.GetCount();i++) {
+	       // ex) <a href="http://jointhegame.kde.org"><img src="/images/teaser/jointhegame.gif" alt="Join the Game" /></a>
+	       responseText.Append(wxT("<p><img src=\"") + array[i] + wxT("\" width=200 height=200 /></p>"));
+	       //wxMessageBox(responseText);
+	  }
+	  // HTMLに改行を加える
+	  responseText.Append(wxT("<br>"));
+     }
+}
+/**
  * 指定された文字列でdatファイルへのファイルパスを組み立てる
  */
 wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,

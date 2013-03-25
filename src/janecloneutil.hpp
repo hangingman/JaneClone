@@ -75,6 +75,10 @@ public:
       */
      static wxString ReplaceURLText(const wxString& responseText);
      /**
+      * レス内に画像があれば<a>タグを付ける
+      */
+     static void AddImgTag(wxString& responseText);
+     /**
       * 指定された文字列でdatファイルへのファイルパスを組み立てる
       */
      static wxString AssembleFilePath(wxString& boardNameAscii, wxString& origNumber);
