@@ -457,12 +457,71 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      SocketCommunication* sock = new SocketCommunication();
      DownloadImageResult* result = new DownloadImageResult;
      result->ext = ext;
+     result->imageURL = href;
      sock->DownloadImageFile(href, result);
      delete sock;
 
      // 画像ビューアに表示させる
      JaneClone::GetJaneCloneImageViewer()->Show(true);
      JaneClone::GetJaneCloneImageViewer()->SetImageFile(result);
+
+     // wxMemoryFSHandlerに登録されているファイルを削除し、新しいファイルを登録する
+     wxString filename = wxFileSystem::URLToFileName(result->imageURL).GetFullName();
+     wxMessageBox(result->imageURL);
+     wxMessageBox(filename);
+     wxMemoryFSHandler::RemoveFile(filename);
+
+     // wxBitmapTypeの判別
+     wxBitmapType type;
+
+     if (!ext.CmpNoCase(wxT("png"))) {
+     	  type = wxBITMAP_TYPE_PNG;
+     } else if (!ext.CmpNoCase(wxT("jpg"))) {
+     	  type = wxBITMAP_TYPE_JPEG;
+     } else if (!ext.CmpNoCase(wxT("jpeg"))) {
+     	  type = wxBITMAP_TYPE_JPEG;
+     } else if (!ext.CmpNoCase(wxT("gif"))) {
+     	  type = wxBITMAP_TYPE_GIF;
+     } else if (!ext.CmpNoCase(wxT("bmp"))) {
+     	  type = wxBITMAP_TYPE_BMP;
+     } else if (!ext.CmpNoCase(wxT("ico"))) {
+     	  type = wxBITMAP_TYPE_ICO;
+     } else if (!ext.CmpNoCase(wxT("xpm"))) {
+     	  type = wxBITMAP_TYPE_XPM;
+     } else if (!ext.CmpNoCase(wxT("tiff"))) {
+     	  type = wxBITMAP_TYPE_TIF;
+     } else {
+     	  type = wxBITMAP_TYPE_ANY;
+     }
+
+     // resultの結果を元に画像のサムネイルと画像を配置する
+     wxImage image;
+     wxBitmap bitmap;
+     
+     // load wxImage
+     if (!image.LoadFile(result->imagePath)) {
+	  wxMessageBox(wxT("画像ファイルの読み出しに失敗しました"),
+		       wxT("画像ビューア"),
+		       wxICON_ERROR);
+	  result->result = false;
+	  delete result;
+	  return;
+     }
+     // wxImage to wxBitmap
+     bitmap = wxBitmap(image);
+
+     if (!bitmap.Ok()) {
+	  wxMessageBox(wxT("画像データの内部変換に失敗しました"),
+		       wxT("画像ビューア"),
+		       wxICON_ERROR);
+	  result->result = false;
+	  delete result;
+	  return;
+     }
+     // 画像を登録する
+     wxMemoryFSHandler::AddFile(filename, bitmap, type);
+     this->AppendToPage(wxEmptyString);
+
      delete result;
 }
 /*
