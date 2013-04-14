@@ -4,11 +4,12 @@
 
 !define NAME "JaneClone"
 !define VERSION "%%%VERSION%%%"
+!define ARCH    "%%%ARCH%%%"
 !define PACKAGE "${NAME} ${VERSION}"
 !define APPDIR "package"
 
 Name "${PACKAGE}"
-OutFile "${NAME}-${VERSION}.exe"
+OutFile "${NAME}-${ARCH}-${VERSION}.exe"
 
 InstallDir "$PROGRAMFILES\${PACKAGE}"
 InstallDirRegKey HKLM "SOFTWARE\${PACKAGE}" ""

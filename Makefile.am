@@ -7,6 +7,7 @@ WXDLLS  = $(shell find `wx-config --prefix`/lib -type f -name 'wx*.dll')
 STDCDLL	= $(shell find /mingw/bin -type f -name 'libstdc++*.dll')
 RESTDLL = $(MINGWBIN)/libjpeg-*.dll $(MINGWBIN)/libpng*.dll $(MINGWBIN)/libtiff-*.dll $(MINGWBIN)/libxml2*.dll $(MINGWBIN)/zlib*.dll
 LIBGCC64= $(MINGWBIN)/libgcc_s_sjlj_64*.dll
+LIBGCC	= $(MINGWBIN)/libgcc_s_sjlj*.dll
 JANEEXE = $(top_builddir)/src/.libs/$(PACKAGE_NAME)
 
 # NSISの設定ファイル
@@ -28,10 +29,12 @@ package-win32-msi: prepare-package
 	cp -p $(WXDLLS) $(top_builddir)/extras/package
 	cp -p $(STDCDLL) $(top_builddir)/extras/package
 	cp -p $(RESTDLL) $(top_builddir)/extras/package
+	cp -p $(LIBGCC) $(top_builddir)/extras/package
 	cp -p $(JANEEXE) $(top_builddir)/extras/package
 # add line to NSIS script
 	cp -p $(NSIS_NSI_IN) $(NSIS_NSI)
 	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(NSIS_NSI)
+	sed -i 's/%%%ARCH%%%/win32/g' $(NSIS_NSI)
 	@echo 'makensis start...'
 	$(MAKENSIS) $(NSIS_NSI)
 
@@ -51,6 +54,7 @@ package-win64-msi: prepare-package
 # add line to NSIS script
 	cp -p $(NSIS_NSI_IN) $(NSIS_NSI)
 	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(NSIS_NSI)
+	sed -i 's/%%%ARCH%%%/win64/g' $(NSIS_NSI)
 	@echo 'makensis start...'
 	$(MAKENSIS) $(NSIS_NSI)
 
