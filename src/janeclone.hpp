@@ -199,8 +199,8 @@ private:
      void SetJaneCloneAuiPaneInfo();
      void SetPreviousUserLookedTab();
 
-     // 取得した板一覧ファイルからデータを抽出してレイアウトに反映するメソッド
-     void SetBoardList();
+     // 取得した板一覧ファイルからデータを抽出したのちwxTreeCtrlのインスタンスを返す
+     wxTreeCtrl* SetBoardList();
 
      // すべてのウィジェットが載るAuiマネージャー
      wxAuiManager m_mgr;
@@ -229,11 +229,6 @@ private:
      /**
       * 画面左側のオブジェクトとメソッド
       */
-     // ツリーコントロールは内部からならいじれるようにしておく
-     wxTreeCtrl* m_tree_ctrl;
-     wxTreeItemData* m_treeData;
-     wxTreeItemId m_rootId;
-
      // ログ出力画面
      wxTextCtrl* m_logCtrl;
 

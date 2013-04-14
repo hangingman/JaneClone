@@ -112,7 +112,6 @@ int wxMain::OnExit() {
      }
 
      delete m_checker;
-     delete wxJaneClone;
 
      return 0;
 }
