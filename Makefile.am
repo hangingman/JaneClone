@@ -1,4 +1,13 @@
+
+# 依存関係にあるソース群
 SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 src
+
+# ChangeLogと連動させる
+dist-hook: ChangeLog
+
+# configure.acが更新された時動く
+ChangeLog: configure.ac
+	git log --stat --name-only --date=short --abbrev-commit > ChangeLog
 
 # 依存関係にあるDLL
 MINGWBIN= /mingw/bin
