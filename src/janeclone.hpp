@@ -82,6 +82,8 @@
 #include "responsewindow.hpp"
 #include "janecloneimageviewer.hpp"
 
+#define JANECLONE_DOWNLOADSITE wxT("http://hiroyuki-nagata.github.io/")
+
 /**
  * JaneClone本体はGUI構築用のwxFrameと
  * マウスモーション管理用のwxMouseEventsManagerを継承する
@@ -134,6 +136,7 @@ private:
      void FontDialogThreadNotebook(wxCommandEvent& event);
      void FontDialogThreadContents(wxCommandEvent& event);
      void SetFontDialog(const int enumType);
+     void OnOpenJaneCloneOfficial(wxCommandEvent& event);
 
      // 動的に要素を確保するメニュー
      wxMenu* closeT;
