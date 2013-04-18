@@ -1880,47 +1880,55 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
      *m_logCtrl << wxT("スレッド取得　三　(　＾ν）\n");
      // 現在アクティブになっているタブの板名を取得する
-     wxString boardName = boardNoteBook->GetPageText(
-	  boardNoteBook->GetSelection());
+     wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
 
      if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
 	  wxMessageBox(wxT("すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
-     } else {
-	  // リストコントロールを引き出してくる
-	  VirtualBoardListCtrl vbListCtrl =
-	       vbListCtrlHash[(const wxString) boardName];
-	  // ノートブックの移り変わり時にリストコントロールに入るべきリストをリフレッシュする
-	  VirtualBoardList vbList = vbListHash[(const wxString) boardName];
-	  vbListCtrl.m_vBoardList = vbList;
-
-	  // Hashから情報を引き出す
-	  URLvsBoardName hash = retainHash[boardName];
-	  wxString boardURL = hash.boardURL;
-	  wxString boardNameAscii = hash.boardNameAscii;
-
-	  // スレの固有番号とタイトルをリストから取り出す
-	  long index = event.GetIndex();
-	  const wxString origNumber(vbListCtrl.OnGetItemText(index, (long) 9));
-	  const wxString title(vbListCtrl.OnGetItemText(index, (long) 1));
-
-	  // ソケット通信を行う
-	  SocketCommunication* socketCommunication = new SocketCommunication();
-	  const wxString threadContentPath = socketCommunication->DownloadThread(
-	       boardName, boardURL, boardNameAscii, origNumber);
-	  delete socketCommunication;
-	  // 無事に通信が終了したならばステータスバーに表示
-	  this->SetStatusText(wxT(" スレッドのダウンロード終了"));
-
-	  // スレッドの内容をノートブックに反映する
-	  SetThreadContentToNoteBook(threadContentPath, origNumber, title);
-	  // ノートブックに登録されたスレッド情報をハッシュに登録する
-	  ThreadInfo info;
-	  info.origNumber = origNumber;
-	  info.boardNameAscii = boardNameAscii;
-	  tiHash[title] = info;
-
-	  *m_logCtrl << wxT("完了…　(´ん｀/)三\n");
+	  return;
      }
+
+     // リストコントロールを引き出してくる
+     wxWindowList& children = boardNoteBook->GetChildren();
+     VirtualBoardListCtrl* vbListCtrl;
+
+     for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) { 
+          // boardNoteBookを親とするウィンドウクラスを引き出す
+	  wxWindow* current = (wxWindow *)node->GetData();
+
+	  if (current->GetLabel() == boardName) {
+	       // 板名が一致するwindowクラスを取得する
+	       vbListCtrl = (VirtualBoardListCtrl*)current;
+	       break;
+	  }
+     }
+
+     // Hashから情報を引き出す
+     URLvsBoardName hash = retainHash[boardName];
+     wxString boardURL = hash.boardURL;
+     wxString boardNameAscii = hash.boardNameAscii;
+
+     // スレの固有番号とタイトルをリストから取り出す
+     const long index = event.GetIndex();
+     const wxString origNumber(vbListCtrl->OnGetItemText(index, static_cast<long>(9)));
+     const wxString title(vbListCtrl->OnGetItemText(index, static_cast<long>(1)));
+
+     // ソケット通信を行う
+     SocketCommunication* socketCommunication = new SocketCommunication();
+     const wxString threadContentPath = socketCommunication->DownloadThread(
+	  boardName, boardURL, boardNameAscii, origNumber);
+     delete socketCommunication;
+     // 無事に通信が終了したならばステータスバーに表示
+     this->SetStatusText(wxT(" スレッドのダウンロード終了"));
+
+     // スレッドの内容をノートブックに反映する
+     SetThreadContentToNoteBook(threadContentPath, origNumber, title);
+     // ノートブックに登録されたスレッド情報をハッシュに登録する
+     ThreadInfo info;
+     info.origNumber = origNumber;
+     info.boardNameAscii = boardNameAscii;
+     tiHash[title] = info;
+
+     *m_logCtrl << wxT("完了…　(´ん｀/)三\n");
 }
 void JaneClone::OnLeftClickAtListCtrlCol(wxListEvent& event) {
      

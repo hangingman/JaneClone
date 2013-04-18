@@ -82,6 +82,7 @@
 #include "responsewindow.hpp"
 #include "janecloneimageviewer.hpp"
 
+/** JaneClone公式サイトのURL */
 #define JANECLONE_DOWNLOADSITE wxT("http://hiroyuki-nagata.github.io/")
 
 /**
