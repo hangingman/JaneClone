@@ -7,6 +7,9 @@ else
    SUBDIRS = libwxnkf libwxuuid wxsqlite3 src
 endif
 
+# パッケージ作成用サブディレクトリも設定する
+DIST_SUBDIRS = $(SUBDIRS)
+
 # ChangeLogと連動させる
 dist-hook: ChangeLog
 
@@ -31,6 +34,11 @@ NSIS_NSI    = $(top_builddir)/extras/janeclone.nsi
 
 # RPM用設定ファイル
 RPM_MACRO   = $(top_builddir)/extras/package/.rpmmacros
+# <パッケージ名>-<バージョン番号>.<リリース番号>.spec
+SPECFILE	= $(PACKAGE_NAME)-$(VERSION).spec
+SPECFILE_PATH	= $(top_builddir)/extras/package/SPECS/$(SPECFILE)
+# <パッケージ名>-<バージョン番号>.<リリース番号>.<アーキテクチャ>.rpm
+RPMNAME		= $(PACKAGE_NAME)-$(VERSION).`uname -m`.rpm
 
 # Windows(x86)向けのインストーラ作成
 package-win32-msi: prepare-package
@@ -77,11 +85,60 @@ package-rpm: package-clean
 	@echo 'RPM package create start...'
 	mkdir -p $(top_builddir)/extras/package/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 	touch $(RPM_MACRO)
-	echo "%_topdir $(top_builddir)/extras/package" >> $(RPM_MACRO)
+	echo "%_topdir $(top_builddir)/extras/package" > $(RPM_MACRO)
 	echo "%packager Hiroyuki Nagata <$(PACKAGE_BUGREPORT)>" >> $(RPM_MACRO)
 	echo "%_sysconfdir /etc" >> $(RPM_MACRO)
 	$(MAKE) dist
 	mv $(distdir).tar.gz $(top_builddir)/extras/package/SOURCES
+# SPECファイルを作成する
+	touch $(SPECFILE_PATH)
+	echo "" > $(SPECFILE_PATH)
+	echo "%define		name	$(PACKAGE_NAME)" >> $(SPECFILE_PATH)
+	echo "%define		version $(VERSION)" >> $(SPECFILE_PATH)
+	echo "%define		release 0" >> $(SPECFILE_PATH)
+	echo "%define		prefix  /usr" >> $(SPECFILE_PATH)
+	echo "" >> $(SPECFILE_PATH)
+	echo "License:		GPL" >> $(SPECFILE_PATH)
+	echo "Group:		Applications/Internet" >> $(SPECFILE_PATH)
+	echo "Source:		$(distdir).tar.gz" >> $(SPECFILE_PATH)
+	echo "Summary:		Cross Platform 2ch browser" >> $(SPECFILE_PATH)
+	echo "Packager:		Hiroyuki Nagata" >> $(SPECFILE_PATH)
+	echo "Distribution:	`lsb_release -i | awk {'print $$3'}`" >> $(SPECFILE_PATH)
+	echo "BuildRoot:	/var/tmp/%{name}-%{version}-root" >> $(SPECFILE_PATH)
+	echo "Url:		http://hiroyuki-nagata.github.io/" >> $(SPECFILE_PATH)
+	echo "Vendor:		Hiroyuki Nagata<$(PACKAGE_BUGREPORT)>" >> $(SPECFILE_PATH)
+	echo "" >> $(SPECFILE_PATH)
+	echo "Requires:		filesystem" >> $(SPECFILE_PATH)
+	echo "" >> $(SPECFILE_PATH)
+	echo "BuildRequires:	gcc-c++" >> $(SPECFILE_PATH)
+	echo "BuildRequires:	ncurses-devel" >> $(SPECFILE_PATH)
+	echo "BuildRequires:	zlib-devel" >> $(SPECFILE_PATH)
+	echo "BuildRequires:	wxGTK-devel >= 2.8.12" >> $(SPECFILE_PATH)
+	echo "BuildRequires:	sqlite-devel" >> $(SPECFILE_PATH)
+	echo "BuildRequires:	libxml2-devel" >> $(SPECFILE_PATH)
+	echo "" >> $(SPECFILE_PATH)
+	echo "%description" >> $(SPECFILE_PATH)
+	echo "JaneClone is a plain browser dedicated to read 2ch thread. Using a library called wxWidgets." >> $(SPECFILE_PATH)
+	echo "It will work on Windows, Linux, Mac. It will keep the platform-specific user interface." >> $(SPECFILE_PATH)
+	echo "" >> $(SPECFILE_PATH)
+	echo "%prep" >> $(SPECFILE_PATH)
+	echo "%setup -q" >> $(SPECFILE_PATH)
+	echo "" >> $(SPECFILE_PATH)
+	echo "%build" >> $(SPECFILE_PATH)
+	echo "rm -rf $RPM_BUILD_ROOT" >> $(SPECFILE_PATH)
+	echo "CXXFLAGS=$RPM_OPT_FLAGS ./configure --prefix=%{prefix}" >> $(SPECFILE_PATH)
+	echo "make" >> $(SPECFILE_PATH)
+	echo "" >> $(SPECFILE_PATH)
+	echo "%install" >> $(SPECFILE_PATH)
+	echo "[ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;" >> $(SPECFILE_PATH)
+	echo "make -e prefix=$RPM_BUILD_ROOT%{prefix} install" >> $(SPECFILE_PATH)
+	echo "" >> $(SPECFILE_PATH)
+	echo "%clean" >> $(SPECFILE_PATH)
+	echo "[ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;" >> $(SPECFILE_PATH)
+	echo "" >> $(SPECFILE_PATH)
+# rpmbuildを実行する
+	cd $(top_builddir)/extras/package/SPECS && rpmbuild --macros=$(RPM_MACRO) -ba $(SPECFILE)
+	@echo 'RPM package create end...'
 
 # Debian系ディストリビューション向けのインストーラ作成
 package-deb: prepare-package
