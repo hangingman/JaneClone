@@ -53,6 +53,13 @@ if test "$PLATFORM_STRING" = "Win32"; then
 else
 # Set false use_windres
 AM_CONDITIONAL(USE_WINDRES, false)
+# If not Windows Platform, Checks for sqlite3
+AC_CHECK_LIB(sqlite3,sqlite3_open,has_sqlite3=1,has_sqlite3=0)
+   if test $has_sqlite3 = 0; then
+     AC_MSG_ERROR("ERROR: cannot find sqlite3.")
+   fi
+   SQLITE3LIBS="-lsqlite3"
+   AC_SUBST(SQLITE3LIBS)
 fi
 
 # Checks for libxml2
@@ -167,10 +174,15 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset munmap nl_langinfo strcasecmp strchr strcspn strpbrk strrchr strspn strstr fdatasync usleep fullfsync localtime_r gmtime_r])
 AC_FUNC_STRERROR_R
 
+# setting for Makefile generate location
 AC_CONFIG_FILES([Makefile
-                 libwxnkf/Makefile
-		 libwxuuid/Makefile
-		 sqlite3/Makefile
-		 wxsqlite3/Makefile
-                 src/Makefile])
+		libwxnkf/Makefile
+		libwxuuid/Makefile
+		wxsqlite3/Makefile
+		src/Makefile])
+# if Windows, build sqlite3
+if test "$PLATFORM_STRING" = "Win32"; then
+   AC_CONFIG_FILES([sqlite3/Makefile])
+fi
+
 AC_OUTPUT

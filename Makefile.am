@@ -1,6 +1,11 @@
 
-# 依存関係にあるソース群
-SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 src
+if USE_WINDRES
+   # 依存関係にあるソース群
+   SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 src
+else
+   # 依存関係にあるソース群
+   SUBDIRS = libwxnkf libwxuuid wxsqlite3 src
+endif
 
 # ChangeLogと連動させる
 dist-hook: ChangeLog

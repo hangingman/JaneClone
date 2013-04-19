@@ -27,12 +27,12 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    imagepanel.hpp
 
 # common build rule
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid
 ACLOCAL_AMFLAGS    = -I m4
 
 # For Icon build and library dependency
 if USE_WINDRES
 # Platform is Windows
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid
 JaneClone_LDADD    = JaneClone_rc.o $(top_builddir)/libwxnkf/libwxnkf.la $(top_builddir)/libwxuuid/libwxuuid.la $(top_builddir)/wxsqlite3/libwxsqlite3.la $(top_builddir)/sqlite3/libsqlite3.la 
 JaneClone_LDFLAGS  = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ JaneClone_rc.o
 
@@ -41,7 +41,8 @@ JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 
 else
 # Platform is not Windows
-JaneClone_LDFLAGS  = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid
+JaneClone_LDFLAGS  = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ @SQLITE3LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3
 endif
 
 # target for debug
