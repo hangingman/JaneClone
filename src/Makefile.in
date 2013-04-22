@@ -186,7 +186,6 @@ READLINE_LIBS = @READLINE_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
-SQLITE3LIBS = @SQLITE3LIBS@
 STRIP = @STRIP@
 THREADSAFE_FLAGS = @THREADSAFE_FLAGS@
 VERSION = @VERSION@
@@ -201,9 +200,6 @@ WX_LIBS = @WX_LIBS@
 WX_LIBS_STATIC = @WX_LIBS_STATIC@
 WX_RESCOMP = @WX_RESCOMP@
 WX_VERSION = @WX_VERSION@
-WX_VERSION_MAJOR = @WX_VERSION_MAJOR@
-WX_VERSION_MICRO = @WX_VERSION_MICRO@
-WX_VERSION_MINOR = @WX_VERSION_MINOR@
 XML2CFLAGS = @XML2CFLAGS@
 XML2CONFIG = @XML2CONFIG@
 XML2LIBS = @XML2LIBS@
@@ -293,16 +289,15 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 
 
 # common build rule
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid
 ACLOCAL_AMFLAGS = -I m4
-
-# Platform is not Windows
-@USE_WINDRES_FALSE@JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid
 
 # For Icon build and library dependency
 # Platform is Windows
-@USE_WINDRES_TRUE@JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid
 @USE_WINDRES_TRUE@JaneClone_LDADD = JaneClone_rc.o $(top_builddir)/libwxnkf/libwxnkf.la $(top_builddir)/libwxuuid/libwxuuid.la $(top_builddir)/wxsqlite3/libwxsqlite3.la $(top_builddir)/sqlite3/libsqlite3.la 
-@USE_WINDRES_FALSE@JaneClone_LDFLAGS = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ @SQLITE3LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3
+
+# Platform is not Windows
+@USE_WINDRES_FALSE@JaneClone_LDFLAGS = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3
 @USE_WINDRES_TRUE@JaneClone_LDFLAGS = `wx-config --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ JaneClone_rc.o
 all: all-am
 

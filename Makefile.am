@@ -1,11 +1,5 @@
-
-if USE_WINDRES
-   # 依存関係にあるソース群
-   SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 src
-else
-   # 依存関係にあるソース群
-   SUBDIRS = libwxnkf libwxuuid wxsqlite3 src
-endif
+# 依存関係にあるソース群
+SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 src
 
 # パッケージ作成用サブディレクトリも設定する
 DIST_SUBDIRS = $(SUBDIRS)

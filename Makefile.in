@@ -194,7 +194,6 @@ READLINE_LIBS = @READLINE_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
-SQLITE3LIBS = @SQLITE3LIBS@
 STRIP = @STRIP@
 THREADSAFE_FLAGS = @THREADSAFE_FLAGS@
 VERSION = @VERSION@
@@ -209,9 +208,6 @@ WX_LIBS = @WX_LIBS@
 WX_LIBS_STATIC = @WX_LIBS_STATIC@
 WX_RESCOMP = @WX_RESCOMP@
 WX_VERSION = @WX_VERSION@
-WX_VERSION_MAJOR = @WX_VERSION_MAJOR@
-WX_VERSION_MICRO = @WX_VERSION_MICRO@
-WX_VERSION_MINOR = @WX_VERSION_MINOR@
 XML2CFLAGS = @XML2CFLAGS@
 XML2CONFIG = @XML2CONFIG@
 XML2LIBS = @XML2LIBS@
@@ -272,8 +268,9 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@USE_WINDRES_FALSE@SUBDIRS = libwxnkf libwxuuid wxsqlite3 src
-@USE_WINDRES_TRUE@SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 src
+
+# 依存関係にあるソース群
+SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 src
 
 # パッケージ作成用サブディレクトリも設定する
 DIST_SUBDIRS = $(SUBDIRS)
@@ -813,9 +810,6 @@ uninstall-am:
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags tags-recursive uninstall uninstall-am
 
-
-@USE_WINDRES_TRUE@   # 依存関係にあるソース群
-@USE_WINDRES_FALSE@   # 依存関係にあるソース群
 
 # ChangeLogと連動させる
 dist-hook: ChangeLog

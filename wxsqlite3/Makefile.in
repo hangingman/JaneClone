@@ -91,8 +91,7 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-@USE_WINDRES_TRUE@libwxsqlite3_la_DEPENDENCIES =  \
-@USE_WINDRES_TRUE@	$(top_builddir)/sqlite3/libsqlite3.la
+libwxsqlite3_la_DEPENDENCIES = $(top_builddir)/sqlite3/libsqlite3.la
 am_libwxsqlite3_la_OBJECTS = wxsqlite3.lo
 libwxsqlite3_la_OBJECTS = $(am_libwxsqlite3_la_OBJECTS)
 libwxsqlite3_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -188,7 +187,6 @@ READLINE_LIBS = @READLINE_LIBS@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
-SQLITE3LIBS = @SQLITE3LIBS@
 STRIP = @STRIP@
 THREADSAFE_FLAGS = @THREADSAFE_FLAGS@
 VERSION = @VERSION@
@@ -203,9 +201,6 @@ WX_LIBS = @WX_LIBS@
 WX_LIBS_STATIC = @WX_LIBS_STATIC@
 WX_RESCOMP = @WX_RESCOMP@
 WX_VERSION = @WX_VERSION@
-WX_VERSION_MAJOR = @WX_VERSION_MAJOR@
-WX_VERSION_MICRO = @WX_VERSION_MICRO@
-WX_VERSION_MINOR = @WX_VERSION_MINOR@
 XML2CFLAGS = @XML2CFLAGS@
 XML2CONFIG = @XML2CONFIG@
 XML2LIBS = @XML2LIBS@
@@ -266,13 +261,12 @@ target_vendor = @target_vendor@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+AM_CXXFLAGS = -I$(top_builddir)/sqlite3 -DWXMAKINGDLL_WXSQLITE3 -DwxUSE_DYNAMIC_SQLITE3_LOAD=0 -DWXSQLITE3_HAVE_METADATA=0 -DWXSQLITE3_HAVE_CODEC=0 -DWXSQLITE3_HAVE_LOAD_EXTENSION=0
 ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libwxsqlite3.la
 libwxsqlite3_la_SOURCES = wxsqlite3.cpp
 libwxsqlite3_la_LDFLAGS = -no-undefined -version-info 3:0:2
-@USE_WINDRES_FALSE@AM_CXXFLAGS = -DWXMAKINGDLL_WXSQLITE3 -DwxUSE_DYNAMIC_SQLITE3_LOAD=0 -DWXSQLITE3_HAVE_METADATA=0 -DWXSQLITE3_HAVE_CODEC=0 -DWXSQLITE3_HAVE_LOAD_EXTENSION=0
-@USE_WINDRES_TRUE@AM_CXXFLAGS = -I$(top_builddir)/sqlite3 -DWXMAKINGDLL_WXSQLITE3 -DwxUSE_DYNAMIC_SQLITE3_LOAD=0 -DWXSQLITE3_HAVE_METADATA=0 -DWXSQLITE3_HAVE_CODEC=0 -DWXSQLITE3_HAVE_LOAD_EXTENSION=0
-@USE_WINDRES_TRUE@libwxsqlite3_la_LIBADD = $(top_builddir)/sqlite3/libsqlite3.la
+libwxsqlite3_la_LIBADD = $(top_builddir)/sqlite3/libsqlite3.la
 all: all-am
 
 .SUFFIXES:
@@ -583,9 +577,6 @@ uninstall-am: uninstall-libLTLIBRARIES
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-libLTLIBRARIES
 
-
-@USE_WINDRES_TRUE@   # 依存関係にあるソース群
-@USE_WINDRES_FALSE@   # 依存関係にあるソース群
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
