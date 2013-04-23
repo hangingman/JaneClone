@@ -1037,13 +1037,33 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	  if (SQLiteAccessor::TableHasData(wxT("BOARD_INFO"))) {
 	       SQLiteAccessor::DropTable(wxT("BOARD_INFO"));
 	  }
-	  // 板一覧情報を展開し、Sqliteに設定する
+	  // 板一覧情報を展開し、SQLiteに設定する
 	  new ExtractBoardList(BOARD_LIST_PATH.mb_str());
-	  // 板一覧情報をセットする
-	  // ! FIX ME !
-	  //JaneClone::SetBoardList();
 
-	  *m_logCtrl << wxT("　　　(ヽ´ん`）　　 \n");
+	  // すでに存在する板一覧ツリーを削除する
+	  wxWindowList& children = this->GetChildren();
+	  for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) { 
+	       // boardNoteBookを親とするウィンドウクラスを引き出す
+	       wxWindow* current = (wxWindow *)node->GetData();
+
+	       if (current->GetLabel() == BOARD_TREE) {
+		    m_mgr.DetachPane(current);
+		    break;
+	       }
+	  }
+
+	  // 板一覧情報をセットする
+	  wxAuiPaneInfo boardTree;
+	  boardTree.Name(wxT("boardTree"));
+	  boardTree.Caption(wxT("板一覧"));
+	  boardTree.Left();
+	  boardTree.CloseButton(false);
+	  boardTree.BestSize(100, 100);
+
+	  m_mgr.AddPane(this->SetBoardList(), boardTree);
+	  m_mgr.Update();
+
+	  *m_logCtrl << wxT("　　　(ヽ´ん`) 完了\n");
      }
 }
 /**
