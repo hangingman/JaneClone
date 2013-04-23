@@ -1960,7 +1960,6 @@ void JaneClone::OnLeftClickAtListCtrlCol(wxListEvent& event) {
 void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 					   const wxString& origNumber, const wxString& title) {
 
-
      // ノートブックの変更中はノートブックに触れないようにする
      threadNoteBook->Freeze();
 

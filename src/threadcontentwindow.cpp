@@ -65,8 +65,12 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
      config->Read(wxT("HTML.PointSize"), &p, 0);
      delete config;
      // HTMLソース中のテキストの種類とサイズを決定する
-     static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };     
-     this->SetFonts(fontName, wxEmptyString, f_size);
+     static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };
+
+     // 設定ファイルにフォントが設定されていなければSetFontsは実行しない
+     if (fontName != wxEmptyString && p != 0) {
+	  this->SetFonts(fontName, wxEmptyString, f_size);
+     }
      // メモリに読み込んだHTMLを表示する
      this->SetPage(htmlSource);
      // 外部から参照可能なHTML
