@@ -73,6 +73,7 @@ EVT_UPDATE_UI(ID_UserLookingTabsMenuUp, JaneClone::UserLookingTabsMenuUp)
 
 // ツリーコントロールのイベント
 EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
+
 // 板一覧ノートブックで右クリックされた時の処理
 EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_BoardNoteBook, JaneClone::OnRightClickBoardNoteBook)
 // スレッド一覧ノートブックで右クリックされた時の処理
@@ -862,6 +863,11 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
      if (!m_tree_ctrl->ItemHasChildren(pushedTree)) {
 	  // 板名をwxStringで取得する
 	  wxString boardName(m_tree_ctrl->GetItemText(pushedTree));
+
+	  // 取得した板名が取得不可なものであればリターン
+	  if (boardName == wxEmptyString || boardName == wxT("2ch板一覧"))
+	       return;
+
 	  // URLを保持する文字列
 	  wxString boardURL;
 	  // サーバー名を保持する文字列
@@ -919,8 +925,6 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 void JaneClone::SetThreadListItemNew(const wxString boardName,
 				     const wxString outputPath, const size_t selectedPage) {
 
-     // ノートブックの変更中はノートブックに触れないようにする
-     boardNoteBook->Freeze();
      // Hashに格納する板名タブのオブジェクトのインスタンスを準備する
      VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
 	  (wxWindow*) boardNoteBook, (const wxString) boardName,
@@ -933,6 +937,9 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 
      // スレッドリストを表示させる
      boardNoteBook->AddPage(vbListCtrl, boardName, false);
+     // ノートブックの選択処理
+     boardNoteBook->SetSelection(selectedPage);
+
      // カラムの幅を最大化
 #ifdef __WXMSW__
      vbListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE);
@@ -951,13 +958,6 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
      vbListCtrl->SetColumnWidth(10, pointSize * 12);
 #endif
 
-     // ノートブックの選択処理
-     boardNoteBook->SetSelection(selectedPage);
-     boardNoteBook->Thaw();
-     m_mgr.Update();
-     // ノートブックの更新処理
-     boardNoteBook->Update();
-     threadNoteBook->Update();
 }
 /**
  * ノートブックに、スレッド一覧情報の更新を反映するメソッド
@@ -965,8 +965,6 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 					const wxString outputPath, const size_t selectedPage) {
 
-     // ノートブックの変更中はノートブックに触れないようにする
-     boardNoteBook->Freeze();
      // HashMapから対象の板のオブジェクトを取り出す
      if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
 	  wxMessageBox(wxT("スレッド一覧更新処理に失敗しました。"));
@@ -987,6 +985,8 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 
 	  boardNoteBook->DeletePage(selectedPage);
 	  boardNoteBook->InsertPage(selectedPage, vbListCtrl, boardName, false, wxNullBitmap);
+	  // ノートブックの選択処理
+	  boardNoteBook->SetSelection(selectedPage);
 
 	  // カラムの幅を最大化
 #ifdef __WXMSW__
@@ -1005,15 +1005,6 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	  vbListCtrl->SetColumnWidth(9, pointSize * 10);
 	  vbListCtrl->SetColumnWidth(10, pointSize * 12);
 #endif
-	  // ノートブックの選択処理
-	  boardNoteBook->SetSelection(selectedPage);
-	  // ノートブックの解放
-	  boardNoteBook->Thaw();
-
-	  m_mgr.Update();
-	  // ノートブックの更新処理
-	  vbListCtrl->Update();
-	  boardNoteBook->Update();
      }
 }
 /**
@@ -1645,8 +1636,6 @@ void JaneClone::DeleteDatFile(wxCommandEvent& event) {
  */
 void JaneClone::ReloadThisThread(wxCommandEvent& event) {
 
-     // ノートブックの変更中はノートブックに触れないようにする
-     threadNoteBook->Freeze();
      // 選択されたスレタブの情報を集める
      wxString boardName,boardURL, title, origNumber, boardNameAscii;
      size_t page = threadNoteBook->GetSelection();
@@ -1695,9 +1684,6 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
      // スレッドを表示させる
      threadNoteBook->InsertPage(page, threadBar, title, false, wxNullBitmap);
      threadNoteBook->SetSelection(page);
-     threadNoteBook->Thaw();
-
-     m_mgr.Update();
 }
 /**
  *  書き込み用のウィンドウを呼び出す
@@ -1980,19 +1966,13 @@ void JaneClone::OnLeftClickAtListCtrlCol(wxListEvent& event) {
 void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 					   const wxString& origNumber, const wxString& title) {
 
-     // ノートブックの変更中はノートブックに触れないようにする
-     threadNoteBook->Freeze();
-
      // スレッド用の検索バー等のインスタンスを用意する
      ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, wxID_ANY);
      threadBar->SetTitle(title);
 
      // スレッドの内容はThreadContentBarの中で設定する
      threadBar->SetThreadContentWindow(threadContentPath);
-     threadNoteBook->AddPage(threadBar, title, false);
-     threadNoteBook->Thaw();
-
-     m_mgr.Update();
+     threadNoteBook->AddPage(threadBar, title, true);
 }
 /**
  * 板一覧ノートブックで右クリックされた時の処理
