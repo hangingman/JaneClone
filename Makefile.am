@@ -191,7 +191,7 @@ prepare-package: package-clean
 	echo 'NSIS is exist'
 
 # 独自設定のクリーン用ターゲット
-clean-local: package-clean
+clean-local: package-clean remove_distdir
 # パッケージディレクトリを削除するだけ
 package-clean:
 # rm packagedir and crate packagedir

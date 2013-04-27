@@ -46,13 +46,12 @@ END_EVENT_TABLE()
  */
 AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource )
 :wxPopupTransientWindow( parent ) {
-     wxBoxSizer *topsizer;
 
      // HTMLのソース
      wxString html = HTML_HEADER;
      html+=htmlSource;
      html+=HTML_FOOTER;
-     topsizer = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
      // wxHtmlWindowにHTMLソースを設定する
      htmlWin = new wxHtmlWindow(this, wxID_ANY, point, size, wxHW_SCROLLBAR_AUTO);
      htmlWin->SetBorders(0);
@@ -63,7 +62,6 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
      htmlWin->SetSize(hx, hy);
      // このウィンドウ(popup)にサイザーをセットして最小の大きさに設定する
      topsizer->Add(htmlWin, 1, wxALL, 10);
-     htmlWin->SetSizer(topsizer);
      this->SetSize(hx, hy);
 }
 
