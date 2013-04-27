@@ -920,7 +920,33 @@ package-rpm: package-clean
 	@echo 'RPM package create end...'
 
 # Debian系ディストリビューション向けのインストーラ作成
-package-deb: prepare-package
+package-deb: remove_distdir distdir
+# 作業用ディレクトリ作成
+	(cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT))
+# controlファイルに詳細を追記
+	echo "Source: janeclone" > $(distdir)/debian/control
+	echo "Section: net" >> $(distdir)/debian/control
+	echo "Priority: extra" >> $(distdir)/debian/control
+	echo "Maintainer: hiroyuki nagata <$(PACKAGE_BUGREPORT)>" >> $(distdir)/debian/control
+	echo "Build-Depends: debhelper (>= 8.0.0), autotools-dev, libatk1.0-0 (>= 1.29.3), libc6 (>= 2.7), libcairo2 (>= 1.2.4), libdbus-1-3 (>= 1.1.1), libfontconfig1 (>= 2.8.0), libfreetype6 (>= 2.2.1), libgcc1 (>= 1:4.1.1), libglib2.0-0 (>= 2.12.0), libgtk2.0-0 (>= 2.8.0), libpango1.0-0 (>= 1.14.0), libstdc++6 (>= 4.1.1),libwxbase2.8-0 (>= 2.8.10.1), libwxgtk2.8-0 (>= 2.8.10.1), libxml2-dev (>= 2.8.0)" >> $(distdir)/debian/control
+	echo "Standards-Version: $(VERSION)" >> $(distdir)/debian/control
+	echo "Homepage: https://github.com/Hiroyuki-Nagata/JaneClone" >> $(distdir)/debian/control
+	echo "" >> $(distdir)/debian/control
+	echo "Package: janeclone" >> $(distdir)/debian/control
+	echo "Architecture: any"  >> $(distdir)/debian/control
+	echo "Depends: ${shlibs:Depends}, ${misc:Depends}" >> $(distdir)/debian/control
+	echo "Description: Cross Platform 2ch browser" >> $(distdir)/debian/control
+	echo " JaneClone is a plain browser dedicated to read 2ch thread. Using a library called wxWidgets." >> $(distdir)/debian/control
+	echo " It will work on Windows, Linux, Mac. It will keep the platform-specific user interface." >> $(distdir)/debian/control
+# パッケージを作る
+	(cd $(distdir) && debuild -us -uc)
+
+remove_distdir :
+	if test -d "$(distdir)"; then \
+	find "$(distdir)" -type d ! -perm -200 -exec chmod u+w {} ';' \
+	&& rm -rf "$(distdir)" \
+	|| { sleep 5 && rm -rf "$(distdir)"; }; \
+	else :; fi
 
 # OSX向けのインストーラ作成
 package-osx-intel32-dmg: prepare-package

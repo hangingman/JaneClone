@@ -1,3 +1,110 @@
+commit 6c73c9c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-26
+
+    ・Windows向けバイナリにて、スレッド一覧およびスレッド表示画面がデータ取得時に最大化しないバグを修正
+
+libtool
+src/janeclone.cpp
+
+commit 2b170a8
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-25
+
+    ・Debian Wheezy上でWindows向けバイナリのビルドに成功した
+
+Makefile.am
+Makefile.in
+libtool
+src/Makefile.am
+src/Makefile.in
+
+commit 8802ace
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-23
+
+    ・JaneClone初回起動時に板一覧更新をしても反映されない問題を修正
+
+src/janeclone.cpp
+
+commit da023a4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-23
+
+    ・設定ファイルにフォントが設定されていなければSetFontsは実行しないようにした
+
+src/janeclone.cpp
+src/threadcontentwindow.cpp
+
+commit d7e9bb9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-23
+
+    ・Debian Wheezyでのビルドを行った
+    ・SQLite3の読み込み設定を元に戻した
+
+Makefile.am
+Makefile.in
+aclocal.m4
+config.h.in
+configure
+configure.ac
+libtool
+libwxnkf/Makefile.in
+libwxuuid/Makefile.in
+sqlite3/Makefile.in
+src/Makefile.am
+src/Makefile.in
+wxsqlite3/Makefile.am
+wxsqlite3/Makefile.in
+
+commit d174309
+Author: hiroyuki <newserver002@gmail.com>
+Date:   2013-04-20
+
+    ・RPM用SPECファイルを途中まで作成した
+
+Makefile.am
+Makefile.in
+
+commit 49b89a8
+Author: hiroyuki <newserver002@gmail.com>
+Date:   2013-04-19
+
+    ・Linux(Fedora17でのビルド実行)
+    ・Windows以外の場合SQLite3のライブラリはシステムのものを使用させるよう設定
+
+Makefile.am
+Makefile.in
+aclocal.m4
+configure
+configure.ac
+libtool
+libwxnkf/Makefile.in
+libwxuuid/Makefile.in
+ltmain.sh
+m4/ltversion.m4
+sqlite3/Makefile.in
+src/Makefile.am
+src/Makefile.in
+wxsqlite3/Makefile.am
+wxsqlite3/Makefile.in
+
+commit 56a8b84
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2013-04-19
+
+    ・ChangeLog, NEWSを追加
+
+ChangeLog
+Makefile.am
+Makefile.in
+NEWS
+configure
+configure.ac
+libtool
+src/threadcontentwindow.cpp
+
 commit 3cfc1d1
 Author: Hiroyuki-Nagata <newserver002@gmail.com>
 Date:   2013-04-19

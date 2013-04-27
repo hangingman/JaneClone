@@ -832,8 +832,15 @@ void JaneClone::OnQuit(wxCommandEvent&) {
  */
 void JaneClone::OnRestart(wxCommandEvent& event) {
 
+#ifdef __WXMSW__
      this->pid = wxGetProcessId();
      Close(true);
+#else
+     // ここはどうしたものやら
+     this->Hide();
+     wxSleep(1);
+     this->Show();
+#endif
 }
 /**
  * 板一覧のツリーがクリックされたときに起きるイベント
