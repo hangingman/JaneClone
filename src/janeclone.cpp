@@ -1931,19 +1931,16 @@ void JaneClone::OnLeftClickAtListCtrlCol(wxListEvent& event) {
      if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
 	  wxMessageBox(wxT("すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
      } else {
-	  // リストコントロールを引き出してくる
-	  wxWindowList & children = boardNoteBook->GetChildren();
-	  for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) {
-	       // boardNoteBookを親とするウィンドウクラスを引き出す
-	       wxWindow *current = (wxWindow *)node->GetData();
 
-	       if (current->GetLabel() == boardName) {
-		    // 板名が一致するwindowクラスでソートをかける
-		    VirtualBoardListCtrl* vbListCtrl = (VirtualBoardListCtrl*)current;
-		    vbListCtrl->SortVectorItems(event.GetColumn());
-		    break;
-	       }	       
+	  // リストコントロールを引き出してくる
+	  VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
+	  if (vbListCtrl == NULL) {
+	       wxMessageBox(wxT("内部エラー, スレッドソート処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
+	       return;
 	  }
+
+	  // 板名が一致するwindowクラスでソートをかける
+	  vbListCtrl->SortVectorItems(event.GetColumn());
      }
 }
 /**
@@ -2594,6 +2591,69 @@ wxPanel* JaneClone::CreateAuiToolBar(wxAuiNotebook* parent, const wxString& boar
      searchBox->AddTool(wxID_ANY, wxT("threadSearch"), 
 			     wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), 
 			     wxT("検索"));
+     // メニューの設定
+     wxAuiToolBarItemArray prepend_items1;
+     wxAuiToolBarItemArray append_items1;
+     wxAuiToolBarItem item;
+     item.SetKind(wxITEM_NORMAL);
+     //item.SetId(ID_ReloadThisThread);
+     item.SetLabel(wxT("↑検索"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("↓検索"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("コピー"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("切り取り"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("貼り付け"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("全て選択"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("クリア"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("通常検索"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("正規表現"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("閉じる"));
+     append_items1.Add(item);
+     searchBox->SetCustomOverflowItems(prepend_items1, append_items1);
+
+     // 検索ボックスを設定する
+     wxComboBox* searchWordCombo = new wxComboBox(searchBox, wxID_ANY, wxEmptyString, wxDefaultPosition, 
+     						  wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
+     searchBox->AddControl(searchWordCombo, boardName + wxT("_combo"));
+
+     // 閉じるボタンを設定する
+     searchBox->AddTool(wxID_ANY, wxT("closeThreadSearch"), wxBitmap(closeImg, wxBITMAP_TYPE_ANY), wxT("検索ボックスを隠す"));
+
      searchBox->Realize();
      vbox->Add(searchBox, 0, wxLEFT | wxTOP, 10);
 
