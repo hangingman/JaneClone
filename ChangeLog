@@ -1,3 +1,77 @@
+commit 4f19cae
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-28
+
+    ・Windows向けインストーラの設定を変更した
+
+Makefile.am
+Makefile.in
+janeclone.nsi.in
+libtool
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 9fb9bbe
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-28
+
+    ・少し修正
+
+src/janeclone.cpp
+
+commit 401efb0
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-28
+
+    ・スレッド一覧から検索するためのツールバーを追加
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit da47eca
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-28
+
+    ・m4ディレクトリにAX_CHECK_COMPILE_FLAGを加えた
+    ・バッファオーバーフロー対策とC++11用オプションを加えてビルドできるようにした
+
+INSTALL
+Makefile.in
+aclocal.m4
+bootstrap
+configure
+configure.ac
+libtool
+libwxnkf/Makefile.in
+libwxuuid/Makefile.in
+m4/m4_ax_check_compile_flag.m4
+sqlite3/Makefile.in
+src/Makefile.in
+wxsqlite3/Makefile.in
+
+commit 402857b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-28
+
+    ・Linuxにてレスアンカーポップアップ表示で落ちるバグを修正した
+
+Makefile.am
+Makefile.in
+src/anchoredresponsepopup.cpp
+
+commit 2d4338d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-28
+
+    ・Debian系ディストリビューション向けの設定ファイルをMakefile.amに追加
+
+ChangeLog
+Makefile.am
+Makefile.in
+libtool
+src/janeclone.cpp
+
 commit 6c73c9c
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-04-26

@@ -206,8 +206,14 @@ private:
      void SetJaneCloneAuiPaneInfo();
      void SetPreviousUserLookedTab();
 
+     // ツリーコントロールが乗るパネル
+     wxPanel* m_boardTreePanel;
+     // ツリーコントロール
+     wxTreeCtrl* m_tree_ctrl;
      // 取得した板一覧ファイルからデータを抽出したのちwxTreeCtrlのインスタンスを返す
-     wxTreeCtrl* SetBoardList();
+     void SetBoardList();
+     // 板一覧更ツリーの初期化
+     void InitializeBoardList();
 
      // すべてのウィジェットが載るAuiマネージャー
      wxAuiManager m_mgr;

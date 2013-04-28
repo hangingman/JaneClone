@@ -36,6 +36,7 @@ enum {
 	ID_ThreadNoteBook,		// スレッド一覧ノートブックに使うID
 	ID_BoardNoteBook,       	// 板一覧用ノートブックに使うID
 	ID_ThumbnailNoteBook,           // 画像ビューア用ID
+	ID_BoardTreectrl,               // 板一覧ツリー用ID
 	ID_OneBoardTabClose,		// スレッド一覧タブをひとつ閉じる
 	ID_ExcepSelTabClose,		// 現在選択されていないスレッド一覧タブを閉じる
 	ID_AllBoardTabClose,		// すべてのスレッド一覧タブを閉じる
@@ -116,7 +117,11 @@ enum {
 	ID_SelectLeftThumbnailTab,	// 左の画像タブに移動
 	ID_SelectRightThumbnailTab,	// 右の画像タブに移動
 	ID_OnOpenImageByBrowser,	// 画像をブラウザで開く
-	ID_HideThumbnailTab	        // 画像ビューアを隠す
+	ID_HideThumbnailTab,	        // 画像ビューアを隠す
+	// テスト用予備ID
+	ID_Test1,
+	ID_Test2,
+	ID_Test3
 };
 
 #endif /* ENUMS_HPP_ */

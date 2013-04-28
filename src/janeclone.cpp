@@ -96,9 +96,6 @@ EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ThreadNoteBook, JaneClone::OnChangedThreadTab)
 EVT_SET_FOCUS(JaneClone::OnSetFocus)
 
 // マウスモーションの監視
-//EVT_LEFT_DOWN(JaneClone::OnMouseDown)
-//EVT_LEFT_UP(JaneClone::OnMouseUp)
-//EVT_MOTION(JaneClone::OnMove)
 EVT_ENTER_WINDOW(JaneClone::MotionEnterWindow)
 EVT_LEAVE_WINDOW(JaneClone::MotionLeaveWindow)
 
@@ -158,6 +155,9 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
      wxTextAttr attr;
      attr.SetFont(font);
      m_logCtrl->SetDefaultStyle(attr);
+
+     // 板一覧ツリー
+     m_boardTreePanel = new wxPanel(this);
 
      *m_logCtrl << wxT("(ヽ´ん`)…デバッグ用画面…\n");
      // ステータスバー設置
@@ -606,12 +606,6 @@ void JaneClone::SetProperties() {
      SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
      delete sqliteAccessor;
 
-     // ! FIX ME !
-     // もしSqlite上に板一覧情報が存在するならば板一覧設定に飛ぶ
-     //if (SQLiteAccessor::TableHasData(wxT("BOARD_INFO"))) {
-     //  SetBoardList();
-     //}
-
      // アプリ上部URL入力欄の画像つきボタンのサイズ調整
      m_url_input_button->SetSize(m_url_input_button->GetBestSize());
      // アプリ上部URL入力欄のフォント調整
@@ -733,7 +727,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 #ifdef __WXMSW__
      m_mgr.AddPane(m_search_ctrl, search);
      m_mgr.AddPane(m_url_input_panel, url);
-     m_mgr.AddPane(this->SetBoardList(), boardTree);
+     m_mgr.AddPane(m_boardTreePanel, boardTree);
      m_mgr.AddPane(m_logCtrl, logWindow);
      m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
      m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
@@ -741,7 +735,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_mgr.AddPane(m_url_input_panel, url);
      m_mgr.AddPane(m_search_ctrl, search);
      m_mgr.AddPane(m_logCtrl, logWindow);
-     m_mgr.AddPane(this->SetBoardList(), boardTree);
+     m_mgr.AddPane(m_boardTreePanel, boardTree);
      m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
      m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
 #endif
@@ -752,6 +746,9 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_logCtrl->SetLabel(LOG_WINDOW);
      boardNoteBook->SetLabel(BOARD_NOTEBOOK);
      threadNoteBook->SetLabel(THREAD_NOTEBOOK);
+
+     // 板一覧更ツリーの初期化
+     InitializeBoardList();
 
      // 前回設定されたフォント情報があれば設定する
      *m_logCtrl << wxT("前回使用したフォント情報の読み出し…\n");
@@ -850,22 +847,6 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
 
      // 選択されたTreeItemIdのインスタンス
      wxTreeItemId pushedTree = event.GetItem();
-     wxTreeCtrl* m_tree_ctrl;
-
-     // ツリーコントロールを引き出してくる
-     wxWindowList& children = this->GetChildren();
-     for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) {
-	  // JaneCloneを親とするウィンドウクラスを引き出す
-	  wxWindow *current = (wxWindow *)node->GetData();
-	  if (current->GetLabel() == BOARD_TREE) {
-	       m_tree_ctrl = dynamic_cast<wxTreeCtrl*>(current);
-	       if (m_tree_ctrl == NULL) {
-		    wxMessageBox(wxT("内部エラー, 板名処理に失敗しました."), wxT("板一覧情報ツリー"), wxICON_ERROR);
-		    return;
-	       }
-	       break;
-	  }
-     }
 
      // もし選択されたツリーが板名だったら(※TreeItemに子要素が無かったら)
      if (!m_tree_ctrl->ItemHasChildren(pushedTree)) {
@@ -1025,30 +1006,9 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	  }
 	  // 板一覧情報を展開し、SQLiteに設定する
 	  new ExtractBoardList(BOARD_LIST_PATH.mb_str());
-
-	  // すでに存在する板一覧ツリーを削除する
-	  wxWindowList& children = this->GetChildren();
-	  for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) { 
-	       // boardNoteBookを親とするウィンドウクラスを引き出す
-	       wxWindow* current = (wxWindow *)node->GetData();
-
-	       if (current->GetLabel() == BOARD_TREE) {
-		    m_mgr.DetachPane(current);
-		    break;
-	       }
-	  }
-
-	  // 板一覧情報をセットする
-	  wxAuiPaneInfo boardTree;
-	  boardTree.Name(wxT("boardTree"));
-	  boardTree.Caption(wxT("板一覧"));
-	  boardTree.Left();
-	  boardTree.CloseButton(false);
-	  boardTree.BestSize(100, 100);
-
-	  m_mgr.AddPane(this->SetBoardList(), boardTree);
-	  m_mgr.Update();
-
+	  // 板一覧更新
+	  SetBoardList();
+	  
 	  *m_logCtrl << wxT("　　　(ヽ´ん`) 完了\n");
      }
 }
@@ -1713,10 +1673,10 @@ void JaneClone::CallResponseWindow(wxCommandEvent& event) {
      response->Show(true);
 }
 /**
- * Sqliteから板一覧情報を抽出してレイアウトに反映するメソッド
+ * 板一覧更ツリーの初期化
  */
-wxTreeCtrl* JaneClone::SetBoardList() {
-
+void JaneClone::InitializeBoardList() {
+     
      // ArrayStringの形で板一覧情報を取得する
      wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
      // カテゴリ名一時格納用
@@ -1725,21 +1685,26 @@ wxTreeCtrl* JaneClone::SetBoardList() {
      wxString boardName;
      // URL一時格納用
      wxString url;
-
+     // Sizer
+     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
      // ツリー用ウィジェットのインスタンスを用意する
-     wxTreeCtrl* m_tree_ctrl = new wxTreeCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+     m_tree_ctrl = new wxTreeCtrl(m_boardTreePanel, ID_BoardTreectrl, wxDefaultPosition, wxDefaultSize, 
+				  wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+     vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 10);
+
      wxTreeItemData treeData;
-     wxTreeItemId m_rootId = m_tree_ctrl->AddRoot(wxT("2ch板一覧"), 0, 0, &treeData);
+     wxTreeItemId m_rootId;
 
      // イメージリストにアイコンを登録する
-     wxImageList *treeImage = new wxImageList(16, 16);
+     wxImageList* treeImage = new wxImageList(16, 16);
      wxBitmap idx1(wxT("rc/folder.png"), wxBITMAP_TYPE_PNG);
      treeImage->Add(idx1);
      wxBitmap idx2(wxT("rc/text-html.png"), wxBITMAP_TYPE_PNG);
      treeImage->Add(idx2);
      m_tree_ctrl->AssignImageList(treeImage);
      m_tree_ctrl->SetLabel(BOARD_TREE);
-     m_tree_ctrl->SetFont(ReadFontInfo(BOARD_NOTEBOOK));
+     wxTreeItemId rootTemp = m_tree_ctrl->AddRoot(wxT("2ch板一覧"));
+     m_tree_ctrl->SetItemImage(rootTemp, 1, wxTreeItemIcon_Normal);
 
      // カテゴリ名を保持するためのID
      wxTreeItemId category;
@@ -1748,17 +1713,20 @@ wxTreeCtrl* JaneClone::SetBoardList() {
 
      // 板一覧情報をツリーに渡す
      for (unsigned int i = 0; i < boardInfoArray.GetCount(); i += 3) {
+
 	  // カテゴリをツリーに登録
 	  if (categoryName != boardInfoArray[i + 2]) {
-	       category = m_tree_ctrl->AppendItem(m_rootId, boardInfoArray[i + 2], 0, 0, &treeData);
+	       category = m_tree_ctrl->AppendItem(m_tree_ctrl->GetRootItem(), boardInfoArray[i + 2]);
+	       m_tree_ctrl->SetItemImage(category, 0, wxTreeItemIcon_Normal);
 	  }
 	  // それぞれの要素を一時格納
 	  boardName = boardInfoArray[i];
 	  url = boardInfoArray[i + 1];
 	  categoryName = boardInfoArray[i + 2];
 
-	  // ツリーに板名を追加する  ! treeData !
-	  m_tree_ctrl->AppendItem(category, boardName, 1, 1, &treeData);
+	  // ツリーに板名を追加する
+	  wxTreeItemId itemIdTemp = m_tree_ctrl->AppendItem(category, boardName);
+	  m_tree_ctrl->SetItemImage(itemIdTemp, 1, wxTreeItemIcon_Normal);
 
 	  // 板名の配列に板名とURLを入れておく
 	  URLvsBoardName urlVsName;
@@ -1786,7 +1754,71 @@ wxTreeCtrl* JaneClone::SetBoardList() {
      }
 
      m_tree_ctrl->Expand(m_rootId);
-     return m_tree_ctrl;
+
+     // パネルにSizerを設定する
+     m_boardTreePanel->SetSizer(vbox);
+     m_boardTreePanel->Update();
+}
+/**
+ * Sqliteから板一覧情報を抽出してレイアウトに反映するメソッド
+ */
+void JaneClone::SetBoardList() {
+
+     // ArrayStringの形で板一覧情報を取得する
+     wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
+     // カテゴリ名一時格納用
+     wxString categoryName;
+     // 板名一時格納用
+     wxString boardName;
+     // URL一時格納用
+     wxString url;
+     // カテゴリ名を保持するためのID
+     wxTreeItemId category;
+     // Hashのカウント用Integer
+     int hashID = 0;
+     // 一度中身を削除する
+     m_tree_ctrl->CollapseAndReset(m_tree_ctrl->GetRootItem());
+
+     // 板一覧情報をツリーに渡す
+     for (unsigned int i = 0; i < boardInfoArray.GetCount(); i += 3) {
+	  // カテゴリをツリーに登録
+	  if (categoryName != boardInfoArray[i + 2]) {
+	       category = m_tree_ctrl->AppendItem(m_tree_ctrl->GetRootItem(), boardInfoArray[i + 2]);
+	  }
+	  // それぞれの要素を一時格納
+	  boardName = boardInfoArray[i];
+	  url = boardInfoArray[i + 1];
+	  categoryName = boardInfoArray[i + 2];
+
+	  // ツリーに板名を追加する
+	  m_tree_ctrl->AppendItem(category, boardName);
+
+	  // 板名の配列に板名とURLを入れておく
+	  URLvsBoardName urlVsName;
+	  urlVsName.boardName = boardName;
+	  urlVsName.boardURL = url;
+
+	  // 正規表現を使ってサーバ名と板名(ascii)を取得する
+	  // そこまで難しい正規表現を使う必要はないようです
+	  wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
+
+	  // 正規表現のコンパイルにエラーがなければ
+	  if (reThreadList.IsValid()) {
+	       // マッチさせる
+	       if (reThreadList.Matches(url)) {
+		    // マッチした文字列の３番目をいただく
+		    urlVsName.boardNameAscii = reThreadList.GetMatch(url, 3);
+	       }
+	  }
+	  // Hashに板情報を入れる
+	  if (!boardName.IsEmpty())
+	       retainHash[(const wxString) boardName]
+		    = (const URLvsBoardName&) urlVsName;
+	  // Hashのキー値をインクリメントしておく
+	  hashID++;
+     }
+
+     m_tree_ctrl->Expand(m_tree_ctrl->GetRootItem());
 }
 /**
  * バージョン情報が書かれたダイアログを表示する
