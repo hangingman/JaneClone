@@ -68,6 +68,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   [JaneCloneのコンパイル]
   $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
   $ cd /path/to/JaneClone
+  $ ./bootstrap
   $ ./configure
   $ make
   $ make install package-win32-msi
@@ -142,7 +143,6 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ make install
   $ sed -i 's/--define __WIN32__ --define __WIN95__ --define __GNUWIN32__/--define WX_CPU_AMD64/g' /mingw/bin/wx-config
   $ cd /mingw/include/wx-2.8/wx/msw
-  $ mv amd64.manifest wx.manifest
 
   wx-configコマンドが使用出来れば成功
   $ wx-config --version
@@ -153,6 +153,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   [JaneCloneのコンパイル]
   $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
   $ cd /path/to/JaneClone
+  $ ./bootstrap
   $ ./configure --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32
   $ make
   $ make package-win64-msi

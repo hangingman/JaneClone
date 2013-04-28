@@ -146,6 +146,10 @@ if test $has_pthread = 0; then
   AC_MSG_ERROR("ERROR: cannot find pthread.")
 fi
 
+# Check compile flag
+AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
+AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
+
 # Add Flags
 CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
 CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
