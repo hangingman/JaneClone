@@ -272,6 +272,9 @@ private:
 
      VirtualBoardListHash vbListHash;
 
+     // スレッド検索ボックスを隠す
+     void HideThreadSearchBar(wxCommandEvent& event);
+
      /**
       * 右下のオブジェクトとメソッド
       */

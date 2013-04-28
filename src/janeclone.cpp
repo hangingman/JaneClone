@@ -64,6 +64,7 @@ EVT_MENU(ID_FontDialogBoardNotebook, JaneClone::FontDialogBoardNotebook)
 EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
 EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
 EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
+EVT_MENU(ID_HideThreadSearchBar, JaneClone::HideThreadSearchBar)
 
 // 動的に項目を追加するメニューでのイベント
 EVT_MENU_OPEN(JaneClone::OnMenuOpen)
@@ -2585,7 +2586,7 @@ wxPanel* JaneClone::CreateAuiToolBar(wxAuiNotebook* parent, const wxString& boar
      wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 
      // wxAuiToolBarを宣言する
-     wxAuiToolBar* searchBox = new wxAuiToolBar(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+     wxAuiToolBar* searchBox = new wxAuiToolBar(panel, ID_ThreadSearchBar, wxDefaultPosition, wxDefaultSize,
 						wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
      searchBox->SetToolBitmapSize(wxSize(32,32));
      searchBox->AddTool(wxID_ANY, wxT("threadSearch"), 
@@ -2641,7 +2642,7 @@ wxPanel* JaneClone::CreateAuiToolBar(wxAuiNotebook* parent, const wxString& boar
      append_items1.Add(item);
 
      item.SetKind(wxITEM_NORMAL);
-     item.SetId(wxID_ANY);
+     item.SetId(ID_HideThreadSearchBar);
      item.SetLabel(wxT("閉じる"));
      append_items1.Add(item);
      searchBox->SetCustomOverflowItems(prepend_items1, append_items1);
@@ -2690,4 +2691,12 @@ wxPanel* JaneClone::CreateAuiToolBar(wxAuiNotebook* parent, const wxString& boar
      panel->SetSizer(vbox);
 
      return panel;
+}
+/**
+ * スレッド検索ボックスを隠す
+ */
+void JaneClone::HideThreadSearchBar(wxCommandEvent& event) {
+
+     wxWindow* threadSearchBar = wxWindow::FindWindowById(ID_ThreadSearchBar);
+     threadSearchBar->Hide();
 }

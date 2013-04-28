@@ -75,6 +75,8 @@ enum {
 	ID_UserLastClosedBoardClick,    // ユーザーが最後に閉じた板の情報をクリックした
 	ID_UserLookingTabsMenuClick,    // ユーザーが現在見ているスレタブ・板タブの情報をメニューからクリックした
 	ID_OnOpenJaneCloneOfficial,     // JaneClone公式サイトをブラウザで開く
+	ID_HideThreadSearchBar,         // スレッド検索ボックスを隠す
+	ID_ThreadSearchBar,             // スレッド検索ボックスのID
 	// responsewindow.hpp
 	ID_ResponseWindow,
 	ID_QuitResponseWindow,

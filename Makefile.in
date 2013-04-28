@@ -840,6 +840,7 @@ package-win32-msi: prepare-package
 	cp -p $(NSIS_NSI_IN) $(NSIS_NSI)
 	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(NSIS_NSI)
 	sed -i 's/%%%ARCH%%%/win32/g' $(NSIS_NSI)
+	sed -i 's/%%%DEFAULT_PROGRAMFILES%%%/$$PROGRAMFILES32/g' $(NSIS_NSI)
 	@echo 'makensis start...'
 	$(MAKENSIS) $(NSIS_NSI)
 
@@ -860,6 +861,7 @@ package-win64-msi: prepare-package
 	cp -p $(NSIS_NSI_IN) $(NSIS_NSI)
 	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(NSIS_NSI)
 	sed -i 's/%%%ARCH%%%/win64/g' $(NSIS_NSI)
+	sed -i 's/%%%DEFAULT_PROGRAMFILES%%%/$$PROGRAMFILES64/g' $(NSIS_NSI)
 	@echo 'makensis start...'
 	$(MAKENSIS) $(NSIS_NSI)
 

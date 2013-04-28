@@ -1,6 +1,7 @@
 # NSIS Script for JaneClone
 
-!include "MUI2.nsh"
+!include MUI2.nsh
+!include LogicLib.nsh
 
 !define NAME "JaneClone"
 !define VERSION "%%%VERSION%%%"
@@ -10,8 +11,7 @@
 
 Name "${PACKAGE}"
 OutFile "${NAME}-${ARCH}-${VERSION}.exe"
-
-InstallDir "$PROGRAMFILES\${PACKAGE}"
+InstallDir "%%%DEFAULT_PROGRAMFILES%%%\${PACKAGE}"
 InstallDirRegKey HKLM "SOFTWARE\${PACKAGE}" ""
 
 RequestExecutionLevel admin
@@ -50,9 +50,10 @@ Section
   
   SetShellVarContext all
   CreateDirectory "$SMPROGRAMS\${PACKAGE}"
-  CreateShortCut "$SMPROGRAMS\${PACKAGE}\manual.lnk" "$INSTDIR\manual.pdf"
-  CreateShortCut "$SMPROGRAMS\${PACKAGE}\sample.lnk" "$INSTDIR\sample"
   CreateShortCut "$SMPROGRAMS\${PACKAGE}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+  CreateShortCut "$SMPROGRAMS\${PACKAGE}\${NAME}.lnk" "$INSTDIR\$NAME.exe" "" "$INSTDIR\rc\janeclone.ico"  
+  CreateShortCut "$DESKTOP\${NAME}.lnk" "$INSTDIR\$NAME.exe" "" "$INSTDIR\rc\janeclone.ico"  
+  CreateShortCut "$DESKTOP\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" ""
 
   WriteRegStr HKLM SOFTWARE\${NAME} "" "$INSTDIR"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}" \
@@ -74,5 +75,7 @@ Section Uninstall
   
   SetShellVarContext all
   RMDir /r "$SMPROGRAMS\${PACKAGE}"
+
+  Delete "$desktop\${NAME}.lnk"
 
 SectionEnd
