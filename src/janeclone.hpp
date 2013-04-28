@@ -85,6 +85,9 @@
 /** JaneClone公式サイトのURL */
 #define JANECLONE_DOWNLOADSITE wxT("http://hiroyuki-nagata.github.io/")
 
+/** wxAuiToolbarを使うかどうか */
+#define USE_WXAUITOOLBAR 1
+
 /**
  * JaneClone本体はGUI構築用のwxFrameと
  * マウスモーション管理用のwxMouseEventsManagerを継承する
@@ -316,6 +319,8 @@ private:
       */
      // スレタブ上に存在するスレッドのURLを返す
      wxString GetThreadURL(const wxString title,const wxString boardNameAscii,const wxString origNumber);
+     // 板一覧リスト上にあるツールバーを設定する
+     wxPanel* CreateAuiToolBar(wxAuiNotebook* parent, const wxString& boardName, const wxString& outputPath);
 
      DECLARE_EVENT_TABLE()
 };

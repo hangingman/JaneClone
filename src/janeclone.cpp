@@ -932,6 +932,15 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 void JaneClone::SetThreadListItemNew(const wxString boardName,
 				     const wxString outputPath, const size_t selectedPage) {
 
+#if USE_WXAUITOOLBAR // wxAuiToolBarを使っていく方針
+     // wxAuiToolBarを宣言する
+     wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath);
+     // スレッドリストを表示させる
+     boardNoteBook->AddPage(panel, boardName, false);
+     // ノートブックの選択処理
+     boardNoteBook->SetSelection(selectedPage);
+
+#else
      // Hashに格納する板名タブのオブジェクトのインスタンスを準備する
      VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
 	  (wxWindow*) boardNoteBook, (const wxString) boardName,
@@ -947,24 +956,7 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
      // ノートブックの選択処理
      boardNoteBook->SetSelection(selectedPage);
 
-     // カラムの幅を最大化
-#ifdef __WXMSW__
-     vbListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(8, wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(9, wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(10, wxLIST_AUTOSIZE);
-#else
-     // どうやらWindows以外ではリストの幅が適切に調整されないので
-     // フォントの大きさから適切なリストの幅を算出する
-     wxFont font = GetCurrentFont();
-     int pointSize = font.GetPointSize();
-     // 2chのスレタイの文字数制限は全角24文字
-     vbListCtrl->SetColumnWidth(1, pointSize * 52);
-     vbListCtrl->SetColumnWidth(8, pointSize * 12);
-     vbListCtrl->SetColumnWidth(9, pointSize * 10);
-     vbListCtrl->SetColumnWidth(10, pointSize * 12);
 #endif
-
 }
 /**
  * ノートブックに、スレッド一覧情報の更新を反映するメソッド
@@ -981,6 +973,18 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	  vbListCtrlHash.erase(boardName);
 	  vbListHash.erase(boardName);
 
+#if USE_WXAUITOOLBAR // wxAuiToolBarを使っていく方針
+	  
+	  // wxAuiToolBarを宣言する
+	  wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath);
+     
+	  boardNoteBook->DeletePage(selectedPage);
+	  boardNoteBook->InsertPage(selectedPage, panel, boardName, false, wxNullBitmap);
+	  // ノートブックの選択処理
+	  boardNoteBook->SetSelection(selectedPage);
+
+#else
+
 	  VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
 	       (wxWindow*) boardNoteBook, (const wxString) boardName,
 	       (const wxString) outputPath);
@@ -994,23 +998,6 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	  boardNoteBook->InsertPage(selectedPage, vbListCtrl, boardName, false, wxNullBitmap);
 	  // ノートブックの選択処理
 	  boardNoteBook->SetSelection(selectedPage);
-
-	  // カラムの幅を最大化
-#ifdef __WXMSW__
-	  vbListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE);
-	  vbListCtrl->SetColumnWidth(8, wxLIST_AUTOSIZE);
-	  vbListCtrl->SetColumnWidth(9, wxLIST_AUTOSIZE);
-	  vbListCtrl->SetColumnWidth(10, wxLIST_AUTOSIZE);
-#else
-	  // どうやらWindows以外ではリストの幅が適切に調整されないので
-	  // フォントの大きさから適切なリストの幅を算出する
-	  wxFont font = GetCurrentFont();
-	  int pointSize = font.GetPointSize();
-	  // 2chのスレタイの文字数制限は全角24文字
-	  vbListCtrl->SetColumnWidth(1, pointSize * 52);
-	  vbListCtrl->SetColumnWidth(8, pointSize * 12);
-	  vbListCtrl->SetColumnWidth(9, pointSize * 10);
-	  vbListCtrl->SetColumnWidth(10, pointSize * 12);
 #endif
      }
 }
@@ -1901,18 +1888,10 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
      }
 
      // リストコントロールを引き出してくる
-     wxWindowList& children = boardNoteBook->GetChildren();
-     VirtualBoardListCtrl* vbListCtrl;
-
-     for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) { 
-          // boardNoteBookを親とするウィンドウクラスを引き出す
-	  wxWindow* current = (wxWindow *)node->GetData();
-
-	  if (current->GetLabel() == boardName) {
-	       // 板名が一致するwindowクラスを取得する
-	       vbListCtrl = (VirtualBoardListCtrl*)current;
-	       break;
-	  }
+     VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
+     if (vbListCtrl == NULL) {
+	  wxMessageBox(wxT("内部エラー, スレッドダウンロード処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
+	  return;
      }
 
      // Hashから情報を引き出す
@@ -2598,4 +2577,57 @@ void JaneClone::MotionLeaveWindow(wxMouseEvent& event) {
  */
 void JaneClone::OnOpenJaneCloneOfficial(wxCommandEvent& event) {
      wxLaunchDefaultBrowser(JANECLONE_DOWNLOADSITE);
+}
+/**
+ * 板一覧リスト上にあるツールバーを設定する
+ */
+wxPanel* JaneClone::CreateAuiToolBar(wxAuiNotebook* parent, const wxString& boardName, const wxString& outputPath) {
+
+     // スレッド検索ボックスとスレッド一覧リストを格納するサイザーを宣言する
+     wxPanel* panel = new wxPanel(parent, -1);
+     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+
+     // wxAuiToolBarを宣言する
+     wxAuiToolBar* searchBox = new wxAuiToolBar(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+						wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
+     searchBox->SetToolBitmapSize(wxSize(32,32));
+     searchBox->AddTool(wxID_ANY, wxT("threadSearch"), 
+			     wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), 
+			     wxT("検索"));
+     searchBox->Realize();
+     vbox->Add(searchBox, 0, wxLEFT | wxTOP, 10);
+
+     // Hashに格納する板名タブのオブジェクトのインスタンスを準備する
+     VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
+	  (wxWindow*) panel, (const wxString) boardName,
+	  (const wxString) outputPath);
+     vbListCtrl->SetName(boardName);
+     vbox->Add(vbListCtrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 10);
+
+     //　boardName(key),boardTabAndTh(value)としてHashに格納する
+     vbListCtrlHash[(const wxString) boardName] = (const VirtualBoardListCtrl&) vbListCtrl;
+     // listctrl内のリストをJaneCloneのメモリに持たせる
+     vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
+
+     // カラムの幅を最大化
+#ifdef __WXMSW__
+     vbListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(8, wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(9, wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(10, wxLIST_AUTOSIZE);
+#else
+     // どうやらWindows以外ではリストの幅が適切に調整されないので
+     // フォントの大きさから適切なリストの幅を算出する
+     wxFont font = GetCurrentFont();
+     int pointSize = font.GetPointSize();
+     // 2chのスレタイの文字数制限は全角24文字
+     vbListCtrl->SetColumnWidth(1, pointSize * 52);
+     vbListCtrl->SetColumnWidth(8, pointSize * 12);
+     vbListCtrl->SetColumnWidth(9, pointSize * 10);
+     vbListCtrl->SetColumnWidth(10, pointSize * 12);
+#endif
+     // パネルにSizerを設定する
+     panel->SetSizer(vbox);
+
+     return panel;
 }
