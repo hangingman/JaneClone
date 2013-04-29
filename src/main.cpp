@@ -19,21 +19,14 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
-//#include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif
-
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#include <wx/cmdline.h>
 #include <wx/image.h>
 #include <wx/snglinst.h>
 #include <wx/fs_mem.h>
 #include "janeclone.hpp"
+
+#ifdef __WXMSW__
+
+#include <wx/cmdline.h>
 
 /** 再起動処理のために引数が与えられた場合使用する */
 static const wxCmdLineEntryDesc gCmdLineDesc[] =
@@ -43,6 +36,8 @@ static const wxCmdLineEntryDesc gCmdLineDesc[] =
        wxCMD_LINE_VAL_NUMBER, wxCMD_LINE_PARAM_OPTIONAL },
      { wxCMD_LINE_NONE }
 };
+#endif
+
 /*
  * wxAppを継承したwxMainを宣言
  */
@@ -54,10 +49,13 @@ public:
      wxMain() : m_Locale(wxLANGUAGE_DEFAULT){}
      virtual bool OnInit();
      virtual int OnExit();
-     virtual int OnRun();
+
      // 再起動時のコマンドライン読み込み用
+#ifdef __WXMSW__
+     virtual int OnRun();
      virtual void OnInitCmdLine(wxCmdLineParser& parser);
      virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
+#endif
 
 private:
      wxSingleInstanceChecker* m_checker;
@@ -115,6 +113,8 @@ int wxMain::OnExit() {
 
      return 0;
 }
+
+#ifdef __WXMSW__
 /**
  * コンソールを走らせるために必要？
  */
@@ -140,3 +140,4 @@ bool wxMain::OnCmdLineParsed(wxCmdLineParser& parser) {
      parser.Found(wxT("p"), &m_pid);
      return true;
 }
+#endif

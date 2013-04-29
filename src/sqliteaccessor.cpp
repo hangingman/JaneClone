@@ -353,7 +353,7 @@ wxArrayString SQLiteAccessor::GetUserLookedThreadList() {
 	  wxString boardNameAscii = rs.GetAsString(wxT("BOARDNAME_ASCII"));
 
 	  // 各項目がNULLで無ければArrayStringに詰める
-	  if (title.Length() > 0 && origNumber > 0 && boardNameAscii > 0) {
+	  if (title.Len() > 0 && origNumber.Len() > 0 && boardNameAscii.Len() > 0) {
 	       array.Add(title);
 	       array.Add(origNumber);
 	       array.Add(boardNameAscii);
@@ -437,7 +437,7 @@ wxArrayString SQLiteAccessor::GetClosedBoardInfo() {
 	  wxMessageBox(e.GetMessage());
      }
 
-     return NULL;
+     return array;
 }
 /**
  * 板タブを閉じた際に情報をSQLiteに格納する
@@ -515,7 +515,7 @@ wxArrayString SQLiteAccessor::GetClosedThreadInfo() {
 	  wxMessageBox(e.GetMessage());
      }
 
-     return NULL;
+     return array;
 }
 /**
  * 指定されたテーブルにレコードが何件存在するかどうかを調べるメソッド

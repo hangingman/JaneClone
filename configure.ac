@@ -30,12 +30,12 @@ case "$host" in
         *-*-linux*)
                 AC_DEFINE(PLATFORM_LINUX, 1, [Platform is Linux])
                 PLATFORM_STRING="Linux"
-		AC_SUBST(PLATFORM_STRING)
+				AC_SUBST(PLATFORM_STRING)
                 ;;
         *-*-darwin*)
                 AC_DEFINE(PLATFORM_APPLE, 1, [Platform is Apple])
                 PLATFORM_STRING="Apple"
-		AC_SUBST(PLATFORM_STRING)
+				AC_SUBST(PLATFORM_STRING)
                 ;;
         *)
                 AC_MSG_WARN([*** Please add $host to configure.ac checks!])
@@ -149,6 +149,10 @@ fi
 # Check compile flag
 AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
 AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
+
+if test "$PLATFORM_STRING" = "Apple"; then
+	AX_CHECK_COMPILE_FLAG([-arch], [CXXFLAGS="$CXXFLAGS -arch x86_64" CFLAGS="$CFLAGS -arch x86_64"])
+fi
 
 # Add Flags
 CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
