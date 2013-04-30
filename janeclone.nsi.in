@@ -51,15 +51,12 @@ Section
   SetShellVarContext all
   CreateDirectory "$SMPROGRAMS\${PACKAGE}"
   CreateShortCut "$SMPROGRAMS\${PACKAGE}\Uninstall.lnk" "$INSTDIR\uninstall.exe"
-  CreateShortCut "$SMPROGRAMS\${PACKAGE}\${NAME}.lnk" "$INSTDIR\$NAME.exe" "" "$INSTDIR\rc\janeclone.ico"  
-  CreateShortCut "$DESKTOP\${NAME}.lnk" "$INSTDIR\$NAME.exe" "" "$INSTDIR\rc\janeclone.ico"  
-  CreateShortCut "$DESKTOP\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" ""
+  CreateShortCut "$SMPROGRAMS\${PACKAGE}\${NAME}.lnk" "$INSTDIR\${NAME}.exe" "" "$INSTDIR\rc\janeclone.ico"  
+  CreateShortCut "$DESKTOP\${NAME}.lnk" "$INSTDIR\${NAME}.exe" "" "$INSTDIR\rc\janeclone.ico"  
 
   WriteRegStr HKLM SOFTWARE\${NAME} "" "$INSTDIR"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}" \
-      "DisplayName" "${PACKAGE} (remove only)"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}" \
-      "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}" "DisplayName" "${PACKAGE} (remove only)"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}" "UninstallString" '"$INSTDIR\uninstall.exe"'
   
   WriteUninstaller "uninstall.exe"
   
