@@ -2503,9 +2503,8 @@ void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
      // メニューアイテムを順次消していく
      wxMenuItemList::Node* current_menuitem_node;
      wxMenuItem* current_menuitem;
-     current_menuitem_node = closeT->GetMenuItems().GetLast();
 
-     while ( current_menuitem_node ) {
+     while ( current_menuitem_node = closeT->GetMenuItems().GetLast() ) {
 	  current_menuitem = current_menuitem_node->GetData();
 	  if (!current_menuitem->IsSeparator()) {
 	       // menuの区切りでなければ削除する
@@ -2514,7 +2513,6 @@ void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
 	       // そうでなければ削除は終わりなので脱出
 	       break;
 	  }
-	  current_menuitem_node = current_menuitem_node->GetPrevious();
      }
      // ユーザが閉じたスレッドのうち、データベースに保存されている数
      wxArrayString array = SQLiteAccessor::GetClosedThreadInfo();
@@ -2530,9 +2528,8 @@ void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
      // メニューアイテムを順次消していく
      wxMenuItemList::Node* current_menuitem_node;
      wxMenuItem* current_menuitem;
-     current_menuitem_node = closeB->GetMenuItems().GetLast();
 
-     while ( current_menuitem_node ) {
+     while ( current_menuitem_node = closeB->GetMenuItems().GetLast() ) {
 	  current_menuitem = current_menuitem_node->GetData();
 	  if (!current_menuitem->IsSeparator()) {
 	       // menuの区切りでなければ削除する
@@ -2541,7 +2538,6 @@ void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
 	       // そうでなければ削除は終わりなので脱出
 	       break;
 	  }
-	  current_menuitem_node = current_menuitem_node->GetPrevious();
      }
      // ユーザが閉じたスレッドのうち、データベースに保存されている数
      wxArrayString array = SQLiteAccessor::GetClosedBoardInfo();
@@ -2557,9 +2553,8 @@ void JaneClone::UserLookingTabsMenuUp(wxUpdateUIEvent& event) {
      // メニューアイテムを順次消していく
      wxMenuItemList::Node* current_menuitem_node;
      wxMenuItem* current_menuitem;
-     current_menuitem_node = lookingTB->GetMenuItems().GetLast();
 
-     while ( current_menuitem_node ) {
+     while ( current_menuitem_node = lookingTB->GetMenuItems().GetLast() ) {
 	  current_menuitem = current_menuitem_node->GetData();
 	  if (!current_menuitem->IsSeparator()) {
 	       // menuの区切りでなければ削除する
@@ -2568,7 +2563,6 @@ void JaneClone::UserLookingTabsMenuUp(wxUpdateUIEvent& event) {
 	       // そうでなければ削除は終わりなので脱出
 	       break;
 	  }
-	  current_menuitem_node = current_menuitem_node->GetPrevious();
      }
 
      // menu8に現在ユーザーが開いているタブの名前を追加する
