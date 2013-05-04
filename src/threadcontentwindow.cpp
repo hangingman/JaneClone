@@ -424,11 +424,12 @@ void ThreadContentWindow::SearchThreadBySelectWord(wxCommandEvent& event) {
  */
 void ThreadContentWindow::OnSize(wxSizeEvent& event) {
 
-     // 現在の位置を保存する
-     GetViewStart(&m_x, &m_y);
-     fNeedScroll = true;
+     // 現在位置の取得
+     int x, y; 
+     GetViewStart(&x, &y);
      wxHtmlWindow::OnSize(event);
-     event.Skip();
+     Scroll(x, y);
+     event.Skip(false);
 }
 /**
  * 左クリック時に起こるイベント
