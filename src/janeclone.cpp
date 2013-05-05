@@ -578,34 +578,66 @@ void JaneClone::SetProperties() {
 
      // ユーザーのホームディレクトリを取得
      wxDir workDir(::wxGetHomeDir());
-     const wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     wxDir jcDir(jc);
 
      // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
      if (!workDir.HasSubDirs(JANECLONE_DIR)) {
+	  
 	  ::wxMkdir(jc);
+	  wxDir jcDir(jc);
+ 
+	  // 存在しない場合は初期化処理を実施する
+	  InitializeJaneClone(jc, jcDir);
+	  // sqliteの初期化を行う
+	  SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
+	  delete sqliteAccessor;
+	  /** 板一覧更新を行う */
+
+	  // ソケット通信を行う
+	  SocketCommunication* socketCommunication = new SocketCommunication();
+	  int rc = socketCommunication->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
+	  delete socketCommunication;
+
+	  // 実行コード別のダイアログを出す
+	  if (rc != 0) {
+	       wxMessageBox(wxT("板一覧情報取得に失敗しました。ネットワークの接続状況を確認してください。"));
+	  } else {
+	       // もし板一覧情報テーブルが空でなければテーブルを削除しておく
+	       if (SQLiteAccessor::TableHasData(wxT("BOARD_INFO"))) {
+		    SQLiteAccessor::DropTable(wxT("BOARD_INFO"));
+	       }
+	       // 板一覧情報を展開し、SQLiteに設定する
+	       wxString boardListPath = BOARD_LIST_PATH;
+	       new ExtractBoardList(boardListPath.mb_str());
+
+	       *m_logCtrl << wxT("(ヽ´ん`) 板一覧更新完了\n");
+	  }
+
+	  
+     } else {
+	  // sqliteの初期化を行う
+	  SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
+	  delete sqliteAccessor;
      }
 
-     wxDir jcDir(jc);
-
-     // datフォルダ、propフォルダ、cacheフォルダが存在するか確認。無ければ確認＆フォルダを作成
-     if (!jcDir.HasSubDirs(wxT("dat"))) {
-	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
-     }
-     if (!jcDir.HasSubDirs(wxT("prop"))) {
-	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
-     }
-     if (!jcDir.HasSubDirs(wxT("cache"))) {
-	  ::wxMkdir(jcDir.GetName() + + wxFileSeparator + wxT("cache"));
-     }
+     // 初回起動以外の際、確認のためディレクトリをチェックする
+     wxDir chkDir(jc);
 
      // 設定ファイルの準備をする
-     wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
-     config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile,
-			       wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+     wxString configFile = chkDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
-     // sqliteの初期化を行う
-     SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
-     delete sqliteAccessor;
+     // datフォルダ、propフォルダ、cacheフォルダが存在するか確認。無ければ確認＆フォルダを作成
+     if (!chkDir.HasSubDirs(wxT("dat"))) {
+	  ::wxMkdir(chkDir.GetName() + wxFileSeparator + wxT("dat"));
+     }
+     if (!chkDir.HasSubDirs(wxT("prop"))) {
+	  ::wxMkdir(chkDir.GetName() + wxFileSeparator + wxT("prop"));
+     }
+     if (!chkDir.HasSubDirs(wxT("cache"))) {
+	  ::wxMkdir(chkDir.GetName() + + wxFileSeparator + wxT("cache"));
+     }
 
      // アプリ上部URL入力欄の画像つきボタンのサイズ調整
      m_url_input_button->SetSize(m_url_input_button->GetBestSize());
@@ -627,6 +659,15 @@ void JaneClone::SetProperties() {
      imageViewer = new JaneCloneImageViewer(this, wxID_ANY, wxT("画像ビューア"));
      // 通常は隠しておく
      imageViewer->Show(false);
+}
+/**
+ * JaneCloneを初回起動した場合に実行するメソッド
+ */
+void JaneClone::InitializeJaneClone(wxString& jc, wxDir& jcDir) {
+
+     ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
+     ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
+     ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("cache"));
 }
 /**
  * DoLayout

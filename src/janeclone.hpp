@@ -199,6 +199,7 @@ private:
      void DoLayout();
      void SetJaneCloneAuiPaneInfo();
      void SetPreviousUserLookedTab();
+     void InitializeJaneClone(wxString& jc, wxDir& jcDir);
 
      // ツリーコントロールが乗るパネル
      wxPanel* m_boardTreePanel;
