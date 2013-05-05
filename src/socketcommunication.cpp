@@ -985,7 +985,6 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      headerPath += wxT(".header");
 #endif
 
-     //wxMessageBox(timeNow);
      wxString buttonText = wxT("%8F%91%82%AB%8D%9E%82%DE");
 
      // Postする内容のデータサイズを取得する
@@ -1180,7 +1179,6 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      headerPath += wxT(".header");
 #endif
 
-     //wxMessageBox(timeNow);
      wxString buttonText = wxT("%8F%91%82%AB%8D%9E%82%DE");
 
      // Postする内容のデータサイズを取得する
@@ -1389,7 +1387,6 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      headerPath += wxT(".header");
 #endif
 
-     //wxMessageBox(timeNow);
      wxString buttonText = wxT("%8F%91%82%AB%8D%9E%82%DE");
 
      // Postする内容のデータサイズを取得する
@@ -1689,7 +1686,6 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
      imageFilePath += uuid;
      imageFilePath += ext;
      result->imagePath = imageFilePath;
-     wxMessageBox(result->imagePath);
 
      /** Content-typeの判別 */
      wxString contentType = JaneCloneUtil::DetermineContentType(href);
