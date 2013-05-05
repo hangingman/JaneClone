@@ -323,8 +323,10 @@ private:
       */
      // スレタブ上に存在するスレッドのURLを返す
      wxString GetThreadURL(const wxString title,const wxString boardNameAscii,const wxString origNumber);
-     // 板一覧リスト上にあるツールバーを設定する
-     wxPanel* CreateAuiToolBar(wxAuiNotebook* parent, const wxString& boardName, const wxString& outputPath);
+     // スレッド一覧画面にツールバーを設定する
+     wxPanel* CreateAuiToolBar(wxWindow* parent, const wxString& boardName, const wxString& outputPath);
+     // 検索用ツールバー設定の共通部分
+     void CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindowID id, const wxString& boardName = wxEmptyString);
 
      DECLARE_EVENT_TABLE()
 };

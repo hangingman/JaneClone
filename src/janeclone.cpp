@@ -26,6 +26,10 @@
 #include"../rc/janeclone.xpm"
 #endif
 
+// マクロ置換用マクロ
+#define XSTR(x) #x
+#define STR(x)  XSTR(x)
+
 // event table
 BEGIN_EVENT_TABLE(JaneClone, wxFrame)
 // メニューバー・ポップアップメニューにあるコマンド入力で起動するメソッドのイベントテーブル
@@ -64,7 +68,7 @@ EVT_MENU(ID_FontDialogBoardNotebook, JaneClone::FontDialogBoardNotebook)
 EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
 EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
 EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
-EVT_MENU(ID_HideThreadSearchBar, JaneClone::HideThreadSearchBar)
+EVT_MENU(ID_SearchBarHide, JaneClone::HideThreadSearchBar)
 
 // 動的に項目を追加するメニューでのイベント
 EVT_MENU_OPEN(JaneClone::OnMenuOpen)
@@ -1731,6 +1735,9 @@ void JaneClone::InitializeBoardList() {
      wxString url;
      // Sizer
      wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+     // 検索用ツールバーを設定する
+     CreateCommonAuiToolBar(m_boardTreePanel, vbox, ID_BoardSearchBar);
+
      // ツリー用ウィジェットのインスタンスを用意する
      m_tree_ctrl = new wxTreeCtrl(m_boardTreePanel, ID_BoardTreectrl, wxDefaultPosition, wxDefaultSize, 
 				  wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
@@ -1870,9 +1877,9 @@ void JaneClone::SetBoardList() {
 void JaneClone::OnVersionInfo(wxCommandEvent&) {
 
      wxAboutDialogInfo info;
-     info.SetName(wxT("Jane Clone - ２ちゃんねるビューア"));
-     info.SetVersion(wxT("0.6.0"));
-     info.SetDescription(wxT("Copyright(C) 2012 Nagata Hiroyuki, All Rights Reserved. "));
+     info.SetName(wxT("JaneClone - ２ちゃんねるビューア"));
+     info.SetVersion(_T(STR(PACKAGE_VERSION)));
+     info.SetDescription(wxT("Copyright(C) 2013 Nagata Hiroyuki, All Rights Reserved. "));
      info.SetCopyright(wxT("http://nantonaku-shiawase.hatenablog.com/"));
 
      wxAboutBox(info);
@@ -2647,86 +2654,15 @@ void JaneClone::OnOpenJaneCloneOfficial(wxCommandEvent& event) {
      wxLaunchDefaultBrowser(JANECLONE_DOWNLOADSITE);
 }
 /**
- * 板一覧リスト上にあるツールバーを設定する
+ * スレッド一覧画面にツールバーを設定する
  */
-wxPanel* JaneClone::CreateAuiToolBar(wxAuiNotebook* parent, const wxString& boardName, const wxString& outputPath) {
+wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName, const wxString& outputPath) {
 
      // スレッド検索ボックスとスレッド一覧リストを格納するサイザーを宣言する
      wxPanel* panel = new wxPanel(parent, -1);
      wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-
-     // wxAuiToolBarを宣言する
-     wxAuiToolBar* searchBox = new wxAuiToolBar(panel, ID_ThreadSearchBar, wxDefaultPosition, wxDefaultSize,
-						wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
-     searchBox->SetToolBitmapSize(wxSize(32,32));
-     searchBox->AddTool(wxID_ANY, wxT("threadSearch"), 
-			     wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), 
-			     wxT("検索"));
-     // メニューの設定
-     wxAuiToolBarItemArray prepend_items1;
-     wxAuiToolBarItemArray append_items1;
-     wxAuiToolBarItem item;
-     item.SetKind(wxITEM_NORMAL);
-     //item.SetId(ID_ReloadThisThread);
-     item.SetLabel(wxT("↑検索"));
-     append_items1.Add(item);
-
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(wxID_ANY);
-     item.SetLabel(wxT("↓検索"));
-     append_items1.Add(item);
-
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(wxID_ANY);
-     item.SetLabel(wxT("コピー"));
-     append_items1.Add(item);
-
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(wxID_ANY);
-     item.SetLabel(wxT("切り取り"));
-     append_items1.Add(item);
-
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(wxID_ANY);
-     item.SetLabel(wxT("貼り付け"));
-     append_items1.Add(item);
-
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(wxID_ANY);
-     item.SetLabel(wxT("全て選択"));
-     append_items1.Add(item);
-
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(wxID_ANY);
-     item.SetLabel(wxT("クリア"));
-     append_items1.Add(item);
-
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(wxID_ANY);
-     item.SetLabel(wxT("通常検索"));
-     append_items1.Add(item);
-
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(wxID_ANY);
-     item.SetLabel(wxT("正規表現"));
-     append_items1.Add(item);
-
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(ID_HideThreadSearchBar);
-     item.SetLabel(wxT("閉じる"));
-     append_items1.Add(item);
-     searchBox->SetCustomOverflowItems(prepend_items1, append_items1);
-
-     // 検索ボックスを設定する
-     wxComboBox* searchWordCombo = new wxComboBox(searchBox, wxID_ANY, wxEmptyString, wxDefaultPosition, 
-     						  wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
-     searchBox->AddControl(searchWordCombo, boardName + wxT("_combo"));
-
-     // 閉じるボタンを設定する
-     searchBox->AddTool(wxID_ANY, wxT("closeThreadSearch"), wxBitmap(closeImg, wxBITMAP_TYPE_ANY), wxT("検索ボックスを隠す"));
-
-     searchBox->Realize();
-     vbox->Add(searchBox, 0, wxLEFT | wxTOP, 10);
+     // 検索ツールバーをpanelとsizerに載せる
+     CreateCommonAuiToolBar(panel, vbox, ID_ThreadSearchBar, boardName);
 
      // Hashに格納する板名タブのオブジェクトのインスタンスを準備する
      VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
@@ -2761,6 +2697,98 @@ wxPanel* JaneClone::CreateAuiToolBar(wxAuiNotebook* parent, const wxString& boar
      panel->SetSizer(vbox);
 
      return panel;
+}
+/**
+ * 検索用ツールバー設定の共通部分
+ */
+void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindowID id, const wxString& boardName) {
+
+     // wxAuiToolBarを宣言する
+     wxAuiToolBar* searchBox = new wxAuiToolBar(panel, id, wxDefaultPosition, wxDefaultSize, wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
+     searchBox->SetToolBitmapSize(wxSize(32,32));
+     searchBox->AddTool(wxID_ANY, wxT("threadSearch"), 
+			wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), 
+			wxT("検索"));
+     // メニューの設定
+     wxAuiToolBarItemArray prepend_items1;
+     wxAuiToolBarItemArray append_items1;
+     wxAuiToolBarItem item;
+     // 後からどのウィンドウか判別するために、itemとwindowを関連付ける
+     item.SetWindow (searchBox);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(ID_SearchBoxUp);
+     item.SetLabel(wxT("↑検索"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(ID_SearchBoxDown);
+     item.SetLabel(wxT("↓検索"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(ID_SearchBoxCopy);
+     item.SetLabel(wxT("コピー"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(ID_SearchBoxCut);
+     item.SetLabel(wxT("切り取り"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(wxID_ANY);
+     item.SetLabel(wxT("貼り付け"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(ID_SearchBoxSelectAll);
+     item.SetLabel(wxT("全て選択"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(ID_SearchBoxClear);
+     item.SetLabel(wxT("クリア"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(ID_SearchBoxNormalSearch);
+     item.SetLabel(wxT("通常検索"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(ID_SearchBoxRegexSearch);
+     item.SetLabel(wxT("正規表現"));
+     append_items1.Add(item);
+
+     item.SetKind(wxITEM_NORMAL);
+     item.SetId(ID_SearchBarHide);
+     item.SetLabel(wxT("閉じる"));
+     append_items1.Add(item);
+     searchBox->SetCustomOverflowItems(prepend_items1, append_items1);
+
+     if (id == ID_ThreadSearchBar) {
+	  // 検索ボックスを設定する
+	  wxComboBox* searchWordCombo = new wxComboBox(searchBox, ID_ThreadSearchBarCombo, wxEmptyString, wxDefaultPosition, 
+						       wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
+
+	  // スレッド検索ボックスのID
+	  searchBox->AddControl(searchWordCombo, boardName + wxT("_combo"));
+	  // 閉じるボタンを設定する
+	  searchBox->AddTool(wxID_ANY, wxT("closeThreadSearch"), wxBitmap(closeImg, wxBITMAP_TYPE_ANY), wxT("検索ボックスを隠す"));
+
+     } else if (id == ID_BoardSearchBar) {
+	  // 検索ボックスを設定する
+	  wxComboBox* searchWordCombo = new wxComboBox(searchBox, ID_BoardSearchBarCombo, wxEmptyString, wxDefaultPosition, 
+						       wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
+	  // 板名検索ボックスのID
+	  searchBox->AddControl(searchWordCombo, wxT("board_tree_combo"));
+	  // 閉じるボタンを設定する
+	  searchBox->AddTool(wxID_ANY, wxT("closeThreadSearch"), wxBitmap(closeImg, wxBITMAP_TYPE_ANY), wxT("検索ボックスを隠す"));
+     }
+
+     searchBox->Realize();
+     vbox->Add(searchBox, 0, wxLEFT | wxTOP, 10);
 }
 /**
  * スレッド検索ボックスを隠す

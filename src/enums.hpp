@@ -76,8 +76,19 @@ enum {
 	ID_UserLastClosedBoardClick,    // ユーザーが最後に閉じた板の情報をクリックした
 	ID_UserLookingTabsMenuClick,    // ユーザーが現在見ているスレタブ・板タブの情報をメニューからクリックした
 	ID_OnOpenJaneCloneOfficial,     // JaneClone公式サイトをブラウザで開く
-	ID_HideThreadSearchBar,         // スレッド検索ボックスを隠す
 	ID_ThreadSearchBar,             // スレッド検索ボックスのID
+	ID_BoardSearchBar,              // 板名検索ボックスのID
+	ID_ThreadSearchBarCombo,        // スレッド検索ボックスのコンボボックス
+	ID_BoardSearchBarCombo,         // 板名検索ボックスのコンボボックス
+	ID_SearchBoxUp,                 // 検索ボックスで上に移動
+	ID_SearchBoxDown,               // 検索ボックスで下に移動
+	ID_SearchBoxCopy,               // 検索ボックスでコピー実行
+	ID_SearchBoxCut,                // 検索ボックスで切り取り実行
+	ID_SearchBoxSelectAll,          // 検索ボックスで全て選択
+	ID_SearchBoxClear,              // 検索ボックスをクリア
+	ID_SearchBoxNormalSearch,       // 検索ボックスで通常検索
+	ID_SearchBoxRegexSearch,        // 検索ボックスで正規表現検索
+	ID_SearchBarHide,               // 検索ボックスを隠す
 	// responsewindow.hpp
 	ID_ResponseWindow,
 	ID_QuitResponseWindow,
