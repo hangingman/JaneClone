@@ -316,6 +316,22 @@ private:
      wxFont ReadFontInfo(const wxString& widgetName);
 
      /**
+      *  検索ボックス系の処理
+      */ 
+     // 検索ボックスで上に移動
+     void SearchBoxUp(wxCommandEvent& event);
+     // 検索ボックスで下に移動
+     void SearchBoxDown(wxCommandEvent& event);
+     // 検索ボックスでコピー実行
+     void SearchBoxCopy(wxCommandEvent& event);
+     // 検索ボックスで切り取り実行
+     void SearchBoxCut(wxCommandEvent& event);
+     // 検索ボックスで全て選択
+     void SearchBoxSelectAll(wxCommandEvent& event);
+     // 検索ボックスをクリア
+     void SearchBoxClear(wxCommandEvent& event);
+
+     /**
       *  よく使う処理のコールバック関数
       */
      // スレタブ上に存在するスレッドのURLを返す
@@ -326,6 +342,26 @@ private:
      void CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindowID id, const wxString& boardName = wxEmptyString);
      // 検索ボックスを隠す
      void HideSearchBar(wxCommandEvent& event);
+     // ユーザーがさわったコンボボックスを見つける
+     wxComboBox* FindUserAttachedCombo(wxCommandEvent& event, wxWindow* parent) {
+
+	  wxComboBox* combo;
+	  
+	  if (parent->GetLabel() == BOARD_TREE_SEARCH) {
+	       combo = dynamic_cast<wxComboBox*>(wxWindow::FindWindowById(ID_BoardSearchBarCombo));
+	  } else if (parent->GetLabel() == THREADLIST_SEARCH) {
+	       combo = dynamic_cast<wxComboBox*>(wxWindow::FindWindowById(ID_ThreadSearchBarCombo));
+	  }
+	  return combo;
+     };
+     // クリップボードに指定した文字列をコピーする
+     void SetStringToClipBoard(wxString copyString) {
+	  if (wxTheClipboard->Open()) {
+	       wxTheClipboard->Clear();
+	       wxTheClipboard->SetData(new wxTextDataObject(copyString));
+	       wxTheClipboard->Close();
+	  }
+     };
 
      DECLARE_EVENT_TABLE()
 };

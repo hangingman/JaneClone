@@ -69,6 +69,12 @@ EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
 EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
 EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
 EVT_MENU(ID_SearchBarHide, JaneClone::HideSearchBar)
+EVT_MENU(ID_SearchBoxUp, JaneClone::SearchBoxUp)
+EVT_MENU(ID_SearchBoxDown, JaneClone::SearchBoxDown)
+EVT_MENU(ID_SearchBoxCopy, JaneClone::SearchBoxCopy)
+EVT_MENU(ID_SearchBoxCut, JaneClone::SearchBoxCut)
+EVT_MENU(ID_SearchBoxSelectAll, JaneClone::SearchBoxSelectAll)
+EVT_MENU(ID_SearchBoxClear, JaneClone::SearchBoxClear)
 
 // 動的に項目を追加するメニューでのイベント
 EVT_MENU_OPEN(JaneClone::OnMenuOpen)
@@ -2800,4 +2806,66 @@ void JaneClone::HideSearchBar(wxCommandEvent& event) {
 	  window->Hide();
 	  m_mgr.Update();
      }
+}
+/** 
+ * 検索ボックスで上に移動
+ */
+void JaneClone::SearchBoxUp(wxCommandEvent& event) {
+}
+/** 
+ * 検索ボックスで下に移動
+ */
+void JaneClone::SearchBoxDown(wxCommandEvent& event) {
+}
+/** 
+ * 検索ボックスでコピー実行
+ */
+void JaneClone::SearchBoxCopy(wxCommandEvent& event) {
+
+     wxWindow* window = dynamic_cast<wxWindow*>(event.GetEventObject());
+     if (window == NULL) return;
+     // 取得対象の検索ボックスを決める
+     wxComboBox* combo = FindUserAttachedCombo(event, window);
+     if (combo == NULL) return;
+     // クリップボードに文字列をコピーする
+     combo->Copy();
+}
+/** 
+ * 検索ボックスで切り取り実行
+ */
+void JaneClone::SearchBoxCut(wxCommandEvent& event) {
+
+     wxWindow* window = dynamic_cast<wxWindow*>(event.GetEventObject());
+     if (window == NULL) return;
+     // 取得対象の検索ボックスを決める
+     wxComboBox* combo = FindUserAttachedCombo(event, window);
+     if (combo == NULL) return;
+     // コンボボックスから文字列を削除
+     combo->Cut();
+}
+/**
+ * 検索ボックスで全て選択
+ */
+void JaneClone::SearchBoxSelectAll(wxCommandEvent& event) {
+
+     wxWindow* window = dynamic_cast<wxWindow*>(event.GetEventObject());
+     if (window == NULL) return;
+     // 取得対象の検索ボックスを決める
+     wxComboBox* combo = FindUserAttachedCombo(event, window);
+     if (combo == NULL) return;
+     // コンボボックスの文字列を選択
+     combo->SetSelection(0, combo->GetLastPosition() + 1);
+}
+/** 
+ * 検索ボックスをクリア
+ */
+void JaneClone::SearchBoxClear(wxCommandEvent& event) {
+
+     wxWindow* window = dynamic_cast<wxWindow*>(event.GetEventObject());
+     if (window == NULL) return;
+     // 取得対象の検索ボックスを決める
+     wxComboBox* combo = FindUserAttachedCombo(event, window);
+     if (combo == NULL) return;
+     // コンボボックスの文字列をクリア
+     combo->SetValue(wxEmptyString);
 }
