@@ -2753,14 +2753,7 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
      item.SetLabel(wxT("クリア"));
      append_items1.Add(item);
 
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(ID_SearchBoxNormalSearch);
-     item.SetLabel(wxT("通常検索"));
-     append_items1.Add(item);
-
-     item.SetKind(wxITEM_NORMAL);
-     item.SetId(ID_SearchBoxRegexSearch);
-     item.SetLabel(wxT("正規表現"));
+     item.SetKind(wxITEM_SEPARATOR);
      append_items1.Add(item);
 
      item.SetKind(wxITEM_NORMAL);
@@ -2768,6 +2761,7 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
      item.SetLabel(wxT("閉じる"));
      append_items1.Add(item);
      searchBox->SetCustomOverflowItems(prepend_items1, append_items1);
+     searchBox->AddTool(ID_SearchBoxRegexSearch, wxT("正規表現"), wxBitmap(regexImg, wxBITMAP_TYPE_ANY), wxT("正規表現を使います"), wxITEM_CHECK);
 
      if (id == ID_ThreadSearchBar) {
 	  // ラベルを設定する

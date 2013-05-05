@@ -33,23 +33,6 @@
 // begin wxGlade: ::dependencies
 // end wxGlade
 
-// 各ボタンに貼り付けられる画像
-static const wxString autoReloadImg = wxT("rc/appointment-new.png");
-static const wxString redResExtractImg = wxT("rc/system-search.png");
-static const wxString refreshImg = wxT("rc/view-refresh.png");
-static const wxString scrollToNewResImg = wxT("rc/go-bottom.png");
-static const wxString stopImg = wxT("rc/dialog-error.png");
-static const wxString resExtractImg = wxT("rc/edit-find-replace.png");
-static const wxString newThreadImg = wxT("rc/go-last.png");
-static const wxString responseImg = wxT("rc/format-justify-left.png");
-static const wxString bookMarkImg = wxT("rc/bookmark-new.png");
-static const wxString deleteLogImg = wxT("rc/edit-delete.png");
-static const wxString closeImg = wxT("rc/emblem-unreadable.png");
-static const wxString normalSearchImg = wxT("rc/system-search.png");
-static const wxString hideSearchBarImg = wxT("rc/emblem-unreadable.png");
-static const wxString forwardImg = wxT("rc/go-down.png");
-static const wxString backwardImg = wxT("rc/go-up.png");
-
 // 各ウィジェットのサイズなど
 static const wxSize   threadContentBarImgSize = wxSize(32, 32);
 static const wxSize   searchWordComboSize = wxSize(320, 32);
