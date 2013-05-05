@@ -273,9 +273,6 @@ private:
 
      VirtualBoardListHash vbListHash;
 
-     // スレッド検索ボックスを隠す
-     void HideThreadSearchBar(wxCommandEvent& event);
-
      /**
       * 右下のオブジェクトとメソッド
       */
@@ -327,6 +324,8 @@ private:
      wxPanel* CreateAuiToolBar(wxWindow* parent, const wxString& boardName, const wxString& outputPath);
      // 検索用ツールバー設定の共通部分
      void CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindowID id, const wxString& boardName = wxEmptyString);
+     // 検索ボックスを隠す
+     void HideSearchBar(wxCommandEvent& event);
 
      DECLARE_EVENT_TABLE()
 };
