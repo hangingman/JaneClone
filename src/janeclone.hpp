@@ -82,12 +82,6 @@
 #include "responsewindow.hpp"
 #include "janecloneimageviewer.hpp"
 
-/** JaneClone公式サイトのURL */
-#define JANECLONE_DOWNLOADSITE wxT("http://hiroyuki-nagata.github.io/")
-
-/** wxAuiToolbarを使うかどうか */
-#define USE_WXAUITOOLBAR 1
-
 /**
  * JaneClone本体はGUI構築用のwxFrameと
  * マウスモーション管理用のwxMouseEventsManagerを継承する

@@ -127,7 +127,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(wxString& boardNameAscii,
 					     wxString& origNumber, wxString& resNumber) {
 
      // ファイルパスの組み立てとファイルの有無確認
-     wxDir dir(wxGetCwd());
+     wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString filePath = dir.GetName();
 
 #ifdef __WXMSW__
@@ -339,7 +339,7 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,
 					 wxString& origNumber) {
 
-     wxDir dir(wxGetCwd());
+     wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString filePath = dir.GetName();
 
 #ifdef __WXMSW__

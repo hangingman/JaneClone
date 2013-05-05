@@ -576,29 +576,30 @@ void JaneClone::SetProperties() {
      isDragging = false;
      isClicking = false;
 
-     // カレントディレクトリを設定
-     wxDir dir(wxGetCwd());
+     // ユーザーのホームディレクトリを取得
+     wxDir workDir(::wxGetHomeDir());
+     const wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+
+     // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
+     if (!workDir.HasSubDirs(JANECLONE_DIR)) {
+	  ::wxMkdir(jc);
+     }
+
+     wxDir jcDir(jc);
+
      // datフォルダ、propフォルダ、cacheフォルダが存在するか確認。無ければ確認＆フォルダを作成
-     if (!dir.Exists(wxT("./dat/"))) {
-	  ::wxMkdir(wxT("./dat/"));
+     if (!jcDir.HasSubDirs(wxT("dat"))) {
+	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
      }
-     if (!dir.Exists(wxT("./prop/"))) {
-	  wxMkdir(wxT("./prop/"));
+     if (!jcDir.HasSubDirs(wxT("prop"))) {
+	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
      }
-     if (!dir.Exists(wxT("./dat/cache/"))) {
-	  ::wxMkdir(wxT("./dat/cache/"));
+     if (!jcDir.HasSubDirs(wxT("cache"))) {
+	  ::wxMkdir(jcDir.GetName() + + wxFileSeparator + wxT("cache"));
      }
 
      // 設定ファイルの準備をする
-     wxString configFile = wxGetCwd();
-#ifdef __WXMSW__
-     // Windowsではパスの区切りは"\"
-     configFile += wxT("\\prop\\");
-#else
-     // Linuxではパスの区切りは"/"
-     configFile += wxT("/prop/");
-#endif
-     configFile += APP_CONFIG_FILE;
+     wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
      config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile,
 			       wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
@@ -774,8 +775,18 @@ void JaneClone::SetPreviousUserLookedTab() {
 	  // 板名に対応したURLを取ってくる
 	  URLvsBoardName hash = retainHash[boardName];
 	  wxString boardNameAscii = hash.boardNameAscii;
-	  wxString outputPath = wxT("./dat/") + boardNameAscii + wxT("/")
-	       + boardNameAscii + wxT(".dat");
+
+	  // ファイルのパスを設定する
+	  wxString outputPath = ::wxGetHomeDir() 
+	       + wxFileSeparator 
+	       + JANECLONE_DIR
+	       + wxFileSeparator
+	       + wxT("dat")
+	       + wxFileSeparator
+	       + boardNameAscii
+	       + wxFileSeparator
+	       + boardNameAscii
+	       + wxT(".dat");
 
 	  // 板一覧タブをセットする
 	  SetThreadListItemNew(boardName, outputPath, (const size_t) i);
@@ -992,8 +1003,7 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 
      // ソケット通信を行う
      SocketCommunication* socketCommunication = new SocketCommunication();
-     int rc = socketCommunication->DownloadBoardList(BOARD_LIST_PATH,
-						     BOARD_LIST_HEADER_PATH);
+     int rc = socketCommunication->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
      delete socketCommunication;
 
      // 実行コード別のダイアログを出す
@@ -1005,7 +1015,8 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	       SQLiteAccessor::DropTable(wxT("BOARD_INFO"));
 	  }
 	  // 板一覧情報を展開し、SQLiteに設定する
-	  new ExtractBoardList(BOARD_LIST_PATH.mb_str());
+	  wxString boardListPath = BOARD_LIST_PATH;
+	  new ExtractBoardList(boardListPath.mb_str());
 	  // 板一覧更新
 	  SetBoardList();
 	  
@@ -1297,16 +1308,8 @@ void JaneClone::CopyTBothDataToClipBoard(wxCommandEvent& event) {
 void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
 
      // ファイルパスの組み立て
-     wxDir dir(wxGetCwd());
-     wxString filePath = dir.GetName();
-
-#ifdef __WXMSW__
-     // Windowsではパスの区切りは"\"
-     filePath += wxT("\\dat");
-#else
-     // それ以外ではパスの区切りは"/"
-     filePath += wxT("/dat");
-#endif
+     wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     wxString filePath = jcDir.GetName() + wxFileSeparator + wxT("dat");     
 
      // datファイルパスを開く
      wxDir datDir(filePath);
@@ -1704,7 +1707,7 @@ void JaneClone::InitializeBoardList() {
      m_tree_ctrl->AssignImageList(treeImage);
      m_tree_ctrl->SetLabel(BOARD_TREE);
      wxTreeItemId rootTemp = m_tree_ctrl->AddRoot(wxT("2ch板一覧"));
-     m_tree_ctrl->SetItemImage(rootTemp, 1, wxTreeItemIcon_Normal);
+     m_tree_ctrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
 
      // カテゴリ名を保持するためのID
      wxTreeItemId category;

@@ -37,7 +37,13 @@ int SocketCommunication::DownloadBoardList(const wxString outputPath,
      wxString gzipPath = outputPath;
      gzipPath.Replace(wxT(".html"), wxT(".gzip"));
      // 一時保存用ファイルのパスを設定する
-     wxString tmpPath = wxT("./dat/tmp.html");
+     wxString tmpPath = ::wxGetHomeDir() 
+	  + wxFileSeparator 
+	  + JANECLONE_DIR
+	  + wxFileSeparator
+	  + wxT("dat")
+	  + wxFileSeparator
+	  + wxT("tmp.html");
 
      // 解凍された板一覧情報が存在しないor前回の通信ログが残っていないならば通常通りソケット通信を行う
      if ((!wxFileExists(outputPath)) || (!wxFileExists(headerPath))) {
@@ -241,14 +247,21 @@ wxString SocketCommunication::DownloadThreadList(const wxString boardName,
      wxString outputFileName = boardNameAscii;
      outputFileName += wxT(".dat");
      // 出力先のファイルパスを設定する
-     wxString outputFilePath = wxT("./dat/");
-     outputFilePath += boardNameAscii;
-     outputFilePath += wxT("/");
+     wxString outputFilePath = 
+	  ::wxGetHomeDir()
+	  + wxFileSeparator 
+	  + JANECLONE_DIR
+	  + wxFileSeparator
+	  + wxT("dat")
+	  + wxFileSeparator
+	  + boardNameAscii;
 
      // 保存用フォルダ存在するか確認。無ければフォルダを作成
      if (!wxDir::Exists(outputFilePath)) {
 	  ::wxMkdir(outputFilePath);
      }
+
+     outputFilePath += wxFileSeparator;
      outputFilePath += outputFileName;
      // gzip用のパスを設定する
      wxString gzipPath = outputFilePath;
@@ -494,12 +507,23 @@ wxString SocketCommunication::DownloadThread(const wxString boardName,
      // 出力するファイルの名前
      wxString outputFileName = origNumber + wxT(".dat");
      // 出力先のファイルパスを設定する
-     wxString outputFilePath = wxT("./dat/") + boardNameAscii + wxT("/");
-     // 保存用フォルダが存在するか確認。無ければフォルダを作成
+     wxString outputFilePath = 
+	  ::wxGetHomeDir()
+	  + wxFileSeparator 
+	  + JANECLONE_DIR
+	  + wxFileSeparator
+	  + wxT("dat")
+	  + wxFileSeparator
+	  + boardNameAscii;
+
+     // 保存用フォルダ存在するか確認。無ければフォルダを作成
      if (!wxDir::Exists(outputFilePath)) {
 	  ::wxMkdir(outputFilePath);
      }
+
+     outputFilePath += wxFileSeparator;
      outputFilePath += outputFileName;
+
      // gzip用のパスを設定する
      wxString gzipPath = outputFilePath;
      gzipPath.Replace(wxT(".dat"), wxT(".gzip"));
@@ -927,10 +951,22 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      // 投稿時間を算出する(UNIX Time)
      wxString timeNow = JaneCloneUtil::GetTimeNow();
 
-     wxDir dir(wxGetCwd());
+     wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString headerPath = dir.GetName();
-     if (!dir.Exists(wxT("./dat/kakikomi/"))) {
-	  ::wxMkdir(wxT("./dat/kakikomi/"));
+     wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     wxDir datDir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
+
+     // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
+     if (!dir.HasSubDirs(JANECLONE_DIR)) {
+	  ::wxMkdir(jcDir.GetName());
+     }
+
+     if (!jcDir.HasSubDirs(wxT("dat"))) {
+	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
+     }
+
+     if (!datDir.HasSubDirs(wxT("kakikomi"))) {
+	  ::wxMkdir(datDir.GetName() + wxFileSeparator + wxT("kakikomi"));
      }
 
 #ifdef __WXMSW__
@@ -1110,10 +1146,22 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      // 投稿時間を算出する(UNIX Time)
      wxString timeNow = JaneCloneUtil::GetTimeNow();
 
-     wxDir dir(wxGetCwd());
+     wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString headerPath = dir.GetName();
-     if (!dir.Exists(wxT("./dat/kakikomi/"))) {
-	  ::wxMkdir(wxT("./dat/kakikomi/"));
+     wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     wxDir datDir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
+
+     // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
+     if (!dir.HasSubDirs(JANECLONE_DIR)) {
+	  ::wxMkdir(jcDir.GetName());
+     }
+
+     if (!jcDir.HasSubDirs(wxT("dat"))) {
+	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
+     }
+
+     if (!datDir.HasSubDirs(wxT("kakikomi"))) {
+	  ::wxMkdir(datDir.GetName() + wxFileSeparator + wxT("kakikomi"));
      }
 
 #ifdef __WXMSW__
@@ -1307,10 +1355,22 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      // 投稿時間を算出する(UNIX Time)
      wxString timeNow = JaneCloneUtil::GetTimeNow();
 
-     wxDir dir(wxGetCwd());
+     wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString headerPath = dir.GetName();
-     if (!dir.Exists(wxT("./dat/kakikomi/"))) {
-	  ::wxMkdir(wxT("./dat/kakikomi/"));
+     wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     wxDir datDir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
+
+     // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
+     if (!dir.HasSubDirs(JANECLONE_DIR)) {
+	  ::wxMkdir(jcDir.GetName());
+     }
+
+     if (!jcDir.HasSubDirs(wxT("dat"))) {
+	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
+     }
+
+     if (!datDir.HasSubDirs(wxT("kakikomi"))) {
+	  ::wxMkdir(datDir.GetName() + wxFileSeparator + wxT("kakikomi"));
      }
 
 #ifdef __WXMSW__
@@ -1456,20 +1516,20 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 bool SocketCommunication::InitializeCookie() {
 
      // カレントディレクトリを設定
-     wxDir dir(wxGetCwd());
-     if (!dir.Exists(wxT("./prop/"))) {
-	  wxMkdir(wxT("./prop/"));
+     wxDir dir(::wxGetHomeDir());
+     wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     wxDir propDir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
+
+     // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
+     if (!dir.HasSubDirs(JANECLONE_DIR)) {
+	  ::wxMkdir(jcDir.GetName());
+     }
+
+     if (!jcDir.HasSubDirs(wxT("prop"))) {
+	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
      }
      // 設定ファイルの準備をする
-     wxString configFile = wxGetCwd();
-#ifdef __WXMSW__
-     // Windowsではパスの区切りは"\"
-     configFile += wxT("\\prop\\");
-#else
-     // Linuxではパスの区切りは"/"
-     configFile += wxT("/prop/");
-#endif
-     configFile += COOKIE_CONFIG_FILE;
+     wxString configFile = propDir.GetName() + wxFileSeparator + COOKIE_CONFIG_FILE;
      
      if (wxFile::Exists(configFile)) {
 	  if (!config) {
@@ -1602,19 +1662,19 @@ void SocketCommunication::DownloadImageFile(const wxString& href, DownloadImageR
 void SocketCommunication::DownloadImageFileByHttp(const wxString& href, DownloadImageResult* result) {
 
      // 画像の保存先をコンフィグファイルから取得する
-     // デフォルトは ./dat/cache
+     // デフォルトは $HOME/.jc/cache
      InitializeCookie();
-     wxString imageFilePath = wxGetCwd();
+     wxString imageFilePath = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
 
 #ifdef __WXMSW__
      // Windowsではパスの区切りは"\"
      wxString tmp;
-     config->Read(wxT("CachePath"), &tmp, wxT("\\dat\\cache"));
+     config->Read(wxT("CachePath"), &tmp, wxT("\\cache"));
      imageFilePath += tmp;
 #else
      // Linuxではパスの区切りは"/"
      wxString tmp;
-     config->Read(wxT("CachePath"), &tmp, wxT("/dat/cache"));
+     config->Read(wxT("CachePath"), &tmp, wxT("/cache"));
      imageFilePath += tmp;
 #endif
      delete config;
@@ -1625,8 +1685,11 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
      uuid.Replace(wxT("}"), wxT(""), true);
 
      wxString ext  = wxT(".") + result->ext;
-     imageFilePath = imageFilePath + wxFileSeparator + uuid + ext;
+     imageFilePath += wxFileSeparator;
+     imageFilePath += uuid;
+     imageFilePath += ext;
      result->imagePath = imageFilePath;
+     wxMessageBox(result->imagePath);
 
      /** Content-typeの判別 */
      wxString contentType = JaneCloneUtil::DetermineContentType(href);
@@ -1682,18 +1745,18 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
 void SocketCommunication::DownloadImageFileByFtp(const wxString& href, DownloadImageResult* result) {
 
      // 画像の保存先をコンフィグファイルから取得する
-     // デフォルトは ./dat/cache
+     // デフォルトは $HOME/.jc/cache
      InitializeCookie();
-     wxString imageFilePath = wxGetCwd();
+     wxString imageFilePath = ::wxGetHomeDir();
 #ifdef __WXMSW__
      // Windowsではパスの区切りは"\"
      wxString tmp;
-     config->Read(wxT("CachePath"), &tmp, wxT("\\dat\\cache"));
+     config->Read(wxT("CachePath"), &tmp, wxT("\\cache"));
      imageFilePath += tmp;
 #else
      // Linuxではパスの区切りは"/"
      wxString tmp;
-     config->Read(wxT("CachePath"), &tmp, wxT("/dat/cache"));
+     config->Read(wxT("CachePath"), &tmp, wxT("/cache"));
      imageFilePath += tmp;
 #endif
      delete config;

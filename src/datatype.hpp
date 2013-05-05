@@ -27,20 +27,14 @@
 /*
  * 定数値の宣言
  */
+/** JaneClone公式サイトのURL */
+#define JANECLONE_DOWNLOADSITE wxT("http://hiroyuki-nagata.github.io/")
+/** JaneCloneの作業用隠しフォルダ名 */
+#define JANECLONE_DIR wxT(".jc")
+/** wxAuiToolbarを使うかどうか */
+#define USE_WXAUITOOLBAR 1
+/** コンフィグファイル名 */
 #define APP_CONFIG_FILE wxT("janeclone.env")
-// 板一覧情報ファイルのパス
-static const wxString BOARD_LIST_PATH = wxT("./dat/boardlist.html");
-// 板一覧情報ファイルのヘッダ情報のパス
-static const wxString BOARD_LIST_HEADER_PATH = wxT("./dat/boardlistheader.html");
-
-/** 各ウィジェットの名前を表す定数値 */
-#define JANECLONE_WINDOW       wxT("janeclone_window")
-#define SEARCH_BAR             wxT("m_search_ctrl")
-#define URL_BAR                wxT("m_url_input_panel")
-#define BOARD_TREE             wxT("m_tree_ctrl")
-#define LOG_WINDOW             wxT("m_logCtrl")
-#define BOARD_NOTEBOOK         wxT("boardNoteBook")
-#define THREAD_NOTEBOOK        wxT("threadNoteBook")
 
 // ファイルの区切り文字
 #ifdef __WXMSW__
@@ -55,6 +49,20 @@ static const wxString BOARD_LIST_HEADER_PATH = wxT("./dat/boardlistheader.html")
 #else
   #define wxExt wxT("") 
 #endif
+
+// 板一覧情報ファイルのパス
+#define BOARD_LIST_PATH ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR + wxFileSeparator + wxT("dat") + wxFileSeparator + wxT("boardlist.html")
+// 板一覧情報ファイルのヘッダ情報のパス
+#define BOARD_LIST_HEADER_PATH ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR + wxFileSeparator + wxT("dat") + wxFileSeparator + wxT("boardlistheader.html")
+
+/** 各ウィジェットの名前を表す定数値 */
+#define JANECLONE_WINDOW       wxT("janeclone_window")
+#define SEARCH_BAR             wxT("m_search_ctrl")
+#define URL_BAR                wxT("m_url_input_panel")
+#define BOARD_TREE             wxT("m_tree_ctrl")
+#define LOG_WINDOW             wxT("m_logCtrl")
+#define BOARD_NOTEBOOK         wxT("boardNoteBook")
+#define THREAD_NOTEBOOK        wxT("threadNoteBook")
 
 /**
  * クラス

@@ -102,6 +102,12 @@ public:
      static void DeleteTableData(const wxString);
 
 private:
+
+     /**
+      * JaneCloneが使用するSQLiteのDBファイルの場所を返す
+      */
+     static wxString GetDBFilePath();
+
      wxArrayString* boardInfoArray;
 };
 

@@ -519,21 +519,8 @@ void ResponseWindow::PostConfirmForm(wxCommandEvent &event) {
  */
 int ResponseWindow::CheckCookie() {
 
-     // カレントディレクトリを設定
-     wxDir dir(wxGetCwd());
-     if (!dir.Exists(wxT("./prop/"))) {
-	  wxMkdir(wxT("./prop/"));
-     }
-     // 設定ファイルの準備をする
-     wxString configFile = wxGetCwd();
-#ifdef __WXMSW__
-     // Windowsではパスの区切りは"\"
-     configFile += wxT("\\prop\\");
-#else
-     // Linuxではパスの区切りは"/"
-     configFile += wxT("/prop/");
-#endif
-     configFile += COOKIE_CONFIG_FILE;
+     wxString configFile = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR 
+	  + wxFileSeparator + wxT("prop") + wxFileSeparator + COOKIE_CONFIG_FILE;
 
      if (!wxFile::Exists(configFile))
 	  return NO_COOKIE;

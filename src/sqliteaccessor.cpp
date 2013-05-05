@@ -27,7 +27,7 @@
 SQLiteAccessor::SQLiteAccessor() {
      
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
 
      try {
 	  wxSQLite3Database::InitializeSQLite();
@@ -57,7 +57,7 @@ SQLiteAccessor::SQLiteAccessor() {
 void SQLiteAccessor::SetBoardInfoCommit(wxArrayString* boardInfoArray) {
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
 
      try {
 	  
@@ -93,7 +93,7 @@ void SQLiteAccessor::SetBoardInfoCommit(wxArrayString* boardInfoArray) {
 wxArrayString SQLiteAccessor::GetBoardInfo() {
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
 
      try {	  
 	  // dbファイルの初期化
@@ -136,7 +136,7 @@ wxArrayString SQLiteAccessor::GetBoardInfo() {
 bool SQLiteAccessor::TableHasData(const wxString tableName) {
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
 
      try {
 	  
@@ -176,7 +176,7 @@ bool SQLiteAccessor::TableHasData(const wxString tableName) {
 void SQLiteAccessor::DropTable(const wxString tableName) {
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
 
      try {
 	  
@@ -206,7 +206,7 @@ void SQLiteAccessor::DropTable(const wxString tableName) {
 void SQLiteAccessor::DeleteTableData(const wxString tableName) {
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
 
      try {
 	  
@@ -236,7 +236,7 @@ void SQLiteAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardList
      DeleteTableData(wxT("USER_LOOKING_BOARDLIST"));
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
      wxSQLite3Database::InitializeSQLite();
      wxSQLite3Database db;
      db.Open(dbFile);
@@ -263,7 +263,7 @@ void SQLiteAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardList
 wxArrayString SQLiteAccessor::GetUserLookedBoardList() {
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
      wxSQLite3Database::InitializeSQLite();
      wxSQLite3Database db;
      db.Open(dbFile);
@@ -299,7 +299,7 @@ void SQLiteAccessor::SetUserLookingThreadList(wxArrayString& userLookingThreadLi
      DeleteTableData(wxT("USER_LOOKING_THREADLIST"));
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
      wxSQLite3Database::InitializeSQLite();
      wxSQLite3Database db;
      db.Open(dbFile);
@@ -330,7 +330,7 @@ void SQLiteAccessor::SetUserLookingThreadList(wxArrayString& userLookingThreadLi
 wxArrayString SQLiteAccessor::GetUserLookedThreadList() {
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
      wxSQLite3Database::InitializeSQLite();
      wxSQLite3Database db;
      db.Open(dbFile);
@@ -372,7 +372,7 @@ void SQLiteAccessor::SetClosedThreadInfo(ThreadInfo* t) {
      wxDateTime now = wxDateTime::Now();
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
      wxSQLite3Database::InitializeSQLite();
 
      try {
@@ -404,7 +404,7 @@ void SQLiteAccessor::SetClosedThreadInfo(ThreadInfo* t) {
 wxArrayString SQLiteAccessor::GetClosedBoardInfo() {
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
      wxArrayString array;
 
      try {
@@ -450,7 +450,7 @@ void SQLiteAccessor::SetClosedBoardInfo(URLvsBoardName* hash) {
      wxDateTime now = wxDateTime::Now();
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
      wxSQLite3Database::InitializeSQLite();
 
      try {
@@ -482,7 +482,7 @@ void SQLiteAccessor::SetClosedBoardInfo(URLvsBoardName* hash) {
 wxArrayString SQLiteAccessor::GetClosedThreadInfo() {
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
      wxArrayString array;
 
      try {
@@ -523,7 +523,7 @@ wxArrayString SQLiteAccessor::GetClosedThreadInfo() {
 int SQLiteAccessor::HowManyRecord(const wxString tableName) {
 
      // dbファイルの初期化
-     wxString dbFile = wxGetCwd() + SQLITE_FILE_PATH;
+     wxString dbFile = GetDBFilePath();
 
      try {
 	  
@@ -551,4 +551,12 @@ int SQLiteAccessor::HowManyRecord(const wxString tableName) {
      }
 
      return 0;
-} 
+}
+/**
+ * JaneCloneが使用するSQLiteのDBファイルの場所を返す
+ */
+wxString SQLiteAccessor::GetDBFilePath() {
+
+     wxString dbFile = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR + SQLITE_FILE_PATH;
+     return dbFile;
+}

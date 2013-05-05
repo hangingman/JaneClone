@@ -55,7 +55,19 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
      // 指定されたパスからHTMLファイルを読み出す
      wxString htmlSource = GetConvertedDatFile(threadContentPath);
      // 設定ファイルの準備をする
-     wxString configFile = wxGetCwd() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     // ユーザーのホームディレクトリを取得
+     wxDir workDir(::wxGetHomeDir());
+     wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+
+     // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
+     if (!workDir.HasSubDirs(JANECLONE_DIR)) {
+	  ::wxMkdir(jcDir.GetName());
+     }
+     if (!jcDir.HasSubDirs(wxT("prop"))) {
+	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
+     }
+
+     wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
      wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
      // フォント設定を読み出し
