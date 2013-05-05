@@ -36,6 +36,7 @@
 #include <wx/dir.h>
 #include <wx/regex.h>
 #include <wx/fs_mem.h>
+#include <wx/treectrl.h>
 #include "wx/wxnkf.h"
 #include "wxUUID.h"
 #include "datatype.hpp"

@@ -68,6 +68,9 @@ EVT_MENU(ID_FontDialogBoardNotebook, JaneClone::FontDialogBoardNotebook)
 EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
 EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
 EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
+
+// 検索バー系の命令
+EVT_MENU(ID_SearchBoxDoSearch, JaneClone::SearchBoxDoSearch)
 EVT_MENU(ID_SearchBarHide, JaneClone::HideSearchBar)
 EVT_MENU(ID_SearchBoxUp, JaneClone::SearchBoxUp)
 EVT_MENU(ID_SearchBoxDown, JaneClone::SearchBoxDown)
@@ -1820,7 +1823,7 @@ void JaneClone::InitializeBoardList() {
 /**
  * Sqliteから板一覧情報を抽出してレイアウトに反映するメソッド
  */
-void JaneClone::SetBoardList() {
+void JaneClone::SetBoardList(const bool thisIsFirst) {
 
      // ArrayStringの形で板一覧情報を取得する
      wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
@@ -1842,6 +1845,7 @@ void JaneClone::SetBoardList() {
 	  // カテゴリをツリーに登録
 	  if (categoryName != boardInfoArray[i + 2]) {
 	       category = m_tree_ctrl->AppendItem(m_tree_ctrl->GetRootItem(), boardInfoArray[i + 2]);
+	       m_tree_ctrl->SetItemImage(category, 0, wxTreeItemIcon_Normal);
 	  }
 	  // それぞれの要素を一時格納
 	  boardName = boardInfoArray[i];
@@ -1849,7 +1853,8 @@ void JaneClone::SetBoardList() {
 	  categoryName = boardInfoArray[i + 2];
 
 	  // ツリーに板名を追加する
-	  m_tree_ctrl->AppendItem(category, boardName);
+	  wxTreeItemId tmp = m_tree_ctrl->AppendItem(category, boardName);
+	  m_tree_ctrl->SetItemImage(tmp, 1, wxTreeItemIcon_Normal);
 
 	  // 板名の配列に板名とURLを入れておく
 	  URLvsBoardName urlVsName;
@@ -1869,9 +1874,8 @@ void JaneClone::SetBoardList() {
 	       }
 	  }
 	  // Hashに板情報を入れる
-	  if (!boardName.IsEmpty())
-	       retainHash[(const wxString) boardName]
-		    = (const URLvsBoardName&) urlVsName;
+	  if (!boardName.IsEmpty() && thisIsFirst)
+	       retainHash[(const wxString) boardName] = (const URLvsBoardName&) urlVsName;
 	  // Hashのキー値をインクリメントしておく
 	  hashID++;
      }
@@ -2713,9 +2717,7 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
      // wxAuiToolBarを宣言する
      wxAuiToolBar* searchBox = new wxAuiToolBar(panel, id, wxDefaultPosition, wxDefaultSize, wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
      searchBox->SetToolBitmapSize(wxSize(32,32));
-     searchBox->AddTool(wxID_ANY, wxT("search_box"), 
-			wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), 
-			wxT("検索"));
+     searchBox->AddTool(ID_SearchBoxDoSearch, SEARCH_BOX, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), wxT("検索"));
      // メニューの設定
      wxAuiToolBarItemArray prepend_items1;
      wxAuiToolBarItemArray append_items1;
@@ -2796,6 +2798,73 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
      searchBox->Realize();
      vbox->Add(searchBox, 0, wxLEFT | wxTOP, 10);
 }
+/** 
+ * 検索実行
+ */
+void JaneClone::SearchBoxDoSearch(wxCommandEvent& event) {
+
+     wxWindow* window = dynamic_cast<wxWindow*>(event.GetEventObject());
+     if (window != NULL && window->GetLabel() == BOARD_TREE_SEARCH) {
+	  // 板一覧ツリーの操作
+	  wxComboBox* combo = FindUserAttachedCombo(event, window);
+	  const wxString keyword = combo->GetValue();
+	  SearchBoardTree(keyword);
+
+     } else if (window != NULL && window->GetLabel() == THREADLIST_SEARCH) {
+	  // スレッド一覧リストの操作
+	  wxComboBox* combo = FindUserAttachedCombo(event, window);
+	  const wxString keyword = combo->GetValue();
+	  SearchThreadList(keyword);
+     }
+}
+/**
+ * 板一覧ツリーを検索する
+ */
+void JaneClone::SearchBoardTree(const wxString& keyword) {
+
+     // 検索ワードをSQLiteに格納させる
+     //SQLiteAccessor::SetBoardListSearchKeyword(keyword);
+     // ArrayStringの形で板一覧情報を取得する
+     wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
+     // カテゴリ名一時格納用
+     wxString categoryName;
+     // 板名一時格納用
+     wxString boardName;
+     // URL一時格納用
+     wxString url;
+     // カテゴリ名を保持するためのID
+     wxTreeItemId category;
+
+     // 一度中身を削除する
+     m_tree_ctrl->CollapseAndReset(m_tree_ctrl->GetRootItem());
+
+     // 板一覧情報をツリーに渡す
+     for (unsigned int i = 0; i < boardInfoArray.GetCount(); i += 3) {
+	  // 板名がキーワードと一致する場合のみカテゴリをツリーに登録
+	  if (categoryName != boardInfoArray[i + 2] && boardInfoArray[i].Contains(keyword)) {
+	       category = m_tree_ctrl->AppendItem(m_tree_ctrl->GetRootItem(), boardInfoArray[i + 2]);
+	       m_tree_ctrl->SetItemImage(category, 0, wxTreeItemIcon_Normal);
+	  } else {
+	       continue;
+	  }
+	  // それぞれの要素を一時格納
+	  boardName = boardInfoArray[i];
+	  url = boardInfoArray[i + 1];
+	  categoryName = boardInfoArray[i + 2];
+
+	  wxTreeItemId tmp = m_tree_ctrl->AppendItem(category, boardName);
+	  m_tree_ctrl->SetItemImage(tmp, 1, wxTreeItemIcon_Normal);
+	  m_tree_ctrl->Expand(category);
+	  
+     }
+
+     m_tree_ctrl->Expand(m_tree_ctrl->GetRootItem());
+}
+/** 
+ * スレッド一覧リストを検索する
+ */
+void JaneClone::SearchThreadList(const wxString& keyword) {
+}
 /**
  * スレッド検索ボックスを隠す
  */
@@ -2868,4 +2937,9 @@ void JaneClone::SearchBoxClear(wxCommandEvent& event) {
      if (combo == NULL) return;
      // コンボボックスの文字列をクリア
      combo->SetValue(wxEmptyString);
+
+     if (window->GetLabel() == BOARD_TREE_SEARCH) {
+	  // 板一覧ツリーも初期状態にもどす
+	  SetBoardList(false);
+     }
 }

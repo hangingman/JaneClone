@@ -28,7 +28,6 @@
 #include <wx/image.h>
 #include <wx/statusbr.h>
 #include <wx/splitter.h>
-#include <wx/treectrl.h>
 #include <wx/msgdlg.h>
 #include <wx/imaglist.h>
 #include <wx/artprov.h>
@@ -206,7 +205,7 @@ private:
      // ツリーコントロール
      wxTreeCtrl* m_tree_ctrl;
      // 取得した板一覧ファイルからデータを抽出したのちwxTreeCtrlのインスタンスを返す
-     void SetBoardList();
+     void SetBoardList(const bool thisIsFirst = true);
      // 板一覧更ツリーの初期化
      void InitializeBoardList();
 
@@ -317,7 +316,13 @@ private:
 
      /**
       *  検索ボックス系の処理
-      */ 
+      */
+     // 検索実行
+     void SearchBoxDoSearch(wxCommandEvent& event);
+     // 板一覧ツリーを検索する
+     void SearchBoardTree(const wxString& keyword);
+     // スレッド一覧リストを検索する
+     void SearchThreadList(const wxString& keyword);
      // 検索ボックスで上に移動
      void SearchBoxUp(wxCommandEvent& event);
      // 検索ボックスで下に移動

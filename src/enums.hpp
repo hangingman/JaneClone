@@ -80,6 +80,7 @@ enum {
 	ID_BoardSearchBar,              // 板名検索ボックスのID
 	ID_ThreadSearchBarCombo,        // スレッド検索ボックスのコンボボックス
 	ID_BoardSearchBarCombo,         // 板名検索ボックスのコンボボックス
+	ID_SearchBoxDoSearch,           // 検索ボックスで検索ボタンを押す
 	ID_SearchBoxUp,                 // 検索ボックスで上に移動
 	ID_SearchBoxDown,               // 検索ボックスで下に移動
 	ID_SearchBoxCopy,               // 検索ボックスでコピー実行

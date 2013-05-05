@@ -474,4 +474,3 @@ wxString JaneCloneUtil::CalcThreadMomentum(wxString& itemResponse, wxString& ite
 	  return wxT("std::underflow_error");
      }
 }
-

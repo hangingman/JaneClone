@@ -58,6 +58,7 @@
 /** 各ウィジェットの名前を表す定数値 */
 #define JANECLONE_WINDOW       wxT("janeclone_window")
 #define SEARCH_BAR             wxT("m_search_ctrl")
+#define SEARCH_BOX             wxT("search_box")
 #define URL_BAR                wxT("m_url_input_panel")
 #define BOARD_TREE             wxT("m_tree_ctrl")
 #define BOARD_TREE_PANEL       wxT("m_tree_panel")
