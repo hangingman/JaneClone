@@ -40,10 +40,13 @@ SQLiteAccessor::SQLiteAccessor() {
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_BOARDLIST(BOARDNAME_KANJI TEXT)"));
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_THREADLIST(THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
 	  // ユーザーが最近閉じたタブについての情報
-	  db.ExecuteUpdate(
-	       wxT("CREATE TABLE IF NOT EXISTS USER_CLOSED_BOARDLIST(TIMEINFO TIMESTAMP, BOARDNAME_KANJI TEXT, BOARD_URL TEXT, BOARDNAME_ASCII TEXT)"));
-	  db.ExecuteUpdate(
-	       wxT("CREATE TABLE IF NOT EXISTS USER_CLOSED_THREADLIST(TIMEINFO TIMESTAMP, THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_CLOSED_BOARDLIST(TIMEINFO TIMESTAMP, BOARDNAME_KANJI TEXT, BOARD_URL TEXT, BOARDNAME_ASCII TEXT)"));
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_CLOSED_THREADLIST(TIMEINFO TIMESTAMP, THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
+	  // ユーザーが検索したキーワードを保存する(板一覧ツリー、スレッド一覧リスト、スレッド表示ウィンドウでの検索)
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_SEARCHED_BOARDNAME(TIMEINFO TIMESTAMP, KEYWORD TEXT)"));
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_SEARCHED_THREADNAME(TIMEINFO TIMESTAMP, KEYWORD TEXT)"));
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_SEARCHED_THREADCONTENTS(TIMEINFO TIMESTAMP, KEYWORD TEXT)"));
+
 	  db.Commit();
 	  db.Close();
 
@@ -560,3 +563,98 @@ wxString SQLiteAccessor::GetDBFilePath() {
      wxString dbFile = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR + SQLITE_FILE_PATH;
      return dbFile;
 }
+/**
+ * ユーザーが検索ボックスで検索したキーワードをSQLiteに格納する
+ */
+void SQLiteAccessor::SetUserSearchedKeyword(const wxString& keyword, const wxWindowID id) {
+
+     // 現在時間timestamp
+     wxDateTime now = wxDateTime::Now();
+
+     // dbファイルの初期化
+     wxString dbFile = GetDBFilePath();
+     wxSQLite3Database::InitializeSQLite();
+
+     try {
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+	  db.Begin();
+	  /** 閉じられたスレタブの情報をインサート */
+	  const wxString sqlIn = wxT("INSERT INTO ?(TIMEINFO, KEYWORD) VALUES (?,?)");
+	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+	  stmt.ClearBindings();
+
+	  if (id == ID_BoardSearchBar) {
+	       stmt.Bind(1, wxT("USER_SEARCHED_BOARDNAME"));
+	  } else if (id == ID_ThreadSearchBar) {
+	       stmt.Bind(1, wxT("USER_SEARCHED_THREADNAME"));
+	  } else {
+	       // エラールート
+	       return;
+	  }
+
+	  stmt.BindTimestamp(2, now);
+	  stmt.Bind(3, keyword);
+	  stmt.ExecuteUpdate();
+
+	  // コミット実行
+	  db.Commit();
+	  db.Close();
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+}
+/**
+ * ユーザーが検索ボックスで検索したキーワードを取得する
+ */
+wxArrayString SQLiteAccessor::GetUserSearchedKeyword(const wxWindowID id) {
+
+     // dbファイルの初期化
+     wxString dbFile = GetDBFilePath();
+     wxArrayString array;
+
+     try {
+
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+
+	  // リザルトセットを用意する
+	  wxSQLite3ResultSet rs;
+	  // SQL文を用意する
+	  const wxString SQL_QUERY = wxT("SELECT THREAD_TITLE from ?");
+	  wxSQLite3Statement stmt = db.PrepareStatement (SQL_QUERY);
+	  stmt.ClearBindings();
+
+	  if (id == ID_BoardSearchBar) {
+	       stmt.Bind(1, wxT("USER_SEARCHED_BOARDNAME"));
+	  } else if (id == ID_ThreadSearchBar) {
+	       stmt.Bind(1, wxT("USER_SEARCHED_THREADNAME"));
+	  } else {
+	       // エラールート
+	       return array;
+	  }
+
+	  // SQL文を実行する
+	  rs = db.ExecuteQuery(SQL_QUERY);
+	  db.Close();
+
+	  while (rs.NextRow()) {
+	       wxString keyword = rs.GetAsString(wxT("KEYWORD"));
+
+	       // 各項目がNULLで無ければArrayStringに詰める
+	       if (keyword.Length() > 0) {
+		    array.Add(keyword);
+	       }
+	  }
+
+	  return array;
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+
+     return array;
+}
+     

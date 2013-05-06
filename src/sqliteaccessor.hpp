@@ -28,6 +28,7 @@
 #include <wx/file.h>
 #include <wx/datetime.h>
 #include <wx/wxsqlite3.h>
+#include "enums.hpp"
 #include "datatype.hpp"
 
 // SQLiteのデータベースファイルのパス
@@ -100,6 +101,14 @@ public:
       * 指定されたテーブルのデータを削除する
       */
      static void DeleteTableData(const wxString);
+     /**
+      * ユーザーが検索ボックスで検索したキーワードをSQLiteに格納する
+      */
+     static void SetUserSearchedKeyword(const wxString& keyword, const wxWindowID id);
+     /**
+      * ユーザーが検索ボックスで検索したキーワードを取得する
+      */
+     static wxArrayString GetUserSearchedKeyword(const wxWindowID id);
 
 private:
 
