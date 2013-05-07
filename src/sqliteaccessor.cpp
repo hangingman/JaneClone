@@ -579,22 +579,26 @@ void SQLiteAccessor::SetUserSearchedKeyword(const wxString& keyword, const wxWin
 	  wxSQLite3Database db;
 	  db.Open(dbFile);
 	  db.Begin();
-	  /** 閉じられたスレタブの情報をインサート */
-	  const wxString sqlIn = wxT("INSERT INTO ?(TIMEINFO, KEYWORD) VALUES (?,?)");
-	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
-	  stmt.ClearBindings();
 
-	  if (id == ID_BoardSearchBar) {
-	       stmt.Bind(1, wxT("USER_SEARCHED_BOARDNAME"));
-	  } else if (id == ID_ThreadSearchBar) {
-	       stmt.Bind(1, wxT("USER_SEARCHED_THREADNAME"));
+	  wxString boardName;
+	  
+	  if (id == ID_BoardSearchBarCombo) {
+	       boardName = wxT("USER_SEARCHED_BOARDNAME");
+	  } else if (id == ID_ThreadSearchBarCombo) {
+	       boardName = wxT("USER_SEARCHED_THREADNAME");
 	  } else {
 	       // エラールート
+	       db.Commit();
+	       db.Close();
 	       return;
 	  }
 
-	  stmt.BindTimestamp(2, now);
-	  stmt.Bind(3, keyword);
+	  const wxString sqlIn = wxT("INSERT INTO ") + boardName + wxT("(TIMEINFO, KEYWORD) VALUES (?,?)");
+	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+	  stmt.ClearBindings();
+
+	  stmt.BindTimestamp(1, now);
+	  stmt.Bind(2, keyword);
 	  stmt.ExecuteUpdate();
 
 	  // コミット実行
@@ -622,19 +626,20 @@ wxArrayString SQLiteAccessor::GetUserSearchedKeyword(const wxWindowID id) {
 
 	  // リザルトセットを用意する
 	  wxSQLite3ResultSet rs;
-	  // SQL文を用意する
-	  const wxString SQL_QUERY = wxT("SELECT THREAD_TITLE from ?");
-	  wxSQLite3Statement stmt = db.PrepareStatement (SQL_QUERY);
-	  stmt.ClearBindings();
-
-	  if (id == ID_BoardSearchBar) {
-	       stmt.Bind(1, wxT("USER_SEARCHED_BOARDNAME"));
-	  } else if (id == ID_ThreadSearchBar) {
-	       stmt.Bind(1, wxT("USER_SEARCHED_THREADNAME"));
+	  wxString boardName;
+	  
+	  if (id == ID_BoardSearchBarCombo) {
+	       boardName = wxT("USER_SEARCHED_BOARDNAME");
+	  } else if (id == ID_ThreadSearchBarCombo) {
+	       boardName = wxT("USER_SEARCHED_THREADNAME");
 	  } else {
 	       // エラールート
+	       db.Close();
 	       return array;
 	  }
+
+	  // SQL文を用意する
+	  const wxString SQL_QUERY = wxT("SELECT KEYWORD from ") + boardName;
 
 	  // SQL文を実行する
 	  rs = db.ExecuteQuery(SQL_QUERY);

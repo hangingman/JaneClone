@@ -335,6 +335,8 @@ private:
      void SearchBoxSelectAll(wxCommandEvent& event);
      // 検索ボックスをクリア
      void SearchBoxClear(wxCommandEvent& event);
+     // 以前検索したキーワードをコンボボックスに補填する
+     void SupplySearchWords(wxComboBox* combo, const wxWindowID id);
 
      /**
       *  よく使う処理のコールバック関数
@@ -347,18 +349,27 @@ private:
      void CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindowID id, const wxString& boardName = wxEmptyString);
      // 検索ボックスを隠す
      void HideSearchBar(wxCommandEvent& event);
+
      // ユーザーがさわったコンボボックスを見つける
      wxComboBox* FindUserAttachedCombo(wxCommandEvent& event, wxWindow* parent) {
 
 	  wxComboBox* combo;
-	  
-	  if (parent->GetLabel() == BOARD_TREE_SEARCH) {
-	       combo = dynamic_cast<wxComboBox*>(wxWindow::FindWindowById(ID_BoardSearchBarCombo));
-	  } else if (parent->GetLabel() == THREADLIST_SEARCH) {
-	       combo = dynamic_cast<wxComboBox*>(wxWindow::FindWindowById(ID_ThreadSearchBarCombo));
-	  }
+	  wxWindowID id = FindUserAttachedWindowId(event, parent);
+	  combo = dynamic_cast<wxComboBox*>(wxWindow::FindWindowById(id));
+
 	  return combo;
      };
+
+     // ユーザーがさわったウィンドウのIDを返す
+     wxWindowID FindUserAttachedWindowId(wxCommandEvent& event, wxWindow* parent) {
+
+	  if (parent->GetLabel() == BOARD_TREE_SEARCH) {
+	       return ID_BoardSearchBarCombo;
+	  } else if (parent->GetLabel() == THREADLIST_SEARCH) {
+	       return ID_ThreadSearchBarCombo;
+	  }
+     };
+
      // クリップボードに指定した文字列をコピーする
      void SetStringToClipBoard(wxString copyString) {
 	  if (wxTheClipboard->Open()) {

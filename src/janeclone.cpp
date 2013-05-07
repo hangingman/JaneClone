@@ -2777,6 +2777,7 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 	  // 検索ボックスを設定する
 	  wxComboBox* searchWordCombo = new wxComboBox(searchBox, ID_ThreadSearchBarCombo, wxEmptyString, wxDefaultPosition, 
 						       wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
+	  SupplySearchWords(searchWordCombo, ID_ThreadSearchBarCombo);
 
 	  // スレッド検索ボックスのID
 	  searchBox->AddControl(searchWordCombo, boardName + wxT("_combo"));
@@ -2787,8 +2788,17 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 	  // ラベルを設定する
 	  searchBox->SetLabel(BOARD_TREE_SEARCH);
 	  // 検索ボックスを設定する
-	  wxComboBox* searchWordCombo = new wxComboBox(searchBox, ID_BoardSearchBarCombo, wxEmptyString, wxDefaultPosition, 
-						       wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
+	  const wxArrayString choices = SQLiteAccessor::GetUserSearchedKeyword(ID_BoardSearchBarCombo);
+	  wxComboBox* searchWordCombo = new wxComboBox(searchBox,
+						       ID_BoardSearchBarCombo,
+						       wxEmptyString, 
+						       wxDefaultPosition, 
+						       wxDefaultSize,  
+						       choices, 
+						       wxCB_DROPDOWN);
+
+	  SupplySearchWords(searchWordCombo, ID_BoardSearchBarCombo);
+
 	  // 板名検索ボックスのID
 	  searchBox->AddControl(searchWordCombo, wxT("board_tree_combo"));
 	  // 閉じるボタンを設定する
@@ -2798,32 +2808,36 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
      searchBox->Realize();
      vbox->Add(searchBox, 0, wxLEFT | wxTOP, 10);
 }
+/**
+ * 以前検索したキーワードをコンボボックスに補填する
+ */
+void JaneClone::SupplySearchWords(wxComboBox* combo, const wxWindowID id) {
+
+}
 /** 
  * 検索実行
  */
 void JaneClone::SearchBoxDoSearch(wxCommandEvent& event) {
 
      wxWindow* window = dynamic_cast<wxWindow*>(event.GetEventObject());
-     if (window != NULL && window->GetLabel() == BOARD_TREE_SEARCH) {
-	  // 板一覧ツリーの操作
-	  wxComboBox* combo = FindUserAttachedCombo(event, window);
-	  const wxString keyword = combo->GetValue();
-	  SearchBoardTree(keyword);
+     wxComboBox* combo = FindUserAttachedCombo(event, window);
+     const wxString keyword = combo->GetValue();
+     if (keyword.IsEmpty()) return;
 
+     if (window != NULL && window->GetLabel() == BOARD_TREE_SEARCH) {
+	  SearchBoardTree(keyword);
      } else if (window != NULL && window->GetLabel() == THREADLIST_SEARCH) {
-	  // スレッド一覧リストの操作
-	  wxComboBox* combo = FindUserAttachedCombo(event, window);
-	  const wxString keyword = combo->GetValue();
 	  SearchThreadList(keyword);
      }
+     // コンボボックスに検索したキーワードをつめる
+     combo->Append(keyword);
+     SQLiteAccessor::SetUserSearchedKeyword(keyword, FindUserAttachedWindowId(event, window));
 }
 /**
  * 板一覧ツリーを検索する
  */
 void JaneClone::SearchBoardTree(const wxString& keyword) {
 
-     // 検索ワードをSQLiteに格納させる
-     //SQLiteAccessor::SetBoardListSearchKeyword(keyword);
      // ArrayStringの形で板一覧情報を取得する
      wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
      // カテゴリ名一時格納用
