@@ -29,6 +29,7 @@
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
+#include <wx/dir.h>
 #include "datatype.hpp"
 
 class AnchoredResponsePopup: public wxPopupTransientWindow {
@@ -57,6 +58,7 @@ private:
      void OnSize( wxSizeEvent &event );
      void OnSetFocus( wxFocusEvent &event );
      void OnKillFocus( wxFocusEvent &event );
+     void SetInternalFonts(wxHtmlWindow* htmlWin);
 
 private:
      wxHtmlWindow *htmlWin;
