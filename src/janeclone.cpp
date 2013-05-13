@@ -980,31 +980,12 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 void JaneClone::SetThreadListItemNew(const wxString boardName,
 				     const wxString outputPath, const size_t selectedPage) {
 
-#if USE_WXAUITOOLBAR // wxAuiToolBarを使っていく方針
      // wxAuiToolBarを宣言する
      wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath);
      // スレッドリストを表示させる
      boardNoteBook->AddPage(panel, boardName, false);
      // ノートブックの選択処理
      boardNoteBook->SetSelection(selectedPage);
-
-#else
-     // Hashに格納する板名タブのオブジェクトのインスタンスを準備する
-     VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
-	  (wxWindow*) boardNoteBook, (const wxString) boardName,
-	  (const wxString) outputPath);
-
-     //　boardName(key),boardTabAndTh(value)としてHashに格納する
-     vbListCtrlHash[(const wxString) boardName] = (const VirtualBoardListCtrl&) vbListCtrl;
-     // listctrl内のリストをJaneCloneのメモリに持たせる
-     vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
-
-     // スレッドリストを表示させる
-     boardNoteBook->AddPage(vbListCtrl, boardName, false);
-     // ノートブックの選択処理
-     boardNoteBook->SetSelection(selectedPage);
-
-#endif
 }
 /**
  * ノートブックに、スレッド一覧情報の更新を反映するメソッド
@@ -1020,33 +1001,12 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 	  // ハッシュ内部の情報を削除する
 	  vbListCtrlHash.erase(boardName);
 	  vbListHash.erase(boardName);
-
-#if USE_WXAUITOOLBAR // wxAuiToolBarを使っていく方針
-	  
 	  // wxAuiToolBarを宣言する
-	  wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath);
-     
+	  wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath);     
 	  boardNoteBook->DeletePage(selectedPage);
 	  boardNoteBook->InsertPage(selectedPage, panel, boardName, false, wxNullBitmap);
 	  // ノートブックの選択処理
 	  boardNoteBook->SetSelection(selectedPage);
-
-#else
-
-	  VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
-	       (wxWindow*) boardNoteBook, (const wxString) boardName,
-	       (const wxString) outputPath);
-
-	  //　boardName(key),boardTabAndTh(value)としてHashに格納する
-	  vbListCtrlHash[(const wxString) boardName] = (const VirtualBoardListCtrl&) vbListCtrl;
-	  // listctrl内のリストをJaneCloneのメモリに持たせる
-	  vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
-
-	  boardNoteBook->DeletePage(selectedPage);
-	  boardNoteBook->InsertPage(selectedPage, vbListCtrl, boardName, false, wxNullBitmap);
-	  // ノートブックの選択処理
-	  boardNoteBook->SetSelection(selectedPage);
-#endif
      }
 }
 /**
@@ -1229,15 +1189,7 @@ void JaneClone::ReloadOneBoard(wxCommandEvent& event) {
      size_t page = boardNoteBook->GetSelection();
      wxString boardName = boardNoteBook->GetPageText(page);
      URLvsBoardName hash = retainHash[boardName];
-
-     // スレ一覧をダウンロードする
-     SocketCommunication* socketCommunication = new SocketCommunication();
-     socketCommunication->SetLogWindow(m_logCtrl);
-     wxString outputPath = socketCommunication->DownloadThreadList(boardName, hash.boardURL, hash.boardNameAscii);
-     delete socketCommunication;
-
-     // 更新をかける
-     SetThreadListItemUpdate(boardName, outputPath, page);
+     SetBoardNameToNoteBook(boardName, hash.boardURL, hash.boardNameAscii);
 }
 /**
  * 板のURLをクリップボードにコピーする

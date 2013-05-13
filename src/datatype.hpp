@@ -31,8 +31,6 @@
 #define JANECLONE_DOWNLOADSITE wxT("http://hiroyuki-nagata.github.io/")
 /** JaneCloneの作業用隠しフォルダ名 */
 #define JANECLONE_DIR wxT(".jc")
-/** wxAuiToolbarを使うかどうか */
-#define USE_WXAUITOOLBAR 1
 /** コンフィグファイル名 */
 #define APP_CONFIG_FILE wxT("janeclone.env")
 

@@ -69,10 +69,6 @@ public:
 	  m_since                  = since;
 	  m_oid                    = oid;
 	  m_boardName              = boardName;
-
-	  // 新着チェック状態のデフォルトを設定する
-	  //m_check = THREAD_STATE_NORMAL;
-	  //m_check = THREAD_STATE_ADD;
      };
 
      // ゲッターとセッター
@@ -117,6 +113,8 @@ public:
      };
      
      // それぞれのカラムをソートするPreidicate関数
+     
+
      // ! Fix Me ! 繰り返しが多すぎる。もう少し効率的に書ける方法を探すべき
      static bool PredicateForwardCheck(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return lItem.getCheck() < rItem.getCheck();
@@ -345,8 +343,6 @@ private:
      void MotionLeaveWindow(wxMouseEvent& event);
      void SetFocus(wxFocusEvent& event);
 
-     // リスト内部のイメージ
-     //wxImageList* threadImage;
      // 新着チェック
      bool f_check;
      // 番号
