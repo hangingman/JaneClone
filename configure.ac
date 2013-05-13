@@ -149,6 +149,7 @@ fi
 # Check compile flag
 AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
 AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
+AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"])
 
 if test "$PLATFORM_STRING" = "Apple"; then
 	AX_CHECK_COMPILE_FLAG([-arch], [CXXFLAGS="$CXXFLAGS -arch x86_64" CFLAGS="$CFLAGS -arch x86_64"])

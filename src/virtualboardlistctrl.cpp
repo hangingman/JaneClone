@@ -36,14 +36,22 @@ END_EVENT_TABLE()
  * @param wxString boardName   板名
  * @param wxString outputPath  datファイルのパス
  */
-VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
-					   const wxString& boardName, const wxString& outputPath) :
-wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
-	   wxLC_REPORT | wxLC_VIRTUAL) {
+VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent, const wxString& boardName, const wxString& outputPath) :
+wxListCtrl(parent, ID_BoardListCtrl, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRTUAL) {
 
      this->Hide();
      // クラス自体の目印を設置する
      SetLabel(boardName);
+     // リストに使用する画像を設定する
+     wxImageList* threadImage = new wxImageList(16, 16);
+     wxBitmap idx1(threadCheckImg, wxBITMAP_TYPE_PNG);
+     threadImage->Add(idx1);
+     wxBitmap idx2(threadAddImg, wxBITMAP_TYPE_PNG);
+     threadImage->Add(idx2);
+     wxBitmap idx3(threadDropImg, wxBITMAP_TYPE_PNG);
+     threadImage->Add(idx3);
+     this->AssignImageList(threadImage, wxIMAGE_LIST_SMALL);
+
      // テキストファイルの読み込み
      wxTextFile datfile(outputPath);
      datfile.Open();
@@ -56,7 +64,8 @@ wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
      // テキストファイルの終端まで読み込む
      for (wxString line = datfile.GetFirstLine(); !datfile.Eof(); line = datfile.GetNextLine()) {
 
-	  if (line.Contains(_("&"))) { 
+	  if (line.Contains(_("&"))) {
+	       // 実態参照文字の変換
 	       line = convCharacterReference(line);
 	  }
 	  // アイテム用の文字列を先に宣言する
@@ -95,12 +104,16 @@ wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
 	  itemLastUpdate = wxEmptyString;
 
 	  // リストにアイテムを挿入する
-	  m_vBoardList.push_back(VirtualBoardListItem(itemNumber, itemTitle, itemResponse, itemCachedResponseNumber,
-						      itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum,
-						      itemLastUpdate, itemSince, itemOid, itemBoardName));
+	  VirtualBoardListItem listItem = VirtualBoardListItem(itemNumber, itemTitle, itemResponse, itemCachedResponseNumber,
+							       itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum,
+							       itemLastUpdate, itemSince, itemOid, itemBoardName);
+	  // この項目の状態を設定する
+	  listItem.setCheck(THREAD_STATE_ADD);
+	  // Listctrlに項目を追加する
+	  m_vBoardList.push_back(listItem);
 
 	  // ループ変数をインクリメント
-	  loopNumber++;
+	  ++loopNumber;
      }
 
      /**
@@ -110,6 +123,7 @@ wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
      // データを挿入
      SetItemCount(m_vBoardList.size());
 
+     InsertColumn(COL_CHK, wxT("!"), wxLIST_FORMAT_CENTRE);
      InsertColumn(COL_NUM, wxT("番号"), wxLIST_FORMAT_RIGHT);
      InsertColumn(COL_TITLE, wxT("タイトル"));
      InsertColumn(COL_RESP, wxT("レス"), wxLIST_FORMAT_RIGHT);
@@ -123,6 +137,7 @@ wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
      InsertColumn(COL_BOARDNAME, wxT("板"));
 
      // フラグを全てtrueに設定する
+     f_check = true;
      f_number = true;
      f_title = true;
      f_response = true;
@@ -143,10 +158,8 @@ wxListCtrl(parent, ID_BOARDLISTCTRL, wxDefaultPosition, wxDefaultSize,
  * @param wxString boardName   板名(ログ一覧で固定)
  * @param wxString outputPath  datファイルのパス
  */
-VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
-					   const wxString& boardName, const wxArrayString& datFileList) :
-     wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-		wxLC_REPORT | wxLC_VIRTUAL) {
+VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,const wxString& boardName, const wxArrayString& datFileList) :
+wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,wxLC_REPORT | wxLC_VIRTUAL) {
 
      this->Hide();
 
@@ -174,7 +187,6 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 	  /**
 	   * リストに値を設定する
 	   */
-
 	  // 番号
 	  itemNumber = wxString::Format(wxT("%i"), loopNumber);
 	  // 板名
@@ -207,12 +219,16 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 	  itemLastUpdate = wxEmptyString;
 
 	  // リストにアイテムを挿入する
-	  m_vBoardList.push_back(VirtualBoardListItem(itemNumber, itemTitle, itemResponse, itemCachedResponseNumber,
-						      itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum,
-						      itemLastUpdate, itemSince, itemOid, itemBoardName));
+	  VirtualBoardListItem listItem = VirtualBoardListItem(itemNumber, itemTitle, itemResponse, itemCachedResponseNumber,
+							       itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum,
+							       itemLastUpdate, itemSince, itemOid, itemBoardName);
+	  // この項目の状態を設定する
+	  listItem.setCheck(THREAD_STATE_DROP);
+	  // Listctrlに項目を追加する
+	  m_vBoardList.push_back(listItem);
 
 	  // ループ変数をインクリメント
-	  loopNumber++;
+	  ++loopNumber;
      }
 
      /**
@@ -222,6 +238,7 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
      // データを挿入
      SetItemCount(m_vBoardList.size());
 
+     InsertColumn(COL_CHK, wxT("!"), wxLIST_FORMAT_CENTRE);
      InsertColumn(COL_NUM, wxT("番号"), wxLIST_FORMAT_RIGHT);
      InsertColumn(COL_TITLE, wxT("タイトル"));
      InsertColumn(COL_RESP, wxT("レス"), wxLIST_FORMAT_RIGHT);
@@ -271,10 +288,9 @@ VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const 
 	  // アイテム用の文字列を先に宣言する
 	  wxString itemNumber, itemBoardName, itemOid, itemSince, itemTitle, itemResponse, itemCachedResponseNumber,
 	       itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum, itemLastUpdate;
-
+	  
 	  // 番号
 	  itemNumber = wxString::Format(wxT("%i"), loopNumber);
-	  wxMessageBox(itemNumber);
 	  // 板名
 	  itemBoardName = boardName;
 
@@ -291,7 +307,7 @@ VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const 
 	  }
 
 	  /**
-	   * 新規ダウンロードの場合多くは空白となる
+	   * 更新処理
 	   */
 	  // 取得
 	  itemCachedResponseNumber = wxEmptyString;
@@ -305,12 +321,16 @@ VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const 
 	  itemLastUpdate = wxEmptyString;
 
 	  // リストにアイテムを挿入する
-	  m_vBoardList.push_back(VirtualBoardListItem(itemNumber, itemTitle, itemResponse, itemCachedResponseNumber,
-						      itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum,
-						      itemLastUpdate, itemSince, itemOid, itemBoardName));
+	  VirtualBoardListItem listItem = VirtualBoardListItem(itemNumber, itemTitle, itemResponse, itemCachedResponseNumber,
+							       itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum,
+							       itemLastUpdate, itemSince, itemOid, itemBoardName);
+	  // この項目の状態を設定する
+	  listItem.setCheck(THREAD_STATE_ADD);
+	  // Listctrlに項目を追加する
+	  m_vBoardList.push_back(listItem);
 
 	  // ループ変数をインクリメント
-	  loopNumber++;
+	  ++loopNumber;
      }
 
      /**
@@ -320,6 +340,7 @@ VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const 
      // データを挿入
      SetItemCount(m_vBoardList.size());
 
+     InsertColumn(COL_CHK, wxT("!"), wxLIST_FORMAT_CENTRE);
      InsertColumn(COL_NUM, wxT("番号"), wxLIST_FORMAT_RIGHT);
      InsertColumn(COL_TITLE, wxT("タイトル"));
      InsertColumn(COL_RESP, wxT("レス"), wxLIST_FORMAT_RIGHT);
@@ -346,7 +367,11 @@ wxString VirtualBoardListCtrl::OnGetItemText(long item, long column) const {
      wxString result = wxEmptyString;
 
      switch (column) {
-     
+
+     case COL_CHK:
+	  // アイコン部分には文字列を入れない
+	  result = wxEmptyString;
+	  break;
      case COL_NUM:
 	  result = m_vBoardList[item].getNumber();
 	  break;
@@ -400,6 +425,13 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
 
      // カラムの位置によって分岐させる
      switch (col) {
+
+     case COL_CHK:
+	  f_check ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseCheck)
+	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardCheck);
+	  f_check ? f_check = false
+	       : f_check = true;
+	  break;
      
      case COL_NUM:
 	  f_number ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseNumber)
@@ -510,23 +542,47 @@ wxString VirtualBoardListCtrl::convCharacterReference(wxString& inputString) {
      return buffer;
 }
 void VirtualBoardListCtrl::MotionEnterWindow(wxMouseEvent& event) {
-
-     SetFocus((wxFocusEvent&) event);
-     //wxMessageBox(wxT("virtual boardlist enter"))
-     //JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(this->GetGrandParent());
-     //wxMessageBox(wxJaneClone->boardNoteBook->SetSelection(0));
-     //wxJaneClone->boardNoteBook->SetSelection(0);
-     //wxAuiNotebook* note = (JaneClone->boardNoteBook)gParent->boardNoteBook;
-     //wxMessageBox(gParent->GetLabel());
-     //wxAuiNotebook* boardNoteBook(JaneClone->boardNoteBook);
-     //boardNoteBook->SetSelection(0);
      event.Skip();
 }
 void VirtualBoardListCtrl::MotionLeaveWindow(wxMouseEvent& event) {
-     //wxMessageBox(wxT("virtual boardlist leave"));
      event.Skip();
 }
 void VirtualBoardListCtrl::SetFocus(wxFocusEvent& event) {
      event.Skip();
 }
+/**
+ * 仮想リスト内のアイコンを表示させる
+ */
+int VirtualBoardListCtrl::OnGetItemColumnImage(long item, long column) const {
 
+     if (column != COL_CHK)
+	  return -1;
+
+     //const long threadState = m_vBoardList[item].getCheck();
+     const int threadState = m_vBoardList[item].getCheck();
+     
+     int result = -1;
+
+     switch (threadState) {
+     
+     case THREAD_STATE_ADD:
+     	  result = 2;
+     	  break;
+     case THREAD_STATE_NEW:
+     	  result = -1;
+     	  break;
+     case THREAD_STATE_DROP:
+     	  result = 3;
+     	  break;
+     case THREAD_STATE_CHECK:
+     	  result = 1;
+     	  break;
+     case THREAD_STATE_NORMAL:
+     	  result = -1;
+     	  break;
+     default:
+     	  break;
+     }
+
+     return result;
+}

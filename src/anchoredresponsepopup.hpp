@@ -30,6 +30,7 @@
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
 #include <wx/dir.h>
+#include <wx/fileconf.h>
 #include "datatype.hpp"
 
 class AnchoredResponsePopup: public wxPopupTransientWindow {

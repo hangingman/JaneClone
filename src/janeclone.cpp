@@ -1112,8 +1112,7 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
 	       // アンカーの出現位置
 	       wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
 	       // 取得した情報を元に新しいポップアップウィンドウを出現させる
-	       SetPopUpWindow(event, boardNameAscii, orgNumber, resNumber,
-			      anchorPoint);
+	       SetPopUpWindow(event, boardNameAscii, orgNumber, resNumber, anchorPoint);
 	  }
      }
 }
@@ -1448,20 +1447,20 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
 
      // カラムの幅を最大化
 #ifdef __WXMSW__
-     vbListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(8, wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(2, wxLIST_AUTOSIZE);
      vbListCtrl->SetColumnWidth(9, wxLIST_AUTOSIZE);
      vbListCtrl->SetColumnWidth(10, wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(11, wxLIST_AUTOSIZE);
 #else
      // どうやらWindows以外ではリストの幅が適切に調整されないので
      // フォントの大きさから適切なリストの幅を算出する
      wxFont font = GetCurrentFont();
      int pointSize = font.GetPointSize();
      // 2chのスレタイの文字数制限は全角24文字
-     vbListCtrl->SetColumnWidth(1, pointSize * 52);
-     vbListCtrl->SetColumnWidth(8, pointSize * 12);
-     vbListCtrl->SetColumnWidth(9, pointSize * 10);
-     vbListCtrl->SetColumnWidth(10, pointSize * 12);
+     vbListCtrl->SetColumnWidth(2, pointSize * 52);
+     vbListCtrl->SetColumnWidth(9, pointSize * 12);
+     vbListCtrl->SetColumnWidth(10, pointSize * 10);
+     vbListCtrl->SetColumnWidth(11, pointSize * 12);
 #endif
 
      // ノートブックの選択処理
@@ -1996,8 +1995,8 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
      // スレの固有番号とタイトルをリストから取り出す
      const long index = event.GetIndex();
-     const wxString origNumber(vbListCtrl->OnGetItemText(index, static_cast<long>(9)));
-     const wxString title(vbListCtrl->OnGetItemText(index, static_cast<long>(1)));
+     const wxString origNumber(vbListCtrl->OnGetItemText(index, static_cast<long>(VirtualBoardListCtrl::Columns::COL_OID)));
+     const wxString title(vbListCtrl->OnGetItemText(index, static_cast<long>(VirtualBoardListCtrl::Columns::COL_TITLE)));
 
      // ソケット通信を行う
      SocketCommunication* socketCommunication = new SocketCommunication();
@@ -2017,6 +2016,9 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
      *m_logCtrl << wxT("完了…　(´ん｀/)三\n");
 }
+/**
+ * スレッド一覧リストでリストのヘッダーにクリックした場合の処理
+ */
 void JaneClone::OnLeftClickAtListCtrlCol(wxListEvent& event) {
      
      // 現在アクティブになっているタブの板名を取得する
@@ -2230,7 +2232,7 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event,
 
      // マウスカーソルの位置に調整する
      wxPoint p = ClientToScreen(wxGetMousePosition());
-     popup->Position(anchorPoint, wxSize(p.x + 50, p.y - 50));
+     popup->Position(anchorPoint, wxSize(p.x + 50, p.y - 150));
      popup->Popup();
 }
 /**
@@ -2299,8 +2301,10 @@ void JaneClone::FontDialogThreadContents(wxCommandEvent& event) {
      wxString pointSize = wxString::Format(_("%d"), font.GetPointSize());
      config->Write(wxT("HTML.PointSize"), pointSize);
      // 設定を反映するため再起動させる
-     this->pid = wxGetProcessId();
-     Close(true);
+     //this->pid = wxGetProcessId();
+     //Close(true);
+     this->Refresh();
+     this->Update();
 }
 /**
  * フォント設定処理の本体
@@ -2348,6 +2352,7 @@ void JaneClone::SetFontDialog(const int enumType) {
 	       if (current->GetLabel() == wannaChange) {
 		    current->SetFont(canvasFont);
 		    current->Refresh();
+		    current->Update();
 		    break;
 	       }   
 	  }
@@ -2689,20 +2694,22 @@ wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName
 
      // カラムの幅を最大化
 #ifdef __WXMSW__
-     vbListCtrl->SetColumnWidth(1, wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(8, wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(9, wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(10, wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_CHK      , 20);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_TITLE    , wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_SINCE    , wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_OID      , wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_BOARDNAME, wxLIST_AUTOSIZE);
 #else
-     // どうやらWindows以外ではリストの幅が適切に調整されないので
+     // GTK+, Cocoaではリストの幅が適切に調整されないので
      // フォントの大きさから適切なリストの幅を算出する
      wxFont font = GetCurrentFont();
      int pointSize = font.GetPointSize();
      // 2chのスレタイの文字数制限は全角24文字
-     vbListCtrl->SetColumnWidth(1, pointSize * 52);
-     vbListCtrl->SetColumnWidth(8, pointSize * 12);
-     vbListCtrl->SetColumnWidth(9, pointSize * 10);
-     vbListCtrl->SetColumnWidth(10, pointSize * 12);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_CHK      , 20);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_TITLE    , pointSize * 52);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_SINCE    , pointSize * 12);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_OID      , pointSize * 10);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_BOARDNAME, pointSize * 12);
 #endif
      // パネルにSizerを設定する
      panel->SetSizer(vbox);

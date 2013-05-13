@@ -130,10 +130,11 @@ enum {
 	ID_SelectRightThumbnailTab,	// 右の画像タブに移動
 	ID_OnOpenImageByBrowser,	// 画像をブラウザで開く
 	ID_HideThumbnailTab,	        // 画像ビューアを隠す
-	// テスト用予備ID
-	ID_Test1,
-	ID_Test2,
-	ID_Test3
+	// スレッド一覧リストの新着状態を表す定数
+	ID_ThreadCheck,                 // 取得しているスレッドを表す 
+	ID_ThreadAdd,                   // スレッドにレスの増加が見られた状態
+	ID_ThreadDrop,                  // DAT落ちしたスレッドを表す
+	ID_ThreadNew                    // 新規に取得したスレッドを表す
 };
 
 #endif /* ENUMS_HPP_ */

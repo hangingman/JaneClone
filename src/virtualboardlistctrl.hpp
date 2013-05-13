@@ -28,10 +28,24 @@
 #include <wx/txtstrm.h>
 #include <vector>
 #include <algorithm>
+#include "datatype.hpp"
 #include "janecloneutil.hpp"
+
+/**
+ * スレッドの状態
+ */
+
+static const int THREAD_STATE_NEW    = 1000;
+static const int THREAD_STATE_NORMAL = 1001;
+static const int THREAD_STATE_ADD    = 1002;
+static const int THREAD_STATE_DROP   = 1003;
+static const int THREAD_STATE_CHECK  = 1004;
 
 class VirtualBoardListItem;
 
+/**
+ * 仮想リストの１項目分
+ */
 class VirtualBoardListItem {
 
 public:
@@ -39,17 +53,35 @@ public:
       * 仮想リストの１アイテムを表すオブジェクトのコンストラクタ
       */
      VirtualBoardListItem(const wxString& number, const wxString& title, const wxString& response, 
-			  const wxString& cachedResponseNumber,
-			  const wxString& newResponseNumber, const wxString& increaseResponseNumber,
+			  const wxString& cachedResponseNumber, const wxString& newResponseNumber, const wxString& increaseResponseNumber,
 			  const wxString& momentum, const wxString& lastUpdate, const wxString& since,
-			  const wxString& oid, const wxString& boardName):
+			  const wxString& oid, const wxString& boardName) {
+	       
+	  // 各項目を設定する
+	  m_number                 = number;
+	  m_title		   = title; 
+	  m_response		   = response;
+	  m_cachedResponseNumber   = cachedResponseNumber;
+	  m_newResponseNumber	   = newResponseNumber;
+	  m_increaseResponseNumber = increaseResponseNumber;
+	  m_momentum               = momentum;
+	  m_lastUpdate             = lastUpdate;
+	  m_since                  = since;
+	  m_oid                    = oid;
+	  m_boardName              = boardName;
 
-	  m_number(number), m_title(title), m_response(response), 
-	  m_cachedResponseNumber(cachedResponseNumber), m_newResponseNumber(newResponseNumber),
-	  m_increaseResponseNumber(increaseResponseNumber), m_momentum(momentum),
-	  m_lastUpdate(lastUpdate), m_since(since), m_oid(oid), m_boardName(boardName) {};
+	  // 新着チェック状態のデフォルトを設定する
+	  //m_check = THREAD_STATE_NORMAL;
+	  //m_check = THREAD_STATE_ADD;
+     };
 
      // ゲッターとセッター
+     int getCheck() const {
+	  return m_check;
+     };
+     void setCheck(int chk) {
+	  m_check = chk;
+     };
      wxString getNumber() const {
 	  return m_number;
      };
@@ -86,6 +118,14 @@ public:
      
      // それぞれのカラムをソートするPreidicate関数
      // ! Fix Me ! 繰り返しが多すぎる。もう少し効率的に書ける方法を探すべき
+     static bool PredicateForwardCheck(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return lItem.getCheck() < rItem.getCheck();
+     };
+
+     static bool PredicateReverseCheck(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
+	  return lItem.getCheck() > rItem.getCheck();
+     };
+
      static bool PredicateForwardNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getNumber()) < wxAtoi(rItem.getNumber());
      };
@@ -175,6 +215,8 @@ public:
      };
 
 private:
+     // 新着チェック
+     int m_check;
      // 番号(単に取得したdatファイルの順序から)
      wxString m_number;
      // タイトル
@@ -201,25 +243,11 @@ private:
 
 typedef std::vector<VirtualBoardListItem> VirtualBoardList;
 
+/**
+ * スレッド一覧リスト用の仮想リストコントロール
+ * 大量のデータを扱うときは仮想リストを使用する
+ */
 class VirtualBoardListCtrl: public wxListCtrl {
-
-     enum Columns {
-	  COL_NUM = 0, 	// 番号
-	  COL_TITLE,	// タイトル
-	  COL_RESP,	// レス
-	  COL_CACHEDRES,// 取得
-	  COL_NEWRESP,	// 新着
-	  COL_INCRESP,	// 増レス
-	  COL_MOMENTUM,	// 勢い
-	  COL_LASTUP,	// 最終取得
-	  COL_SINCE,	// SINCE
-	  COL_OID,      // 固有番号
-	  COL_BOARDNAME	// 板
-     };
-
-     enum {
-	  ID_BOARDLISTCTRL
-     };
 
 public:
      /**
@@ -273,11 +301,28 @@ public:
       * リスト内部のカラムの数を返す
       */
      long GetColumnCount() {
-	  return 11;
+	  return 12;
      }
-
+     
      // 内部にあるリスト
      VirtualBoardList m_vBoardList;
+
+     // リスト内部の列挙型
+     enum Columns {
+	  COL_CHK = 0,  // 新着チェック
+	  COL_NUM, 	// 番号
+	  COL_TITLE,	// タイトル
+	  COL_RESP,	// レス
+	  COL_CACHEDRES,// 取得
+	  COL_NEWRESP,	// 新着
+	  COL_INCRESP,	// 増レス
+	  COL_MOMENTUM,	// 勢い
+	  COL_LASTUP,	// 最終取得
+	  COL_SINCE,	// SINCE
+	  COL_OID,      // 固有番号
+	  COL_BOARDNAME	// 板
+     };
+
 
 private:
 
@@ -285,11 +330,26 @@ private:
       * 文字列中の実体参照文字を変換する
       */
      static wxString convCharacterReference(wxString& inputString);
+     /**
+      * 仮想リスト内のアイコンを表示させる
+      */
+     virtual int OnGetItemColumnImage(long item, long column) const;
+     /**
+      *
+      */
+     long GetItemData(long item) const {
+	  return wxListCtrl::GetItemData(item);
+     };
 
      void MotionEnterWindow(wxMouseEvent& event);
      void MotionLeaveWindow(wxMouseEvent& event);
      void SetFocus(wxFocusEvent& event);
 
+     // リスト内部のイメージ
+     //wxImageList* threadImage;
+     // 新着チェック
+     bool f_check;
+     // 番号
      bool f_number;
      // タイトル
      bool f_title;
