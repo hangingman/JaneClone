@@ -69,6 +69,20 @@ EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
 EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
 EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
 
+// メニューバーからスレッド一覧リストをソート
+EVT_MENU(ID_OnClickMenuCOL_CHK,      JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_NUM,      JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_TITLE,    JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_RESP,     JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_CACHEDRES,JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_NEWRESP,  JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_INCRESP,  JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_MOMENTUM, JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_LASTUP,   JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_SINCE,    JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_OID,      JaneClone::OnThreadListSort)
+EVT_MENU(ID_OnClickMenuCOL_BOARDNAME,JaneClone::OnThreadListSort)
+
 // 検索バー系の命令
 EVT_MENU(ID_SearchBoxDoSearch, JaneClone::SearchBoxDoSearch)
 EVT_MENU(ID_SearchBarHide, JaneClone::HideSearchBar)
@@ -318,18 +332,18 @@ void JaneClone::SetJaneCloneManuBar() {
      menu4->AppendSubMenu(abone, wxT("あぼ～ん"));
      menu4->AppendSeparator();
      wxMenu *sort = new wxMenu;
-     sort->Append(wxID_ANY, wxT("1 !"));
-     sort->Append(wxID_ANY, wxT("2 番号"));
-     sort->Append(wxID_ANY, wxT("3 タイトル"));
-     sort->Append(wxID_ANY, wxT("4 レス"));
-     sort->Append(wxID_ANY, wxT("5 取得"));
-     sort->Append(wxID_ANY, wxT("6 新着"));
-     sort->Append(wxID_ANY, wxT("7 最終取得"));
-     sort->Append(wxID_ANY, wxT("8 最終書込"));
-     sort->Append(wxID_ANY, wxT("9 Since"));
-     sort->Append(wxID_ANY, wxT("0 板"));
-     sort->Append(wxID_ANY, wxT("a 勢い"));
-     sort->Append(wxID_ANY, wxT("b 増レス"));
+     sort->Append(ID_OnClickMenuCOL_CHK,       wxT("1 !"));
+     sort->Append(ID_OnClickMenuCOL_NUM,       wxT("2 番号"));
+     sort->Append(ID_OnClickMenuCOL_TITLE,     wxT("3 タイトル"));
+     sort->Append(ID_OnClickMenuCOL_RESP,      wxT("4 レス"));
+     sort->Append(ID_OnClickMenuCOL_CACHEDRES, wxT("5 取得"));
+     sort->Append(ID_OnClickMenuCOL_NEWRESP,   wxT("6 新着"));
+     sort->Append(ID_OnClickMenuCOL_INCRESP,   wxT("7 増レス"));
+     sort->Append(ID_OnClickMenuCOL_MOMENTUM,  wxT("8 勢い"));
+     sort->Append(ID_OnClickMenuCOL_LASTUP,    wxT("9 最終取得"));
+     sort->Append(ID_OnClickMenuCOL_SINCE,     wxT("0 SINCE"));
+     sort->Append(ID_OnClickMenuCOL_OID,       wxT("a 固有番号"));
+     sort->Append(ID_OnClickMenuCOL_BOARDNAME, wxT("b 板"));
      sort->AppendSeparator();
      sort->AppendCheckItem(wxID_ANY, wxT("開いているスレを上へソート"));
      sort->AppendCheckItem(wxID_ANY, wxT("重要スレを上へソート"));
@@ -1408,22 +1422,23 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
 
      // カラムの幅を最大化
 #ifdef __WXMSW__
-     vbListCtrl->SetColumnWidth(2, wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(9, wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(10, wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(11, wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_CHK      , 20);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_TITLE    , wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_SINCE    , wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_OID      , wxLIST_AUTOSIZE);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_BOARDNAME, wxLIST_AUTOSIZE);
 #else
-     // どうやらWindows以外ではリストの幅が適切に調整されないので
+     // GTK+, Cocoaではリストの幅が適切に調整されないので
      // フォントの大きさから適切なリストの幅を算出する
      wxFont font = GetCurrentFont();
      int pointSize = font.GetPointSize();
      // 2chのスレタイの文字数制限は全角24文字
-     vbListCtrl->SetColumnWidth(2, pointSize * 52);
-     vbListCtrl->SetColumnWidth(9, pointSize * 12);
-     vbListCtrl->SetColumnWidth(10, pointSize * 10);
-     vbListCtrl->SetColumnWidth(11, pointSize * 12);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_CHK      , 20);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_TITLE    , pointSize * 52);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_SINCE    , pointSize * 12);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_OID      , pointSize * 10);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_BOARDNAME, pointSize * 12);
 #endif
-
      // ノートブックの選択処理
      boardNoteBook->SetSelection(selectedPage);
      boardNoteBook->Thaw();
@@ -2924,4 +2939,66 @@ void JaneClone::SearchBoxClear(wxCommandEvent& event) {
 	  // 板一覧ツリーも初期状態にもどす
 	  SetBoardList(false);
      }
+}
+/**
+ * アクティブなスレッド一覧リストをソートする
+ */
+void JaneClone::OnThreadListSort(wxCommandEvent& event) {
+
+     // 現在アクティブになっているタブの板名を取得する
+     wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+
+     if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
+	  wxMessageBox(wxT("すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
+     } else {
+
+	  // リストコントロールを引き出してくる
+	  VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
+	  if (vbListCtrl == NULL) {
+	       wxMessageBox(wxT("内部エラー, スレッドソート処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
+	       return;
+	  }
+
+	  switch(event.GetId()) {
+
+	  case ID_OnClickMenuCOL_CHK:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_CHK);
+	       break;
+	  case ID_OnClickMenuCOL_NUM:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_NUM);
+	       break;
+	  case ID_OnClickMenuCOL_TITLE:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_TITLE);
+	       break;
+	  case ID_OnClickMenuCOL_RESP:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_RESP);
+	       break;
+	  case ID_OnClickMenuCOL_CACHEDRES:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_CACHEDRES);
+	       break;
+	  case ID_OnClickMenuCOL_NEWRESP:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_NEWRESP);
+	       break;
+	  case ID_OnClickMenuCOL_INCRESP:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_INCRESP);
+	       break;
+	  case ID_OnClickMenuCOL_MOMENTUM:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_MOMENTUM);
+	       break;
+	  case ID_OnClickMenuCOL_LASTUP:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_LASTUP);
+	       break;
+	  case ID_OnClickMenuCOL_SINCE:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_SINCE);
+	       break;
+	  case ID_OnClickMenuCOL_OID:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_OID);
+	       break;
+	  case ID_OnClickMenuCOL_BOARDNAME:
+	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_BOARDNAME);
+	       break;
+	  default:
+	       break;
+	  }
+     }     
 }

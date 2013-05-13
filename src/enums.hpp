@@ -134,7 +134,20 @@ enum {
 	ID_ThreadCheck,                 // 取得しているスレッドを表す 
 	ID_ThreadAdd,                   // スレッドにレスの増加が見られた状態
 	ID_ThreadDrop,                  // DAT落ちしたスレッドを表す
-	ID_ThreadNew                    // 新規に取得したスレッドを表す
+	ID_ThreadNew,                   // 新規に取得したスレッドを表す
+	// メニューからスレッド一覧リストをソートする
+	ID_OnClickMenuCOL_CHK,          // 新着チェック
+	ID_OnClickMenuCOL_NUM,          // 番号	       
+	ID_OnClickMenuCOL_TITLE,	// タイトル    
+	ID_OnClickMenuCOL_RESP,	        // レス	       
+	ID_OnClickMenuCOL_CACHEDRES,    // 取得	   
+	ID_OnClickMenuCOL_NEWRESP,	// 新着	       
+	ID_OnClickMenuCOL_INCRESP,	// 増レス      
+	ID_OnClickMenuCOL_MOMENTUM,	// 勢い	       
+	ID_OnClickMenuCOL_LASTUP,	// 最終取得    
+	ID_OnClickMenuCOL_SINCE,	// SINCE       
+	ID_OnClickMenuCOL_OID,	        // 固有番号	   
+	ID_OnClickMenuCOL_BOARDNAME	// 板	       
 };
 
 #endif /* ENUMS_HPP_ */

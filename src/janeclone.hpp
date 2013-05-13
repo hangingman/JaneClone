@@ -157,6 +157,7 @@ private:
      void CopyBTitleToClipBoard(wxCommandEvent& event);
      void CopyBBothDataToClipBoard(wxCommandEvent& event);
      void CallResponseWindow(wxCommandEvent& event);
+     void OnThreadListSort(wxCommandEvent& event);
      
      // スレタブでの処理
      void OneThreadTabClose(wxCommandEvent& event);
