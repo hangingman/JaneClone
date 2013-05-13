@@ -844,7 +844,8 @@ void JaneClone::SetPreviousUserLookedTab() {
 	       + wxT(".dat");
 
 	  // 板一覧タブをセットする
-	  SetThreadListItemNew(boardName, outputPath, (const size_t) i);
+	  std::map<wxString, ThreadList> stub;
+	  SetThreadListItemNew(boardName, outputPath, i, stub);
      }
 
      wxArrayString userLookedThreadList = SQLiteAccessor::GetUserLookedThreadList();
@@ -940,8 +941,16 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
 /**
  * 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
  */
-void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
-				       wxString& boardNameAscii) {
+void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii) {
+
+     // 以前ダウンロードしていたスレッドの情報をmap化する
+     std::map<wxString, ThreadList> oldThreadMap;
+     URLvsBoardName boardInfo;
+     boardInfo.boardName      = boardName;
+     boardInfo.boardURL	      = boardURL;
+     boardInfo.boardNameAscii = boardNameAscii;
+     // map化の実行
+     JaneCloneUtil::GenerateOldThreadMap(oldThreadMap, boardInfo);
 
      // スレ一覧をダウンロードする
      SocketCommunication* socketCommunication = new SocketCommunication();
@@ -966,19 +975,19 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
      if (itIsNewBoardName) {
 	  // もし新規のダウンロードだった場合、選択されるべきページを指定
 	  selectedPage = boardNoteBook->GetPageCount();
-	  SetThreadListItemNew((const wxString) boardName,
-			       (const wxString) outputPath, (const size_t) selectedPage);
+	  SetThreadListItemNew((const wxString) boardName, (const wxString) outputPath, 
+			       (const size_t) selectedPage, oldThreadMap);
      } else {
 	  // 更新処理の場合、選択されるべきページはi
-	  SetThreadListItemUpdate((const wxString) boardName,
-				  (const wxString) outputPath, (const size_t) selectedPage);
+	  SetThreadListItemUpdate((const wxString) boardName, (const wxString) outputPath, 
+				  (const size_t) selectedPage, oldThreadMap);
      }
 }
 /**
  * ノートブックに、新規にダウンロードされたスレッド一覧情報を反映するメソッド
  */
-void JaneClone::SetThreadListItemNew(const wxString boardName,
-				     const wxString outputPath, const size_t selectedPage) {
+void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString outputPath, 
+				     const size_t selectedPage, std::map<wxString,ThreadList>& oldThreadMap) {
 
      // wxAuiToolBarを宣言する
      wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath);
@@ -990,8 +999,8 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 /**
  * ノートブックに、スレッド一覧情報の更新を反映するメソッド
  */
-void JaneClone::SetThreadListItemUpdate(const wxString boardName,
-					const wxString outputPath, const size_t selectedPage) {
+void JaneClone::SetThreadListItemUpdate(const wxString boardName, const wxString outputPath, 
+					const size_t selectedPage, std::map<wxString,ThreadList>& oldThreadMap) {
 
      // HashMapから対象の板のオブジェクトを取り出す
      if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {

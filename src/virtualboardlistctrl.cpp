@@ -66,7 +66,7 @@ wxListCtrl(parent, ID_BoardListCtrl, wxDefaultPosition, wxDefaultSize, wxLC_REPO
 
 	  if (line.Contains(_("&"))) {
 	       // 実態参照文字の変換
-	       line = convCharacterReference(line);
+	       line = JaneCloneUtil::ConvCharacterReference(line);
 	  }
 	  // アイテム用の文字列を先に宣言する
 	  wxString itemNumber, itemBoardName, itemOid, itemSince, itemTitle, itemResponse, itemCachedResponseNumber,
@@ -115,6 +115,8 @@ wxListCtrl(parent, ID_BoardListCtrl, wxDefaultPosition, wxDefaultSize, wxLC_REPO
 	  // ループ変数をインクリメント
 	  ++loopNumber;
      }
+
+     datfile.Close();
 
      /**
       * データ挿入
@@ -182,7 +184,7 @@ wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,wxLC_REPORT | wxLC
 	  wxString line = datfile.GetFirstLine();
 
 	  if (line.Contains(_("&"))) { 
-	       line = convCharacterReference(line);
+	       line = JaneCloneUtil::ConvCharacterReference(line);
 	  }
 	  /**
 	   * リストに値を設定する
@@ -229,6 +231,8 @@ wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,wxLC_REPORT | wxLC
 
 	  // ループ変数をインクリメント
 	  ++loopNumber;
+	  // ファイルをクローズ
+	  datfile.Close();
      }
 
      /**
@@ -282,7 +286,7 @@ VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const 
      for (wxString line = datfile.GetFirstLine(); !datfile.Eof(); line = datfile.GetNextLine()) {
 
 	  if (line.Contains(_("&"))) { 
-	       line = convCharacterReference(line);
+	       line = JaneCloneUtil::ConvCharacterReference(line);
 	  }
 
 	  // アイテム用の文字列を先に宣言する
@@ -332,6 +336,8 @@ VirtualBoardList VirtualBoardListCtrl::Refresh(const wxString& boardName, const 
 	  // ループ変数をインクリメント
 	  ++loopNumber;
      }
+
+     datfile.Close();
 
      /**
       * データ挿入
@@ -526,20 +532,6 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
 
      SetItemCount(m_vBoardList.size());
      this->Show();
-}
-/**
- * 文字列中の実体参照文字を変換する
- */
-wxString VirtualBoardListCtrl::convCharacterReference(wxString& inputString) {
-
-     wxString buffer = inputString;
-     buffer.Replace(_T("&nbsp;"), _T(" "), true);
-     buffer.Replace(_T("&lt;"), _T("<"), true);
-     buffer.Replace(_T("&gt;"), _T(">"), true);
-     buffer.Replace(_T("&amp;"), _T("&"), true);
-     buffer.Replace(_T("&quot;"), _T("\""), true);
-     buffer.Replace(_T("&apos;"), _T("'"), true);
-     return buffer;
 }
 void VirtualBoardListCtrl::MotionEnterWindow(wxMouseEvent& event) {
      event.Skip();

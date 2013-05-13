@@ -325,10 +325,6 @@ public:
 private:
 
      /**
-      * 文字列中の実体参照文字を変換する
-      */
-     static wxString convCharacterReference(wxString& inputString);
-     /**
       * 仮想リスト内のアイコンを表示させる
       */
      virtual int OnGetItemColumnImage(long item, long column) const;

@@ -23,7 +23,6 @@
 #define JANECLONEUTIL_HPP_
 
 #include <zlib.h>
-#include <vector>
 #include <iostream>
 #include <fstream>
 #include <iterator>
@@ -93,6 +92,10 @@ public:
       */
      static std::string UrlEncode(const std::string& str);
      /**
+      * 文字列中の実体参照文字を変換する
+      */
+     static wxString ConvCharacterReference(wxString& inputString);
+     /**
       * URLの末尾にある拡張子が何か判別し、Content-Typeを返す
       */
      static wxString DetermineContentType(const wxString& href);
@@ -112,6 +115,11 @@ public:
       * @return momentum     勢い
       */
      static wxString CalcThreadMomentum(wxString& itemResponse, wxString& itemOid);
+     /**
+      * スレッドの情報をOIDをキーとするmapに変換する
+      * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
+      */
+     static void GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThreadMap, URLvsBoardName& boardInfo);
 
 private:
 

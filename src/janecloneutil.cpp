@@ -399,6 +399,20 @@ std::string JaneCloneUtil::UrlEncode(const std::string& str) {
      return retStr;  
 }
 /**
+ * 文字列中の実体参照文字を変換する
+ */
+wxString JaneCloneUtil::ConvCharacterReference(wxString& inputString) {
+
+     wxString buffer = inputString;
+     buffer.Replace(_T("&nbsp;"), _T(" "), true);
+     buffer.Replace(_T("&lt;"), _T("<"), true);
+     buffer.Replace(_T("&gt;"), _T(">"), true);
+     buffer.Replace(_T("&amp;"), _T("&"), true);
+     buffer.Replace(_T("&quot;"), _T("\""), true);
+     buffer.Replace(_T("&apos;"), _T("'"), true);
+     return buffer;
+}
+/**
  * URLの末尾にある拡張子が何か判別し、Content-Typeを返す
  */
 wxString JaneCloneUtil::DetermineContentType(const wxString& href) {
@@ -473,4 +487,84 @@ wxString JaneCloneUtil::CalcThreadMomentum(wxString& itemResponse, wxString& ite
      } catch (std::underflow_error& e) {
 	  return wxT("std::underflow_error");
      }
+}
+/**
+ * スレッドの情報をOIDをキーとするmapに変換する
+ * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
+ */
+void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThreadMap, URLvsBoardName& boardInfo) {
+
+     // ファイルのパスを設定する
+     wxString outputPath = ::wxGetHomeDir() 
+	  + wxFileSeparator 
+	  + JANECLONE_DIR
+	  + wxFileSeparator
+	  + wxT("dat")
+	  + wxFileSeparator
+	  + boardInfo.boardNameAscii
+	  + wxFileSeparator
+	  + boardInfo.boardNameAscii
+	  + wxT(".dat");
+
+     // ファイルが存在しなければそのままリターン
+     // つまり完全に初回のスレッド一覧取得
+     if(!wxFileExists(outputPath)) return;
+     // テキストファイルの読み込み
+     wxTextFile datfile(outputPath);
+     datfile.Open();
+
+     // スレッド一覧読み込み用正規表現を準備する
+     wxRegEx reThreadLine(_T("([[:digit:]]+).dat<>(.+)\\(([[:digit:]]{1,4})\\)"), wxRE_ADVANCED + wxRE_ICASE);
+     // スレッドに番号をつける
+     int loopNumber = 1;
+
+     // テキストファイルの終端まで読み込む
+     for (wxString line = datfile.GetFirstLine(); !datfile.Eof(); line = datfile.GetNextLine()) {
+
+	  if (line.Contains(_("&"))) { 
+	       line = ConvCharacterReference(line);
+	  }
+
+	  ThreadList threadInfoList;
+	  
+	  // 番号
+	  threadInfoList.number = loopNumber;
+	  // 板名
+	  threadInfoList.boardName = boardInfo.boardName;
+
+	  // 正規表現で情報を取得する
+	  if (reThreadLine.Matches(line)) {
+	       // キー値を取得する
+	       threadInfoList.oid = reThreadLine.GetMatch(line, 1);
+	       // since
+	       threadInfoList.since = JaneCloneUtil::CalcThreadCreatedTime(threadInfoList.oid);
+	       // スレタイを取得する
+	       threadInfoList.title = reThreadLine.GetMatch(line, 2);
+	       // レス数を取得する
+	       threadInfoList.response = wxAtoi(reThreadLine.GetMatch(line, 3));
+	  }
+
+	  /**
+	   * 更新処理
+	   */
+	  // 取得
+	  //itemCachedResponseNumber = wxEmptyString;
+	  // 新着
+	  //itemNewResponseNumber = wxEmptyString;
+	  // 増レス
+	  //itemIncreaseResponseNumber = wxEmptyString;
+	  // 勢い
+	  wxString response = wxString::Format(wxT("%d"), threadInfoList.response);
+	  threadInfoList.momentum = JaneCloneUtil::CalcThreadMomentum(response, threadInfoList.oid);
+	  // 最終取得
+	  //itemLastUpdate = wxEmptyString;
+
+	  // 項目を追加する
+	  oldThreadMap.insert(std::map<wxString, ThreadList>::value_type(threadInfoList.oid, threadInfoList));
+	  
+	  // ループ変数をインクリメント
+	  ++loopNumber;
+     }
+
+     datfile.Close();
 }

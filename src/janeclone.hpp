@@ -249,10 +249,10 @@ private:
      void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
 				 wxString& boardNameAscii);
      // ノートブックに反映する際のコールバック
-     void SetThreadListItemNew(const wxString boardName,
-			       const wxString outputPath, const size_t selectedPage);
-     void SetThreadListItemUpdate(const wxString boardName,
-				  const wxString outputPath, const size_t selectedPage);
+     void SetThreadListItemNew( wxString boardName, wxString outputPath, size_t selectedPage, 
+				std::map<wxString,ThreadList>& oldThreadMap);
+     void SetThreadListItemUpdate( wxString boardName,  wxString outputPath, size_t selectedPage, 
+				   std::map<wxString,ThreadList>& oldThreadMap);
 
      // VirtualBoardListCtrlのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
      WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
