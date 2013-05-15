@@ -278,8 +278,7 @@ private:
       */
 
      // スレッド一覧をクリックすると、それをスレ表示画面に反映するメソッド
-     void SetThreadContentToNoteBook(const wxString&, const wxString&,
-				     const wxString&);
+     void SetThreadContentToNoteBook(const wxString&, const wxString&, const wxString&);
 
      // ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
      WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
@@ -345,7 +344,8 @@ private:
      // スレタブ上に存在するスレッドのURLを返す
      wxString GetThreadURL(const wxString title,const wxString boardNameAscii,const wxString origNumber);
      // スレッド一覧画面にツールバーを設定する
-     wxPanel* CreateAuiToolBar(wxWindow* parent, const wxString& boardName, const wxString& outputPath);
+     wxPanel* CreateAuiToolBar(wxWindow* parent, const wxString& boardName, const wxString& outputPath,
+			       std::map<wxString,ThreadList>& oldThreadMap);
      // 検索用ツールバー設定の共通部分
      void CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindowID id, const wxString& boardName = wxEmptyString);
      // 検索ボックスを隠す

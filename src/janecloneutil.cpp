@@ -506,6 +506,8 @@ void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThrea
 	  + boardInfo.boardNameAscii
 	  + wxT(".dat");
 
+     std::cout << "create old thread map" << std::endl;
+
      // ファイルが存在しなければそのままリターン
      // つまり完全に初回のスレッド一覧取得
      if(!wxFileExists(outputPath)) return;
@@ -564,6 +566,7 @@ void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThrea
 	  
 	  // ループ変数をインクリメント
 	  ++loopNumber;
+	  std::cout << "old thread number:" << loopNumber << std::endl;
      }
 
      datfile.Close();

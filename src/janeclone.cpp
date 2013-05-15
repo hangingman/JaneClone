@@ -1004,7 +1004,7 @@ void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString ou
 				     const size_t selectedPage, std::map<wxString,ThreadList>& oldThreadMap) {
 
      // wxAuiToolBarを宣言する
-     wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath);
+     wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath, oldThreadMap);
      // スレッドリストを表示させる
      boardNoteBook->AddPage(panel, boardName, false);
      // ノートブックの選択処理
@@ -1025,7 +1025,7 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName, const wxString
 	  vbListCtrlHash.erase(boardName);
 	  vbListHash.erase(boardName);
 	  // wxAuiToolBarを宣言する
-	  wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath);     
+	  wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath, oldThreadMap);     
 	  boardNoteBook->DeletePage(selectedPage);
 	  boardNoteBook->InsertPage(selectedPage, panel, boardName, false, wxNullBitmap);
 	  // ノートブックの選択処理
@@ -2648,7 +2648,8 @@ void JaneClone::OnOpenJaneCloneOfficial(wxCommandEvent& event) {
 /**
  * スレッド一覧画面にツールバーを設定する
  */
-wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName, const wxString& outputPath) {
+wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName, const wxString& outputPath,
+				     std::map<wxString,ThreadList>& oldThreadMap) {
 
      // スレッド検索ボックスとスレッド一覧リストを格納するサイザーを宣言する
      wxPanel* panel = new wxPanel(parent, -1);
@@ -2658,8 +2659,10 @@ wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName
 
      // Hashに格納する板名タブのオブジェクトのインスタンスを準備する
      VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
-	  (wxWindow*) panel, (const wxString) boardName,
-	  (const wxString) outputPath);
+	  (wxWindow*) panel, 
+	  (const wxString) boardName,
+	  (const wxString) outputPath,
+	  oldThreadMap);
      vbListCtrl->SetName(boardName);
      vbox->Add(vbListCtrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 10);
 

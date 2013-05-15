@@ -131,10 +131,10 @@ enum {
 	ID_OnOpenImageByBrowser,	// 画像をブラウザで開く
 	ID_HideThumbnailTab,	        // 画像ビューアを隠す
 	// スレッド一覧リストの新着状態を表す定数
-	ID_ThreadCheck,                 // 取得しているスレッドを表す 
-	ID_ThreadAdd,                   // スレッドにレスの増加が見られた状態
-	ID_ThreadDrop,                  // DAT落ちしたスレッドを表す
-	ID_ThreadNew,                   // 新規に取得したスレッドを表す
+	//ID_ThreadCheck,                 // 取得しているスレッドを表す 
+	//ID_ThreadAdd,                   // スレッドにレスの増加が見られた状態
+	//ID_ThreadDrop,                  // DAT落ちしたスレッドを表す
+	//ID_ThreadNew,                   // 新規に取得したスレッドを表す
 	// メニューからスレッド一覧リストをソートする
 	ID_OnClickMenuCOL_CHK,          // 新着チェック
 	ID_OnClickMenuCOL_NUM,          // 番号	       

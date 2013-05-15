@@ -89,6 +89,7 @@ static const wxString regexImg           = wxT("rc/emblem-regex.png");
 static const wxString threadCheckImg     = wxT("rc/dialog-accept.png");
 static const wxString threadAddImg       = wxT("rc/edit-add-3.png");
 static const wxString threadDropImg      = wxT("rc/go-down-4.png");
+static const wxString threadNewImg       = wxT("rc/download-3.png");
 
 /**
  * クラス

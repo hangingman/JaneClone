@@ -35,11 +35,12 @@
  * スレッドの状態
  */
 
-static const int THREAD_STATE_NEW    = 1000;
-static const int THREAD_STATE_NORMAL = 1001;
-static const int THREAD_STATE_ADD    = 1002;
-static const int THREAD_STATE_DROP   = 1003;
-static const int THREAD_STATE_CHECK  = 1004;
+
+static const int THREAD_STATE_NORMAL = -1;
+static const int THREAD_STATE_CHECK  =  0;
+static const int THREAD_STATE_ADD    =  1;
+static const int THREAD_STATE_DROP   =  2;
+static const int THREAD_STATE_NEW    =  3;
 
 class VirtualBoardListItem;
 
@@ -90,11 +91,20 @@ public:
      wxString getCachedResponseNumber() const {
 	  return m_cachedResponseNumber;
      };
+     void setCachedResponseNumber(wxString& cachedResponseNumber) {
+	  m_cachedResponseNumber = cachedResponseNumber;
+     };
      wxString getNewResponseNumber() const {
 	  return m_newResponseNumber;
      };
+     void setNewResponseNumber(wxString& newResponseNumber) {
+	  m_newResponseNumber = newResponseNumber;
+     };
      wxString getIncreaseResponseNumber() const {
 	  return m_increaseResponseNumber;
+     };
+     void setIncreaseResponseNumber(wxString& increaseResponseNumber) {
+	  m_increaseResponseNumber = increaseResponseNumber;
      };
      wxString getMomentum() const {
 	  return m_momentum;
@@ -250,11 +260,13 @@ class VirtualBoardListCtrl: public wxListCtrl {
 public:
      /**
       * コンストラクタ：配置するwindowと板名を指定
-      * @param wxWindow* parent     親ウィンドウ
-      * @param wxString boardName   板名
-      * @param wxString outputPath  datファイルのパス
+      * @param wxWindow* parent                       親ウィンドウ
+      * @param wxString boardName                     板名
+      * @param wxString outputPath                    datファイルのパス
+      * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
       */
-     VirtualBoardListCtrl(wxWindow* parent, const wxString& boardName, const wxString& outputPath);
+     VirtualBoardListCtrl(wxWindow* parent, const wxString& boardName, const wxString& outputPath, 
+			  std::map<wxString,ThreadList>& oldThreadMap);
      /**
       * コンストラクタ：ログ一覧リスト作成用
       * @param wxWindow* parent     親ウィンドウ
@@ -299,7 +311,7 @@ public:
       * リスト内部のカラムの数を返す
       */
      long GetColumnCount() {
-	  return 12;
+	  return COL_ENUMS_END;
      }
      
      // 内部にあるリスト
@@ -318,7 +330,8 @@ public:
 	  COL_LASTUP,	// 最終取得
 	  COL_SINCE,	// SINCE
 	  COL_OID,      // 固有番号
-	  COL_BOARDNAME	// 板
+	  COL_BOARDNAME,// 板
+	  COL_ENUMS_END // 列挙型がいくつあるか
      };
 
 
