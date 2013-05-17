@@ -521,6 +521,42 @@ wxArrayString SQLiteAccessor::GetClosedThreadInfo() {
      return array;
 }
 /**
+ * 最近閉じたスレッドタブ情報を取得する
+ */
+void SQLiteAccessor::GetClosedThreadFullInfo(const int number, ThreadInfo* threadInfo) {
+
+     // dbファイルの初期化
+     wxString dbFile = GetDBFilePath();
+     wxArrayString array;
+
+     try {
+	  
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+
+	  // リザルトセットを用意する
+	  wxSQLite3ResultSet rs;
+	  // SQL文を用意する
+	  const wxString SQL_QUERY = 
+	         wxT("SELECT THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII from USER_CLOSED_THREADLIST limit 1 offset ")
+	       + wxString::Format(wxT("%d"), number);
+
+	  // SQL文を実行する
+	  rs = db.ExecuteQuery(SQL_QUERY);
+	  db.Close();
+
+	  while (rs.NextRow()) {
+	       threadInfo->title          = rs.GetAsString(wxT("THREAD_TITLE"));
+	       threadInfo->origNumber     = rs.GetAsString(wxT("THREAD_ORIG_NUM"));
+	       threadInfo->boardNameAscii = rs.GetAsString(wxT("BOARDNAME_ASCII"));
+	  }
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+}
+/**
  * 指定されたテーブルにレコードが何件存在するかどうかを調べるメソッド
  */
 int SQLiteAccessor::HowManyRecord(const wxString tableName) {

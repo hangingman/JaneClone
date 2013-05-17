@@ -134,14 +134,20 @@ private:
      void FontDialogThreadContents(wxCommandEvent& event);
      void SetFontDialog(const int enumType);
      void OnOpenJaneCloneOfficial(wxCommandEvent& event);
+     // ユーザーが最後に閉じた板を開く
+     void OnUserLastClosedBoardClick(wxCommandEvent& event);
+     // ユーザーが最後に閉じたスレッドを開く
+     void OnUserLastClosedThreadClick(wxCommandEvent& event);
 
      // 動的に要素を確保するメニュー
      wxMenu* closeT;
      wxMenu* closeB;
      wxMenu* lookingTB;
      void OnMenuOpen(wxMenuEvent& event);
-     void UserLastClosedThreadMenuUp(wxUpdateUIEvent& event);
+     // ユーザーが最近閉じた板タブの情報をSQLiteから取得して設定する
      void UserLastClosedBoardMenuUp(wxUpdateUIEvent& event);
+     // ユーザーが最近閉じたスレタブの情報をSQLiteから取得して設定する
+     void UserLastClosedThreadMenuUp(wxUpdateUIEvent& event);
      void UserLookingTabsMenuUp(wxUpdateUIEvent& event);
      void UserLookingTabsControl(wxUpdateUIEvent& event);
 

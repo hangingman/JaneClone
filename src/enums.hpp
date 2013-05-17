@@ -72,8 +72,6 @@ enum {
 	ID_UserLastClosedBoardMenuUp,   // ユーザーが最後に閉じた板の情報を項目に補充する
 	ID_UserLookingTabsMenuUp,       // ユーザーが現在見ているスレタブ・板タブの情報を項目に補充する
 	ID_UserLookingTabsControl,      // ユーザーが現在フォーカスしているウィンドウの操作を行う
-	ID_UserLastClosedThreadClick,   // ユーザーが最後に閉じたスレッドの情報をクリックした
-	ID_UserLastClosedBoardClick,    // ユーザーが最後に閉じた板の情報をクリックした
 	ID_UserLookingTabsMenuClick,    // ユーザーが現在見ているスレタブ・板タブの情報をメニューからクリックした
 	ID_OnOpenJaneCloneOfficial,     // JaneClone公式サイトをブラウザで開く
 	ID_ThreadSearchBar,             // スレッド検索ボックスのID
@@ -147,7 +145,9 @@ enum {
 	ID_OnClickMenuCOL_LASTUP,	// 最終取得    
 	ID_OnClickMenuCOL_SINCE,	// SINCE       
 	ID_OnClickMenuCOL_OID,	        // 固有番号	   
-	ID_OnClickMenuCOL_BOARDNAME	// 板	       
+	ID_OnClickMenuCOL_BOARDNAME,	// 板
+	ID_UserLastClosedThreadClick = 1000,   // ユーザーが最後に閉じたスレッドの情報をクリックした(動的なIDのため1000~)
+	ID_UserLastClosedBoardClick  = 1100    // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
 };
 
 #endif /* ENUMS_HPP_ */

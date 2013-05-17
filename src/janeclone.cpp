@@ -68,6 +68,8 @@ EVT_MENU(ID_FontDialogBoardNotebook, JaneClone::FontDialogBoardNotebook)
 EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
 EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
 EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
+EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
+EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
 
 // メニューバーからスレッド一覧リストをソート
 EVT_MENU(ID_OnClickMenuCOL_CHK,      JaneClone::OnThreadListSort)
@@ -2549,31 +2551,6 @@ void JaneClone::OnMenuOpen(wxMenuEvent& event) {
      event.Skip();
 }
 /**
- * ユーザーが最近閉じたスレタブの情報をSQLiteから取得して設定する
- */
-void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
-
-     // メニューアイテムを順次消していく
-     wxMenuItemList::Node* current_menuitem_node;
-     wxMenuItem* current_menuitem;
-
-     while ( current_menuitem_node = closeT->GetMenuItems().GetLast() ) {
-	  current_menuitem = current_menuitem_node->GetData();
-	  if (!current_menuitem->IsSeparator()) {
-	       // menuの区切りでなければ削除する
-	       closeT->Delete( current_menuitem );
-	  } else {
-	       // そうでなければ削除は終わりなので脱出
-	       break;
-	  }
-     }
-     // ユーザが閉じたスレッドのうち、データベースに保存されている数
-     wxArrayString array = SQLiteAccessor::GetClosedThreadInfo();
-     for (unsigned int i = 0; i < array.GetCount(); i++ ) {
-	  closeT->Append(ID_UserLastClosedThreadClick, array[i]);
-     }
-}
-/**
  * ユーザーが最近閉じた板タブの情報をSQLiteから取得して設定する
  */
 void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
@@ -2595,8 +2572,78 @@ void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
      // ユーザが閉じたスレッドのうち、データベースに保存されている数
      wxArrayString array = SQLiteAccessor::GetClosedBoardInfo();
      for (unsigned int i = 0; i < array.GetCount(); i++ ) {
-	  closeB->Append(ID_UserLastClosedBoardClick, array[i]);
+	  closeB->Append(ID_UserLastClosedBoardClick + i, array[i]);
      }
+}
+/**
+ * ユーザーが最後に閉じた板を開く
+ */
+void JaneClone::OnUserLastClosedBoardClick(wxCommandEvent& event) {
+     wxMessageBox(wxString::Format(wxT("%d"), event.GetId()));
+}
+/**
+ * ユーザーが最近閉じたスレタブの情報をSQLiteから取得して設定する
+ */
+void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
+
+     // メニューアイテムを順次消していく
+     wxMenuItemList::Node* current_menuitem_node;
+     wxMenuItem* current_menuitem;
+
+     while ( current_menuitem_node = closeT->GetMenuItems().GetLast() ) {
+	  current_menuitem = current_menuitem_node->GetData();
+	  if (!current_menuitem->IsSeparator()) {
+	       // menuの区切りでなければ削除する
+	       closeT->Delete( current_menuitem );
+	  } else {
+	       // そうでなければ削除は終わりなので脱出
+	       break;
+	  }
+     }
+     // ユーザが閉じたスレッドのうち、データベースに保存されている数
+     wxArrayString array = SQLiteAccessor::GetClosedThreadInfo();
+     for (unsigned int i = 0; i < array.GetCount(); i++ ) {
+	  closeT->Append(ID_UserLastClosedThreadClick + i, array[i]);
+     }
+}
+/**
+ * ユーザーが最後に閉じたスレッドを開く
+ */
+void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
+
+     // メニューアイテムの項目番号を取得する
+     const int number = event.GetId() - 1000;
+     ThreadInfo* threadInfo = new ThreadInfo();
+     SQLiteAccessor::GetClosedThreadFullInfo(number, threadInfo);
+
+     if (!threadInfo) {
+	  // 無ければ警告を出して終了
+	  wxMessageBox(wxT("前回読み込んでいたdatファイルの読み出しに失敗しました\n\
+                            datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
+	  delete threadInfo;
+	  return;
+     }
+
+     // ファイルパスの組み立てとファイルの有無確認
+     wxString threadContentPath = JaneCloneUtil::AssembleFilePath(threadInfo->boardNameAscii, threadInfo->origNumber);
+
+     // ファイルの有無確認
+     if (!wxFile::Exists(threadContentPath)) {
+	  // 無ければ警告を出して次へ
+	  wxMessageBox(wxT("前回読み込んでいたdatファイルの読み出しに失敗しました\n\
+                            datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
+	  delete threadInfo;
+	  return;
+     }
+
+     // スレッドの内容をノートブックに反映する
+     SetThreadContentToNoteBook(threadContentPath, threadInfo->origNumber, threadInfo->title);
+     // ノートブックに登録されたスレッド情報をハッシュに登録する
+     ThreadInfo info;
+     info.origNumber = threadInfo->origNumber;
+     info.boardNameAscii = threadInfo->boardNameAscii;
+     tiHash[threadInfo->title] = info;
+     delete threadInfo;
 }
 /**
  * ユーザーが現在開いているスレタブ、板タブの一覧を作成する

@@ -78,6 +78,10 @@ public:
       */
      static wxArrayString GetClosedThreadInfo();
      /**
+      * 最近閉じたスレッドタブ情報を取得する
+      */
+     static void GetClosedThreadFullInfo(const int number, ThreadInfo* threadInfo);
+     /**
       * 板タブを閉じた際に情報をSQLiteに格納する
       */
      static void SetClosedBoardInfo(URLvsBoardName* hash);
