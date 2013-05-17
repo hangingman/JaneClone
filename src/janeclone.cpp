@@ -1022,7 +1022,7 @@ void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString ou
      // スレッドリストを表示させる
      boardNoteBook->AddPage(panel, boardName, false);
      // ノートブックの選択処理
-     boardNoteBook->SetSelection(selectedPage);
+     boardNoteBook->SetSelection(boardNoteBook->GetPageCount());
 }
 /**
  * ノートブックに、スレッド一覧情報の更新を反映するメソッド
@@ -2579,7 +2579,49 @@ void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
  * ユーザーが最後に閉じた板を開く
  */
 void JaneClone::OnUserLastClosedBoardClick(wxCommandEvent& event) {
-     wxMessageBox(wxString::Format(wxT("%d"), event.GetId()));
+
+     // メニューアイテムの項目番号を取得する
+     wxString boardName = closeB->GetLabelText(event.GetId());
+     // 板名に対応したURLを取ってくる
+     URLvsBoardName hash = retainHash[boardName];
+     wxString boardNameAscii = hash.boardNameAscii;
+
+     // ファイルのパスを設定する
+     wxString outputPath = ::wxGetHomeDir() 
+	  + wxFileSeparator 
+	  + JANECLONE_DIR
+	  + wxFileSeparator
+	  + wxT("dat")
+	  + wxFileSeparator
+	  + boardNameAscii
+	  + wxFileSeparator
+	  + boardNameAscii
+	  + wxT(".dat");
+
+     // 板一覧タブをセットする
+     std::map<wxString, ThreadList> stub;
+     // 要素を追加する
+     wxString stubStr = wxT("NO_NEED_TO_CHK_THREAD_STATE");
+     ThreadList thList;
+     stub.insert( std::map<wxString, ThreadList>::value_type( stubStr, thList ) );
+
+     // 新規にセットされる板名かどうかのフラグを用意する
+     bool itIsNewBoardName = true;
+     // 次に選択されるべきタブのページ数を格納する変数
+     size_t selectedPage = 0;
+
+     // ユーザーが開いているタブの板名を調べる
+     for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) {
+	  if (boardName.Cmp(boardNoteBook->GetPageText(i)) == 0) {
+	       itIsNewBoardName = false;
+	       selectedPage = i;
+	       // もうスレッド一覧を開いていれば開く
+	       boardNoteBook->SetSelection(selectedPage);
+	       return;
+	  }
+     }
+     // スレッド一覧リストを配置
+     SetThreadListItemNew(boardName, outputPath, boardNoteBook->GetPageCount() + 1, stub);
 }
 /**
  * ユーザーが最近閉じたスレタブの情報をSQLiteから取得して設定する
@@ -2612,7 +2654,7 @@ void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
 void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
 
      // メニューアイテムの項目番号を取得する
-     const int number = event.GetId() - 1000;
+     const int number = event.GetId() - ID_UserLastClosedThreadClick;
      ThreadInfo* threadInfo = new ThreadInfo();
      SQLiteAccessor::GetClosedThreadFullInfo(number, threadInfo);
 
