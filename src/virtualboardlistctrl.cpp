@@ -25,9 +25,9 @@
 IMPLEMENT_DYNAMIC_CLASS(VirtualBoardListCtrl, wxListCtrl)
 
 BEGIN_EVENT_TABLE(VirtualBoardListCtrl, wxListCtrl)
-EVT_ENTER_WINDOW(VirtualBoardListCtrl::MotionEnterWindow)
-EVT_LEAVE_WINDOW(VirtualBoardListCtrl::MotionLeaveWindow)
-EVT_SET_FOCUS(VirtualBoardListCtrl::SetFocus)
+   EVT_ENTER_WINDOW(VirtualBoardListCtrl::MotionEnterWindow)
+   EVT_LEAVE_WINDOW(VirtualBoardListCtrl::MotionLeaveWindow)
+   EVT_SET_FOCUS(VirtualBoardListCtrl::SetFocus)
 END_EVENT_TABLE()
 
 /**
@@ -56,6 +56,8 @@ wxListCtrl(parent, ID_BoardListCtrl, wxDefaultPosition, wxDefaultSize, wxLC_REPO
      wxBitmap idx4(threadNewImg, wxBITMAP_TYPE_PNG);
      threadImage->Add(idx4);
      this->AssignImageList(threadImage, wxIMAGE_LIST_SMALL);
+     // 背景色の設定
+     m_attr.SetBackgroundColour(*wxLIGHT_GREY);
 
      // 過去のデータがあるかどうかのフラグを立てる
      bool hasOldData, noNeedToChkThreadState = false;
@@ -279,6 +281,7 @@ VirtualBoardList VirtualBoardListCtrl::ThreadListUpdate(const wxString& boardNam
 							       itemLastUpdate, itemSince, itemOid, itemBoardName);
 	  // この項目の状態を設定する
 	  listItem.setCheck(THREAD_STATE_ADD);
+
 	  // Listctrlに項目を追加する
 	  m_vBoardList.push_back(listItem);
 
@@ -376,6 +379,12 @@ int VirtualBoardListCtrl::OnGetItemColumnImage(long item, long column) const {
 	  return -1;
      }
      return m_vBoardList[item].getCheck();
+}
+/**
+ * 仮想リスト内の色情報等の設定
+ */
+wxListItemAttr *VirtualBoardListCtrl::OnGetItemAttr(long item) const {
+    return item % 2 ? NULL : (wxListItemAttr *)&m_attr;
 }
 /**
  * コンストラクタ：ログ一覧リスト作成用

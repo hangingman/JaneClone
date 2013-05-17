@@ -122,8 +122,7 @@ public:
 	  return m_boardName;
      };
      
-     // それぞれのカラムをソートするPreidicate関数
-     
+     // それぞれのカラムをソートするPreidicate関数     
 
      // ! Fix Me ! 繰り返しが多すぎる。もう少し効率的に書ける方法を探すべき
      static bool PredicateForwardCheck(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
@@ -247,6 +246,7 @@ private:
      wxString m_oid;
      // 板
      wxString m_boardName;
+
 };
 
 typedef std::vector<VirtualBoardListItem> VirtualBoardList;
@@ -342,6 +342,10 @@ private:
       */
      virtual int OnGetItemColumnImage(long item, long column) const;
      /**
+      * 仮想リスト内の色情報等の設定
+      */
+     virtual wxListItemAttr* OnGetItemAttr(long item) const;
+     /**
       *
       */
      long GetItemData(long item) const {
@@ -377,6 +381,8 @@ private:
      // 板
      bool f_boardName;
 
+     // 内部の色情報等
+     wxListItemAttr m_attr;
 
      DECLARE_EVENT_TABLE()
      DECLARE_DYNAMIC_CLASS(VirtualBoardListCtrl)
