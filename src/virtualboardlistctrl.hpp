@@ -280,7 +280,7 @@ public:
       * @pram  wxString outputPath  datファイルのパス
       * @param VirtualBoardList     更新したリストのコンテナ
       */
-     VirtualBoardList Refresh(const wxString& boardName, const wxString& outputPath);
+     VirtualBoardList ThreadListUpdate(const wxString& boardName, const wxString& outputPath);
      /**
       * Hash用のコンストラクタ
       */

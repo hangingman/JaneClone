@@ -158,6 +158,7 @@ private:
      void CopyBBothDataToClipBoard(wxCommandEvent& event);
      void CallResponseWindow(wxCommandEvent& event);
      void OnThreadListSort(wxCommandEvent& event);
+     //void OnDoubleClickBoardTab(wxAuiNotebookEvent& event);
      
      // スレタブでの処理
      void OneThreadTabClose(wxCommandEvent& event);
@@ -173,6 +174,8 @@ private:
      void SaveDatFileToClipBoard(wxCommandEvent& event);
      void DeleteDatFile(wxCommandEvent& event);
      void ReloadThisThread(wxCommandEvent& event);
+     //void OnDoubleClickThreadTab(wxAuiNotebookEvent& event);
+
      // いろいろなイベント処理
      void OnCloseWindow(wxCloseEvent& event);
      void OnLeftClickAtListCtrl(wxListEvent& event);
@@ -190,8 +193,10 @@ private:
      void OnSetFocus(wxFocusEvent& event);
 
      // マウスモーション
-     void MotionEnterWindow(wxMouseEvent& event);
-     void MotionLeaveWindow(wxMouseEvent& event);
+     //void MouseMotion(wxMouseEvent& event);
+     //void MotionEnterWindow(wxMouseEvent& event);
+     //void MotionLeaveWindow(wxMouseEvent& event);
+     //void OnDoubleClick(wxMouseEvent& event);
 
      // 各種GUI上の設定
      void SetJaneCloneManuBar();

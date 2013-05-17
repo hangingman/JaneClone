@@ -113,18 +113,24 @@ EVT_AUINOTEBOOK_PAGE_CLOSE(ID_BoardNoteBook, JaneClone::OnAboutCloseBoardNoteBoo
 EVT_AUINOTEBOOK_PAGE_CLOSE(ID_ThreadNoteBook, JaneClone::OnAboutCloseThreadNoteBook)
 
 // AuiNotebookのタブを変更中の処理
-EVT_AUINOTEBOOK_PAGE_CHANGING(ID_BoardNoteBook, JaneClone::OnChangeBoardTab)
+EVT_AUINOTEBOOK_PAGE_CHANGING(ID_BoardNoteBook,  JaneClone::OnChangeBoardTab)
 EVT_AUINOTEBOOK_PAGE_CHANGING(ID_ThreadNoteBook, JaneClone::OnChangeThreadTab)
+
 // AuiNotebookのタブを変更し終わった時の処理
-EVT_AUINOTEBOOK_PAGE_CHANGED(ID_BoardNoteBook, JaneClone::OnChangedBoardTab)
+EVT_AUINOTEBOOK_PAGE_CHANGED(ID_BoardNoteBook,  JaneClone::OnChangedBoardTab)
 EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ThreadNoteBook, JaneClone::OnChangedThreadTab)
+// AuiNotebook上でダブルクリックした時の処理
+//EVT_AUINOTEBOOK_TAB_MIDDLE_DOWN(ID_BoardNoteBook,  JaneClone::OnDoubleClickBoardTab)
+//EVT_AUINOTEBOOK_TAB_MIDDLE_DOWN(ID_ThreadNoteBook, JaneClone::OnDoubleClickThreadTab)
 
 // フォーカスの監視
 EVT_SET_FOCUS(JaneClone::OnSetFocus)
 
 // マウスモーションの監視
-EVT_ENTER_WINDOW(JaneClone::MotionEnterWindow)
-EVT_LEAVE_WINDOW(JaneClone::MotionLeaveWindow)
+//EVT_MOUSE_EVENTS(JaneClone::MouseMotion)
+//EVT_ENTER_WINDOW(JaneClone::MotionEnterWindow)
+//EVT_LEAVE_WINDOW(JaneClone::MotionLeaveWindow)
+//EVT_LEFT_DCLICK(JaneClone::OnDoubleClick)
 
 // スレッド一覧リストでのクリック
 EVT_LIST_ITEM_SELECTED(wxID_ANY, JaneClone::OnLeftClickAtListCtrl)
@@ -764,7 +770,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      boardTree.Caption(wxT("板一覧"));
      boardTree.Left();
      boardTree.CloseButton(false);
-     boardTree.BestSize(100, 300);
+     boardTree.BestSize(m_boardTreePanel->GetSize());
 
      // 左側下部・ログ出力ウィンドウを設定する
      wxAuiPaneInfo logWindow;
@@ -859,6 +865,11 @@ void JaneClone::SetPreviousUserLookedTab() {
 
 	  // 板一覧タブをセットする
 	  std::map<wxString, ThreadList> stub;
+	  // 要素を追加する
+	  wxString stubStr = wxT("NO_NEED_TO_CHK_THREAD_STATE");
+	  ThreadList thList;
+	  stub.insert( std::map<wxString, ThreadList>::value_type( stubStr, thList ) );
+
 	  SetThreadListItemNew(boardName, outputPath, i, stub);
      }
 
@@ -876,7 +887,8 @@ void JaneClone::SetPreviousUserLookedTab() {
 	  // ファイルの有無確認
 	  if (!wxFile::Exists(threadContentPath)) {
 	       // 無ければ警告を出して次へ
-	       wxMessageBox(wxT("前回読み込んでいたdatファイルの読み出しに失敗しました"));
+	       wxMessageBox(wxT("前回読み込んでいたdatファイルの読み出しに失敗しました\n\
+                                 datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
 	       continue;
 	  }
 
@@ -1726,7 +1738,7 @@ void JaneClone::InitializeBoardList() {
      // ツリー用ウィジェットのインスタンスを用意する
      m_tree_ctrl = new wxTreeCtrl(m_boardTreePanel, ID_BoardTreectrl, wxDefaultPosition, wxDefaultSize, 
 				  wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
-     vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 10);
+     vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
 
      wxTreeItemData treeData;
      wxTreeItemId m_rootId;
@@ -2277,8 +2289,6 @@ void JaneClone::FontDialogThreadContents(wxCommandEvent& event) {
      wxString pointSize = wxString::Format(_("%d"), font.GetPointSize());
      config->Write(wxT("HTML.PointSize"), pointSize);
      // 設定を反映するため再起動させる
-     //this->pid = wxGetProcessId();
-     //Close(true);
      this->Refresh();
      this->Update();
 }
@@ -2633,12 +2643,6 @@ void JaneClone::UserLookingTabsControl(wxUpdateUIEvent& event) {
 void JaneClone::OnSetFocus(wxFocusEvent& event) {
      event.Skip();
 }
-void JaneClone::MotionEnterWindow(wxMouseEvent& event) {
-     event.Skip();
-}
-void JaneClone::MotionLeaveWindow(wxMouseEvent& event) {
-     event.Skip();
-}
 /**
  * JaneClone公式サイトをブラウザで開く
  */
@@ -2792,7 +2796,7 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
      }
 
      searchBox->Realize();
-     vbox->Add(searchBox, 0, wxLEFT | wxTOP, 10);
+     vbox->Add(searchBox, 0, wxLEFT | wxTOP | wxEXPAND, 10);
 }
 /**
  * 以前検索したキーワードをコンボボックスに補填する
@@ -3005,3 +3009,21 @@ void JaneClone::OnThreadListSort(wxCommandEvent& event) {
 	  }
      }     
 }
+/**
+ * スレッド一覧リストのタブでダブルクリックを実行
+ */
+// void JaneClone::OnDoubleClickBoardTab(wxAuiNotebookEvent& event) {
+//      wxMessageBox(wxT("boardnotebook"));
+//}
+/**
+ * スレタブでダブルクリックを実行
+ */
+// void JaneClone::OnDoubleClickThreadTab(wxAuiNotebookEvent& event) {
+//      wxMessageBox(wxT("threadnotebook"));
+// }
+/**
+ * ダブルクリックを実行
+ */
+// void JaneClone::OnDoubleClick(wxMouseEvent& event) {
+//      wxMessageBox(wxT("double click"));
+// }
