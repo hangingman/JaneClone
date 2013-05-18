@@ -250,6 +250,8 @@ private:
       */
      // ログ出力画面
      wxTextCtrl* m_logCtrl;
+     // アイコン付きのツールバー
+     wxAuiToolBar* m_floatToolBar;
 
      //　ツリーコントロールにクリックした時のイベント
      void OnGetBoardInfo(wxTreeEvent& event);

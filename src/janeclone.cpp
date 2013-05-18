@@ -32,118 +32,117 @@
 
 // event table
 BEGIN_EVENT_TABLE(JaneClone, wxFrame)
-// メニューバー・ポップアップメニューにあるコマンド入力で起動するメソッドのイベントテーブル
-EVT_MENU(ID_Quit, JaneClone::OnQuit)
-EVT_MENU(ID_Restart, JaneClone::OnRestart)
-EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
-EVT_MENU(ID_CheckLogDirectory, JaneClone::CheckLogDirectory)
-EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
-EVT_MENU(ID_OneBoardTabClose, JaneClone::OneBoardTabClose)
-EVT_MENU(ID_ExcepSelTabClose, JaneClone::ExcepSelTabClose)
-EVT_MENU(ID_AllBoardTabClose, JaneClone::AllBoardTabClose)
-EVT_MENU(ID_AllLeftBoardTabClose, JaneClone::AllLeftBoardTabClose)
-EVT_MENU(ID_AllRightBoardTabClose, JaneClone::AllRightBoardTabClose)
-EVT_MENU(ID_OnOpenBoardByBrowser, JaneClone::OnOpenBoardByBrowser)
-EVT_MENU(ID_ReloadOneBoard, JaneClone::ReloadOneBoard)
-EVT_MENU(ID_CopyBURLToClipBoard, JaneClone::CopyBURLToClipBoard)
-EVT_MENU(ID_CopyBTitleToClipBoard, JaneClone::CopyBTitleToClipBoard)
-EVT_MENU(ID_CopyBBothDataToClipBoard, JaneClone::CopyBBothDataToClipBoard)
-EVT_MENU(ID_CopyTURLToClipBoard, JaneClone::CopyTURLToClipBoard)
-EVT_MENU(ID_CopyTTitleToClipBoard, JaneClone::CopyTTitleToClipBoard)
-EVT_MENU(ID_CopyTBothDataToClipBoard, JaneClone::CopyTBothDataToClipBoard)
-EVT_MENU(ID_OneThreadTabClose, JaneClone::OneThreadTabClose)
-EVT_MENU(ID_ExcepSelThreadTabClose, JaneClone::ExcepSelThreadTabClose)
-EVT_MENU(ID_AllThreadTabClose, JaneClone::AllThreadTabClose)
-EVT_MENU(ID_AllLeftThreadTabClose, JaneClone::AllLeftThreadTabClose)
-EVT_MENU(ID_AllRightThreadTabClose, JaneClone::AllRightThreadTabClose)
-EVT_MENU(ID_OnOpenThreadByBrowser, JaneClone::OnOpenThreadByBrowser)
-EVT_MENU(ID_SaveDatFile, JaneClone::SaveDatFile)
-EVT_MENU(ID_SaveDatFileToClipBoard, JaneClone::SaveDatFileToClipBoard)
-EVT_MENU(ID_DeleteDatFile, JaneClone::DeleteDatFile)
-EVT_MENU(ID_ReloadThisThread, JaneClone::ReloadThisThread)
-EVT_MENU(ID_CallResponseWindow, JaneClone::CallResponseWindow)
-EVT_MENU(ID_FontDialogBoardTree, JaneClone::FontDialogBoardTree)
-EVT_MENU(ID_FontDialogLogWindow, JaneClone::FontDialogLogWindow)
-EVT_MENU(ID_FontDialogBoardNotebook, JaneClone::FontDialogBoardNotebook)
-EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
-EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
-EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
-EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
-EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
-
-// メニューバーからスレッド一覧リストをソート
-EVT_MENU(ID_OnClickMenuCOL_CHK,      JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_NUM,      JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_TITLE,    JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_RESP,     JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_CACHEDRES,JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_NEWRESP,  JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_INCRESP,  JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_MOMENTUM, JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_LASTUP,   JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_SINCE,    JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_OID,      JaneClone::OnThreadListSort)
-EVT_MENU(ID_OnClickMenuCOL_BOARDNAME,JaneClone::OnThreadListSort)
-
-// 検索バー系の命令
-EVT_MENU(ID_SearchBoxDoSearch, JaneClone::SearchBoxDoSearch)
-EVT_MENU(ID_SearchBarHide, JaneClone::HideSearchBar)
-EVT_MENU(ID_SearchBoxUp, JaneClone::SearchBoxUp)
-EVT_MENU(ID_SearchBoxDown, JaneClone::SearchBoxDown)
-EVT_MENU(ID_SearchBoxCopy, JaneClone::SearchBoxCopy)
-EVT_MENU(ID_SearchBoxCut, JaneClone::SearchBoxCut)
-EVT_MENU(ID_SearchBoxSelectAll, JaneClone::SearchBoxSelectAll)
-EVT_MENU(ID_SearchBoxClear, JaneClone::SearchBoxClear)
-
-// 動的に項目を追加するメニューでのイベント
-EVT_MENU_OPEN(JaneClone::OnMenuOpen)
-EVT_UPDATE_UI(ID_UserLastClosedThreadMenuUp, JaneClone::UserLastClosedThreadMenuUp)
-EVT_UPDATE_UI(ID_UserLastClosedBoardMenuUp, JaneClone::UserLastClosedBoardMenuUp)
-EVT_UPDATE_UI(ID_UserLookingTabsMenuUp, JaneClone::UserLookingTabsMenuUp)
-
-// ツリーコントロールのイベント
-EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
-
-// 板一覧ノートブックで右クリックされた時の処理
-EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_BoardNoteBook, JaneClone::OnRightClickBoardNoteBook)
-// スレッド一覧ノートブックで右クリックされた時の処理
-EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_ThreadNoteBook, JaneClone::OnRightClickThreadNoteBook)
-
-// 板一覧ノートブックで、タブが消される前の処理
-EVT_AUINOTEBOOK_PAGE_CLOSE(ID_BoardNoteBook, JaneClone::OnAboutCloseBoardNoteBook)
-// スレッド一覧ノートブックで、タブが消される前の処理
-EVT_AUINOTEBOOK_PAGE_CLOSE(ID_ThreadNoteBook, JaneClone::OnAboutCloseThreadNoteBook)
-
-// AuiNotebookのタブを変更中の処理
-EVT_AUINOTEBOOK_PAGE_CHANGING(ID_BoardNoteBook,  JaneClone::OnChangeBoardTab)
-EVT_AUINOTEBOOK_PAGE_CHANGING(ID_ThreadNoteBook, JaneClone::OnChangeThreadTab)
-
-// AuiNotebookのタブを変更し終わった時の処理
-EVT_AUINOTEBOOK_PAGE_CHANGED(ID_BoardNoteBook,  JaneClone::OnChangedBoardTab)
-EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ThreadNoteBook, JaneClone::OnChangedThreadTab)
-// AuiNotebook上でダブルクリックした時の処理
-//EVT_AUINOTEBOOK_TAB_MIDDLE_DOWN(ID_BoardNoteBook,  JaneClone::OnDoubleClickBoardTab)
-//EVT_AUINOTEBOOK_TAB_MIDDLE_DOWN(ID_ThreadNoteBook, JaneClone::OnDoubleClickThreadTab)
-
-// フォーカスの監視
-EVT_SET_FOCUS(JaneClone::OnSetFocus)
-
-// マウスモーションの監視
-//EVT_MOUSE_EVENTS(JaneClone::MouseMotion)
-//EVT_ENTER_WINDOW(JaneClone::MotionEnterWindow)
-//EVT_LEAVE_WINDOW(JaneClone::MotionLeaveWindow)
-//EVT_LEFT_DCLICK(JaneClone::OnDoubleClick)
-
-// スレッド一覧リストでのクリック
-EVT_LIST_ITEM_SELECTED(wxID_ANY, JaneClone::OnLeftClickAtListCtrl)
-EVT_LIST_COL_CLICK(wxID_ANY, JaneClone::OnLeftClickAtListCtrlCol)
-// 終了前処理
-EVT_CLOSE(JaneClone::OnCloseWindow)
-// wxHtmlWindow上でのイベント処理
-EVT_HTML_CELL_HOVER(wxID_ANY, JaneClone::OnCellHover)
-// URL入力ウィンドウのボタンイベント処理
-EVT_BUTTON(ID_URLWindowButton, JaneClone::OnClickURLWindowButton)
-
+   // メニューバー・ポップアップメニューにあるコマンド入力で起動するメソッドのイベントテーブル
+   EVT_MENU(ID_Quit, JaneClone::OnQuit)
+   EVT_MENU(ID_Restart, JaneClone::OnRestart)
+   EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
+   EVT_MENU(ID_CheckLogDirectory, JaneClone::CheckLogDirectory)
+   EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
+   EVT_MENU(ID_OneBoardTabClose, JaneClone::OneBoardTabClose)
+   EVT_MENU(ID_ExcepSelTabClose, JaneClone::ExcepSelTabClose)
+   EVT_MENU(ID_AllBoardTabClose, JaneClone::AllBoardTabClose)
+   EVT_MENU(ID_AllLeftBoardTabClose, JaneClone::AllLeftBoardTabClose)
+   EVT_MENU(ID_AllRightBoardTabClose, JaneClone::AllRightBoardTabClose)
+   EVT_MENU(ID_OnOpenBoardByBrowser, JaneClone::OnOpenBoardByBrowser)
+   EVT_MENU(ID_ReloadOneBoard, JaneClone::ReloadOneBoard)
+   EVT_MENU(ID_CopyBURLToClipBoard, JaneClone::CopyBURLToClipBoard)
+   EVT_MENU(ID_CopyBTitleToClipBoard, JaneClone::CopyBTitleToClipBoard)
+   EVT_MENU(ID_CopyBBothDataToClipBoard, JaneClone::CopyBBothDataToClipBoard)
+   EVT_MENU(ID_CopyTURLToClipBoard, JaneClone::CopyTURLToClipBoard)
+   EVT_MENU(ID_CopyTTitleToClipBoard, JaneClone::CopyTTitleToClipBoard)
+   EVT_MENU(ID_CopyTBothDataToClipBoard, JaneClone::CopyTBothDataToClipBoard)
+   EVT_MENU(ID_OneThreadTabClose, JaneClone::OneThreadTabClose)
+   EVT_MENU(ID_ExcepSelThreadTabClose, JaneClone::ExcepSelThreadTabClose)
+   EVT_MENU(ID_AllThreadTabClose, JaneClone::AllThreadTabClose)
+   EVT_MENU(ID_AllLeftThreadTabClose, JaneClone::AllLeftThreadTabClose)
+   EVT_MENU(ID_AllRightThreadTabClose, JaneClone::AllRightThreadTabClose)
+   EVT_MENU(ID_OnOpenThreadByBrowser, JaneClone::OnOpenThreadByBrowser)
+   EVT_MENU(ID_SaveDatFile, JaneClone::SaveDatFile)
+   EVT_MENU(ID_SaveDatFileToClipBoard, JaneClone::SaveDatFileToClipBoard)
+   EVT_MENU(ID_DeleteDatFile, JaneClone::DeleteDatFile)
+   EVT_MENU(ID_ReloadThisThread, JaneClone::ReloadThisThread)
+   EVT_MENU(ID_CallResponseWindow, JaneClone::CallResponseWindow)
+   EVT_MENU(ID_FontDialogBoardTree, JaneClone::FontDialogBoardTree)
+   EVT_MENU(ID_FontDialogLogWindow, JaneClone::FontDialogLogWindow)
+   EVT_MENU(ID_FontDialogBoardNotebook, JaneClone::FontDialogBoardNotebook)
+   EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
+   EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
+   EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
+   EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
+   EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
+    
+   // メニューバーからスレッド一覧リストをソート
+   EVT_MENU(ID_OnClickMenuCOL_CHK,      JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_NUM,      JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_TITLE,    JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_RESP,     JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_CACHEDRES,JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_NEWRESP,  JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_INCRESP,  JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_MOMENTUM, JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_LASTUP,   JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_SINCE,    JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_OID,      JaneClone::OnThreadListSort)
+   EVT_MENU(ID_OnClickMenuCOL_BOARDNAME,JaneClone::OnThreadListSort)
+    
+   // 検索バー系の命令
+   EVT_MENU(ID_SearchBoxDoSearch, JaneClone::SearchBoxDoSearch)
+   EVT_MENU(ID_SearchBarHide, JaneClone::HideSearchBar)
+   EVT_MENU(ID_SearchBoxUp, JaneClone::SearchBoxUp)
+   EVT_MENU(ID_SearchBoxDown, JaneClone::SearchBoxDown)
+   EVT_MENU(ID_SearchBoxCopy, JaneClone::SearchBoxCopy)
+   EVT_MENU(ID_SearchBoxCut, JaneClone::SearchBoxCut)
+   EVT_MENU(ID_SearchBoxSelectAll, JaneClone::SearchBoxSelectAll)
+   EVT_MENU(ID_SearchBoxClear, JaneClone::SearchBoxClear)
+    
+   // 動的に項目を追加するメニューでのイベント
+   EVT_MENU_OPEN(JaneClone::OnMenuOpen)
+   EVT_UPDATE_UI(ID_UserLastClosedThreadMenuUp, JaneClone::UserLastClosedThreadMenuUp)
+   EVT_UPDATE_UI(ID_UserLastClosedBoardMenuUp, JaneClone::UserLastClosedBoardMenuUp)
+   EVT_UPDATE_UI(ID_UserLookingTabsMenuUp, JaneClone::UserLookingTabsMenuUp)
+    
+   // ツリーコントロールのイベント
+   EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
+    
+   // 板一覧ノートブックで右クリックされた時の処理
+   EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_BoardNoteBook, JaneClone::OnRightClickBoardNoteBook)
+   // スレッド一覧ノートブックで右クリックされた時の処理
+   EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_ThreadNoteBook, JaneClone::OnRightClickThreadNoteBook)
+    
+   // 板一覧ノートブックで、タブが消される前の処理
+   EVT_AUINOTEBOOK_PAGE_CLOSE(ID_BoardNoteBook, JaneClone::OnAboutCloseBoardNoteBook)
+   // スレッド一覧ノートブックで、タブが消される前の処理
+   EVT_AUINOTEBOOK_PAGE_CLOSE(ID_ThreadNoteBook, JaneClone::OnAboutCloseThreadNoteBook)
+    
+   // AuiNotebookのタブを変更中の処理
+   EVT_AUINOTEBOOK_PAGE_CHANGING(ID_BoardNoteBook,  JaneClone::OnChangeBoardTab)
+   EVT_AUINOTEBOOK_PAGE_CHANGING(ID_ThreadNoteBook, JaneClone::OnChangeThreadTab)
+    
+   // AuiNotebookのタブを変更し終わった時の処理
+   EVT_AUINOTEBOOK_PAGE_CHANGED(ID_BoardNoteBook,  JaneClone::OnChangedBoardTab)
+   EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ThreadNoteBook, JaneClone::OnChangedThreadTab)
+   // AuiNotebook上でダブルクリックした時の処理
+   //EVT_AUINOTEBOOK_TAB_MIDDLE_DOWN(ID_BoardNoteBook,  JaneClone::OnDoubleClickBoardTab)
+   //EVT_AUINOTEBOOK_TAB_MIDDLE_DOWN(ID_ThreadNoteBook, JaneClone::OnDoubleClickThreadTab)
+    
+   // フォーカスの監視
+   EVT_SET_FOCUS(JaneClone::OnSetFocus)
+    
+   // マウスモーションの監視
+   //EVT_MOUSE_EVENTS(JaneClone::MouseMotion)
+   //EVT_ENTER_WINDOW(JaneClone::MotionEnterWindow)
+   //EVT_LEAVE_WINDOW(JaneClone::MotionLeaveWindow)
+   //EVT_LEFT_DCLICK(JaneClone::OnDoubleClick)
+    
+   // スレッド一覧リストでのクリック
+   EVT_LIST_ITEM_SELECTED(wxID_ANY, JaneClone::OnLeftClickAtListCtrl)
+   EVT_LIST_COL_CLICK(wxID_ANY, JaneClone::OnLeftClickAtListCtrlCol)
+   // 終了前処理
+   EVT_CLOSE(JaneClone::OnCloseWindow)
+   // wxHtmlWindow上でのイベント処理
+   EVT_HTML_CELL_HOVER(wxID_ANY, JaneClone::OnCellHover)
+   // URL入力ウィンドウのボタンイベント処理
+   EVT_BUTTON(ID_URLWindowButton, JaneClone::OnClickURLWindowButton)
 END_EVENT_TABLE()
 
 // 画像ビューアのインスタンスを初期化
@@ -179,6 +178,8 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
       */
      // 検索バー
      m_search_ctrl = new wxSearchCtrl((wxWindow*)this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
+     // アイコン付きのツールバー
+     m_floatToolBar = new wxAuiToolBar(this, ID_FloatToolBar, wxDefaultPosition, wxDefaultSize, wxAUI_TB_DEFAULT_STYLE);
      // URL入力欄
      m_url_input_panel = new wxPanel(this, wxID_ANY);
      m_url_input = new wxTextCtrl(m_url_input_panel, wxID_ANY, m_url_text, wxDefaultPosition, wxDefaultSize);
@@ -416,7 +417,7 @@ void JaneClone::SetJaneCloneManuBar() {
      move->Append(wxID_ANY, wxT("指定レス番号にジャンプ"));
      menu5->AppendSubMenu(move, wxT("移動"));
      menu5->AppendSeparator();
-     menu5->Append(wxID_ANY, wxT("新着チェック"));
+     menu5->Append(ID_ReloadThisThread, wxT("新着チェック"));
      menu5->Append(wxID_ANY, wxT("すべてのタブの新着チェック"));
      menu5->Append(wxID_ANY, wxT("すべてのタブの更新チェック"));
      menu5->Append(wxID_ANY, wxT("中止"));
@@ -716,6 +717,58 @@ void JaneClone::DoLayout() {
      url_sizer->Add(m_url_input_button, 0, 0, 0);
      m_url_input_panel->SetSizer(url_sizer);
 
+     // アイコン付きのツールバーのレイアウトを設定する
+     m_floatToolBar->SetToolBitmapSize(wxSize(16,16));
+     m_floatToolBar->AddTool(ID_SwitchSeparateXY,
+			     wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY),
+			     wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY),
+			     false,NULL,
+			     wxT("縦⇔横分割切り替え"),
+			     wxT("ウィンドウを３分割する形式を切り替えます."));
+     m_floatToolBar->AddTool(ID_SwitchTwoThreePane,
+			     wxT("２⇔３ペイン切り替え"),
+			     wxBitmap(twoPaneWinImg, wxBITMAP_TYPE_ANY),
+			     wxT("２⇔３ペイン切り替え"));
+     m_floatToolBar->AddTool(ID_ShowBoardListTree,
+			     wxT("板ツリー表示"),
+			     wxBitmap(sideTreeImg, wxBITMAP_TYPE_ANY),
+			     wxT("板ツリー表示"));
+     m_floatToolBar->AddTool(ID_SwitchRightPane,
+			     wxT("右側切り替え"),
+			     wxBitmap(twoPaneWinImg, wxBITMAP_TYPE_ANY),
+			     wxT("右側切り替え"));
+     m_floatToolBar->AddSeparator();
+     m_floatToolBar->AddTool(ID_CallResponseWindow,
+			     wxT("スレッド新規作成"),
+			     wxBitmap(responseImg, wxBITMAP_TYPE_ANY),
+			     wxT("スレッド新規作成"));
+     m_floatToolBar->AddTool(wxID_ANY,
+			     wxT("更新/すべてのタブの更新"),
+			     wxBitmap(refreshImg, wxBITMAP_TYPE_ANY),
+			     wxT("更新/すべてのタブの更新"));
+     m_floatToolBar->AddTool(wxID_ANY,
+			     wxT("お気に入りの更新チェック"),
+			     wxBitmap(bookMarkImg, wxBITMAP_TYPE_ANY),
+			     wxT("お気に入りの更新チェック"));
+     m_floatToolBar->AddSeparator();
+     m_floatToolBar->AddTool(wxID_ANY,
+			     wxT("スレ絞り込み検索/検索結果のクリア"),
+			     wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY),
+			     wxT("スレ絞り込み検索/検索結果のクリア"));
+     m_floatToolBar->AddTool(wxID_ANY,
+			     wxT("ログから検索"),
+			     wxBitmap(logSearchImg, wxBITMAP_TYPE_ANY),
+			     wxT("ログから検索"));
+     m_floatToolBar->AddSeparator();
+     m_floatToolBar->AddTool(wxID_ANY,
+			     wxT("設定/ビューア設定"),
+			     wxBitmap(configImg, wxBITMAP_TYPE_ANY),
+			     wxT("設定/ビューア設定"));
+     m_floatToolBar->AddTool(wxID_ANY,
+			     wxT("ログから検索"),
+			     wxBitmap(helpImg, wxBITMAP_TYPE_ANY),
+			     wxT("ログから検索"));
+
      // Auiマネージャーがどのフレームを管理するか示す
      m_mgr.SetManagedWindow(this);
      // それぞれのペインの情報を設定する
@@ -754,7 +807,6 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      // 上部・検索バーを設定する
      wxAuiPaneInfo search;
      search.Name(wxT("searchbar"));
-     search.Caption(wxT("検索バー"));
      search.Top();
      search.CloseButton(false);
 
@@ -762,14 +814,18 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      wxAuiPaneInfo url;
      url.Name(wxT("urlbar"));
      url.MinSize(wxSize(0, 16));
-     url.Caption(wxT("url"));
      url.Top();
      url.CloseButton(false);
+
+     // アイコン付きのツールバーを設定する
+     wxAuiPaneInfo toolBar;
+     toolBar.Name(wxT("toolBar"));
+     toolBar.Top();
+     toolBar.CloseButton(false);
 
      // 左側・板一覧のツリーコントロールを設定する
      wxAuiPaneInfo boardTree;
      boardTree.Name(wxT("boardTree"));
-     boardTree.Caption(wxT("板一覧"));
      boardTree.Left();
      boardTree.CloseButton(false);
      boardTree.BestSize(m_boardTreePanel->GetSize());
@@ -777,7 +833,6 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      // 左側下部・ログ出力ウィンドウを設定する
      wxAuiPaneInfo logWindow;
      logWindow.Name(wxT("logWindow"));
-     logWindow.Caption(wxT("ログ出力画面"));
      logWindow.Left();
      logWindow.CloseButton(false);
      logWindow.MaxSize(20, 20);
@@ -785,7 +840,6 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      // 右側上部・板一覧のノートブックとスレッド一覧リストが載ったウィンドウ
      wxAuiPaneInfo boardListThreadListInfo;
      boardListThreadListInfo.Name(wxT("boardListThreadListInfo"));
-     boardListThreadListInfo.Caption(wxT("スレッド一覧"));
      boardListThreadListInfo.Right();
      boardListThreadListInfo.Center();
      boardListThreadListInfo.CloseButton(false);
@@ -794,7 +848,6 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      // 右側下部・スレッド一覧タブとスレ表示画面が載ったウィンドウ
      wxAuiPaneInfo threadTabThreadContentInfo;
      threadTabThreadContentInfo.Name(wxT("threadTabThreadContentInfo"));
-     threadTabThreadContentInfo.Caption(wxT("開いているスレ"));
      threadTabThreadContentInfo.Right();
      threadTabThreadContentInfo.Center();
      threadTabThreadContentInfo.CloseButton(false);
@@ -803,6 +856,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      // Addの順番と反映がLinuxとWindowsで逆なので、順番をifdefで設定する
 #ifdef __WXMSW__
      m_mgr.AddPane(m_search_ctrl, search);
+     m_mgr.AddPane(m_floatToolBar, toolBar);
      m_mgr.AddPane(m_url_input_panel, url);
      m_mgr.AddPane(m_boardTreePanel, boardTree);
      m_mgr.AddPane(m_logCtrl, logWindow);
@@ -810,6 +864,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
 #else
      m_mgr.AddPane(m_url_input_panel, url);
+     m_mgr.AddPane(m_floatToolBar, toolBar);
      m_mgr.AddPane(m_search_ctrl, search);
      m_mgr.AddPane(m_logCtrl, logWindow);
      m_mgr.AddPane(m_boardTreePanel, boardTree);
@@ -827,7 +882,8 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 
      // 板一覧更ツリーの初期化
      InitializeBoardList();
-
+     // ツールバーの明示化
+     m_floatToolBar->Realize();
      // 前回設定されたフォント情報があれば設定する
      *m_logCtrl << wxT("前回使用したフォント情報の読み出し…\n");
      m_search_ctrl->SetFont(ReadFontInfo(SEARCH_BAR));
@@ -1659,9 +1715,6 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
 	  }
      }
 
-     // アクティブなタブを選択して閉じる
-     threadNoteBook->DeletePage(threadNoteBook->GetSelection());
-
      // ソケット通信を行う
      SocketCommunication* socketCommunication = new SocketCommunication();
      const wxString threadContentPath = socketCommunication->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
@@ -1684,8 +1737,11 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
      *m_logCtrl << wxT("完了…　(´ん｀/)三\n");
 
      // スレッドを表示させる
+     threadNoteBook->Freeze();
      threadNoteBook->InsertPage(page, threadBar, title, false, wxNullBitmap);
+     threadNoteBook->DeletePage(threadNoteBook->GetSelection());
      threadNoteBook->SetSelection(page);
+     threadNoteBook->Thaw();
 }
 /**
  *  書き込み用のウィンドウを呼び出す
@@ -2037,12 +2093,14 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 					   const wxString& origNumber, const wxString& title) {
 
      // スレッド用の検索バー等のインスタンスを用意する
+     threadNoteBook->Freeze();
      ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, wxID_ANY);
      threadBar->SetTitle(title);
 
      // スレッドの内容はThreadContentBarの中で設定する
      threadBar->SetThreadContentWindow(threadContentPath);
      threadNoteBook->AddPage(threadBar, title, true);
+     threadNoteBook->Thaw();
 }
 /**
  * 板一覧ノートブックで右クリックされた時の処理
@@ -2148,7 +2206,7 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
      threadTabUtil->AppendSubMenu(addFavAll, wxT("すべてのタブをお気に入りに追加"));
      threadTabUtil->AppendSeparator();
 
-     threadTabUtil->Append(wxID_ANY, wxT("新着チェック"));
+     threadTabUtil->Append(ID_ReloadThisThread, wxT("新着チェック"));
      threadTabUtil->Append(wxID_ANY, wxT("すべてのタブの新着チェック"));
      threadTabUtil->Append(wxID_ANY, wxT("中止"));
      threadTabUtil->Append(ID_CallResponseWindow, wxT("レス"));

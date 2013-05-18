@@ -76,7 +76,7 @@ static const wxString scrollToNewResImg  = wxT("rc/go-bottom.png");
 static const wxString stopImg            = wxT("rc/dialog-error.png");
 static const wxString resExtractImg      = wxT("rc/edit-find-replace.png");
 static const wxString newThreadImg       = wxT("rc/go-last.png");
-static const wxString responseImg        = wxT("rc/format-justify-left.png");
+static const wxString responseImg        = wxT("rc/page-edit.png");
 static const wxString bookMarkImg        = wxT("rc/bookmark-new.png");
 static const wxString deleteLogImg       = wxT("rc/edit-delete.png");
 static const wxString closeImg           = wxT("rc/emblem-unreadable.png");
@@ -85,6 +85,14 @@ static const wxString hideSearchBarImg   = wxT("rc/emblem-unreadable.png");
 static const wxString forwardImg         = wxT("rc/go-down.png");
 static const wxString backwardImg        = wxT("rc/go-up.png");
 static const wxString regexImg           = wxT("rc/emblem-regex.png");
+// ツールバー用アイコン
+static const wxString sideTreeImg        = wxT("rc/application-side-tree.png");
+static const wxString twoPaneWinImg      = wxT("rc/application-tile-horizontal.png");
+static const wxString thrPaneWinImg      = wxT("rc/view-choose.png");
+static const wxString thrColumnWinImg    = wxT("rc/view-file-columns.png");
+static const wxString configImg          = wxT("rc/configure-2.png");
+static const wxString logSearchImg       = wxT("rc/system-search-5.png");
+static const wxString helpImg            = wxT("rc/help-browser.png");
 // スレッド一覧リスト用画像
 static const wxString threadCheckImg     = wxT("rc/dialog-accept.png");
 static const wxString threadAddImg       = wxT("rc/edit-add-3.png");

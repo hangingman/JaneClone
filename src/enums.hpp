@@ -88,6 +88,11 @@ enum {
 	ID_SearchBoxNormalSearch,       // 検索ボックスで通常検索
 	ID_SearchBoxRegexSearch,        // 検索ボックスで正規表現検索
 	ID_SearchBarHide,               // 検索ボックスを隠す
+	ID_FloatToolBar,                // アイコン付きのツールバー自体のID
+	ID_SwitchSeparateXY,            // 縦⇔横分割切り替え
+	ID_SwitchTwoThreePane,          // ２⇔３ペイン切り替え
+	ID_ShowBoardListTree,           // 板一覧ツリー表示切り替え
+	ID_SwitchRightPane,             // 右側ペインの内容切り替え
 	// responsewindow.hpp
 	ID_ResponseWindow,
 	ID_QuitResponseWindow,
