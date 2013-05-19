@@ -84,7 +84,10 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_OnClickMenuCOL_SINCE,    JaneClone::OnThreadListSort)
    EVT_MENU(ID_OnClickMenuCOL_OID,      JaneClone::OnThreadListSort)
    EVT_MENU(ID_OnClickMenuCOL_BOARDNAME,JaneClone::OnThreadListSort)
-    
+
+   // ツールバーからの命令
+   EVT_MENU(ID_ShowBoardListTree, JaneClone::ShowBoardListTree)
+
    // 検索バー系の命令
    EVT_MENU(ID_SearchBoxDoSearch, JaneClone::SearchBoxDoSearch)
    EVT_MENU(ID_SearchBarHide, JaneClone::HideSearchBar)
@@ -191,9 +194,6 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
      wxTextAttr attr;
      attr.SetFont(font);
      m_logCtrl->SetDefaultStyle(attr);
-
-     // 板一覧ツリー
-     m_boardTreePanel = new wxPanel(this);
 
      *m_logCtrl << wxT("(ヽ´ん`)…デバッグ用画面…\n");
      // ステータスバー設置
@@ -720,11 +720,13 @@ void JaneClone::DoLayout() {
      // アイコン付きのツールバーのレイアウトを設定する
      m_floatToolBar->SetToolBitmapSize(wxSize(16,16));
      m_floatToolBar->AddTool(ID_SwitchSeparateXY,
+			     wxT("縦⇔横分割切り替え"),
 			     wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY),
 			     wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY),
-			     false,NULL,
+			     wxITEM_CHECK, //false,NULL,
 			     wxT("縦⇔横分割切り替え"),
-			     wxT("ウィンドウを３分割する形式を切り替えます."));
+			     wxT("ウィンドウを３分割する形式を切り替えます."),
+	                     NULL);
      m_floatToolBar->AddTool(ID_SwitchTwoThreePane,
 			     wxT("２⇔３ペイン切り替え"),
 			     wxBitmap(twoPaneWinImg, wxBITMAP_TYPE_ANY),
@@ -732,7 +734,11 @@ void JaneClone::DoLayout() {
      m_floatToolBar->AddTool(ID_ShowBoardListTree,
 			     wxT("板ツリー表示"),
 			     wxBitmap(sideTreeImg, wxBITMAP_TYPE_ANY),
-			     wxT("板ツリー表示"));
+			     wxBitmap(sideTreeImg, wxBITMAP_TYPE_ANY),
+			     wxITEM_CHECK,
+			     wxT("板ツリー表示"),
+			     wxT("板一覧ツリーを表示させるかどうか設定します"),
+			     NULL);
      m_floatToolBar->AddTool(ID_SwitchRightPane,
 			     wxT("右側切り替え"),
 			     wxBitmap(twoPaneWinImg, wxBITMAP_TYPE_ANY),
@@ -771,14 +777,6 @@ void JaneClone::DoLayout() {
 
      // Auiマネージャーがどのフレームを管理するか示す
      m_mgr.SetManagedWindow(this);
-     // それぞれのペインの情報を設定する
-     SetJaneCloneAuiPaneInfo();
-     // Auiマネージャーの設定を反映する
-     m_mgr.Update();
-     // 設定ファイルからレイアウト情報を読み取る
-     wxString perspective;
-     config->Read(wxT("Perspective"), &perspective, wxEmptyString);
-     m_mgr.LoadPerspective((const wxString) perspective, true);
 
      int x, y;
      config->Read(wxT("FrameX"), &x, 640);
@@ -795,6 +793,21 @@ void JaneClone::DoLayout() {
      config->Read(wxT("IsMaximized"), &isMaximized, false);
      this->Maximize(isMaximized);
 
+     // 板一覧ツリーを表示するかどうか
+     bool toggled;
+     config->Read(wxT("ShowBoardListTree"), &toggled, true);
+     m_floatToolBar->ToggleTool(ID_ShowBoardListTree, toggled);
+
+     // それぞれのペインの情報を設定する
+     SetJaneCloneAuiPaneInfo();
+
+     // 設定ファイルからレイアウト情報を読み取る
+     wxString perspective;
+     config->Read(wxT("Perspective"), &perspective, wxEmptyString);
+     m_mgr.LoadPerspective((const wxString) perspective, true);
+
+     // Auiマネージャーの設定を反映する
+     m_mgr.Update();
      // 初期設定はこのLayout()が呼ばれる前に行わなくてはいけない
      Layout();
      // end wxGlade
@@ -804,6 +817,10 @@ void JaneClone::DoLayout() {
  * AuiManagerのPaneInfoを設定する
  */
 void JaneClone::SetJaneCloneAuiPaneInfo() {
+     
+     // 板一覧ツリーを表示するかどうか
+     const bool enableBoardListTree = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
+
      // 上部・検索バーを設定する
      wxAuiPaneInfo search;
      search.Name(wxT("searchbar"));
@@ -825,11 +842,15 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 
      // 左側・板一覧のツリーコントロールを設定する
      wxAuiPaneInfo boardTree;
-     boardTree.Name(wxT("boardTree"));
-     boardTree.Left();
-     boardTree.CloseButton(false);
-     boardTree.BestSize(m_boardTreePanel->GetSize());
-
+     if (enableBoardListTree) {
+	  // 板一覧ツリー
+	  m_boardTreePanel = new wxPanel(this);
+	  boardTree.Name(wxT("boardTree"));
+	  boardTree.Left();
+	  boardTree.CloseButton(false);
+	  boardTree.BestSize(m_boardTreePanel->GetSize());
+     }
+     
      // 左側下部・ログ出力ウィンドウを設定する
      wxAuiPaneInfo logWindow;
      logWindow.Name(wxT("logWindow"));
@@ -858,7 +879,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_mgr.AddPane(m_search_ctrl, search);
      m_mgr.AddPane(m_floatToolBar, toolBar);
      m_mgr.AddPane(m_url_input_panel, url);
-     m_mgr.AddPane(m_boardTreePanel, boardTree);
+     if (enableBoardListTree) m_mgr.AddPane(m_boardTreePanel, boardTree);
      m_mgr.AddPane(m_logCtrl, logWindow);
      m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
      m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
@@ -867,7 +888,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_mgr.AddPane(m_floatToolBar, toolBar);
      m_mgr.AddPane(m_search_ctrl, search);
      m_mgr.AddPane(m_logCtrl, logWindow);
-     m_mgr.AddPane(m_boardTreePanel, boardTree);
+     if (enableBoardListTree) m_mgr.AddPane(m_boardTreePanel, boardTree);
      m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
      m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
 #endif
@@ -878,10 +899,10 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_logCtrl->SetLabel(LOG_WINDOW);
      boardNoteBook->SetLabel(BOARD_NOTEBOOK);
      threadNoteBook->SetLabel(THREAD_NOTEBOOK);
-     m_boardTreePanel->SetLabel(BOARD_TREE_PANEL);
+     if (enableBoardListTree) m_boardTreePanel->SetLabel(BOARD_TREE_PANEL);
 
      // 板一覧更ツリーの初期化
-     InitializeBoardList();
+     if (enableBoardListTree) InitializeBoardList();
      // ツールバーの明示化
      m_floatToolBar->Realize();
      // 前回設定されたフォント情報があれば設定する
@@ -2000,6 +2021,10 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
      // ウィンドウの最大化情報
      bool isMaximized = this->IsMaximized();
      config->Write(wxT("IsMaximized"), isMaximized);
+     
+     // 板一覧ツリーの情報
+     const bool toggled = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
+     config->Write(wxT("ShowBoardListTree"), toggled);
 
      // 各ウィジェットのフォント情報
      wxWindowList& children = this->GetChildren();
@@ -3157,20 +3182,29 @@ void JaneClone::OnThreadListSort(wxCommandEvent& event) {
      }     
 }
 /**
- * スレッド一覧リストのタブでダブルクリックを実行
+ * ツリーコントロールの表示・非表示切り替え
  */
-// void JaneClone::OnDoubleClickBoardTab(wxAuiNotebookEvent& event) {
-//      wxMessageBox(wxT("boardnotebook"));
-//}
-/**
- * スレタブでダブルクリックを実行
- */
-// void JaneClone::OnDoubleClickThreadTab(wxAuiNotebookEvent& event) {
-//      wxMessageBox(wxT("threadnotebook"));
-// }
-/**
- * ダブルクリックを実行
- */
-// void JaneClone::OnDoubleClick(wxMouseEvent& event) {
-//      wxMessageBox(wxT("double click"));
-// }
+void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
+
+     const bool toggled = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
+     if (!toggled) {
+	  m_mgr.DetachPane(m_boardTreePanel);
+	  m_boardTreePanel->Destroy();
+     } else {
+	  // 板一覧ツリーの再設定
+	  m_boardTreePanel = new wxPanel(this);
+	  // 左側・板一覧のツリーコントロールを設定する
+	  wxAuiPaneInfo boardTree;
+	  boardTree.Name(wxT("boardTree"));
+	  boardTree.Left();
+	  boardTree.CloseButton(false);
+	  boardTree.BestSize(m_boardTreePanel->GetSize());
+	  m_mgr.AddPane(m_boardTreePanel, boardTree);
+	  m_boardTreePanel->SetLabel(BOARD_TREE_PANEL);
+          // 板一覧更ツリーの初期化
+	  InitializeBoardList();
+     }
+
+     // 全体の再描画
+     m_mgr.Update();
+}

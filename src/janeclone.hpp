@@ -164,7 +164,6 @@ private:
      void CopyBBothDataToClipBoard(wxCommandEvent& event);
      void CallResponseWindow(wxCommandEvent& event);
      void OnThreadListSort(wxCommandEvent& event);
-     //void OnDoubleClickBoardTab(wxAuiNotebookEvent& event);
      
      // スレタブでの処理
      void OneThreadTabClose(wxCommandEvent& event);
@@ -180,7 +179,6 @@ private:
      void SaveDatFileToClipBoard(wxCommandEvent& event);
      void DeleteDatFile(wxCommandEvent& event);
      void ReloadThisThread(wxCommandEvent& event);
-     //void OnDoubleClickThreadTab(wxAuiNotebookEvent& event);
 
      // いろいろなイベント処理
      void OnCloseWindow(wxCloseEvent& event);
@@ -252,6 +250,8 @@ private:
      wxTextCtrl* m_logCtrl;
      // アイコン付きのツールバー
      wxAuiToolBar* m_floatToolBar;
+     // ツリーコントロールの表示・非表示切り替え
+     void ShowBoardListTree(wxCommandEvent& event);
 
      //　ツリーコントロールにクリックした時のイベント
      void OnGetBoardInfo(wxTreeEvent& event);
