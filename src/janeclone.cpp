@@ -87,6 +87,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
 
    // ツールバーからの命令
    EVT_MENU(ID_ShowBoardListTree, JaneClone::ShowBoardListTree)
+   EVT_MENU(ID_SwitchSeparateXY, JaneClone::SwitchSeparateXY)
 
    // 検索バー系の命令
    EVT_MENU(ID_SearchBoxDoSearch, JaneClone::SearchBoxDoSearch)
@@ -723,7 +724,7 @@ void JaneClone::DoLayout() {
 			     wxT("縦⇔横分割切り替え"),
 			     wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY),
 			     wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY),
-			     wxITEM_CHECK, //false,NULL,
+			     wxITEM_NORMAL,
 			     wxT("縦⇔横分割切り替え"),
 			     wxT("ウィンドウを３分割する形式を切り替えます."),
 	                     NULL);
@@ -797,6 +798,11 @@ void JaneClone::DoLayout() {
      bool toggled;
      config->Read(wxT("ShowBoardListTree"), &toggled, true);
      m_floatToolBar->ToggleTool(ID_ShowBoardListTree, toggled);
+
+     // 画面の分割を縦横どちらにするか
+     config->Read(wxT("SeparateXY"), &separateIsX, false);
+     separateIsX ? m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY))
+	         : m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
 
      // それぞれのペインの情報を設定する
      SetJaneCloneAuiPaneInfo();
@@ -2026,6 +2032,9 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
      const bool toggled = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
      config->Write(wxT("ShowBoardListTree"), toggled);
 
+     // 画面の分割を縦横どちらにするか
+     config->Write(wxT("SeparateXY"), separateIsX);
+
      // 各ウィジェットのフォント情報
      wxWindowList& children = this->GetChildren();
      for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) {
@@ -3207,4 +3216,19 @@ void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
 
      // 全体の再描画
      m_mgr.Update();
+}
+/**
+ * 縦⇔横分割切り替え
+ */
+void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
+
+     if (separateIsX) {
+	  // 現在縦分割状態なので横分割に変更
+	  separateIsX = false;
+	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
+     } else {
+	  // 現在横分割状態なので縦分割に変更
+	  separateIsX = true;
+	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY));
+     }
 }

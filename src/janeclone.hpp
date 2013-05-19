@@ -250,8 +250,11 @@ private:
      wxTextCtrl* m_logCtrl;
      // アイコン付きのツールバー
      wxAuiToolBar* m_floatToolBar;
+     bool separateIsX;
      // ツリーコントロールの表示・非表示切り替え
      void ShowBoardListTree(wxCommandEvent& event);
+     // 縦⇔横分割切り替え
+     void SwitchSeparateXY(wxCommandEvent& event);
 
      //　ツリーコントロールにクリックした時のイベント
      void OnGetBoardInfo(wxTreeEvent& event);
