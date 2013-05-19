@@ -800,7 +800,8 @@ void JaneClone::DoLayout() {
      m_floatToolBar->ToggleTool(ID_ShowBoardListTree, toggled);
 
      // 画面の分割を縦横どちらにするか
-     config->Read(wxT("SeparateXY"), &separateIsX, false);
+     // separateX = 日, separateY = 而
+     config->Read(wxT("SeparateXY"), &separateIsX, true);
      separateIsX ? m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY))
 	         : m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
 
@@ -887,16 +888,30 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_mgr.AddPane(m_url_input_panel, url);
      if (enableBoardListTree) m_mgr.AddPane(m_boardTreePanel, boardTree);
      m_mgr.AddPane(m_logCtrl, logWindow);
-     m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
-     m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
+
+     // 縦分割か横分割か
+     if (separateIsX) {
+	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
+	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
+     } else {
+	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
+	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
+     }
 #else
      m_mgr.AddPane(m_url_input_panel, url);
      m_mgr.AddPane(m_floatToolBar, toolBar);
      m_mgr.AddPane(m_search_ctrl, search);
      m_mgr.AddPane(m_logCtrl, logWindow);
      if (enableBoardListTree) m_mgr.AddPane(m_boardTreePanel, boardTree);
-     m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
-     m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
+
+     // 縦分割か横分割か
+     if (separateIsX) {
+	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
+	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
+     } else {
+	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
+	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
+     }
 #endif
      // 各ウィンドウで識別用のラベルを設定する
      this->SetLabel(JANECLONE_WINDOW);
@@ -3222,13 +3237,108 @@ void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
  */
 void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
 
+     wxAuiPaneInfo boardListThreadListInfo    = m_mgr.GetPane(boardNoteBook);
+     wxAuiPaneInfo threadTabThreadContentInfo = m_mgr.GetPane(threadNoteBook);
+
      if (separateIsX) {
-	  // 現在縦分割状態なので横分割に変更
-	  separateIsX = false;
-	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
-     } else {
 	  // 現在横分割状態なので縦分割に変更
+	  separateIsX = false;
+
+	  // ペインの状態を変更する
+	  *m_logCtrl << wxT("現在横分割状態なので縦分割に変更\n");
+	  // 変更した情報をもとに、ペインを入れなおす
+#ifdef __WXMSW__
+	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo, wxAUI_INSERT_DOCK);
+	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo, wxAUI_INSERT_DOCK);
+#else
+	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo, wxAUI_INSERT_DOCK);
+	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo, wxAUI_INSERT_DOCK);
+#endif
+
+     } else {
+	  // 現在縦分割状態なので横分割に変更
 	  separateIsX = true;
-	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY));
+	  *m_logCtrl << wxT("現在縦分割状態なので横分割に変更\n");
+
+	  // 板一覧ツリーを表示するかどうか
+	  const bool enableBoardListTree = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
+
+	  // 上部・検索バーを設定する
+	  wxAuiPaneInfo search;
+	  search.Name(wxT("searchbar"));
+	  search.Top();
+	  search.CloseButton(false);
+
+	  // 上部・URL入力欄を設定する
+	  wxAuiPaneInfo url;
+	  url.Name(wxT("urlbar"));
+	  url.MinSize(wxSize(0, 16));
+	  url.Top();
+	  url.CloseButton(false);
+
+	  // アイコン付きのツールバーを設定する
+	  wxAuiPaneInfo toolBar;
+	  toolBar.Name(wxT("toolBar"));
+	  toolBar.Top();
+	  toolBar.CloseButton(false);
+
+	  // 左側・板一覧のツリーコントロールを設定する
+	  wxAuiPaneInfo boardTree;
+	  if (enableBoardListTree) {
+	       // 板一覧ツリー
+	       if (!m_boardTreePanel) m_boardTreePanel = new wxPanel(this);
+	       boardTree.Name(wxT("boardTree"));
+	       boardTree.Left();
+	       boardTree.CloseButton(false);
+	       boardTree.BestSize(m_boardTreePanel->GetSize());
+	  }
+     
+	  // 左側下部・ログ出力ウィンドウを設定する
+	  wxAuiPaneInfo logWindow;
+	  logWindow.Name(wxT("logWindow"));
+	  logWindow.Left();
+	  logWindow.CloseButton(false);
+	  logWindow.MaxSize(20, 20);
+
+	  // 右側上部・板一覧のノートブックとスレッド一覧リストが載ったウィンドウ
+	  wxAuiPaneInfo boardListThreadListInfo;
+	  boardListThreadListInfo.Name(wxT("boardListThreadListInfo"));
+	  boardListThreadListInfo.Right();
+	  boardListThreadListInfo.Center();
+	  boardListThreadListInfo.CloseButton(false);
+	  boardListThreadListInfo.BestSize(400, 400);
+
+	  // 右側下部・スレッド一覧タブとスレ表示画面が載ったウィンドウ
+	  wxAuiPaneInfo threadTabThreadContentInfo;
+	  threadTabThreadContentInfo.Name(wxT("threadTabThreadContentInfo"));
+	  threadTabThreadContentInfo.Right();
+	  threadTabThreadContentInfo.Center();
+	  threadTabThreadContentInfo.CloseButton(false);
+	  threadTabThreadContentInfo.BestSize(400, 400);
+
+#ifdef __WXMSW__
+	  m_mgr.InsertPane(m_search_ctrl, search);
+	  m_mgr.InsertPane(m_floatToolBar, toolBar);
+	  m_mgr.InsertPane(m_url_input_panel, url);
+	  if (enableBoardListTree) m_mgr.InsertPane(m_boardTreePanel, boardTree);
+	  m_mgr.InsertPane(m_logCtrl, logWindow);
+	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo);
+	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo);
+#else
+	  m_mgr.InsertPane(m_url_input_panel, url);
+	  m_mgr.InsertPane(m_floatToolBar, toolBar);
+	  m_mgr.InsertPane(m_search_ctrl, search);
+	  m_mgr.InsertPane(m_logCtrl, logWindow);
+	  if (enableBoardListTree) m_mgr.InsertPane(m_boardTreePanel, boardTree);
+	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo);
+	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo);
+#endif
      }
+
+     // 画像の切り替え
+     separateIsX ? m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY))
+	  : m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
+
+     // 全体の再描画
+     m_mgr.Update();
 }
