@@ -1475,7 +1475,9 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
      datList.Shrink();
 
      // ノートブックの変更中はノートブックに触れないようにする
+#ifndef __WXMSW__
      boardNoteBook->Freeze();
+#endif
 
      // 新規にセットされる板名かどうかのフラグを用意する
      bool itIsNewBoardName = true;
@@ -1533,15 +1535,6 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
      }
 
      // カラムの幅を最大化
-#ifdef __WXMSW__
-     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_CHK      , 20);
-     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_TITLE    , wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_SINCE    , wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_OID      , wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_BOARDNAME, wxLIST_AUTOSIZE);
-#else
-     // GTK+, Cocoaではリストの幅が適切に調整されないので
-     // フォントの大きさから適切なリストの幅を算出する
      wxFont font = GetCurrentFont();
      int pointSize = font.GetPointSize();
      // 2chのスレタイの文字数制限は全角24文字
@@ -1550,11 +1543,12 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
      vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_SINCE    , pointSize * 12);
      vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_OID      , pointSize * 10);
      vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_BOARDNAME, pointSize * 12);
-#endif
+
      // ノートブックの選択処理
      boardNoteBook->SetSelection(selectedPage);
+#ifndef __WXMSW__
      boardNoteBook->Thaw();
-
+#endif
      m_mgr.Update();
 }
 /**
@@ -1779,11 +1773,15 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
      *m_logCtrl << wxT("完了…　(´ん｀/)三\n");
 
      // スレッドを表示させる
+#ifndef __WXMSW__
      threadNoteBook->Freeze();
+#endif
      threadNoteBook->InsertPage(page, threadBar, title, false, wxNullBitmap);
      threadNoteBook->DeletePage(threadNoteBook->GetSelection());
      threadNoteBook->SetSelection(page);
+#ifndef __WXMSW__
      threadNoteBook->Thaw();
+#endif
 }
 /**
  *  書き込み用のウィンドウを呼び出す
@@ -2142,14 +2140,18 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 					   const wxString& origNumber, const wxString& title) {
 
      // スレッド用の検索バー等のインスタンスを用意する
+#ifndef __WXMSW__
      threadNoteBook->Freeze();
+#endif
      ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, wxID_ANY);
      threadBar->SetTitle(title);
 
      // スレッドの内容はThreadContentBarの中で設定する
      threadBar->SetThreadContentWindow(threadContentPath);
      threadNoteBook->AddPage(threadBar, title, true);
+#ifndef __WXMSW__
      threadNoteBook->Thaw();
+#endif
 }
 /**
  * 板一覧ノートブックで右クリックされた時の処理
@@ -2551,8 +2553,9 @@ wxString JaneClone::GetThreadURL(const wxString title,const wxString boardNameAs
 void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
 
      // ノートブックの変更中はノートブックに触れないようにする
+#ifndef __WXMSW__
      boardNoteBook->Freeze();
-
+#endif
      // 選択したタブのURLをURL画面に設定する
      if (wxEmptyString != boardNoteBook->GetPageText(event.GetSelection())) {
 	  // 板一覧タブの場合
@@ -2587,7 +2590,9 @@ void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
      // タイトルを設定する
      SetTitle(selectedBoardName + wxT(" - JaneClone"));
      // ノートブックの解放
+#ifndef __WXMSW__
      boardNoteBook->Thaw();
+#endif
      m_mgr.Update();
 }
 /**
@@ -2596,8 +2601,9 @@ void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
 void JaneClone::OnChangeThreadTab(wxAuiNotebookEvent& event) {
 
      // ノートブックの変更中はノートブックに触れないようにする
+#ifndef __WXMSW__
      threadNoteBook->Freeze();
-
+#endif
      if (wxEmptyString != threadNoteBook->GetPageText(event.GetSelection())) {
 	  // スレタブの場合
 	  const wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
@@ -2616,8 +2622,9 @@ void JaneClone::OnChangeThreadTab(wxAuiNotebookEvent& event) {
 
 	  return;
      }
-
+#ifndef __WXMSW__
      threadNoteBook->Thaw();
+#endif
      m_mgr.Update();
 }
 /**
@@ -2872,15 +2879,6 @@ wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName
      vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
 
      // カラムの幅を最大化
-#ifdef __WXMSW__
-     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_CHK      , 20);
-     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_TITLE    , wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_SINCE    , wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_OID      , wxLIST_AUTOSIZE);
-     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_BOARDNAME, wxLIST_AUTOSIZE);
-#else
-     // GTK+, Cocoaではリストの幅が適切に調整されないので
-     // フォントの大きさから適切なリストの幅を算出する
      wxFont font = GetCurrentFont();
      int pointSize = font.GetPointSize();
      // 2chのスレタイの文字数制限は全角24文字
@@ -2889,7 +2887,7 @@ wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName
      vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_SINCE    , pointSize * 12);
      vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_OID      , pointSize * 10);
      vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_BOARDNAME, pointSize * 12);
-#endif
+
      // パネルにSizerを設定する
      panel->SetSizer(vbox);
 
@@ -3247,13 +3245,8 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
 	  // ペインの状態を変更する
 	  *m_logCtrl << wxT("現在横分割状態なので縦分割に変更\n");
 	  // 変更した情報をもとに、ペインを入れなおす
-#ifdef __WXMSW__
-	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo, wxAUI_INSERT_DOCK);
-	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo, wxAUI_INSERT_DOCK);
-#else
 	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo, wxAUI_INSERT_DOCK);
 	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo, wxAUI_INSERT_DOCK);
-#endif
 
      } else {
 	  // 現在縦分割状態なので横分割に変更
@@ -3316,15 +3309,6 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
 	  threadTabThreadContentInfo.CloseButton(false);
 	  threadTabThreadContentInfo.BestSize(400, 400);
 
-#ifdef __WXMSW__
-	  m_mgr.InsertPane(m_search_ctrl, search);
-	  m_mgr.InsertPane(m_floatToolBar, toolBar);
-	  m_mgr.InsertPane(m_url_input_panel, url);
-	  if (enableBoardListTree) m_mgr.InsertPane(m_boardTreePanel, boardTree);
-	  m_mgr.InsertPane(m_logCtrl, logWindow);
-	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo);
-	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo);
-#else
 	  m_mgr.InsertPane(m_url_input_panel, url);
 	  m_mgr.InsertPane(m_floatToolBar, toolBar);
 	  m_mgr.InsertPane(m_search_ctrl, search);
@@ -3332,7 +3316,6 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
 	  if (enableBoardListTree) m_mgr.InsertPane(m_boardTreePanel, boardTree);
 	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo);
 	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo);
-#endif
      }
 
      // 画像の切り替え

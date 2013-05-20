@@ -57,7 +57,8 @@ Section
   WriteRegStr HKLM SOFTWARE\${NAME} "" "$INSTDIR"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}" "DisplayName" "${PACKAGE} (remove only)"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}" "DisplayIcon" "$INSTDIR\rc\janeclone.ico"
+
   WriteUninstaller "uninstall.exe"
   
 SectionEnd
