@@ -81,7 +81,8 @@ am_JaneClone_OBJECTS = JaneClone-main.$(OBJEXT) \
 	JaneClone-extractboardlist.$(OBJEXT) \
 	JaneClone-threadcontentwindow.$(OBJEXT) \
 	JaneClone-janecloneimageviewer.$(OBJEXT) \
-	JaneClone-imagepanel.$(OBJEXT)
+	JaneClone-imagepanel.$(OBJEXT) \
+	JaneClone-settingwindow.$(OBJEXT)
 JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
 @USE_WINDRES_TRUE@JaneClone_DEPENDENCIES = JaneClone_rc.o \
 @USE_WINDRES_TRUE@	$(top_builddir)/libwxnkf/libwxnkf.la \
@@ -289,7 +290,9 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    janecloneimageviewer.cpp	\
 		    janecloneimageviewer.hpp    \
 		    imagepanel.cpp		\
-		    imagepanel.hpp
+		    imagepanel.hpp		\
+		    settingwindow.cpp		\
+		    settingwindow.hpp
 
 
 # common build rule
@@ -401,6 +404,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-janecloneutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-responsewindow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-settingwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-socketcommunication.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-sqliteaccessor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-threadcontentbar.Po@am__quote@
@@ -609,6 +613,20 @@ JaneClone-imagepanel.obj: imagepanel.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='imagepanel.cpp' object='JaneClone-imagepanel.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-imagepanel.obj `if test -f 'imagepanel.cpp'; then $(CYGPATH_W) 'imagepanel.cpp'; else $(CYGPATH_W) '$(srcdir)/imagepanel.cpp'; fi`
+
+JaneClone-settingwindow.o: settingwindow.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-settingwindow.o -MD -MP -MF $(DEPDIR)/JaneClone-settingwindow.Tpo -c -o JaneClone-settingwindow.o `test -f 'settingwindow.cpp' || echo '$(srcdir)/'`settingwindow.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-settingwindow.Tpo $(DEPDIR)/JaneClone-settingwindow.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='settingwindow.cpp' object='JaneClone-settingwindow.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-settingwindow.o `test -f 'settingwindow.cpp' || echo '$(srcdir)/'`settingwindow.cpp
+
+JaneClone-settingwindow.obj: settingwindow.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-settingwindow.obj -MD -MP -MF $(DEPDIR)/JaneClone-settingwindow.Tpo -c -o JaneClone-settingwindow.obj `if test -f 'settingwindow.cpp'; then $(CYGPATH_W) 'settingwindow.cpp'; else $(CYGPATH_W) '$(srcdir)/settingwindow.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-settingwindow.Tpo $(DEPDIR)/JaneClone-settingwindow.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='settingwindow.cpp' object='JaneClone-settingwindow.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-settingwindow.obj `if test -f 'settingwindow.cpp'; then $(CYGPATH_W) 'settingwindow.cpp'; else $(CYGPATH_W) '$(srcdir)/settingwindow.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

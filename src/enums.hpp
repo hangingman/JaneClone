@@ -93,6 +93,7 @@ enum {
 	ID_SwitchTwoThreePane,          // ２⇔３ペイン切り替え
 	ID_ShowBoardListTree,           // 板一覧ツリー表示切り替え
 	ID_SwitchRightPane,             // 右側ペインの内容切り替え
+	ID_CallSettingWindow,           // ビューア設定画面を呼び出す
 	// responsewindow.hpp
 	ID_ResponseWindow,
 	ID_QuitResponseWindow,
@@ -151,6 +152,9 @@ enum {
 	ID_OnClickMenuCOL_SINCE,	// SINCE       
 	ID_OnClickMenuCOL_OID,	        // 固有番号	   
 	ID_OnClickMenuCOL_BOARDNAME,	// 板
+	// settingwindow.hpp
+	ID_OnCancelSetting,             // 設定画面をキャンセル
+	ID_OnOkSetting,                 // 設定画面をOkで終了
 	ID_UserLastClosedThreadClick = 1000,   // ユーザーが最後に閉じたスレッドの情報をクリックした(動的なIDのため1000~)
 	ID_UserLastClosedBoardClick  = 1100    // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
 };

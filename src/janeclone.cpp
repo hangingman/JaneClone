@@ -88,6 +88,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    // ツールバーからの命令
    EVT_MENU(ID_ShowBoardListTree, JaneClone::ShowBoardListTree)
    EVT_MENU(ID_SwitchSeparateXY, JaneClone::SwitchSeparateXY)
+   EVT_MENU(ID_CallSettingWindow, JaneClone::CallSettingWindow)
 
    // 検索バー系の命令
    EVT_MENU(ID_SearchBoxDoSearch, JaneClone::SearchBoxDoSearch)
@@ -767,7 +768,7 @@ void JaneClone::DoLayout() {
 			     wxBitmap(logSearchImg, wxBITMAP_TYPE_ANY),
 			     wxT("ログから検索"));
      m_floatToolBar->AddSeparator();
-     m_floatToolBar->AddTool(wxID_ANY,
+     m_floatToolBar->AddTool(ID_CallSettingWindow,
 			     wxT("設定/ビューア設定"),
 			     wxBitmap(configImg, wxBITMAP_TYPE_ANY),
 			     wxT("設定/ビューア設定"));
@@ -3325,3 +3326,12 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
      // 全体の再描画
      m_mgr.Update();
 }
+/**
+ * ビューア設定画面を呼び出す
+ */
+void JaneClone::CallSettingWindow(wxCommandEvent& event) {
+
+     SettingDialog* dialog = new SettingDialog(this, wxID_ANY, wxT("設定 - "));
+     dialog->ShowModal();
+}
+

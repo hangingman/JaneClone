@@ -80,6 +80,7 @@
 #include "anchoredresponsepopup.hpp"
 #include "responsewindow.hpp"
 #include "janecloneimageviewer.hpp"
+#include "settingwindow.hpp"
 
 /**
  * JaneClone本体はGUI構築用のwxFrameと
@@ -255,6 +256,8 @@ private:
      void ShowBoardListTree(wxCommandEvent& event);
      // 縦⇔横分割切り替え
      void SwitchSeparateXY(wxCommandEvent& event);
+     // ビューア設定画面を呼び出す
+     void CallSettingWindow(wxCommandEvent& event);
 
      //　ツリーコントロールにクリックした時のイベント
      void OnGetBoardInfo(wxTreeEvent& event);
