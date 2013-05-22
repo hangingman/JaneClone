@@ -37,6 +37,7 @@ enum {
 	ID_BoardNoteBook,       	// 板一覧用ノートブックに使うID
 	ID_ThumbnailNoteBook,           // 画像ビューア用ID
 	ID_BoardTreectrl,               // 板一覧ツリー用ID
+	ID_BoardTreeNoteBook,           // 板一覧ツリーを載せるノートブックに使うID
 	ID_OneBoardTabClose,		// スレッド一覧タブをひとつ閉じる
 	ID_ExcepSelTabClose,		// 現在選択されていないスレッド一覧タブを閉じる
 	ID_AllBoardTabClose,		// すべてのスレッド一覧タブを閉じる

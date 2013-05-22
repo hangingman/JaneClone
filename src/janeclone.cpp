@@ -845,12 +845,17 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      // 左側・板一覧のツリーコントロールを設定する
      wxAuiPaneInfo boardTree;
      if (enableBoardListTree) {
-	  // 板一覧ツリー
-	  m_boardTreePanel = new wxPanel(this);
+          // ノートブックのサイズ調整
+	  wxSize client_size = GetClientSize();
+	  // 板一覧ツリーを載せるノートブック
+	  boardTreeNoteBook = new wxAuiNotebook(this, ID_BoardTreeNoteBook, wxPoint(client_size.x, client_size.y), 
+						wxDefaultSize, wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
+	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
 	  boardTree.Name(wxT("boardTree"));
 	  boardTree.Left();
 	  boardTree.CloseButton(false);
-	  boardTree.BestSize(m_boardTreePanel->GetSize());
+	  boardTree.BestSize(boardTreeNoteBook->GetSize());
      }
      
      // 左側下部・ログ出力ウィンドウを設定する
@@ -881,7 +886,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_mgr.AddPane(m_search_ctrl, search);
      m_mgr.AddPane(m_floatToolBar, toolBar);
      m_mgr.AddPane(m_url_input_panel, url);
-     if (enableBoardListTree) m_mgr.AddPane(m_boardTreePanel, boardTree);
+     if (enableBoardListTree) m_mgr.AddPane(boardTreeNoteBook, boardTree);
      m_mgr.AddPane(m_logCtrl, logWindow);
 
      // 縦分割か横分割か
@@ -897,7 +902,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_mgr.AddPane(m_floatToolBar, toolBar);
      m_mgr.AddPane(m_search_ctrl, search);
      m_mgr.AddPane(m_logCtrl, logWindow);
-     if (enableBoardListTree) m_mgr.AddPane(m_boardTreePanel, boardTree);
+     if (enableBoardListTree) m_mgr.AddPane(boardTreeNoteBook, boardTree);
 
      // 縦分割か横分割か
      if (separateIsX) {
@@ -915,7 +920,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_logCtrl->SetLabel(LOG_WINDOW);
      boardNoteBook->SetLabel(BOARD_NOTEBOOK);
      threadNoteBook->SetLabel(THREAD_NOTEBOOK);
-     if (enableBoardListTree) m_boardTreePanel->SetLabel(BOARD_TREE_PANEL);
+     if (enableBoardListTree) boardTreeNoteBook->SetLabel(BOARD_TREE_PANEL);
 
      // 板一覧更ツリーの初期化
      if (enableBoardListTree) InitializeBoardList();
@@ -3202,19 +3207,24 @@ void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
 
      const bool toggled = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
      if (!toggled) {
-	  m_mgr.DetachPane(m_boardTreePanel);
-	  m_boardTreePanel->Destroy();
+	  m_mgr.DetachPane(boardTreeNoteBook);
+	  boardTreeNoteBook->Destroy();
      } else {
+          // ノートブックのサイズ調整
+	  wxSize client_size = GetClientSize();
 	  // 板一覧ツリーの再設定
-	  m_boardTreePanel = new wxPanel(this);
+	  boardTreeNoteBook = new wxAuiNotebook(this, ID_BoardTreeNoteBook, wxPoint(client_size.x, client_size.y), 
+						wxDefaultSize, wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
+	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
 	  // 左側・板一覧のツリーコントロールを設定する
 	  wxAuiPaneInfo boardTree;
 	  boardTree.Name(wxT("boardTree"));
 	  boardTree.Left();
 	  boardTree.CloseButton(false);
-	  boardTree.BestSize(m_boardTreePanel->GetSize());
-	  m_mgr.AddPane(m_boardTreePanel, boardTree);
-	  m_boardTreePanel->SetLabel(BOARD_TREE_PANEL);
+	  boardTree.BestSize(boardTreeNoteBook->GetSize());
+	  m_mgr.AddPane(boardTreeNoteBook, boardTree);
+	  boardTreeNoteBook->SetLabel(BOARD_TREE_PANEL);
           // 板一覧更ツリーの初期化
 	  InitializeBoardList();
      }
@@ -3271,11 +3281,19 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
 	  wxAuiPaneInfo boardTree;
 	  if (enableBoardListTree) {
 	       // 板一覧ツリー
-	       if (!m_boardTreePanel) m_boardTreePanel = new wxPanel(this);
+	       if (!boardTreeNoteBook) {
+		    // ノートブックのサイズ調整
+		    wxSize client_size = GetClientSize();
+		    // 板一覧ツリーを載せるノートブック
+		    boardTreeNoteBook = new wxAuiNotebook(this, ID_BoardTreeNoteBook, wxPoint(client_size.x, client_size.y), 
+							  wxDefaultSize, wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+		    m_boardTreePanel = new wxPanel(boardTreeNoteBook);
+		    boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
+	       }
 	       boardTree.Name(wxT("boardTree"));
 	       boardTree.Left();
 	       boardTree.CloseButton(false);
-	       boardTree.BestSize(m_boardTreePanel->GetSize());
+	       boardTree.BestSize(boardTreeNoteBook->GetSize());
 	  }
      
 	  // 左側下部・ログ出力ウィンドウを設定する
@@ -3305,7 +3323,7 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
 	  m_mgr.InsertPane(m_floatToolBar, toolBar);
 	  m_mgr.InsertPane(m_search_ctrl, search);
 	  m_mgr.InsertPane(m_logCtrl, logWindow);
-	  if (enableBoardListTree) m_mgr.InsertPane(m_boardTreePanel, boardTree);
+	  if (enableBoardListTree) m_mgr.InsertPane(boardTreeNoteBook, boardTree);
 	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo);
 	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo);
      }
