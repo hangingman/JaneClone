@@ -5,12 +5,70 @@
 
 #include <wx/wx.h>
 #include <wx/image.h>
+#include <wx/spinctrl.h>
 #include <wx/filepicker.h>
 #include "enums.hpp"
 #include "janecloneutil.hpp"
 
 // begin wxGlade: ::extracode
 // end wxGlade
+
+/**
+ * 各種ネットワーク設定用画面
+ */
+class NetworkSettingPanel: public wxPanel {
+public:
+     // begin wxGlade: NetworkSettingPanel::ids
+     // end wxGlade
+     NetworkSettingPanel(wxWindow* parent, int id=ID_NetworkPanel, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+
+private:
+     // begin wxGlade: NetworkSettingPanel::methods
+     void set_properties();
+     void do_layout();
+     // end wxGlade
+
+protected:
+     // begin wxGlade: NetworkSettingPanel::attributes
+     wxCheckBox* proxyUseCheck;
+     wxCheckBox* proxyCacheUseCheck;
+     wxPanel* panel_6;
+     wxStaticText* label_6;
+     wxStaticText* label_7;
+     wxStaticText* label_8;
+     wxTextCtrl* recProxyAddrTC;
+     wxTextCtrl* recProxyPortTC;
+     wxStaticText* label_9;
+     wxTextCtrl* sedProxyAddrTC;
+     wxTextCtrl* sedProxyPortTC;
+     wxStaticText* label_10;
+     wxTextCtrl* authSSLAddrTC;
+     wxTextCtrl* authSSLPortTC;
+     wxStaticText* label_11;
+     wxStaticText* label_12;
+     wxTextCtrl* basicAuthUserNameTC;
+     wxPanel* panel_8;
+     wxStaticText* label_13;
+     wxTextCtrl* basicAuthPasswordTC;
+     wxPanel* panel_9;
+     wxPanel* panel_7;
+     wxPanel* panel_1;
+     wxStaticText* label_4;
+     wxTextCtrl* receiveTimeoutTC;
+     wxPanel* panel_2;
+     wxStaticText* label_5;
+     wxTextCtrl* connectTimeoutTC;
+     wxPanel* panel_3;
+     wxStaticText* label_3;
+     wxTextCtrl* boardListURLTC;
+     wxPanel* panel_4;
+     wxStaticText* label_1;
+     wxTextCtrl* receiveBufferSizeTC;
+     wxStaticText* label_2;
+     wxSpinCtrl* maxConnSC;
+     wxPanel* panel_5;
+     // end wxGlade
+}; // wxGlade: end class
 
 /**
  * 各種パス設定用画面

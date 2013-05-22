@@ -40,7 +40,7 @@ END_EVENT_TABLE()
  * 設定画面のコンストラクタ
  */
 SettingDialog::SettingDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
-     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE) {
+wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE) {
 
      // begin wxGlade: SettingDialog::SettingDialog
      bottomPanel = new wxPanel(this, wxID_ANY);
@@ -51,11 +51,6 @@ SettingDialog::SettingDialog(wxWindow* parent, int id, const wxString& title, co
 				      wxTR_HIDE_ROOT|wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
      // 右側の設定画面部分
      settingPanel = new wxPanel(splitterWindow, wxID_ANY);
-     // スプリッターウィンドウの位置を設定ファイルから読み出す
-     double gravity = 0.3;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("SETTING_WINDOW_SASH_GRAVITY"), &gravity);
-     splitterWindow->SetSashGravity(gravity);
-
      spacePanel = new wxPanel(bottomPanel, wxID_ANY);
      // OK,キャンセルボタン
      okButton = new wxButton(bottomPanel, ID_OnOkSetting, wxT("OK"));
@@ -64,13 +59,22 @@ SettingDialog::SettingDialog(wxWindow* parent, int id, const wxString& title, co
      SetProperties();
      DoLayout();
      // end wxGlade
+
+     // 初回は通信パネルを開く
+     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+     vbox->Add(new NetworkSettingPanel(settingPanel));
+     settingPanel->SetSizer(vbox);
+     this->SetTitle(wxT("設定 - 通信"));
+     // スプリッターウィンドウの位置を設定ファイルから読み出す
+     double gravity = 0.3;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("SETTING_WINDOW_SASH_GRAVITY"), &gravity);
+     splitterWindow->SetSashGravity(gravity);
 }
 /**
  * ウィンドウのプロパティを設定
  */
 void SettingDialog::SetProperties() {
      // begin wxGlade: SettingDialog::set_properties
-     SetTitle(wxT("設定 - "));
      SetSize(wxSize(960, 640));
 
      // ツリーコントロールの表示内容を設定する
@@ -143,15 +147,23 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
      const wxString itemStr(settingTreeCtrl->GetItemText(pushedTree));
      // 取得不可なものであればリターン
      if (itemStr == wxEmptyString) return;
-     
+
+     if (settingPanel) {
+	  // settingPanelのインスタンスが存在するならばDestroy
+	  // 子ウィンドウを殺す
+	  settingPanel->DestroyChildren();	  
+     }
+
      if (itemStr == wxT("通信")) {
-	  //wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-	  //vbox->Add(new NetworkPanel(settingPanel));
-	  //settingPanel->SetSizer(vbox);
+	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  vbox->Add(new NetworkSettingPanel(settingPanel));
+	  settingPanel->SetSizer(vbox);
      } else if (itemStr == wxT("パス")) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new PathSettingPanel(settingPanel));
 	  settingPanel->SetSizer(vbox);
      }
-     
+
+     // ウィンドウのタイトルを変える
+     this->SetTitle(wxT("設定 - ") + itemStr);
 }

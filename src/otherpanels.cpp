@@ -2,6 +2,128 @@
 
 #include "otherpanels.hpp"
 
+/**
+ * 各種ネットワーク設定用画面
+ */
+NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long style):
+     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL) {
+
+     // begin wxGlade: NetworkSettingPanel::NetworkSettingPanel
+     panel_5 = new wxPanel(this, wxID_ANY);
+     panel_4 = new wxPanel(this, wxID_ANY);
+     panel_3 = new wxPanel(this, wxID_ANY);
+     panel_2 = new wxPanel(this, wxID_ANY);
+     panel_1 = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER|wxTAB_TRAVERSAL);
+     panel_7 = new wxPanel(panel_1, wxID_ANY);
+     panel_9 = new wxPanel(panel_7, wxID_ANY);
+     panel_8 = new wxPanel(panel_7, wxID_ANY);
+     panel_6 = new wxPanel(panel_1, wxID_ANY);
+     proxyUseCheck = new wxCheckBox(panel_6, wxID_ANY, wxT("Proxyを使用する"));
+     proxyCacheUseCheck = new wxCheckBox(panel_6, wxID_ANY, wxT("Proxy使用時にキャッシュを使用しない"));
+     label_6 = new wxStaticText(panel_7, wxID_ANY, wxT("使用するProxyのアドレス"));
+     label_7 = new wxStaticText(panel_7, wxID_ANY, wxT("ポート"));
+     label_8 = new wxStaticText(panel_7, wxID_ANY, wxT("受信用"));
+     recProxyAddrTC = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     recProxyPortTC = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     label_9 = new wxStaticText(panel_7, wxID_ANY, wxT("送信用"));
+     sedProxyAddrTC = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     sedProxyPortTC = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     label_10 = new wxStaticText(panel_7, wxID_ANY, wxT("SSL（認証用）"));
+     authSSLAddrTC = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     authSSLPortTC = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     label_11 = new wxStaticText(panel_7, wxID_ANY, wxT("Basic認証"));
+     label_12 = new wxStaticText(panel_8, wxID_ANY, wxT("UserName:"));
+     basicAuthUserNameTC = new wxTextCtrl(panel_8, wxID_ANY, wxEmptyString);
+     label_13 = new wxStaticText(panel_9, wxID_ANY, wxT("Password:"));
+     basicAuthPasswordTC = new wxTextCtrl(panel_9, wxID_ANY, wxEmptyString);
+     label_4 = new wxStaticText(panel_2, wxID_ANY, wxT("受信タイムアウト（ミリ秒）"));
+     receiveTimeoutTC = new wxTextCtrl(panel_2, wxID_ANY, wxT("30000"));
+     label_5 = new wxStaticText(panel_3, wxID_ANY, wxT("接続タイムアウト（ミリ秒）"));
+     connectTimeoutTC = new wxTextCtrl(panel_3, wxID_ANY, wxT("10000"));
+     label_3 = new wxStaticText(panel_4, wxID_ANY, wxT("ボード一覧取得URL"));
+     boardListURLTC = new wxTextCtrl(panel_4, wxID_ANY, wxT("http://menu.2ch.net/bbsmenu.html"));
+     label_1 = new wxStaticText(panel_5, wxID_ANY, wxT("受信バッファサイズ（KB）"));
+     receiveBufferSizeTC = new wxTextCtrl(panel_5, wxID_ANY, wxT("32"));
+     label_2 = new wxStaticText(panel_5, wxID_ANY, wxT("最大接続数"));
+     maxConnSC = new wxSpinCtrl(panel_5, wxID_ANY, wxT("3"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+
+     set_properties();
+     do_layout();
+     // end wxGlade
+}
+
+
+void NetworkSettingPanel::set_properties() {
+     // begin wxGlade: NetworkSettingPanel::set_properties
+     // end wxGlade
+}
+
+
+void NetworkSettingPanel::do_layout() {
+
+     // begin wxGlade: NetworkSettingPanel::do_layout
+     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_5 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_4 = new wxBoxSizer(wxVERTICAL);
+     wxGridSizer* grid_sizer_1 = new wxGridSizer(5, 3, 0, 0);
+     wxBoxSizer* sizer_8 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_7 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
+     sizer_6->Add(proxyUseCheck, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_6->Add(proxyCacheUseCheck, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_6->SetSizer(sizer_6);
+     sizer_4->Add(panel_6, 0, wxEXPAND, 0);
+     grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
+     grid_sizer_1->Add(label_6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(label_7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(label_8, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(recProxyAddrTC, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(recProxyPortTC, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(label_9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(sedProxyAddrTC, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(sedProxyPortTC, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(label_10, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(authSSLAddrTC, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(authSSLPortTC, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(label_11, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(label_12, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(basicAuthUserNameTC, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     panel_8->SetSizer(sizer_7);
+     grid_sizer_1->Add(panel_8, 0, wxEXPAND, 0);
+     sizer_8->Add(label_13, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_8->Add(basicAuthPasswordTC, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     panel_9->SetSizer(sizer_8);
+     grid_sizer_1->Add(panel_9, 0, wxEXPAND, 0);
+     panel_7->SetSizer(grid_sizer_1);
+     sizer_4->Add(panel_7, 0, wxALL|wxEXPAND, 5);
+     panel_1->SetSizer(sizer_4);
+     vbox->Add(panel_1, 0, wxALL|wxEXPAND, 5);
+     sizer_3->Add(label_4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_3->Add(receiveTimeoutTC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_2->SetSizer(sizer_3);
+     vbox->Add(panel_2, 0, wxEXPAND, 0);
+     sizer_2->Add(label_5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_2->Add(connectTimeoutTC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_3->SetSizer(sizer_2);
+     vbox->Add(panel_3, 0, wxEXPAND, 0);
+     sizer_1->Add(label_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_1->Add(boardListURLTC, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     panel_4->SetSizer(sizer_1);
+     vbox->Add(panel_4, 0, wxEXPAND, 0);
+     sizer_5->Add(label_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(receiveBufferSizeTC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(label_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(maxConnSC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_5->SetSizer(sizer_5);
+     vbox->Add(panel_5, 0, wxEXPAND, 0);
+     SetSizer(vbox);
+     vbox->Fit(this);
+     // end wxGlade
+}
+
 BEGIN_EVENT_TABLE(PathSettingPanel, wxPanel)
    EVT_CHECKBOX(ID_BrowserCheck, PathSettingPanel::OnBrowserCheck)
    EVT_DIRPICKER_CHANGED(ID_DirPickerBrowser, PathSettingPanel::OnChangeDirPickerBrowser)
