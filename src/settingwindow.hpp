@@ -31,10 +31,10 @@
 #include <wx/treectrl.h>
 // end wxGlade
 #include "enums.hpp"
+#include "otherpanels.hpp"
 
 // begin wxGlade: ::extracode
 // end wxGlade
-
 
 class SettingDialog: public wxDialog {
 
@@ -57,14 +57,16 @@ private:
      void SetProperties();
      void DoLayout();
      // end wxGlade
+
      void OnQuit(wxCommandEvent& event);
+     void OnChangeSettingPanel(wxTreeEvent& event);
 
 protected:
      // begin wxGlade: SettingDialog::attributes
      wxTreeCtrl* settingTreeCtrl;
      wxPanel* treePanel;
      wxPanel* settingPanel;
-     wxSplitterWindow* window_1;
+     wxSplitterWindow* splitterWindow;
      wxPanel* spacePanel;
      wxButton* okButton;
      wxButton* cancelButton;

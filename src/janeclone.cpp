@@ -132,7 +132,6 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
     
    // フォーカスの監視
    EVT_SET_FOCUS(JaneClone::OnSetFocus)
-    
    // マウスモーションの監視
    //EVT_MOUSE_EVENTS(JaneClone::MouseMotion)
    //EVT_ENTER_WINDOW(JaneClone::MotionEnterWindow)

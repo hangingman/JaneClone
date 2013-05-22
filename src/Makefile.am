@@ -26,7 +26,9 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    imagepanel.cpp		\
 		    imagepanel.hpp		\
 		    settingwindow.cpp		\
-		    settingwindow.hpp
+		    settingwindow.hpp		\
+		    otherpanels.cpp		\
+		    otherpanels.hpp
 
 # common build rule
 JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -DPACKAGE_VERSION=@PACKAGE_VERSION@

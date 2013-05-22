@@ -571,3 +571,48 @@ void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThrea
 
      datfile.Close();
 }
+/**
+ * プロパティファイルの指定されたKEYを指定されたVALUEで書き換える
+ * @param const wxString& key     キー
+ * @param const <class T>& value  値
+ */
+template <class T>
+void JaneCloneUtil::SetJaneCloneProperties(const wxString& key, const T& value) {
+
+     // 設定ファイルの準備をする
+     wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     wxDir jcDir(jc);
+     wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+
+     config->Write(key, value);
+     config->Flush();
+     delete config;
+}
+// テンプレート関数の実体化
+template void JaneCloneUtil::SetJaneCloneProperties<wxString>(const wxString& key, const wxString& value);
+template void JaneCloneUtil::SetJaneCloneProperties<long>(const wxString& key, const long& value);
+template void JaneCloneUtil::SetJaneCloneProperties<double>(const wxString& key, const double& value);
+template void JaneCloneUtil::SetJaneCloneProperties<bool>(const wxString& key, const bool& value);
+/**
+ * プロパティファイルの指定されたKEYを読みとってvalueに格納
+ * @param  const wxString&  key    キー
+ * @param        <class T>* value  値
+ */
+template <class T>
+void JaneCloneUtil::GetJaneCloneProperties(const wxString& key, T* value) {
+
+     // 設定ファイルの準備をする
+     wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     wxDir jcDir(jc);
+     wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+
+     config->Read(key, value);
+     delete config;
+}
+// テンプレート関数の実体化
+template void JaneCloneUtil::GetJaneCloneProperties<wxString>(const wxString& key, wxString* value);
+template void JaneCloneUtil::GetJaneCloneProperties<long>(const wxString& key, long* value);
+template void JaneCloneUtil::GetJaneCloneProperties<double>(const wxString& key, double* value);
+template void JaneCloneUtil::GetJaneCloneProperties<bool>(const wxString& key, bool* value);

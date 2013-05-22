@@ -27,9 +27,14 @@
 // end wxGlade
 
 BEGIN_EVENT_TABLE(SettingDialog, wxDialog)
+   // ボタンによるイベント
    EVT_BUTTON(ID_OnOkSetting, SettingDialog::OnQuit)
    EVT_BUTTON(ID_OnCancelSetting, SettingDialog::OnQuit)
+   // ツリーコントロールでのウィンドウ描画切り替え
+   EVT_TREE_SEL_CHANGED(ID_SettingPanelTree, SettingDialog::OnChangeSettingPanel)
 END_EVENT_TABLE()
+
+
 
 /**
  * 設定画面のコンストラクタ
@@ -39,13 +44,13 @@ SettingDialog::SettingDialog(wxWindow* parent, int id, const wxString& title, co
 
      // begin wxGlade: SettingDialog::SettingDialog
      bottomPanel = new wxPanel(this, wxID_ANY);
-     window_1 = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
+     splitterWindow = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
      // 左側のツリー部分
-     treePanel = new wxPanel(window_1, wxID_ANY);
-     settingTreeCtrl = new wxTreeCtrl(treePanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 
+     treePanel = new wxPanel(splitterWindow, wxID_ANY);
+     settingTreeCtrl = new wxTreeCtrl(treePanel, ID_SettingPanelTree, wxDefaultPosition, wxDefaultSize, 
 				      wxTR_HIDE_ROOT|wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
      // 右側の設定画面部分
-     settingPanel = new wxPanel(window_1, wxID_ANY);
+     settingPanel = new wxPanel(splitterWindow, wxID_ANY);
 
      spacePanel = new wxPanel(bottomPanel, wxID_ANY);
      // OK,キャンセルボタン
@@ -92,6 +97,12 @@ void SettingDialog::SetProperties() {
      settingTreeCtrl->AppendItem(item, wxT("色・フォント"));
      settingTreeCtrl->AppendItem(item, wxT("タブ色"));
      settingTreeCtrl->ExpandAll();
+
+     // スプリッターウィンドウの位置を設定ファイルから読み出す
+     long position = 50;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("SETTING_WINDOW_SASH_POSITION"), &position);
+     splitterWindow->SetSashPosition(position);
+
      // end wxGlade
 }
 /**
@@ -104,8 +115,8 @@ void SettingDialog::DoLayout() {
      wxBoxSizer* treeVbox = new wxBoxSizer(wxVERTICAL);
      treeVbox->Add(settingTreeCtrl, 1, wxEXPAND, 0);
      treePanel->SetSizer(treeVbox);
-     window_1->SplitVertically(treePanel, settingPanel);
-     vbox->Add(window_1, 1, wxEXPAND, 0);
+     splitterWindow->SplitVertically(treePanel, settingPanel);
+     vbox->Add(splitterWindow, 1, wxEXPAND, 0);
      bottomSizer->Add(spacePanel, 1, wxEXPAND, 0);
      bottomSizer->Add(okButton, 0, 0, 5);
      bottomSizer->Add(cancelButton, 0, 0, 5);
@@ -119,5 +130,30 @@ void SettingDialog::DoLayout() {
  * 設定画面のクローズ
  */
 void SettingDialog::OnQuit(wxCommandEvent& event) {
+     JaneCloneUtil::SetJaneCloneProperties(wxT("SETTING_WINDOW_SASH_POSITION"), 
+					   static_cast<long>(splitterWindow->GetSashPosition()));
      this->Destroy();
+}
+/**
+ * ツリーコントロールでのウィンドウ描画切り替え
+ */
+void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
+
+     // 選択されたTreeItemIdのインスタンス
+     const wxTreeItemId pushedTree = event.GetItem();
+     // 板名をwxStringで取得する
+     const wxString itemStr(settingTreeCtrl->GetItemText(pushedTree));
+     // 取得不可なものであればリターン
+     if (itemStr == wxEmptyString) return;
+     
+     if (itemStr == wxT("通信")) {
+	  //wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  //vbox->Add(new NetworkPanel(settingPanel));
+	  //settingPanel->SetSizer(vbox);
+     } else if (itemStr == wxT("パス")) {
+	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  vbox->Add(new PathSettingPanel(settingPanel));
+	  settingPanel->SetSizer(vbox);
+     }
+     
 }

@@ -155,6 +155,26 @@ enum {
 	// settingwindow.hpp
 	ID_OnCancelSetting,             // 設定画面をキャンセル
 	ID_OnOkSetting,                 // 設定画面をOkで終了
+	ID_SettingPanelTree,            // 設定画面の描画を切り替える
+	// otherpanels.hpp
+        ID_NetworkPanel,                // ネットワーク設定用パネル
+        ID_NetworkPanelUseProxy,        // プロキシを使用するかどうか
+        ID_NetworkPanelUseProxyCache,   // プロキシでキャッシュを使用するかどうか
+        ID_NetworkPanelBasicAuthUserName,// ベーシック認証のユーザー名
+        ID_NetworkPanelBasicAuthPassword,// ベーシック認証のパスワード
+        ID_NetworkPanelProxyReceiveAddr, // Proxy受信用アドレス
+        ID_NetworkPanelProxyReceivePort, // Proxy受信用ポート
+        ID_NetworkPanelProxySendAddr,    // Proxy送信用アドレス
+        ID_NetworkPanelProxySendPort,    // Proxy送信用ポート
+        ID_NetworkPanelProxySSLAuthAddr, // Proxy SSL認証用アドレス
+        ID_NetworkPanelProxySSLAuthPort, // Proxy SSL認証用ポート
+	ID_BrowserCheck,                 // 使用するブラウザを指定するかどうか 
+	ID_BrowserPathTC,                // ブラウザのパスをもつテキストコントロール
+	ID_DirPickerBrowser,             // ブラウザのパスを参照する
+	ID_BoardListTC,                  // 板一覧リストを保持する場所をもつテキストコントロール
+	ID_DirPickerBoardList,           // 板一覧リストのパスを参照する
+	ID_SkinPathTC,                   // スキン用のファイルのパスをもつテキストコントロール
+	ID_DirPickerSkin,                // スキン用ファイルのパスを参照する
 	ID_UserLastClosedThreadClick = 1000,   // ユーザーが最後に閉じたスレッドの情報をクリックした(動的なIDのため1000~)
 	ID_UserLastClosedBoardClick  = 1100    // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
 };

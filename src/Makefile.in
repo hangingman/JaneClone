@@ -82,7 +82,8 @@ am_JaneClone_OBJECTS = JaneClone-main.$(OBJEXT) \
 	JaneClone-threadcontentwindow.$(OBJEXT) \
 	JaneClone-janecloneimageviewer.$(OBJEXT) \
 	JaneClone-imagepanel.$(OBJEXT) \
-	JaneClone-settingwindow.$(OBJEXT)
+	JaneClone-settingwindow.$(OBJEXT) \
+	JaneClone-otherpanels.$(OBJEXT)
 JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
 @USE_WINDRES_TRUE@JaneClone_DEPENDENCIES = JaneClone_rc.o \
 @USE_WINDRES_TRUE@	$(top_builddir)/libwxnkf/libwxnkf.la \
@@ -292,7 +293,9 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    imagepanel.cpp		\
 		    imagepanel.hpp		\
 		    settingwindow.cpp		\
-		    settingwindow.hpp
+		    settingwindow.hpp		\
+		    otherpanels.cpp		\
+		    otherpanels.hpp
 
 
 # common build rule
@@ -403,6 +406,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-janecloneimageviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-janecloneutil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-otherpanels.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-responsewindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-settingwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-socketcommunication.Po@am__quote@
@@ -627,6 +631,20 @@ JaneClone-settingwindow.obj: settingwindow.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='settingwindow.cpp' object='JaneClone-settingwindow.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-settingwindow.obj `if test -f 'settingwindow.cpp'; then $(CYGPATH_W) 'settingwindow.cpp'; else $(CYGPATH_W) '$(srcdir)/settingwindow.cpp'; fi`
+
+JaneClone-otherpanels.o: otherpanels.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-otherpanels.o -MD -MP -MF $(DEPDIR)/JaneClone-otherpanels.Tpo -c -o JaneClone-otherpanels.o `test -f 'otherpanels.cpp' || echo '$(srcdir)/'`otherpanels.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-otherpanels.Tpo $(DEPDIR)/JaneClone-otherpanels.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='otherpanels.cpp' object='JaneClone-otherpanels.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-otherpanels.o `test -f 'otherpanels.cpp' || echo '$(srcdir)/'`otherpanels.cpp
+
+JaneClone-otherpanels.obj: otherpanels.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-otherpanels.obj -MD -MP -MF $(DEPDIR)/JaneClone-otherpanels.Tpo -c -o JaneClone-otherpanels.obj `if test -f 'otherpanels.cpp'; then $(CYGPATH_W) 'otherpanels.cpp'; else $(CYGPATH_W) '$(srcdir)/otherpanels.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-otherpanels.Tpo $(DEPDIR)/JaneClone-otherpanels.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='otherpanels.cpp' object='JaneClone-otherpanels.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-otherpanels.obj `if test -f 'otherpanels.cpp'; then $(CYGPATH_W) 'otherpanels.cpp'; else $(CYGPATH_W) '$(srcdir)/otherpanels.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

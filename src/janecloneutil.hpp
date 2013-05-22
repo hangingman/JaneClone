@@ -36,6 +36,7 @@
 #include <wx/regex.h>
 #include <wx/fs_mem.h>
 #include <wx/treectrl.h>
+#include <wx/fileconf.h>
 #include "wx/wxnkf.h"
 #include "wxUUID.h"
 #include "datatype.hpp"
@@ -120,6 +121,14 @@ public:
       * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
       */
      static void GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThreadMap, URLvsBoardName& boardInfo);
+     /**
+      * プロパティファイルの指定されたKEYを指定されたVALUEで書き換える
+      */
+     template <class T> static void SetJaneCloneProperties(const wxString& key, const T& value);
+     /**
+      * プロパティファイルの指定されたKEYを読み取る
+      */
+     template <class T> static void GetJaneCloneProperties(const wxString& key, T* value);
 
 private:
 
