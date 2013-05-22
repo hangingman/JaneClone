@@ -55,9 +55,6 @@ class SocketCommunication {
 #define TEXT_ENDLINE_TYPE wxTextFileType_Mac
 #endif
 
-     // クッキーの設定ファイル
-#define COOKIE_CONFIG_FILE wxT("cookie.env")
-
      /** 定数化された書き込み前のCOOKIEの状態 */
 #define NO_COOKIE         10
 #define HAS_COOKIE_HIDDEN 11
@@ -216,7 +213,7 @@ private:
      /**
       * COOKIE関連の初期化処理を行う
       */
-     bool InitializeCookie();
+     void InitializeCookie();
      /**
       * COOKIEのデータ書き出しを行う
       */

@@ -23,26 +23,24 @@
 #include "janeclone.hpp"
 
 IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
-// event table
-BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
-// 右クリック時のイベント
-EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
-// リンク押下時のイベント
-EVT_HTML_LINK_CLICKED(wxID_ANY, ThreadContentWindow::OnLeftClickHtmlWindow)
-// 右クリックメニューイベント
-EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
-EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
-EVT_MENU(ID_SelectAllTextHtmlWindow, ThreadContentWindow::SelectAllTextHtmlWindow)
-EVT_MENU(ID_SearchSelectWordByYahoo,ThreadContentWindow::SearchSelectWordByYahoo)
-EVT_MENU(ID_SearchSelectWordByGoogle,ThreadContentWindow::SearchSelectWordByGoogle)
-EVT_MENU(ID_SearchSelectWordByAmazon,ThreadContentWindow::SearchSelectWordByAmazon)
-EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
-// リサイズがかかった際のイベント
-EVT_SIZE(ThreadContentWindow::OnSize)
-
+   BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
+   // 右クリック時のイベント
+   EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
+   // リンク押下時のイベント
+   EVT_HTML_LINK_CLICKED(wxID_ANY, ThreadContentWindow::OnLeftClickHtmlWindow)
+   // 右クリックメニューイベント
+   EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
+   EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
+   EVT_MENU(ID_SelectAllTextHtmlWindow, ThreadContentWindow::SelectAllTextHtmlWindow)
+   EVT_MENU(ID_SearchSelectWordByYahoo,ThreadContentWindow::SearchSelectWordByYahoo)
+   EVT_MENU(ID_SearchSelectWordByGoogle,ThreadContentWindow::SearchSelectWordByGoogle)
+   EVT_MENU(ID_SearchSelectWordByAmazon,ThreadContentWindow::SearchSelectWordByAmazon)
+   EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
+   // リサイズがかかった際のイベント
+   EVT_SIZE(ThreadContentWindow::OnSize) 
 #ifdef DEBUG
-// HTMLのデバッグ用イベント
-EVT_MENU(ID_HtmlSourceDebug, ThreadContentWindow::HtmlSourceDebug)
+   // HTMLのデバッグ用イベント
+   EVT_MENU(ID_HtmlSourceDebug, ThreadContentWindow::HtmlSourceDebug)
 #endif
 END_EVENT_TABLE()
 
@@ -67,15 +65,14 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
 	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
      }
 
-     wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
-     wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
-
      // フォント設定を読み出し
-     wxString fontName;
-     config->Read(wxT("HTML.Font"), &fontName, wxEmptyString);
-     int p, realSize;
-     config->Read(wxT("HTML.PointSize"), &p, 0);
-     delete config;
+     wxString fontName = wxEmptyString;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HTML.Font"), &fontName);
+     
+     long lp = 0;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HTML.PointSize"), &lp);
+     const int p = static_cast<int>(lp);
+     
      // HTMLソース中のテキストの種類とサイズを決定する
      static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };
 

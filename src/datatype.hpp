@@ -35,6 +35,8 @@
 #define JANECLONE_DIR wxT(".jc")
 /** コンフィグファイル名 */
 #define APP_CONFIG_FILE wxT("janeclone.env")
+/** クッキーの設定ファイル */
+#define COOKIE_CONFIG_FILE wxT("janeclone.env")
 
 // ファイルの区切り文字
 #ifdef __WXMSW__

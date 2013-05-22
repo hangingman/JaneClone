@@ -29,7 +29,7 @@
 void JaneCloneUtil::DecommpressFile(wxString & inputPath,
 				    wxString & outputPath) {
      // gzファイルをZlibを使って解凍する
-     gzFile infile = gzopen(inputPath.mb_str(), "rb");
+     const gzFile infile = gzopen(inputPath.mb_str(), "rb");
      FILE *outfile = fopen(outputPath.mb_str(), "wb");
 
      char buffer[S_SIZE];
@@ -106,7 +106,7 @@ size_t JaneCloneUtil::GetFileSize(const wxString& filePath) {
 
      if (wxFileName::FileExists(filePath)) {
 
-	  wxULongLong fileSize = wxFileName::GetSize(filePath);
+	  const wxULongLong fileSize = wxFileName::GetSize(filePath);
 
 	  if (fileSize == wxInvalidSize) {
 	       // ファイルが正常に開けなかった場合
@@ -127,7 +127,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(wxString& boardNameAscii,
 					     wxString& origNumber, wxString& resNumber) {
 
      // ファイルパスの組み立てとファイルの有無確認
-     wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString filePath = dir.GetName();
 
 #ifdef __WXMSW__
@@ -339,7 +339,7 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,
 					 wxString& origNumber) {
 
-     wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString filePath = dir.GetName();
 
 #ifdef __WXMSW__
@@ -580,9 +580,9 @@ template <class T>
 void JaneCloneUtil::SetJaneCloneProperties(const wxString& key, const T& value) {
 
      // 設定ファイルの準備をする
-     wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
-     wxDir jcDir(jc);
-     wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     const wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     const wxDir jcDir(jc);
+     const wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
      wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
      config->Write(key, value);
@@ -603,9 +603,9 @@ template <class T>
 void JaneCloneUtil::GetJaneCloneProperties(const wxString& key, T* value) {
 
      // 設定ファイルの準備をする
-     wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
-     wxDir jcDir(jc);
-     wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     const wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     const wxDir jcDir(jc);
+     const wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
      wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
      config->Read(key, value);

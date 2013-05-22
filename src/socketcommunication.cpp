@@ -1121,11 +1121,10 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 
      // 不可視項目値をコンフィグファイルから取得する
      InitializeCookie();
-     wxString hiddenName, hiddenVal, cookie;
-     config->Read(wxT("HiddenName"), &hiddenName, wxT("ERROR"));
-     config->Read(wxT("HiddenValue"), &hiddenVal, wxT("ERROR"));
-     config->Read(wxT("Cookie"), &cookie, wxT("ERROR"));
-     delete config;
+     wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR"), cookie = wxT("ERROR");
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie"), &cookie);
 
      // 読み取り失敗ならば書込失敗
      if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR") || cookie == wxT("ERROR"))
@@ -1325,12 +1324,11 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 
      // 不可視項目値をコンフィグファイルから取得する
      InitializeCookie();
-     wxString hiddenName, hiddenVal, cookie, pern;
-     config->Read(wxT("HiddenName"), &hiddenName, wxT("ERROR"));
-     config->Read(wxT("HiddenValue"), &hiddenVal, wxT("ERROR"));
-     config->Read(wxT("Cookie"), &cookie, wxT("ERROR"));
-     config->Read(wxT("PERN"), &pern, wxT("ERROR"));
-     delete config;
+     wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR"), cookie = wxT("ERROR"), pern = wxT("ERROR");
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie"), &cookie);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("PERN"), &pern);
 
      // 読み取り失敗ならば書込失敗
      if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR") || cookie == wxT("ERROR") || pern == wxT("ERROR"))
@@ -1510,7 +1508,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 /**
  * COOKIE関連の初期化処理を行う
  */
-bool SocketCommunication::InitializeCookie() {
+void SocketCommunication::InitializeCookie() {
 
      // カレントディレクトリを設定
      wxDir dir(::wxGetHomeDir());
@@ -1525,22 +1523,6 @@ bool SocketCommunication::InitializeCookie() {
      if (!jcDir.HasSubDirs(wxT("prop"))) {
 	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
      }
-     // 設定ファイルの準備をする
-     wxString configFile = propDir.GetName() + wxFileSeparator + COOKIE_CONFIG_FILE;
-     
-     if (wxFile::Exists(configFile)) {
-	  if (!config) {
-	       config = new wxFileConfig(wxT("JaneCloneCookie"), wxEmptyString, configFile,
-					 wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
-	       return true;
-	  }
-     }
-
-     // cookieを記録したファイルが無ければ作成する
-     config = new wxFileConfig(wxT("JaneCloneCookie"), wxEmptyString, configFile,
-			       wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
-
-     return false;
 }
 /**
  * 投稿内容をソケット通信クラスに設定する
@@ -1595,12 +1577,11 @@ void SocketCommunication::WriteCookieData(wxString dataFilePath) {
      }
 
      // クッキー情報をコンフィグファイルに書き出す
-     config->Write(wxT("Cookie"), cookie);
-     config->Write(wxT("HiddenName"), hiddenName);
-     config->Write(wxT("HiddenValue"), hiddenVal);
-     config->Flush();
+     JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie"), cookie);
+     JaneCloneUtil::SetJaneCloneProperties(wxT("HiddenName"), hiddenName);
+     JaneCloneUtil::SetJaneCloneProperties(wxT("HiddenValue"), hiddenVal);
+
      cookieFile.Close();
-     delete config;
 }
 /*
  * PERNのデータ書き出しを行う
@@ -1630,10 +1611,9 @@ void SocketCommunication::WritePernData(wxString dataFilePath) {
      pern = tmp;
 
      // クッキー情報をコンフィグファイルに書き出す
-     config->Write(wxT("PERN"), pern);
-     config->Flush();
+     JaneCloneUtil::SetJaneCloneProperties(wxT("PERN"), pern);
+
      cookieFile.Close();
-     delete config;
 }
 /**
  * 指定されたURLからデータをダウンロードする
@@ -1663,18 +1643,10 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
      InitializeCookie();
      wxString imageFilePath = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
 
-#ifdef __WXMSW__
-     // Windowsではパスの区切りは"\"
-     wxString tmp;
-     config->Read(wxT("CachePath"), &tmp, wxT("\\cache"));
+     wxString tmp = wxFileSeparator;
+     tmp += wxT("cache");
+     JaneCloneUtil::GetJaneCloneProperties(wxT("CachePath"), &tmp);
      imageFilePath += tmp;
-#else
-     // Linuxではパスの区切りは"/"
-     wxString tmp;
-     config->Read(wxT("CachePath"), &tmp, wxT("/cache"));
-     imageFilePath += tmp;
-#endif
-     delete config;
 
      // 画像ファイルパスを決定する
      wxString uuid = JaneCloneUtil::GenerateUUIDString();
@@ -1744,16 +1716,10 @@ void SocketCommunication::DownloadImageFileByFtp(const wxString& href, DownloadI
      // デフォルトは $HOME/.jc/cache
      InitializeCookie();
      wxString imageFilePath = ::wxGetHomeDir();
-#ifdef __WXMSW__
-     // Windowsではパスの区切りは"\"
-     wxString tmp;
-     config->Read(wxT("CachePath"), &tmp, wxT("\\cache"));
+
+     wxString tmp = wxFileSeparator;
+     tmp += wxT("cache");
+     JaneCloneUtil::GetJaneCloneProperties(wxT("CachePath"), &tmp);
      imageFilePath += tmp;
-#else
-     // Linuxではパスの区切りは"/"
-     wxString tmp;
-     config->Read(wxT("CachePath"), &tmp, wxT("/cache"));
-     imageFilePath += tmp;
-#endif
-     delete config;
+
 }

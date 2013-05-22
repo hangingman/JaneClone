@@ -660,11 +660,6 @@ void JaneClone::SetProperties() {
 
      // 初回起動以外の際、確認のためディレクトリをチェックする
      wxDir chkDir(jc);
-
-     // 設定ファイルの準備をする
-     wxString configFile = chkDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
-     config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
-
      // datフォルダ、propフォルダ、cacheフォルダが存在するか確認。無ければ確認＆フォルダを作成
      if (!chkDir.HasSubDirs(wxT("dat"))) {
 	  ::wxMkdir(chkDir.GetName() + wxFileSeparator + wxT("dat"));
@@ -779,29 +774,29 @@ void JaneClone::DoLayout() {
      // Auiマネージャーがどのフレームを管理するか示す
      m_mgr.SetManagedWindow(this);
 
-     int x, y;
-     config->Read(wxT("FrameX"), &x, 640);
-     config->Read(wxT("FrameY"), &y, 480);
-     this->SetSize(x, y);
+     long x = 640, y = 480;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("FrameX"), &x);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("FrameY"), &y);
+     this->SetSize(static_cast<int>(x), static_cast<int>(y));
 
-     int px, py;
-     config->Read(wxT("FramePx"), &px, 0);
-     config->Read(wxT("FramePy"), &py, 0);
-     this->Move(px, py);
+     long px, py = 0;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("FramePx"), &px);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("FramePy"), &py);
+     this->Move(static_cast<int>(px), static_cast<int>(py));
 
      // ウィンドウの最大化情報
-     bool isMaximized;
-     config->Read(wxT("IsMaximized"), &isMaximized, false);
+     bool isMaximized = false;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("IsMaximized"), &isMaximized);
      this->Maximize(isMaximized);
 
      // 板一覧ツリーを表示するかどうか
-     bool toggled;
-     config->Read(wxT("ShowBoardListTree"), &toggled, true);
+     bool toggled = true;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("ShowBoardListTree"), &toggled);
      m_floatToolBar->ToggleTool(ID_ShowBoardListTree, toggled);
 
      // 画面の分割を縦横どちらにするか
      // separateX = 日, separateY = 而
-     config->Read(wxT("SeparateXY"), &separateIsX, true);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("SeparateXY"), &separateIsX);
      separateIsX ? m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY))
 	         : m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
 
@@ -809,9 +804,9 @@ void JaneClone::DoLayout() {
      SetJaneCloneAuiPaneInfo();
 
      // 設定ファイルからレイアウト情報を読み取る
-     wxString perspective;
-     config->Read(wxT("Perspective"), &perspective, wxEmptyString);
-     m_mgr.LoadPerspective((const wxString) perspective, true);
+     wxString perspective = wxEmptyString;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Perspective"), &perspective);
+     m_mgr.LoadPerspective(perspective, true);
 
      // Auiマネージャーの設定を反映する
      m_mgr.Update();
@@ -1007,7 +1002,6 @@ void JaneClone::SetPreviousUserLookedTab() {
 JaneClone::~JaneClone() {
      // Auiマネージャーを削除する
      m_mgr.UnInit();
-     delete config;
 }
 /**
  * JaneCloneを終了させる
@@ -2025,28 +2019,28 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
      // wxAuiManagerのレイアウトの情報を保存する
      const wxString perspective = m_mgr.SavePerspective();
-     config->Write(wxT("Perspective"), perspective);
+     JaneCloneUtil::SetJaneCloneProperties(wxT("Perspective"), perspective);
      // フレームのレイアウト情報を保存する
      int x, y;
      this->GetSize(&x, &y);
-     config->Write(wxT("FrameX"), x);
-     config->Write(wxT("FrameY"), y);
+     JaneCloneUtil::SetJaneCloneProperties(wxT("FrameX"), static_cast<long>(x));
+     JaneCloneUtil::SetJaneCloneProperties(wxT("FrameY"), static_cast<long>(y));
 
      int px, py;
      this->GetPosition(&px, &py);
-     config->Write(wxT("FramePx"), px);
-     config->Write(wxT("FramePy"), py);
+     JaneCloneUtil::SetJaneCloneProperties(wxT("FramePx"), static_cast<long>(px));
+     JaneCloneUtil::SetJaneCloneProperties(wxT("FramePy"), static_cast<long>(py));
 
      // ウィンドウの最大化情報
      bool isMaximized = this->IsMaximized();
-     config->Write(wxT("IsMaximized"), isMaximized);
-     
+     JaneCloneUtil::SetJaneCloneProperties(wxT("IsMaximaized"), isMaximized);     
+
      // 板一覧ツリーの情報
      const bool toggled = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
-     config->Write(wxT("ShowBoardListTree"), toggled);
+     JaneCloneUtil::SetJaneCloneProperties(wxT("ShowBoardListTree"), toggled);
 
      // 画面の分割を縦横どちらにするか
-     config->Write(wxT("SeparateXY"), separateIsX);
+     JaneCloneUtil::SetJaneCloneProperties(wxT("SeparateXY"), separateIsX);
 
      // 各ウィジェットのフォント情報
      wxWindowList& children = this->GetChildren();
@@ -2394,12 +2388,9 @@ void JaneClone::FontDialogThreadContents(wxCommandEvent& event) {
      }
 
      // ex) Osaka
-     wxString faceName = font.GetFaceName();
-     config->Write(wxT("HTML.Font"), faceName);
+     JaneCloneUtil::SetJaneCloneProperties(wxT("HTML.Font"), font.GetFaceName());
      // ex) 10
-     wxString pointSize = wxString::Format(_("%d"), font.GetPointSize());
-     config->Write(wxT("HTML.PointSize"), pointSize);
-     // 設定を反映するため再起動させる
+     JaneCloneUtil::SetJaneCloneProperties(wxT("HTML.PointSize"), wxString::Format(_("%d"), font.GetPointSize()));
      this->Refresh();
      this->Update();
 }
@@ -2462,37 +2453,37 @@ void JaneClone::WriteFontInfo(wxWindow* current) {
 
      if (current->GetLabel() == SEARCH_BAR) {
 	  wxFont f = current->GetFont();
-	  config->Write(SEARCH_BAR, f.GetNativeFontInfoDesc());
+	  JaneCloneUtil::SetJaneCloneProperties(SEARCH_BAR, f.GetNativeFontInfoDesc());
 	  return;
      }
 
      if (current->GetLabel() == URL_BAR) {
 	  wxFont f = current->GetFont();
-	  config->Write(URL_BAR, f.GetNativeFontInfoDesc());
+	  JaneCloneUtil::SetJaneCloneProperties(URL_BAR, f.GetNativeFontInfoDesc());
 	  return; 
      }
 
      if (current->GetLabel() == BOARD_TREE) {
 	  wxFont f = current->GetFont();
-	  config->Write(BOARD_TREE, f.GetNativeFontInfoDesc());
+	  JaneCloneUtil::SetJaneCloneProperties(BOARD_TREE, f.GetNativeFontInfoDesc());
 	  return; 
      }
 
      if (current->GetLabel() == LOG_WINDOW) {
 	  wxFont f = current->GetFont();
-	  config->Write(LOG_WINDOW, f.GetNativeFontInfoDesc());
+	  JaneCloneUtil::SetJaneCloneProperties(LOG_WINDOW, f.GetNativeFontInfoDesc());
 	  return; 
      }
 
      if (current->GetLabel() == BOARD_NOTEBOOK) {
 	  wxFont f = current->GetFont();
-	  config->Write(BOARD_NOTEBOOK, f.GetNativeFontInfoDesc());
+	  JaneCloneUtil::SetJaneCloneProperties(BOARD_NOTEBOOK, f.GetNativeFontInfoDesc());
 	  return; 
      }
 
      if (current->GetLabel() == THREAD_NOTEBOOK) {
 	  wxFont f = current->GetFont();
-	  config->Write(THREAD_NOTEBOOK, f.GetNativeFontInfoDesc());
+	  JaneCloneUtil::SetJaneCloneProperties(THREAD_NOTEBOOK, f.GetNativeFontInfoDesc());
 	  return; 
      }
 }
@@ -2501,14 +2492,15 @@ void JaneClone::WriteFontInfo(wxWindow* current) {
  */
 wxFont JaneClone::ReadFontInfo(const wxString& widgetName) {
 
-     wxString nativeFontInfo;
-     config->Read(widgetName, &nativeFontInfo, wxEmptyString);
+     wxString nativeFontInfo = wxEmptyString;
+     JaneCloneUtil::GetJaneCloneProperties(widgetName, &nativeFontInfo);
+
      wxFont f;
-     bool ret = f.SetNativeFontInfo(nativeFontInfo);
+     const bool ret = f.SetNativeFontInfo(nativeFontInfo);
      wxString result;
 
-     (ret) ? result = wxT("OK")
-	  : result = wxT("NG");
+     ret ? result = wxT("OK")
+	 : result = wxT("NG");
 
      // ログを出力する
      *m_logCtrl << nativeFontInfo + wxT(":") + result;

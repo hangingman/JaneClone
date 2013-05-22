@@ -33,9 +33,9 @@
 
 // event table
 BEGIN_EVENT_TABLE(ResponseWindow, wxDialog)
-EVT_BUTTON(ID_PostResponse, ResponseWindow::OnPostResponse)
-EVT_BUTTON(ID_QuitResponseWindow, ResponseWindow::QuitResponseWindow)
-EVT_BUTTON(ID_PostConfirmForm, ResponseWindow::PostConfirmForm)
+   EVT_BUTTON(ID_PostResponse, ResponseWindow::OnPostResponse)
+   EVT_BUTTON(ID_QuitResponseWindow, ResponseWindow::QuitResponseWindow)
+   EVT_BUTTON(ID_PostConfirmForm, ResponseWindow::PostConfirmForm)
 END_EVENT_TABLE()
 
 
@@ -525,15 +525,12 @@ int ResponseWindow::CheckCookie() {
      if (!wxFile::Exists(configFile))
 	  return NO_COOKIE;
 
-     wxFileConfig* config = new wxFileConfig(wxT("JaneCloneCookie"), wxEmptyString, configFile,
-					    wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
      // 内部にある要素を調べる
-     wxString hiddenName, hiddenVal, cookie, pern;
-     config->Read(wxT("HiddenName"), &hiddenName, wxEmptyString);
-     config->Read(wxT("HiddenValue"), &hiddenVal, wxEmptyString);
-     config->Read(wxT("Cookie"), &cookie, wxEmptyString);
-     config->Read(wxT("PERN"), &pern, wxEmptyString);
-     delete config;
+     wxString hiddenName = wxEmptyString, hiddenVal = wxEmptyString, cookie = wxEmptyString, pern = wxEmptyString;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie"), &cookie);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("PERN"), &pern);
 
      // もしクッキーと隠し要素１がなければクッキーがないのと同じなのでNO_COOKIEを返す
      if (hiddenName.IsEmpty() || hiddenVal.IsEmpty() || cookie.IsEmpty()) {

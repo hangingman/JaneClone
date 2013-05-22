@@ -51,6 +51,10 @@ SettingDialog::SettingDialog(wxWindow* parent, int id, const wxString& title, co
 				      wxTR_HIDE_ROOT|wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
      // 右側の設定画面部分
      settingPanel = new wxPanel(splitterWindow, wxID_ANY);
+     // スプリッターウィンドウの位置を設定ファイルから読み出す
+     double gravity = 0.3;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("SETTING_WINDOW_SASH_GRAVITY"), &gravity);
+     splitterWindow->SetSashGravity(gravity);
 
      spacePanel = new wxPanel(bottomPanel, wxID_ANY);
      // OK,キャンセルボタン
@@ -97,12 +101,6 @@ void SettingDialog::SetProperties() {
      settingTreeCtrl->AppendItem(item, wxT("色・フォント"));
      settingTreeCtrl->AppendItem(item, wxT("タブ色"));
      settingTreeCtrl->ExpandAll();
-
-     // スプリッターウィンドウの位置を設定ファイルから読み出す
-     long position = 50;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("SETTING_WINDOW_SASH_POSITION"), &position);
-     splitterWindow->SetSashPosition(position);
-
      // end wxGlade
 }
 /**
@@ -130,8 +128,8 @@ void SettingDialog::DoLayout() {
  * 設定画面のクローズ
  */
 void SettingDialog::OnQuit(wxCommandEvent& event) {
-     JaneCloneUtil::SetJaneCloneProperties(wxT("SETTING_WINDOW_SASH_POSITION"), 
-					   static_cast<long>(splitterWindow->GetSashPosition()));
+
+     JaneCloneUtil::SetJaneCloneProperties(wxT("SETTING_WINDOW_SASH_GRAVITY"), splitterWindow->GetSashGravity());
      this->Destroy();
 }
 /**

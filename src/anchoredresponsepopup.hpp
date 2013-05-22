@@ -32,6 +32,7 @@
 #include <wx/dir.h>
 #include <wx/fileconf.h>
 #include "datatype.hpp"
+#include "janecloneutil.hpp"
 
 class AnchoredResponsePopup: public wxPopupTransientWindow {
 
