@@ -179,6 +179,8 @@ AC_FUNC_STRERROR_R
 # Checks for libzmq
 if test -d "libzmq"; then
    AC_CONFIG_SUBDIRS([libzmq])
+else
+   AC_MSG_ERROR([libzmq directory not found. please do git submodule init; git submodule update;])
 fi
 
 AC_CONFIG_FILES([Makefile

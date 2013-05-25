@@ -18063,6 +18063,8 @@ if test -d "libzmq"; then
 
 subdirs="$subdirs libzmq"
 
+else
+   as_fn_error $? "libzmq directory not found. please do git submodule init; git submodule update;" "$LINENO" 5
 fi
 
 ac_config_files="$ac_config_files Makefile libwxnkf/Makefile libwxuuid/Makefile sqlite3/Makefile wxsqlite3/Makefile src/Makefile"

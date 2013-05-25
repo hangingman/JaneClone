@@ -36,6 +36,8 @@ SQLiteAccessor::SQLiteAccessor() {
 	  db.Begin();
 	  // 2chのすべての板一覧情報
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO(BOARDNAME_KANJI TEXT, BOARD_URL TEXT, CATEGORY TEXT)"));
+	  // ユーザーが登録している新月のノード情報
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO_SHINGETSU(TIMEINFO TIMESTAMP, BOARD_URL TEXT)"));
 	  // ユーザーが前回見ていたタブについての情報
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_BOARDLIST(BOARDNAME_KANJI TEXT)"));
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_THREADLIST(THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
@@ -91,7 +93,7 @@ void SQLiteAccessor::SetBoardInfoCommit(wxArrayString* boardInfoArray) {
      }
 }
 /**
- * 板一覧情報をMetakit内のテーブルから取得しArrayStringの形で返す
+ * 板一覧情報をSQLite内のテーブルから取得しArrayStringの形で返す
  */
 wxArrayString SQLiteAccessor::GetBoardInfo() {
 
@@ -698,4 +700,84 @@ wxArrayString SQLiteAccessor::GetUserSearchedKeyword(const wxWindowID id) {
 
      return array;
 }
-     
+/**
+ * 登録済みの新月の公開ノード一覧を取得する
+ */
+wxArrayString SQLiteAccessor::GetShingetsuNodeList() {
+
+     // dbファイルの初期化
+     wxString dbFile = GetDBFilePath();
+     wxArrayString array;
+
+     try {
+	  
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+
+	  // リザルトセットを用意する
+	  wxSQLite3ResultSet rs;
+	  // SQL文を用意する
+	  const wxString SQL_QUERY = wxT("SELECT BOARD_URL from BOARD_INFO_SHINGETSU");
+
+	  // SQL文を実行する
+	  rs = db.ExecuteQuery(SQL_QUERY);
+	  db.Close();
+
+	  while (rs.NextRow()) {
+	       array.Add(rs.GetAsString(wxT("BOARD_URL")));
+	  }
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+
+     return array;
+}
+/**
+ * 新月の公開ノードを登録する
+ */
+void SQLiteAccessor::SetShingetsuNode(const wxString& nodeURL) {
+
+
+     // dbファイルの初期化
+     wxString dbFile = GetDBFilePath();
+     // 現在時間timestamp
+     wxDateTime now = wxDateTime::Now();
+
+     try {
+	  
+	  // dbファイルの初期化
+	  wxString dbFile = GetDBFilePath();
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+	  db.Begin();
+
+	  // PreparedStatementを準備する
+	  wxString sqlIn = wxEmptyString;
+	  sqlIn += wxT("declare");
+	  sqlIn += wxT("   wk_num  NUMBER ;");
+	  sqlIn += wxT("begin");
+	  sqlIn += wxT("   select count(BOARD_URL) into ? from BOARD_INFO_SHINGETSU;");
+	  sqlIn += wxT("if wk_num = 0 then");
+	  sqlIn += wxT("   insert into BOARD_INFO_SHINGETSU values(?, ?) ;");
+	  sqlIn += wxT("endif ;");
+
+	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+
+	  // レコードを追加する
+	  stmt.ClearBindings();
+	  stmt.Bind(1, nodeURL);
+	  stmt.BindTimestamp(2, now);
+	  stmt.Bind(3, nodeURL);
+	  stmt.ExecuteUpdate();
+	  wxMessageBox(stmt.GetSQL());
+	  // コミット実行
+	  db.Commit();
+	  db.Close();
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+}

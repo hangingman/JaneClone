@@ -850,8 +850,13 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	  // 板一覧ツリーを載せるノートブック
 	  boardTreeNoteBook = new wxAuiNotebook(this, ID_BoardTreeNoteBook, wxPoint(client_size.x, client_size.y), 
 						wxDefaultSize, wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+          // 2ch板一覧用ページ
 	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
 	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
+	  // 新月の公開ノード用ページ
+	  m_shingetsuTreePanel = new wxPanel(boardTreeNoteBook);
+	  boardTreeNoteBook->AddPage(m_shingetsuTreePanel, wxT("新月公開ノード一覧"), false);
+
 	  boardTree.Name(wxT("boardTree"));
 	  boardTree.Left();
 	  boardTree.CloseButton(false);
@@ -1819,6 +1824,16 @@ void JaneClone::CallResponseWindow(wxCommandEvent& event) {
  */
 void JaneClone::InitializeBoardList() {
      
+     // 2ch板一覧ツリーの初期化
+     this->Initialize2chBoardList();
+     // 新月公開ノードの初期化
+     this->InitializeShingetsuNodeList();
+}
+/**
+ * 2ch板一覧ツリーの初期化
+ */
+void JaneClone::Initialize2chBoardList() {
+
      // ArrayStringの形で板一覧情報を取得する
      wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
      // カテゴリ名一時格納用
@@ -1903,6 +1918,46 @@ void JaneClone::InitializeBoardList() {
      // パネルにSizerを設定する
      m_boardTreePanel->SetSizer(vbox);
      m_boardTreePanel->Update();
+}
+/**
+ *  新月公開ノードの初期化
+ */
+void JaneClone::InitializeShingetsuNodeList() {
+
+     // ArrayStringの形で板一覧情報を取得する
+     wxArrayString shingetsuInfoArray = SQLiteAccessor::GetShingetsuNodeList();
+     
+     // URL一時格納用
+     wxString url;
+     // Sizer
+     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+     // 検索用ツールバーを設定する
+     CreateCommonAuiToolBar(m_shingetsuTreePanel, vbox, ID_ShingetsuBoardSearchBar);
+
+     // ツリー用ウィジェットのインスタンスを用意する
+     m_shingetsu_tree_ctrl = new wxTreeCtrl(m_shingetsuTreePanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 
+					   wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+     vbox->Add(m_shingetsu_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
+
+     wxTreeItemData treeData;
+     wxTreeItemId m_rootId;
+
+     // イメージリストにアイコンを登録する
+     wxImageList* treeImage = new wxImageList(16, 16);
+     wxBitmap idx1(wxT("rc/folder.png"), wxBITMAP_TYPE_PNG);
+     treeImage->Add(idx1);
+     wxBitmap idx2(wxT("rc/text-html.png"), wxBITMAP_TYPE_PNG);
+     treeImage->Add(idx2);
+     m_tree_ctrl->AssignImageList(treeImage);
+     m_tree_ctrl->SetLabel(SHINGETU_NODE_TREE);
+     wxTreeItemId rootTemp = m_shingetsu_tree_ctrl->AddRoot(wxT("新月公開ノード一覧"));
+     m_tree_ctrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
+
+     m_tree_ctrl->Expand(m_rootId);
+
+     // パネルにSizerを設定する
+     m_shingetsuTreePanel->SetSizer(vbox);
+     m_shingetsuTreePanel->Update();
 }
 /**
  * Sqliteから板一覧情報を抽出してレイアウトに反映するメソッド
@@ -3013,6 +3068,25 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 	  searchBox->AddControl(searchWordCombo, wxT("board_tree_combo"));
 	  // 閉じるボタンを設定する
 	  searchBox->AddTool(ID_SearchBarHide, wxT("closeThreadSearch"), wxBitmap(closeImg, wxBITMAP_TYPE_ANY), wxT("検索ボックスを隠す"));
+     } else if (id == ID_ShingetsuBoardSearchBar) {
+	  // ラベルを設定する
+	  searchBox->SetLabel(SHINGETU_NODE_SEARCH);
+	  // 検索ボックスを設定する
+	  //const wxArrayString choices = SQLiteAccessor::GetUserSearchedKeyword(ID_BoardSearchBarCombo);
+	  wxComboBox* searchWordCombo = new wxComboBox(searchBox,
+						       ID_BoardSearchBarCombo,
+						       wxEmptyString, 
+						       wxDefaultPosition, 
+						       wxDefaultSize,  
+						       NULL,//choices, 
+						       wxCB_DROPDOWN);
+	  // !FIXME!
+	  //SupplySearchWords(searchWordCombo, ID_BoardSearchBarCombo);
+
+	  // 板名検索ボックスのID
+	  searchBox->AddControl(searchWordCombo, wxT("shingetsu_tree_combo"));
+	  // 閉じるボタンを設定する
+	  searchBox->AddTool(ID_SearchBarHide, wxT("closeThreadSearch"), wxBitmap(closeImg, wxBITMAP_TYPE_ANY), wxT("検索ボックスを隠す"));
      }
 
      searchBox->Realize();
@@ -3244,8 +3318,13 @@ void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
 	  // 板一覧ツリーの再設定
 	  boardTreeNoteBook = new wxAuiNotebook(this, ID_BoardTreeNoteBook, wxPoint(client_size.x, client_size.y), 
 						wxDefaultSize, wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+	  // 2ch板一覧用ページ
 	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
 	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
+	  // 新月の公開ノード用ページ FIXME
+	  m_shingetsuTreePanel = new wxPanel(boardTreeNoteBook);
+	  boardTreeNoteBook->AddPage(m_shingetsuTreePanel, wxT("新月公開ノード一覧"), false);
+
 	  // 左側・板一覧のツリーコントロールを設定する
 	  wxAuiPaneInfo boardTree;
 	  boardTree.Name(wxT("boardTree"));
@@ -3316,8 +3395,12 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
 		    // 板一覧ツリーを載せるノートブック
 		    boardTreeNoteBook = new wxAuiNotebook(this, ID_BoardTreeNoteBook, wxPoint(client_size.x, client_size.y), 
 							  wxDefaultSize, wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+		    // 2ch板一覧用ページ
 		    m_boardTreePanel = new wxPanel(boardTreeNoteBook);
 		    boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
+		    // 新月の公開ノード用ページ FIXME
+		    m_shingetsuTreePanel = new wxPanel(boardTreeNoteBook);
+		    boardTreeNoteBook->AddPage(m_shingetsuTreePanel, wxT("新月公開ノード一覧"), false);
 	       }
 	       boardTree.Name(wxT("boardTree"));
 	       boardTree.Left();

@@ -214,14 +214,23 @@ private:
 
      // ツリーコントロールを載せるノートブック
      wxAuiNotebook* boardTreeNoteBook;
-     // ツリーコントロールが乗るパネル
+     // 2ch板一覧ツリーコントロールが乗るパネル
      wxPanel* m_boardTreePanel;
-     // ツリーコントロール
+     // 2ch板一覧ツリーコントロール
      wxTreeCtrl* m_tree_ctrl;
      // 取得した板一覧ファイルからデータを抽出したのちwxTreeCtrlのインスタンスを返す
      void SetBoardList(const bool thisIsFirst = true);
-     // 板一覧更ツリーの初期化
+
+     // 新月の公開ノード用ツリーコントロールが乗るパネル
+     wxPanel* m_shingetsuTreePanel;
+     // 新月の公開ノード用ツリーコントロール
+     wxTreeCtrl* m_shingetsu_tree_ctrl;
+     // 板一覧ツリーの初期化
      void InitializeBoardList();
+     // 2ch板一覧ツリーの初期化
+     void Initialize2chBoardList();
+     // 新月公開ノードの初期化
+     void InitializeShingetsuNodeList();
 
      // すべてのウィジェットが載るAuiマネージャー
      wxAuiManager m_mgr;

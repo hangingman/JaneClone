@@ -77,6 +77,7 @@ enum {
 	ID_OnOpenJaneCloneOfficial,     // JaneClone公式サイトをブラウザで開く
 	ID_ThreadSearchBar,             // スレッド検索ボックスのID
 	ID_BoardSearchBar,              // 板名検索ボックスのID
+	ID_ShingetsuBoardSearchBar,     // 新月の板名検索ボックスのID
 	ID_ThreadSearchBarCombo,        // スレッド検索ボックスのコンボボックス
 	ID_BoardSearchBarCombo,         // 板名検索ボックスのコンボボックス
 	ID_SearchBoxDoSearch,           // 検索ボックスで検索ボタンを押す

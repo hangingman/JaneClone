@@ -113,6 +113,14 @@ public:
       * ユーザーが検索ボックスで検索したキーワードを取得する
       */
      static wxArrayString GetUserSearchedKeyword(const wxWindowID id);
+     /**
+      * 登録済みの新月の公開ノード一覧を取得する
+      */
+     static wxArrayString GetShingetsuNodeList();
+     /**
+      * 新月の公開ノードを登録する
+      */
+     static void SetShingetsuNode(const wxString& nodeURL);
 
 private:
 
