@@ -106,9 +106,12 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_UPDATE_UI(ID_UserLastClosedBoardMenuUp, JaneClone::UserLastClosedBoardMenuUp)
    EVT_UPDATE_UI(ID_UserLookingTabsMenuUp, JaneClone::UserLookingTabsMenuUp)
     
-   // ツリーコントロールのイベント
-   EVT_TREE_SEL_CHANGED(wxID_ANY, JaneClone::OnGetBoardInfo)
-    
+   // 2ch板一覧ツリーコントロールのイベント
+   EVT_TREE_SEL_CHANGED(ID_BoardTreectrl, JaneClone::OnGetBoardInfo)
+   // 新月公開ノードツリーコントロールのイベント
+   EVT_TREE_SEL_CHANGED(ID_ShingetsuBoardTreectrl, JaneClone::OnGetShingetsuNodeInfo)
+   EVT_TREE_ITEM_RIGHT_CLICK(ID_ShingetsuBoardTreectrl, JaneClone::OnRightClickShingetsuNodeTree)
+ 
    // 板一覧ノートブックで右クリックされた時の処理
    EVT_AUINOTEBOOK_TAB_RIGHT_DOWN(ID_BoardNoteBook, JaneClone::OnRightClickBoardNoteBook)
    // スレッド一覧ノートブックで右クリックされた時の処理
@@ -1069,6 +1072,59 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
      }
 }
 /**
+ * 新月公開ノードツリーコントロールでクリックした時のイベント
+ */
+void JaneClone::OnGetShingetsuNodeInfo(wxTreeEvent& event) {
+
+     // 選択されたTreeItemIdのインスタンス
+     wxTreeItemId pushedTree = event.GetItem();
+
+     // もし選択されたツリーが板名だったら(※TreeItemに子要素が無かったら)
+     if (!m_tree_ctrl->ItemHasChildren(pushedTree)) {
+	  // 板名をwxStringで取得する
+	  wxString boardURL(m_tree_ctrl->GetItemText(pushedTree));
+
+	  // 取得した板名が取得不可なものであればリターン
+	  if (boardURL == wxEmptyString || boardURL == wxT("新月公開ノード一覧"))
+	       return;
+
+	  wxMessageBox(boardURL);
+	  // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
+	  // SetBoardNameToNoteBook(boardName, boardURL, boardNameAscii);
+     }
+}
+/**
+ * 新月公開ノードツリー上で右クリックした時のイベント
+ * 動的に公開ノードのURLを登録する
+ */
+void JaneClone::OnRightClickShingetsuNodeTree(wxTreeEvent& event) {
+
+     //wxMessageBox(wxT("test"));
+     //event.Skip();
+
+     wxTextEntryDialog* askDialog = new wxTextEntryDialog(this,
+							  wxT("新月公開ノードURLの追加を行います.URLを入力してください."),
+							  wxT("新月公開ノードURLの追加"));
+     askDialog->SetTitle(wxT("新月公開ノードURLの追加"));
+
+#ifdef __WXMSW__
+     askDialog->SetIcon(wxICON(wxicon));
+#else
+     askDialog->SetIcon(wxICON(janeclone));
+#endif
+     
+     if ( askDialog->ShowModal() == wxID_OK ) {
+	  const wxString nodeURL = askDialog->GetValue();
+	  if (!nodeURL.IsEmpty()) {
+	       SQLiteAccessor::SetShingetsuNode(nodeURL);
+	       m_shingetsu_tree_ctrl->AppendItem(m_shingetsu_tree_ctrl->GetRootItem(), nodeURL, 1, 1);
+	  }
+     }
+
+     askDialog->Destroy();
+     
+}
+/**
  * 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
  */
 void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii) {
@@ -1935,8 +1991,8 @@ void JaneClone::InitializeShingetsuNodeList() {
      CreateCommonAuiToolBar(m_shingetsuTreePanel, vbox, ID_ShingetsuBoardSearchBar);
 
      // ツリー用ウィジェットのインスタンスを用意する
-     m_shingetsu_tree_ctrl = new wxTreeCtrl(m_shingetsuTreePanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 
-					   wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+     m_shingetsu_tree_ctrl = new wxTreeCtrl(m_shingetsuTreePanel, ID_ShingetsuBoardTreectrl, wxDefaultPosition, wxDefaultSize, 
+					    wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
      vbox->Add(m_shingetsu_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
 
      wxTreeItemData treeData;
@@ -1948,10 +2004,14 @@ void JaneClone::InitializeShingetsuNodeList() {
      treeImage->Add(idx1);
      wxBitmap idx2(wxT("rc/text-html.png"), wxBITMAP_TYPE_PNG);
      treeImage->Add(idx2);
-     m_tree_ctrl->AssignImageList(treeImage);
-     m_tree_ctrl->SetLabel(SHINGETU_NODE_TREE);
+     m_shingetsu_tree_ctrl->AssignImageList(treeImage);
+     m_shingetsu_tree_ctrl->SetLabel(SHINGETU_NODE_TREE);
      wxTreeItemId rootTemp = m_shingetsu_tree_ctrl->AddRoot(wxT("新月公開ノード一覧"));
      m_tree_ctrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
+
+     for (unsigned int i = 0; i < shingetsuInfoArray.GetCount(); i++ ) {
+	  m_shingetsu_tree_ctrl->AppendItem(m_shingetsu_tree_ctrl->GetRootItem(), shingetsuInfoArray[i], 1, 1);
+     }
 
      m_tree_ctrl->Expand(m_rootId);
 

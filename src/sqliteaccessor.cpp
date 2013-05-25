@@ -754,25 +754,28 @@ void SQLiteAccessor::SetShingetsuNode(const wxString& nodeURL) {
 	  db.Open(dbFile);
 	  db.Begin();
 
-	  // PreparedStatementを準備する
-	  wxString sqlIn = wxEmptyString;
-	  sqlIn += wxT("declare");
-	  sqlIn += wxT("   wk_num  NUMBER ;");
-	  sqlIn += wxT("begin");
-	  sqlIn += wxT("   select count(BOARD_URL) into ? from BOARD_INFO_SHINGETSU;");
-	  sqlIn += wxT("if wk_num = 0 then");
-	  sqlIn += wxT("   insert into BOARD_INFO_SHINGETSU values(?, ?) ;");
-	  sqlIn += wxT("endif ;");
+	  /** 同じURLが登録されているか */
 
-	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+	  // リザルトセットを用意する
+	  wxSQLite3ResultSet rs;
+	  // SQL文を用意する
+	  wxString SQL_QUERY = wxT("select count(BOARD_URL) from BOARD_INFO_SHINGETSU");
+	  rs = db.ExecuteQuery(SQL_QUERY);
 
-	  // レコードを追加する
-	  stmt.ClearBindings();
-	  stmt.Bind(1, nodeURL);
-	  stmt.BindTimestamp(2, now);
-	  stmt.Bind(3, nodeURL);
-	  stmt.ExecuteUpdate();
-	  wxMessageBox(stmt.GetSQL());
+	  int record = 0;
+
+	  if (!rs.IsNull(0)) record = rs.GetInt(0);
+	  if (record == 0) {
+	       wxString sqlIn = wxT("insert into BOARD_INFO_SHINGETSU values(?, ?)");
+	       wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+
+	       // レコードを追加する
+	       stmt.ClearBindings();
+	       stmt.BindTimestamp(1, now);
+	       stmt.Bind(2, nodeURL);
+	       stmt.ExecuteUpdate();
+	  }
+
 	  // コミット実行
 	  db.Commit();
 	  db.Close();

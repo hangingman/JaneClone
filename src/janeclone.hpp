@@ -192,6 +192,7 @@ private:
      void OnChangedThreadTab(wxAuiNotebookEvent& event);
      void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
      void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
+     void OnRightClickShingetsuNodeTree(wxTreeEvent& event);
      void OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event);
      void OnAboutCloseBoardNoteBook(wxAuiNotebookEvent& event);
      void OnCellHover(wxHtmlCellEvent& event);
@@ -271,8 +272,10 @@ private:
      // ビューア設定画面を呼び出す
      void CallSettingWindow(wxCommandEvent& event);
 
-     //　ツリーコントロールにクリックした時のイベント
+     // 2ch板一覧ツリーコントロールでクリックした時のイベント
      void OnGetBoardInfo(wxTreeEvent& event);
+     // 新月公開ノードツリーコントロールでクリックした時のイベント
+     void OnGetShingetsuNodeInfo(wxTreeEvent& event);
 
      /**
       * 右上のオブジェクトとメソッド
