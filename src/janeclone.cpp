@@ -1973,9 +1973,38 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
 
      wxAboutDialogInfo info;
      info.SetName(wxT("JaneClone - ２ちゃんねるビューア"));
+     info.AddDeveloper(wxT("Hiroyuki Nagata newserver002@gmail.com"));
+     info.AddDeveloper(wxT("K.Watanabe      kwtnb@outlook.com"));
      info.SetVersion(_T(STR(PACKAGE_VERSION)));
-     info.SetDescription(wxT("Copyright(C) 2013 Nagata Hiroyuki, All Rights Reserved. "));
-     info.SetCopyright(wxT("http://nantonaku-shiawase.hatenablog.com/"));
+     info.SetCopyright(wxT("Copyright(C) 2013 Nagata Hiroyuki, All Rights Reserved. "));
+     info.SetWebSite(wxT("http://nantonaku-shiawase.hatenablog.com/"));
+
+     // 説明を追加
+     wxString description = wxT("wxWidgetsのバージョン:");
+     description += wxVERSION_STRING;
+     description += wxT("\n");
+     description += wxT("ØMQのバージョン:");
+     int major = 0, minor = 0, patch = 0;
+     zmq_version (&major, &minor, &patch);
+     description += wxString::Format(wxT("%d.%d.%d"), major, minor, patch);
+     description += wxT("\n");
+
+     info.SetDescription(description);
+
+     // ライセンスを読み込む
+     wxTextFile licenceFile;
+     licenceFile.Open(licencePath, wxConvUTF8);
+     wxString licence;
+
+     // ファイルがオープンされているならば
+     if (licenceFile.IsOpened()) {
+	  for (licence += licenceFile.GetFirstLine(); !licenceFile.Eof(); licence += licenceFile.GetNextLine()) {
+	       licence += wxT("\n");
+	  }
+     }
+     // ここまで来てしまった場合空文字を返す
+     licenceFile.Close();
+     info.SetLicence(licence);
 
      wxAboutBox(info);
 }

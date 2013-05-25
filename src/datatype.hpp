@@ -70,6 +70,9 @@
 #define BOARD_NOTEBOOK         wxT("boardNoteBook")
 #define THREAD_NOTEBOOK        wxT("threadNoteBook")
 
+// ライセンスのデフォルトのパス
+static const wxString licencePath        = wxT("rc/gpl-2.0.txt");
+
 // 各ボタンに貼り付けられる画像
 static const wxString autoReloadImg      = wxT("rc/appointment-new.png");
 static const wxString redResExtractImg   = wxT("rc/system-search.png");

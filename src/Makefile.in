@@ -85,7 +85,8 @@ JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
 @USE_WINDRES_TRUE@	$(top_builddir)/libwxnkf/libwxnkf.la \
 @USE_WINDRES_TRUE@	$(top_builddir)/libwxuuid/libwxuuid.la \
 @USE_WINDRES_TRUE@	$(top_builddir)/wxsqlite3/libwxsqlite3.la \
-@USE_WINDRES_TRUE@	$(top_builddir)/sqlite3/libsqlite3.la
+@USE_WINDRES_TRUE@	$(top_builddir)/sqlite3/libsqlite3.la \
+@USE_WINDRES_TRUE@	$(top_builddir)/libzmq/src/libzmq.la
 JaneClone_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(JaneClone_CXXFLAGS) \
 	$(CXXFLAGS) $(JaneClone_LDFLAGS) $(LDFLAGS) -o $@
@@ -296,15 +297,15 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 
 
 # common build rule
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -DPACKAGE_VERSION=@PACKAGE_VERSION@
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -I$(top_builddir)/libzmq/src -I$(top_builddir)/libzmq/include -DPACKAGE_VERSION=@PACKAGE_VERSION@
 ACLOCAL_AMFLAGS = -I m4
 
 # For Icon build and library dependency
 # Platform is Windows
-@USE_WINDRES_TRUE@JaneClone_LDADD = JaneClone_rc.o $(top_builddir)/libwxnkf/libwxnkf.la $(top_builddir)/libwxuuid/libwxuuid.la $(top_builddir)/wxsqlite3/libwxsqlite3.la $(top_builddir)/sqlite3/libsqlite3.la 
+@USE_WINDRES_TRUE@JaneClone_LDADD = JaneClone_rc.o $(top_builddir)/libwxnkf/libwxnkf.la $(top_builddir)/libwxuuid/libwxuuid.la $(top_builddir)/wxsqlite3/libwxsqlite3.la $(top_builddir)/sqlite3/libsqlite3.la $(top_builddir)/libzmq/src/libzmq.la
 
 # Platform is not Windows
-@USE_WINDRES_FALSE@JaneClone_LDFLAGS = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3
+@USE_WINDRES_FALSE@JaneClone_LDFLAGS = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3 -L$(top_builddir)/libzmq/src -lzmq
 @USE_WINDRES_TRUE@JaneClone_LDFLAGS = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ JaneClone_rc.o
 all: all-am
 

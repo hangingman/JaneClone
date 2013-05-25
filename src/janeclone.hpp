@@ -66,6 +66,7 @@
 #include <wx/font.h>
 #include <wx/fontdlg.h>
 #include <wx/menu.h>
+#include <zmq.h>
 
 // 自作クラスのヘッダ
 #include "enums.hpp"

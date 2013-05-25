@@ -12,8 +12,8 @@
   Mac OSX  (Lion~)  
   BSD      (GTK2 or 3)  
   
-【バージョン】0.7
-【最終更新日】2013/02/10
+【バージョン】1.1.0
+【最終更新日】2013/05/25
 
 【 ウ ェ ブ 】http://nantonaku-shiawase.hatenablog.com/
 【 E - mail 】newserver002@gmail.com
@@ -78,3 +78,8 @@ http://engawa.2ch.net/test/read.cgi/poverty/1354372438/
 
 明日発売の『Aチャンネル』最新第4巻の店舗特典がどれも可愛すぎると話題に！　これは大人買い決定か？ 
 http://engawa.2ch.net/test/read.cgi/poverty/1361888028/
+
+---------
+
+・開発者向け
+ビルド方法はプロジェクト配下のINSTALLというファイルを参照してください
