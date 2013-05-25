@@ -79,7 +79,8 @@ am_JaneClone_OBJECTS = JaneClone-main.$(OBJEXT) \
 	JaneClone-janecloneimageviewer.$(OBJEXT) \
 	JaneClone-imagepanel.$(OBJEXT) \
 	JaneClone-settingwindow.$(OBJEXT) \
-	JaneClone-otherpanels.$(OBJEXT)
+	JaneClone-otherpanels.$(OBJEXT) \
+	JaneClone-zmqcommunication.$(OBJEXT)
 JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
 @USE_WINDRES_TRUE@JaneClone_DEPENDENCIES = JaneClone_rc.o \
 @USE_WINDRES_TRUE@	$(top_builddir)/libwxnkf/libwxnkf.la \
@@ -293,11 +294,13 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    settingwindow.cpp		\
 		    settingwindow.hpp		\
 		    otherpanels.cpp		\
-		    otherpanels.hpp
+		    otherpanels.hpp		\
+		    zmqcommunication.cpp	\
+		    zmqcommunication.hpp
 
 
 # common build rule
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -I$(top_builddir)/libzmq/src -I$(top_builddir)/libzmq/include -DPACKAGE_VERSION=@PACKAGE_VERSION@
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -I$(top_builddir)/libzmq/src -I$(top_builddir)/libzmq/include -I$(top_builddir)/cppzmq -DPACKAGE_VERSION=@PACKAGE_VERSION@
 ACLOCAL_AMFLAGS = -I m4
 
 # For Icon build and library dependency
@@ -412,6 +415,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-threadcontentbar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-threadcontentwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-virtualboardlistctrl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/JaneClone-zmqcommunication.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -643,6 +647,20 @@ JaneClone-otherpanels.obj: otherpanels.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='otherpanels.cpp' object='JaneClone-otherpanels.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-otherpanels.obj `if test -f 'otherpanels.cpp'; then $(CYGPATH_W) 'otherpanels.cpp'; else $(CYGPATH_W) '$(srcdir)/otherpanels.cpp'; fi`
+
+JaneClone-zmqcommunication.o: zmqcommunication.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-zmqcommunication.o -MD -MP -MF $(DEPDIR)/JaneClone-zmqcommunication.Tpo -c -o JaneClone-zmqcommunication.o `test -f 'zmqcommunication.cpp' || echo '$(srcdir)/'`zmqcommunication.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-zmqcommunication.Tpo $(DEPDIR)/JaneClone-zmqcommunication.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='zmqcommunication.cpp' object='JaneClone-zmqcommunication.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-zmqcommunication.o `test -f 'zmqcommunication.cpp' || echo '$(srcdir)/'`zmqcommunication.cpp
+
+JaneClone-zmqcommunication.obj: zmqcommunication.cpp
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -MT JaneClone-zmqcommunication.obj -MD -MP -MF $(DEPDIR)/JaneClone-zmqcommunication.Tpo -c -o JaneClone-zmqcommunication.obj `if test -f 'zmqcommunication.cpp'; then $(CYGPATH_W) 'zmqcommunication.cpp'; else $(CYGPATH_W) '$(srcdir)/zmqcommunication.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/JaneClone-zmqcommunication.Tpo $(DEPDIR)/JaneClone-zmqcommunication.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='zmqcommunication.cpp' object='JaneClone-zmqcommunication.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(JaneClone_CXXFLAGS) $(CXXFLAGS) -c -o JaneClone-zmqcommunication.obj `if test -f 'zmqcommunication.cpp'; then $(CYGPATH_W) 'zmqcommunication.cpp'; else $(CYGPATH_W) '$(srcdir)/zmqcommunication.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -616,3 +616,13 @@ template void JaneCloneUtil::GetJaneCloneProperties<wxString>(const wxString& ke
 template void JaneCloneUtil::GetJaneCloneProperties<long>(const wxString& key, long* value);
 template void JaneCloneUtil::GetJaneCloneProperties<double>(const wxString& key, double* value);
 template void JaneCloneUtil::GetJaneCloneProperties<bool>(const wxString& key, bool* value);
+
+/**
+ * 指定されたディレクトリの下に、指定された名前のディレクトリが存在するか確認して作成する
+ */
+void JaneCloneUtil::CreateSpecifyDirectory(wxDir& specifyDir, const wxString& dirName) {
+
+     if (!specifyDir.HasSubDirs(dirName)) {
+	  ::wxMkdir(specifyDir.GetName() + wxFileSeparator + dirName);
+     }
+}

@@ -66,12 +66,13 @@
 #include <wx/font.h>
 #include <wx/fontdlg.h>
 #include <wx/menu.h>
-#include <zmq.h>
+#include <zmq.hpp>
 
 // 自作クラスのヘッダ
 #include "enums.hpp"
 #include "extractboardlist.hpp"
 #include "socketcommunication.hpp"
+#include "zmqcommunication.hpp"
 #include "datatype.hpp"
 #include "virtualboardlistctrl.hpp"
 #include "sqliteaccessor.hpp"
@@ -281,13 +282,16 @@ private:
       * 右上のオブジェクトとメソッド
       */
      // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
-     void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL,
-				 wxString& boardNameAscii);
+     void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii);
      // ノートブックに反映する際のコールバック
      void SetThreadListItemNew( wxString boardName, wxString outputPath, size_t selectedPage, 
 				std::map<wxString,ThreadList>& oldThreadMap);
      void SetThreadListItemUpdate( wxString boardName,  wxString outputPath, size_t selectedPage, 
 				   std::map<wxString,ThreadList>& oldThreadMap);
+
+     // 新月公開ノードをクリックして、それをノートブックに反映するメソッド
+     void SetShingetsuNodeToNoteBook(const wxString& nodeHostname);
+
 
      // VirtualBoardListCtrlのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
      WX_DECLARE_HASH_MAP( wxString, 		// type of the keys

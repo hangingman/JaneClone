@@ -663,15 +663,14 @@ void JaneClone::SetProperties() {
 
      // 初回起動以外の際、確認のためディレクトリをチェックする
      wxDir chkDir(jc);
-     // datフォルダ、propフォルダ、cacheフォルダが存在するか確認。無ければ確認＆フォルダを作成
-     if (!chkDir.HasSubDirs(wxT("dat"))) {
-	  ::wxMkdir(chkDir.GetName() + wxFileSeparator + wxT("dat"));
-     }
-     if (!chkDir.HasSubDirs(wxT("prop"))) {
-	  ::wxMkdir(chkDir.GetName() + wxFileSeparator + wxT("prop"));
-     }
-     if (!chkDir.HasSubDirs(wxT("cache"))) {
-	  ::wxMkdir(chkDir.GetName() + + wxFileSeparator + wxT("cache"));
+     // dat, shingetsu, prop, cacheフォルダが存在するか確認。無ければ確認＆フォルダを作成
+     wxArrayString jcNeedDir;
+     jcNeedDir.Add(wxT("dat"));
+     jcNeedDir.Add(wxT("shingetsu"));
+     jcNeedDir.Add(wxT("prop"));
+     jcNeedDir.Add(wxT("cache"));
+     for (int i = 0; i < jcNeedDir.GetCount(); i++ ) {
+	  JaneCloneUtil::CreateSpecifyDirectory(chkDir, jcNeedDir[i]);
      }
 
      // アプリ上部URL入力欄の画像つきボタンのサイズ調整
@@ -1082,15 +1081,13 @@ void JaneClone::OnGetShingetsuNodeInfo(wxTreeEvent& event) {
      // もし選択されたツリーが板名だったら(※TreeItemに子要素が無かったら)
      if (!m_tree_ctrl->ItemHasChildren(pushedTree)) {
 	  // 板名をwxStringで取得する
-	  wxString boardURL(m_tree_ctrl->GetItemText(pushedTree));
+	  const wxString nodeHostname(m_tree_ctrl->GetItemText(pushedTree));
 
 	  // 取得した板名が取得不可なものであればリターン
-	  if (boardURL == wxEmptyString || boardURL == wxT("新月公開ノード一覧"))
+	  if (nodeHostname == wxEmptyString || nodeHostname == wxT("新月公開ノード一覧"))
 	       return;
-
-	  wxMessageBox(boardURL);
-	  // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
-	  // SetBoardNameToNoteBook(boardName, boardURL, boardNameAscii);
+	  // 新月公開ノードをクリックして、それをノートブックに反映するメソッド
+	  SetShingetsuNodeToNoteBook(nodeHostname);
      }
 }
 /**
@@ -1098,9 +1095,6 @@ void JaneClone::OnGetShingetsuNodeInfo(wxTreeEvent& event) {
  * 動的に公開ノードのURLを登録する
  */
 void JaneClone::OnRightClickShingetsuNodeTree(wxTreeEvent& event) {
-
-     //wxMessageBox(wxT("test"));
-     //event.Skip();
 
      wxTextEntryDialog* askDialog = new wxTextEntryDialog(this,
 							  wxT("新月公開ノードURLの追加を行います.URLを入力してください."),
@@ -1122,7 +1116,6 @@ void JaneClone::OnRightClickShingetsuNodeTree(wxTreeEvent& event) {
      }
 
      askDialog->Destroy();
-     
 }
 /**
  * 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
@@ -2100,7 +2093,7 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
      description += wxT("\n");
      description += wxT("ØMQのバージョン:");
      int major = 0, minor = 0, patch = 0;
-     zmq_version (&major, &minor, &patch);
+     zmq_version(&major, &minor, &patch);
      description += wxString::Format(wxT("%d.%d.%d"), major, minor, patch);
      description += wxT("\n");
 
@@ -3515,4 +3508,13 @@ void JaneClone::CallSettingWindow(wxCommandEvent& event) {
      SettingDialog* dialog = new SettingDialog(this, wxID_ANY, wxT("設定 - "));
      dialog->ShowModal();
 }
+/**
+ * 新月公開ノードをクリックして、それをノートブックに反映するメソッド
+ */
+void JaneClone::SetShingetsuNodeToNoteBook(const wxString& nodeHostname) {
 
+     ZMQCommunication* zmq = new ZMQCommunication();
+     zmq->SetLogWindow(m_logCtrl);
+     zmq->DownloadShingetsuThreadList(nodeHostname);
+     delete zmq;
+}

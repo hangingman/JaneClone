@@ -129,6 +129,10 @@ public:
       * プロパティファイルの指定されたKEYを読み取る
       */
      template <class T> static void GetJaneCloneProperties(const wxString& key, T* value);
+     /**
+      * 指定されたディレクトリの下に、指定された名前のディレクトリが存在するか確認して作成する
+      */
+     static void CreateSpecifyDirectory(wxDir& specifyDir, const wxString& dirName);
 
 private:
 
