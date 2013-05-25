@@ -1,3 +1,4 @@
 #! /bin/sh
 
-exec autoreconf -vi -I m4
+mkdir -p `pwd`/libzmq/config
+exec autoreconf -vi -I `pwd`/m4

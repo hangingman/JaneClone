@@ -176,6 +176,11 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset munmap nl_langinfo strcasecmp strchr strcspn strpbrk strrchr strspn strstr fdatasync usleep fullfsync localtime_r gmtime_r])
 AC_FUNC_STRERROR_R
 
+# Checks for libzmq
+if test -d "libzmq"; then
+   AC_CONFIG_SUBDIRS([libzmq])
+fi
+
 AC_CONFIG_FILES([Makefile
                  libwxnkf/Makefile
 		 libwxuuid/Makefile
