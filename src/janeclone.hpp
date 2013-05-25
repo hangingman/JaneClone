@@ -211,6 +211,8 @@ private:
      void SetPreviousUserLookedTab();
      void InitializeJaneClone(wxString& jc, wxDir& jcDir);
 
+     // ツリーコントロールを載せるノートブック
+     wxAuiNotebook* boardTreeNoteBook;
      // ツリーコントロールが乗るパネル
      wxPanel* m_boardTreePanel;
      // ツリーコントロール
