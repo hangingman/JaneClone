@@ -156,7 +156,25 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ git submodule init
   $ git submodule update
   $ ./bootstrap
-  $ ./configure --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32
+  $ ./configure --build=x86_64-w64-mingw32 \
+  --host=x86_64-w64-mingw32                \
+  --target=x86_64-w64-mingw32              \
+  --disable-curldebug \
+  --disable-debug \
+  --disable-rtsp  \
+  --disable-ldap  \
+  --disable-ldaps \
+  --disable-rtsp  \
+  --disable-dict  \
+  --disable-telnet \
+  --disable-tftp   \
+  --disable-imap   \
+  --disable-smtp   \
+  --disable-gopher \
+  --disable-manual \
+  --disable-ipv6   \
+  --disable-ntlm-wb
+
   $ make
   $ make package-win64-msi
 
@@ -207,7 +225,23 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ git submodule init
   $ git submodule update
   $ ./bootstrap
-  $ ./configure
+  $ ./configure  \
+  --disable-curldebug \
+  --disable-debug \
+  --disable-rtsp  \
+  --disable-ldap  \
+  --disable-ldaps \
+  --disable-rtsp  \
+  --disable-dict  \
+  --disable-telnet \
+  --disable-tftp   \
+  --disable-imap   \
+  --disable-smtp   \
+  --disable-gopher \
+  --disable-manual \
+  --disable-ipv6   \
+  --disable-ntlm-wb
+
   $ make
   $ make install
 
@@ -235,7 +269,22 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ git submodule init
   $ git submodule update
   $ ./bootstrap
-  $ ./configure
+  $ ./configure       \
+  --disable-curldebug \
+  --disable-debug \
+  --disable-rtsp  \
+  --disable-ldap  \
+  --disable-ldaps \
+  --disable-rtsp  \
+  --disable-dict  \
+  --disable-telnet \
+  --disable-tftp   \
+  --disable-imap   \
+  --disable-smtp   \
+  --disable-gopher \
+  --disable-manual \
+  --disable-ipv6   \
+  --disable-ntlm-wb
   $ make
 
   ・make installは、ユーザーの環境を汚してしまうので非推奨

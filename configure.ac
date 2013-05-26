@@ -6,7 +6,7 @@ AC_INIT([JaneClone], [1.1.1], [newserver002@gmail.com])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wno-portability])
 AC_CONFIG_SRCDIR([libwxnkf/flagset.h])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([config.h:curlpp/include/curlpp/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_SYS_LARGEFILE
 
@@ -25,21 +25,27 @@ case "$host" in
                 AC_DEFINE(PLATFORM_WIN32, 1, [Platform is Win32])
                 PLATFORM_STRING="Win32"
 		AC_SUBST(PLATFORM_STRING)
+		need_no_undefined=yes
                 ;;
         *-*-linux*)
                 AC_DEFINE(PLATFORM_LINUX, 1, [Platform is Linux])
                 PLATFORM_STRING="Linux"
-				AC_SUBST(PLATFORM_STRING)
+		AC_SUBST(PLATFORM_STRING)
+		need_no_undefined=no
                 ;;
         *-*-darwin*)
                 AC_DEFINE(PLATFORM_APPLE, 1, [Platform is Apple])
                 PLATFORM_STRING="Apple"
-				AC_SUBST(PLATFORM_STRING)
+		AC_SUBST(PLATFORM_STRING)
+		need_no_undefined=no	
                 ;;
         *)
                 AC_MSG_WARN([*** Please add $host to configure.ac checks!])
                 ;;
 esac
+
+# Checks for no undefined
+AM_CONDITIONAL(NO_UNDEFINED, test x$need_no_undefined = xyes)
 
 # Check for windres
 if test "$PLATFORM_STRING" = "Win32"; then
@@ -145,11 +151,36 @@ if test $has_pthread = 0; then
   AC_MSG_ERROR("ERROR: cannot find pthread.")
 fi
 
+# Checks for boost
+AX_BOOST_BASE([1.33.1])
+AM_CONDITIONAL(HAVE_BOOST, test x$want_boost = xyes)
+
+# curlpp build flag
+AC_MSG_CHECKING([if we need BUILDING_CURLPP])
+case $host in
+  *-*-mingw*)
+    AC_DEFINE(BUILDING_CURLPP, 1, [when building cURLpp itself])
+    AC_MSG_RESULT(yes)
+    AC_MSG_CHECKING([if we need CURLPP_STATICLIB])
+    if test "X$enable_shared" = "Xno"
+    then
+      AC_DEFINE(CURLPP_STATICLIB, 1, [when not building a shared library])
+      AC_MSG_RESULT(yes)
+    else
+      AC_MSG_RESULT(no)
+    fi
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+esac
+
 # Check compile flag
 AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
 AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
 AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"])
 
+# Checks for Mac OSX specific
 if test "$PLATFORM_STRING" = "Apple"; then
 	AX_CHECK_COMPILE_FLAG([-arch], [CXXFLAGS="$CXXFLAGS -arch x86_64" CFLAGS="$CFLAGS -arch x86_64"])
 fi
@@ -175,17 +206,29 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset munmap nl_langinfo strcasecmp strchr strcspn strpbrk strrchr strspn strstr fdatasync usleep fullfsync localtime_r gmtime_r])
 AC_FUNC_STRERROR_R
 
-# Checks for libzmq
-if test -d "libzmq"; then
-   AC_CONFIG_SUBDIRS([libzmq])
+# Checks for libcurl
+if test -d "curl"; then
+   AC_CONFIG_SUBDIRS([curl])
 else
-   AC_MSG_ERROR([libzmq directory not found. please do git submodule init; git submodule update;])
+   AC_MSG_ERROR([libcurl directory not found. please do git submodule init; git submodule update;])
 fi
 
+# Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile
                  libwxnkf/Makefile
 		 libwxuuid/Makefile
 		 sqlite3/Makefile
 		 wxsqlite3/Makefile
+                 curlpp/Makefile
+                 curlpp/src/Makefile
+                 curlpp/src/curlpp/Makefile
+                 curlpp/src/curlpp/internal/Makefile
+                 curlpp/src/utilspp/Makefile
+                 curlpp/include/Makefile
+                 curlpp/include/curlpp/Makefile
+                 curlpp/include/curlpp/internal/Makefile
+                 curlpp/include/utilspp/Makefile
+                 curlpp/include/utilspp/functor/Makefile
+                 curlpp/include/utilspp/singleton/Makefile
                  src/Makefile])
 AC_OUTPUT

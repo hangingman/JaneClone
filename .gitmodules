@@ -1,6 +1,3 @@
-[submodule "libzmq"]
-	path = libzmq
-	url = git://github.com/zeromq/libzmq.git
-[submodule "cppzmq"]
-	path = cppzmq
-	url = git://github.com/zeromq/cppzmq.git
+[submodule "curl"]
+	path = curl
+	url = git://github.com/bagder/curl.git

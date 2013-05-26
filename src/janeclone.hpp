@@ -24,7 +24,6 @@
 #define JANECLONE_HPP_
 
 // 純粋なwxWidgetsライブラリはここに
-// zmqはwxより前に呼ぶ
 #include <wx/wx.h>
 #include <wx/image.h>
 #include <wx/statusbr.h>
@@ -67,13 +66,14 @@
 #include <wx/font.h>
 #include <wx/fontdlg.h>
 #include <wx/menu.h>
-#include <zmq.hpp>
+
+// Curl
+#include <curl/curl.h>
 
 // 自作クラスのヘッダ
 #include "enums.hpp"
 #include "extractboardlist.hpp"
 #include "socketcommunication.hpp"
-#include "zmqcommunication.hpp"
 #include "datatype.hpp"
 #include "virtualboardlistctrl.hpp"
 #include "sqliteaccessor.hpp"

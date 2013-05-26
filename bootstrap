@@ -1,4 +1,3 @@
 #! /bin/sh
 
-mkdir -p `pwd`/libzmq/config
 exec autoreconf -vi -I `pwd`/m4

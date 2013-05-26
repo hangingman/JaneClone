@@ -1,13 +1,11 @@
 # 依存関係にあるソース群
-SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 libzmq src
+SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 curl curlpp src
 
 # パッケージ作成用サブディレクトリも設定する
 DIST_SUBDIRS = $(SUBDIRS)
 
 # ChangeLogと連動させる
 dist-hook: ChangeLog
-	cp -rp $(top_builddir)/cppzmq $(distdir)
-	rm -rf $(distdir)/cppzmq/.git
 
 # configure.acが更新された時動く
 ChangeLog: configure.ac

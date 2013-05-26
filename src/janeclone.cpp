@@ -2091,11 +2091,11 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
      wxString description = wxT("wxWidgetsのバージョン:");
      description += wxVERSION_STRING;
      description += wxT("\n");
-     description += wxT("ØMQのバージョン:");
-     int major = 0, minor = 0, patch = 0;
-     zmq_version(&major, &minor, &patch);
-     description += wxString::Format(wxT("%d.%d.%d"), major, minor, patch);
-     description += wxT("\n");
+     description += wxT("Curlのバージョン:");
+     //int major = 0, minor = 0, patch = 0;
+     //zmq_version(&major, &minor, &patch);
+     //description += wxString::Format(wxT("%d.%d.%d"), major, minor, patch);
+     //description += wxT("\n");
 
      info.SetDescription(description);
 
@@ -3513,8 +3513,8 @@ void JaneClone::CallSettingWindow(wxCommandEvent& event) {
  */
 void JaneClone::SetShingetsuNodeToNoteBook(const wxString& nodeHostname) {
 
-     ZMQCommunication* zmq = new ZMQCommunication();
-     zmq->SetLogWindow(m_logCtrl);
-     zmq->DownloadShingetsuThreadList(nodeHostname);
-     delete zmq;
+     // ZMQCommunication* zmq = new ZMQCommunication();
+     // zmq->SetLogWindow(m_logCtrl);
+     // zmq->DownloadShingetsuThreadList(nodeHostname);
+     // delete zmq;
 }
