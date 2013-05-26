@@ -2092,10 +2092,25 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
      description += wxVERSION_STRING;
      description += wxT("\n");
      description += wxT("Curlのバージョン:");
-     //int major = 0, minor = 0, patch = 0;
-     //zmq_version(&major, &minor, &patch);
-     //description += wxString::Format(wxT("%d.%d.%d"), major, minor, patch);
-     //description += wxT("\n");
+
+     /** curlをwxWidgetsから呼ぶテスト */
+     curl_version_info_data* data = curl_version_info(CURLVERSION_NOW);
+     description += wxString::From8BitData(data->version);
+     description += wxT("\n");
+
+     description += wxT("対応プロトコル:");
+     for (int i = 0; i < sizeof data->protocols; i++) {
+	  description += wxString::From8BitData(data->protocols[i]);
+	  description += wxT(", ");	  
+     }
+
+     description += wxT("OpenSSLのバージョン:");
+     description += wxString::From8BitData(data->ssl_version);
+     description += wxT("\n");
+
+     description += wxT("zlibのバージョン");
+     description += wxString::From8BitData(data->libz_version);
+     description += wxT("\n");
 
      info.SetDescription(description);
 
