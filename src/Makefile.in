@@ -53,6 +53,7 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 bin_PROGRAMS = JaneClone$(EXEEXT)
+@USE_WINDRES_TRUE@am__append_1 = -D_WIN32
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -300,7 +301,12 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 
 
 # common build rule
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -I$(top_builddir)/libzmq/src -I$(top_builddir)/libzmq/include -I$(top_builddir)/cppzmq -DPACKAGE_VERSION=@PACKAGE_VERSION@
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ \
+	-I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 \
+	-I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc \
+	-I$(top_builddir)/libwxuuid -I$(top_builddir)/libzmq/src \
+	-I$(top_builddir)/libzmq/include -I$(top_builddir)/cppzmq \
+	-DPACKAGE_VERSION=@PACKAGE_VERSION@ $(am__append_1)
 ACLOCAL_AMFLAGS = -I m4
 
 # For Icon build and library dependency

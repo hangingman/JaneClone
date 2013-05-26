@@ -1,3 +1,542 @@
+commit d26062f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-26
+
+    ・プロジェクトにcppzmqを追加
+
+.gitmodules
+cppzmq
+libzmq
+src/Makefile.am
+src/Makefile.in
+src/datatype.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/socketcommunication.hpp
+
+commit 58d8532
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-26
+
+    ・新月の公開ノードをツリーに登録できるようにした
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/sqliteaccessor.cpp
+
+commit 913cf59
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-25
+
+    ・新月の公開ノードを保存するツリーを追加
+
+.gitmodules
+configure
+configure.ac
+cppzmq
+src/datatype.hpp
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit 9fb25c8
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-25
+
+    ・ライセンス等バージョン情報用ダイアログを設定
+
+.gitmodules
+INSTALL
+README
+cppzmq
+libzmq
+src/Makefile.am
+src/Makefile.in
+src/datatype.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/rc/gpl-2.0.txt
+
+commit 8f54101
+Merge: b569549 212c016
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-25
+
+    Merge branch 'master' of https://github.com/Hiroyuki-Nagata/JaneClone
+    
+    Merge branch 'master' of https://github.com/Hiroyuki-Nagata/JaneClone
+    
+    ・既存コードとのマージ
+
+commit b569549
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-25
+
+    ・libzmqをプロジェクトに編入(git submodule形式)
+
+.gitmodules
+Makefile.am
+Makefile.in
+aclocal.m4
+bootstrap
+configure
+configure.ac
+libwxnkf/Makefile.in
+libwxuuid/Makefile.in
+libzmq
+sqlite3/Makefile.in
+src/Makefile.in
+wxsqlite3/Makefile.in
+
+commit 212c016
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-22
+
+    ・板一覧ツリーをタブ形式に変更
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 895bda8
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-22
+
+    ・通信設定用画面を追加
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit 43b8c3f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-22
+
+    ・設定ファイルの読み書きを修正
+
+src/anchoredresponsepopup.cpp
+src/anchoredresponsepopup.hpp
+src/datatype.hpp
+src/janeclone.cpp
+src/janecloneutil.cpp
+src/responsewindow.cpp
+src/settingwindow.cpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/threadcontentwindow.cpp
+
+commit c59fb5c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-22
+
+    ・各種パス設定用ウィンドウを作成
+    ・環境設定ファイルの読み書き機能を追加
+
+src/Makefile.am
+src/Makefile.in
+src/enums.hpp
+src/janeclone.cpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+src/settingwindow.hpp
+
+commit c300d7d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-22
+
+    ・設定画面を追加
+
+src/Makefile.am
+src/Makefile.in
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/settingwindow.cpp
+src/settingwindow.hpp
+
+commit 60d20d8
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-20
+
+    ・Windows向けの微調整
+
+janeclone.nsi.in
+src/janeclone.cpp
+
+commit 203db16
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-19
+
+    ・板一覧リストとスレッド表示部分の縦⇔横分割切り替えを実装した
+
+src/janeclone.cpp
+
+commit c642132
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-19
+
+    ・ツールバーのアイコン切り替えを実装
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 52a8ef9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-19
+
+    ・板一覧ツリーの表示非表示切り替えを実装
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 2ad8280
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-19
+
+    ・フロート可能なツールバーを追加、その他微妙な調整
+
+src/datatype.hpp
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/rc/COPYING
+src/rc/application-side-tree.png
+src/rc/application-tile-horizontal.png
+src/rc/configure-2.png
+src/rc/page-edit.png
+src/rc/system-search-5.png
+src/rc/view-choose.png
+src/rc/view-file-columns.png
+
+commit 2f38743
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-18
+
+    ・スレッド一覧リストの背景色を縞模様にした
+
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit 3cfc3eb
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-17
+
+    ・最近閉じた板タブについてもメニューから開けるようにした
+
+src/janeclone.cpp
+
+commit 51d5fba
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-17
+
+    ・ユーザーが最後に閉じたスレッドを開く機能を追加
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit 96e63dc
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-17
+
+    ・再起動時の新着チェック処理の廃止
+    ・板一覧ツリーのサイズ調整
+
+src/datatype.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit b3237b9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-16
+
+    ・スレッド一覧の更新時に前回との差分を計算し新着レスの情報をアイコンに表示できるようにした
+    ・スレッド一覧の更新時に新着レス、取得などの情報をリストに表示できるようにした
+
+src/datatype.hpp
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/rc/COPYING
+src/rc/download-3.png
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit 5a89d36
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-14
+
+    ・使う人がいるのか疑問ではあるがメニューバーからのスレッド一覧リストのソートを実装した
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit c6fae15
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-13
+
+    ・過去に取得したスレッド情報参照用のルートを作成
+
+src/datatype.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit ade5b6a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-13
+
+    ・無駄なコードを削除
+
+src/datatype.hpp
+src/janeclone.cpp
+src/virtualboardlistctrl.hpp
+
+commit 7ae11f3
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-13
+
+    ・暫定的にスレッド一覧リストの新着チェック用アイコンを表示できるようにした
+
+configure
+configure.ac
+libtool
+src/anchoredresponsepopup.hpp
+src/datatype.hpp
+src/enums.hpp
+src/janeclone.cpp
+src/rc/COPYING
+src/rc/LICENSES
+src/rc/LICENSES_full_documentation_std.txt
+src/rc/dialog-accept.png
+src/rc/edit-add-3.png
+src/rc/go-down-4.png
+src/rc/site_search.png
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit 77fcb5f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-08
+
+    ・ポップアップ内部のフォントをスレッド内部のフォントと合わせた
+
+src/anchoredresponsepopup.cpp
+src/anchoredresponsepopup.hpp
+
+commit 4ea7ea2
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-08
+
+    ・INSTALLを更新
+
+INSTALL
+
+commit c1a71b4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-07
+
+    ・板一覧ツリーにて検索したキーワードを再起動後にコンボボックスに表示できるようにした
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/sqliteaccessor.cpp
+
+commit 2e3ac60
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-07
+
+    ・検索ワード保存用DB周りのコードを追加
+
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit f0984cf
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-06
+
+    ・板一覧ツリーで板名を検索する機能を追加した
+
+src/datatype.hpp
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+
+commit 32bc867
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-06
+
+    ・検索ボックス内の処理をいくつか実装した
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit b84cea4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-06
+
+    ・検索ボックスに正規表現用のチェックボックスを追加した
+
+src/datatype.hpp
+src/janeclone.cpp
+src/rc/emblem-regex.png
+src/threadcontentbar.hpp
+
+commit 6fa6c21
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-05
+
+    ・検索ボックスの閉じるボタンを押すことで、ボックスを隠すことができるようにした
+
+src/datatype.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit f41c69f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-05
+
+    ・検索ボックスウィジェット作成用コードを一般化
+    ・板一覧ツリーに検索ボックスを追加
+    ・バージョン情報をコンパイル時に追加できるようにした
+
+Makefile.in
+aclocal.m4
+configure
+libtool
+libwxnkf/Makefile.in
+libwxuuid/Makefile.in
+sqlite3/Makefile.in
+src/Makefile.am
+src/Makefile.in
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+wxsqlite3/Makefile.in
+
+commit b96c3ae
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-05
+
+    ・デバッグコードの削除
+
+src/socketcommunication.cpp
+
+commit 596d062
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-05
+
+    ・初回起動時に自動的に板一覧更新を行うように動作を変更
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 593b2d7
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-05
+
+    ・書き込み権限の問題を解消するため、取得したdatや画像は$HOME/.jc/以下に格納するようにした
+
+src/datatype.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/responsewindow.cpp
+src/socketcommunication.cpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+src/threadcontentwindow.cpp
+
+commit 7a0b86d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-04
+
+    ・ウィンドウを動かした際にスレッドが>>1まで戻ってしまう問題に対処
+
+src/threadcontentwindow.cpp
+
+commit 853e393
+Merge: 4f6108b 943b964
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2013-05-03
+
+    Merge pull request #4 from k-watanabe/bugfix
+    
+    問題無さそうですのでマージさせて頂きます。
+    ご協力ありがとうございます。
+
+commit 943b964
+Author: K.Watanabe <kwtnb@outlook.com>
+Date:   2013-05-04
+
+    メニュー展開時に発生していたセグメンテーション違反を修正した
+
+src/janeclone.cpp
+
+commit 4f6108b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-01
+
+    ・ショートカットからJaneCloneを起動できないバグを修正
+
+janeclone.nsi.in
+
+commit 89d7744
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-30
+
+    ・Mac向けのビルド用スクリプトを整備した
+    （現状ビルドはできるが実行不可）
+
+Makefile.am
+Makefile.in
+aclocal.m4
+configure
+configure.ac
+libtool
+libwxnkf/Makefile.in
+libwxuuid/Makefile.in
+sqlite3/Makefile.in
+src/Makefile.in
+src/main.cpp
+src/sqliteaccessor.cpp
+wxsqlite3/Makefile.in
+
+commit 88c9baf
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-04-29
+
+    ・Windows向けバイナリにてツリーコントロールがクラッシュするバグを修正
+    ・janeclone-1.1.0をリリース
+
+ChangeLog
+NEWS
+configure
+configure.ac
+libtool
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+
 commit 4f19cae
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-04-28

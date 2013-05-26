@@ -24,6 +24,7 @@
 #define JANECLONE_HPP_
 
 // 純粋なwxWidgetsライブラリはここに
+// zmqはwxより前に呼ぶ
 #include <wx/wx.h>
 #include <wx/image.h>
 #include <wx/statusbr.h>

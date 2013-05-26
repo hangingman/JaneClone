@@ -2,8 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.67])
-AC_INIT([JaneClone], [1.1.0], [newserver002@gmail.com])
-#AC_CANONICAL_HOST
+AC_INIT([JaneClone], [1.1.1], [newserver002@gmail.com])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wno-portability])
 AC_CONFIG_SRCDIR([libwxnkf/flagset.h])

@@ -6,6 +6,8 @@ DIST_SUBDIRS = $(SUBDIRS)
 
 # ChangeLogと連動させる
 dist-hook: ChangeLog
+	cp -rp $(top_builddir)/cppzmq $(distdir)
+	rm -rf $(distdir)/cppzmq/.git
 
 # configure.acが更新された時動く
 ChangeLog: configure.ac
@@ -45,7 +47,7 @@ MACICON			= $(BUNDLE)/Contents/$(ICONFILE)
 MACPKGINFO		= $(BUNDLE)/Contents/PkgInfo
 MACINFOPLIST	= $(BUNDLE)/Contents/Info.plist 
 # OSX Info.plist用の設定
-COMPANY			= ????
+COMPANY		= ????
 BUNDLEPACKAGE	= APPL
 BUNDLESIGNATURE	= ????
 

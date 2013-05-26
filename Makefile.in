@@ -831,6 +831,8 @@ uninstall-am:
 
 # ChangeLogと連動させる
 dist-hook: ChangeLog
+	cp -rp $(top_builddir)/cppzmq $(distdir)
+	rm -rf $(distdir)/cppzmq/.git
 
 # configure.acが更新された時動く
 ChangeLog: configure.ac

@@ -22,6 +22,7 @@
 #ifndef DATATYPE_HPP_
 #define DATATYPE_HPP_
 
+#include <wx/wx.h>
 #include <vector>
 #include <map>
 #include <wx/regex.h>
