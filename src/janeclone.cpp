@@ -780,8 +780,8 @@ void JaneClone::DoLayout() {
      JaneCloneUtil::GetJaneCloneProperties(wxT("FrameX"), &x);
      JaneCloneUtil::GetJaneCloneProperties(wxT("FrameY"), &y);
      this->SetSize(static_cast<int>(x), static_cast<int>(y));
-
-     long px, py = 0;
+     // 初回起動時にここが0,0だと困ったことになる
+     long px = 300, py = 300;
      JaneCloneUtil::GetJaneCloneProperties(wxT("FramePx"), &px);
      JaneCloneUtil::GetJaneCloneProperties(wxT("FramePy"), &py);
      this->Move(static_cast<int>(px), static_cast<int>(py));
