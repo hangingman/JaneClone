@@ -1723,3 +1723,78 @@ void SocketCommunication::DownloadImageFileByFtp(const wxString& href, DownloadI
      imageFilePath += tmp;
 
 }
+/**
+ * 指定された新月公開ノードホストにぶら下がるスレッド一覧リストをダウンロードしてくるメソッド
+ * もし前回通信した際のログが残っていれば更新の確認のみ行う
+ * @param  新月公開ノードのホスト名
+ * @return 実行コード
+ * 
+ * 新月のAPIについては：http://shingetsu.info/saku/api
+ */
+int SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostname) {
+
+     // URIから各パラメーターを抜き取る
+     PartOfURI* uri = new PartOfURI;
+     bool urlIsSane = JaneCloneUtil::SubstringURI(nodeHostname, uri);
+     const wxString protocol = uri->protocol;
+     const wxString hostname = uri->hostname;
+     const wxString port = uri->port;
+     const wxString path = uri->path;
+     delete uri;
+
+     // 保存対象のディレクトリが存在するか確かめる
+     wxString shingetsu = ::wxGetHomeDir()
+	  + wxFileSeparator 
+	  + JANECLONE_DIR 
+	  + wxFileSeparator 
+	  + wxT("shingetsu");
+
+     wxDir chkDir(shingetsu);
+     JaneCloneUtil::CreateSpecifyDirectory(chkDir, hostname);
+     const std::string outputFilename = 
+	  std::string(chkDir.GetName().mb_str()) 
+	  + this->separator() 
+	  + std::string(hostname.mb_str())
+	  + this->separator()
+	  + std::string(hostname.mb_str())
+	  + ".csv";
+
+     try {
+
+	  // GETする対象URLを構築
+	  std::string stdProtocol = std::string(protocol.mb_str());
+	  std::string stdHostname = std::string(hostname.mb_str());
+	  std::string stdPort     = std::string(port.mb_str());
+	  std::string stdPath     = std::string(path.mb_str());
+	  
+	  std::string requestQuery = stdProtocol + "://" + stdHostname;
+	  if (!stdPort.empty()) {
+	       requestQuery += ":";
+	       requestQuery += stdPort;
+	  }
+
+	  requestQuery += "/";
+	  requestQuery += stdPath;
+	  requestQuery += "/csv/index/file,stamp,date,path,uri,type,title,records,size";
+
+	  curlpp::Cleanup myCleanup;
+
+	  curlpp::options::Url myUrl(requestQuery);
+	  curlpp::Easy myRequest;
+	  myRequest.setOpt(myUrl);
+	  std::ofstream ofs(outputFilename , std::ios::out | std::ios::app );
+
+	  curlpp::options::WriteStream ws(&ofs);
+	  myRequest.setOpt(ws);
+	  myRequest.perform();
+
+	  return 0;
+
+     } catch (curlpp::RuntimeError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+     } catch (curlpp::LogicError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+     }
+
+     return -1;
+}

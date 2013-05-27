@@ -22,6 +22,9 @@
 #ifndef SOCKETCOMMUNICATION_HPP_
 #define SOCKETCOMMUNICATION_HPP_
 
+#include <sstream>
+#include <iostream>
+
 #include <wx/wx.h>
 #include <wx/string.h>
 #include <wx/filefn.h>
@@ -38,6 +41,11 @@
 #include <wx/fileconf.h>
 #include <wx/sstream.h>
 #include <wx/sckstrm.h>
+
+#include <curlpp/cURLpp.hpp>
+#include <curlpp/Easy.hpp>
+#include <curlpp/Options.hpp>
+
 #include "janecloneutil.hpp"
 
 class SocketCommunication {
@@ -120,6 +128,22 @@ public:
       * FTPでのダウンロード
       */
      void DownloadImageFileByFtp(const wxString& href, DownloadImageResult* result);
+     /**
+      * 新月の公開ノードからスレッド一覧を取得する
+      */
+     int DownloadShingetsuThreadList(const wxString& nodeHostname);
+
+     /**
+      * ファイル区切り文字
+      */
+     inline char separator() {
+#ifdef __WXMSW__
+	  return '\\';
+#else
+	  return '/';
+#endif
+     };
+     
 
 
 private:

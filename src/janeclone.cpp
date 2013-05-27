@@ -3528,8 +3528,8 @@ void JaneClone::CallSettingWindow(wxCommandEvent& event) {
  */
 void JaneClone::SetShingetsuNodeToNoteBook(const wxString& nodeHostname) {
 
-     // ZMQCommunication* zmq = new ZMQCommunication();
-     // zmq->SetLogWindow(m_logCtrl);
-     // zmq->DownloadShingetsuThreadList(nodeHostname);
-     // delete zmq;
+     SocketCommunication* socket = new SocketCommunication();
+     socket->SetLogWindow(m_logCtrl);
+     socket->DownloadShingetsuThreadList(nodeHostname);
+     delete socket;
 }

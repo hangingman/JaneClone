@@ -31,13 +31,14 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    otherpanels.hpp
 
 # common build rule
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -I$(top_builddir)/curl/include -DPACKAGE_VERSION=@PACKAGE_VERSION@
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -I$(top_builddir)/curl/include -I$(top_builddir)/curlpp/include -DPACKAGE_VERSION=@PACKAGE_VERSION@
 ACLOCAL_AMFLAGS    = -I m4
 
 # For Icon build and library dependency
 if USE_WINDRES
 # Platform is Windows
-JaneClone_LDADD    = JaneClone_rc.o $(top_builddir)/libwxnkf/libwxnkf.la $(top_builddir)/libwxuuid/libwxuuid.la $(top_builddir)/wxsqlite3/libwxsqlite3.la $(top_builddir)/sqlite3/libsqlite3.la $(top_builddir)/curl/lib/libcurl.la
+JaneClone_LDADD    = JaneClone_rc.o $(top_builddir)/libwxnkf/libwxnkf.la $(top_builddir)/libwxuuid/libwxuuid.la $(top_builddir)/wxsqlite3/libwxsqlite3.la $(top_builddir)/sqlite3/libsqlite3.la $(top_builddir)/curl/lib/libcurl.la $(top_builddir)/curlpp/src/curlpp/libcurlpp.la
+
 JaneClone_LDFLAGS  = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ JaneClone_rc.o
 
 JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
@@ -45,7 +46,7 @@ JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 
 else
 # Platform is not Windows
-JaneClone_LDFLAGS  = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3 -L$(top_builddir)/curl/lib -lcurl
+JaneClone_LDFLAGS  = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3 -L$(top_builddir)/curl/lib -lcurl -L$(top_builddir)/curlpp/src/curlpp -lcurlpp
 endif
 
 # target for debug
