@@ -3528,8 +3528,118 @@ void JaneClone::CallSettingWindow(wxCommandEvent& event) {
  */
 void JaneClone::SetShingetsuNodeToNoteBook(const wxString& nodeHostname) {
 
+     // CSVファイルの出力先を渡す
+     wxString outputFilePath;
+
+     // 通信用クラスの呼び出し
      SocketCommunication* socket = new SocketCommunication();
      socket->SetLogWindow(m_logCtrl);
-     socket->DownloadShingetsuThreadList(nodeHostname);
+     bool success = socket->DownloadShingetsuThreadList(nodeHostname, outputFilePath);
      delete socket;
+
+     if (success) {
+	  SetShingetsuThreadListToNoteBook(nodeHostname, outputFilePath);
+     } else {
+	  wxMessageBox(wxT("内部エラー, 新月公開ノードからスレッドをダウンロードする処理に失敗しました."), 
+			 wxT("スレッド一覧リスト"), wxICON_ERROR);
+     }
 }
+/**
+ * 新月公開ノード上のスレッド一覧をUIに反映するメソッド
+ */
+void JaneClone::SetShingetsuThreadListToNoteBook(const wxString& nodeHostname, wxString& outputFilePath) {
+
+     // 新規にセットされる板名かどうかのフラグを用意する
+     bool itIsNewBoardName = true;
+     // 次に選択されるべきタブのページ数を格納する変数
+     size_t selectedPage = 0;
+
+     // ユーザーが開いているタブの板名を調べる
+     for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) {
+	  if (nodeHostname.Cmp(boardNoteBook->GetPageText(i)) == 0) {
+	       itIsNewBoardName = false;
+	       selectedPage = i;
+	       break;
+	  }
+     }
+
+     if (itIsNewBoardName) {
+	  // もし新規のダウンロードだった場合、選択されるべきページを指定
+	  selectedPage = boardNoteBook->GetPageCount();
+	  SetShingetsuThreadListItemNew(nodeHostname, selectedPage, outputFilePath);
+     } else {
+	  // 更新処理の場合、選択されるべきページはi
+	  SetShingetsuThreadListItemUpdate(nodeHostname, selectedPage, outputFilePath);
+     }
+}
+/**
+ * 新月のスレッド一覧を新たに取得する
+ */
+void JaneClone::SetShingetsuThreadListItemNew(const wxString& nodeHostname, const size_t selectedPage
+					      ,wxString& outputFilePath
+					      ,const std::map<wxString,ThreadList>& oldThreadMap) {
+
+     // スレッド検索ボックスとスレッド一覧リストを格納するサイザーを宣言する
+     wxPanel* panel = new wxPanel(boardNoteBook, -1);
+     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+     // 検索ツールバーをpanelとsizerに載せる
+     //CreateCommonAuiToolBar(panel, vbox, ID_ThreadSearchBar, boardName);
+
+     // Hashに格納する板名タブのオブジェクトのインスタンスを準備する
+     VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
+	  (wxWindow*) panel, 
+	  nodeHostname,
+	  (const wxString) outputFilePath,
+	  std::map<wxString, ThreadList>(),
+	  true);
+     vbListCtrl->SetName(nodeHostname);
+     vbox->Add(vbListCtrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 10);
+
+     //　boardName(key),boardTabAndTh(value)としてHashに格納する
+     vbListCtrlHash[nodeHostname] = (const VirtualBoardListCtrl&) vbListCtrl;
+     // listctrl内のリストをJaneCloneのメモリに持たせる
+     vbListHash[nodeHostname] = vbListCtrl->m_vBoardList;
+
+     // カラムの幅を最大化
+     wxFont font = GetCurrentFont();
+     int pointSize = font.GetPointSize();
+     // 2chのスレタイの文字数制限は全角24文字
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_CHK      , 20);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_TITLE    , pointSize * 52);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_SINCE    , pointSize * 12);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_OID      , pointSize * 10);
+     vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_BOARDNAME, pointSize * 12);
+
+     // パネルにSizerを設定する
+     panel->SetSizer(vbox);
+
+     // wxAuiToolBarを宣言する
+     // スレッドリストを表示させる
+     boardNoteBook->AddPage(panel, nodeHostname, false);
+     // ノートブックの選択処理
+     boardNoteBook->SetSelection(boardNoteBook->GetPageCount());
+}
+/**
+ * 新月のスレッド一覧を更新する
+ */
+void JaneClone::SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, const size_t selectedPage
+						 ,wxString& outputFilePath
+						 ,const std::map<wxString,ThreadList>& oldThreadMap) {
+
+     // HashMapから対象の板のオブジェクトを取り出す
+     if (vbListCtrlHash.find(nodeHostname) == vbListCtrlHash.end()) {
+	  wxMessageBox(wxT("スレッド一覧更新処理に失敗しました。"));
+	  boardNoteBook->Thaw();
+     } else {
+	  // ハッシュ内部の情報を削除する
+	  vbListCtrlHash.erase(nodeHostname);
+	  vbListHash.erase(nodeHostname);
+	  // wxAuiToolBarを宣言する
+	  wxPanel* panel;// = CreateAuiToolBar(boardNoteBook, nodeHostname, outputPath, oldThreadMap);     
+	  boardNoteBook->DeletePage(selectedPage);
+	  boardNoteBook->InsertPage(selectedPage, panel, nodeHostname, false, wxNullBitmap);
+	  // ノートブックの選択処理
+	  boardNoteBook->SetSelection(selectedPage);
+     }
+}
+

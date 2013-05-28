@@ -131,7 +131,7 @@ public:
      /**
       * 新月の公開ノードからスレッド一覧を取得する
       */
-     int DownloadShingetsuThreadList(const wxString& nodeHostname);
+     bool DownloadShingetsuThreadList(const wxString& nodeHostname, wxString& outputFilePath);
 
      /**
       * ファイル区切り文字

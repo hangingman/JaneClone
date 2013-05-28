@@ -37,8 +37,12 @@ END_EVENT_TABLE()
  * @param wxString outputPath			 datファイルのパス
  * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
  */
-VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent, const wxString& boardName,
-					   const wxString& outputPath, std::map<wxString,ThreadList>& oldThreadMap):
+VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent, 
+					   const wxString& boardName,
+					   const wxString& outputPath, 
+					   const std::map<wxString,ThreadList>& oldThreadMap,
+					   bool targetIsShingetsu):
+
 wxListCtrl(parent, ID_BoardListCtrl, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRTUAL) {
 
      this->Hide();
@@ -58,6 +62,45 @@ wxListCtrl(parent, ID_BoardListCtrl, wxDefaultPosition, wxDefaultSize, wxLC_REPO
      this->AssignImageList(threadImage, wxIMAGE_LIST_SMALL);
      // 背景色の設定
      m_attr.SetBackgroundColour(*wxLIGHT_GREY);
+
+     // ファイル読み出しメソッドの変更
+     targetIsShingetsu ? FileLoadMethodShingetsu(boardName, outputPath, oldThreadMap)
+	  : FileLoadMethod2ch(boardName, outputPath, oldThreadMap);
+
+     InsertColumn(COL_CHK, wxT("!"), wxLIST_FORMAT_CENTRE);
+     InsertColumn(COL_NUM, wxT("番号"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_TITLE, wxT("タイトル"));
+     InsertColumn(COL_RESP, wxT("レス"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_CACHEDRES, wxT("取得"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_NEWRESP, wxT("新着"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_INCRESP, wxT("増レス"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_MOMENTUM, wxT("勢い"), wxLIST_FORMAT_RIGHT);
+     InsertColumn(COL_LASTUP, wxT("最終取得"));
+     InsertColumn(COL_SINCE, wxT("SINCE"));
+     InsertColumn(COL_OID, wxT("固有番号"));
+     InsertColumn(COL_BOARDNAME, wxT("板"));
+
+     // フラグを全てtrueに設定する
+     f_check = true;
+     f_number = true;
+     f_title = true;
+     f_response = true;
+     f_cachedResponseNumber = true;
+     f_newResponseNumber = true;
+     f_increaseResponseNumber = true;
+     f_momentum = true;
+     f_lastUpdate = true;
+     f_since = true;
+     f_oid = true;
+     f_boardName = true;
+
+     this->Show();
+}
+/**
+ * 2chのdatファイルを読み出す処理
+ */
+void VirtualBoardListCtrl::FileLoadMethod2ch(const wxString& boardName, const wxString& outputPath, 
+					     const std::map<wxString,ThreadList>& oldThreadMap) {
 
      // 過去のデータがあるかどうかのフラグを立てる
      bool hasOldData, noNeedToChkThreadState = false;
@@ -138,7 +181,9 @@ wxListCtrl(parent, ID_BoardListCtrl, wxDefaultPosition, wxDefaultSize, wxLC_REPO
 
 	       } else {
 		    // 要素がある場合の処理
-		    ThreadList oldThread = oldThreadMap[itemOid];
+		    std::map<wxString, ThreadList>::const_iterator it;
+		    it = oldThreadMap.find(itemOid);
+		    const ThreadList oldThread = it->second;
 		    int newResInt = wxAtoi(itemResponse) - oldThread.response;
 		    // 取得した情報をリストの項目に設定する
 		    wxString oldRes = wxString::Format(wxT("%d"), oldThread.response);
@@ -178,35 +223,68 @@ wxListCtrl(parent, ID_BoardListCtrl, wxDefaultPosition, wxDefaultSize, wxLC_REPO
 
      // データを挿入
      SetItemCount(m_vBoardList.size());
+}
+/**
+ * 新月ののcsvファイルを読み出す処理
+ */
+void VirtualBoardListCtrl::FileLoadMethodShingetsu(const wxString& boardName, const wxString& outputPath, 
+						   const std::map<wxString,ThreadList>& oldThreadMap) {
 
-     InsertColumn(COL_CHK, wxT("!"), wxLIST_FORMAT_CENTRE);
-     InsertColumn(COL_NUM, wxT("番号"), wxLIST_FORMAT_RIGHT);
-     InsertColumn(COL_TITLE, wxT("タイトル"));
-     InsertColumn(COL_RESP, wxT("レス"), wxLIST_FORMAT_RIGHT);
-     InsertColumn(COL_CACHEDRES, wxT("取得"), wxLIST_FORMAT_RIGHT);
-     InsertColumn(COL_NEWRESP, wxT("新着"), wxLIST_FORMAT_RIGHT);
-     InsertColumn(COL_INCRESP, wxT("増レス"), wxLIST_FORMAT_RIGHT);
-     InsertColumn(COL_MOMENTUM, wxT("勢い"), wxLIST_FORMAT_RIGHT);
-     InsertColumn(COL_LASTUP, wxT("最終取得"));
-     InsertColumn(COL_SINCE, wxT("SINCE"));
-     InsertColumn(COL_OID, wxT("固有番号"));
-     InsertColumn(COL_BOARDNAME, wxT("板"));
+     // テキストファイルの読み込み
+     wxTextFile csvfile(outputPath);
+     csvfile.Open();
 
-     // フラグを全てtrueに設定する
-     f_check = true;
-     f_number = true;
-     f_title = true;
-     f_response = true;
-     f_cachedResponseNumber = true;
-     f_newResponseNumber = true;
-     f_increaseResponseNumber = true;
-     f_momentum = true;
-     f_lastUpdate = true;
-     f_since = true;
-     f_oid = true;
-     f_boardName = true;
+     // スレッドに番号をつける
+     int loopNumber = 1;
 
-     this->Show();
+     // テキストファイルの終端まで読み込む
+     for (wxString line = csvfile.GetFirstLine(); !csvfile.Eof(); line = csvfile.GetNextLine()) {
+
+	  // アイテム用の文字列を先に宣言する
+	  wxString itemNumber, itemBoardName, itemOid, itemSince, itemTitle, itemResponse, itemCachedResponseNumber,
+	       itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum, itemLastUpdate, itemFilename, itemPath, itemUri, itemSize;
+
+	  // lineをコンマで分割する
+	  wxStringTokenizer tkz(line, wxT(","));
+	  
+	  while (tkz.HasMoreTokens()) {
+
+	       itemFilename   = tkz.GetNextToken();
+	       itemOid        = tkz.GetNextToken();
+	       itemLastUpdate = tkz.GetNextToken();
+	       itemPath       = tkz.GetNextToken();
+	       itemUri        = tkz.GetNextToken();
+	       itemBoardName  = tkz.GetNextToken(); // type
+	       itemTitle      = tkz.GetNextToken();
+	       itemResponse   = tkz.GetNextToken();
+	       itemSize       = tkz.GetNextToken();
+
+	       break;
+	  }
+
+	  // 番号
+	  itemNumber = wxString::Format(wxT("%i"), loopNumber);
+
+          // リストにアイテムを挿入する
+	  VirtualBoardListItem listItem = VirtualBoardListItem(itemNumber, itemTitle, itemResponse, itemCachedResponseNumber,
+							       itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum,
+							       itemLastUpdate, itemSince, itemOid, itemBoardName);
+
+          // Listctrlに項目を追加する
+	  m_vBoardList.push_back(listItem);
+	  // ループ変数をインクリメント
+	  ++loopNumber;
+
+     }
+
+     csvfile.Close();
+
+     /**
+      * データ挿入
+      */
+
+     // データを挿入
+     SetItemCount(m_vBoardList.size());
 }
 /**
  * 内部リストの更新処理

@@ -1731,7 +1731,7 @@ void SocketCommunication::DownloadImageFileByFtp(const wxString& href, DownloadI
  * 
  * 新月のAPIについては：http://shingetsu.info/saku/api
  */
-int SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostname) {
+bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostname, wxString& outputFilePath) {
 
      // URIから各パラメーターを抜き取る
      PartOfURI* uri = new PartOfURI;
@@ -1758,6 +1758,9 @@ int SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostnam
 	  + this->separator()
 	  + std::string(hostname.mb_str())
 	  + ".csv";
+
+     // 元のクラスにファイルパスを伝える
+     outputFilePath = wxString(outputFilename.c_str(), wxConvUTF8);
 
      try {
 
@@ -1788,7 +1791,7 @@ int SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostnam
 	  myRequest.setOpt(ws);
 	  myRequest.perform();
 
-	  return 0;
+	  return true;
 
      } catch (curlpp::RuntimeError &e) {
 	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
@@ -1796,5 +1799,5 @@ int SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostnam
 	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
      }
 
-     return -1;
+     return false;
 }

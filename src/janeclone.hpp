@@ -292,7 +292,18 @@ private:
 
      // 新月公開ノードをクリックして、それをノートブックに反映するメソッド
      void SetShingetsuNodeToNoteBook(const wxString& nodeHostname);
-
+     // 新月公開ノード上のスレッド一覧をUIに反映するメソッド
+     void SetShingetsuThreadListToNoteBook(const wxString& nodeHostname, wxString& outputFilePath);
+     // 新月のスレッド一覧を新たに取得する
+     void SetShingetsuThreadListItemNew(const wxString& nodeHostname, const size_t selectedPage
+					,wxString& outputFilePath
+					,const std::map<wxString,ThreadList>& oldThreadMap 
+					= std::map<wxString,ThreadList>());
+     // 新月のスレッド一覧を更新する
+     void SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, const size_t selectedPage
+					   ,wxString& outputFilePath
+					   ,const std::map<wxString,ThreadList>& oldThreadMap 
+					   = std::map<wxString,ThreadList>());
 
      // VirtualBoardListCtrlのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
      WX_DECLARE_HASH_MAP( wxString, 		// type of the keys

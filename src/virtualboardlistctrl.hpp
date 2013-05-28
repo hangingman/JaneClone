@@ -259,14 +259,33 @@ class VirtualBoardListCtrl: public wxListCtrl {
 
 public:
      /**
+      * デフォルトコンストラクタ
+      */
+     VirtualBoardListCtrl() {}
+     VirtualBoardListCtrl(const VirtualBoardListCtrl&) {}
+     /**
       * コンストラクタ：配置するwindowと板名を指定
       * @param wxWindow* parent                       親ウィンドウ
       * @param wxString boardName                     板名
       * @param wxString outputPath                    datファイルのパス
       * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
+      * @rapam bool     targetIsShingetsu             読み込み対象は新月のCSVか
       */
-     VirtualBoardListCtrl(wxWindow* parent, const wxString& boardName, const wxString& outputPath, 
-			  std::map<wxString,ThreadList>& oldThreadMap);
+     VirtualBoardListCtrl(wxWindow* parent, 
+			  const wxString& boardName, 
+			  const wxString& outputPath, 
+			  const std::map<wxString,ThreadList>& oldThreadMap = std::map<wxString,ThreadList>(), 
+			  bool targetIsShingetsu = false);
+     /**
+      * 2chのdatファイルを読み出す処理
+      */
+     void FileLoadMethod2ch(const wxString& boardName, const wxString& outputPath, 
+			    const std::map<wxString,ThreadList>& oldThreadMap);
+     /**
+      * 新月ののcsvファイルを読み出す処理
+      */
+     void FileLoadMethodShingetsu(const wxString& boardName, const wxString& outputPath, 
+				  const std::map<wxString,ThreadList>& oldThreadMap);
      /**
       * コンストラクタ：ログ一覧リスト作成用
       * @param wxWindow* parent     親ウィンドウ
@@ -281,11 +300,6 @@ public:
       * @param VirtualBoardList     更新したリストのコンテナ
       */
      VirtualBoardList ThreadListUpdate(const wxString& boardName, const wxString& outputPath);
-     /**
-      * Hash用のコンストラクタ
-      */
-     VirtualBoardListCtrl() {}
-     VirtualBoardListCtrl(const VirtualBoardListCtrl&) {}
      /**
       * オペレーターに対する参照返し
       */
