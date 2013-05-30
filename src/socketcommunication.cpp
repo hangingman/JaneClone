@@ -1802,3 +1802,77 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
 
      return false;
 }
+/**
+ * 新月のスレッドをダウンロードしてくるメソッド
+ * @param  公開ノードのURL
+ * @param  スレッドのタイトル
+ * @param  ファイル名
+ * @return ダウンロードしたcsvファイルの保存先
+ */
+wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostname, const wxString& title, const wxString& filename) {
+
+     // URIから各パラメーターを抜き取る
+     PartOfURI* uri = new PartOfURI;
+     bool urlIsSane = JaneCloneUtil::SubstringURI(nodeHostname, uri);
+     const wxString protocol = uri->protocol;
+     const wxString hostname = uri->hostname;
+     wxString port = uri->port;
+     delete uri;
+
+     // 保存対象のディレクトリが存在するか確かめる
+     wxString shingetsu = ::wxGetHomeDir()
+	  + wxFileSeparator 
+	  + JANECLONE_DIR 
+	  + wxFileSeparator 
+	  + wxT("shingetsu");
+
+     wxDir chkDir(shingetsu);
+     JaneCloneUtil::CreateSpecifyDirectory(chkDir, hostname);
+     const std::string outputFilename = 
+	  std::string(chkDir.GetName().mb_str()) 
+	  + this->separator() 
+	  + std::string(hostname.mb_str())
+	  + this->separator()
+	  + std::string(filename.mb_str())
+	  + ".dat";
+
+     try {
+
+	  // GETする対象URLを構築
+	  std::string requestQuery = std::string(protocol.mb_str())
+	       + "://"
+	       + std::string(hostname.mb_str())
+	       + "/thread.cgi/"
+	       + JaneCloneUtil::UrlEncode(title);
+
+	  // portの取得
+	  port.Replace(wxT(":"), wxEmptyString, true);
+	  int portInteger = 80;
+	  if (port != wxEmptyString) {
+	       portInteger = wxAtoi(port);
+	  }
+
+	  curlpp::Cleanup myCleanup;
+	  curlpp::Easy myRequest;
+	  myRequest.setOpt(new cURLpp::Options::Url(requestQuery));
+	  myRequest.setOpt(new cURLpp::Options::Port(portInteger));
+
+	  std::ofstream ofs(outputFilename , std::ios::out | std::ios::trunc );
+
+	  curlpp::options::WriteStream ws(&ofs);
+	  myRequest.setOpt(ws);
+	  
+	  // ログ出力
+	  *m_logCtrl << wxT("新月のスレッドを取得 (ん`　 )") << wxString(requestQuery.c_str(), wxConvUTF8) << wxT("\n");
+	  myRequest.perform();
+
+	  return wxString(outputFilename.c_str(), wxConvUTF8);
+
+     } catch (curlpp::RuntimeError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+     } catch (curlpp::LogicError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+     }
+
+     return wxEmptyString;
+}

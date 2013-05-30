@@ -121,6 +121,14 @@ public:
      wxString getBoardName() const {
 	  return m_boardName;
      };
+
+     /** 新月向け情報 */
+     void setFilename(wxString& filename) {
+	  m_filename = filename;
+     };
+     wxString getFilename() const {
+	  return m_filename;
+     };
      
      // それぞれのカラムをソートするPreidicate関数     
 
@@ -221,6 +229,15 @@ public:
 	  return lItem.getBoardName() > rItem.getBoardName();
      };
 
+
+
+
+private:
+     /** 新月向け情報 */
+
+     // 正式なファイル名
+     wxString m_filename;
+
 private:
      // 新着チェック
      int m_check;
@@ -265,13 +282,15 @@ public:
      VirtualBoardListCtrl(const VirtualBoardListCtrl&) {}
      /**
       * コンストラクタ：配置するwindowと板名を指定
-      * @param wxWindow* parent                       親ウィンドウ
-      * @param wxString boardName                     板名
-      * @param wxString outputPath                    datファイルのパス
+      * @param wxWindow*  parent                      親ウィンドウ
+      * @param wxWindowID id                          ウィンドウID
+      * @param wxString   boardName                   板名
+      * @param wxString   outputPath                  datファイルのパス
       * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
       * @rapam bool     targetIsShingetsu             読み込み対象は新月のCSVか
       */
-     VirtualBoardListCtrl(wxWindow* parent, 
+     VirtualBoardListCtrl(wxWindow* parent,
+			  const wxWindowID id,
 			  const wxString& boardName, 
 			  const wxString& outputPath, 
 			  const std::map<wxString,ThreadList>& oldThreadMap = std::map<wxString,ThreadList>(), 

@@ -189,6 +189,8 @@ private:
      // いろいろなイベント処理
      void OnCloseWindow(wxCloseEvent& event);
      void OnLeftClickAtListCtrl(wxListEvent& event);
+     void OnLeftClickAtListCtrl2ch(wxListEvent& event);
+     void OnLeftClickAtListCtrlShingetsu(wxListEvent& event);
      void OnLeftClickAtListCtrlCol(wxListEvent& event);
      void OnChangeBoardTab(wxAuiNotebookEvent& event);
      void OnChangeThreadTab(wxAuiNotebookEvent& event);

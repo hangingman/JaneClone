@@ -64,6 +64,7 @@ enum {
 	ID_ReloadThisThread,    	// スレッドの再読み込み
 	ID_CallResponseWindow,          // 書き込み用のウィンドウを呼び出す
 	ID_BoardListCtrl,               // 板一覧リスト自体を表すID
+	ID_ShingetsuBoardListCtrl,      // 新月の板一覧リスト自体を表すID
 	ID_FontDialogBoardTree,         // 板一覧ツリー部分のフォントの指定を行う
 	ID_FontDialogLogWindow,         // ログ出力画面部分のフォントの指定を行う
 	ID_FontDialogBoardNotebook,     // スレッド一覧部分のフォントの指定を行う

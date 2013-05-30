@@ -87,6 +87,14 @@ public:
 			     const wxString boardNameAscii, const wxString origNumber);
 
      /**
+      * 新月のスレッドをダウンロードしてくるメソッド
+      * @param  公開ノードのURL
+      * @param  ファイル名
+      * @return ダウンロードしたcsvファイルの保存先
+      */
+     wxString DownloadShingetsuThread(const wxString& nodeHostname, const wxString& title, const wxString& filename);
+
+     /**
       * スレッドへの初回書き込みを行うメソッド
       * @param 板名,URL,サーバー名
       * @return 書き込み結果

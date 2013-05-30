@@ -93,6 +93,12 @@ public:
       */
      static std::string UrlEncode(const std::string& str);
      /**
+      * 文字列をURLエンコードする
+      */
+     static std::string UrlEncode(const wxString& str) {
+	  return JaneCloneUtil::UrlEncode(std::string(str.mb_str()));
+     };
+     /**
       * 文字列中の実体参照文字を変換する
       */
      static wxString ConvCharacterReference(wxString& inputString);

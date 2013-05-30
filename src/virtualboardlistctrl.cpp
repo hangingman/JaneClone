@@ -32,18 +32,21 @@ END_EVENT_TABLE()
 
 /**
  * コンストラクタ：配置するwindowと板名を指定
- * @param wxWindow* parent			 親ウィンドウ
- * @param wxString boardName			 板名
- * @param wxString outputPath			 datファイルのパス
+ * @param wxWindow*  parent			 親ウィンドウ
+ * @param wxWindowID id				 ウィンドウID
+ * @param wxString   boardName			 板名
+ * @param wxString   outputPath			 datファイルのパス
  * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
+ * @rapam bool	   targetIsShingetsu		 読み込み対象は新月のCSVか
  */
 VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent, 
+					   const wxWindowID id,
 					   const wxString& boardName,
 					   const wxString& outputPath, 
 					   const std::map<wxString,ThreadList>& oldThreadMap,
 					   bool targetIsShingetsu):
 
-wxListCtrl(parent, ID_BoardListCtrl, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRTUAL) {
+wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRTUAL) {
 
      this->Hide();
      // クラス自体の目印を設置する
@@ -264,11 +267,16 @@ void VirtualBoardListCtrl::FileLoadMethodShingetsu(const wxString& boardName, co
 
 	  // 番号
 	  itemNumber = wxString::Format(wxT("%i"), loopNumber);
+	  // since
+	  itemSince = JaneCloneUtil::CalcThreadCreatedTime(itemOid);
+	  // 勢い
+	  itemMomentum = JaneCloneUtil::CalcThreadMomentum(itemResponse, itemOid);
 
           // リストにアイテムを挿入する
 	  VirtualBoardListItem listItem = VirtualBoardListItem(itemNumber, itemTitle, itemResponse, itemCachedResponseNumber,
 							       itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum,
 							       itemLastUpdate, itemSince, itemOid, itemBoardName);
+	  listItem.setFilename(itemFilename);
 
           // Listctrlに項目を追加する
 	  m_vBoardList.push_back(listItem);

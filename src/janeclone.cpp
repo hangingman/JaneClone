@@ -142,8 +142,10 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    //EVT_LEFT_DCLICK(JaneClone::OnDoubleClick)
     
    // スレッド一覧リストでのクリック
-   EVT_LIST_ITEM_SELECTED(wxID_ANY, JaneClone::OnLeftClickAtListCtrl)
-   EVT_LIST_COL_CLICK(wxID_ANY, JaneClone::OnLeftClickAtListCtrlCol)
+   EVT_LIST_ITEM_SELECTED(ID_BoardListCtrl,          JaneClone::OnLeftClickAtListCtrl)
+   EVT_LIST_ITEM_SELECTED(ID_ShingetsuBoardListCtrl, JaneClone::OnLeftClickAtListCtrl)
+   EVT_LIST_COL_CLICK(ID_BoardListCtrl,          JaneClone::OnLeftClickAtListCtrlCol)
+   EVT_LIST_COL_CLICK(ID_ShingetsuBoardListCtrl, JaneClone::OnLeftClickAtListCtrlCol)
    // 終了前処理
    EVT_CLOSE(JaneClone::OnCloseWindow)
    // wxHtmlWindow上でのイベント処理
@@ -2257,6 +2259,27 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
      *m_logCtrl << wxT("スレッド取得　三　(　＾ν）\n");
+
+     switch (event.GetId()) {
+
+     case ID_ShingetsuBoardListCtrl:
+	  this->OnLeftClickAtListCtrlShingetsu(event);
+	  break;
+     case ID_BoardListCtrl:
+	  this->OnLeftClickAtListCtrl2ch(event);
+	  break;
+     default:
+	  wxMessageBox(wxT("内部エラー, スレッドダウンロード処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
+	  break;
+     }
+
+     *m_logCtrl << wxT("完了…　(´ん｀/)三\n");
+}
+/**
+ * スレッドのダウンロード2ch向け
+ */
+void JaneClone::OnLeftClickAtListCtrl2ch(wxListEvent& event) {
+
      // 現在アクティブになっているタブの板名を取得する
      wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
 
@@ -2297,8 +2320,41 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
      info.origNumber = origNumber;
      info.boardNameAscii = boardNameAscii;
      tiHash[title] = info;
+}
+/**
+ * スレッドのダウンロード新月向け
+ */
+void JaneClone::OnLeftClickAtListCtrlShingetsu(wxListEvent& event) {
 
-     *m_logCtrl << wxT("完了…　(´ん｀/)三\n");
+     // 現在アクティブになっているタブの板名を取得する
+     wxString nodeHostname = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+
+     if (vbListCtrlHash.find(nodeHostname) == vbListCtrlHash.end()) {
+	  wxMessageBox(wxT("すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
+	  return;
+     }
+
+     // リストコントロールを引き出してくる
+     VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(nodeHostname));
+     if (vbListCtrl == NULL) {
+	  wxMessageBox(wxT("内部エラー, スレッドダウンロード処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
+	  return;
+     }
+
+     // スレッドのファイル名を取り出す
+     const long index = event.GetIndex();
+     const wxString filename(vbListCtrl->m_vBoardList[index].getFilename());
+     const wxString title(vbListCtrl->m_vBoardList[index].getTitle());
+
+     // ソケット通信を行う
+     this->SetStatusText(wxT(" 取得 - ") + filename);
+     SocketCommunication* socketCommunication = new SocketCommunication();
+     socketCommunication->SetLogWindow(m_logCtrl);
+     const wxString threadContentPath = socketCommunication->DownloadShingetsuThread(nodeHostname, title, filename);
+     delete socketCommunication;
+     // 無事に通信が終了したならばステータスバーに表示
+     this->SetStatusText(wxT(" スレッドのダウンロード終了"));
+
 }
 /**
  * スレッド一覧リストでリストのヘッダーにクリックした場合の処理
@@ -3055,7 +3111,8 @@ wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName
 
      // Hashに格納する板名タブのオブジェクトのインスタンスを準備する
      VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
-	  (wxWindow*) panel, 
+	  (wxWindow*) panel,
+	  ID_BoardListCtrl,
 	  (const wxString) boardName,
 	  (const wxString) outputPath,
 	  oldThreadMap);
@@ -3627,7 +3684,8 @@ void JaneClone::SetShingetsuThreadListItemNew(const wxString& nodeHostname, cons
 
      // Hashに格納する板名タブのオブジェクトのインスタンスを準備する
      VirtualBoardListCtrl* vbListCtrl = new VirtualBoardListCtrl(
-	  (wxWindow*) panel, 
+	  (wxWindow*) panel,
+	  ID_ShingetsuBoardListCtrl,
 	  nodeHostname,
 	  (const wxString) outputFilePath,
 	  std::map<wxString, ThreadList>(),
