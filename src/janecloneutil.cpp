@@ -626,3 +626,30 @@ void JaneCloneUtil::CreateSpecifyDirectory(wxDir& specifyDir, const wxString& di
 	  ::wxMkdir(specifyDir.GetName() + wxFileSeparator + dirName);
      }
 }
+/**
+ * 新月のCSVファイル保存場所を作成する
+ */
+wxString JaneCloneUtil::CreateShingetsuThreadListFilePath(const wxString& nodeHostname) {
+
+     // URIから各パラメーターを抜き取る
+     PartOfURI* uri = new PartOfURI;
+     bool urlIsSane = JaneCloneUtil::SubstringURI(nodeHostname, uri);
+     const wxString protocol = uri->protocol;
+     const wxString hostname = uri->hostname;
+     const wxString port = uri->port;
+     const wxString path = uri->path;
+     delete uri;
+
+     wxString shingetsuFilePath = ::wxGetHomeDir()
+	  + wxFileSeparator 
+	  + JANECLONE_DIR 
+	  + wxFileSeparator 
+	  + wxT("shingetsu")
+	  + wxFileSeparator
+	  + hostname
+	  + wxFileSeparator
+	  + hostname
+	  + wxT(".csv");
+
+     return shingetsuFilePath;
+}

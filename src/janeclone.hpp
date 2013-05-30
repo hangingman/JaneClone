@@ -69,6 +69,8 @@
 
 // Curl
 #include <curl/curl.h>
+// Curlpp
+#include <curlpp/cURLpp.hpp>
 
 // 自作クラスのヘッダ
 #include "enums.hpp"
@@ -286,9 +288,9 @@ private:
      void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii);
      // ノートブックに反映する際のコールバック
      void SetThreadListItemNew( wxString boardName, wxString outputPath, size_t selectedPage, 
-				std::map<wxString,ThreadList>& oldThreadMap);
+				const std::map<wxString,ThreadList>& oldThreadMap=std::map<wxString,ThreadList>());
      void SetThreadListItemUpdate( wxString boardName,  wxString outputPath, size_t selectedPage, 
-				   std::map<wxString,ThreadList>& oldThreadMap);
+				   const std::map<wxString,ThreadList>& oldThreadMap=std::map<wxString,ThreadList>());
 
      // 新月公開ノードをクリックして、それをノートブックに反映するメソッド
      void SetShingetsuNodeToNoteBook(const wxString& nodeHostname);
@@ -395,7 +397,7 @@ private:
      wxString GetThreadURL(const wxString title,const wxString boardNameAscii,const wxString origNumber);
      // スレッド一覧画面にツールバーを設定する
      wxPanel* CreateAuiToolBar(wxWindow* parent, const wxString& boardName, const wxString& outputPath,
-			       std::map<wxString,ThreadList>& oldThreadMap);
+			       const std::map<wxString,ThreadList>& oldThreadMap);
      // 検索用ツールバー設定の共通部分
      void CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindowID id, const wxString& boardName = wxEmptyString);
      // 検索ボックスを隠す

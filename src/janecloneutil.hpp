@@ -133,6 +133,10 @@ public:
       * 指定されたディレクトリの下に、指定された名前のディレクトリが存在するか確認して作成する
       */
      static void CreateSpecifyDirectory(wxDir& specifyDir, const wxString& dirName);
+     /**
+      * 新月のCSVファイル保存場所を作成する
+      */
+     static wxString CreateShingetsuThreadListFilePath(const wxString& nodeHostname);
 
 private:
 

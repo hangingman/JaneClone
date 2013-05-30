@@ -632,7 +632,8 @@ void JaneClone::SetProperties() {
 	  // sqliteの初期化を行う
 	  SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
 	  delete sqliteAccessor;
-	  /** 板一覧更新を行う */
+	  // Curlの初期化を行う
+	  cURLpp::initialize();
 
 	  // ソケット通信を行う
 	  SocketCommunication* socketCommunication = new SocketCommunication();
@@ -952,32 +953,45 @@ void JaneClone::SetPreviousUserLookedTab() {
 
      for (unsigned int i = 0; i < userLookedBoardList.GetCount(); i++) {
 
+	  // 板名
 	  wxString boardName = userLookedBoardList[i];
 
 	  // 板名に対応したURLを取ってくる
 	  URLvsBoardName hash = retainHash[boardName];
 	  wxString boardNameAscii = hash.boardNameAscii;
 
-	  // ファイルのパスを設定する
-	  wxString outputPath = ::wxGetHomeDir() 
-	       + wxFileSeparator 
-	       + JANECLONE_DIR
-	       + wxFileSeparator
-	       + wxT("dat")
-	       + wxFileSeparator
-	       + boardNameAscii
-	       + wxFileSeparator
-	       + boardNameAscii
-	       + wxT(".dat");
+	  if (!boardNameAscii.IsEmpty()) {
+	       /** 2chのdatファイルが入っていた場合の処理 */
+	       wxString outputPath = ::wxGetHomeDir() 
+		    + wxFileSeparator 
+		    + JANECLONE_DIR
+		    + wxFileSeparator
+		    + wxT("dat")
+		    + wxFileSeparator
+		    + boardNameAscii
+		    + wxFileSeparator
+		    + boardNameAscii
+		    + wxT(".dat");
 
-	  // 板一覧タブをセットする
-	  std::map<wxString, ThreadList> stub;
-	  // 要素を追加する
-	  wxString stubStr = wxT("NO_NEED_TO_CHK_THREAD_STATE");
-	  ThreadList thList;
-	  stub.insert( std::map<wxString, ThreadList>::value_type( stubStr, thList ) );
+	       // 板一覧タブをセットする
+	       std::map<wxString, ThreadList> stub;
+	       // 要素を追加する
+	       wxString stubStr = wxT("NO_NEED_TO_CHK_THREAD_STATE");
+	       ThreadList thList;
+	       stub.insert( std::map<wxString, ThreadList>::value_type( stubStr, thList ) );
 
-	  SetThreadListItemNew(boardName, outputPath, i, stub);
+	       SetThreadListItemNew(boardName, outputPath, i, stub);
+
+	  } else {
+
+	       // ホスト名
+	       const wxString nodeHostname = boardName;
+	       // ファイルパス
+	       wxString filePath = JaneCloneUtil::CreateShingetsuThreadListFilePath(nodeHostname);
+
+	       /** 新月のcsvファイルを参照する */
+	       SetShingetsuThreadListToNoteBook(nodeHostname, filePath);
+	  }
      }
 
      wxArrayString userLookedThreadList = SQLiteAccessor::GetUserLookedThreadList();
@@ -1014,6 +1028,8 @@ void JaneClone::SetPreviousUserLookedTab() {
 JaneClone::~JaneClone() {
      // Auiマネージャーを削除する
      m_mgr.UnInit();
+     // Curlの終了処理を行う
+     cURLpp::terminate();
 }
 /**
  * JaneCloneを終了させる
@@ -1109,9 +1125,33 @@ void JaneClone::OnRightClickShingetsuNodeTree(wxTreeEvent& event) {
      
      if ( askDialog->ShowModal() == wxID_OK ) {
 	  const wxString nodeURL = askDialog->GetValue();
+
+	  // URIから各パラメーターを抜き取る
+	  PartOfURI* uri = new PartOfURI;
+	  bool urlIsSane = JaneCloneUtil::SubstringURI(nodeURL, uri);
+	  const wxString protocol = uri->protocol;            // http
+	  const wxString hostname = uri->hostname;            // localhost
+	  const wxString port = uri->port;                    // :8080
+	  const wxString path = uri->path;                    // /path/to/content
+	  delete uri;
+
+	  if (!urlIsSane) {
+	       wxMessageBox(wxT("エラー, 不正なURLです.入力したURLが正しいか確認してください."), 
+			    wxT("新月公開ノードの登録"), wxICON_ERROR);
+	       askDialog->Destroy();
+	       return;
+	  }
+
 	  if (!nodeURL.IsEmpty()) {
-	       SQLiteAccessor::SetShingetsuNode(nodeURL);
-	       m_shingetsu_tree_ctrl->AppendItem(m_shingetsu_tree_ctrl->GetRootItem(), nodeURL, 1, 1);
+	       if (!port.IsEmpty()) {
+		    const wxString url = protocol + wxT("://") + hostname + port + wxT("/");
+		    SQLiteAccessor::SetShingetsuNode(url);
+		    m_shingetsu_tree_ctrl->AppendItem(m_shingetsu_tree_ctrl->GetRootItem(), url, 1, 1);
+	       } else {
+		    const wxString url = protocol + wxT("://") + hostname + wxT("/");
+		    SQLiteAccessor::SetShingetsuNode(url);
+		    m_shingetsu_tree_ctrl->AppendItem(m_shingetsu_tree_ctrl->GetRootItem(), url, 1, 1);	       
+	       }
 	  }
      }
 
@@ -1166,7 +1206,7 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, 
  * ノートブックに、新規にダウンロードされたスレッド一覧情報を反映するメソッド
  */
 void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString outputPath, 
-				     const size_t selectedPage, std::map<wxString,ThreadList>& oldThreadMap) {
+				     const size_t selectedPage, const std::map<wxString,ThreadList>& oldThreadMap) {
 
      // wxAuiToolBarを宣言する
      wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath, oldThreadMap);
@@ -1179,7 +1219,7 @@ void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString ou
  * ノートブックに、スレッド一覧情報の更新を反映するメソッド
  */
 void JaneClone::SetThreadListItemUpdate(const wxString boardName, const wxString outputPath, 
-					const size_t selectedPage, std::map<wxString,ThreadList>& oldThreadMap) {
+					const size_t selectedPage, const std::map<wxString,ThreadList>& oldThreadMap) {
 
      // HashMapから対象の板のオブジェクトを取り出す
      if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
@@ -3005,7 +3045,7 @@ void JaneClone::OnOpenJaneCloneOfficial(wxCommandEvent& event) {
  * スレッド一覧画面にツールバーを設定する
  */
 wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName, const wxString& outputPath,
-				     std::map<wxString,ThreadList>& oldThreadMap) {
+				     const std::map<wxString,ThreadList>& oldThreadMap) {
 
      // スレッド検索ボックスとスレッド一覧リストを格納するサイザーを宣言する
      wxPanel* panel = new wxPanel(parent, -1);

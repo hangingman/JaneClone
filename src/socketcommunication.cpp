@@ -1738,8 +1738,8 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
      bool urlIsSane = JaneCloneUtil::SubstringURI(nodeHostname, uri);
      const wxString protocol = uri->protocol;
      const wxString hostname = uri->hostname;
-     const wxString port = uri->port;
-     const wxString path = uri->path;
+     wxString port = uri->port;
+     //const wxString path = uri->path;
      delete uri;
 
      // 保存対象のディレクトリが存在するか確かめる
@@ -1765,38 +1765,39 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
      try {
 
 	  // GETする対象URLを構築
-	  std::string stdProtocol = std::string(protocol.mb_str());
-	  std::string stdHostname = std::string(hostname.mb_str());
-	  std::string stdPort     = std::string(port.mb_str());
-	  std::string stdPath     = std::string(path.mb_str());
-	  
-	  std::string requestQuery = stdProtocol + "://" + stdHostname;
-	  if (!stdPort.empty()) {
-	       requestQuery += ":";
-	       requestQuery += stdPort;
+	  std::string requestQuery = std::string(protocol.mb_str())
+	       + "://"
+	       + std::string(hostname.mb_str())
+	       + "/gateway.cgi/csv/index/file,stamp,date,path,uri,type,title,records,size";
+	  // portの取得
+	  port.Replace(wxT(":"), wxEmptyString, true);
+	  int portInteger = 80;
+	  if (port != wxEmptyString) {
+	       portInteger = wxAtoi(port);
 	  }
 
-	  requestQuery += "/";
-	  requestQuery += stdPath;
-	  requestQuery += "/csv/index/file,stamp,date,path,uri,type,title,records,size";
-
 	  curlpp::Cleanup myCleanup;
-
-	  curlpp::options::Url myUrl(requestQuery);
 	  curlpp::Easy myRequest;
-	  myRequest.setOpt(myUrl);
-	  std::ofstream ofs(outputFilename , std::ios::out | std::ios::app );
+	  myRequest.setOpt(new cURLpp::Options::Url(requestQuery));
+	  myRequest.setOpt(new cURLpp::Options::Port(portInteger));
+
+	  std::ofstream ofs(outputFilename , std::ios::out | std::ios::trunc );
 
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
+	  
+	  // ログ出力
+	  *m_logCtrl << wxT("新月にアクセス (ん`　 )") << wxString(requestQuery.c_str(), wxConvUTF8) << wxT("\n");
 	  myRequest.perform();
 
 	  return true;
 
      } catch (curlpp::RuntimeError &e) {
 	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+	  return false;
      } catch (curlpp::LogicError &e) {
 	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+	  return false;
      }
 
      return false;

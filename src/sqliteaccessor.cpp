@@ -759,7 +759,7 @@ void SQLiteAccessor::SetShingetsuNode(const wxString& nodeURL) {
 	  // リザルトセットを用意する
 	  wxSQLite3ResultSet rs;
 	  // SQL文を用意する
-	  wxString SQL_QUERY = wxT("select count(BOARD_URL) from BOARD_INFO_SHINGETSU");
+	  const wxString SQL_QUERY = wxT("select count(BOARD_URL) from BOARD_INFO_SHINGETSU where BOARD_URL = '") + nodeURL + wxT("'");
 	  rs = db.ExecuteQuery(SQL_QUERY);
 
 	  int record = 0;
