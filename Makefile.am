@@ -4,6 +4,11 @@ SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 curl curlpp src
 # パッケージ作成用サブディレクトリも設定する
 DIST_SUBDIRS = $(SUBDIRS)
 
+# MacOSXの場合特殊な処理を入れる
+if USE_MAC_OSX
+	all-am += osx-make-hook
+endif
+
 # ChangeLogと連動させる
 dist-hook: ChangeLog
 
@@ -152,9 +157,11 @@ package-rpm: package-clean
 	@echo 'RPM package create end...'
 
 # Debian系ディストリビューション向けのインストーラ作成
-package-deb: remove_distdir distdir
+package-deb: remove_distdir distdir dist
 # 作業用ディレクトリ作成
-	(cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT))
+	(tar xvf $(distdir).tar.gz && cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
+# config.statusを削除しないと "error: source directory already configured; run "make distclean" there first" と怒られる
+	rm -f $(top_builddir)/config.status
 # controlファイルに詳細を追記
 	echo "Source: janeclone" > $(distdir)/debian/control
 	echo "Section: net" >> $(distdir)/debian/control
@@ -170,18 +177,23 @@ package-deb: remove_distdir distdir
 	echo "Description: Cross Platform 2ch browser" >> $(distdir)/debian/control
 	echo " JaneClone is a plain browser dedicated to read 2ch thread. Using a library called wxWidgets." >> $(distdir)/debian/control
 	echo " It will work on Windows, Linux, Mac. It will keep the platform-specific user interface." >> $(distdir)/debian/control
+# rulesファイルに設定を追加
+	echo "" >> $(distdir)/debian/rules
 # パッケージを作る
-	(cd $(distdir) && debuild -us -uc)
+	(cd $(distdir) && debuild -uc -us)
 
 remove_distdir :
+# パッケージを削除
 	if test -d "$(distdir)"; then \
 	find "$(distdir)" -type d ! -perm -200 -exec chmod u+w {} ';' \
 	&& rm -rf "$(distdir)" \
 	|| { sleep 5 && rm -rf "$(distdir)"; }; \
 	else :; fi
+# 圧縮ファイルも消す
+	rm -rf $(distdir).tar.gz
 
 # OSX向けのバイナリ作成
-install-exec-hook : $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST)
+osx-make-hook : $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST)
 
 # Bundleその他の生成方法を書く
 #  This builds the bundle's directory structure.

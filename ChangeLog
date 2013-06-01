@@ -1,3 +1,295 @@
+commit 95688b2
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-02
+
+    ・インストール場所の変更
+
+Makefile.in
+aclocal.m4
+configure
+configure.ac
+curlpp/Makefile.in
+curlpp/include/Makefile.in
+curlpp/include/curlpp/Makefile.am
+curlpp/include/curlpp/Makefile.in
+curlpp/include/curlpp/config.h
+curlpp/include/curlpp/config.h~
+curlpp/include/curlpp/internal/Makefile.am
+curlpp/include/curlpp/internal/Makefile.in
+curlpp/include/utilspp/Makefile.am
+curlpp/include/utilspp/Makefile.in
+curlpp/include/utilspp/functor/Makefile.am
+curlpp/include/utilspp/functor/Makefile.in
+curlpp/include/utilspp/singleton/Makefile.am
+curlpp/include/utilspp/singleton/Makefile.in
+curlpp/src/Makefile.in
+curlpp/src/curlpp/Makefile.in
+curlpp/src/curlpp/internal/Makefile.in
+curlpp/src/utilspp/Makefile.in
+libwxnkf/Makefile.in
+libwxuuid/Makefile.in
+m4/ax_boost_base.m4
+sqlite3/Makefile.am
+sqlite3/Makefile.in
+src/Makefile.in
+wxsqlite3/Makefile.in
+
+commit 60d7e30
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-01
+
+    ・make installでのライブラリインストール場所の変更
+
+curlpp/src/curlpp/Makefile.am
+curlpp/src/curlpp/Makefile.in
+curlpp/src/utilspp/Makefile.am
+curlpp/src/utilspp/Makefile.in
+libwxnkf/Makefile.am
+libwxnkf/Makefile.in
+libwxuuid/Makefile.am
+libwxuuid/Makefile.in
+sqlite3/Makefile.am
+sqlite3/Makefile.in
+src/Makefile.am
+src/Makefile.in
+wxsqlite3/Makefile.am
+wxsqlite3/Makefile.in
+
+commit 9d7d2ae
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-31
+
+    ・とりあえず新月のスレッドを取得できるようにした
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit 06e33c9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-30
+
+    ・SQL文が間違えているため修正
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/socketcommunication.cpp
+src/sqliteaccessor.cpp
+
+commit 3c760fd
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-28
+
+    ・新月のスレッド一覧をスレッド一覧リストに表示できるようにした
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit af43a28
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-27
+
+    ・shingetsuの公開ノードからスレッド一覧リストを取得する機能を追加
+
+src/Makefile.am
+src/Makefile.in
+src/janeclone.cpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit dbde14a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-27
+
+    ・curlからバージョン情報を呼び出すテストを追加
+
+curlpp/curlpp-0.7.3
+src/janeclone.cpp
+
+commit ce78eac
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-26
+
+    ・libzmqを削除
+    ・curl, curlppを編入、ビルド可能とした
+
+.gitmodules
+INSTALL
+Makefile.am
+Makefile.in
+aclocal.m4
+bootstrap
+config.h.in
+configure
+configure.ac
+cppzmq
+curl
+curlpp/AUTHORS
+curlpp/CHANGES
+curlpp/COPYING
+curlpp/ChangeLog
+curlpp/INSTALL
+curlpp/Makefile.am
+curlpp/Makefile.in
+curlpp/NEWS
+curlpp/README
+curlpp/README.win32
+curlpp/TODO
+curlpp/depcomp
+curlpp/include/Makefile.am
+curlpp/include/Makefile.in
+curlpp/include/curlpp/Easy.hpp
+curlpp/include/curlpp/Easy.inl
+curlpp/include/curlpp/Exception.hpp
+curlpp/include/curlpp/Form.hpp
+curlpp/include/curlpp/Info.hpp
+curlpp/include/curlpp/Info.inl
+curlpp/include/curlpp/Infos.hpp
+curlpp/include/curlpp/Makefile.am
+curlpp/include/curlpp/Makefile.in
+curlpp/include/curlpp/Multi.hpp
+curlpp/include/curlpp/Option.hpp
+curlpp/include/curlpp/Option.inl
+curlpp/include/curlpp/OptionBase.hpp
+curlpp/include/curlpp/Options.hpp
+curlpp/include/curlpp/Types.hpp
+curlpp/include/curlpp/cURLpp.hpp
+curlpp/include/curlpp/config.h
+curlpp/include/curlpp/config.h.in
+curlpp/include/curlpp/config.h.sample
+curlpp/include/curlpp/config.h~
+curlpp/include/curlpp/config.win32.h
+curlpp/include/curlpp/internal/CurlHandle.hpp
+curlpp/include/curlpp/internal/CurlHandle.inl
+curlpp/include/curlpp/internal/Makefile.am
+curlpp/include/curlpp/internal/Makefile.in
+curlpp/include/curlpp/internal/OptionContainer.hpp
+curlpp/include/curlpp/internal/OptionContainer.inl
+curlpp/include/curlpp/internal/OptionContainerType.hpp
+curlpp/include/curlpp/internal/OptionList.hpp
+curlpp/include/curlpp/internal/OptionSetter.hpp
+curlpp/include/curlpp/internal/OptionSetter.inl
+curlpp/include/curlpp/internal/SList.hpp
+curlpp/include/curlpp/internal/buildconfig.h
+curlpp/include/curlpp/internal/global.h
+curlpp/include/curlpp/stamp-h2
+curlpp/include/utilspp/EmptyType.hpp
+curlpp/include/utilspp/Functors.hpp
+curlpp/include/utilspp/Makefile.am
+curlpp/include/utilspp/Makefile.in
+curlpp/include/utilspp/NonCopyable.hpp
+curlpp/include/utilspp/NullType.hpp
+curlpp/include/utilspp/Singleton.hpp
+curlpp/include/utilspp/SmartPtr.hpp
+curlpp/include/utilspp/ThreadingFactoryMutex.hpp
+curlpp/include/utilspp/ThreadingFactoryMutex.inl
+curlpp/include/utilspp/ThreadingSingle.hpp
+curlpp/include/utilspp/ThreadingSingle.inl
+curlpp/include/utilspp/TypeList.hpp
+curlpp/include/utilspp/TypeTrait.hpp
+curlpp/include/utilspp/clone_ptr.hpp
+curlpp/include/utilspp/functor/Binder.hpp
+curlpp/include/utilspp/functor/Functor.hpp
+curlpp/include/utilspp/functor/FunctorHandler.hpp
+curlpp/include/utilspp/functor/FunctorImpl.hpp
+curlpp/include/utilspp/functor/Makefile.am
+curlpp/include/utilspp/functor/Makefile.in
+curlpp/include/utilspp/functor/MemFunHandler.hpp
+curlpp/include/utilspp/singleton/CreationStatic.hpp
+curlpp/include/utilspp/singleton/CreationStatic.inl
+curlpp/include/utilspp/singleton/CreationUsingNew.hpp
+curlpp/include/utilspp/singleton/CreationUsingNew.inl
+curlpp/include/utilspp/singleton/LifetimeDefault.hpp
+curlpp/include/utilspp/singleton/LifetimeDefault.inl
+curlpp/include/utilspp/singleton/LifetimeLibrary.hpp
+curlpp/include/utilspp/singleton/LifetimeLibrary.inl
+curlpp/include/utilspp/singleton/LifetimeWithLongevity.hpp
+curlpp/include/utilspp/singleton/LifetimeWithLongevity.inl
+curlpp/include/utilspp/singleton/Makefile.am
+curlpp/include/utilspp/singleton/Makefile.in
+curlpp/include/utilspp/singleton/PrivateMembers.hpp
+curlpp/include/utilspp/singleton/PrivateMembers.inl
+curlpp/include/utilspp/singleton/SingletonHolder.hpp
+curlpp/include/utilspp/singleton/SingletonHolder.inl
+curlpp/install-sh
+curlpp/ltmain.sh
+curlpp/missing
+curlpp/src/Makefile.am
+curlpp/src/Makefile.in
+curlpp/src/curlpp/Easy.cpp
+curlpp/src/curlpp/Exception.cpp
+curlpp/src/curlpp/Form.cpp
+curlpp/src/curlpp/Info.cpp
+curlpp/src/curlpp/Makefile.am
+curlpp/src/curlpp/Makefile.in
+curlpp/src/curlpp/Multi.cpp
+curlpp/src/curlpp/OptionBase.cpp
+curlpp/src/curlpp/Options.cpp
+curlpp/src/curlpp/autolink.h
+curlpp/src/curlpp/cURLpp.cpp
+curlpp/src/curlpp/internal/CurlHandle.cpp
+curlpp/src/curlpp/internal/Makefile.am
+curlpp/src/curlpp/internal/Makefile.in
+curlpp/src/curlpp/internal/OptionList.cpp
+curlpp/src/curlpp/internal/OptionSetter.cpp
+curlpp/src/curlpp/internal/SList.cpp
+curlpp/src/utilspp/LifetimeLibrary.cpp
+curlpp/src/utilspp/Makefile.am
+curlpp/src/utilspp/Makefile.in
+curlpp/src/utilspp/PrivateMembers.cpp
+libwxnkf/Makefile.in
+libwxuuid/Makefile.in
+libzmq
+m4/ax_boost_base.m4
+sqlite3/Makefile.in
+src/Makefile.am
+src/Makefile.in
+src/janeclone.cpp
+src/janeclone.hpp
+src/zmqcommunication.cpp
+src/zmqcommunication.hpp
+wxsqlite3/Makefile.in
+
+commit 3b41471
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-26
+
+    ・初回起動時にウィンドウの位置がディスプレイの外に出てしまう問題に対応
+
+libtool
+src/janeclone.cpp
+src/zmqcommunication.cpp
+src/zmqcommunication.hpp
+
+commit 60c5d11
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-05-26
+
+    ・janeclone-1.1.1をリリース、バグ修正と機能変更、機能追加
+
+ChangeLog
+Makefile.am
+Makefile.in
+NEWS
+configure
+configure.ac
+libtool
+src/Makefile.am
+src/Makefile.in
+src/datatype.hpp
+src/janeclone.hpp
+
 commit d26062f
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-05-26

@@ -46,6 +46,7 @@ esac
 
 # Checks for no undefined
 AM_CONDITIONAL(NO_UNDEFINED, test x$need_no_undefined = xyes)
+AM_CONDITIONAL(USE_MAC_OSX, false)
 
 # Check for windres
 if test "$PLATFORM_STRING" = "Win32"; then
@@ -58,6 +59,10 @@ if test "$PLATFORM_STRING" = "Win32"; then
 else
 # Set false use_windres
 AM_CONDITIONAL(USE_WINDRES, false)
+# Set MacOSX flag
+  if test "$PLATFORM_STRING" = "Apple"; then
+     AM_CONDITIONAL(USE_MAC_OSX, true)
+  fi
 fi
 
 # Checks for libxml2
