@@ -1,4 +1,5 @@
-lib_LTLIBRARIES = libutilspp.la
+janeclonedir		= $(pkglibdir)
+janeclone_LTLIBRARIES	= libutilspp.la
 
 INCLUDES = -I$(top_builddir)/curl/include -I$(top_builddir)/curlpp/include
 

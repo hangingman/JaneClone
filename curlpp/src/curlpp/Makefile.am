@@ -1,6 +1,8 @@
 SUBDIRS = internal
-lib_LTLIBRARIES = libcurlpp.la
-EXTRA_DIST = Makefile.msvc
+
+janeclonedir 		= $(pkglibdir)
+janeclone_LTLIBRARIES	= libcurlpp.la
+EXTRA_DIST		= Makefile.msvc
 
 INCLUDES = -I$(top_builddir)/curl/include -I$(top_builddir)/include/curlpp -I$(top_builddir)/curlpp/include
 
