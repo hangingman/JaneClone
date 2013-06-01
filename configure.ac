@@ -151,10 +151,6 @@ if test $has_pthread = 0; then
   AC_MSG_ERROR("ERROR: cannot find pthread.")
 fi
 
-# Checks for boost
-AX_BOOST_BASE([1.33.1])
-AM_CONDITIONAL(HAVE_BOOST, test x$want_boost = xyes)
-
 # curlpp build flag
 AC_MSG_CHECKING([if we need BUILDING_CURLPP])
 case $host in
@@ -206,8 +202,18 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset munmap nl_langinfo strcasecmp strchr strcspn strpbrk strrchr strspn strstr fdatasync usleep fullfsync localtime_r gmtime_r])
 AC_FUNC_STRERROR_R
 
+# Set install paths.
+if test "x$prefix" = "xNONE" ; then
+  prefix="/usr/local"
+fi
+
+if test "x$exec_prefix" = "xNONE" ; then
+  exec_prefix=$prefix
+fi
+
 # Checks for libcurl
 if test -d "curl"; then
+   ac_configure_args="$ac_configure_args --disable-debug --disable-curldebug --bindir=$prefix/lib/$PACKAGE --includedir=$prefix/lib/$PACKAGE/include --datadir=$prefix/lib/$PACKAGE --libdir=$prefix/lib/$PACKAGE"
    AC_CONFIG_SUBDIRS([curl])
 else
    AC_MSG_ERROR([libcurl directory not found. please do git submodule init; git submodule update;])

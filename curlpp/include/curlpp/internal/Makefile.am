@@ -1,5 +1,5 @@
 
-pkginclude_HEADERS = \
+noinst_HEADERS = \
 	CurlHandle.hpp CurlHandle.inl \
 	OptionContainer.hpp OptionContainer.inl	OptionContainerType.hpp \
 	OptionList.hpp \

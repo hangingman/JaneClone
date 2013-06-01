@@ -1,6 +1,6 @@
 SUBDIRS = functor singleton
 
-pkginclude_HEADERS = \
+noinst_HEADERS = \
 	EmptyType.hpp \
 	Functors.hpp \
 	NonCopyable.hpp \

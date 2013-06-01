@@ -1,6 +1,6 @@
 SUBDIRS = internal 
 
-pkginclude_HEADERS = \
+noinst_HEADERS = \
 	Easy.hpp Easy.inl \
 	Exception.hpp \
 	Form.hpp \

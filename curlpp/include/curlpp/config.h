@@ -6,9 +6,6 @@
 /* when not building a shared library */
 #undef CURLPP_STATICLIB
 
-/* define if the Boost library is available */
-#undef HAVE_BOOST
-
 /* Define to 1 if you have the declaration of `strerror_r', and to 0 if you
    don't. */
 #undef HAVE_DECL_STRERROR_R

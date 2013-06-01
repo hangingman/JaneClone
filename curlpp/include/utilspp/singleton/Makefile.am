@@ -1,4 +1,4 @@
-pkginclude_HEADERS = \
+noinst_HEADERS = \
 	CreationStatic.hpp CreationStatic.inl \
 	CreationUsingNew.hpp CreationUsingNew.inl \
 	LifetimeDefault.hpp LifetimeDefault.inl \

@@ -1,4 +1,4 @@
-pkginclude_HEADERS = \
+noinst_HEADERS = \
 	Binder.hpp  \
 	FunctorHandler.hpp \
 	Functor.hpp \
