@@ -1,5 +1,7 @@
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
 janecloneexec_PROGRAMS 	= JaneClone
+
+JaneClonedir	  = $(pkglibdir)
 JaneClone_SOURCES = extractboardlist.hpp        \
 		    main.cpp                    \
 		    socketcommunication.cpp     \
@@ -29,10 +31,9 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    settingwindow.cpp		\
 		    settingwindow.hpp		\
 		    otherpanels.cpp		\
-		    otherpanels.hpp
-
-janeclonercdir		= $(janecloneexecdir)/rc
-janeclonerc_DATA	= $(wildcard rc/*)
+		    otherpanels.hpp		\
+		    enums.hpp			\
+		    $(wildcard rc/*)
 
 # common build rule
 JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -I$(top_builddir)/curl/include -I$(top_builddir)/curlpp/include -DPACKAGE_VERSION=@PACKAGE_VERSION@

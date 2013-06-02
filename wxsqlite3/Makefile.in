@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 am__make_dryrun = \
   { \
@@ -53,7 +54,8 @@ build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
 subdir = wxsqlite3
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -117,6 +119,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -269,6 +272,12 @@ janeclone_LTLIBRARIES = libwxsqlite3.la
 libwxsqlite3_la_SOURCES = wxsqlite3.cpp
 libwxsqlite3_la_LDFLAGS = -no-undefined -version-info 3:0:2
 libwxsqlite3_la_LIBADD = $(top_builddir)/sqlite3/libsqlite3.la
+noinst_HEADERS = \
+	wx/wxsqlite3.h    \
+	wx/wxsqlite3def.h \
+	wx/wxsqlite3dyn.h \
+	wx/wxsqlite3opt.h
+
 all: all-am
 
 .SUFFIXES:
@@ -457,7 +466,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
 	for dir in "$(DESTDIR)$(janeclonedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \

@@ -1,3 +1,20 @@
+commit 1a3d46d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-02
+
+    ・Debianパッケージ用の設定を追加
+
+ChangeLog
+Makefile.am
+Makefile.in
+configure
+configure.ac
+curlpp/include/curlpp/internal/Makefile.in
+curlpp/include/utilspp/functor/Makefile.in
+curlpp/include/utilspp/singleton/Makefile.in
+curlpp/src/curlpp/Makefile.am
+curlpp/src/curlpp/Makefile.in
+
 commit 95688b2
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-06-02

@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 am__make_dryrun = \
   { \
@@ -54,7 +55,8 @@ host_triplet = @host@
 target_triplet = @target@
 @USE_WINDRES_TRUE@am__append_1 = -loleaut32 -lole32
 subdir = libwxuuid
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = $(noinst_HEADERS) $(srcdir)/Makefile.am \
+	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -127,6 +129,7 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+HEADERS = $(noinst_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -278,6 +281,13 @@ janeclone_LTLIBRARIES = libwxuuid.la
 libwxuuid_la_SOURCES = wxUUID.cpp wxMD5.cpp wxGUID.cpp md5c.c
 libwxuuid_la_LDFLAGS = -no-undefined -version-info 1:0:0 \
 	$(am__append_1)
+noinst_HEADERS = \
+	global.h  \
+	md5.h     \
+	wxGUID.h  \
+	wxMD5.h   \
+	wxUUID.h
+
 all: all-am
 
 .SUFFIXES:
@@ -490,7 +500,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
 	for dir in "$(DESTDIR)$(janeclonedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \

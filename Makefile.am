@@ -157,7 +157,7 @@ package-rpm: package-clean
 	@echo 'RPM package create end...'
 
 # Debian系ディストリビューション向けのインストーラ作成
-package-deb: remove_distdir distdir dist
+package-deb: remove_distdir dist
 # 作業用ディレクトリ作成
 	(tar xvf $(distdir).tar.gz && cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
 # config.statusを削除しないと "error: source directory already configured; run "make distclean" there first" と怒られる
@@ -178,6 +178,18 @@ package-deb: remove_distdir distdir dist
 	echo " JaneClone is a plain browser dedicated to read 2ch thread. Using a library called wxWidgets." >> $(distdir)/debian/control
 	echo " It will work on Windows, Linux, Mac. It will keep the platform-specific user interface." >> $(distdir)/debian/control
 # rulesファイルに設定を追加
+	echo "#!/usr/bin/make -f" > $(distdir)/debian/rules
+	echo "" >> $(distdir)/debian/rules
+	echo "include /usr/share/cdbs/1/rules/debhelper.mk" >> $(distdir)/debian/rules
+	echo "include /usr/share/cdbs/1/class/autotools.mk" >> $(distdir)/debian/rules
+	echo "" >> $(distdir)/debian/rules
+	echo "# ./configure 実行時の環境変数" >> $(distdir)/debian/rules
+	echo "DEB_CONFIGURE_SCRIPT_ENV +=" >> $(distdir)/debian/rules
+	echo "" >> $(distdir)/debian/rules
+	echo "# make 実行時の環境変数" >> $(distdir)/debian/rules
+	echo "DEB_MAKE_ENVVARS += CFLAGS=\"-O2 -Wall\"" >> $(distdir)/debian/rules
+	echo "" >> $(distdir)/debian/rules
+	echo "" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules
 # パッケージを作る
 	(cd $(distdir) && debuild -uc -us)
