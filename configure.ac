@@ -17,7 +17,7 @@ AC_PROG_CC
 AC_PROG_MAKE_SET
 AC_PROG_MKDIR_P
 AC_LIBTOOL_WIN32_DLL
-AC_PROG_LIBTOOL
+LT_INIT
 
 # Checks for HostOS
 case "$host" in
@@ -178,7 +178,9 @@ esac
 
 # Check compile flag
 AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
-AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
+AX_CHECK_COMPILE_FLAG([-std=c++0x], 
+		      [CXXFLAGS="$CXXFLAGS -std=c++0x"], 
+		      AC_MSG_ERROR([this compiler cannot support C++0x feature.]))
 AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"])
 
 # Checks for Mac OSX specific
@@ -218,7 +220,7 @@ fi
 
 # Checks for libcurl
 if test -d "curl"; then
-   ac_configure_args="$ac_configure_args --disable-debug --disable-curldebug --bindir=$prefix/lib/$PACKAGE --includedir=$prefix/lib/$PACKAGE/include --datadir=$prefix/lib/$PACKAGE --libdir=$prefix/lib/$PACKAGE"
+   ac_configure_args="$ac_configure_args --disable-man-pages --disable-manual --disable-debug --disable-curldebug --bindir=$prefix/lib/$PACKAGE --includedir=$prefix/lib/$PACKAGE/include --datadir=$prefix/lib/$PACKAGE --libdir=$prefix/lib/$PACKAGE"
    AC_CONFIG_SUBDIRS([curl])
 else
    AC_MSG_ERROR([libcurl directory not found. please do git submodule init; git submodule update;])

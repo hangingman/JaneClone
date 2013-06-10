@@ -160,8 +160,6 @@ package-rpm: package-clean
 package-deb: remove_distdir dist
 # 作業用ディレクトリ作成
 	(tar xvf $(distdir).tar.gz && cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
-# config.statusを削除しないと "error: source directory already configured; run "make distclean" there first" と怒られる
-	rm -f $(top_builddir)/config.status
 # controlファイルに詳細を追記
 	echo "Source: janeclone" > $(distdir)/debian/control
 	echo "Section: net" >> $(distdir)/debian/control
@@ -183,11 +181,8 @@ package-deb: remove_distdir dist
 	echo "include /usr/share/cdbs/1/rules/debhelper.mk" >> $(distdir)/debian/rules
 	echo "include /usr/share/cdbs/1/class/autotools.mk" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules
-	echo "# ./configure 実行時の環境変数" >> $(distdir)/debian/rules
-	echo "DEB_CONFIGURE_SCRIPT_ENV +=" >> $(distdir)/debian/rules
-	echo "" >> $(distdir)/debian/rules
-	echo "# make 実行時の環境変数" >> $(distdir)/debian/rules
-	echo "DEB_MAKE_ENVVARS += CFLAGS=\"-O2 -Wall\"" >> $(distdir)/debian/rules
+	echo "install/janeclone::" >> $(distdir)/debian/rules
+	echo "	rm -rf $(distdir)/debian/man/janeclone/usr/share/man" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules

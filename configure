@@ -17435,7 +17435,7 @@ $as_echo "$ax_cv_check_cflags___std_cpp0x" >&6; }
 if test x"$ax_cv_check_cflags___std_cpp0x" = xyes; then :
   CXXFLAGS="$CXXFLAGS -std=c++0x"
 else
-  :
+  as_fn_error $? "this compiler cannot support C++0x feature." "$LINENO" 5
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -fomit-frame-pointer" >&5
@@ -18134,7 +18134,7 @@ fi
 
 # Checks for libcurl
 if test -d "curl"; then
-   ac_configure_args="$ac_configure_args --disable-debug --disable-curldebug --bindir=$prefix/lib/$PACKAGE --includedir=$prefix/lib/$PACKAGE/include --datadir=$prefix/lib/$PACKAGE --libdir=$prefix/lib/$PACKAGE"
+   ac_configure_args="$ac_configure_args --disable-man-pages --disable-manual --disable-debug --disable-curldebug --bindir=$prefix/lib/$PACKAGE --includedir=$prefix/lib/$PACKAGE/include --datadir=$prefix/lib/$PACKAGE --libdir=$prefix/lib/$PACKAGE"
 
 
 subdirs="$subdirs curl"
