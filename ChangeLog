@@ -1,3 +1,23 @@
+commit 003c410
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-10
+
+    ・ブランチ：curl_v7.30_jcを作成、docやman pageなどを作成しないようにした
+
+curl
+
+commit 097a18c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-10
+
+    ・現状ソースの保存
+
+ChangeLog
+Makefile.am
+Makefile.in
+configure
+configure.ac
+
 commit edda356
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-06-03

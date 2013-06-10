@@ -181,8 +181,8 @@ package-deb: remove_distdir dist
 	echo "include /usr/share/cdbs/1/rules/debhelper.mk" >> $(distdir)/debian/rules
 	echo "include /usr/share/cdbs/1/class/autotools.mk" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules
-	echo "install/janeclone::" >> $(distdir)/debian/rules
-	echo "	rm -rf $(distdir)/debian/man/janeclone/usr/share/man" >> $(distdir)/debian/rules
+	echo "" >> $(distdir)/debian/rules
+	echo "" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules
