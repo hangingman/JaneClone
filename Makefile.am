@@ -9,6 +9,19 @@ if USE_MAC_OSX
 	all-am += osx-make-hook
 endif
 
+# janeclone.wrapper向けルール
+bin_SCRIPTS = janeclone
+CLEANFILES  = $(bin_SCRIPTS)
+EXTRA_DIST  = janeclone.wrapper
+
+do_subst =  sed -e 's,%%%appdir%%%,$(datarootdir)/@PACKAGE@,g' \
+		-e 's,%%%pkglibdir%%%,$(pkglibdir),g'
+
+# janecloneスクリプトを作成する
+janeclone:
+	$(do_subst) janeclone.wrapper > janeclone
+	chmod +x janeclone
+
 # ChangeLogと連動させる
 dist-hook: ChangeLog
 
@@ -198,6 +211,8 @@ remove_distdir :
 	else :; fi
 # 圧縮ファイルも消す
 	rm -rf $(distdir).tar.gz
+# パッケージを消す
+	rm -rf janeclone_*
 
 # OSX向けのバイナリ作成
 osx-make-hook : $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST)

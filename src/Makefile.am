@@ -1,5 +1,7 @@
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
 janecloneexec_PROGRAMS 	= JaneClone
+janecloneexecrcdir	= $(datarootdir)/@PACKAGE@/rc
+janecloneexecrc_DATA	= $(wildcard rc/*)
 
 JaneClonedir	  = $(pkglibdir)
 JaneClone_SOURCES = extractboardlist.hpp        \

@@ -9,16 +9,22 @@ ac_config_file_line=`grep -n -A 1000000 "AC_CONFIG_FILES(" ${curdir}/curl/config
 begin=`echo ${ac_config_file_line} | awk -F' ' '{print $1}'`
 end=`echo ${ac_config_file_line} | awk -F' ' '{print $NF}'`
 
-# sed to libcurl configure.ac
-sed -i "${begin},${end}d" ${curdir}/curl/configure.ac
-begin=`expr ${begin} + 1`
+# already sed ?
+differ=`expr ${end} - ${begin}`
 
-sed -i "${begin}a AC_CONFIG_FILES([Makefile include/Makefile include/curl/Makefile src/Makefile lib/Makefile lib/libcurl.vers curl-config libcurl.pc])\\
-AC_OUTPUT" ${curdir}/curl/configure.ac
+if test ${differ} -gt 10 ; then
+   # sed to libcurl configure.ac
+   echo "replace some str in curl/configure.ac !"
+   sed -i "${begin},${end}d" ${curdir}/curl/configure.ac
+   begin=`expr ${begin} + 1`
+    
+   sed -i "${begin}a AC_CONFIG_FILES([Makefile include/Makefile include/curl/Makefile src/Makefile lib/Makefile lib/libcurl.vers curl-config libcurl.pc])\\
+   AC_OUTPUT" ${curdir}/curl/configure.ac
+fi
 
 # sed to libcurl Makefile.am
 sed -i 's/^DIST_SUBDIRS/\#DIST_SUBDIRS/g' ${curdir}/curl/Makefile.am
 sed -i 's/^	cd docs && $(MAKE) install/\#	cd docs && $(MAKE) install/g' ${curdir}/curl/Makefile.am
 
 # exec autoreconf
-exec autoreconf -vi -I `pwd`/m4
+autoreconf -vi -I `pwd`/m4

@@ -15,6 +15,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 am__make_dryrun = \
   { \
@@ -63,7 +64,8 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(janecloneexecdir)"
+am__installdirs = "$(DESTDIR)$(janecloneexecdir)" \
+	"$(DESTDIR)$(janecloneexecrcdir)"
 PROGRAMS = $(janecloneexec_PROGRAMS)
 am_JaneClone_OBJECTS = JaneClone-main.$(OBJEXT) \
 	JaneClone-socketcommunication.$(OBJEXT) \
@@ -120,6 +122,34 @@ am__can_run_installinfo = \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
+am__vpath_adj = case $$p in \
+    $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
+    *) f=$$p;; \
+  esac;
+am__strip_dir = f=`echo $$p | sed -e 's|^.*/||'`;
+am__install_max = 40
+am__nobase_strip_setup = \
+  srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*|]/\\\\&/g'`
+am__nobase_strip = \
+  for p in $$list; do echo "$$p"; done | sed -e "s|$$srcdirstrip/||"
+am__nobase_list = $(am__nobase_strip_setup); \
+  for p in $$list; do echo "$$p $$p"; done | \
+  sed "s| $$srcdirstrip/| |;"' / .*\//!s/ .*/ ./; s,\( .*\)/[^/]*$$,\1,' | \
+  $(AWK) 'BEGIN { files["."] = "" } { files[$$2] = files[$$2] " " $$1; \
+    if (++n[$$2] == $(am__install_max)) \
+      { print $$2, files[$$2]; n[$$2] = 0; files[$$2] = "" } } \
+    END { for (dir in files) print dir, files[dir] }'
+am__base_list = \
+  sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
+  sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
+am__uninstall_files_from_dir = { \
+  test -z "$$files" \
+    || { test ! -d "$$dir" && test ! -f "$$dir" && test ! -r "$$dir"; } \
+    || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
+         $(am__cd) "$$dir" && rm -f $$files; }; \
+  }
+DATA = $(janecloneexecrc_DATA)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -266,6 +296,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 janecloneexecdir = $(datarootdir)/@PACKAGE@
+janecloneexecrcdir = $(datarootdir)/@PACKAGE@/rc
+janecloneexecrc_DATA = $(wildcard rc/*)
 JaneClonedir = $(pkglibdir)
 JaneClone_SOURCES = extractboardlist.hpp        \
 		    main.cpp                    \
@@ -654,6 +686,27 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-janecloneexecrcDATA: $(janecloneexecrc_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(janecloneexecrc_DATA)'; test -n "$(janecloneexecrcdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(janecloneexecrcdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(janecloneexecrcdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(janecloneexecrcdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(janecloneexecrcdir)" || exit $$?; \
+	done
+
+uninstall-janecloneexecrcDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(janecloneexecrc_DATA)'; test -n "$(janecloneexecrcdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(janecloneexecrcdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -739,9 +792,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(PROGRAMS)
+all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(janecloneexecdir)"; do \
+	for dir in "$(DESTDIR)$(janecloneexecdir)" "$(DESTDIR)$(janecloneexecrcdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -803,7 +856,8 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
-install-exec-am: install-janecloneexecPROGRAMS
+install-exec-am: install-janecloneexecPROGRAMS \
+	install-janecloneexecrcDATA
 
 install-html: install-html-am
 
@@ -843,7 +897,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-janecloneexecPROGRAMS
+uninstall-am: uninstall-janecloneexecPROGRAMS \
+	uninstall-janecloneexecrcDATA
 
 .MAKE: install-am install-strip
 
@@ -854,12 +909,14 @@ uninstall-am: uninstall-janecloneexecPROGRAMS
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
-	install-janecloneexecPROGRAMS install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-janecloneexecPROGRAMS
+	install-janecloneexecPROGRAMS install-janecloneexecrcDATA \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-janecloneexecPROGRAMS \
+	uninstall-janecloneexecrcDATA
 
 
 @USE_WINDRES_TRUE@JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
