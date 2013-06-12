@@ -658,6 +658,8 @@ XML2CONFIG
 USE_WINDRES_FALSE
 USE_WINDRES_TRUE
 WINDRES
+USE_LINUX_FALSE
+USE_LINUX_TRUE
 USE_MAC_OSX_FALSE
 USE_MAC_OSX_TRUE
 NO_UNDEFINED_FALSE
@@ -16443,6 +16445,14 @@ else
   USE_MAC_OSX_FALSE=
 fi
 
+ if false; then
+  USE_LINUX_TRUE=
+  USE_LINUX_FALSE='#'
+else
+  USE_LINUX_TRUE='#'
+  USE_LINUX_FALSE=
+fi
+
 
 # Check for windres
 if test "$PLATFORM_STRING" = "Win32"; then
@@ -16561,6 +16571,17 @@ fi
 else
   USE_MAC_OSX_TRUE='#'
   USE_MAC_OSX_FALSE=
+fi
+
+  fi
+# Set Linux flag
+  if test "$PLATFORM_STRING" = "Linux"; then
+      if true; then
+  USE_LINUX_TRUE=
+  USE_LINUX_FALSE='#'
+else
+  USE_LINUX_TRUE='#'
+  USE_LINUX_FALSE=
 fi
 
   fi
@@ -18287,6 +18308,10 @@ if test -z "${USE_MAC_OSX_TRUE}" && test -z "${USE_MAC_OSX_FALSE}"; then
   as_fn_error $? "conditional \"USE_MAC_OSX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
+if test -z "${USE_LINUX_TRUE}" && test -z "${USE_LINUX_FALSE}"; then
+  as_fn_error $? "conditional \"USE_LINUX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
 if test -z "${USE_WINDRES_TRUE}" && test -z "${USE_WINDRES_FALSE}"; then
   as_fn_error $? "conditional \"USE_WINDRES\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
@@ -18297,6 +18322,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${USE_MAC_OSX_TRUE}" && test -z "${USE_MAC_OSX_FALSE}"; then
   as_fn_error $? "conditional \"USE_MAC_OSX\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${USE_LINUX_TRUE}" && test -z "${USE_LINUX_FALSE}"; then
+  as_fn_error $? "conditional \"USE_LINUX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

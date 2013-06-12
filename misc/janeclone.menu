@@ -1,0 +1,5 @@
+?package(janeclone): needs="X11" \
+  section="Applications/Network/BBS Reader" \
+  title="JaneClone" \
+  command="%%%bindir%%%/janeclone" \
+  icon="%%%janecloneexecrcdir%%%/janeclone.xpm"

@@ -1,3 +1,28 @@
+commit 8b67ec6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-12
+
+    ・Debian向けパッケージのラッパースクリプトを作成
+
+Makefile.am
+Makefile.in
+bootstrap
+janeclone.wrapper
+src/Makefile.am
+src/Makefile.in
+
+commit eebc6e9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-11
+
+    ・janeclone_1.1.1_amd64.debをビルドしインストールすることができるようになった
+
+ChangeLog
+Makefile.am
+Makefile.in
+bootstrap
+curl
+
 commit 003c410
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-06-10
