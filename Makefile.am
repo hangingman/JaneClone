@@ -12,15 +12,24 @@ endif
 # janeclone.wrapper向けルール
 bin_SCRIPTS = janeclone
 CLEANFILES  = $(bin_SCRIPTS)
-EXTRA_DIST  = janeclone.wrapper
+EXTRA_DIST  = janeclone.wrapper misc/janeclone.menu
 
-do_subst =  sed -e 's,%%%appdir%%%,$(datarootdir)/@PACKAGE@,g' \
-		-e 's,%%%pkglibdir%%%,$(pkglibdir),g'
+# 書き換えスクリプト
+janecloneexecdir 	= $(datarootdir)/@PACKAGE@
+janecloneexecrcdir	= $(datarootdir)/@PACKAGE@/rc
+
+do_subst_wrapper =  sed -e 's,%%%appdir%%%,$(datarootdir)/@PACKAGE@,g' \
+			-e 's,%%%pkglibdir%%%,$(pkglibdir),g'
+do_subst_menu 	 =  sed -e 's,%%%bindir%%%,$(bindir),g' \
+			-e 's,%%%janecloneexecrcdir%%%,$(janecloneexecrcdir),g'
 
 # janecloneスクリプトを作成する
 janeclone:
-	$(do_subst) janeclone.wrapper > janeclone
+	$(do_subst_wrapper) janeclone.wrapper > janeclone
 	chmod +x janeclone
+if USE_LINUX
+	$(do_subst_menu) misc/janeclone.menu > debian/menu
+endif
 
 # ChangeLogと連動させる
 dist-hook: ChangeLog
@@ -199,6 +208,8 @@ package-deb: remove_distdir dist
 	echo "" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules
 	echo "" >> $(distdir)/debian/rules
+# 必要なファイルをリネームする
+	rm -f $(distdir)/debian/menu.ex
 # パッケージを作る
 	(cd $(distdir) && debuild -uc -us)
 
