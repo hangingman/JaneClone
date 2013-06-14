@@ -158,23 +158,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ ./bootstrap
   $ ./configure --build=x86_64-w64-mingw32 \
   --host=x86_64-w64-mingw32                \
-  --target=x86_64-w64-mingw32              \
-  --disable-curldebug \
-  --disable-debug \
-  --disable-rtsp  \
-  --disable-ldap  \
-  --disable-ldaps \
-  --disable-rtsp  \
-  --disable-dict  \
-  --disable-telnet \
-  --disable-tftp   \
-  --disable-imap   \
-  --disable-smtp   \
-  --disable-gopher \
-  --disable-manual \
-  --disable-ipv6   \
-  --disable-ntlm-wb
-
+  --target=x86_64-w64-mingw32
   $ make
   $ make package-win64-msi
 
@@ -225,23 +209,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ git submodule init
   $ git submodule update
   $ ./bootstrap
-  $ ./configure  \
-  --disable-curldebug \
-  --disable-debug \
-  --disable-rtsp  \
-  --disable-ldap  \
-  --disable-ldaps \
-  --disable-rtsp  \
-  --disable-dict  \
-  --disable-telnet \
-  --disable-tftp   \
-  --disable-imap   \
-  --disable-smtp   \
-  --disable-gopher \
-  --disable-manual \
-  --disable-ipv6   \
-  --disable-ntlm-wb
-
+  $ ./configure
   $ make
   $ make install
 
@@ -269,34 +237,35 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ git submodule init
   $ git submodule update
   $ ./bootstrap
-  $ ./configure       \
-  --disable-curldebug \
-  --disable-debug \
-  --disable-rtsp  \
-  --disable-ldap  \
-  --disable-ldaps \
-  --disable-rtsp  \
-  --disable-dict  \
-  --disable-telnet \
-  --disable-tftp   \
-  --disable-imap   \
-  --disable-smtp   \
-  --disable-gopher \
-  --disable-manual \
-  --disable-ipv6   \
-  --disable-ntlm-wb
+  $ ./configure
   $ make
 
-  ・make installは、ユーザーの環境を汚してしまうので非推奨
+  ・make installで /usr/local 以下に janeclone のラッパースクリプトが入ります
+　・make package-deb で Debian のパッケージを作成できます
 
  [F.Mac OSX]
  F-1. 依存するライブラリのインストール
 
-  準備中
+  clang, gsedのインストール
+  # port install clang-2.9 gsed
+
+  wxWidgets-2.9.4のインストール
+  # cd wxWidgets-2.9.4/
+  # ./configure CXX='clang++-mp-3.3 -std=c++0x -DwxNO__T' CC='clang-mp-3.3' --enable-unicode \
+  --disable-debug --disable-webview --with-opengl  	      		       		     \
+  --with-macosx-sdk=/Developer/SDKs/MacOSX10.7.sdk 			       		     \
+  --with-macosx-version-min=10.7 --with-cocoa
+  # make && make install
 
  F-2. パッケージング
 
-  準備中
+  $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
+  $ cd /path/to/JaneClone
+  $ git submodule init
+  $ git submodule update
+  $ ./bootstrap
+  $ ./configure CXX='clang++' CC='clang'
+  $ make
 
  [G.BSD]
  G-1. 依存するライブラリのインストール

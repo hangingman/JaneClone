@@ -183,9 +183,7 @@ esac
 
 # Check compile flag
 AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
-AX_CHECK_COMPILE_FLAG([-std=c++0x], 
-		      [CXXFLAGS="$CXXFLAGS -std=c++0x"], 
-		      AC_MSG_ERROR([this compiler cannot support C++0x feature.]))
+AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
 AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"])
 
 # Checks for Mac OSX specific
