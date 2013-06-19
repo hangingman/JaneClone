@@ -577,9 +577,9 @@ wxString SocketCommunication::DownloadThread(const wxString boardName,
  * @param 固有番号
  * @return 実行コード
  */
-int SocketCommunication::DownloadThreadNew(const wxString gzipPath,
-					   const wxString headerPath, const wxString boardNameAscii,
-					   const wxString origNumber, const wxString hostName) {
+void SocketCommunication::DownloadThreadNew(const wxString gzipPath,
+					    const wxString headerPath, const wxString boardNameAscii,
+					    const wxString origNumber, const wxString hostName) {
 
      /**
       * スレッド取得の凡例(１回目)
@@ -594,8 +594,6 @@ int SocketCommunication::DownloadThreadNew(const wxString gzipPath,
       * Connection: close
       */
 
-     int rc = 0;
-
      // 取得先のパスを引数から作成する
      const wxString getPath = wxT("GET /") + boardNameAscii + wxT("/dat/")
 	  + origNumber + wxT(".dat");
@@ -603,54 +601,43 @@ int SocketCommunication::DownloadThreadNew(const wxString gzipPath,
      const wxString referer = wxT("http://") + hostName + wxT("/test/read.cgi/")
 	  + boardNameAscii + wxT("/") + origNumber;
 
-     wxHTTP http;
-     http.SetHeader(getPath, _T("HTTP/1.1"));
-     http.SetHeader(_T("Accept-Encoding"), _T("gzip"));
-     http.SetHeader(_T("Host"), hostName);
-     http.SetHeader(_T("Accept"), _T("*/*"));
-     http.SetHeader(_T("Referer"), referer);
-     http.SetHeader(_T("Accept-Language"), _T("ja"));
-     http.SetHeader(_T("User-Agent"), _T("Monazilla/1.00"));
-     http.SetHeader(_T("Connection"), _T("close"));
-     http.SetTimeout(5);
+     // ヘッダの作成
+     std::list<std::string> headers;
+     headers.push_back(std::string(getPath.mb_str()) + ": HTTP/1.1");
+     headers.push_back("Accept-Encoding: gzip");
+     headers.push_back("Host: " + std::string(hostName.mb_str()));
+     headers.push_back("Accept: */*");
+     headers.push_back("Referer: "+ std::string(referer.mb_str()));
+     headers.push_back("Accept-Language: ja");
+     headers.push_back("User-Agent: Monazilla/1.00");
+     headers.push_back("Connection: close");
 
      wxString server = hostName;
-     wxString path = wxT("/") + boardNameAscii + wxT("/dat/") + origNumber
-	  + wxT(".dat");
-     wxString msg = wxEmptyString;
+     wxString path = wxT("/") + boardNameAscii + wxT("/dat/") + origNumber + wxT(".dat");
+     const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
 
-     // 保存先を決める
-     wxFileOutputStream output(gzipPath);
-     wxDataOutputStream store(output);
+     try {
 
-     if (http.Connect(server, 80)) {
-	  wxInputStream *stream;
-	  stream = http.GetInputStream(path);
+	  // 保存先を決める
+	  curlpp::Cleanup myCleanup;
+	  curlpp::Easy myRequest;
+	  myRequest.setOpt(new curlpp::options::Url(url));
+	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
+	  myRequest.setOpt(new curlpp::options::Verbose(true));
 
-	  if (stream == NULL) {
-	       return -1;
-	  } else {
-	       unsigned char buffer[1024];
-	       int byteRead;
+	  std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
+	  curlpp::options::WriteStream ws(&ofs);
+	  myRequest.setOpt(ws);
 
-	       // ヘッダを書きだす
-	       WriteHeaderFile(http, (const wxString) headerPath);
+	  *m_logCtrl << wxT("2chのスレッドを取得 (ん`　 )") << wxT("\n");
+	  *m_logCtrl << server + path << wxT("\n");
+	  myRequest.perform();
 
-	       // ストリームを受け取るループ部分
-	       while (!stream->Eof()) {
-		    stream->Read(buffer, sizeof(buffer));
-		    store.Write8(buffer, sizeof(buffer));
-		    byteRead = stream->LastRead();
-		    if (byteRead <= 0) {
-			 break;
-		    }
-	       }
-	  }
-     } else {
-	  return -1;
+     } catch (curlpp::RuntimeError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+     } catch (curlpp::LogicError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      }
-
-     return rc;
 }
 
 /**

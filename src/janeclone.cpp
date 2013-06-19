@@ -1847,9 +1847,10 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
      }
 
      // ソケット通信を行う
-     SocketCommunication* socketCommunication = new SocketCommunication();
-     const wxString threadContentPath = socketCommunication->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
-     delete socketCommunication;
+     SocketCommunication* sock = new SocketCommunication();
+     sock->SetLogWindow(m_logCtrl);
+     const wxString threadContentPath = sock->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
+     delete sock;
      // 無事に通信が終了したならばステータスバーに表示
      this->SetStatusText(wxT(" スレッドのダウンロード終了"));
 
@@ -2306,10 +2307,10 @@ void JaneClone::OnLeftClickAtListCtrl2ch(wxListEvent& event) {
      const wxString title(vbListCtrl->OnGetItemText(index, static_cast<long>(VirtualBoardListCtrl::Columns::COL_TITLE)));
 
      // ソケット通信を行う
-     SocketCommunication* socketCommunication = new SocketCommunication();
-     const wxString threadContentPath = socketCommunication->DownloadThread(
-	  boardName, boardURL, boardNameAscii, origNumber);
-     delete socketCommunication;
+     SocketCommunication* sock = new SocketCommunication();
+     sock->SetLogWindow(m_logCtrl);
+     const wxString threadContentPath = sock->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
+     delete sock;
      // 無事に通信が終了したならばステータスバーに表示
      this->SetStatusText(wxT(" スレッドのダウンロード終了"));
 

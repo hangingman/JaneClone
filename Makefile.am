@@ -28,7 +28,9 @@ janeclone:
 	$(do_subst_wrapper) janeclone.wrapper > janeclone
 	chmod +x janeclone
 if USE_LINUX
-	$(do_subst_menu) misc/janeclone.menu > debian/menu
+	if [-d debian] then ;
+		$(do_subst_menu) misc/janeclone.menu > debian/menu
+	fi
 endif
 
 # ChangeLogと連動させる

@@ -195,9 +195,9 @@ private:
       * @param サーバーのホスト名
       * @return 実行コード
       */
-     int DownloadThreadNew(const wxString gzipPath, const wxString headerPath,
-			   const wxString boardNameAscii, const wxString origNumber,
-			   const wxString hostName);
+     void DownloadThreadNew(const wxString gzipPath, const wxString headerPath,
+			    const wxString boardNameAscii, const wxString origNumber,
+			    const wxString hostName);
 
      /**
       * 前回との差分のスレッドのデータをダウンロードしてくるメソッド

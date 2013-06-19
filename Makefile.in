@@ -920,7 +920,9 @@ uninstall-am: uninstall-binSCRIPTS
 janeclone:
 	$(do_subst_wrapper) janeclone.wrapper > janeclone
 	chmod +x janeclone
-@USE_LINUX_TRUE@	$(do_subst_menu) misc/janeclone.menu > debian/menu
+@USE_LINUX_TRUE@	if [-d debian] then ;
+@USE_LINUX_TRUE@		$(do_subst_menu) misc/janeclone.menu > debian/menu
+@USE_LINUX_TRUE@	fi
 
 # ChangeLogと連動させる
 dist-hook: ChangeLog
