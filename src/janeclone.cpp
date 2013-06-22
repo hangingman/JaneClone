@@ -638,9 +638,9 @@ void JaneClone::SetProperties() {
 	  cURLpp::initialize();
 
 	  // ソケット通信を行う
-	  SocketCommunication* socketCommunication = new SocketCommunication();
-	  int rc = socketCommunication->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
-	  delete socketCommunication;
+	  SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+	  int rc = sock->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
+	  delete sock;
 
 	  // 実行コード別のダイアログを出す
 	  if (rc != 0) {
@@ -1174,10 +1174,9 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, 
      JaneCloneUtil::GenerateOldThreadMap(oldThreadMap, boardInfo);
 
      // スレ一覧をダウンロードする
-     SocketCommunication* socketCommunication = new SocketCommunication();
-     socketCommunication->SetLogWindow(m_logCtrl);
-     wxString outputPath = socketCommunication->DownloadThreadList(boardName, boardURL, boardNameAscii);
-     delete socketCommunication;
+     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+     wxString outputPath = sock->DownloadThreadList(boardName, boardURL, boardNameAscii);
+     delete sock;
 
      // 新規にセットされる板名かどうかのフラグを用意する
      bool itIsNewBoardName = true;
@@ -1247,9 +1246,9 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
      *m_logCtrl << wxT("三┏（ ；´ん｀）┛…板一覧更新\n");
 
      // ソケット通信を行う
-     SocketCommunication* socketCommunication = new SocketCommunication();
-     int rc = socketCommunication->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
-     delete socketCommunication;
+     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+     int rc = sock->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
+     delete sock;
 
      // 実行コード別のダイアログを出す
      if (rc != 0) {
@@ -1847,8 +1846,7 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
      }
 
      // ソケット通信を行う
-     SocketCommunication* sock = new SocketCommunication();
-     sock->SetLogWindow(m_logCtrl);
+     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
      const wxString threadContentPath = sock->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
      delete sock;
      // 無事に通信が終了したならばステータスバーに表示
@@ -2307,8 +2305,7 @@ void JaneClone::OnLeftClickAtListCtrl2ch(wxListEvent& event) {
      const wxString title(vbListCtrl->OnGetItemText(index, static_cast<long>(VirtualBoardListCtrl::Columns::COL_TITLE)));
 
      // ソケット通信を行う
-     SocketCommunication* sock = new SocketCommunication();
-     sock->SetLogWindow(m_logCtrl);
+     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
      const wxString threadContentPath = sock->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
      delete sock;
      // 無事に通信が終了したならばステータスバーに表示
@@ -2349,10 +2346,9 @@ void JaneClone::OnLeftClickAtListCtrlShingetsu(wxListEvent& event) {
 
      // ソケット通信を行う
      this->SetStatusText(wxT(" 取得 - ") + filename);
-     SocketCommunication* socketCommunication = new SocketCommunication();
-     socketCommunication->SetLogWindow(m_logCtrl);
-     const wxString threadContentPath = socketCommunication->DownloadShingetsuThread(nodeHostname, title, filename);
-     delete socketCommunication;
+     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+     const wxString threadContentPath = sock->DownloadShingetsuThread(nodeHostname, title, filename);
+     delete sock;
      // 無事に通信が終了したならばステータスバーに表示
      this->SetStatusText(wxT(" スレッドのダウンロード終了"));
 
@@ -3630,10 +3626,9 @@ void JaneClone::SetShingetsuNodeToNoteBook(const wxString& nodeHostname) {
      wxString outputFilePath;
 
      // 通信用クラスの呼び出し
-     SocketCommunication* socket = new SocketCommunication();
-     socket->SetLogWindow(m_logCtrl);
-     bool success = socket->DownloadShingetsuThreadList(nodeHostname, outputFilePath);
-     delete socket;
+     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+     bool success = sock->DownloadShingetsuThreadList(nodeHostname, outputFilePath);
+     delete sock;
 
      if (success) {
 	  SetShingetsuThreadListToNoteBook(nodeHostname, outputFilePath);

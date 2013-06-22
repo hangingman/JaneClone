@@ -45,6 +45,7 @@
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
 #include <curlpp/Options.hpp>
+#include <curlpp/Infos.hpp>
 
 #include "janecloneutil.hpp"
 
@@ -53,7 +54,13 @@ class SocketCommunication {
 
 public:
 
-
+     /**
+      * コンストラクタ
+      */
+     SocketCommunication(){};
+     SocketCommunication(wxTextCtrl* logCtrl) {
+	  this->m_logCtrl = logCtrl;
+     };
      /**
       * デストラクタ
       */
