@@ -57,8 +57,13 @@ public:
      /**
       * コンストラクタ
       */
-     SocketCommunication(){};
+     SocketCommunication(){
+	  this->respBuf.clear();
+	  this->bodyBuf.clear();
+     };
      SocketCommunication(wxTextCtrl* logCtrl) {
+	  this->respBuf.clear();
+	  this->bodyBuf.clear();
 	  this->m_logCtrl = logCtrl;
      };
      /**
@@ -148,6 +153,7 @@ public:
       */
      bool DownloadShingetsuThreadList(const wxString& nodeHostname, wxString& outputFilePath);
 
+private:
      /**
       * ファイル区切り文字
       */
@@ -158,10 +164,14 @@ public:
 	  return '/';
 #endif
      };
-     
-
-
-private:
+     /**
+      * ヘッダファイル情報
+      */
+     std::string respBuf;
+     /**
+      * HTTPの本文の情報
+      */
+     std::string bodyBuf;
      /**
       * 新規に板一覧情報を取得しに行く
       */
@@ -231,7 +241,11 @@ private:
      /**
       * HTTPヘッダを書きだす
       */
-     void WriteHeaderFile(wxHTTP& http, const wxString headerPath);
+     size_t WriteHeaderData(char *ptr, size_t size, size_t nmemb);
+     /**
+      * HTTPボディを書きだす
+      */
+     size_t WriteDataInternal(char *ptr, size_t size, size_t nmemb);
      /**
       * COOKIE関連の初期化処理を行う
       */

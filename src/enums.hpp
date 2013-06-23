@@ -29,6 +29,7 @@ enum {
         // janeclone.hpp
         ID_Quit = 1,                    // 終了
 	ID_Restart,      		// 再起動
+	ID_CurlSocketTest,              // 通信テスト
 	ID_WindowMinimize,              // ウィンドウを最小化する
 	ID_GetBoardList,        	// 板一覧情報取得
 	ID_CheckLogDirectory,           // 保存されているログをスレッド一覧に表示する
@@ -180,7 +181,7 @@ enum {
 	ID_SkinPathTC,                   // スキン用のファイルのパスをもつテキストコントロール
 	ID_DirPickerSkin,                // スキン用ファイルのパスを参照する
 	ID_UserLastClosedThreadClick = 1000,   // ユーザーが最後に閉じたスレッドの情報をクリックした(動的なIDのため1000~)
-	ID_UserLastClosedBoardClick  = 1100    // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
+	ID_UserLastClosedBoardClick  = 1100   // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
 };
 
 #endif /* ENUMS_HPP_ */

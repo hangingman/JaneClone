@@ -94,7 +94,11 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
 	  myRequest.setOpt(new curlpp::options::Timeout(5));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
+          // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
 
+	  // メインのデータ出力
 	  std::ofstream ofs(outputPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
@@ -102,7 +106,13 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 	  *m_logCtrl << wxT("2chの板一覧情報を取得 (ん`　 )") << wxT("\n");
 	  *m_logCtrl << server + path << wxT("\n");
 	  myRequest.perform();
-	  
+
+	  // レスポンスヘッダーの書き出し
+	  if (!respBuf.empty()) {
+	       std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+	       ofsHeader << respBuf << std::endl;
+	  }
+
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
@@ -151,6 +161,9 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
 	  myRequest.setOpt(new curlpp::options::Timeout(5));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
+          // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
 
 	  std::ofstream ofs(tmpOutputPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
 	  curlpp::options::WriteStream ws(&ofs);
@@ -173,10 +186,13 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
 
 	  // 最後までうまく行った場合
 	  RemoveTmpFile(outputPath);
-	  //RemoveTmpFile(headerPath);
 	  // tmpファイルを本物のファイルとする
 	  wxRenameFile(tmpOutputPath, outputPath);
-	  //wxRenameFile(tmpHeaderPath, headerPath);
+	  // レスポンスヘッダーの書き出し
+	  if (!respBuf.empty()) {
+	       std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+	       ofsHeader << respBuf << std::endl;
+	  }
 	  
 	  return 0;
 
@@ -348,6 +364,9 @@ int SocketCommunication::DownloadThreadListNew(const wxString gzipPath,
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
 	  myRequest.setOpt(new curlpp::options::Timeout(5));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
+          // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
 
 	  std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
 	  curlpp::options::WriteStream ws(&ofs);
@@ -355,6 +374,14 @@ int SocketCommunication::DownloadThreadListNew(const wxString gzipPath,
 
 	  *m_logCtrl << wxT("スレッド一覧を取得 (ん`　 )") << wxT("\n");
 	  *m_logCtrl << server + path << wxT("\n");
+
+	  myRequest.perform();
+
+	  // レスポンスヘッダーの書き出し
+	  if (!respBuf.empty()) {
+	       std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+	       ofsHeader << respBuf << std::endl;
+	  }
 	  
 	  return 0;
 
@@ -434,6 +461,9 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
 	  myRequest.setOpt(new curlpp::options::Timeout(5));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
+          // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
 
 	  std::ofstream ofs(tmpOutputPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
 	  curlpp::options::WriteStream ws(&ofs);
@@ -444,8 +474,6 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 	  myRequest.perform();
 
 	  long rc = curlpp::infos::ResponseCode::get(myRequest);
-	  *m_logCtrl << wxT("HTTP") << wxString::Format(wxT("%lu"), rc) << wxT("\n");
-
 	  
 	  if (rc = 304) {
 	       // レスポンスコードが304ならば変更なしなので正常終了
@@ -455,7 +483,12 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 
 	  // tmpファイルを本物のファイルとする
 	  wxRenameFile(tmpOutputPath, gzipPath);
-	  //wxRenameFile(tmpHeaderPath, headerPath);
+
+	  // レスポンスヘッダーの書き出し
+	  if (!respBuf.empty()) {
+	       std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+	       ofsHeader << respBuf << std::endl;
+	  }
 	  
 	  return 0;
 
@@ -601,6 +634,9 @@ void SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
 	  myRequest.setOpt(new curlpp::options::Timeout(5));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
+          // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
 
 	  std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
 	  curlpp::options::WriteStream ws(&ofs);
@@ -609,6 +645,12 @@ void SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 	  *m_logCtrl << wxT("2chのスレッドを取得 (ん`　 )") << wxT("\n");
 	  *m_logCtrl << server + path << wxT("\n");
 	  myRequest.perform();
+
+	  // レスポンスヘッダーの書き出し
+	  if (!respBuf.empty()) {
+	       std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+	       ofsHeader << respBuf << std::endl;
+	  }
 
      } catch (curlpp::RuntimeError &e) {
 	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
@@ -683,28 +725,34 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
 	  myRequest.setOpt(new curlpp::options::Timeout(5));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
-
-	  std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-	  curlpp::options::WriteStream ws(&ofs);
-	  myRequest.setOpt(ws);
+          // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+          // BODY用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::WriteFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteDataInternal)));	  
 
 	  *m_logCtrl << wxT("2chのスレッドを取得 (ん`　 )") << wxT("\n");
 	  *m_logCtrl << server + path << wxT("\n");
 	  myRequest.perform();
 
 	  long rc = curlpp::infos::ResponseCode::get(myRequest);
-	  *m_logCtrl << wxT("HTTP") << wxString::Format(wxT("%lu"), rc) << wxT("\n");
-
 	  
 	  if (rc == 304) {
-	       // レスポンスコードが304ならば変更なしなので正常終了
-	       RemoveTmpFile(gzipPath);
-	       return 0;
+	       // レスポンスコードが304ならば変更なし、何もしない
 	  } else if (rc == 206) {
 	       // スレッドに更新ありの場合の処理、更新部分を追加する
-	       return 0;
+	       if (!bodyBuf.empty()) {
+		    std::ofstream ofsBody(gzipPath.mb_str() , std::ios::out | std::ios::app );
+		    ofsBody << bodyBuf << std::endl;
+	       }
 	  }
 
+	  // レスポンスヘッダーの書き出し
+	  if (!respBuf.empty()) {
+	       std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+	       ofsHeader << respBuf << std::endl;
+	  }
 
      } catch (curlpp::RuntimeError &e) {
 	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
@@ -726,93 +774,27 @@ void SocketCommunication::RemoveTmpFile(const wxString removeFile) {
 /**
  * HTTPヘッダを書きだす
  */
-void SocketCommunication::WriteHeaderFile(wxHTTP& http,
-					  const wxString headerPath) {
+size_t SocketCommunication::WriteHeaderData(char *ptr, size_t size, size_t nmemb) {
 
-     // ヘッダファイルの書き出し先を作る
-     wxTextFile headerFile(headerPath);
+     // 文字列をメンバ変数に格納
+     size_t realsize = size * nmemb;
+     std::string line(static_cast<const char *>(ptr), realsize);
 
-     // 既にファイルが存在するならば中身を消す
-     if (headerFile.Exists()) {
-	  headerFile.Open(wxConvUTF8);
-	  headerFile.Clear();
-	  // 存在しないなら作成する
-     } else {
-	  headerFile.Create();
-     }
+     // ログに出力する
+     if (std::string::npos != line.find("HTTP")) *m_logCtrl << wxString(line.c_str(), wxConvUTF8) << wxT("\n");
 
-     // レスポンスの状態に合わせてヘッダの内容を書きだしていく
-     wxString status = wxT("HTTP1.1/ ");
-     switch (http.GetResponse()) {
-     case 200:
-	  status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" OK");
-	  break;
-     case 206:
-	  status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" PARTIAL_CONTENT");
-	  break;
-     case 302:
-	  status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" MOVED");
-	  break;
-     case 304:
-	  status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" NOT_MODIFIED");
-	  break;
-     case 404:
-	  status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" NOT FOUND");
-	  break;
-     case 416:
-	  status += wxString::Format(_T("%d"), http.GetResponse()) += wxT(" RANGE_NOT_SATISFIABLE");
-	  break;
-     default:
-	  status = wxT("cannot get HTTP response");
-	  break;
-     }
-     headerFile.AddLine(status, TEXT_ENDLINE_TYPE);
+     respBuf.append(line);
 
-     if (m_logCtrl != NULL) {
-	  // フレームに結果を出力する
-	  *m_logCtrl << status << wxT("\n");
-     }
-
-     /**
-      * ヘッダの要素と中身を書き出す
-      */
-
-     // Date:
-     wxString date = wxT("Date: ");
-     date += http.GetHeader(wxT("Date"));
-     headerFile.AddLine(date, TEXT_ENDLINE_TYPE);
-     // Server:
-     wxString server = wxT("Server: ");
-     server += http.GetHeader(wxT("Server"));
-     headerFile.AddLine(server, TEXT_ENDLINE_TYPE);
-     // Last-Modified:
-     wxString lastModified = wxT("Last-Modified: ");
-     lastModified += http.GetHeader(wxT("Last-Modified"));
-     headerFile.AddLine(lastModified, TEXT_ENDLINE_TYPE);
-     // ETag:
-     wxString etag = wxT("ETag: ");
-     etag += http.GetHeader(wxT("ETag"));
-     headerFile.AddLine(etag, TEXT_ENDLINE_TYPE);
-     // Accept-Ranges:
-     wxString acceptRanges = wxT("Accept-Ranges: ");
-     acceptRanges += http.GetHeader(wxT("Accept-Ranges"));
-     headerFile.AddLine(acceptRanges, TEXT_ENDLINE_TYPE);
-     // Content-Length:
-     wxString contentLength = wxT("Content-Length: ");
-     contentLength += http.GetHeader(wxT("Content-Length"));
-     headerFile.AddLine(contentLength, TEXT_ENDLINE_TYPE);
-     // Connection:
-     wxString connection = wxT("Connection: ");
-     connection += http.GetHeader(wxT("Connection"));
-     headerFile.AddLine(connection, TEXT_ENDLINE_TYPE);
-     // Content-Type:
-     wxString contentType = wxT("Content-Type: ");
-     contentType += http.GetContentType();
-     headerFile.AddLine(contentType, TEXT_ENDLINE_TYPE);
-
-     // 書きだした内容を保存する
-     headerFile.Write(wxTextFileType_None, wxConvUTF8);
-     headerFile.Close();
+     return realsize;
+}
+/**
+ * HTTPボディを書きだす
+ */
+size_t SocketCommunication::WriteDataInternal(char *ptr, size_t size, size_t nmemb) {
+     // 文字列をメンバ変数に格納
+     size_t realsize = size * nmemb;
+     bodyBuf.append( static_cast<const char *>(ptr), realsize );
+     return realsize;
 }
 /**
    ・bbs.cgiを呼び出すとスレッドにレスの書き込みができます。

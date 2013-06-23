@@ -125,6 +125,10 @@ public:
 
 private:
 
+     void CurlSocketTest(wxCommandEvent& event);
+     size_t writeMemoryCallback(char *ptr, size_t size, size_t nmemb);
+     wxString m_headerTest;
+
      // begin wxGlade: JaneClone::methods
      // イベントテーブル系
      void OnQuit(wxCommandEvent& event);
