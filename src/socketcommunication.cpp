@@ -577,7 +577,6 @@ wxString SocketCommunication::DownloadThread(const wxString boardName,
 
      return outputFilePath;
 }
-
 /**
  * 新規にスレッドのデータをダウンロードしてくるメソッド
  * @param gzipのダウンロード先パス
@@ -645,6 +644,24 @@ void SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 	  *m_logCtrl << wxT("2chのスレッドを取得 (ん`　 )") << wxT("\n");
 	  *m_logCtrl << server + path << wxT("\n");
 	  myRequest.perform();
+
+	  long rc = curlpp::infos::ResponseCode::get(myRequest);
+	  
+	  if (rc == 200) {
+	       // 通常スレッド取得
+	       *m_logCtrl << wxT("新規取得 (ヽ´ん`)") << wxT("\n");
+	  } else if (rc == 203) {
+	       // dat落ち確定
+	       *m_logCtrl << wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
+	  } else if (rc == 302) {
+	       // dat落ちか削除
+	       *m_logCtrl << wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
+	  } else if (rc == 404) {
+	       // dat落ちか削除
+	       *m_logCtrl << wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	  }
 
 	  // レスポンスヘッダーの書き出し
 	  if (!respBuf.empty()) {
@@ -740,12 +757,26 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 	  
 	  if (rc == 304) {
 	       // レスポンスコードが304ならば変更なし、何もしない
+	       *m_logCtrl << wxT("更新なし (ヽ´ん`)") << wxT("\n");
 	  } else if (rc == 206) {
 	       // スレッドに更新ありの場合の処理、更新部分を追加する
+	       *m_logCtrl << wxT("更新あり (ヽ´ん`)") << wxT("\n");
 	       if (!bodyBuf.empty()) {
 		    std::ofstream ofsBody(gzipPath.mb_str() , std::ios::out | std::ios::app );
 		    ofsBody << bodyBuf << std::endl;
 	       }
+	  } else if (rc == 203) {
+	       // dat落ち確定
+	       *m_logCtrl << wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
+	       
+	  } else if (rc == 302) {
+	       // dat落ちか削除
+	       *m_logCtrl << wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
+	  } else if (rc == 404) {
+	       // dat落ちか削除
+	       *m_logCtrl << wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
 	  }
 
 	  // レスポンスヘッダーの書き出し
@@ -763,6 +794,130 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
      return -1;
 }
 /**
+ * 過去のスレッドのデータをダウンロードしてくるメソッド
+ * @param gzipのダウンロード先パス
+ * @param HTTPヘッダのダウンロード先パス
+ * @param 板名（ascii）
+ * @param 固有番号
+ * @param サーバーのホスト名
+ * @param 要求するファイルの拡張子
+ * @return 実行コード
+ */
+int SocketCommunication::DownloadThreadPast(const wxString gzipPath, const wxString headerPath,
+					    const wxString boardNameAscii, const wxString origNumber,
+					    const wxString hostName, const wxString ext) {
+
+// dat落ちしたスレッドは、一定期間を経て過去ログ倉庫に収められます。（過去ログ化）
+// 過去ログ倉庫の格納場所は次の通りです。
+// ・スレッド番号が10桁の場合
+// http://[サーバー]/[板名]/kako/[スレッド番号（上4桁）]/[スレッド番号（上5桁）]/[スレッド番号].dat.gz
+// ・スレッド番号が9桁の場合
+// http://[サーバー]/[板名]/kako/[スレッド番号（上3桁）]/[スレッド番号].dat.gz
+// ・[スレッド番号].dat.gzが無い場合、[スレッド番号].datで要求すると取得できる場合があります。
+
+     wxString server = hostName;
+     wxString path;
+     
+     if (origNumber.Len() == 10) {
+	  path += wxT("/");
+	  path += boardNameAscii; 
+	  path += wxT("/kako/");
+	  path += origNumber.Mid(0, 4);
+	  path += wxT("/");
+	  path += origNumber.Mid(0, 5);
+	  path += wxT("/");
+	  path += origNumber;
+	  path += ext;
+     } else if (origNumber.Len() == 9) {
+	  path += wxT("/");
+	  path += boardNameAscii; 
+	  path += wxT("/kako/");
+	  path += origNumber.Mid(0, 3);
+	  path += wxT("/");
+	  path += origNumber;
+	  path += ext;
+     } else {
+	  // エラー
+	  return -1;
+     }
+     
+     // 取得先のパスを引数から作成する
+     const wxString getPath = wxT("GET ") + path;
+     // リファラを引数から作成する
+     const wxString referer = wxT("http://") + hostName + wxT("/test/read.cgi/") + boardNameAscii + wxT("/") + origNumber;
+     // 取得するURLの構築
+     const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
+     // ヘッダの作成
+     std::list<std::string> headers;
+     headers.push_back(std::string(getPath.mb_str()) + ": HTTP/1.1");
+     headers.push_back("Accept-Encoding: gzip");
+     headers.push_back("Host: " + std::string(hostName.mb_str()));
+     headers.push_back("Accept: */*");
+     headers.push_back("Referer: "+ std::string(referer.mb_str()));
+     headers.push_back("Accept-Language: ja");
+     headers.push_back("User-Agent: Monazilla/1.00");
+     headers.push_back("Connection: close");
+
+     try {
+
+	  // 保存先を決める
+	  curlpp::Cleanup myCleanup;
+	  curlpp::Easy myRequest;
+	  myRequest.setOpt(new curlpp::options::Url(url));
+	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
+	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Verbose(true));
+          // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+
+	  std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
+	  curlpp::options::WriteStream ws(&ofs);
+	  myRequest.setOpt(ws);
+
+	  *m_logCtrl << wxT("2chのスレッド(過去スレ)を取得 (ん`　 )") << wxT("\n");
+	  *m_logCtrl << server + path << wxT("\n");
+
+	  // 過去スレ取得は２回目のクラスメソッド起動になるはずなので
+	  // 文字列をクリアーしておく
+	  this->respBuf.clear();
+	  this->bodyBuf.clear();
+	  myRequest.perform();
+
+	  long rc = curlpp::infos::ResponseCode::get(myRequest);
+	  
+	  if (rc == 200) {
+	       // 通常スレッド取得
+	       *m_logCtrl << wxT("新規取得 (ヽ´ん`)") << wxT("\n");
+	  } else if (rc == 203) {
+	       // dat落ち確定
+	       *m_logCtrl << wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	  } else if (rc == 302) {
+	       // dat落ちか削除
+	       *m_logCtrl << wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName, wxT(".dat"));
+	  } else if (rc == 404) {
+	       // dat落ちか削除
+	       *m_logCtrl << wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	  }
+
+	  // レスポンスヘッダーの書き出し
+	  if (!respBuf.empty()) {
+	       std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+	       ofsHeader << respBuf << std::endl;
+	  }
+
+	  return 0;
+
+     } catch (curlpp::RuntimeError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+     } catch (curlpp::LogicError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+     }
+     
+     return -1;
+}
+/**
  * 一時ファイルを消す
  */
 void SocketCommunication::RemoveTmpFile(const wxString removeFile) {
@@ -770,7 +925,6 @@ void SocketCommunication::RemoveTmpFile(const wxString removeFile) {
 	  wxRemoveFile(removeFile);
      }
 }
-
 /**
  * HTTPヘッダを書きだす
  */

@@ -228,7 +228,20 @@ private:
      int DownloadThreadMod(const wxString gzipPath, const wxString headerPath,
 			   const wxString boardNameAscii, const wxString origNumber,
 			   const wxString hostName);
-     
+
+     /**
+      * 過去のスレッドのデータをダウンロードしてくるメソッド
+      * @param gzipのダウンロード先パス
+      * @param HTTPヘッダのダウンロード先パス
+      * @param 板名（ascii）
+      * @param 固有番号
+      * @param サーバーのホスト名
+      * @return 実行コード
+      */
+     int DownloadThreadPast(const wxString gzipPath, const wxString headerPath,
+			    const wxString boardNameAscii, const wxString origNumber,
+			    const wxString hostName, const wxString ext = wxT(".dat.gz"));     
+
      /**
       * 通信ログに残っているHTTPレスポンスコードを取得する
       */
