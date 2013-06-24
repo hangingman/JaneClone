@@ -42,14 +42,22 @@ class ThreadContentBar: public wxPanel {
 public:
      // begin wxGlade: ThreadContentBar::ids
      // end wxGlade
-
      ThreadContentBar(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, 
 		      long style=wxDEFAULT_FRAME_STYLE);
 
      // スレッドタイトルをクラスに設定する
      void SetTitle(const wxString& title);
+
      // スレッドの内容を設定する
      void SetThreadContentWindow(const wxString& threadContentPath);
+     // 開いているHTMLのスクロール位置を取得する
+     void GetThreadContentWindowScrollPos(wxPoint* p) {
+	  tcw->GetHtmlWindowScrollPos(p);
+     };
+     // スレッドをスクロールさせる
+     void SetThreadContentWindowScroll(const wxPoint* p) {
+	  tcw->ForceScroll(p);
+     };
 
 private:
      // begin wxGlade: ThreadContentBar::methods
@@ -57,28 +65,9 @@ private:
      void do_layout();
      // end wxGlade
 
-     // ボタン上をマウスがホバーした場合の処理
-     //void OnHoverTCBAutoReload(wxMouseEvent& event);
-
-     // ボタンをマウスがクリックした場合の処理
-     // void OnClickTCBAutoReload(wxCommandEvent& event);
-     // void OnClickTCBRedResExtract(wxCommandEvent event);
-     // void OnClickTCBRefresh(wxCommandEvent event);
-     // void OnClickTCBScrollToNewRes(wxCommandEvent event);
-     // void OnClickTCBStop(wxCommandEvent event);
-     // void OnClickTCBResExtract(wxCommandEvent event);
-     // void OnClickTCBNewThread(wxCommandEvent event);
-     // void OnClickTCBResponse(wxCommandEvent event);
-     // void OnClickTCBBookMark(wxCommandEvent event);
-     // void OnClickTCBDeleteLog(wxCommandEvent event);
-     // void OnClickTCBClose(wxCommandEvent event);
-     // void OnClickTCBNormalSearch(wxCommandEvent event);
-     // void OnClickTCBHideSearchBar(wxCommandEvent event);
-     // void OnClickTCBForward(wxCommandEvent event);
-     // void OnClickTCBBackward(wxCommandEvent event);
-
-     // スレッドの内容を描画するクラス
      wxPanel* threadContentPanel;
+     // スレッドの内容を描画するクラス
+     ThreadContentWindow* tcw;
      // 検索ワードの履歴管理用文字列
      wxString* searchWordCombo_choices;
 

@@ -1855,11 +1855,19 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
      // 無事に通信が終了したならばステータスバーに表示
      this->SetStatusText(wxT(" スレッドのダウンロード終了"));
 
-     // スレッド用の検索バー等のインスタンスを用意する
-     ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, wxID_ANY);
-     threadBar->SetTitle(title);
+     // 既存のページから情報を取得して削除する
+     ThreadContentBar* oldThreadBar = dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(page));
+     wxPoint p;
 
-     // スレッドの内容はThreadContentBarの中で設定する
+     if (oldThreadBar) {
+	  oldThreadBar->GetThreadContentWindowScrollPos(&p);
+     }
+     
+     threadNoteBook->DeletePage(threadNoteBook->GetSelection());
+
+     // スレッド用の検索バー等のインスタンスを用意する
+     ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, ID_ThreadContentBar + page);
+     threadBar->SetTitle(title);
      threadBar->SetThreadContentWindow(threadContentPath);
 
      // ノートブックに登録されたスレッド情報をハッシュに登録する
@@ -1873,9 +1881,11 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
 #ifndef __WXMSW__
      threadNoteBook->Freeze();
 #endif
+
      threadNoteBook->InsertPage(page, threadBar, title, false, wxNullBitmap);
-     threadNoteBook->DeletePage(threadNoteBook->GetSelection());
      threadNoteBook->SetSelection(page);
+     threadBar->SetThreadContentWindowScroll(&p);
+     
 #ifndef __WXMSW__
      threadNoteBook->Thaw();
 #endif
@@ -2390,12 +2400,14 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 #ifndef __WXMSW__
      threadNoteBook->Freeze();
 #endif
-     ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, wxID_ANY);
+     size_t page = threadNoteBook->GetPageCount();
+     ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, ID_ThreadContentBar + page );
      threadBar->SetTitle(title);
 
      // スレッドの内容はThreadContentBarの中で設定する
      threadBar->SetThreadContentWindow(threadContentPath);
      threadNoteBook->AddPage(threadBar, title, true);
+
 #ifndef __WXMSW__
      threadNoteBook->Thaw();
 #endif

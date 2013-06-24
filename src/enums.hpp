@@ -180,8 +180,9 @@ enum {
 	ID_DirPickerBoardList,           // 板一覧リストのパスを参照する
 	ID_SkinPathTC,                   // スキン用のファイルのパスをもつテキストコントロール
 	ID_DirPickerSkin,                // スキン用ファイルのパスを参照する
-	ID_UserLastClosedThreadClick = 1000,   // ユーザーが最後に閉じたスレッドの情報をクリックした(動的なIDのため1000~)
-	ID_UserLastClosedBoardClick  = 1100   // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
+	ID_UserLastClosedThreadClick = 1000,  // ユーザーが最後に閉じたスレッドの情報をクリックした(動的なIDのため1000~)
+	ID_UserLastClosedBoardClick  = 1100,  // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
+	ID_ThreadContentBar          = 1500   // ThreadContentBar自体のID(動的なIDのため1500~)
 };
 
 #endif /* ENUMS_HPP_ */

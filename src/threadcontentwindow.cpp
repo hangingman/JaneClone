@@ -248,15 +248,21 @@ wxString ThreadContentWindow::ProcessRestResponse(wxString& threadRecord, int nu
      return lumpOfHTML;
 }
 /**
- * URLを開いた時の状態
+ * 現在開いているHTMLのスクロール位置を取得する
  */
-// wxHtmlOpeningStatus ThreadContentWindow::OnOpeningURL(wxHtmlURLType WXUNUSED(type),
-// 						      const wxString& url,
-// 						      wxString *WXUNUSED(redirect)) const {
-
-//      //GetRelatedFrame()->SetStatusText(url + _T(" lately opened"),1);
-//      return wxHTML_OPEN;
-// }
+void ThreadContentWindow::GetHtmlWindowScrollPos(wxPoint* p) {
+     // 現在位置の取得
+     int x, y;
+     GetViewStart(&x, &y);
+     p->x = x;
+     p->y = y;
+}
+/**
+ * 外のクラスから強制的にスクロールさせる
+ */
+void ThreadContentWindow::ForceScroll(const wxPoint* p) {
+     Scroll(p->x, p->y);
+}
 /**
  * スレッドのHtmlWindowで右クリックした場合の処理
  */

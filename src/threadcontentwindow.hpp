@@ -60,12 +60,14 @@ public:
       */
      void OnRightClickHtmlWindow(wxMouseEvent& event);
      /**
-      * URLを開いた時の状態
+      * 現在開いているHTMLのスクロール位置を取得する
       */
-     // virtual wxHtmlOpeningStatus OnOpeningURL (wxHtmlURLType WXUNUSED(type),
-     //                                           const wxString& url,
-     // 					       wxString *WXUNUSED(redirect)) const;
-     
+     void GetHtmlWindowScrollPos(wxPoint* p);
+     /**
+      * 外のクラスから強制的にスクロールさせる
+      */
+     void ForceScroll(const wxPoint* p);
+
 private:
      /**
       * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する

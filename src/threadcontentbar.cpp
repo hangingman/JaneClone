@@ -250,44 +250,10 @@ void ThreadContentBar::SetTitle(const wxString& title) {
 }
 
 void ThreadContentBar::SetThreadContentWindow(const wxString& threadContentPath) {
+
      // スレッドの内容を表すウィンドウをthreadContentPanelを親として宣言する
-     ThreadContentWindow* tcw = new ThreadContentWindow(threadContentPanel, threadContentPath);
+     tcw = new ThreadContentWindow(threadContentPanel, threadContentPath);
      wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
      vbox->Add(tcw, 1, wxEXPAND | wxALL, 5);
      threadContentPanel->SetSizer(vbox);
 }
-
-// void ThreadContentBar::OnClickTCBAutoReload(wxCommandEvent& event) {
-//      wxMessageBox(wxT("click!"));
-// }
-// void ThreadContentBar::OnHoverTCBAutoReload(wxMouseEvent& event) {
-//      wxMessageBox(wxT("hover!"));
-// }
-// void ThreadContentBar::OnClickTCBRedResExtract(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBRefresh(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBScrollToNewRes(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBStop(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBResExtract(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBNewThread(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBResponse(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBBookMark(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBDeleteLog(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBClose(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBNormalSearch(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBHideSearchBar(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBForward(wxCommandEvent event) {
-// }
-// void ThreadContentBar::OnClickTCBBackward(wxCommandEvent event) {
-// }
