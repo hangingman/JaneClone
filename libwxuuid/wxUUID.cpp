@@ -52,6 +52,10 @@ wxUUID::wxUUID(const int& iVersion /*= 0*/, const wxString& szNameOrHash /*= wxE
      }
 }
 
+wxUUID::~wxUUID()
+{
+}
+
 //////////////////////////////////////////////////////////////////////
 // Operator Overloading
 //////////////////////////////////////////////////////////////////////
@@ -126,12 +130,9 @@ void wxUUID::GetRandomInfo(char pSeed[16])
      wxString	szToHash = szSystemInfo + llTime.ToString() + szHostName;
      wxString	szHash = wxMD5::GetDigest(szToHash);
 
-     char szHashChar[16];
-     strcpy( szHashChar, (const char*)szHash.mb_str(wxConvUTF8) );
-
      for(unsigned int i = 0; i < 16; i++)
      {
-	  pSeed[i] = szHashChar[i];
+	  pSeed[i] = szHash[i];
      }
 }
 

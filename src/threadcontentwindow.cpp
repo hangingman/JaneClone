@@ -538,7 +538,11 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      }
      // 画像を登録する
      wxMemoryFSHandler::AddFile(filename, bitmap, type);
+     // 現在位置の取得とスクロール
+     int x, y; 
+     GetViewStart(&x, &y);
      this->AppendToPage(wxEmptyString);
+     Scroll(x, y);
 
      delete result;
 }

@@ -33,12 +33,13 @@ class wxUUID
 {
  public:
   wxUUID(const int& iVersion = 0, const wxString& szNameOrHash = wxEmptyString);
+  ~wxUUID();
 
   // Data Access Methods
   long		GetTimeLow() const				{ return m_lTimeLow; }
   short		GetTimeMid() const				{ return m_sTimeMid; }
-  short		GetTimeHiAndVersion() const		{ return m_sTimeHiAndVersion; }
-  char		GetClockHiAndReserved() const	{ return m_cClockHiAndReserved; }
+  short		GetTimeHiAndVersion() const		        { return m_sTimeHiAndVersion; }
+  char		GetClockHiAndReserved() const	                { return m_cClockHiAndReserved; }
   char		GetClockLow() const				{ return m_cClockLow; }
   const char*	GetIEEENode() const				{ return (const char*)m_IEEENode; }
 
@@ -67,7 +68,7 @@ class wxUUID
   void	GenerateUUIDv3(const wxString& szHash);
   void	GenerateUUIDvName(const wxString& szName);
 
-  wxString			m_szNameOrHash;
+  wxString		m_szNameOrHash;
 
   unsigned long		m_lTimeLow;
   unsigned short	m_sTimeMid;
