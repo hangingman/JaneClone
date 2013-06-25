@@ -22,10 +22,19 @@
 #ifndef DATATYPE_HPP_
 #define DATATYPE_HPP_
 
+#ifdef HAVE_CONFIG_H
+   #include "config.h"
+#endif
+
 #include <wx/wx.h>
 #include <vector>
 #include <map>
 #include <wx/regex.h>
+
+
+// マクロ置換用マクロ
+#define XSTR(x) #x
+#define STR(x)  XSTR(x)
 
 /*
  * 定数値の宣言
@@ -94,6 +103,12 @@
 
 // ライセンスのデフォルトのパス
 static const wxString licencePath        = wxT("rc/gpl-2.0.txt");
+
+// ユーザーエージェント
+static const std::string userAgent       = std::string("Monazilla/1.00 JaneClone(") + std::string(STR(PACKAGE_VERSION)) + std::string(")");
+
+// バージョン
+static const wxString janecloneVersion   = wxT(STR(PACKAGE_VERSION));
 
 // 各ボタンに貼り付けられる画像
 static const wxString autoReloadImg      = wxT("rc/appointment-new.png");

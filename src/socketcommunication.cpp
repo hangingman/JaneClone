@@ -78,7 +78,7 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
      headers.push_back("Accept: ");
      headers.push_back("Referer: http://menu.2ch.net/");
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: Monazilla/1.00");
+     headers.push_back("User-Agent: " + userAgent);
 
      wxString server = wxT("menu.2ch.net");
      wxString path = wxT("/bbsmenu.html");
@@ -145,7 +145,7 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
      headers.push_back("Accept: ");
      headers.push_back("Referer: http://menu.2ch.net/");
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: Monazilla/1.00");
+     headers.push_back("User-Agent: " + userAgent);
 
      wxString server = wxT("menu.2ch.net");
      wxString path = wxT("/bbsmenu.html");
@@ -296,16 +296,13 @@ wxString SocketCommunication::DownloadThreadList(const wxString boardName,
      }
 
      // gzip拡張子のファイルがあれば、ファイルの解凍・UTF化を行う
-     wxMessageBox(gzipPath);
-
      if (wxFile::Exists(gzipPath)) {
 	  JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
-	  wxMessageBox(wxT("解凍完了"));
 	  JaneCloneUtil::ConvertSJISToUTF8(tmpPath, outputFilePath);
-	  wxMessageBox(wxT("エンコード完了"));
      }
      // 更新が終わったらgzipファイルとSJISファイルを消しておく
      RemoveTmpFile(gzipPath);
+     RemoveTmpFile(tmpPath);
 
      return outputFilePath;
 }
@@ -349,7 +346,7 @@ int SocketCommunication::DownloadThreadListNew(const wxString gzipPath,
      headers.push_back("Accept: */*");
      headers.push_back("Referer: " + std::string(boardURL.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: Monazilla/1.00");
+     headers.push_back("User-Agent: " + userAgent);
      headers.push_back("Connection: close");
 
      wxString server = hostName;
@@ -440,7 +437,7 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
      headers.push_back("Accept: */*");
      headers.push_back("Referer: " + std::string(boardURL.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: Monazilla/1.00");
+     headers.push_back("User-Agent: " + userAgent);
      headers.push_back("Connection: close");
 
      wxString server = hostName;
@@ -594,17 +591,17 @@ void SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 	  + origNumber + wxT(".dat");
      // リファラを引数から作成する
      const wxString referer = wxT("http://") + hostName + wxT("/test/read.cgi/")
-	  + boardNameAscii + wxT("/") + origNumber;
+	  + boardNameAscii + wxT("/") + origNumber + wxT("/");
 
      // ヘッダの作成
      std::list<std::string> headers;
-     headers.push_back(std::string(getPath.mb_str()) + ": HTTP/1.1");
+     headers.push_back(std::string(getPath.mb_str()) + " HTTP/1.1");
      headers.push_back("Accept-Encoding: gzip");
      headers.push_back("Host: " + std::string(hostName.mb_str()));
      headers.push_back("Accept: */*");
      headers.push_back("Referer: "+ std::string(referer.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: Monazilla/1.00");
+     headers.push_back("User-Agent: " + userAgent);
      headers.push_back("Connection: close");
 
      wxString server = hostName;
@@ -694,7 +691,7 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
      // 取得先のパスを引数から作成する
      const wxString getPath = wxT("GET /") + boardNameAscii + wxT("/dat/") + origNumber + wxT(".dat");
      // リファラを引数から作成する
-     const wxString referer = wxT("http://") + hostName + wxT("/test/read.cgi/") + boardNameAscii + wxT("/") + origNumber;
+     const wxString referer = wxT("http://") + hostName + wxT("/test/read.cgi/") + boardNameAscii + wxT("/") + origNumber + wxT("/");
      // 最終更新時間を作成する
      const wxString lastModifiedTime = GetHTTPResponseCode(headerPath, wxT("Last-Modified:"));
      // etag
@@ -702,18 +699,24 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
      // ファイルサイズ
      wxString datFilePath = headerPath;
      datFilePath.Replace(wxT(".header"), wxT(".dat"));
-     wxULongLong fileSize = wxFileName::DirName(datFilePath).GetSize();
+     wxULongLong fileSize = wxFileName::GetSize(datFilePath);
+
+     if (fileSize == wxInvalidSize) {
+	  wxMessageBox(wxT("ダウンロード済のdatファイルのサイズが異常です."), wxT("スレッド取得"), wxICON_ERROR);
+	  return -1;
+     }
 
      // ヘッダの作成
      std::list<std::string> headers;
-     headers.push_back(std::string(getPath.mb_str()) + ": HTTP/1.1");
+     headers.push_back(std::string(getPath.mb_str()) + " HTTP/1.1");
      headers.push_back("Host: " + std::string(hostName.mb_str()));
      headers.push_back("Accept: */*");
      headers.push_back("Referer: "+ std::string(referer.mb_str()));
+     headers.push_back("Accept-Language: ja");
      headers.push_back("If-Modified-Since: " + std::string(lastModifiedTime.mb_str()));
      headers.push_back("If-None-Match: " + std::string(etag.mb_str()));
-     headers.push_back("Range: " + std::string(fileSize.ToString().mb_str()));
-     headers.push_back("User-Agent: Monazilla/1.00");
+     headers.push_back("Range: bytes= " + std::string(fileSize.ToString().mb_str()) + std::string("-"));
+     headers.push_back("User-Agent: " + userAgent);
      headers.push_back("Connection: close");
 
      wxString server = hostName;
@@ -741,15 +744,22 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 	  myRequest.perform();
 
 	  long rc = curlpp::infos::ResponseCode::get(myRequest);
-	  
-	  if (rc == 304) {
+
+	  if (rc == 200) {
+	       if (!bodyBuf.empty()) {
+		    std::ofstream ofsBody(datFilePath.mb_str() , std::ios::out | std::ios::app );
+		    ofsBody << bodyBuf << std::endl;
+	       }	       
+	  } else if (rc == 304) {
 	       // レスポンスコードが304ならば変更なし、何もしない
 	       *m_logCtrl << wxT("更新なし (ヽ´ん`)") << wxT("\n");
+
 	  } else if (rc == 206) {
 	       // スレッドに更新ありの場合の処理、更新部分を追加する
 	       *m_logCtrl << wxT("更新あり (ヽ´ん`)") << wxT("\n");
 	       if (!bodyBuf.empty()) {
-		    std::ofstream ofsBody(gzipPath.mb_str() , std::ios::out | std::ios::app );
+		    std::ofstream ofsBody(datFilePath.mb_str() , std::ios::out | std::ios::app );
+		    //wxString tmp = bodyBuf;
 		    ofsBody << bodyBuf << std::endl;
 	       }
 	  } else if (rc == 203) {
@@ -761,6 +771,7 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 	       // dat落ちか削除
 	       *m_logCtrl << wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
 	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
+
 	  } else if (rc == 404) {
 	       // dat落ちか削除
 	       *m_logCtrl << wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
@@ -844,7 +855,7 @@ int SocketCommunication::DownloadThreadPast(const wxString gzipPath, const wxStr
      headers.push_back("Accept: */*");
      headers.push_back("Referer: "+ std::string(referer.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: Monazilla/1.00");
+     headers.push_back("User-Agent: " + userAgent);
      headers.push_back("Connection: close");
 
      try {
@@ -924,6 +935,12 @@ size_t SocketCommunication::WriteHeaderData(char *ptr, size_t size, size_t nmemb
 
      // ログに出力する
      if (std::string::npos != line.find("HTTP")) *m_logCtrl << wxString(line.c_str(), wxConvUTF8) << wxT("\n");
+     // クッキーを書き出す
+     if (std::string::npos != line.find("Set-Cookie:")) {
+	  wxString cookie;
+	  wxString(line.c_str(), wxConvUTF8).StartsWith(wxT("Set-Cookie: "), &cookie);
+	  JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie"), cookie);
+     }
 
      respBuf.append(line);
 
@@ -996,10 +1013,6 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      wxDir datDir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
 
      // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-     if (!dir.HasSubDirs(JANECLONE_DIR)) {
-	  ::wxMkdir(jcDir.GetName());
-     }
-
      if (!jcDir.HasSubDirs(wxT("dat"))) {
 	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
      }
@@ -1032,96 +1045,62 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
 	  + postContent->name + wxT("&mail") + postContent->mail + wxT("&MESSAGE")
 	  + postContent->kakikomi + wxT("&submit=") + buttonText;
 
+     // 接続先
+     std::string url(hostName.mb_str());
+     url += "/test/bbs.cgi";
      // URL
      const wxString boardURL = boardInfoHash.boardURL;
      // リファラを引数から作成する
      const wxString referer = wxT("http://") + hostName + wxT("/") + boardInfoHash.boardNameAscii + wxT("/");
-
-     // wxHTTPはまだ発展途上のクラスのようで、2012年現在POST用メソッドが安定版に
-     // 登録されていないので、代わりにwxSocketClientを使う
-     // ソースの統一性を持たせるため、後で全てwxSocketClientに変えるかもしれない
-     wxSocketClient* socket = new wxSocketClient();
-     socket->SetTimeout(5);
-
+     // ヘッダのサイズ
+     const std::string kakikomiSize = std::to_string(kakikomiInfo.Len());
+     
      /**
       * ヘッダを設定する
       */
-     wxString header = wxT("");
-     // POST
-     header += wxT("POST /test/bbs.cgi HTTP/1.1\n");
-     // Connection close
-     header += wxT("Connection: close\n");
-     // Content-Type
-     header += wxT("Content-Type: application/x-www-form-urlencoded\n");
-     // Content-Length
-     header += wxT("Content-Length: ");
-     header += wxString::Format(_("%zd"), kakikomiInfo.Len());
-     header += wxT("\n");
-     // hostname
-     header += wxT("Host: ");
-     header += hostName;
-     header += wxT("\n");
-     // Accept
-     header += wxT("Accept: text/html, */*\n");
-     // Referer
-     header += wxT("Referer: ");
-     header += referer;
-     header += wxT("\n");
-     // Accept-Language
-     header += wxT("Accept-Language: ja\n");
-     // User-Agent
-     header += wxT("User-Agent: Monazilla/1.00 (JaneClone/0.80)\n");
-     // POST
-     header += wxT("\n");
-     header += kakikomiInfo;
+     std::list<std::string> headers;
+     headers.push_back("POST /test/bbs.cgi HTTP/1.1");
+     headers.push_back("Connection: close");
+     headers.push_back("Content-Type: application/x-www-form-urlencoded");
+     headers.push_back("Content-Length: " + kakikomiSize);
+     headers.push_back("Host: " + std::string(hostName.mb_str()));
+     headers.push_back("Accept: text/html, */*");
+     headers.push_back("Referer: " + std::string(referer.mb_str()));
+     headers.push_back("Accept-Language: ja");
+     headers.push_back("User-Agent: " + userAgent);
 
-     // ホストに接続する
-     wxIPV4address* address = new wxIPV4address();
-     address->Hostname(hostName);
-     address->Service(80);
+     try {
 
-     if (!socket->Connect(*address)) {
-	  // 接続失敗
-	  *m_logCtrl << wxT("　(ﾟ)(ﾟ) ") << wxT("\n");
-	  *m_logCtrl << wxT("彡　　と ＜　書込失敗、ち～ん") << wxT("\n");
-	  delete socket;
-	  delete address;
-	  return FAIL_TO_POST;
+	  // 保存先を決める
+	  curlpp::Cleanup myCleanup;
+	  curlpp::Easy myRequest;
+	  myRequest.setOpt(new curlpp::options::Url(url));
+	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
+	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
+	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
+	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
+	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Verbose(true));
+          // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+
+	  std::ofstream ofs(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+	  curlpp::options::WriteStream ws(&ofs);
+	  myRequest.setOpt(ws);
+
+	  *m_logCtrl << wxT("書き込み実行 (ヽ´ん`)") << wxT("\n");
+
+	  // 文字列をクリアーしておく
+	  this->respBuf.clear();
+	  this->bodyBuf.clear();
+	  myRequest.perform();
+
+     } catch (curlpp::RuntimeError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
+     } catch (curlpp::LogicError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
      }
-
-     // ヘッダ情報を書き込む
-     socket->Write(header.c_str(),header.Len());
-     wxString wHeaderLog = wxString::Format(_("Wrote %u out of %zd bytes"),socket->LastCount(), header.Len());
-     *m_logCtrl << wHeaderLog << wxT("\n");
-
-     // レスポンスを受け取る
-     wxString resPath = headerPath;
-     wxFileOutputStream output(headerPath);
-     wxDataOutputStream out(output);
-
-     wxInputStream *stream = new wxSocketInputStream(*socket);
-     if (!stream) {
-	  // ERROR
-	  *m_logCtrl << wxT("内部エラー：ストリームの作成に失敗") << wxT("\n");
-	  delete stream;
-	  return FAIL_TO_POST;
-     }
-
-     unsigned char ch[1];
-     int byteRead;
-
-     // ストリームを受け取るループ部分
-     while (!stream->Eof()) {
-	  stream->Read(ch, 1);
-	  out.Write8(ch, 1);
-	  byteRead = stream->LastRead();
-	  if (byteRead < 0) {
-	       break;
-	  }
-     }
-
-     delete stream;
-     output.Close();
 
      // Shift_JIS から UTF-8への変換処理
      wxNKF* nkf = new wxNKF();
@@ -1542,8 +1521,6 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 
      return headerPath;
 }
-
-
 /**
  * COOKIE関連の初期化処理を行う
  */
@@ -1579,22 +1556,7 @@ void SocketCommunication::WriteCookieData(wxString dataFilePath) {
      InitializeCookie();
      wxTextFile cookieFile;
      cookieFile.Open(dataFilePath, wxConvUTF8);
-     wxString str, cookie, hiddenName, hiddenVal;
-
-     // ファイルがオープンされているならば
-     if (cookieFile.IsOpened()) {
-	  for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine()) {
-	       // Set-Cookieに当たる部分を読み取る
-	       wxString tmp;
-	       if (str.StartsWith(wxT("Set-Cookie: "), &tmp)) {
-		    cookie = tmp;
-		    tmp.Clear();
-	       }
-
-	       if (str.IsEmpty())
-		    break;
-	  }
-     }
+     wxString str, hiddenName, hiddenVal;
 
      if (cookieFile.IsOpened()) {
 	  for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine()) {
@@ -1616,7 +1578,6 @@ void SocketCommunication::WriteCookieData(wxString dataFilePath) {
      }
 
      // クッキー情報をコンフィグファイルに書き出す
-     JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie"), cookie);
      JaneCloneUtil::SetJaneCloneProperties(wxT("HiddenName"), hiddenName);
      JaneCloneUtil::SetJaneCloneProperties(wxT("HiddenValue"), hiddenVal);
 

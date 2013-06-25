@@ -38,7 +38,7 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    $(wildcard rc/*)
 
 # common build rule
-JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -I$(top_builddir)/curl/include -I$(top_builddir)/curlpp/include -DPACKAGE_VERSION=@PACKAGE_VERSION@
+JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ -I$(top_builddir)/libwxnkf -I$(top_builddir)/wxsqlite3 -I$(top_builddir)/sqlite3 -I$(top_builddir)/src/rc -I$(top_builddir)/libwxuuid -I$(top_builddir)/curl/include -I$(top_builddir)/curlpp/include
 ACLOCAL_AMFLAGS    = -I m4
 
 # For Icon build and library dependency

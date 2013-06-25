@@ -26,10 +26,6 @@
 #include"../rc/janeclone.xpm"
 #endif
 
-// マクロ置換用マクロ
-#define XSTR(x) #x
-#define STR(x)  XSTR(x)
-
 // event table
 BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    // メニューバー・ポップアップメニューにあるコマンド入力で起動するメソッドのイベントテーブル
@@ -2137,7 +2133,7 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
      info.SetName(wxT("JaneClone - ２ちゃんねるビューア"));
      info.AddDeveloper(wxT("Hiroyuki Nagata newserver002@gmail.com"));
      info.AddDeveloper(wxT("K.Watanabe      kwtnb@outlook.com"));
-     info.SetVersion(_T(STR(PACKAGE_VERSION)));
+     info.SetVersion(janecloneVersion);
      info.SetCopyright(wxT("Copyright(C) 2013 Nagata Hiroyuki, All Rights Reserved. "));
      info.SetWebSite(wxT("http://nantonaku-shiawase.hatenablog.com/"));
 
