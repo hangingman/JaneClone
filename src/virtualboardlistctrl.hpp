@@ -229,7 +229,12 @@ public:
 	  return lItem.getBoardName() > rItem.getBoardName();
      };
 
-
+     /**
+      * 文字列検索用叙述関数
+      */
+     // static bool PredSearchString(const VirtualBoardListItem& item) {
+     // 	  return item.getTitle.Contains(
+     // };
 
 
 private:
@@ -334,6 +339,10 @@ public:
       * 内部のリストをソートする
       */
      void SortVectorItems(int col);
+     /**
+      * スレッドタイトル検索を実施する
+      */
+     void SearchAndSortItems(const wxString& keyword);
      /**
       * リスト内部のアイテムの数を返す
       */

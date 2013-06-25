@@ -690,6 +690,40 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
      SetItemCount(m_vBoardList.size());
      this->Show();
 }
+/**
+ * スレッドタイトル検索を実施する
+ */
+void VirtualBoardListCtrl::SearchAndSortItems(const wxString& keyword) {
+
+     this->Hide();
+
+     // 要素を一度全て削除する
+     DeleteAllItems();
+
+     VirtualBoardList work;
+     
+     // 文字列に一致するものをコピーして再構築
+     std::copy_if(m_vBoardList.begin(), 
+		  m_vBoardList.end(), 
+		  back_inserter(work), 
+		  [&keyword] (const VirtualBoardListItem& item) -> bool { return item.getTitle().Contains(keyword);});
+     // 文字列に一致しないものをコピーして再構築
+     std::copy_if(m_vBoardList.begin(), 
+		  m_vBoardList.end(), 
+		  back_inserter(work), 
+		  [&keyword] (const VirtualBoardListItem& item) -> bool { return ! item.getTitle().Contains(keyword);});
+     
+     // リストを削除して構築し直す
+     m_vBoardList.clear();
+     m_vBoardList = std::move(work);
+
+     SetItemCount(m_vBoardList.size());
+     this->Show();
+}
+
+
+
+
 void VirtualBoardListCtrl::MotionEnterWindow(wxMouseEvent& event) {
      event.Skip();
 }

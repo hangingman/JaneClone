@@ -66,7 +66,6 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
    EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
    EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
-   EVT_MENU(ID_CurlSocketTest, JaneClone::CurlSocketTest)
     
    // メニューバーからスレッド一覧リストをソート
    EVT_MENU(ID_OnClickMenuCOL_CHK,      JaneClone::OnThreadListSort)
@@ -3335,6 +3334,19 @@ void JaneClone::SearchBoardTree(const wxString& keyword) {
  * スレッド一覧リストを検索する
  */
 void JaneClone::SearchThreadList(const wxString& keyword) {
+
+     // 現在アクティブになっているタブの板名を取得する
+     wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+
+     // リストコントロールを引き出してくる
+     VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
+     if (vbListCtrl == NULL) {
+	  wxMessageBox(wxT("内部エラー, スレッド検索処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
+	  return;
+     }
+
+     // スレッドタイトル検索を実施する
+     vbListCtrl->SearchAndSortItems(keyword);
 }
 /**
  * スレッド検索ボックスを隠す
@@ -3746,69 +3758,4 @@ void JaneClone::SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, c
 	  // ノートブックの選択処理
 	  boardNoteBook->SetSelection(selectedPage);
      }
-}
-
-size_t JaneClone::writeMemoryCallback( char *ptr, size_t size, size_t nmemb ){
-     size_t realsize = size * nmemb;
-     //buf.append( static_cast<const char *>(ptr), realsize );
-     // 文字列をメンバ変数に格納
-     //m_headerTest.Append(wxString(std::string(static_cast<const char *>(ptr), realsize).c_str(), wxConvUTF8));
-     m_headerTest.Append(wxString::FromUTF8(static_cast<const char *>(ptr), realsize));
-     return realsize;
-}
-
-void JaneClone::CurlSocketTest(wxCommandEvent& event) {
-
-     *m_logCtrl << wxT("cURLppを使用するテスト (ん`　 )") << wxT("\n");
-     wxString outputPath = BOARD_LIST_PATH;
-     outputPath.Replace(wxT(".html"), wxT(".gzip"));
-
-     // 文字列格納の準備
-     m_headerTest.Clear();
-
-     // ヘッダの作成
-     std::list<std::string> headers;
-     headers.push_back("Accept-Encoding: gzip");
-     headers.push_back("Host: menu.2ch.net");
-     headers.push_back("Accept: ");
-     headers.push_back("Referer: http://menu.2ch.net/");
-     headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: Monazilla/1.00");
-
-     wxString server = wxT("menu.2ch.net");
-     wxString path = wxT("/bbsmenu.html");
-
-     const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
-
-     try {
-
-	  // 保存先を決める
-	  curlpp::Cleanup myCleanup;
-	  curlpp::Easy myRequest;
-	  myRequest.setOpt(new curlpp::options::Url(url));
-	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
-	  myRequest.setOpt(new curlpp::options::Verbose(true));
-	  myRequest.setOpt(new curlpp::options::Header(false));
-
-	  // ファイル出力先を設定する
-	  std::ofstream ofs(outputPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-	  curlpp::options::WriteStream ws(&ofs);
-	  myRequest.setOpt(ws);
-
-	  // ヘッダー用ファンクタを設定する
-	  myRequest.setOpt(new curlpp::options::HeaderFunction(curlpp::types::WriteFunctionFunctor(this, &JaneClone::writeMemoryCallback)));
-
-	  *m_logCtrl << wxT("2chの板一覧情報を取得 (ん`　 )") << wxT("\n");
-	  *m_logCtrl << server + path << wxT("\n");
-	  myRequest.perform();
-
-	  *m_logCtrl << m_headerTest << wxT("\n");
-
-     } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputPath.c_str(), wxConvUTF8) << wxT("\n");
-     } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputPath.c_str(), wxConvUTF8) << wxT("\n");
-     }
-
 }
