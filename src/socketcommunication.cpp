@@ -296,9 +296,13 @@ wxString SocketCommunication::DownloadThreadList(const wxString boardName,
      }
 
      // gzip拡張子のファイルがあれば、ファイルの解凍・UTF化を行う
+     wxMessageBox(gzipPath);
+
      if (wxFile::Exists(gzipPath)) {
 	  JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
+	  wxMessageBox(wxT("解凍完了"));
 	  JaneCloneUtil::ConvertSJISToUTF8(tmpPath, outputFilePath);
+	  wxMessageBox(wxT("エンコード完了"));
      }
      // 更新が終わったらgzipファイルとSJISファイルを消しておく
      RemoveTmpFile(gzipPath);
@@ -393,7 +397,6 @@ int SocketCommunication::DownloadThreadListNew(const wxString gzipPath,
 
      return -1;
 }
-
 /**
  * 前回との差分のスレッド一覧をダウンロードしてくるメソッド
  * @param gzipのダウンロード先パス
@@ -422,11 +425,6 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 
      // 最終更新日時をヘッダ情報から取得する
      wxString lastModifiedTime = GetHTTPResponseCode(headerPath, wxT("Last-Modified:"));
-     // バイナリとヘッダは前回取得した名前と同じでは困るのでtmpファイルとして作成しておく
-     wxString tmpOutputPath(gzipPath);
-     tmpOutputPath.Replace(wxT(".gzip"), wxT(".tmp"));
-     wxString tmpHeaderPath = headerPath;
-     tmpHeaderPath += wxT(".tmp");
 
      // 取得先のパスを引数から作成する
      wxString getPath = wxT("GET /");
@@ -465,24 +463,13 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
 				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
 
-	  std::ofstream ofs(tmpOutputPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
+	  std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
 	  *m_logCtrl << wxT("スレッド一覧を取得 (ん`　 )") << wxT("\n");
 	  *m_logCtrl << server + path << wxT("\n");
 	  myRequest.perform();
-
-	  long rc = curlpp::infos::ResponseCode::get(myRequest);
-	  
-	  if (rc = 304) {
-	       // レスポンスコードが304ならば変更なしなので正常終了
-	       RemoveTmpFile(tmpOutputPath);
-	       return 0;
-	  }
-
-	  // tmpファイルを本物のファイルとする
-	  wxRenameFile(tmpOutputPath, gzipPath);
 
 	  // レスポンスヘッダーの書き出し
 	  if (!respBuf.empty()) {
@@ -785,6 +772,8 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 	       ofsHeader << respBuf << std::endl;
 	  }
 
+	  return 0;
+
      } catch (curlpp::RuntimeError &e) {
 	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      } catch (curlpp::LogicError &e) {
@@ -895,7 +884,6 @@ int SocketCommunication::DownloadThreadPast(const wxString gzipPath, const wxStr
 	  } else if (rc == 302) {
 	       // dat落ちか削除
 	       *m_logCtrl << wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
-	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName, wxT(".dat"));
 	  } else if (rc == 404) {
 	       // dat落ちか削除
 	       *m_logCtrl << wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
