@@ -17,6 +17,7 @@
 #include <wx/datstrm.h>
 #include <wx/wfstream.h>
 #include <wx/sstream.h>
+#include <sstream>
 #include "flagset.h"
 #include "utf8table.h"
 #include "wxnkfencoding.h"
@@ -71,7 +72,11 @@ class wxNKF {
    * msw : C:\\Users\\foo\\bar\\etc.txt
    * gtk, osx : /usr/foo/bar/etc.txt
    */
-  int Convert(const wxString inputFilePath, const wxString outputFilePath, const wxString option);
+  int Convert(const wxString& inputFilePath, const wxString& outputFilePath, const wxString& option);
+  /**
+   * convert std::string to std::string, with option
+   */
+  int ConvertSTDString(const std::string& inputString, std::string& outputString, const std::string& option); 
   /**
    * convert charcter code in string to string, with option
    * 
@@ -84,7 +89,7 @@ class wxNKF {
    * wxString to Multibyte String(Shift_JIS, EUC-JP, ISO-2022-JP, and so on.)
    * UTF-8 is officially supported by wxString. You should use wxString::ToUTF-8.  
    */
-  wxString MultiByteToWx(const std::string inputString, const std::string option);
+  wxString MultiByteToWx(const std::string& inputString, const std::string& option);
   /**
    * show usage
    */
@@ -135,6 +140,10 @@ class wxNKF {
   * main method of this class convert char to string
   */
  int KanjiConvert(wxStringInputStream* in, std::string* oConv);
+ /**
+  * main method of this class convert char to string
+  */
+ int KanjiConvert(std::stringstream* in, std::string* oConv);
  /**
   * setting input encode
   */

@@ -57,7 +57,7 @@ int SocketCommunication::DownloadBoardList(const wxString outputPath,
      if (wxFile::Exists(gzipPath)) {
 	  JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
 	  JaneCloneUtil::ConvertSJISToUTF8(tmpPath, (wxString&) outputPath);
-	  // 更新が終わったらgzipファイルとSJISファイルを消しておく
+	  // 更新が終わったらgzipファイルを消しておく
 	  RemoveTmpFile(gzipPath);
 	  RemoveTmpFile(tmpPath);
      }
@@ -133,7 +133,7 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
      wxString lastModifiedTime = GetHTTPResponseCode(headerPath,wxT("Last-Modified:"));
      // バイナリとヘッダは前回取得した名前と同じでは困るのでtmpファイルとして作成しておく
      wxString tmpOutputPath = outputPath;
-     tmpOutputPath += wxT(".tmp");
+     tmpOutputPath += wxT(".sjis");
      wxString tmpHeaderPath = headerPath;
      tmpHeaderPath += wxT(".tmp");
 
@@ -267,7 +267,7 @@ wxString SocketCommunication::DownloadThreadList(const wxString boardName,
      gzipPath.Replace(wxT(".dat"), wxT(".gzip"));
      // 一時保存用のパスを設定する
      wxString tmpPath = outputFilePath;
-     tmpPath.Replace(wxT(".dat"), wxT(".tmp"));
+     tmpPath.Replace(wxT(".dat"), wxT(".sjis"));
      // ヘッダーのパスを設定する
      wxString headerPath = outputFilePath;
      headerPath.Replace(wxT(".dat"), wxT(".header"));
@@ -300,9 +300,8 @@ wxString SocketCommunication::DownloadThreadList(const wxString boardName,
 	  JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
 	  JaneCloneUtil::ConvertSJISToUTF8(tmpPath, outputFilePath);
      }
-     // 更新が終わったらgzipファイルとSJISファイルを消しておく
+     // 更新が終わったらgzipファイルを消しておく
      RemoveTmpFile(gzipPath);
-     RemoveTmpFile(tmpPath);
 
      return outputFilePath;
 }
@@ -522,7 +521,7 @@ wxString SocketCommunication::DownloadThread(const wxString boardName,
      gzipPath.Replace(wxT(".dat"), wxT(".gzip"));
      // 一時保存用のパスを設定する
      wxString tmpPath = outputFilePath;
-     tmpPath.Replace(wxT(".dat"), wxT(".tmp"));
+     tmpPath.Replace(wxT(".dat"), wxT(".sjis"));
      // ヘッダーのパスを設定する
      wxString headerPath = outputFilePath;
      headerPath.Replace(wxT(".dat"), wxT(".header"));
@@ -555,9 +554,9 @@ wxString SocketCommunication::DownloadThread(const wxString boardName,
 	  JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
 	  JaneCloneUtil::ConvertSJISToUTF8(tmpPath, outputFilePath);
      }
-     // 更新が終わったらgzipファイルとSJISファイルを消しておく
+     // 更新が終わったらgzipファイルを消しておく
+     // SJISファイルは残す（ファイルサイズを知っておくため）
      RemoveTmpFile(gzipPath);
-     RemoveTmpFile(tmpPath);
 
      return outputFilePath;
 }
@@ -696,10 +695,14 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
      const wxString lastModifiedTime = GetHTTPResponseCode(headerPath, wxT("Last-Modified:"));
      // etag
      const wxString etag = GetHTTPResponseCode(headerPath, wxT("ETag:"));
-     // ファイルサイズ
+     // 実際のdatファイル（UTF-8）
      wxString datFilePath = headerPath;
      datFilePath.Replace(wxT(".header"), wxT(".dat"));
-     wxULongLong fileSize = wxFileName::GetSize(datFilePath);
+     // 生のdatファイル（CP932）
+     wxString sjisDatPath = headerPath;
+     sjisDatPath.Replace(wxT(".header"), wxT(".sjis"));
+
+     wxULongLong fileSize = wxFileName::GetSize(sjisDatPath);
 
      if (fileSize == wxInvalidSize) {
 	  wxMessageBox(wxT("ダウンロード済のdatファイルのサイズが異常です."), wxT("スレッド取得"), wxICON_ERROR);
@@ -758,10 +761,15 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 	       // スレッドに更新ありの場合の処理、更新部分を追加する
 	       *m_logCtrl << wxT("更新あり (ヽ´ん`)") << wxT("\n");
 	       if (!bodyBuf.empty()) {
-		    std::ofstream ofsBody(datFilePath.mb_str() , std::ios::out | std::ios::app );
-		    //wxString tmp = bodyBuf;
-		    ofsBody << bodyBuf << std::endl;
+
+		    // sjisファイルの更新を実施
+		    std::ofstream ofsSjis(sjisDatPath.mb_str(), std::ios::out | std::ios::app );
+		    ofsSjis << bodyBuf << std::endl;
+		    // UTF-8に変換
+		    wxRemoveFile(datFilePath);
+		    JaneCloneUtil::ConvertSJISToUTF8(sjisDatPath, datFilePath);
 	       }
+
 	  } else if (rc == 203) {
 	       // dat落ち確定
 	       *m_logCtrl << wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
