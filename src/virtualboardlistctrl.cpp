@@ -49,6 +49,8 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRTUAL) {
 
      this->Hide();
+     f_nowSearching = false;
+
      // クラス自体の目印を設置する
      SetLabel(boardName);
      
@@ -65,7 +67,8 @@ wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRT
      this->AssignImageList(threadImage, wxIMAGE_LIST_SMALL);
      // 背景色の設定
      m_attr.SetBackgroundColour(*wxLIGHT_GREY);
-
+     m_attr_search.SetBackgroundColour(wxColour(wxT("YELLOW")));
+     
      // ファイル読み出しメソッドの変更
      targetIsShingetsu ? FileLoadMethodShingetsu(boardName, outputPath, oldThreadMap)
 	  : FileLoadMethod2ch(boardName, outputPath, oldThreadMap);
@@ -110,6 +113,7 @@ void VirtualBoardListCtrl::FileLoadMethod2ch(const wxString& boardName, const wx
      wxString stub = wxT("NO_NEED_TO_CHK_THREAD_STATE");
      if (!oldThreadMap.empty()) hasOldData = true;
      if (!(oldThreadMap.find(stub) == oldThreadMap.end())) noNeedToChkThreadState = true;
+     f_nowSearching = false;
 
      // テキストファイルの読み込み
      wxTextFile datfile(outputPath);
@@ -237,6 +241,8 @@ void VirtualBoardListCtrl::FileLoadMethodShingetsu(const wxString& boardName, co
      wxTextFile csvfile(outputPath);
      csvfile.Open();
 
+     f_nowSearching = false;
+
      // スレッドに番号をつける
      int loopNumber = 1;
 
@@ -303,6 +309,7 @@ void VirtualBoardListCtrl::FileLoadMethodShingetsu(const wxString& boardName, co
 VirtualBoardList VirtualBoardListCtrl::ThreadListUpdate(const wxString& boardName, const wxString& outputPath) {
 
      this->Hide();
+     f_nowSearching = false;
 
      // 内部にデータがあればリストをクリアする
      if ( ! m_vBoardList.empty()) {
@@ -469,12 +476,19 @@ int VirtualBoardListCtrl::OnGetItemColumnImage(long item, long column) const {
 /**
  * 仮想リスト内の色情報等の設定
  */
-wxListItemAttr *VirtualBoardListCtrl::OnGetItemAttr(long item) const {
-    return item % 2 ? NULL : (wxListItemAttr *)&m_attr;
+wxListItemAttr* VirtualBoardListCtrl::OnGetItemAttr(long item) const {
+
+     if (f_nowSearching) {
+	  if (item <= searchItemNum) {
+	       return (wxListItemAttr*)&m_attr_search;
+	  }
+     }
+     
+     return item % 2 ? NULL : (wxListItemAttr*)&m_attr;
 }
 /**
  * コンストラクタ：ログ一覧リスト作成用
- * @param wxWindow* parent     親ウィンドウ
+ * @param wxWindow* parent     親ウィンドウ>
  * @param wxString boardName   板名(ログ一覧で固定)
  * @param wxString outputPath  datファイルのパス
  */
@@ -482,6 +496,7 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,const wxString& boar
      wxListCtrl(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,wxLC_REPORT | wxLC_VIRTUAL) {
 
      this->Hide();
+     f_nowSearching = false;
 
      /**
       * datファイルの数だけ処理を繰り返す
@@ -582,6 +597,7 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
      
      
      this->Hide();
+     f_nowSearching = false;
 
      // 要素を一度全て削除する
      DeleteAllItems();
@@ -699,6 +715,7 @@ void VirtualBoardListCtrl::SearchAndSortItems(const wxString& keyword) {
 
      // 要素を一度全て削除する
      DeleteAllItems();
+     f_nowSearching = true;
 
      VirtualBoardList work;
      
@@ -706,12 +723,19 @@ void VirtualBoardListCtrl::SearchAndSortItems(const wxString& keyword) {
      std::copy_if(m_vBoardList.begin(), 
 		  m_vBoardList.end(), 
 		  back_inserter(work), 
-		  [&keyword] (const VirtualBoardListItem& item) -> bool { return item.getTitle().Contains(keyword);});
+		  [&keyword] (const VirtualBoardListItem& item) -> bool {
+		       return item.getTitle().Contains(keyword);
+		  });
+     // 当てはまった数を記録
+     searchItemNum = work.size();
+     
      // 文字列に一致しないものをコピーして再構築
      std::copy_if(m_vBoardList.begin(), 
 		  m_vBoardList.end(), 
 		  back_inserter(work), 
-		  [&keyword] (const VirtualBoardListItem& item) -> bool { return ! item.getTitle().Contains(keyword);});
+		  [&keyword] (const VirtualBoardListItem& item) -> bool {
+		       return ! item.getTitle().Contains(keyword);
+		  });
      
      // リストを削除して構築し直す
      m_vBoardList.clear();

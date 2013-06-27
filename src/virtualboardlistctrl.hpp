@@ -283,8 +283,12 @@ public:
      /**
       * デフォルトコンストラクタ
       */
-     VirtualBoardListCtrl() {}
-     VirtualBoardListCtrl(const VirtualBoardListCtrl&) {}
+     VirtualBoardListCtrl() {
+	  f_nowSearching = false;
+     };
+     VirtualBoardListCtrl(const VirtualBoardListCtrl&) {
+	  f_nowSearching = false;
+     };
      /**
       * コンストラクタ：配置するwindowと板名を指定
       * @param wxWindow*  parent                      親ウィンドウ
@@ -425,6 +429,12 @@ private:
 
      // 内部の色情報等
      wxListItemAttr m_attr;
+     wxListItemAttr m_attr_search;
+
+     // 検索を行なっているかどうか
+     bool f_nowSearching;
+     // 検索に当てはまった項目の数
+     long searchItemNum;
 
      DECLARE_EVENT_TABLE()
      DECLARE_DYNAMIC_CLASS(VirtualBoardListCtrl)
