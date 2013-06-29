@@ -266,11 +266,11 @@ private:
      /**
       * COOKIEのデータ書き出しを行う
       */
-     void WriteCookieData(wxString dataFilePath);
+     void WriteCookieData(const wxString& dataFilePath);
      /*
-      * PERNのデータ書き出しを行う
+      * PRENのデータ書き出しを行う
       */
-     void WritePernData(wxString dataFilePath);
+     void WritePrenData(const wxString& dataFilePath);
      /**
       * ログとして出力するためのテキストコントロールのポインタ
       */

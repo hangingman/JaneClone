@@ -305,7 +305,6 @@ wxString SocketCommunication::DownloadThreadList(const wxString boardName,
 
      return outputFilePath;
 }
-
 /**
  * 新規にスレッド一覧をダウンロードしてくるメソッド
  * @param gzipのダウンロード先パス
@@ -483,7 +482,6 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 
      return -1;
 }
-
 /**
  * スレッドのデータをダウンロードしてくるメソッド
  * @param 板名
@@ -947,11 +945,19 @@ size_t SocketCommunication::WriteHeaderData(char *ptr, size_t size, size_t nmemb
      if (std::string::npos != line.find("Set-Cookie:")) {
 	  wxString cookie;
 	  wxString(line.c_str(), wxConvUTF8).StartsWith(wxT("Set-Cookie: "), &cookie);
-	  JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie"), cookie);
+
+	  // 2chからもらえるCookieは複数ある
+	  if (cookie.Contains(wxT("PON"))) {
+	       JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie-PON"), cookie);
+	  } else if (cookie.Contains(wxT("HAP"))) {
+	       JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie-HAP"), cookie);
+	  } else {
+	       JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie"), cookie);
+	  }
+
      }
 
      respBuf.append(line);
-
      return realsize;
 }
 /**
@@ -1013,7 +1019,7 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      }
 
      // 投稿時間を算出する(UNIX Time)
-     wxString timeNow = JaneCloneUtil::GetTimeNow();
+     wxString timeNow = JaneCloneUtil::GetTimeNow(m_logCtrl);
 
      wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString headerPath = dir.GetName();
@@ -1051,7 +1057,7 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      wxString kakikomiInfo = wxT("bbs=") + boardInfoHash.boardNameAscii + wxT("&key=")
 	  + threadInfoHash.origNumber + wxT("&time=") + timeNow + wxT("&FROM=")
 	  + postContent->name + wxT("&mail") + postContent->mail + wxT("&MESSAGE")
-	  + postContent->kakikomi + wxT("&submit=") + buttonText;
+	  + postContent->kakikomi + wxT("&submit=") + buttonText;     
 
      // 接続先
      std::string url(hostName.mb_str());
@@ -1068,14 +1074,14 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
       */
      std::list<std::string> headers;
      headers.push_back("POST /test/bbs.cgi HTTP/1.1");
-     headers.push_back("Connection: close");
-     headers.push_back("Content-Type: application/x-www-form-urlencoded");
-     headers.push_back("Content-Length: " + kakikomiSize);
      headers.push_back("Host: " + std::string(hostName.mb_str()));
-     headers.push_back("Accept: text/html, */*");
+     headers.push_back("Accept: */*");
      headers.push_back("Referer: " + std::string(referer.mb_str()));
      headers.push_back("Accept-Language: ja");
      headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("Content-Length: " + kakikomiSize);
+     headers.push_back("Content-Type: application/x-www-form-urlencoded");
+     headers.push_back("Connection: close");
 
      try {
 
@@ -1089,7 +1095,7 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
 	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
 	  myRequest.setOpt(new curlpp::options::Timeout(5));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
-          // ヘッダー用ファンクタを設定する
+	  // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
 				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
 
@@ -1102,6 +1108,8 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
 	  // 文字列をクリアーしておく
 	  this->respBuf.clear();
 	  this->bodyBuf.clear();
+
+	  wxSleep(2);
 	  myRequest.perform();
 
      } catch (curlpp::RuntimeError &e) {
@@ -1150,7 +1158,7 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR"), cookie = wxT("ERROR");
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie"), &cookie);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-PON"), &cookie);
 
      // 読み取り失敗ならば書込失敗
      if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR") || cookie == wxT("ERROR"))
@@ -1168,17 +1176,12 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      }
 
      // 投稿時間を算出する(UNIX Time)
-     wxString timeNow = JaneCloneUtil::GetTimeNow();
+     wxString timeNow = JaneCloneUtil::GetTimeNow(m_logCtrl);
 
      wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString headerPath = dir.GetName();
      wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxDir datDir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
-
-     // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-     if (!dir.HasSubDirs(JANECLONE_DIR)) {
-	  ::wxMkdir(jcDir.GetName());
-     }
 
      if (!jcDir.HasSubDirs(wxT("dat"))) {
 	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
@@ -1213,101 +1216,65 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 	  + postContent->kakikomi + wxT("&submit=") + buttonText + wxT("&")
 	  + hiddenName + wxT("=") + hiddenVal;
 
+     // 接続先
+     std::string url(hostName.mb_str());
+     url += "/test/bbs.cgi";
      // URL
      const wxString boardURL = boardInfoHash.boardURL;
      // リファラを引数から作成する
      const wxString referer = wxT("http://") + hostName + wxT("/") + boardInfoHash.boardNameAscii + wxT("/");
-
-     // wxHTTPはまだ発展途上のクラスのようで、2012年現在POST用メソッドが安定版に
-     // 登録されていないので、代わりにwxSocketClientを使う
-     // ソースの統一性を持たせるため、後で全てwxSocketClientに変えるかもしれない
-     wxSocketClient* socket = new wxSocketClient();
-     socket->SetTimeout(5);
-
+     // ヘッダのサイズ
+     const std::string kakikomiSize = std::to_string(kakikomiInfo.Len());
+     
      /**
       * ヘッダを設定する
       */
-     wxString header = wxT("");
-     // POST
-     header += wxT("POST /test/bbs.cgi HTTP/1.1\n");
-     // hostname
-     header += wxT("Host: ");
-     header += hostName;
-     header += wxT("\n");
-     // Accept
-     header += wxT("Accept: */*\n");
-     // Referer
-     header += wxT("Referer: ");
-     header += referer;
-     header += wxT("\n");
-     // Accept-Language
-     header += wxT("Accept-Language: ja\n");
-     // User-Agent
-     header += wxT("User-Agent: Monazilla/1.00 (JaneClone/0.80)\n");
-     // Content-Type
-     header += wxT("Content-Type: application/x-www-form-urlencoded\n");
-     // Content-Length
-     header += wxT("Content-Length: ");
-     header += wxString::Format(_("%zd"), kakikomiInfo.Len());
-     header += wxT("\n");
-     // Cookie
-     header += wxT("Cookie: ");
-     header += cookie;
-     header += wxT(" Connection: close\n");
-     // POST
-     header += wxT("\n");
-     header += kakikomiInfo;
+     std::list<std::string> headers;
+     headers.push_back("POST /test/bbs.cgi HTTP/1.1");
+     headers.push_back("Host: " + std::string(hostName.mb_str()));
+     headers.push_back("Accept: */*");
+     headers.push_back("Referer: " + std::string(referer.mb_str()));
+     headers.push_back("Accept-Language: ja");
+     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("Content-Length: " + kakikomiSize);
+     headers.push_back("Content-Type: application/x-www-form-urlencoded");
+     // Cookieの後に /r/n が付いちゃっているので"Connection: close"を連結してそのままPOST...
+     headers.push_back("Cookie: " + std::string(cookie.mb_str()) + std::string("Connection: close"));
 
-     // ホストに接続する
-     wxIPV4address* address = new wxIPV4address();
-     address->Hostname(hostName);
-     address->Service(80);
+     try {
 
-     // サーバ時間よりローカル端末の時間が進んでいる場合が多いので一度スリープ
-     wxSleep(2); // とりあえず２秒
+	  // 保存先を決める
+	  curlpp::Cleanup myCleanup;
+	  curlpp::Easy myRequest;
+	  myRequest.setOpt(new curlpp::options::Url(url));
+	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
+	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
+	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
+	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
+	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Verbose(true));
+	  // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
 
-     if (!socket->Connect(*address)) {
-	  // 接続失敗
-	  *m_logCtrl << wxT("　(ﾟ)(ﾟ) ") << wxT("\n");
-	  *m_logCtrl << wxT("彡　　と ＜　書込失敗、ち～ん") << wxT("\n");
-	  delete socket;
-	  delete address;
-	  return FAIL_TO_POST;
+	  std::ofstream ofs(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+	  curlpp::options::WriteStream ws(&ofs);
+	  myRequest.setOpt(ws);
+
+	  *m_logCtrl << wxT("書き込み実行 (ヽ´ん`)") << wxT("\n");
+
+	  // 文字列をクリアーしておく
+	  this->respBuf.clear();
+	  this->bodyBuf.clear();
+
+	  wxSleep(2);
+	  myRequest.perform();
+
+     } catch (curlpp::RuntimeError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
+     } catch (curlpp::LogicError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
      }
-
-     // ヘッダ情報を書き込む
-     socket->Write(header.c_str(),header.Len());
-     wxString wHeaderLog = wxString::Format(_("Wrote %u out of %zd bytes"),socket->LastCount(), header.Len());
-     *m_logCtrl << wHeaderLog << wxT("\n");
-
-     // レスポンスを受け取る
-     wxString resPath = headerPath;
-     wxFileOutputStream output(headerPath);
-     wxDataOutputStream out(output);
-
-     wxInputStream *stream = new wxSocketInputStream(*socket);
-     if (!stream) {
-	  // ERROR
-	  *m_logCtrl << wxT("内部エラー：ストリームの作成に失敗") << wxT("\n");
-	  delete stream;
-	  return FAIL_TO_POST;
-     }
-
-     unsigned char ch[1];
-     int byteRead;
-
-     // ストリームを受け取るループ部分
-     while (!stream->Eof()) {
-	  stream->Read(ch, 1);
-	  out.Write8(ch, 1);
-	  byteRead = stream->LastRead();
-	  if (byteRead < 0) {
-	       break;
-	  }
-     }
-
-     delete stream;
-     output.Close();
 
      // Shift_JIS から UTF-8への変換処理
      wxNKF* nkf = new wxNKF();
@@ -1318,8 +1285,8 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 
      // ファイルのリネーム
      wxRenameFile(tmpPath, headerPath);
-     // PERNのデータをコンフィグファイルに書き出す
-     WritePernData(headerPath);
+     // PRENのデータをコンフィグファイルに書き出す
+     WritePrenData(headerPath);
 
      return headerPath;
 }
@@ -1350,19 +1317,19 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 
      // 不可視項目値をコンフィグファイルから取得する
      InitializeCookie();
-     wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR"), cookie = wxT("ERROR"), pern = wxT("ERROR");
+     wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR"), cookie = wxT("ERROR"), pren = wxT("ERROR");
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie"), &cookie);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("PERN"), &pern);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-PON"), &cookie);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("PREN"), &pren);
 
      // 読み取り失敗ならば書込失敗
-     if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR") || cookie == wxT("ERROR") || pern == wxT("ERROR"))
+     if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR") || cookie == wxT("ERROR") || pren == wxT("ERROR"))
 	  return FAIL_TO_POST;
 
      // cookie用の文字列を作成する
      // ";"が最初に出てくる部分を求める
-     wxString cookieString = cookie + wxT("; ") + hiddenName + wxT("=") + hiddenVal + wxT("; PREN=") + pern;
+     const wxString cookieString = cookie + wxT("; ") + hiddenName + wxT("=") + hiddenVal + wxT("; PREN=") + pren;
 
      // URLからホスト名を取得する
      wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
@@ -1375,7 +1342,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      }
 
      // 投稿時間を算出する(UNIX Time)
-     wxString timeNow = JaneCloneUtil::GetTimeNow();
+     wxString timeNow = JaneCloneUtil::GetTimeNow(m_logCtrl);
 
      wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString headerPath = dir.GetName();
@@ -1383,10 +1350,6 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      wxDir datDir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
 
      // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-     if (!dir.HasSubDirs(JANECLONE_DIR)) {
-	  ::wxMkdir(jcDir.GetName());
-     }
-
      if (!jcDir.HasSubDirs(wxT("dat"))) {
 	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
      }
@@ -1419,103 +1382,65 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 	  + postContent->name + wxT("&mail=") + postContent->mail + wxT("&MESSAGE=")
 	  + postContent->kakikomi + wxT("&submit=") + buttonText;
 
+     // 接続先
+     std::string url(hostName.mb_str());
+     url += "/test/bbs.cgi";
      // URL
      const wxString boardURL = boardInfoHash.boardURL;
      // リファラを引数から作成する
      const wxString referer = wxT("http://") + hostName + wxT("/") + boardInfoHash.boardNameAscii + wxT("/");
-
-     // wxHTTPはまだ発展途上のクラスのようで、2012年現在POST用メソッドが安定版に
-     // 登録されていないので、代わりにwxSocketClientを使う
-     // ソースの統一性を持たせるため、後で全てwxSocketClientに変えるかもしれない
-     wxSocketClient* socket = new wxSocketClient();
-     socket->SetTimeout(5);
-
+     // ヘッダのサイズ
+     const std::string kakikomiSize = std::to_string(kakikomiInfo.Len());
+     
      /**
       * ヘッダを設定する
       */
-     wxString header = wxT("");
-     // POST
-     header += wxT("POST /test/bbs.cgi HTTP/1.1\n");
-     // hostname
-     header += wxT("Host: ");
-     header += hostName;
-     header += wxT("\n");
-     // Accept
-     header += wxT("Accept: */*\n");
-     // Referer
-     header += wxT("Referer: ");
-     header += referer;
-     header += wxT("\n");
-     // Accept-Language
-     header += wxT("Accept-Language: ja\n");
-     // User-Agent
-     header += wxT("User-Agent: Monazilla/1.00 (JaneClone/0.80)\n");
-     // Content-Type
-     header += wxT("Content-Type: application/x-www-form-urlencoded\n");
-     // Content-Length
-     header += wxT("Content-Length: ");
-     header += wxString::Format(_("%zd"), kakikomiInfo.Len());
-     header += wxT("\n");
-     // Cookie
-     header += wxT("Cookie: ");
-     header += cookieString;
-     header += wxT("\n");
-     // Connection
-     header += wxT("Connection: close\n");
-     // POST
-     header += wxT("\n");
-     header += kakikomiInfo;
+     std::list<std::string> headers;
+     headers.push_back("POST /test/bbs.cgi HTTP/1.1");
+     headers.push_back("Host: " + std::string(hostName.mb_str()));
+     headers.push_back("Accept: */*");
+     headers.push_back("Referer: " + std::string(referer.mb_str()));
+     headers.push_back("Accept-Language: ja");
+     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("Content-Length: " + kakikomiSize);
+     headers.push_back("Content-Type: application/x-www-form-urlencoded");
+     // Cookieの後に /r/n が付いちゃっているので"Connection: close"を連結してそのままPOST...
+     headers.push_back("Cookie: " + std::string(cookieString.mb_str()) + std::string("Connection: close"));
 
-     // ホストに接続する
-     wxIPV4address* address = new wxIPV4address();
-     address->Hostname(hostName);
-     address->Service(80);
+     try {
 
-     // サーバ時間よりローカル端末の時間が進んでいる場合が多いので一度スリープ
-     wxSleep(2); // とりあえず２秒
+	  // 保存先を決める
+	  curlpp::Cleanup myCleanup;
+	  curlpp::Easy myRequest;
+	  myRequest.setOpt(new curlpp::options::Url(url));
+	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
+	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
+	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
+	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
+	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Verbose(true));
+	  // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
 
-     if (!socket->Connect(*address)) {
-	  // 接続失敗
-	  *m_logCtrl << wxT("　(ﾟ)(ﾟ) ") << wxT("\n");
-	  *m_logCtrl << wxT("彡　　と ＜　書込失敗、ち～ん") << wxT("\n");
-	  delete socket;
-	  delete address;
-	  return FAIL_TO_POST;
+	  std::ofstream ofs(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+	  curlpp::options::WriteStream ws(&ofs);
+	  myRequest.setOpt(ws);
+
+	  *m_logCtrl << wxT("書き込み実行 (ヽ´ん`)") << wxT("\n");
+
+	  // 文字列をクリアーしておく
+	  this->respBuf.clear();
+	  this->bodyBuf.clear();
+
+	  wxSleep(2);
+	  myRequest.perform();
+
+     } catch (curlpp::RuntimeError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
+     } catch (curlpp::LogicError &e) {
+	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
      }
-
-     // ヘッダ情報を書き込む
-     socket->Write(header.c_str(),header.Len());
-     wxString wHeaderLog = wxString::Format(_("Wrote %u out of %zd bytes"),socket->LastCount(), header.Len());
-     *m_logCtrl << wHeaderLog << wxT("\n");
-
-     // レスポンスを受け取る
-     wxString resPath = headerPath;
-     wxFileOutputStream output(headerPath);
-     wxDataOutputStream out(output);
-
-     wxInputStream *stream = new wxSocketInputStream(*socket);
-     if (!stream) {
-	  // ERROR
-	  *m_logCtrl << wxT("内部エラー：ストリームの作成に失敗") << wxT("\n");
-	  delete stream;
-	  return FAIL_TO_POST;
-     }
-
-     unsigned char ch[1];
-     int byteRead;
-
-     // ストリームを受け取るループ部分
-     while (!stream->Eof()) {
-	  stream->Read(ch, 1);
-	  out.Write8(ch, 1);
-	  byteRead = stream->LastRead();
-	  if (byteRead < 0) {
-	       break;
-	  }
-     }
-
-     delete stream;
-     output.Close();
 
      // Shift_JIS から UTF-8への変換処理
      wxNKF* nkf = new wxNKF();
@@ -1558,7 +1483,7 @@ void SocketCommunication::SetPostContent(PostContent* postContent) {
 /**
  * COOKIEのデータ書き出しを行う
  */
-void SocketCommunication::WriteCookieData(wxString dataFilePath) {
+void SocketCommunication::WriteCookieData(const wxString& dataFilePath) {
 
      // HTTPヘッダファイルを読み込む
      InitializeCookie();
@@ -1592,15 +1517,15 @@ void SocketCommunication::WriteCookieData(wxString dataFilePath) {
      cookieFile.Close();
 }
 /*
- * PERNのデータ書き出しを行う
+ * PRENのデータ書き出しを行う
  */
-void SocketCommunication::WritePernData(wxString dataFilePath) {
+void SocketCommunication::WritePrenData(const wxString& dataFilePath) {
 
      // HTTPヘッダファイルを読み込む
      InitializeCookie();
      wxTextFile cookieFile;
      cookieFile.Open(dataFilePath, wxConvUTF8);
-     wxString str, pern;
+     wxString str, pren;
 
      // ファイルがオープンされているならば
      if (cookieFile.IsOpened()) {
@@ -1608,18 +1533,18 @@ void SocketCommunication::WritePernData(wxString dataFilePath) {
 	       // Set-Cookieに当たる部分を読み取る
 	       wxString tmp;
 	       if (str.StartsWith(wxT("Set-Cookie: PREN="), &tmp)) {
-		    pern = tmp;
+		    pren = tmp;
 	       }
 	  }
      }
 
      // ";"が最初に出てくる部分を求める
-     int index = pern.Find(wxT(";"));
-     wxString tmp = pern.Mid(0, index - 1);
-     pern = tmp;
+     int index = pren.Find(wxT(";"));
+     wxString tmp = pren.Mid(0, index - 1);
+     pren = tmp;
 
      // クッキー情報をコンフィグファイルに書き出す
-     JaneCloneUtil::SetJaneCloneProperties(wxT("PERN"), pern);
+     JaneCloneUtil::SetJaneCloneProperties(wxT("PREN"), pren);
 
      cookieFile.Close();
 }

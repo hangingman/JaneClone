@@ -87,7 +87,7 @@ public:
      /**
       * 現在時刻をUNIX Timeで返す
       */
-     static wxString GetTimeNow();
+     static wxString GetTimeNow(wxTextCtrl* logCtrl);
      /**
       * 文字列をURLエンコードする
       */

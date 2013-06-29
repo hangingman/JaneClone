@@ -70,7 +70,7 @@ public:
      // begin wxGlade: ResponseWindow::ids
      // end wxGlade
      ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName& boardInfoHash,
-		    ThreadInfo& threadInfoHash, wxPoint& point);
+		    ThreadInfo& threadInfoHash, wxPoint& point, wxTextCtrl* logCtrl);
      /**
       * ログ出力用のウィンドウを設定する
       */
@@ -97,14 +97,15 @@ private:
      void PostConfirm(SocketCommunication* sock);
      
      void PostResponse(SocketCommunication* sock);
-     
+     // 2chのサーバから受け取ったHTMLファイルを読み取りwxStringに格納する
+     void ReadResponseHtml(const wxString& resultHtmlPath, wxString& htmlSource);
 
      // レス投稿ウィンドウのモード設定
      bool f_threadPost;
 
      // 内部で保持するスレッドや板情報
-     URLvsBoardName m_boardInfo;
-     ThreadInfo m_threadInfo;
+     URLvsBoardName  m_boardInfo;
+     ThreadInfo      m_threadInfo;
      /**
       * ログとして出力するためのテキストコントロールのポインタ
       */

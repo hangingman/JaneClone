@@ -151,8 +151,12 @@ TAGS_MODULE_BEGIN(Form)
 
 TAGS_MODULE_END(Form)
 
-ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName& boardInfoHash, ThreadInfo& threadInfoHash, wxPoint& point):
-wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE) {
+ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName& boardInfoHash, 
+			       ThreadInfo& threadInfoHash, wxPoint& point, wxTextCtrl* logCtrl):
+     wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE) {
+
+     // ログ出力用のポインタを設定
+     this->m_logCtrl = logCtrl;
 
      // アイコンの設定を行う
 #ifdef __WXMSW__
@@ -162,7 +166,7 @@ wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG
 #endif
 
      // 構造体をローカルに格納する
-     m_boardInfo = boardInfoHash;
+     m_boardInfo  = boardInfoHash;
      m_threadInfo = threadInfoHash;
 
      // begin wxGlade: ResponseWindow::ResponseWindow
@@ -262,21 +266,23 @@ void ResponseWindow::do_layout() {
 void ResponseWindow::OnPostResponse(wxCommandEvent &event) {
 
      // ソケット通信用のクラスのインスタンスを用意する
-     SocketCommunication* socketCommunication = new SocketCommunication();
-     socketCommunication->SetLogWindow(m_logCtrl);
+     SocketCommunication* socketCommunication = new SocketCommunication(m_logCtrl);
      // クッキーの状態チェック
      int cookieStatus = CheckCookie();
 
      if (cookieStatus == NO_COOKIE) {
 	  // クッキーがない状態
+	  *m_logCtrl << wxT("初回書き込みを実行\n");
 	  PostFirstResponse(socketCommunication);
 	  delete socketCommunication;
      } else if (cookieStatus == HAS_COOKIE_HIDDEN) {
 	  // 最初のレスの後クッキーのみもらった状態
+	  *m_logCtrl << wxT("2chの規約に許諾後の書き込みを実行\n");
 	  PostConfirm(socketCommunication);
 	  delete socketCommunication;
      } else if (cookieStatus == HAS_PERN) {
 	  // PERNをもらった状態；通常の書き込み
+	  *m_logCtrl << wxT("通常書き込みを実行\n");
 	  PostResponse(socketCommunication);
 	  delete socketCommunication;
      }
@@ -333,28 +339,8 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
      // 取得サイズ分だけwxStringを確保する
      wxString htmlSource;
      htmlSource.Alloc(fileSize);
-
      // テキストファイルの読み込み
-     wxTextFile confirmFile;
-     confirmFile.Open(result, wxConvUTF8);
-     wxString str;
-
-     // ファイルがオープンされているならば
-     if (confirmFile.IsOpened()) {
-	  for (str = confirmFile.GetFirstLine(); !confirmFile.Eof();
-	       str = confirmFile.GetNextLine()) {
-
-	       if (str.IsNull() || !str.StartsWith(wxT("<html>"))) {
-		    continue;
-	       } else {
-		    str.Replace(wxT("charset=x-sjis"), wxT("charset=utf-8"));
-	       }
-
-	       htmlSource += str;
-	  }
-     }
-
-     confirmFile.Close();
+     ReadResponseHtml(result, htmlSource);
      // wxHtmlWindowに結果を表示する
      resNoteBook->SetSelection(KAKIKO_PAGE);
      previewWindow->SetPage(htmlSource);
@@ -364,6 +350,22 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
  */
 void ResponseWindow::PostConfirm(SocketCommunication* sock) {
 
+
+     // 投稿内容作成
+     m_postContent = new PostContent;
+     // NKFの準備
+     const wxString option = wxT("--ic=UTF-8 --oc=CP932");
+     wxNKF* nkf = new wxNKF();
+     const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
+     const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
+     const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+     delete nkf;
+
+     // 投稿用の構造体にURLエンコードされた文字列を格納
+     m_postContent->name = wxString(JaneCloneUtil::UrlEncode(stdName).c_str(), wxConvUTF8);
+     m_postContent->mail = wxString(JaneCloneUtil::UrlEncode(stdMail).c_str(), wxConvUTF8);
+     m_postContent->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
+
      if (m_postContent->kakikomi.IsEmpty()) {
      	  // 内容が無ければエラー
      	  *m_logCtrl << wxT("内部エラー…(ヽ´ん`)…やり直してみて…\n");
@@ -371,18 +373,14 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
      }
 
      sock->SetPostContent(m_postContent);
-     wxString result = sock->PostConfirmToThread(m_boardInfo, m_threadInfo, HAS_COOKIE_HIDDEN);
 
-     if (result.StartsWith(wxT("<html>"))) {
-	  // 返り値が<html>タグから始まっていれば書込は失敗
-	  // wxHtmlWindowに結果を表示する
-	  resNoteBook->SetSelection(KAKIKO_PAGE);
-	  previewWindow->SetPage(result);
-	  // メモリの解放
-	  //delete post;
-	  delete sock;
-	  return;
+     if (m_boardInfo.boardName.Len() == 0 || m_threadInfo.title.Len() == 0) {
+     	  *m_logCtrl << wxT("内部エラー…(ヽ´ん`)……板情報とスレッド情報がおかしいです\n");
+     	  return;
      }
+     
+     // 返り値は書き込み結果を示すHTMLファイル
+     wxString result = sock->PostConfirmToThread(m_boardInfo, m_threadInfo, HAS_COOKIE_HIDDEN);
      
      // 失敗でなければ確認画面を表すヘッダファイルへのパスなので
      // ユーザーに確認させるため表示する
@@ -399,29 +397,8 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
      // 取得サイズ分だけwxStringを確保する
      wxString htmlSource;
      htmlSource.Alloc(fileSize);
-
      // テキストファイルの読み込み
-     wxTextFile confirmFile;
-     confirmFile.Open(result, wxConvUTF8);
-     wxString str;
-
-     // ファイルがオープンされているならば
-     if (confirmFile.IsOpened()) {
-	  for (str = confirmFile.GetFirstLine(); !confirmFile.Eof();
-	       str = confirmFile.GetNextLine()) {
-
-	       if (str.IsNull() || !str.StartsWith(wxT("<html>"))) {
-		    continue;
-	       } else {
-		    str.Replace(wxT("charset=x-sjis"), wxT("charset=utf-8"));
-	       }
-
-	       htmlSource += str;
-	  }
-     }
-
-     confirmFile.Close();
-     // wxHtmlWindowに結果を表示する
+     ReadResponseHtml(result, htmlSource);
      resNoteBook->SetSelection(KAKIKO_PAGE);
      previewWindow->SetPage(htmlSource);
 }
@@ -473,28 +450,8 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
      // 取得サイズ分だけwxStringを確保する
      wxString htmlSource;
      htmlSource.Alloc(fileSize);
-
      // テキストファイルの読み込み
-     wxTextFile confirmFile;
-     confirmFile.Open(result, wxConvUTF8);
-     wxString str;
-
-     // ファイルがオープンされているならば
-     if (confirmFile.IsOpened()) {
-	  for (str = confirmFile.GetFirstLine(); !confirmFile.Eof();
-	       str = confirmFile.GetNextLine()) {
-
-	       if (str.IsNull() || !str.StartsWith(wxT("<html>"))) {
-		    continue;
-	       } else {
-		    str.Replace(wxT("charset=x-sjis"), wxT("charset=utf-8"));
-	       }
-
-	       htmlSource += str;
-	  }
-     }
-
-     confirmFile.Close();
+     ReadResponseHtml(result, htmlSource);
      // wxHtmlWindowに結果を表示する
      resNoteBook->SetSelection(KAKIKO_PAGE);
      previewWindow->SetPage(htmlSource);
@@ -529,7 +486,7 @@ int ResponseWindow::CheckCookie() {
      wxString hiddenName = wxEmptyString, hiddenVal = wxEmptyString, cookie = wxEmptyString, pern = wxEmptyString;
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie"), &cookie);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-PON"), &cookie);
      JaneCloneUtil::GetJaneCloneProperties(wxT("PERN"), &pern);
 
      // もしクッキーと隠し要素１がなければクッキーがないのと同じなのでNO_COOKIEを返す
@@ -543,4 +500,31 @@ int ResponseWindow::CheckCookie() {
      }
 
      return HAS_COOKIE_HIDDEN;
+}
+/**
+ *  2chのサーバから受け取ったHTMLファイルを読み取りwxStringに格納する
+ */
+void ResponseWindow::ReadResponseHtml(const wxString& resultHtmlPath, wxString& htmlSource) {
+
+     std::ifstream ifs(resultHtmlPath.mb_str());
+
+     if (ifs) {
+	  std::string line;
+	  
+	  while (ifs) {
+	       getline(ifs, line);
+	       wxString wxLine(line.c_str(), wxConvUTF8);
+
+	       if (std::string::npos != line.find("charset=")) {
+		    wxLine.Replace(wxT("charset=x-sjis"), wxT("charset=utf-8"));
+		    wxLine.Replace(wxT("charset=shift_jis"), wxT("charset=utf-8"));
+	       }
+
+	       htmlSource.Append(wxLine);
+	  }
+
+     } else {
+	  // エラー
+	  return;
+     }
 }

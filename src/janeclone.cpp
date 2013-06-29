@@ -1897,6 +1897,7 @@ void JaneClone::CallResponseWindow(wxCommandEvent& event) {
      // 選択されたスレタブの情報を集める
      wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
      threadInfoHash = tiHash[title];
+     threadInfoHash.title = title; // タイトル情報を設定する
 
      // ハッシュからURLを探す
      NameURLHash::iterator it;
@@ -1912,7 +1913,7 @@ void JaneClone::CallResponseWindow(wxCommandEvent& event) {
      ::wxDisplaySize(&wScreenPx, &hScreenPx);
      // レス用のウィンドウは 640:480なので、ちょうど中央にくるように調整する
      wxPoint point(wScreenPx/2 - 320, hScreenPx/2 - 240);
-     ResponseWindow* response = new ResponseWindow((wxWindow*)this, title, boardInfoHash, threadInfoHash, point);
+     ResponseWindow* response = new ResponseWindow(this, title, boardInfoHash, threadInfoHash, point, m_logCtrl);
      // ログ出力ウィンドウのインスタンスのポインタを渡す
      response->SetLogWindow(m_logCtrl);
      response->Show(true);
