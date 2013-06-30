@@ -280,8 +280,8 @@ void ResponseWindow::OnPostResponse(wxCommandEvent &event) {
 	  *m_logCtrl << wxT("2chの規約に許諾後の書き込みを実行\n");
 	  PostConfirm(socketCommunication);
 	  delete socketCommunication;
-     } else if (cookieStatus == HAS_PERN) {
-	  // PERNをもらった状態；通常の書き込み
+     } else if (cookieStatus == HAS_PREN) {
+	  // PRENをもらった状態；通常の書き込み
 	  *m_logCtrl << wxT("通常書き込みを実行\n");
 	  PostResponse(socketCommunication);
 	  delete socketCommunication;
@@ -403,7 +403,7 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
      previewWindow->SetPage(htmlSource);
 }
 /**
- * PERNをもらった状態；通常の書き込み
+ * PRENをもらった状態；通常の書き込み
  */
 void ResponseWindow::PostResponse(SocketCommunication* sock) {
 
@@ -423,7 +423,7 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
      post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
 
      sock->SetPostContent(post);
-     wxString result = sock->PostResponseToThread(m_boardInfo, m_threadInfo, HAS_PERN);
+     wxString result = sock->PostResponseToThread(m_boardInfo, m_threadInfo, HAS_PREN);
      delete post;
 
      if (result.StartsWith(wxT("<html>"))) {
@@ -483,20 +483,20 @@ int ResponseWindow::CheckCookie() {
 	  return NO_COOKIE;
 
      // 内部にある要素を調べる
-     wxString hiddenName = wxEmptyString, hiddenVal = wxEmptyString, cookie = wxEmptyString, pern = wxEmptyString;
+     wxString hiddenName = wxEmptyString, hiddenVal = wxEmptyString, cookie = wxEmptyString, pren = wxEmptyString;
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
      JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-PON"), &cookie);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("PERN"), &pern);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("PREN"), &pren);
 
      // もしクッキーと隠し要素１がなければクッキーがないのと同じなのでNO_COOKIEを返す
      if (hiddenName.IsEmpty() || hiddenVal.IsEmpty() || cookie.IsEmpty()) {
 	  return NO_COOKIE;
      }
 	  
-     // PERNがあればHAS_PERN、なければHAS_COOKIE_HIDDEN
-     if (!pern.IsEmpty()) {
-	  return HAS_PERN;
+     // PRENがあればHAS_PREN、なければHAS_COOKIE_HIDDEN
+     if (!pren.IsEmpty()) {
+	  return HAS_PREN;
      }
 
      return HAS_COOKIE_HIDDEN;

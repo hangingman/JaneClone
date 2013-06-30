@@ -264,13 +264,21 @@ private:
       */
      void InitializeCookie();
      /**
+      * COOKIE文字列の連結処理を行う
+      */
+     void AssembleCookie(wxString& cookie, const wxString& hiddenName, const wxString& hiddenVal);
+     /**
+      * COOKIE文字列の切り出し処理を行う
+      */
+     void SubstringCookie(wxString& cookie) {
+	  if (cookie.Len() > 0) {
+	       cookie = cookie.Mid(0, cookie.Find(wxT(";")));
+	  }
+     };
+     /**
       * COOKIEのデータ書き出しを行う
       */
      void WriteCookieData(const wxString& dataFilePath);
-     /*
-      * PRENのデータ書き出しを行う
-      */
-     void WritePrenData(const wxString& dataFilePath);
      /**
       * ログとして出力するためのテキストコントロールのポインタ
       */

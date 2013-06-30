@@ -49,18 +49,18 @@
  ・確認する要素
   ・COOKIE (日付等)
   ・HIDDEN (隠し要素１)
-  ・PERN   (隠し要素２)
+  ・PREN   (隠し要素２)
 
  ・システム上あり得る状態(これ以外の状態はイレギュラー)
  (a). 全てない                       (2)へ
  (b). COOKIEとHIDDENのみある         (3)へ
- (c). COOKIE, HIDDEN, PERNすべてある (4)へ
+ (c). COOKIE, HIDDEN, PRENすべてある (4)へ
 
  2. 初回書き込み用電文を投げてCOOKIEとHIDDENをもらう (1)へ
 
- 3. 書き込み同意画面にて「同意する」をクリックして書き込み成功, PERNをもらう(end)
+ 3. 書き込み同意画面にて「同意する」をクリックして書き込み成功, PRENをもらう(end)
 
- 4. COOKIE, HIDDEN, PERNを添えて書き込み成功(end)
+ 4. COOKIE, HIDDEN, PRENを添えて書き込み成功(end)
 
  */
 

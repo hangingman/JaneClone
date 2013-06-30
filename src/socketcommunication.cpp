@@ -940,7 +940,10 @@ size_t SocketCommunication::WriteHeaderData(char *ptr, size_t size, size_t nmemb
      std::string line(static_cast<const char *>(ptr), realsize);
 
      // ログに出力する
-     if (std::string::npos != line.find("HTTP")) *m_logCtrl << wxString(line.c_str(), wxConvUTF8) << wxT("\n");
+     if (std::string::npos != line.find("HTTP")) {
+	  *m_logCtrl << wxString(line.c_str(), wxConvUTF8) << wxT("\n");
+     }
+     
      // クッキーを書き出す
      if (std::string::npos != line.find("Set-Cookie:")) {
 	  wxString cookie;
@@ -952,9 +955,8 @@ size_t SocketCommunication::WriteHeaderData(char *ptr, size_t size, size_t nmemb
 	  } else if (cookie.Contains(wxT("HAP"))) {
 	       JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie-HAP"), cookie);
 	  } else {
-	       JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie"), cookie);
-	  }
-
+	       JaneCloneUtil::SetJaneCloneProperties(wxT("PREN"), cookie);
+	  }     
      }
 
      respBuf.append(line);
@@ -1155,13 +1157,16 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 
      // 不可視項目値をコンフィグファイルから取得する
      InitializeCookie();
-     wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR"), cookie = wxT("ERROR");
+     wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR");
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-PON"), &cookie);
+
+     // Cookie値を構築する
+     wxString cookie;
+     AssembleCookie(cookie, hiddenName, hiddenVal);
 
      // 読み取り失敗ならば書込失敗
-     if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR") || cookie == wxT("ERROR"))
+     if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR"))
 	  return FAIL_TO_POST;
 
      // URLからホスト名を取得する
@@ -1238,8 +1243,8 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      headers.push_back("User-Agent: " + userAgent);
      headers.push_back("Content-Length: " + kakikomiSize);
      headers.push_back("Content-Type: application/x-www-form-urlencoded");
-     // Cookieの後に /r/n が付いちゃっているので"Connection: close"を連結してそのままPOST...
-     headers.push_back("Cookie: " + std::string(cookie.mb_str()) + std::string("Connection: close"));
+     headers.push_back("Cookie: " + std::string(cookie.mb_str()));
+     headers.push_back("Connection: close");
 
      try {
 
@@ -1285,8 +1290,6 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 
      // ファイルのリネーム
      wxRenameFile(tmpPath, headerPath);
-     // PRENのデータをコンフィグファイルに書き出す
-     WritePrenData(headerPath);
 
      return headerPath;
 }
@@ -1317,19 +1320,17 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 
      // 不可視項目値をコンフィグファイルから取得する
      InitializeCookie();
-     wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR"), cookie = wxT("ERROR"), pren = wxT("ERROR");
+     wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR");
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
      JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-PON"), &cookie);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("PREN"), &pren);
+
+     // Cookie値を構築する
+     wxString cookie;
+     AssembleCookie(cookie, hiddenName, hiddenVal);
 
      // 読み取り失敗ならば書込失敗
-     if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR") || cookie == wxT("ERROR") || pren == wxT("ERROR"))
+     if (hiddenName == wxT("ERROR") || hiddenVal == wxT("ERROR"))
 	  return FAIL_TO_POST;
-
-     // cookie用の文字列を作成する
-     // ";"が最初に出てくる部分を求める
-     const wxString cookieString = cookie + wxT("; ") + hiddenName + wxT("=") + hiddenVal + wxT("; PREN=") + pren;
 
      // URLからホスト名を取得する
      wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
@@ -1404,8 +1405,8 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      headers.push_back("User-Agent: " + userAgent);
      headers.push_back("Content-Length: " + kakikomiSize);
      headers.push_back("Content-Type: application/x-www-form-urlencoded");
-     // Cookieの後に /r/n が付いちゃっているので"Connection: close"を連結してそのままPOST...
-     headers.push_back("Cookie: " + std::string(cookieString.mb_str()) + std::string("Connection: close"));
+     headers.push_back("Cookie: " + std::string(cookie.mb_str()));
+     headers.push_back("Connection: close");
 
      try {
 
@@ -1474,6 +1475,55 @@ void SocketCommunication::InitializeCookie() {
      }
 }
 /**
+ * COOKIE文字列の連結処理を行う
+ */
+void SocketCommunication::AssembleCookie(wxString& cookie, const wxString& hiddenName, const wxString& hiddenVal) {
+
+
+     // Cookie-PONの取得
+     wxString cookiePon;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-PON"), &cookiePon);
+     SubstringCookie(cookiePon);
+     
+     // Cookie-HAPの取得
+     wxString cookieHap;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-HAP"), &cookieHap);
+     SubstringCookie(cookieHap);
+
+     // 隠し要素の取得
+     wxString hidden = hiddenName + wxT("=") + hiddenVal + wxT("; ");
+
+     // PRENの取得
+     wxString pren;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("PREN"), &pren);
+     SubstringCookie(pren);
+
+     cookie.Clear();
+
+     if (cookiePon.Len() != 0) {
+	  cookie.Append(cookiePon);
+	  cookie.Append(wxT("; "));
+     }
+
+     if (cookieHap.Len() != 0) {
+	  cookie.Append(cookieHap);
+	  cookie.Append(wxT("; "));
+     }
+
+     if (hidden.Len() != 0) {
+	  cookie.Append(hidden);
+     }
+
+     if (pren.Len() != 0) {
+	  cookie.Append(hidden);
+     }
+
+     if (cookie.EndsWith(wxT("; "))) {
+	  cookie = cookie.RemoveLast();
+	  cookie = cookie.RemoveLast();
+     }
+}
+/**
  * 投稿内容をソケット通信クラスに設定する
  * @param PostContent構造体
  */
@@ -1513,38 +1563,6 @@ void SocketCommunication::WriteCookieData(const wxString& dataFilePath) {
      // クッキー情報をコンフィグファイルに書き出す
      JaneCloneUtil::SetJaneCloneProperties(wxT("HiddenName"), hiddenName);
      JaneCloneUtil::SetJaneCloneProperties(wxT("HiddenValue"), hiddenVal);
-
-     cookieFile.Close();
-}
-/*
- * PRENのデータ書き出しを行う
- */
-void SocketCommunication::WritePrenData(const wxString& dataFilePath) {
-
-     // HTTPヘッダファイルを読み込む
-     InitializeCookie();
-     wxTextFile cookieFile;
-     cookieFile.Open(dataFilePath, wxConvUTF8);
-     wxString str, pren;
-
-     // ファイルがオープンされているならば
-     if (cookieFile.IsOpened()) {
-	  for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine()) {
-	       // Set-Cookieに当たる部分を読み取る
-	       wxString tmp;
-	       if (str.StartsWith(wxT("Set-Cookie: PREN="), &tmp)) {
-		    pren = tmp;
-	       }
-	  }
-     }
-
-     // ";"が最初に出てくる部分を求める
-     int index = pren.Find(wxT(";"));
-     wxString tmp = pren.Mid(0, index - 1);
-     pren = tmp;
-
-     // クッキー情報をコンフィグファイルに書き出す
-     JaneCloneUtil::SetJaneCloneProperties(wxT("PREN"), pren);
 
      cookieFile.Close();
 }

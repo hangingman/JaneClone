@@ -78,7 +78,7 @@
      /** 定数化された書き込み前のCOOKIEの状態 */
 #define NO_COOKIE         10
 #define HAS_COOKIE_HIDDEN 11
-#define HAS_PERN          12
+#define HAS_PREN          12
 
 // 板一覧情報ファイルのパス
 #define BOARD_LIST_PATH ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR + wxFileSeparator + wxT("dat") + wxFileSeparator + wxT("boardlist.html")
