@@ -16404,7 +16404,7 @@ $as_echo "#define PLATFORM_WIN32 1" >>confdefs.h
 
                 PLATFORM_STRING="Win32"
 
-		need_no_undefined=yes
+		need_no_undefined=no
                 ;;
         *-*-linux*)
 
@@ -17424,41 +17424,6 @@ else
   :
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -std=c++0x" >&5
-$as_echo_n "checking whether C compiler accepts -std=c++0x... " >&6; }
-if ${ax_cv_check_cflags___std_cpp0x+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-  ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -std=c++0x"
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ax_cv_check_cflags___std_cpp0x=yes
-else
-  ax_cv_check_cflags___std_cpp0x=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  CFLAGS=$ax_check_save_flags
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___std_cpp0x" >&5
-$as_echo "$ax_cv_check_cflags___std_cpp0x" >&6; }
-if test x"$ax_cv_check_cflags___std_cpp0x" = xyes; then :
-  CXXFLAGS="$CXXFLAGS -std=c++0x"
-else
-  :
-fi
-
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -fomit-frame-pointer" >&5
 $as_echo_n "checking whether C compiler accepts -fomit-frame-pointer... " >&6; }
 if ${ax_cv_check_cflags___fomit_frame_pointer+:} false; then :
@@ -17495,9 +17460,84 @@ else
 fi
 
 
+# Checks for MinGW specific
+if test "$PLATFORM_STRING" = "Win32"; then
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -std=gnu++0x" >&5
+$as_echo_n "checking whether C compiler accepts -std=gnu++0x... " >&6; }
+if ${ax_cv_check_cflags___std_gnupp0x+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -std=gnu++0x"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___std_gnupp0x=yes
+else
+  ax_cv_check_cflags___std_gnupp0x=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___std_gnupp0x" >&5
+$as_echo "$ax_cv_check_cflags___std_gnupp0x" >&6; }
+if test x"$ax_cv_check_cflags___std_gnupp0x" = xyes; then :
+  CXXFLAGS="$CXXFLAGS -std=gnu++0x"
+else
+  :
+fi
+
+else
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -std=c++0x" >&5
+$as_echo_n "checking whether C compiler accepts -std=c++0x... " >&6; }
+if ${ax_cv_check_cflags___std_cpp0x+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -std=c++0x"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___std_cpp0x=yes
+else
+  ax_cv_check_cflags___std_cpp0x=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___std_cpp0x" >&5
+$as_echo "$ax_cv_check_cflags___std_cpp0x" >&6; }
+if test x"$ax_cv_check_cflags___std_cpp0x" = xyes; then :
+  CXXFLAGS="$CXXFLAGS -std=c++0x"
+else
+  :
+fi
+
+fi
+
 # Checks for Mac OSX specific
 if test "$PLATFORM_STRING" = "Apple"; then
-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -arch" >&5
+   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -arch" >&5
 $as_echo_n "checking whether C compiler accepts -arch... " >&6; }
 if ${ax_cv_check_cflags___arch+:} false; then :
   $as_echo_n "(cached) " >&6

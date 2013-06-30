@@ -1069,7 +1069,9 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      // リファラを引数から作成する
      const wxString referer = wxT("http://") + hostName + wxT("/") + boardInfoHash.boardNameAscii + wxT("/");
      // ヘッダのサイズ
-     const std::string kakikomiSize = std::to_string(kakikomiInfo.Len());
+     std::ostringstream stream;
+     stream << kakikomiInfo.Len();
+     const std::string kakikomiSize = stream.str();
      
      /**
       * ヘッダを設定する
@@ -1229,7 +1231,9 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      // リファラを引数から作成する
      const wxString referer = wxT("http://") + hostName + wxT("/") + boardInfoHash.boardNameAscii + wxT("/");
      // ヘッダのサイズ
-     const std::string kakikomiSize = std::to_string(kakikomiInfo.Len());
+     std::ostringstream stream;
+     stream << kakikomiInfo.Len();
+     const std::string kakikomiSize = stream.str();
      
      /**
       * ヘッダを設定する
@@ -1391,7 +1395,9 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      // リファラを引数から作成する
      const wxString referer = wxT("http://") + hostName + wxT("/") + boardInfoHash.boardNameAscii + wxT("/");
      // ヘッダのサイズ
-     const std::string kakikomiSize = std::to_string(kakikomiInfo.Len());
+     std::ostringstream stream;
+     stream << kakikomiInfo.Len();
+     const std::string kakikomiSize = stream.str();
      
      /**
       * ヘッダを設定する

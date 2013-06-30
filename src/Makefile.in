@@ -89,7 +89,9 @@ JaneClone_OBJECTS = $(am_JaneClone_OBJECTS)
 @USE_WINDRES_TRUE@	$(top_builddir)/wxsqlite3/libwxsqlite3.la \
 @USE_WINDRES_TRUE@	$(top_builddir)/sqlite3/libsqlite3.la \
 @USE_WINDRES_TRUE@	$(top_builddir)/curl/lib/libcurl.la \
-@USE_WINDRES_TRUE@	$(top_builddir)/curlpp/src/curlpp/libcurlpp.la
+@USE_WINDRES_TRUE@	$(top_builddir)/curlpp/src/curlpp/libcurlpp.la \
+@USE_WINDRES_TRUE@	$(top_builddir)/curlpp/src/utilspp/libutilspp.la \
+@USE_WINDRES_TRUE@	$(top_builddir)/curlpp/src/curlpp/internal/libinternal.la
 JaneClone_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(JaneClone_CXXFLAGS) \
 	$(CXXFLAGS) $(JaneClone_LDFLAGS) $(LDFLAGS) -o $@
@@ -339,10 +341,10 @@ ACLOCAL_AMFLAGS = -I m4
 
 # For Icon build and library dependency
 # Platform is Windows
-@USE_WINDRES_TRUE@JaneClone_LDADD = JaneClone_rc.o $(top_builddir)/libwxnkf/libwxnkf.la $(top_builddir)/libwxuuid/libwxuuid.la $(top_builddir)/wxsqlite3/libwxsqlite3.la $(top_builddir)/sqlite3/libsqlite3.la $(top_builddir)/curl/lib/libcurl.la $(top_builddir)/curlpp/src/curlpp/libcurlpp.la
+@USE_WINDRES_TRUE@JaneClone_LDADD = JaneClone_rc.o $(top_builddir)/libwxnkf/libwxnkf.la $(top_builddir)/libwxuuid/libwxuuid.la $(top_builddir)/wxsqlite3/libwxsqlite3.la $(top_builddir)/sqlite3/libsqlite3.la $(top_builddir)/curl/lib/libcurl.la $(top_builddir)/curlpp/src/curlpp/libcurlpp.la $(top_builddir)/curlpp/src/utilspp/libutilspp.la $(top_builddir)/curlpp/src/curlpp/internal/libinternal.la
 
 # Platform is not Windows
-@USE_WINDRES_FALSE@JaneClone_LDFLAGS = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3 -L$(top_builddir)/curl/lib -lcurl -L$(top_builddir)/curlpp/src/curlpp -lcurlpp
+@USE_WINDRES_FALSE@JaneClone_LDFLAGS = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3 -L$(top_builddir)/curl/lib -lcurl -L$(top_builddir)/curlpp/src/curlpp -lcurlpp -L$(top_builddir)/curlpp/src/utilspp -lutilspp -L$(top_builddir)/curlpp/src/curlpp/internal -linternal 
 @USE_WINDRES_TRUE@JaneClone_LDFLAGS = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ JaneClone_rc.o
 all: all-am
 

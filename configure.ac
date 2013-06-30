@@ -25,7 +25,7 @@ case "$host" in
                 AC_DEFINE(PLATFORM_WIN32, 1, [Platform is Win32])
                 PLATFORM_STRING="Win32"
 		AC_SUBST(PLATFORM_STRING)
-		need_no_undefined=yes
+		need_no_undefined=no
                 ;;
         *-*-linux*)
                 AC_DEFINE(PLATFORM_LINUX, 1, [Platform is Linux])
@@ -183,12 +183,18 @@ esac
 
 # Check compile flag
 AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
-AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
 AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"])
+
+# Checks for MinGW specific
+if test "$PLATFORM_STRING" = "Win32"; then
+   AX_CHECK_COMPILE_FLAG([-std=gnu++0x], [CXXFLAGS="$CXXFLAGS -std=gnu++0x"])
+else
+   AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
+fi
 
 # Checks for Mac OSX specific
 if test "$PLATFORM_STRING" = "Apple"; then
-	AX_CHECK_COMPILE_FLAG([-arch], [CXXFLAGS="$CXXFLAGS -arch x86_64" CFLAGS="$CFLAGS -arch x86_64"])
+   AX_CHECK_COMPILE_FLAG([-arch], [CXXFLAGS="$CXXFLAGS -arch x86_64" CFLAGS="$CFLAGS -arch x86_64"])
 fi
 
 # Add Flags
