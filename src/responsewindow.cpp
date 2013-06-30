@@ -299,13 +299,34 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
      wxNKF* nkf = new wxNKF();
      const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
      const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
-     const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+     // 改行コードを含んでいる場合は分けてエンコード
+     if (text_ctrl_1->GetValue().Contains(wxT("\n"))) {
+
+	  std::string stdKakikomi, urlEnced;
+
+	  for (int i = 0; i < text_ctrl_1->GetNumberOfLines(); i++) {
+
+	       wxString tmp = text_ctrl_1->GetLineText(i);
+	       if (tmp == wxEmptyString) {
+		    urlEnced    += "%0D%0A";
+		    continue;
+	       }
+	       stdKakikomi  = nkf->WxToMultiByte(tmp, option);
+	       urlEnced    += JaneCloneUtil::UrlEncode(stdKakikomi);
+	       urlEnced    += "%0D%0A";
+	  }
+
+	  post->kakikomi = wxString(urlEnced.c_str(), wxConvUTF8);
+
+     } else {
+	  const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+	  post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
+     }
      delete nkf;
 
      // 投稿用の構造体にURLエンコードされた文字列を格納
      post->name = wxString(JaneCloneUtil::UrlEncode(stdName).c_str(), wxConvUTF8);
      post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail).c_str(), wxConvUTF8);
-     post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
 
      sock->SetPostContent(post);
      wxString result = sock->PostFirstToThread(m_boardInfo, m_threadInfo, NO_COOKIE);
@@ -358,13 +379,34 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
      wxNKF* nkf = new wxNKF();
      const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
      const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
-     const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+     // 改行コードを含んでいる場合は分けてエンコード
+     if (text_ctrl_1->GetValue().Contains(wxT("\n"))) {
+
+	  std::string stdKakikomi, urlEnced;
+
+	  for (int i = 0; i < text_ctrl_1->GetNumberOfLines(); i++) {
+
+	       wxString tmp = text_ctrl_1->GetLineText(i);
+	       if (tmp == wxEmptyString) {
+		    urlEnced    += "%0D%0A";
+		    continue;
+	       }
+	       stdKakikomi  = nkf->WxToMultiByte(tmp, option);
+	       urlEnced    += JaneCloneUtil::UrlEncode(stdKakikomi);
+	       urlEnced    += "%0D%0A";
+	  }
+
+	  m_postContent->kakikomi = wxString(urlEnced.c_str(), wxConvUTF8);
+
+     } else {
+	  const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+	  m_postContent->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
+     }
      delete nkf;
 
      // 投稿用の構造体にURLエンコードされた文字列を格納
      m_postContent->name = wxString(JaneCloneUtil::UrlEncode(stdName).c_str(), wxConvUTF8);
      m_postContent->mail = wxString(JaneCloneUtil::UrlEncode(stdMail).c_str(), wxConvUTF8);
-     m_postContent->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
 
      if (m_postContent->kakikomi.IsEmpty()) {
      	  // 内容が無ければエラー
@@ -414,13 +456,35 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
      wxNKF* nkf = new wxNKF();
      const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
      const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
-     const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+     // 改行コードを含んでいる場合は分けてエンコード
+     if (text_ctrl_1->GetValue().Contains(wxT("\n"))) {
+
+	  std::string stdKakikomi, urlEnced;
+
+	  for (int i = 0; i < text_ctrl_1->GetNumberOfLines(); i++) {
+
+	       wxString tmp = text_ctrl_1->GetLineText(i);
+	       if (tmp == wxEmptyString) {
+		    urlEnced    += "%0D%0A";
+		    continue;
+	       }
+	       stdKakikomi  = nkf->WxToMultiByte(tmp, option);
+	       urlEnced    += JaneCloneUtil::UrlEncode(stdKakikomi);
+	       urlEnced    += "%0D%0A";
+	  }
+	  
+	  post->kakikomi = wxString(urlEnced.c_str(), wxConvUTF8);
+
+     } else {
+
+	  const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+	  post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
+     }
      delete nkf;
 
      // 投稿用の構造体にURLエンコードされた文字列を格納
      post->name = wxString(JaneCloneUtil::UrlEncode(stdName).c_str(), wxConvUTF8);
      post->mail = wxString(JaneCloneUtil::UrlEncode(stdMail).c_str(), wxConvUTF8);
-     post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
 
      sock->SetPostContent(post);
      wxString result = sock->PostResponseToThread(m_boardInfo, m_threadInfo, HAS_PREN);

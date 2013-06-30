@@ -28,6 +28,7 @@
 #include <wx/html/htmlwin.h>
 #include <wx/html/winpars.h>
 #include <wx/valgen.h>
+#include <wx/tokenzr.h>
 #include "enums.hpp"
 #include "socketcommunication.hpp"
 #include "datatype.hpp"
