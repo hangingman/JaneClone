@@ -30,7 +30,9 @@
  */
 #if !defined(CURLPP_STATICLIB)
 	#if defined(BUILDING_CURLPP)
-		#if (defined(WIN32) || defined(_WIN32))
+                #if   (defined(__MINGW32__) || defined(__MINGW64__))
+			#define CURLPPAPI
+		#elif (defined(WIN32) || defined(_WIN32))
 			#define CURLPPAPI  __declspec(dllexport)
 		#else
 			#define CURLPPAPI
@@ -39,7 +41,9 @@
 		#define CURLPP_LIB_EXPORT
 		#undef CURLPP_LIB_IMPORT
 	#else
-		#if (defined(WIN32) || defined(_WIN32))
+                #if   (defined(__MINGW32__) || defined(__MINGW64__))
+			#define CURLPPAPI
+		#elif (defined(WIN32) || defined(_WIN32))
 			#define CURLPPAPI  __declspec(dllimport)
 		#else
 			#define CURLPPAPI
