@@ -185,17 +185,24 @@ esac
 AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
 AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"])
 
-# Checks for MinGW specific
-if test "$PLATFORM_STRING" = "Win32"; then
-   AX_CHECK_COMPILE_FLAG([-std=gnu++0x], [CXXFLAGS="$CXXFLAGS -std=gnu++0x"])
-else
-   AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
-fi
+# Checks for compiler
+AX_COMPILER_VENDOR
+case "${ax_cv_c_compiler_vendor}" in
 
-# Checks for Mac OSX specific
-if test "$PLATFORM_STRING" = "Apple"; then
-   AX_CHECK_COMPILE_FLAG([-arch], [CXXFLAGS="$CXXFLAGS -arch x86_64" CFLAGS="$CFLAGS -arch x86_64"])
-fi
+   gnu)
+	if test "$PLATFORM_STRING" = "Win32"; then
+   	   AX_CHECK_COMPILE_FLAG([-std=gnu++0x], [CXXFLAGS="$CXXFLAGS -std=gnu++0x"])
+	else
+	   AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
+	fi
+	;;
+   clang)
+	CXXFLAGS="$CXXFLAGS -std=c++11 -stdlib=libc++"	       
+        ;;	
+   *)
+	AC_MSG_ERROR("ERROR: JaneClone cannot compile with gnu gcc or clang.")
+	;;
+esac
 
 # Add Flags
 CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
