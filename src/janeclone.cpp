@@ -2250,11 +2250,10 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
      JaneCloneUtil::SetJaneCloneProperties(wxT("SeparateXY"), separateIsX);
 
      // 各ウィジェットのフォント情報
-     wxWindowList& children = this->GetChildren();
-     for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) {
-	  // boardNoteBookを親とするウィンドウクラスを引き出す
-	  wxWindow *current = (wxWindow *)node->GetData();
-	  WriteFontInfo(current);
+     for ( wxWindowList::const_iterator i = this->GetChildren().begin(); i != GetChildren().end(); ++i ) {
+	  if ( wxDynamicCast(*i, wxWindow) ) {
+	       WriteFontInfo((*i));
+	  }
      }
 
      SetStatusText(wxT("終了前処理が終わりました！"));
@@ -2675,7 +2674,7 @@ void JaneClone::SetFontDialog(const int enumType) {
 	  canvasTextColour = retData.GetColour();
 
 	  // とりあえずthisの子ウィンドウを取得して初期化しておく
-	  wxWindowList& children = this->GetChildren();
+	  wxWindowList::const_iterator i = this->GetChildren().begin();
 	  wxString wannaChange;
 
 	  // 設定対象ウィンドウを引き出してくる
@@ -2695,15 +2694,16 @@ void JaneClone::SetFontDialog(const int enumType) {
 	       break;
 	  }
 
-	  for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) {
+	  for ( wxWindowList::const_iterator i = this->GetChildren().begin(); i != GetChildren().end(); ++i ) {
 	       // boardNoteBookを親とするウィンドウクラスを引き出す
-	       wxWindow *current = (wxWindow *)node->GetData();
-	       if (current->GetLabel() == wannaChange) {
-		    current->SetFont(canvasFont);
-		    current->Refresh();
-		    current->Update();
-		    break;
-	       }   
+	       if ( wxDynamicCast(*i, wxWindow) ) {
+		    if ((*i)->GetLabel() == wannaChange) {
+			 (*i)->SetFont(canvasFont);
+			 (*i)->Refresh();
+			 (*i)->Update();
+			 break;
+		    }
+	       }
 	  }
      }
 }
@@ -2828,14 +2828,11 @@ void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
      // 選択したタブの板名を取得する
      wxString selectedBoardName = boardNoteBook->GetPageText(event.GetSelection());
      // リストコントロールを引き出してくる
-     wxWindowList & children = boardNoteBook->GetChildren();
-     for ( wxWindowList::Node *node = children.GetFirst(); node; node = node->GetNext()) {
-	  // boardNoteBookを親とするウィンドウクラスを引き出す
-	  wxWindow *current = (wxWindow *)node->GetData();
+     for (  wxWindowList::const_iterator i = boardNoteBook->GetChildren().begin(); i != GetChildren().end(); ++i  ) {
 
-	  if (current->GetLabel() == selectedBoardName) {
+	  if ( wxDynamicCast(*i, wxWindow) && (*i)->GetLabel() == selectedBoardName ) {
 	       // 板名が一致するwindowクラスを再描画させる
-	       VirtualBoardListCtrl* vbListCtrl = (VirtualBoardListCtrl*)current;
+	       VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(*i);
 	       vbListCtrl->GetItemCount();
 	       break;
 	  }	       
