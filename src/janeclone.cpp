@@ -2920,11 +2920,12 @@ void JaneClone::OnMenuOpen(wxMenuEvent& event) {
 void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
 
      // メニューアイテムを順次消していく
-     wxMenuItemList::Node* current_menuitem_node;
+     wxMenuItemList::compatibility_iterator current_menuitem_node;
+     //wxMenuItemList::Node* current_menuitem_node;
      wxMenuItem* current_menuitem;
 
      while ( current_menuitem_node = closeB->GetMenuItems().GetLast() ) {
-	  current_menuitem = current_menuitem_node->GetData();
+	  current_menuitem = current_menuitem_node.GetData();
 	  if (!current_menuitem->IsSeparator()) {
 	       // menuの区切りでなければ削除する
 	       closeB->Delete( current_menuitem );
@@ -2993,11 +2994,11 @@ void JaneClone::OnUserLastClosedBoardClick(wxCommandEvent& event) {
 void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
 
      // メニューアイテムを順次消していく
-     wxMenuItemList::Node* current_menuitem_node;
+     wxMenuItemList::compatibility_iterator current_menuitem_node;
      wxMenuItem* current_menuitem;
 
      while ( current_menuitem_node = closeT->GetMenuItems().GetLast() ) {
-	  current_menuitem = current_menuitem_node->GetData();
+	  current_menuitem = current_menuitem_node.GetData();
 	  if (!current_menuitem->IsSeparator()) {
 	       // menuの区切りでなければ削除する
 	       closeT->Delete( current_menuitem );
@@ -3057,7 +3058,7 @@ void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
 void JaneClone::UserLookingTabsMenuUp(wxUpdateUIEvent& event) {
      
      // メニューアイテムを順次消していく
-     wxMenuItemList::Node* current_menuitem_node;
+     wxMenuItemList::compatibility_iterator current_menuitem_node;
      wxMenuItem* current_menuitem;
 
      while ( current_menuitem_node = lookingTB->GetMenuItems().GetLast() ) {
@@ -3242,13 +3243,13 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 	  // ラベルを設定する
 	  searchBox->SetLabel(SHINGETU_NODE_SEARCH);
 	  // 検索ボックスを設定する
-	  //const wxArrayString choices = SQLiteAccessor::GetUserSearchedKeyword(ID_BoardSearchBarCombo);
+	  const wxArrayString choices = SQLiteAccessor::GetUserSearchedKeyword(ID_BoardSearchBarCombo);
 	  wxComboBox* searchWordCombo = new wxComboBox(searchBox,
 						       ID_BoardSearchBarCombo,
 						       wxEmptyString, 
 						       wxDefaultPosition, 
 						       wxDefaultSize,  
-						       NULL,//choices, 
+						       choices, 
 						       wxCB_DROPDOWN);
 	  // !FIXME!
 	  //SupplySearchWords(searchWordCombo, ID_BoardSearchBarCombo);

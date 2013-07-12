@@ -421,6 +421,7 @@ private:
 	  } else if (parent->GetLabel() == THREADLIST_SEARCH) {
 	       return ID_ThreadSearchBarCombo;
 	  }
+	  return wxID_ANY;
      };
 
      // クリップボードに指定した文字列をコピーする
