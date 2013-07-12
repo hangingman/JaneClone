@@ -302,7 +302,7 @@ public:
 			  const wxWindowID id,
 			  const wxString& boardName, 
 			  const wxString& outputPath, 
-			  const std::map<wxString,ThreadList>& oldThreadMap = std::map<wxString,ThreadList>(), 
+			  const std::map<wxString,ThreadList>& oldThreadMap, 
 			  bool targetIsShingetsu = false);
      /**
       * 2chのdatファイルを読み出す処理
