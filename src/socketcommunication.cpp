@@ -116,9 +116,9 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputPath.c_str(), wxConvUTF8) << wxT("\n");
+          *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)outputPath.c_str(), wxConvUTF8) << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)outputPath.c_str(), wxConvUTF8) << wxT("\n");
      }
 
      return -1;
@@ -178,7 +178,7 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
 	  *m_logCtrl << wxT("HTTP") << wxString::Format(wxT("%lu"), rc) << wxT("\n");
 
 	  
-	  if (rc = 304) {
+	  if (rc == 304) {
 	       // レスポンスコードが304ならば変更なしなので正常終了
 	       RemoveTmpFile(tmpOutputPath);
 	       return 0;
@@ -197,9 +197,9 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)outputPath.c_str(), wxConvUTF8) << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)outputPath.c_str(), wxConvUTF8) << wxT("\n");
      }
 
      return -1;
@@ -385,9 +385,9 @@ int SocketCommunication::DownloadThreadListNew(const wxString gzipPath,
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      }
 
      return -1;
@@ -475,9 +475,9 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      }
 
      return -1;
@@ -651,9 +651,9 @@ void SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 	  }
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      }
 }
 
@@ -792,9 +792,9 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      }
 
      return -1;
@@ -915,9 +915,9 @@ int SocketCommunication::DownloadThreadPast(const wxString gzipPath, const wxStr
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
      }
      
      return -1;
@@ -1117,9 +1117,9 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
 	  myRequest.perform();
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
      }
 
      // Shift_JIS から UTF-8への変換処理
@@ -1280,9 +1280,9 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 	  myRequest.perform();
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
      }
 
      // Shift_JIS から UTF-8への変換処理
@@ -1444,9 +1444,9 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 	  myRequest.perform();
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
      }
 
      // Shift_JIS から UTF-8への変換処理
@@ -1750,10 +1750,10 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
 	  return true;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
 	  return false;
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
 	  return false;
      }
 
@@ -1826,9 +1826,9 @@ wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostna
 	  return wxString(outputFilename.c_str(), wxConvUTF8);
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString(e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
      }
 
      return wxEmptyString;
