@@ -2920,12 +2920,19 @@ void JaneClone::OnMenuOpen(wxMenuEvent& event) {
 void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
 
      // メニューアイテムを順次消していく
+#if wxCHECK_VERSION(2, 9, 0)
      wxMenuItemList::compatibility_iterator current_menuitem_node;
-     //wxMenuItemList::Node* current_menuitem_node;
+#else
+     wxMenuItemList::Node* current_menuitem_node;
+#endif
      wxMenuItem* current_menuitem;
 
      while ( current_menuitem_node = closeB->GetMenuItems().GetLast() ) {
+#if wxCHECK_VERSION(2, 9, 0)
 	  current_menuitem = current_menuitem_node.GetData();
+#else
+	  current_menuitem = current_menuitem_node->GetData();
+#endif
 	  if (!current_menuitem->IsSeparator()) {
 	       // menuの区切りでなければ削除する
 	       closeB->Delete( current_menuitem );
@@ -2994,11 +3001,19 @@ void JaneClone::OnUserLastClosedBoardClick(wxCommandEvent& event) {
 void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
 
      // メニューアイテムを順次消していく
+#if wxCHECK_VERSION(2, 9, 0)
      wxMenuItemList::compatibility_iterator current_menuitem_node;
+#else
+     wxMenuItemList::Node* current_menuitem_node;
+#endif
      wxMenuItem* current_menuitem;
 
-     while ( current_menuitem_node = closeT->GetMenuItems().GetLast() ) {
+     while ( current_menuitem_node = closeB->GetMenuItems().GetLast() ) {
+#if wxCHECK_VERSION(2, 9, 0)
 	  current_menuitem = current_menuitem_node.GetData();
+#else
+	  current_menuitem = current_menuitem_node->GetData();
+#endif
 	  if (!current_menuitem->IsSeparator()) {
 	       // menuの区切りでなければ削除する
 	       closeT->Delete( current_menuitem );
