@@ -3683,10 +3683,10 @@ void JaneClone::SetShingetsuThreadListToNoteBook(const wxString& nodeHostname, w
      if (itIsNewBoardName) {
 	  // もし新規のダウンロードだった場合、選択されるべきページを指定
 	  selectedPage = boardNoteBook->GetPageCount();
-	  SetShingetsuThreadListItemNew(nodeHostname, selectedPage, outputFilePath);
+	  SetShingetsuThreadListItemNew(nodeHostname, selectedPage, outputFilePath, std::map<wxString,ThreadList>());
      } else {
 	  // 更新処理の場合、選択されるべきページはi
-	  SetShingetsuThreadListItemUpdate(nodeHostname, selectedPage, outputFilePath);
+	  SetShingetsuThreadListItemUpdate(nodeHostname, selectedPage, outputFilePath, std::map<wxString,ThreadList>());
      }
 }
 /**

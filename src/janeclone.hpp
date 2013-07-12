@@ -290,9 +290,9 @@ private:
      void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii);
      // ノートブックに反映する際のコールバック
      void SetThreadListItemNew( wxString boardName, wxString outputPath, size_t selectedPage, 
-				const std::map<wxString,ThreadList>& oldThreadMap=std::map<wxString,ThreadList>());
+				const std::map<wxString,ThreadList>& oldThreadMap);
      void SetThreadListItemUpdate( wxString boardName,  wxString outputPath, size_t selectedPage, 
-				   const std::map<wxString,ThreadList>& oldThreadMap=std::map<wxString,ThreadList>());
+				   const std::map<wxString,ThreadList>& oldThreadMap);
 
      // 新月公開ノードをクリックして、それをノートブックに反映するメソッド
      void SetShingetsuNodeToNoteBook(const wxString& nodeHostname);
@@ -301,13 +301,11 @@ private:
      // 新月のスレッド一覧を新たに取得する
      void SetShingetsuThreadListItemNew(const wxString& nodeHostname, const size_t selectedPage
 					,wxString& outputFilePath
-					,const std::map<wxString,ThreadList>& oldThreadMap 
-					= std::map<wxString,ThreadList>());
+					,const std::map<wxString,ThreadList>& oldThreadMap);
      // 新月のスレッド一覧を更新する
      void SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, const size_t selectedPage
 					   ,wxString& outputFilePath
-					   ,const std::map<wxString,ThreadList>& oldThreadMap 
-					   = std::map<wxString,ThreadList>());
+					   ,const std::map<wxString,ThreadList>& oldThreadMap);
 
      // VirtualBoardListCtrlのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
      WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
