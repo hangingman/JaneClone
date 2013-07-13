@@ -188,20 +188,19 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
      // URL入力欄
      m_url_input_panel = new wxPanel(this, wxID_ANY);
      m_url_input = new wxTextCtrl(m_url_input_panel, wxID_ANY, m_url_text, wxDefaultPosition, wxDefaultSize);
+
+#ifndef __WXMAC__
      m_url_input_button = new wxBitmapButton(m_url_input_panel, ID_URLWindowButton, wxBitmap(wxT("rc/go-next.png"), wxBITMAP_TYPE_ANY));
+#else // Macの場合画像ファイル読み込みの場所が異なる
+     m_url_input_button = new wxBitmapButton(m_url_input_panel, ID_URLWindowButton, wxBitmap(wxT("JaneClone.app/Contents/MacOS/rc/go-next.png"), wxBITMAP_TYPE_ANY));
+#endif
+
      // ログ出力ウィンドウ
      m_logCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
-     wxFont font;
-     font.SetNativeFontInfoUserDesc(wxT("MS PGothic 12 CP932"));
-     wxTextAttr attr;
-     attr.SetFont(font);
-     m_logCtrl->SetDefaultStyle(attr);
 
      *m_logCtrl << wxT("(ヽ´ん`)…デバッグ用画面…\n");
      // ステータスバー設置
      this->CreateStatusBar(2);
-
-     // わかりやすい画像つき各種処理ボタン
 
      // 各種GUI設定を行う
      SetJaneCloneManuBar();
@@ -1955,11 +1954,19 @@ void JaneClone::Initialize2chBoardList() {
      wxTreeItemId m_rootId;
 
      // イメージリストにアイコンを登録する
+#ifndef __WXMAC__
      wxImageList* treeImage = new wxImageList(16, 16);
      wxBitmap idx1(wxT("rc/folder.png"), wxBITMAP_TYPE_PNG);
      treeImage->Add(idx1);
      wxBitmap idx2(wxT("rc/text-html.png"), wxBITMAP_TYPE_PNG);
      treeImage->Add(idx2);
+#else // Macの場合画像ファイル読み込みの場所が異なる
+     wxImageList* treeImage = new wxImageList(16, 16);
+     wxBitmap idx1(wxT("JaneClone.app/Contents/MacOS/rc/folder.png"), wxBITMAP_TYPE_PNG);
+     treeImage->Add(idx1);
+     wxBitmap idx2(wxT("JaneClone.app/Contents/MacOS/rc/text-html.png") , wxBITMAP_TYPE_PNG);
+     treeImage->Add(idx2);
+#endif
      m_tree_ctrl->AssignImageList(treeImage);
      m_tree_ctrl->SetLabel(BOARD_TREE);
      wxTreeItemId rootTemp = m_tree_ctrl->AddRoot(wxT("2ch板一覧"));
@@ -1976,7 +1983,7 @@ void JaneClone::Initialize2chBoardList() {
 	  // カテゴリをツリーに登録
 	  if (categoryName != boardInfoArray[i + 2]) {
 	       category = m_tree_ctrl->AppendItem(m_tree_ctrl->GetRootItem(), boardInfoArray[i + 2]);
-	       m_tree_ctrl->SetItemImage(category, 0, wxTreeItemIcon_Normal);
+	       //m_tree_ctrl->SetItemImage(category, 0, wxTreeItemIcon_Normal);
 	  }
 	  // それぞれの要素を一時格納
 	  boardName = boardInfoArray[i];
@@ -2012,7 +2019,9 @@ void JaneClone::Initialize2chBoardList() {
 	  hashID++;
      }
 
+#ifndef __WXMAC__
      m_tree_ctrl->Expand(m_rootId);
+#endif
 
      // パネルにSizerを設定する
      m_boardTreePanel->SetSizer(vbox);
@@ -2042,11 +2051,19 @@ void JaneClone::InitializeShingetsuNodeList() {
      wxTreeItemId m_rootId;
 
      // イメージリストにアイコンを登録する
+#ifndef __WXMAC__
      wxImageList* treeImage = new wxImageList(16, 16);
      wxBitmap idx1(wxT("rc/folder.png"), wxBITMAP_TYPE_PNG);
      treeImage->Add(idx1);
      wxBitmap idx2(wxT("rc/text-html.png"), wxBITMAP_TYPE_PNG);
      treeImage->Add(idx2);
+#else
+     wxImageList* treeImage = new wxImageList(16, 16);
+     wxBitmap idx1(wxT("JaneClone.app/Contents/MacOS/rc/folder.png"), wxBITMAP_TYPE_PNG);
+     treeImage->Add(idx1);
+     wxBitmap idx2(wxT("JaneClone.app/Contents/MacOS/rc/text-html.png"), wxBITMAP_TYPE_PNG);
+     treeImage->Add(idx2);
+#endif
      m_shingetsu_tree_ctrl->AssignImageList(treeImage);
      m_shingetsu_tree_ctrl->SetLabel(SHINGETU_NODE_TREE);
      wxTreeItemId rootTemp = m_shingetsu_tree_ctrl->AddRoot(wxT("新月公開ノード一覧"));
@@ -2056,7 +2073,9 @@ void JaneClone::InitializeShingetsuNodeList() {
 	  m_shingetsu_tree_ctrl->AppendItem(m_shingetsu_tree_ctrl->GetRootItem(), shingetsuInfoArray[i], 1, 1);
      }
 
+#ifndef __WXMAC__
      m_tree_ctrl->Expand(m_rootId);
+#endif
 
      // パネルにSizerを設定する
      m_shingetsuTreePanel->SetSizer(vbox);
@@ -2122,7 +2141,10 @@ void JaneClone::SetBoardList(const bool thisIsFirst) {
 	  hashID++;
      }
 
+#ifndef __WXMAC__
      m_tree_ctrl->Expand(m_tree_ctrl->GetRootItem());
+#endif
+
 }
 /**
  * バージョン情報が書かれたダイアログを表示する
@@ -3338,11 +3360,14 @@ void JaneClone::SearchBoardTree(const wxString& keyword) {
 
 	  wxTreeItemId tmp = m_tree_ctrl->AppendItem(category, boardName);
 	  m_tree_ctrl->SetItemImage(tmp, 1, wxTreeItemIcon_Normal);
+#ifndef __WXMAC__
 	  m_tree_ctrl->Expand(category);
+#endif
 	  
      }
-
+#ifndef __WXMAC__
      m_tree_ctrl->Expand(m_tree_ctrl->GetRootItem());
+#endif
 }
 /** 
  * スレッド一覧リストを検索する

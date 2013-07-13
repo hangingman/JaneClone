@@ -1,0 +1,15 @@
+*.o
+*.lo
+Makefile
+JaneClone.app*
+JaneClone.app/*
+autom4te*
+autom4te*/*
+*.Plo
+*.Po
+*.dll
+*.dylib
+*.a
+*.la
+*.lai
+*~

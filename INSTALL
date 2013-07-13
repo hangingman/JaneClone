@@ -247,14 +247,17 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
  F-1. 依存するライブラリのインストール
 
   clang, gsedのインストール
-  # port install clang-2.9 gsed
+  # port install clang-3.3 gsed libtool
 
-  wxWidgets-2.9.4のインストール
-  # cd wxWidgets-2.9.4/
-  # ./configure CXX='clang++-mp-3.3 -std=c++0x -DwxNO__T' CC='clang-mp-3.3' --enable-unicode \
-  --disable-debug --disable-webview --with-opengl  	      		       		     \
-  --with-macosx-sdk=/Developer/SDKs/MacOSX10.7.sdk 			       		     \
-  --with-macosx-version-min=10.7 --with-cocoa
+  wxWidgets-2.9.5のインストール
+  # git clone https://github.com/wxWidgets/wxWidgets.git
+  # cd wxWidgets
+  # ./configure CXXFLAGS="-stdlib=libc++ -std=c++11 -DHAVE_TYPE_TRAITS" OBJCXXFLAGS="-stdlib=libc++ -std=c++11" \
+  CPPFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++" CXX=clang++-mp-3.3 CXXCPP="clang++-mp-3.3 -E"              \
+  CC=clang-mp-3.3 CPP="clang-mp-3.3 -E" --enable-unicode --enable-debug --enable-gdb-debug                      \
+  --with-macosx-sdk=/Developer/SDKs/MacOSX10.7.sdk --with-macosx-version-min=10.7 --with-cocoa                  \
+  --with-libjpeg=builtin --with-libpng=builtin --with-regex=builtin --with-libtiff=builtin                      \
+  --with-zlib=builtin --with-expat=builtin --enable-std_containers --enable-std_iostreams --enable-std_string
   # make && make install
 
  F-2. パッケージング
@@ -264,7 +267,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ git submodule init
   $ git submodule update
   $ ./bootstrap
-  $ ./configure CXX='clang++' CC='clang'
+  $ ./configure CC='clang-mp-3.3' CXX='clang++-mp-3.3 -std=c++11 -stdlib=libc++'
   $ make
 
  [G.BSD]
