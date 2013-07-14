@@ -1,6 +1,7 @@
 *.o
 *.lo
 Makefile
+Makefile.in
 JaneClone.app*
 JaneClone.app/*
 autom4te*
