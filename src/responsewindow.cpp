@@ -338,7 +338,7 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
      if (result.StartsWith(wxT("<html>"))) {
 	  // 返り値が<html>タグから始まっていれば書込は失敗
 	  // wxHtmlWindowに結果を表示する	  
-	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  resNoteBook->ChangeSelection(PREVIEW_PAGE);
 	  previewWindow->SetPage(result);
 	  // メモリの解放
 	  delete post;
@@ -352,7 +352,7 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
      size_t fileSize = JaneCloneUtil::GetFileSize(result);
      if (fileSize == 0) {
 	  // wxHtmlWindowに結果を表示する
-	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  resNoteBook->ChangeSelection(PREVIEW_PAGE);
 	  previewWindow->SetPage(FAIL_TO_POST);
 	  delete post;
 	  delete sock;
@@ -364,7 +364,7 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
      // テキストファイルの読み込み
      ReadResponseHtml(result, htmlSource);
      // wxHtmlWindowに結果を表示する
-     resNoteBook->SetSelection(KAKIKO_PAGE);
+     resNoteBook->ChangeSelection(PREVIEW_PAGE);
      previewWindow->SetPage(htmlSource);
 }
 /**
@@ -431,7 +431,7 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
      size_t fileSize = JaneCloneUtil::GetFileSize(result);
      if (fileSize == 0) {
 	  // wxHtmlWindowに結果を表示する
-	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  resNoteBook->ChangeSelection(PREVIEW_PAGE);
 	  previewWindow->SetPage(FAIL_TO_POST);
 	  //delete post;
 	  delete sock;
@@ -442,7 +442,7 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
      htmlSource.Alloc(fileSize);
      // テキストファイルの読み込み
      ReadResponseHtml(result, htmlSource);
-     resNoteBook->SetSelection(KAKIKO_PAGE);
+     resNoteBook->ChangeSelection(PREVIEW_PAGE);
      previewWindow->SetPage(htmlSource);
 }
 /**
@@ -494,7 +494,7 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
      if (result.StartsWith(wxT("<html>"))) {
 	  // 返り値が<html>タグから始まっていれば書込は失敗
 	  // wxHtmlWindowに結果を表示する
-	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  resNoteBook->ChangeSelection(PREVIEW_PAGE);
 	  previewWindow->SetPage(result);
 	  // メモリの解放
 	  delete sock;
@@ -507,7 +507,7 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
      size_t fileSize = JaneCloneUtil::GetFileSize(result);
      if (fileSize == 0) {
 	  // wxHtmlWindowに結果を表示する
-	  resNoteBook->SetSelection(KAKIKO_PAGE);
+	  resNoteBook->ChangeSelection(PREVIEW_PAGE);
 	  previewWindow->SetPage(FAIL_TO_POST);
 	  delete sock;
 	  return;
@@ -518,7 +518,7 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
      // テキストファイルの読み込み
      ReadResponseHtml(result, htmlSource);
      // wxHtmlWindowに結果を表示する
-     resNoteBook->SetSelection(KAKIKO_PAGE);
+     resNoteBook->ChangeSelection(PREVIEW_PAGE);
      previewWindow->SetPage(htmlSource);
 }
 /**
@@ -624,7 +624,8 @@ void ResponseWindow::OnChangeResponseTab(wxNotebookEvent& event) {
      default:
 	  break;
      }
-     
+
+     event.Skip();
 }
 /*
  * プレビュー画面に書き込み内容のプレビューを表示する
