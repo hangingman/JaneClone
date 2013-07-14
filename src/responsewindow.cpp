@@ -183,7 +183,7 @@ ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName
      const wxString *mailCombo_choices = NULL;
      mailCombo = new wxComboBox(resPane, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, mailCombo_choices, wxCB_DROPDOWN);
      sageCheck = new wxCheckBox(resPane, wxID_ANY, wxT("sage"));
-     text_ctrl_1 = new wxTextCtrl(resPane, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxHSCROLL);
+     kakikoTextCtrl = new wxTextCtrl(resPane, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxHSCROLL);
      previewWindow = new wxHtmlWindow(previewPane, wxID_ANY);
      localRuleWindow = new wxHtmlWindow(localRulePane, wxID_ANY);
      settingText = new wxTextCtrl(settingPane, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
@@ -231,7 +231,7 @@ void ResponseWindow::do_layout() {
     hbox1->Add(mailCombo, 0, 0, 0);
     hbox1->Add(sageCheck, 0, wxALIGN_CENTER_VERTICAL, 0);
     resVbox->Add(hbox1, 0, wxEXPAND, 0);
-    resVbox->Add(text_ctrl_1, 1, wxEXPAND, 0);
+    resVbox->Add(kakikoTextCtrl, 1, wxEXPAND, 0);
     resPane->SetSizer(resVbox);
     previewVbox->Add(previewWindow, 1, wxEXPAND, 0);
     previewPane->SetSizer(previewVbox);
@@ -300,13 +300,13 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
      const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
      const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
      // 改行コードを含んでいる場合は分けてエンコード
-     if (text_ctrl_1->GetValue().Contains(wxT("\n"))) {
+     if (kakikoTextCtrl->GetValue().Contains(wxT("\n"))) {
 
 	  std::string stdKakikomi, urlEnced;
 
-	  for (int i = 0; i < text_ctrl_1->GetNumberOfLines(); i++) {
+	  for (int i = 0; i < kakikoTextCtrl->GetNumberOfLines(); i++) {
 
-	       wxString tmp = text_ctrl_1->GetLineText(i);
+	       wxString tmp = kakikoTextCtrl->GetLineText(i);
 	       if (tmp == wxEmptyString) {
 		    urlEnced    += "%0D%0A";
 		    continue;
@@ -319,7 +319,7 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
 	  post->kakikomi = wxString(urlEnced.c_str(), wxConvUTF8);
 
      } else {
-	  const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+	  const std::string stdKakikomi = nkf->WxToMultiByte(kakikoTextCtrl->GetValue(), option);
 	  post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
      }
      delete nkf;
@@ -380,13 +380,13 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
      const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
      const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
      // 改行コードを含んでいる場合は分けてエンコード
-     if (text_ctrl_1->GetValue().Contains(wxT("\n"))) {
+     if (kakikoTextCtrl->GetValue().Contains(wxT("\n"))) {
 
 	  std::string stdKakikomi, urlEnced;
 
-	  for (int i = 0; i < text_ctrl_1->GetNumberOfLines(); i++) {
+	  for (int i = 0; i < kakikoTextCtrl->GetNumberOfLines(); i++) {
 
-	       wxString tmp = text_ctrl_1->GetLineText(i);
+	       wxString tmp = kakikoTextCtrl->GetLineText(i);
 	       if (tmp == wxEmptyString) {
 		    urlEnced    += "%0D%0A";
 		    continue;
@@ -399,7 +399,7 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
 	  m_postContent->kakikomi = wxString(urlEnced.c_str(), wxConvUTF8);
 
      } else {
-	  const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+	  const std::string stdKakikomi = nkf->WxToMultiByte(kakikoTextCtrl->GetValue(), option);
 	  m_postContent->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
      }
      delete nkf;
@@ -457,13 +457,13 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
      const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
      const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
      // 改行コードを含んでいる場合は分けてエンコード
-     if (text_ctrl_1->GetValue().Contains(wxT("\n"))) {
+     if (kakikoTextCtrl->GetValue().Contains(wxT("\n"))) {
 
 	  std::string stdKakikomi, urlEnced;
 
-	  for (int i = 0; i < text_ctrl_1->GetNumberOfLines(); i++) {
+	  for (int i = 0; i < kakikoTextCtrl->GetNumberOfLines(); i++) {
 
-	       wxString tmp = text_ctrl_1->GetLineText(i);
+	       wxString tmp = kakikoTextCtrl->GetLineText(i);
 	       if (tmp == wxEmptyString) {
 		    urlEnced    += "%0D%0A";
 		    continue;
@@ -477,7 +477,7 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
 
      } else {
 
-	  const std::string stdKakikomi = nkf->WxToMultiByte(text_ctrl_1->GetValue(), option);
+	  const std::string stdKakikomi = nkf->WxToMultiByte(kakikoTextCtrl->GetValue(), option);
 	  post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
      }
      delete nkf;
@@ -592,3 +592,11 @@ void ResponseWindow::ReadResponseHtml(const wxString& resultHtmlPath, wxString& 
 	  return;
      }
 }
+/*
+ * レス投稿時にテキスト情報を付加する
+ */
+void ResponseWindow::AddKakikomiText(const wxString& text) {
+
+     kakikoTextCtrl->Clear();
+     kakikoTextCtrl->SetValue(text);
+}	  			  

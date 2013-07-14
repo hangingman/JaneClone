@@ -78,6 +78,8 @@ public:
      void SetLogWindow(wxTextCtrl* logCtrl) {
 	  this->m_logCtrl = logCtrl;
      };
+     // レス投稿時にテキスト情報を付加する
+     void AddKakikomiText(const wxString& text);
 
 private:
      // begin wxGlade: ResponseWindow::methods
@@ -92,11 +94,11 @@ private:
      void PostConfirmForm(wxCommandEvent &event);
      // クッキーの状態チェック
      int CheckCookie();
-
+     // 初回の書き込みを実施する
      void PostFirstResponse(SocketCommunication* sock);
-     
+     // 確認後の書き込みを実施する
      void PostConfirm(SocketCommunication* sock);
-     
+     // 通常の書き込みを実施する
      void PostResponse(SocketCommunication* sock);
      // 2chのサーバから受け取ったHTMLファイルを読み取りwxStringに格納する
      void ReadResponseHtml(const wxString& resultHtmlPath, wxString& htmlSource);
@@ -131,7 +133,7 @@ protected:
      wxStaticText* mail;
      wxComboBox* mailCombo;
      wxCheckBox* sageCheck;
-     wxTextCtrl* text_ctrl_1;
+     wxTextCtrl* kakikoTextCtrl;
      wxPanel* resPane;
      wxHtmlWindow* previewWindow;
      wxPanel* previewPane;

@@ -30,7 +30,7 @@
 #include <vector>
 #include <map>
 #include <wx/regex.h>
-
+#include <wx/hashmap.h>
 
 // マクロ置換用マクロ
 #define XSTR(x) #x
@@ -259,6 +259,22 @@ typedef struct {
      wxString port;
      wxString path;
 } PartOfURI;
+
+// 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
+// URLvsBoardNameのHashMap（板名をkeyとしてBoardURLとascii文字の固有名を持つ）
+WX_DECLARE_HASH_MAP( wxString,	 // type of the keys
+		  URLvsBoardName,// type of the values
+		  wxStringHash , // hasher
+		  wxStringEqual, // key equality predicate
+		  NameURLHash);	 // name of the class
+
+// ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
+WX_DECLARE_HASH_MAP( wxString,		// type of the keys
+		  ThreadInfo,		// 実体を詰める
+		  wxStringHash ,	// hasher
+		  wxStringEqual,	// key equality predicate
+		  ThreadInfoHash);	// name of the class
+
 
 /**
  * 変数

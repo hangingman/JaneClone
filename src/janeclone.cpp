@@ -167,6 +167,15 @@ JaneCloneImageViewer* JaneClone::GetJaneCloneImageViewer () {
      return imageViewer;
 }
 
+/**
+ * 現在JaneCloneが保持しているスレッド情報を取得する
+ */
+void JaneClone::GetThreadInfoHash(ThreadInfoHash& threadInfoHash) {
+
+     if (!tiHash.empty()) {
+	  threadInfoHash = ThreadInfoHash(tiHash);
+     }
+}
 
 JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
      wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)

@@ -36,6 +36,9 @@ IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
    EVT_MENU(ID_SearchSelectWordByGoogle,ThreadContentWindow::SearchSelectWordByGoogle)
    EVT_MENU(ID_SearchSelectWordByAmazon,ThreadContentWindow::SearchSelectWordByAmazon)
    EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
+   // レス番号上で左クリックした際のイベント
+   EVT_MENU(ID_CallResponseWindowAnchor, ThreadContentWindow::CallResponseWindowWithAnchor)
+   EVT_MENU(ID_CallResponseWindowQuote, ThreadContentWindow::CallResponseWindowWithQuote)
    // リサイズがかかった際のイベント
    EVT_SIZE(ThreadContentWindow::OnSize) 
 #ifdef DEBUG
@@ -454,6 +457,8 @@ void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
      const wxHtmlLinkInfo linkInfo = event.GetLinkInfo();
      const wxString href = linkInfo.GetHref();
      const wxString target = linkInfo.GetTarget();
+     wxString rest = wxEmptyString;
+     long res = 0;
      
      // bmp,jpg,jpeg,png,gifなどの拡張子が末尾に付いている場合ダウンロードを行う
      if (regexImage.IsValid()) {
@@ -462,11 +467,117 @@ void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
 	       // 画像ファイルをクリックしたのでダウンロードする
 	       const wxString ext = regexImage.GetMatch(href, 3);
 	       this->SetJaneCloneImageViewer(href, ext);
+
+	  } else if (href.StartsWith(wxT("#"), &rest) && rest.ToLong(&res, 10)) {
+	       if ( 0 < res && res <= 1000) {
+		    OnLeftClickResponseNumber(event, href, res);
+	       }
 	  } else {
 	       // マッチしなければそのままデフォルトのブラウザで開く
 	       wxLaunchDefaultBrowser(href);
 	  }
      }
+}
+/*
+ * レス番号を左クリックした時に起こるイベント
+ */
+void ThreadContentWindow::OnLeftClickResponseNumber(wxHtmlLinkEvent& event, const wxString& href, const long res) {
+
+     // 引数として渡された情報はクラス変数に格納する
+     m_response = -1;
+     m_response = res;
+
+     wxMenu* response = new wxMenu();
+     response->Append(ID_CallResponseWindowAnchor, wxT("これにレス"));
+     response->Append(ID_CallResponseWindowQuote, wxT("引用付きレス"));
+     response->AppendSeparator();
+
+     wxMenu *abone = new wxMenu;
+     abone->Append(wxID_ANY, wxT("NGNameに追加"));
+     abone->Append(wxID_ANY, wxT("NGAddrに追加"));
+     abone->Append(wxID_ANY, wxT("datからNGwordに追加"));
+     abone->Append(wxID_ANY, wxT("NGIDに追加"));
+     abone->Append(wxID_ANY, wxT("NGBEに追加"));
+     abone->Append(wxID_ANY, wxT("あぼ～ん・チェックを解除"));
+
+     wxMenu* copy = new wxMenu();
+     copy->Append(wxID_ANY, wxT("内容をコピー"));
+     copy->Append(ID_CopyTURLToClipBoard, wxT("URLをコピー"));
+     copy->Append(ID_CopyTTitleToClipBoard, wxT("タイトルをコピー"));
+     copy->Append(ID_CopyTBothDataToClipBoard, wxT("タイトルとURLをコピー"));
+     copy->Append(wxID_ANY, wxT("タイトルとURLと内容をコピー"));
+     response->AppendSubMenu(copy, wxT("このレスをコピー"));
+     response->AppendSeparator();
+     response->Append(wxID_ANY, wxT("ここまで読んだ"));
+     response->AppendSeparator();
+     response->Append(wxID_ANY, wxT("あぼ〜ん"));
+     response->Append(wxID_ANY, wxT("透明あぼ〜ん"));
+     response->AppendSeparator();
+     response->Append(wxID_ANY, wxT("ここからあぼ〜ん"));
+     response->AppendSubMenu(abone, wxT("NGItemに追加"));
+     response->AppendSeparator();
+     response->Append(wxID_ANY, wxT("レスの内容をAAListに登録"));
+
+     // ポップアップメニューを表示させる
+     PopupMenu(response);
+}
+/*
+ * レス番号を指定して書き込みウィンドウを開く
+ */
+void ThreadContentWindow::CallResponseWindowWithAnchor(wxCommandEvent& event) {
+     /**
+      * ここのコードはthis->GetGrandParent()と書けば一度にJaneClone本体のインスタンスが
+      * 取得できるはずなのだができない.一度JaneCloneの子インスタンスを取得してから
+      * 改めてJaneClone本体のインスタンスを取得している. Is this bug ?
+      */
+     if (wxWindow* grand = this->GetGrandParent()) {
+
+	  wxAuiNotebook* threadNoteBook = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(THREAD_NOTEBOOK));
+	  wxAuiNotebook* boardNoteBook  = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(BOARD_NOTEBOOK));
+	  wxTextCtrl*    m_logCtrl      = dynamic_cast<wxTextCtrl*>(grand->FindWindowByLabel(LOG_WINDOW));
+
+	  if (threadNoteBook && boardNoteBook) {
+	       // 必要な構造体を宣言する
+	       ThreadInfo threadInfoHash;
+	       URLvsBoardName boardInfoHash;
+	       
+	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(boardNoteBook->GetParent())) {
+		    // スレッド情報をコピーしてくる
+		    ThreadInfoHash tiHash;
+		    wxJaneClone->GetThreadInfoHash(tiHash);
+		    // 選択されたスレタブの情報を集める
+		    wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+		    threadInfoHash = tiHash[title];
+		    threadInfoHash.title = title; // タイトル情報を設定する
+
+		    // ハッシュからURLを探す
+		    NameURLHash::iterator it;
+		    for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it) {
+			 wxString key = it->first;
+			 boardInfoHash = it->second;
+
+			 if (boardInfoHash.boardNameAscii == threadInfoHash.boardNameAscii) break;
+		    }
+
+		    // ウィンドウの大きさを取得する
+		    int wScreenPx, hScreenPx;
+		    ::wxDisplaySize(&wScreenPx, &hScreenPx);
+		    // レス用のウィンドウは 640:480なので、ちょうど中央にくるように調整する
+		    wxPoint point(wScreenPx/2 - 320, hScreenPx/2 - 240);
+		    ResponseWindow* response = new ResponseWindow(wxJaneClone, title, boardInfoHash, threadInfoHash, point, m_logCtrl);
+		    // ログ出力ウィンドウのインスタンスのポインタを渡す
+		    response->SetLogWindow(m_logCtrl);
+		    // ウィンドウにテキストを設定する
+		    response->AddKakikomiText(wxString::Format(wxT(">>%ld"), m_response));
+		    response->Show(true);
+	       }
+	  }
+     }
+}
+/*
+ * レス内容を引用して書き込みウィンドウを開く
+ */
+void ThreadContentWindow::CallResponseWindowWithQuote(wxCommandEvent& event) {
 }
 /*
  * 画像ビューアの状態を確認し、設定する
@@ -493,23 +604,23 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      wxBitmapType type;
 
      if (!ext.CmpNoCase(wxT("png"))) {
-     	  type = wxBITMAP_TYPE_PNG;
+	  type = wxBITMAP_TYPE_PNG;
      } else if (!ext.CmpNoCase(wxT("jpg"))) {
-     	  type = wxBITMAP_TYPE_JPEG;
+	  type = wxBITMAP_TYPE_JPEG;
      } else if (!ext.CmpNoCase(wxT("jpeg"))) {
-     	  type = wxBITMAP_TYPE_JPEG;
+	  type = wxBITMAP_TYPE_JPEG;
      } else if (!ext.CmpNoCase(wxT("gif"))) {
-     	  type = wxBITMAP_TYPE_GIF;
+	  type = wxBITMAP_TYPE_GIF;
      } else if (!ext.CmpNoCase(wxT("bmp"))) {
-     	  type = wxBITMAP_TYPE_BMP;
+	  type = wxBITMAP_TYPE_BMP;
      } else if (!ext.CmpNoCase(wxT("ico"))) {
-     	  type = wxBITMAP_TYPE_ICO;
+	  type = wxBITMAP_TYPE_ICO;
      } else if (!ext.CmpNoCase(wxT("xpm"))) {
-     	  type = wxBITMAP_TYPE_XPM;
+	  type = wxBITMAP_TYPE_XPM;
      } else if (!ext.CmpNoCase(wxT("tiff"))) {
-     	  type = wxBITMAP_TYPE_TIF;
+	  type = wxBITMAP_TYPE_TIF;
      } else {
-     	  type = wxBITMAP_TYPE_ANY;
+	  type = wxBITMAP_TYPE_ANY;
      }
 
      // resultの結果を元に画像のサムネイルと画像を配置する

@@ -49,7 +49,6 @@
 #include <wx/protocol/http.h>
 #include <wx/datstrm.h>
 #include <wx/aboutdlg.h>
-#include <wx/hashmap.h>
 #include <wx/regex.h>
 #include <wx/dir.h>
 #include <wx/listctrl.h>
@@ -102,13 +101,6 @@ public:
 	       wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
      ~JaneClone();
 
-     // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
-     // URLvsBoardNameのHashMap（板名をkeyとしてBoardURLとascii文字の固有名を持つ）
-     WX_DECLARE_HASH_MAP( wxString, 	 // type of the keys
-			  URLvsBoardName,// type of the values
-			  wxStringHash , // hasher
-			  wxStringEqual, // key equality predicate
-			  NameURLHash);  // name of the class
      // HashMapの本体
      NameURLHash retainHash;
      // 板名のツリーコントロールをクリックした場合表示されるwxNoteBook
@@ -331,17 +323,16 @@ private:
 
      // スレッド一覧をクリックすると、それをスレ表示画面に反映するメソッド
      void SetThreadContentToNoteBook(const wxString&, const wxString&, const wxString&);
-
-     // ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
-     WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			  ThreadInfo,           // 実体を詰める
-			  wxStringHash ,        // hasher
-			  wxStringEqual,        // key equality predicate
-			  ThreadInfoHash);      // name of the class
-
      // ユーザーがタブに保持しているスレッドの情報を保存するHashSet
      ThreadInfoHash tiHash;
 
+public:
+     /**
+      * 現在JaneCloneが保持しているスレッド情報を取得する
+      */
+     void GetThreadInfoHash(ThreadInfoHash& tiHash);
+
+private:
      /**
       * その他のオブジェクトとメソッド
       */

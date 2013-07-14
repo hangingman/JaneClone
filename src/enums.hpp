@@ -127,6 +127,8 @@ enum {
 	ID_SearchSelectWordByGoogle,    // 選択したテキストでGoogle検索
 	ID_SearchSelectWordByAmazon,    // 選択したテキストでAmazon検索
 	ID_SearchThreadBySelectWord,    // 選択したテキストでスレタイ検索
+	ID_CallResponseWindowAnchor,    // 書き込み用のウィンドウをアンカー付きで呼び出す
+	ID_CallResponseWindowQuote,     // 書き込み用のウィンドウをレス引用付きで呼び出す
 #ifdef DEBUG
 	ID_HtmlSourceDebug,             // HTMLのデバッグ用命令
 #endif

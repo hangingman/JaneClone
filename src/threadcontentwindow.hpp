@@ -101,6 +101,12 @@ private:
 
      // linkを左クリックした時に起こるイベント
      void OnLeftClickHtmlWindow(wxHtmlLinkEvent& event);
+     // レス番号を左クリックした時に起こるイベント
+     void OnLeftClickResponseNumber(wxHtmlLinkEvent& event, const wxString& href, const long res);
+     // レス番号を指定して書き込みウィンドウを開く
+     void CallResponseWindowWithAnchor(wxCommandEvent& event);
+     // レス番号を指定して書き込みウィンドウを開く
+     void CallResponseWindowWithQuote(wxCommandEvent& event);
      // 画像ビューアの状態を確認し、設定する
      void SetJaneCloneImageViewer(const wxString& href, const wxString& ext);
 
@@ -119,6 +125,8 @@ private:
      wxString m_htmlSource;
      // リサイズ前のスクロール座標
      int m_x, m_y;
+     // 書き込みウィンドウに渡すレス番号
+     long m_response;
      // スクロールさせる必要があるかどうか
      bool fNeedScroll;
 
