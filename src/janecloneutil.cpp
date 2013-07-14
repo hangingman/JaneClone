@@ -253,6 +253,98 @@ wxString JaneCloneUtil::FindAnchoredResponse(wxString& boardNameAscii,
      return lumpOfHTML;
 }
 /**
+ * アンカーで指定されたレスをファイルから読み取ってレスだけを返す
+ */
+wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii,
+					 const wxString& origNumber, const long resNumber) {
+
+     // ファイルパスの組み立てとファイルの有無確認
+     const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     wxString filePath = dir.GetName();
+
+#ifdef __WXMSW__
+     // Windowsではパスの区切りは"\"
+     filePath += wxT("\\dat\\");
+     filePath += boardNameAscii;
+     filePath += wxT("\\");
+     filePath += origNumber;
+     filePath += wxT(".dat");
+#else
+     // それ以外ではパスの区切りは"/"
+     filePath += wxT("/dat/");
+     filePath += boardNameAscii;
+     filePath += wxT("/");
+     filePath += origNumber;
+     filePath += wxT(".dat");
+#endif
+
+     if (!wxFile::Exists(filePath)) {
+	  // 無ければ空文字リターン
+	  return wxEmptyString;
+     }
+     // 取得するレス番
+     int resNumInt = static_cast<int>(resNumber);
+
+     // datファイルを読み込む
+     wxTextFile datFile;
+     datFile.Open(filePath, wxConvUTF8);
+     wxString str;
+
+     if (datFile.IsOpened() && 1 == resNumInt) {
+	  str = datFile.GetFirstLine();
+	  datFile.Close();
+
+     } else if (datFile.IsOpened() && resNumInt > 1) {
+	  datFile.GetFirstLine();
+
+	  for (int i = 1; !datFile.Eof(); str = datFile.GetNextLine()) {
+	       // 上から読み込んでレス番号にあたる行のレスを取得する
+	       if (i == resNumInt) {
+		    datFile.Close();
+		    break;
+	       }
+	       ++i;
+	  }
+     }
+
+     wxString res = wxT(">");
+
+     // 正規表現でレスの内容を取り出してメモリに展開する
+
+     /** ex) レスの形式
+      *
+      * [デフォルト名無し]<>[メ欄]<>[yyyy/mm/dd(D) HH:MM:SS:ss ID:aaaaaaaaa BE:xxxxxxxxx-2BE(n)]<>[書き込み]<>板名
+      * [デフォルト名無し]<>[メ欄]<>[yyyy/mm/dd(D) HH:MM:SS:ss ID:aaaaaaaaa]<>[書き込み]<>
+      */
+     if (regexThread.IsValid() && resNumInt > 1) {
+	  // >>1 以外の処理
+	  if (regexThread.Matches(str)) {
+	       res.Append(regexThread.GetMatch(str, 4));
+	       // レスの最後に改行
+	       res.Replace(wxT("<br>"), wxT("\n>"), true);
+	       res.Append(wxT("\n"));
+	  }
+     } else if (regexThreadFst.IsValid() && resNumInt == 1) {
+	  // >>1 の場合の処理
+	  if (regexThreadFst.Matches(str)) {
+	       res.Append(regexThreadFst.GetMatch(str, 4));
+	       // レスの最後に改行
+	       res.Replace(wxT("<br>"), wxT("\n>"), true);
+	       res.Append(wxT("\n"));
+	  }
+     }
+
+     // HTMLのタグを削除する
+     if (regexHtmlTag.IsValid()) {
+	  regexHtmlTag.ReplaceAll(&res, wxEmptyString);
+     }
+
+     // 実態参照文字を変換
+     res = ConvCharacterReference(res);
+
+     return res;
+}
+/**
  * レス内にURLがあれば<a>タグを付ける
  */
 wxString JaneCloneUtil::ReplaceURLText(const wxString& responseText) {
@@ -332,6 +424,12 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 	  // HTMLに改行を加える
 	  responseText.Append(wxT("<br>"));
      }
+}
+/**
+ * レス内に<a>タグがあれば取り除いてプレインテキストにする
+ */
+void RemoveURLText(wxString& responseText) {
+
 }
 /**
  * 指定された文字列でdatファイルへのファイルパスを組み立てる

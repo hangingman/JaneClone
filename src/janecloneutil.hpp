@@ -73,6 +73,11 @@ public:
      static wxString FindAnchoredResponse(wxString& boardNameAscii,
 					  wxString& origNumber, wxString& resNumber);
      /**
+      * アンカーで指定されたレスをファイルから読み取ってレスだけを返す
+      */
+     static wxString FindAnchoredResponseText(const wxString& boardNameAscii,
+					      const wxString& origNumber, const long resNumber);
+     /**
       * レス内にURLがあれば<a>タグを付ける
       */
      static wxString ReplaceURLText(const wxString& responseText);
@@ -80,6 +85,10 @@ public:
       * レス内に画像があれば<a>タグを付ける
       */
      static void AddImgTag(wxString& responseText);
+     /**
+      * レス内に<a>タグがあれば取り除いてプレインテキストにする
+      */
+     static void RemoveURLText(wxString& responseText);
      /**
       * 指定された文字列でdatファイルへのファイルパスを組み立てる
       */

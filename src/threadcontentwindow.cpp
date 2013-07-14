@@ -578,6 +578,54 @@ void ThreadContentWindow::CallResponseWindowWithAnchor(wxCommandEvent& event) {
  * レス内容を引用して書き込みウィンドウを開く
  */
 void ThreadContentWindow::CallResponseWindowWithQuote(wxCommandEvent& event) {
+
+     if (wxWindow* grand = this->GetGrandParent()) {
+
+	  wxAuiNotebook* threadNoteBook = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(THREAD_NOTEBOOK));
+	  wxAuiNotebook* boardNoteBook  = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(BOARD_NOTEBOOK));
+	  wxTextCtrl*    m_logCtrl      = dynamic_cast<wxTextCtrl*>(grand->FindWindowByLabel(LOG_WINDOW));
+
+	  if (threadNoteBook && boardNoteBook) {
+	       // 必要な構造体を宣言する
+	       ThreadInfo threadInfoHash;
+	       URLvsBoardName boardInfoHash;
+	       
+	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(boardNoteBook->GetParent())) {
+		    // スレッド情報をコピーしてくる
+		    ThreadInfoHash tiHash;
+		    wxJaneClone->GetThreadInfoHash(tiHash);
+		    // 選択されたスレタブの情報を集める
+		    wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+		    threadInfoHash = tiHash[title];
+		    threadInfoHash.title = title; // タイトル情報を設定する
+
+		    // ハッシュからURLを探す
+		    NameURLHash::iterator it;
+		    for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it) {
+			 wxString key = it->first;
+			 boardInfoHash = it->second;
+
+			 if (boardInfoHash.boardNameAscii == threadInfoHash.boardNameAscii) break;
+		    }
+
+		    // ウィンドウの大きさを取得する
+		    int wScreenPx, hScreenPx;
+		    ::wxDisplaySize(&wScreenPx, &hScreenPx);
+		    // レス用のウィンドウは 640:480なので、ちょうど中央にくるように調整する
+		    wxPoint point(wScreenPx/2 - 320, hScreenPx/2 - 240);
+		    ResponseWindow* response = new ResponseWindow(wxJaneClone, title, boardInfoHash, threadInfoHash, point, m_logCtrl);
+		    // ログ出力ウィンドウのインスタンスのポインタを渡す
+		    response->SetLogWindow(m_logCtrl);
+
+		    // ウィンドウにテキストを設定する
+		    wxString quote  = wxString::Format(wxT(">>%ld\n"), m_response);
+		    quote += JaneCloneUtil::FindAnchoredResponseText(threadInfoHash.boardNameAscii, threadInfoHash.origNumber, m_response);
+
+		    response->AddKakikomiText(quote);
+		    response->Show(true);
+	       }
+	  }
+     }
 }
 /*
  * 画像ビューアの状態を確認し、設定する
