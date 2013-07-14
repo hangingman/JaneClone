@@ -102,6 +102,10 @@ private:
      void PostResponse(SocketCommunication* sock);
      // 2chのサーバから受け取ったHTMLファイルを読み取りwxStringに格納する
      void ReadResponseHtml(const wxString& resultHtmlPath, wxString& htmlSource);
+     // レス書き込み用ウィンドウのタブが切り替わった時の処理
+     void OnChangeResponseTab(wxNotebookEvent& event);
+     // プレビュー画面に書き込み内容のプレビューを表示する
+     void SetPreviewWindow(wxNotebookEvent& event);
 
      // レス投稿ウィンドウのモード設定
      bool f_threadPost;
@@ -120,10 +124,10 @@ private:
 
 
      /** 定数化されたページ数 */
-#define KAKIKO_PAGE     1
-#define PREVIEW_PAGE    2
-#define LOCAL_RULE_PAGE 3
-#define SETTING_PAGE    4
+#define KAKIKO_PAGE     0
+#define PREVIEW_PAGE    1
+#define LOCAL_RULE_PAGE 2
+#define SETTING_PAGE    3
 
 protected:
      // begin wxGlade: ResponseWindow::attributes

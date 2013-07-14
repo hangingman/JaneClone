@@ -1992,7 +1992,7 @@ void JaneClone::Initialize2chBoardList() {
 	  // カテゴリをツリーに登録
 	  if (categoryName != boardInfoArray[i + 2]) {
 	       category = m_tree_ctrl->AppendItem(m_tree_ctrl->GetRootItem(), boardInfoArray[i + 2]);
-	       //m_tree_ctrl->SetItemImage(category, 0, wxTreeItemIcon_Normal);
+	       m_tree_ctrl->SetItemImage(category, 0, wxTreeItemIcon_Normal);
 	  }
 	  // それぞれの要素を一時格納
 	  boardName = boardInfoArray[i];

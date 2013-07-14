@@ -36,6 +36,7 @@ BEGIN_EVENT_TABLE(ResponseWindow, wxDialog)
    EVT_BUTTON(ID_PostResponse, ResponseWindow::OnPostResponse)
    EVT_BUTTON(ID_QuitResponseWindow, ResponseWindow::QuitResponseWindow)
    EVT_BUTTON(ID_PostConfirmForm, ResponseWindow::PostConfirmForm)
+   EVT_NOTEBOOK_PAGE_CHANGING(ID_ResponseWindow, ResponseWindow::OnChangeResponseTab)
 END_EVENT_TABLE()
 
 
@@ -599,4 +600,99 @@ void ResponseWindow::AddKakikomiText(const wxString& text) {
 
      kakikoTextCtrl->Clear();
      kakikoTextCtrl->SetValue(text);
-}	  			  
+}
+/*
+ * レス書き込み用ウィンドウのタブが切り替わった時の処理
+ */
+void ResponseWindow::OnChangeResponseTab(wxNotebookEvent& event) {
+
+     switch(event.GetSelection()) {
+
+     case KAKIKO_PAGE:
+	  break;
+	  
+     case PREVIEW_PAGE:
+	  ResponseWindow::SetPreviewWindow(event);
+	  break;
+
+     case LOCAL_RULE_PAGE:
+	  break;
+
+     case SETTING_PAGE:
+	  break;
+
+     default:
+	  break;
+     }
+     
+}
+/*
+ * プレビュー画面に書き込み内容のプレビューを表示する
+ */
+void ResponseWindow::SetPreviewWindow(wxNotebookEvent& event) {
+
+     if (!previewWindow->SetPage(wxEmptyString)) {
+	  wxMessageBox(wxT("エラー, 書き込み内容のプレビューに失敗しました."), 
+		       wxT("レス書き込み用ウィンドウ"), wxICON_ERROR);
+	  return;
+     }
+
+     wxString original        = kakikoTextCtrl->GetValue();
+     wxString default_nanashi = nameCombo->GetValue();
+     wxString mail            = mailCombo->GetValue();
+     wxString day_and_ID      = wxT("yyyy/MM/dd(E) HH:mm:ss.SSSS ID:XXXXXXXXX");
+
+     wxString htmlSource;
+     htmlSource += HTML_HEADER;
+
+     // ひとかたまりのHTMLソースにまとめる
+     wxString lumpOfHTML = wxT("<dt>");
+     wxString num        = wxT("x");
+     wxString link       = wxT("<a href=\"#") + num + wxT("\">") + num + wxT("</a>");
+     htmlSource += link;
+
+     // レスの最初に<table>タグを入れる
+     wxString res = wxEmptyString;
+     res.Append(wxT("<table border=0 id=\"") + num + wxT("\">"));
+
+     // 改行コードで区切る
+     wxStringTokenizer tkz(original, wxT("\n"));
+     while (tkz.HasMoreTokens()) {
+	  res.Append(tkz.GetNextToken());
+	  res.Append(wxT("<br>"));
+     }
+     // 画像があれば<img>タグをつける
+     JaneCloneUtil::AddImgTag(res);
+     res.Append(wxT("</table>"));
+     // レス内部のURLに<a>タグをつける
+     res = JaneCloneUtil::ReplaceURLText(res);
+     // レスの最後に改行
+     res.Append(wxT("<br>"));
+
+     if (mail != wxEmptyString) {
+	  // もしメ欄になにか入っているならば
+	  htmlSource += wxT(" 名前：<a href=\"mailto:");
+	  htmlSource += mail;
+	  htmlSource += wxT("\"><b>");
+	  htmlSource += default_nanashi;
+	  htmlSource += wxT("</b></a>");
+	  htmlSource += day_and_ID;
+	  htmlSource += wxT("<dd>");
+	  htmlSource += res;
+     } else {
+	  // 空の場合
+	  htmlSource += wxT(" 名前：<font color=green><b>");
+	  htmlSource += default_nanashi;
+	  htmlSource += wxT("</b></font>");
+	  htmlSource += day_and_ID;
+	  htmlSource += wxT("<dd>");
+	  htmlSource += res;
+     }
+
+     if (!previewWindow->SetPage(htmlSource)) {
+	  wxMessageBox(wxT("エラー, 書き込み内容のプレビューに失敗しました."), 
+		       wxT("レス書き込み用ウィンドウ"), wxICON_ERROR);
+	  return;
+     }     
+}
+

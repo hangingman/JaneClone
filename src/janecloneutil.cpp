@@ -754,3 +754,115 @@ wxString JaneCloneUtil::CreateShingetsuThreadListFilePath(const wxString& nodeHo
 
      return shingetsuFilePath;
 }
+/**
+ * スレッドの最初の行を処理するメソッド・スレの１には最後の「<>」の後にスレッドタイトルがつく
+ */
+wxString JaneCloneUtil::ProcessFirstResponse(wxString& threadRecord) {
+
+     // スレッドのそれぞれの要素
+     wxString default_nanashi, mail, day_and_ID, res;
+
+     // ひとかたまりのHTMLソースにまとめる
+     wxString lumpOfHTML = wxT("<dt>");
+     lumpOfHTML += wxT("<a href=\"#1\">1</a>");
+
+     // 正規表現でレスの内容を取り出してメモリに展開する
+     if (regexThreadFst.IsValid()) {
+	  if (regexThreadFst.Matches(threadRecord)) {
+	       // マッチさせたそれぞれの要素を取得する
+	       default_nanashi = regexThreadFst.GetMatch(threadRecord, 1);
+	       mail = regexThreadFst.GetMatch(threadRecord, 2);
+	       day_and_ID = regexThreadFst.GetMatch(threadRecord, 3);
+
+	       // レスの最初に<table>タグを入れる
+	       res.Append(wxT("<table border=0 id=\"1\">"));
+	       res.Append(regexThreadFst.GetMatch(threadRecord, 4));
+	       // 画像があれば<img>タグをつける
+	       JaneCloneUtil::AddImgTag(res);
+	       res.Append(wxT("</table>"));
+	       // レス内部のURLに<a>タグをつける
+	       res = JaneCloneUtil::ReplaceURLText(res);
+	       // レスの最後に改行
+	       res.Append(wxT("<br>"));
+	  }
+     }
+
+     if (mail != wxEmptyString) {
+	  // もしメ欄になにか入っているならば
+	  lumpOfHTML += wxT(" 名前：<a href=\"mailto:");
+	  lumpOfHTML += mail;
+	  lumpOfHTML += wxT("\"><b>");
+	  lumpOfHTML += default_nanashi;
+	  lumpOfHTML += wxT("</b></a>");
+	  lumpOfHTML += day_and_ID;
+	  lumpOfHTML += wxT("<dd>");
+	  lumpOfHTML += res;
+     } else {
+	  // 空の場合
+	  lumpOfHTML += wxT(" 名前：<font color=green><b>");
+	  lumpOfHTML += default_nanashi;
+	  lumpOfHTML += wxT("</b></font>");
+	  lumpOfHTML += day_and_ID;
+	  lumpOfHTML += wxT("<dd>");
+	  lumpOfHTML += res;
+     }
+
+     return lumpOfHTML;
+}
+/**
+ * スレッドの１以降を処理するメソッド
+ */
+wxString JaneCloneUtil::ProcessRestResponse(wxString& threadRecord, int number) {
+
+     // スレッドのそれぞれの要素
+     wxString default_nanashi, mail, day_and_ID, res;
+
+     // ひとかたまりのHTMLソースにまとめる
+     wxString lumpOfHTML = wxT("<dt>");
+     wxString num, link;
+     num << number;
+     link = wxT("<a href=\"#") + num + wxT("\">") + num + wxT("</a>");
+     lumpOfHTML += link;
+
+     // 正規表現でレスの内容を取り出してメモリに展開する
+     if (regexThread.IsValid()) {
+	  if (regexThread.Matches(threadRecord)) {
+	       // マッチさせたそれぞれの要素を取得する
+	       default_nanashi = regexThread.GetMatch(threadRecord, 1);
+	       mail = regexThread.GetMatch(threadRecord, 2);
+	       day_and_ID = regexThread.GetMatch(threadRecord, 3);	       
+	       // レスの最初に<table>タグを入れる
+	       res.Append(wxT("<table border=0 id=\"") + num + wxT("\">"));
+	       res.Append(regexThread.GetMatch(threadRecord, 4));
+	       // 画像があれば<img>タグをつける
+	       JaneCloneUtil::AddImgTag(res);
+	       res.Append(wxT("</table>"));
+	       // レス内部のURLに<a>タグをつける
+	       res = JaneCloneUtil::ReplaceURLText(res);
+	       // レスの最後に改行
+	       res.Append(wxT("<br>"));
+	  }
+     }
+
+     if (mail != wxEmptyString) {
+	  // もしメ欄になにか入っているならば
+	  lumpOfHTML += wxT(" 名前：<a href=\"mailto:");
+	  lumpOfHTML += mail;
+	  lumpOfHTML += wxT("\"><b>");
+	  lumpOfHTML += default_nanashi;
+	  lumpOfHTML += wxT("</b></a>");
+	  lumpOfHTML += day_and_ID;
+	  lumpOfHTML += wxT("<dd>");
+	  lumpOfHTML += res;
+     } else {
+	  // 空の場合
+	  lumpOfHTML += wxT(" 名前：<font color=green><b>");
+	  lumpOfHTML += default_nanashi;
+	  lumpOfHTML += wxT("</b></font>");
+	  lumpOfHTML += day_and_ID;
+	  lumpOfHTML += wxT("<dd>");
+	  lumpOfHTML += res;
+     }
+
+     return lumpOfHTML;
+}

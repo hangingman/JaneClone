@@ -152,6 +152,16 @@ public:
       * 新月のCSVファイル保存場所を作成する
       */
      static wxString CreateShingetsuThreadListFilePath(const wxString& nodeHostname);
+     /**
+      * スレッドの最初の行を処理するメソッド
+      */
+     static wxString ProcessFirstResponse(wxString& threadRecord);
+     /**
+      * スレッドの１以降を処理するメソッド
+      */
+     static wxString ProcessRestResponse(wxString& threadRecord, int number);
+
+
 
 private:
 
