@@ -29,7 +29,7 @@ enum {
         // janeclone.hpp
         ID_Quit = 1,                    // 終了
 	ID_Restart,      		// 再起動
-	ID_CurlSocketTest,              // 通信テスト
+	ID_Test,                        // テスト用ID
 	ID_WindowMinimize,              // ウィンドウを最小化する
 	ID_GetBoardList,        	// 板一覧情報取得
 	ID_CheckLogDirectory,           // 保存されているログをスレッド一覧に表示する
@@ -78,6 +78,7 @@ enum {
 	ID_UserLookingTabsControl,      // ユーザーが現在フォーカスしているウィンドウの操作を行う
 	ID_UserLookingTabsMenuClick,    // ユーザーが現在見ているスレタブ・板タブの情報をメニューからクリックした
 	ID_OnOpenJaneCloneOfficial,     // JaneClone公式サイトをブラウザで開く
+	ID_OnOpen2chViewerOfficial,     // ●公式サイトをブラウザで開く
 	ID_ThreadSearchBar,             // スレッド検索ボックスのID
 	ID_BoardSearchBar,              // 板名検索ボックスのID
 	ID_ShingetsuBoardSearchBar,     // 新月の板名検索ボックスのID

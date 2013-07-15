@@ -65,10 +65,6 @@ wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE) {
      vbox->Add(new NetworkSettingPanel(settingPanel));
      settingPanel->SetSizer(vbox);
      this->SetTitle(wxT("設定 - 通信"));
-     // スプリッターウィンドウの位置を設定ファイルから読み出す
-     double gravity = 0.3;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("SETTING_WINDOW_SASH_GRAVITY"), &gravity);
-     splitterWindow->SetSashGravity(gravity);
 }
 /**
  * ウィンドウのプロパティを設定
@@ -117,7 +113,7 @@ void SettingDialog::DoLayout() {
      wxBoxSizer* treeVbox = new wxBoxSizer(wxVERTICAL);
      treeVbox->Add(settingTreeCtrl, 1, wxEXPAND, 0);
      treePanel->SetSizer(treeVbox);
-     splitterWindow->SplitVertically(treePanel, settingPanel);
+     splitterWindow->SplitVertically(treePanel, settingPanel, 200);
      vbox->Add(splitterWindow, 1, wxEXPAND, 0);
      bottomSizer->Add(spacePanel, 1, wxEXPAND, 0);
      bottomSizer->Add(okButton, 0, 0, 5);
@@ -132,8 +128,6 @@ void SettingDialog::DoLayout() {
  * 設定画面のクローズ
  */
 void SettingDialog::OnQuit(wxCommandEvent& event) {
-
-     JaneCloneUtil::SetJaneCloneProperties(wxT("SETTING_WINDOW_SASH_GRAVITY"), splitterWindow->GetSashGravity());
      this->Destroy();
 }
 /**

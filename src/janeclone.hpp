@@ -131,7 +131,16 @@ private:
      void FontDialogThreadNotebook(wxCommandEvent& event);
      void FontDialogThreadContents(wxCommandEvent& event);
      void SetFontDialog(const int enumType);
-     void OnOpenJaneCloneOfficial(wxCommandEvent& event);
+
+     // JaneClone公式サイトをブラウザで開く
+     void OnOpenJaneCloneOfficial(wxCommandEvent& event) {
+	  wxLaunchDefaultBrowser(JANECLONE_DOWNLOADSITE);
+     };
+     // ●公式サイトをブラウザで開く
+     void OnOpen2chViewerOfficial(wxCommandEvent& event) {
+	  wxLaunchDefaultBrowser(IICH_VIEWER_OFFICIAL);
+     };
+
      // ユーザーが最後に閉じた板を開く
      void OnUserLastClosedBoardClick(wxCommandEvent& event);
      // ユーザーが最後に閉じたスレッドを開く

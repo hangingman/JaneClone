@@ -64,6 +64,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_FontDialogThreadNotebook, JaneClone::FontDialogThreadNotebook)
    EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
    EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
+   EVT_MENU(ID_OnOpen2chViewerOfficial, JaneClone::OnOpen2chViewerOfficial)
    EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
    EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
     
@@ -253,8 +254,6 @@ void JaneClone::SetJaneCloneManuBar() {
      menu1->AppendSeparator();
      menu1->Append(ID_Restart, wxT("再起動"), wxT("JaneCloneを再起動します"));
      menu1->Append(ID_Quit, wxT("終了"), wxT("JaneCloneを終了します"));
-
-     menu1->Append(ID_CurlSocketTest, wxT("通信テスト"), wxT("curlppを使った通信のテストを行います"));
      /**
       * 表示部分
       */
@@ -574,7 +573,7 @@ void JaneClone::SetJaneCloneManuBar() {
      menu10->AppendSeparator();
      menu10->Append(ID_OnOpenJaneCloneOfficial, wxT("JaneClone公式サイトをブラウザで開く"));
      menu10->AppendSeparator();
-     menu10->Append(wxID_ANY, wxT("2ちゃんねるビューア●に登録"));
+     menu10->Append(ID_OnOpen2chViewerOfficial, wxT("2ちゃんねるビューア●に登録"));
      menu10->AppendSeparator();
      menu10->Append(wxID_ANY, wxT("アップデートチェック"));
      menu10->AppendSeparator();
@@ -3142,12 +3141,6 @@ void JaneClone::UserLookingTabsControl(wxUpdateUIEvent& event) {
  */
 void JaneClone::OnSetFocus(wxFocusEvent& event) {
      event.Skip();
-}
-/**
- * JaneClone公式サイトをブラウザで開く
- */
-void JaneClone::OnOpenJaneCloneOfficial(wxCommandEvent& event) {
-     wxLaunchDefaultBrowser(JANECLONE_DOWNLOADSITE);
 }
 /**
  * スレッド一覧画面にツールバーを設定する
