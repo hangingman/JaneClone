@@ -260,8 +260,8 @@ $(MACINFOPLIST):
 	@echo "==== Creating Info.plist ===="
 	touch $(MACINFOPLIST)
 	@echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" >> $(MACINFOPLIST)
-	@echo -n "<!DOCTYPE plist PUBLIC " >> $(MACINFOPLIST)
-	@echo -n "\"-//Apple Computer//DTD PLIST 1.0//EN\" " >> $(MACINFOPLIST)
+	@echo "<!DOCTYPE plist PUBLIC " >> $(MACINFOPLIST)
+	@echo "\"-//Apple Computer//DTD PLIST 1.0//EN\" " >> $(MACINFOPLIST)
 	@echo "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">" >> $(MACINFOPLIST)
 	@echo "<plist version=\"1.0\">" >> $(MACINFOPLIST)
 	@echo "<dict>" >> $(MACINFOPLIST)
