@@ -123,12 +123,29 @@ size_t JaneCloneUtil::GetFileSize(const wxString& filePath) {
 /**
  * アンカーで指定されたレスをファイルから読み取ってDOM形式にして送り返す
  */
-wxString JaneCloneUtil::FindAnchoredResponse(wxString& boardNameAscii,
-					     wxString& origNumber, wxString& resNumber) {
+wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, const wxString& origNumber, 
+					     const wxString& resNumberStart, const wxString& resNumberEnd) {
 
      // ファイルパスの組み立てとファイルの有無確認
      const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString filePath = dir.GetName();
+
+     // 複数レスをポップアップさせる
+     bool popupMultiResponse = false;
+
+     // 入力文字列の検証
+     int start = wxAtoi(resNumberStart);
+     if ( start < 0 || 1000 < start ) return wxEmptyString;
+     
+     int end   = 0;
+     if (resNumberEnd != wxEmptyString) {
+	  end = wxAtoi(resNumberEnd);
+	  if ( end < 0 || 1000 < end ) {
+	       return wxEmptyString;
+	  }
+	  // 複数レス用フラグを立てる
+	  popupMultiResponse = true;
+     }
 
 #ifdef __WXMSW__
      // Windowsではパスの区切りは"\"
@@ -150,103 +167,186 @@ wxString JaneCloneUtil::FindAnchoredResponse(wxString& boardNameAscii,
 	  // 無ければ空文字リターン
 	  return wxEmptyString;
      }
-     // 取得するレス番
-     int resNumInt = wxAtoi(resNumber);
-
-     // datファイルを読み込む
-     wxTextFile datFile;
-     datFile.Open(filePath, wxConvUTF8);
-     wxString str;
-
-     if (datFile.IsOpened() && 1 == resNumInt) {
-	  str = datFile.GetFirstLine();
-	  datFile.Close();
-
-     } else if (datFile.IsOpened() && resNumInt > 1) {
-	  datFile.GetFirstLine();
-
-	  for (int i = 1; !datFile.Eof(); str = datFile.GetNextLine()) {
-	       // 上から読み込んでレス番号にあたる行のレスを取得する
-	       if (i == resNumInt) {
-		    datFile.Close();
-		    break;
-	       }
-	       ++i;
-	  }
-     }
 
      // HTMLのDOM形式にする
      wxString lumpOfHTML = HTML_HEADER_POPUP;
-     lumpOfHTML += wxT("<dt>");
-     lumpOfHTML += resNumber;
 
      wxString default_nanashi, mail, day_and_ID, res;
 
-     // 正規表現でレスの内容を取り出してメモリに展開する
+     if (popupMultiResponse) {
+	  /**
+	   * 複数レスをポップアップさせる
+	   */
+	  wxTextFile datFile;
+	  datFile.Open(filePath, wxConvUTF8);
+	  wxArrayString arraystr;
 
-     /** ex) レスの形式
-      *
-      * [デフォルト名無し]<>[メ欄]<>[yyyy/mm/dd(D) HH:MM:SS:ss ID:aaaaaaaaa BE:xxxxxxxxx-2BE(n)]<>[書き込み]<>板名
-      * [デフォルト名無し]<>[メ欄]<>[yyyy/mm/dd(D) HH:MM:SS:ss ID:aaaaaaaaa]<>[書き込み]<>
-      */
-     if (regexThread.IsValid() && resNumInt > 1) {
-	  // >>1 以外の処理
-	  if (regexThread.Matches(str)) {
-	       // マッチさせたそれぞれの要素を取得する
-	       default_nanashi = regexThread.GetMatch(str, 1);
-	       mail = regexThread.GetMatch(str, 2);
-	       day_and_ID = regexThread.GetMatch(str, 3);
-
-	       // レスの最初に<table>タグを入れる
-	       res.Append(wxT("<table border=0 id=\"") + resNumber + wxT("\">"));
-	       res.Append(regexThread.GetMatch(str, 4));
-	       res.Append(wxT("</table>"));
-
-	       // レス内部のURLに<a>タグをつける
-	       res = ReplaceURLText(res);
-	       // レスの最後に改行
-	       res.Append(wxT("<br>"));
+	  for (int i = start; i < end + 1; i++) {
+	       arraystr.Add(datFile[i-1]);
 	  }
-     } else if (regexThreadFst.IsValid() && resNumInt == 1) {
-	  // >>1 の場合の処理
-	  if (regexThreadFst.Matches(str)) {
-	       // マッチさせたそれぞれの要素を取得する
-	       default_nanashi = regexThreadFst.GetMatch(str, 1);
-	       mail = regexThreadFst.GetMatch(str, 2);
-	       day_and_ID = regexThreadFst.GetMatch(str, 3);
 
-	       // レスの最初に<table>タグを入れる
-	       res.Append(wxT("<table border=0 id=\"") + resNumber + wxT("\">"));
-	       res.Append(regexThreadFst.GetMatch(str, 4));
-	       res.Append(wxT("</table>"));
+	  datFile.Close();
 
-	       // レス内部のURLに<a>タグをつける
-	       res = ReplaceURLText(res);
-	       // レスの最後に改行
-	       res.Append(wxT("<br>"));
+	  for (int i = 0; i < arraystr.GetCount(); i++) {
+
+	       int curnumber = i + start;
+	       wxString str  = arraystr[i];
+	       lumpOfHTML += wxT("<dt>");
+	       lumpOfHTML += wxString::Format(wxT("%d"), curnumber);
+	       
+	       if (regexThread.IsValid() && curnumber > 1) {
+		    // >>1 以外の処理
+		    if (regexThread.Matches(str)) {
+			 // マッチさせたそれぞれの要素を取得する
+			 default_nanashi = regexThread.GetMatch(str, 1);
+			 mail = regexThread.GetMatch(str, 2);
+			 day_and_ID = regexThread.GetMatch(str, 3);
+
+			 // レスの最初に<table>タグを入れる
+			 res.Append(wxT("<table border=0 id=\"") + wxString::Format(wxT("%d"), curnumber) + wxT("\">"));
+			 res.Append(regexThread.GetMatch(str, 4));
+			 res.Append(wxT("</table>"));
+
+			 // レス内部のURLに<a>タグをつける
+			 res = ReplaceURLText(res);
+			 // レスの最後に改行
+			 res.Append(wxT("<br>"));
+		    }
+	       } else if (regexThreadFst.IsValid() && curnumber == 1) {
+		    // >>1 の場合の処理
+		    if (regexThreadFst.Matches(str)) {
+			 // マッチさせたそれぞれの要素を取得する
+			 default_nanashi = regexThreadFst.GetMatch(str, 1);
+			 mail = regexThreadFst.GetMatch(str, 2);
+			 day_and_ID = regexThreadFst.GetMatch(str, 3);
+
+			 // レスの最初に<table>タグを入れる
+			 res.Append(wxT("<table border=0 id=\"") + wxString::Format(wxT("%d"), curnumber) + wxT("\">"));
+			 res.Append(regexThreadFst.GetMatch(str, 4));
+			 res.Append(wxT("</table>"));
+
+			 // レス内部のURLに<a>タグをつける
+			 res = ReplaceURLText(res);
+			 // レスの最後に改行
+			 res.Append(wxT("<br>"));
+		    }
+	       }
+
+	       if (mail != wxEmptyString) {
+		    // もしメ欄になにか入っているならば
+		    lumpOfHTML += wxT(" 名前：<a href=\"mailto:");
+		    lumpOfHTML += mail;
+		    lumpOfHTML += wxT("\"><b>");
+		    lumpOfHTML += default_nanashi;
+		    lumpOfHTML += wxT("</b></a>");
+		    lumpOfHTML += day_and_ID;
+		    lumpOfHTML += wxT("<dd>");
+		    lumpOfHTML += res;
+	       } else {
+		    // 空の場合
+		    lumpOfHTML += wxT(" 名前：<font color=green><b>");
+		    lumpOfHTML += default_nanashi;
+		    lumpOfHTML += wxT("</b></font>");
+		    lumpOfHTML += day_and_ID;
+		    lumpOfHTML += wxT("<dd>");
+		    lumpOfHTML += res;
+	       }
 	  }
-     }
 
-     if (mail != wxEmptyString) {
-	  // もしメ欄になにか入っているならば
-	  lumpOfHTML += wxT(" 名前：<a href=\"mailto:");
-	  lumpOfHTML += mail;
-	  lumpOfHTML += wxT("\"><b>");
-	  lumpOfHTML += default_nanashi;
-	  lumpOfHTML += wxT("</b></a>");
-	  lumpOfHTML += day_and_ID;
-	  lumpOfHTML += wxT("<dd>");
-	  lumpOfHTML += res;
      } else {
-	  // 空の場合
-	  lumpOfHTML += wxT(" 名前：<font color=green><b>");
-	  lumpOfHTML += default_nanashi;
-	  lumpOfHTML += wxT("</b></font>");
-	  lumpOfHTML += day_and_ID;
-	  lumpOfHTML += wxT("<dd>");
-	  lumpOfHTML += res;
-     }
+	  /**
+	   * 単独レスをポップアップさせる
+	   */
+	  
+	  wxTextFile datFile;
+	  datFile.Open(filePath, wxConvUTF8);
+	  wxString str;
 
+	  if (datFile.IsOpened() && 1 == start) {
+	       str = datFile.GetFirstLine();
+	       datFile.Close();
+
+	  } else if (datFile.IsOpened() && start > 1) {
+	       datFile.GetFirstLine();
+
+	       for (int i = 1; !datFile.Eof(); str = datFile.GetNextLine()) {
+		    // 上から読み込んでレス番号にあたる行のレスを取得する
+		    if (i == start) {
+			 datFile.Close();
+			 break;
+		    }
+		    ++i;
+	       }
+	  }
+
+	  // 正規表現でレスの内容を取り出してメモリに展開する
+	  lumpOfHTML += wxT("<dt>");
+	  lumpOfHTML += resNumberStart;
+
+	  /** ex) レスの形式
+	   *
+	   * [デフォルト名無し]<>[メ欄]<>[yyyy/mm/dd(D) HH:MM:SS:ss ID:aaaaaaaaa BE:xxxxxxxxx-2BE(n)]<>[書き込み]<>板名
+	   * [デフォルト名無し]<>[メ欄]<>[yyyy/mm/dd(D) HH:MM:SS:ss ID:aaaaaaaaa]<>[書き込み]<>
+	   */
+	  if (regexThread.IsValid() && start > 1) {
+	       // >>1 以外の処理
+	       if (regexThread.Matches(str)) {
+		    // マッチさせたそれぞれの要素を取得する
+		    default_nanashi = regexThread.GetMatch(str, 1);
+		    mail = regexThread.GetMatch(str, 2);
+		    day_and_ID = regexThread.GetMatch(str, 3);
+
+		    // レスの最初に<table>タグを入れる
+		    res.Append(wxT("<table border=0 id=\"") + resNumberStart + wxT("\">"));
+		    res.Append(regexThread.GetMatch(str, 4));
+		    res.Append(wxT("</table>"));
+
+		    // レス内部のURLに<a>タグをつける
+		    res = ReplaceURLText(res);
+		    // レスの最後に改行
+		    res.Append(wxT("<br>"));
+	       }
+	  } else if (regexThreadFst.IsValid() && start == 1) {
+	       // >>1 の場合の処理
+	       if (regexThreadFst.Matches(str)) {
+		    // マッチさせたそれぞれの要素を取得する
+		    default_nanashi = regexThreadFst.GetMatch(str, 1);
+		    mail = regexThreadFst.GetMatch(str, 2);
+		    day_and_ID = regexThreadFst.GetMatch(str, 3);
+
+		    // レスの最初に<table>タグを入れる
+		    res.Append(wxT("<table border=0 id=\"") + resNumberStart + wxT("\">"));
+		    res.Append(regexThreadFst.GetMatch(str, 4));
+		    res.Append(wxT("</table>"));
+
+		    // レス内部のURLに<a>タグをつける
+		    res = ReplaceURLText(res);
+		    // レスの最後に改行
+		    res.Append(wxT("<br>"));
+	       }
+	  }
+
+	  if (mail != wxEmptyString) {
+	       // もしメ欄になにか入っているならば
+	       lumpOfHTML += wxT(" 名前：<a href=\"mailto:");
+	       lumpOfHTML += mail;
+	       lumpOfHTML += wxT("\"><b>");
+	       lumpOfHTML += default_nanashi;
+	       lumpOfHTML += wxT("</b></a>");
+	       lumpOfHTML += day_and_ID;
+	       lumpOfHTML += wxT("<dd>");
+	       lumpOfHTML += res;
+	  } else {
+	       // 空の場合
+	       lumpOfHTML += wxT(" 名前：<font color=green><b>");
+	       lumpOfHTML += default_nanashi;
+	       lumpOfHTML += wxT("</b></font>");
+	       lumpOfHTML += day_and_ID;
+	       lumpOfHTML += wxT("<dd>");
+	       lumpOfHTML += res;
+	  }
+     }
+     
      // HTMLソースを加える
      lumpOfHTML += HTML_FOOTER;
 

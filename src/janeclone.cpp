@@ -1299,8 +1299,7 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
 		    }
 	       }
 
-	       if (orgNumber == wxEmptyString || resNumber == wxEmptyString
-		   || boardNameAscii == wxEmptyString) {
+	       if (orgNumber == wxEmptyString || resNumber == wxEmptyString || boardNameAscii == wxEmptyString) {
 		    return;
 	       }
 	       // アンカーの出現位置
@@ -2596,14 +2595,24 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
 /**
  * レスアンカーに対応するレスを表示するポップアップウィンドウを出現させる
  */
-void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event,
-			       wxString& boardNameAscii, wxString& origNumber, wxString& resNumber,
-			       wxPoint& anchorPoint) {
+void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii, 
+			       wxString& origNumber, wxString& resNumber, wxPoint& anchorPoint) {
 
-     // アンカーが指し示すHTMLソースを取得する
-     wxString htmlDOM = JaneCloneUtil::FindAnchoredResponse(boardNameAscii,
-							    origNumber, resNumber);
+     // ポップアップさせるHTMLソース
+     wxString htmlDOM;
 
+     // '-'が含まれている場合、複数レスをポップアップする
+     if (resNumber.Contains(wxT("-"))) {
+	  wxStringTokenizer tkz(resNumber, wxT("-"));
+	  if (tkz.HasMoreTokens()) {
+	       const wxString resNumberStart = tkz.GetNextToken();
+	       const wxString resNumberEnd   = tkz.GetNextToken();
+	       htmlDOM                       = JaneCloneUtil::FindAnchoredResponse(boardNameAscii, origNumber, resNumberStart, resNumberEnd);
+	  }
+     } else {
+	 htmlDOM = JaneCloneUtil::FindAnchoredResponse(boardNameAscii, origNumber, resNumber);
+     }
+     
      if (wxEmptyString == htmlDOM) {
 	  // 空文字で帰ってきたらリターン
 	  return;
@@ -2612,7 +2621,6 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event,
      // 取得したレスをポップアップさせる
      AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook,
 							      anchorPoint, wxSize(640, 300), htmlDOM);
-
      // マウスカーソルの位置に調整する
      wxPoint p = ClientToScreen(wxGetMousePosition());
      popup->Position(anchorPoint, wxSize(p.x + 50, p.y - 150));

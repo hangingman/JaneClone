@@ -70,8 +70,8 @@ public:
      /**
       * アンカーで指定されたレスをファイルから読み取ってDOM形式にして送り返す
       */
-     static wxString FindAnchoredResponse(wxString& boardNameAscii,
-					  wxString& origNumber, wxString& resNumber);
+     static wxString FindAnchoredResponse(const wxString& boardNameAscii, const wxString& origNumber, 
+					  const wxString& resNumberStart, const wxString& resNumberEnd=wxEmptyString);
      /**
       * アンカーで指定されたレスをファイルから読み取ってレスだけを返す
       *
