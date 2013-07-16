@@ -39,6 +39,8 @@ IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
    // レス番号上で左クリックした際のイベント
    EVT_MENU(ID_CallResponseWindowAnchor, ThreadContentWindow::CallResponseWindowWithAnchor)
    EVT_MENU(ID_CallResponseWindowQuote, ThreadContentWindow::CallResponseWindowWithQuote)
+   EVT_MENU(ID_CopyTContentsToClipBoard, ThreadContentWindow::CopyTContentsToClipBoard) 
+   EVT_MENU(ID_CopyTAllToClipBoard, ThreadContentWindow::CopyTAllToClipBoard)   
    // リサイズがかかった際のイベント
    EVT_SIZE(ThreadContentWindow::OnSize) 
 #ifdef DEBUG
@@ -389,11 +391,11 @@ void ThreadContentWindow::OnLeftClickResponseNumber(wxHtmlLinkEvent& event, cons
      abone->Append(wxID_ANY, wxT("あぼ～ん・チェックを解除"));
 
      wxMenu* copy = new wxMenu();
-     copy->Append(wxID_ANY, wxT("内容をコピー"));
+     copy->Append(ID_CopyTContentsToClipBoard, wxT("内容をコピー"));
      copy->Append(ID_CopyTURLToClipBoard, wxT("URLをコピー"));
      copy->Append(ID_CopyTTitleToClipBoard, wxT("タイトルをコピー"));
      copy->Append(ID_CopyTBothDataToClipBoard, wxT("タイトルとURLをコピー"));
-     copy->Append(wxID_ANY, wxT("タイトルとURLと内容をコピー"));
+     copy->Append(ID_CopyTAllToClipBoard, wxT("タイトルとURLと内容をコピー"));
      response->AppendSubMenu(copy, wxT("このレスをコピー"));
      response->AppendSeparator();
      response->Append(wxID_ANY, wxT("ここまで読んだ"));
@@ -598,4 +600,107 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
  */
 void ThreadContentWindow::HtmlSourceDebug(wxCommandEvent& event) {
      wxMessageBox(this->m_htmlSource);
+}
+/*
+ * レスの内容をクリップボードにコピーする
+ */
+void ThreadContentWindow::CopyTContentsToClipBoard(wxCommandEvent& event) {
+
+     if (wxWindow* grand = this->GetGrandParent()) {
+
+	  wxAuiNotebook* threadNoteBook = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(THREAD_NOTEBOOK));
+
+	  if (threadNoteBook) {
+	       // 必要な構造体を宣言する
+	       ThreadInfo threadInfoHash;
+	       URLvsBoardName boardInfoHash;
+	       
+	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(threadNoteBook->GetParent())) {
+		    // スレッド情報をコピーしてくる
+		    ThreadInfoHash tiHash;
+		    wxJaneClone->GetThreadInfoHash(tiHash);
+		    // 選択されたスレタブの情報を集める
+		    wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+		    threadInfoHash = tiHash[title];
+		    threadInfoHash.title = title; // タイトル情報を設定する
+
+		    // ハッシュからURLを探す
+		    NameURLHash::iterator it;
+		    for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it) {
+			 wxString key = it->first;
+			 boardInfoHash = it->second;
+			 if (boardInfoHash.boardNameAscii == threadInfoHash.boardNameAscii) break;
+		    }
+	       }
+
+	       // レスの内容を取得する
+	       wxString response = JaneCloneUtil::FindAnchoredResponseText(threadInfoHash.boardNameAscii, threadInfoHash.origNumber,
+									   m_response, false);
+
+	       if (wxTheClipboard->Open()) {
+		    // 情報をクリップボードに渡す
+		    wxTheClipboard->Clear();
+		    wxTheClipboard->SetData(new wxTextDataObject(response));
+		    wxTheClipboard->Close();
+	       }
+	  }
+     }
+}
+/*
+ * 指定されたレスの内容をすべてクリップボードにコピーする
+ */
+void ThreadContentWindow::CopyTAllToClipBoard(wxCommandEvent& event) {
+
+     // 必要な構造体を宣言する
+     ThreadInfo     threadInfoHash;
+     URLvsBoardName boardInfoHash;
+     wxString       response;
+     wxString       boardURL;
+
+     if (wxWindow* grand = this->GetGrandParent()) {
+	  wxAuiNotebook* threadNoteBook = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(THREAD_NOTEBOOK));
+	  if (threadNoteBook) {	       
+	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(threadNoteBook->GetParent())) {
+		    // スレッド情報をコピーしてくる
+		    ThreadInfoHash tiHash;
+		    wxJaneClone->GetThreadInfoHash(tiHash);
+		    // 選択されたスレタブの情報を集める
+		    wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+		    threadInfoHash = tiHash[title];
+		    threadInfoHash.title = title; // タイトル情報を設定する
+
+		    // ハッシュからURLを探す
+		    NameURLHash::iterator it;
+		    for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it) {
+			 wxString key = it->first;
+			 boardInfoHash = it->second;
+			 if (boardInfoHash.boardNameAscii == threadInfoHash.boardNameAscii) break;
+		    }
+	       }
+
+	       // レスの内容を取得する
+	       response = JaneCloneUtil::FindAnchoredResponseText(threadInfoHash.boardNameAscii, threadInfoHash.origNumber,
+								  m_response, false);
+	       // URLを取得する
+	       boardURL = boardInfoHash.boardURL;
+	  }
+     }
+     wxString threadURL = boardURL;
+
+     // ホスト名の後の板名を除く
+     int begin = threadURL.Find(threadInfoHash.boardNameAscii);
+     if (begin == wxNOT_FOUND) {
+	  return;
+     }
+     threadURL = threadURL.Mid(0, begin);
+     threadURL += wxT("test/read.cgi/");
+     threadURL += threadInfoHash.boardNameAscii;
+     threadURL += wxT("/");
+     threadURL += threadInfoHash.origNumber;
+     threadURL += wxT("/");
+
+     if (wxTheClipboard->Open()) {
+	  wxTheClipboard->SetData(new wxTextDataObject(threadInfoHash.title + wxT("\n") + threadURL + wxT("\n") + response));
+	  wxTheClipboard->Close();
+     }
 }

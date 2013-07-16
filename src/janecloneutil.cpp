@@ -255,8 +255,8 @@ wxString JaneCloneUtil::FindAnchoredResponse(wxString& boardNameAscii,
 /**
  * アンカーで指定されたレスをファイルから読み取ってレスだけを返す
  */
-wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii,
-					 const wxString& origNumber, const long resNumber) {
+wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii, const wxString& origNumber, 
+						 const long resNumber, const bool useTriangularBrackets) {
 
      // ファイルパスの組み立てとファイルの有無確認
      const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
@@ -307,7 +307,11 @@ wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii,
 	  }
      }
 
-     wxString res = wxT(">");
+     wxString res = wxEmptyString;
+     
+     if (useTriangularBrackets) {
+	  res = wxT(">");
+     }     
 
      // 正規表現でレスの内容を取り出してメモリに展開する
 
@@ -321,7 +325,7 @@ wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii,
 	  if (regexThread.Matches(str)) {
 	       res.Append(regexThread.GetMatch(str, 4));
 	       // レスの最後に改行
-	       res.Replace(wxT("<br>"), wxT("\n>"), true);
+	       res.Replace(wxT("<br>"), useTriangularBrackets ? wxT("\n>") : wxT("\n"), true);
 	       res.Append(wxT("\n"));
 	  }
      } else if (regexThreadFst.IsValid() && resNumInt == 1) {
@@ -329,7 +333,7 @@ wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii,
 	  if (regexThreadFst.Matches(str)) {
 	       res.Append(regexThreadFst.GetMatch(str, 4));
 	       // レスの最後に改行
-	       res.Replace(wxT("<br>"), wxT("\n>"), true);
+	       res.Replace(wxT("<br>"), useTriangularBrackets ? wxT("\n>") : wxT("\n"), true);
 	       res.Append(wxT("\n"));
 	  }
      }

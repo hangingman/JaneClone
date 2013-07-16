@@ -102,6 +102,11 @@ private:
      // 画像ビューアの状態を確認し、設定する
      void SetJaneCloneImageViewer(const wxString& href, const wxString& ext);
 
+     // レスの内容をクリップボードにコピーする
+     void CopyTContentsToClipBoard(wxCommandEvent& event);
+     // 指定されたレスの内容をすべてクリップボードにコピーする
+     void CopyTAllToClipBoard(wxCommandEvent& event);
+
      // リサイズ時のイベント
      void OnSize(wxSizeEvent& event);
 

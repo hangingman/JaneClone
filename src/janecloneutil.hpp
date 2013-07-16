@@ -74,9 +74,15 @@ public:
 					  wxString& origNumber, wxString& resNumber);
      /**
       * アンカーで指定されたレスをファイルから読み取ってレスだけを返す
+      *
+      * @param  const wxString& boardNameAscii         板名の英語名  
+      * @param  const wxString& origNumber             UNIXタイムベースのオリジナルな番号
+      * @param  const long      resNumber              取得するレスの番号
+      * @param  const bool      useTriangularBrackets  true = 返り値に'>'がつく, false = '>'がつかない
+      * @return wxString        取得したレスの内容
       */
-     static wxString FindAnchoredResponseText(const wxString& boardNameAscii,
-					      const wxString& origNumber, const long resNumber);
+     static wxString FindAnchoredResponseText(const wxString& boardNameAscii, const wxString& origNumber, 
+					      const long resNumber, const bool useTriangularBrackets=true);
      /**
       * レス内にURLがあれば<a>タグを付ける
       */

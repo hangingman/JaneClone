@@ -53,6 +53,8 @@ enum {
 	ID_CopyTURLToClipBoard,		// スレッドのURLをクリップボードにコピーする
 	ID_CopyTTitleToClipBoard,	// スレッドのタイトルをクリップボードにコピーする
 	ID_CopyTBothDataToClipBoard,    // スレッドのURLとタイトルをクリップボードにコピーする
+	ID_CopyTContentsToClipBoard,    // スレッドの内容をクリップボードにコピーする
+	ID_CopyTAllToClipBoard,         // スレッドの内容, URL, タイトルをクリップボードにコピーする
 	ID_OneThreadTabClose,		// スレタブをひとつ閉じる
 	ID_ExcepSelThreadTabClose,	// 現在選択されていないスレタブを閉じる
 	ID_AllThreadTabClose,		// すべてのスレタブを閉じる
