@@ -315,4 +315,7 @@ static const wxRegEx regexURI(_T("(http|https|ttp|ftp)://([-0-9a-zA-Z\\._]*)(:[0
 // HTMLタグマッチング用正規表現
 static const wxRegEx regexHtmlTag(_T("<(\"[^\"]*\"|'[^']*'|[^'\">])*>"), wxRE_ADVANCED + wxRE_ICASE);
 
+// レスアンカーマッチング用正規表現
+static const wxRegEx regexResAnchor(_T(">>([[:digit:]]{1,4})"), wxRE_ADVANCED + wxRE_ICASE);
+
 #endif /* DATATYPE_HPP_ */

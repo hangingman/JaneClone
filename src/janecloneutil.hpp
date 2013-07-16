@@ -86,9 +86,9 @@ public:
       */
      static void AddImgTag(wxString& responseText);
      /**
-      * レス内に<a>タグがあれば取り除いてプレインテキストにする
+      * プレインテキスト内にアンカーがあれば<a>タグをつける
       */
-     static void RemoveURLText(wxString& responseText);
+     static wxString AddAnchorTag(wxString& responseText);
      /**
       * 指定された文字列でdatファイルへのファイルパスを組み立てる
       */

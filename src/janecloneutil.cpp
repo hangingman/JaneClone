@@ -426,10 +426,31 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
      }
 }
 /**
- * レス内に<a>タグがあれば取り除いてプレインテキストにする
+ * プレインテキスト内にアンカーがあれば<a>タグをつける
  */
-void RemoveURLText(wxString& responseText) {
+wxString JaneCloneUtil::AddAnchorTag(wxString& responseText) {
 
+     wxString text = responseText;
+     wxString tmp, result;
+     size_t start, len;
+
+     if (regexResAnchor.IsValid() && regexResAnchor.Matches(responseText)) {
+	  for (tmp = text; regexResAnchor.Matches(tmp);
+	       tmp = tmp.SubString(start + len, tmp.Len())) {
+	       regexResAnchor.GetMatch(&start, &len, 0);
+	       result += tmp.SubString(0, start - 1);
+	       result += wxT("<a href=\"#");
+	       result += tmp.SubString(start, start + len - 1);
+	       result += wxT("\"/>&gt;&gt;");
+	       result += tmp.SubString(start, start + len - 1);
+	       result += wxT("</a>");
+	  }
+	  result += tmp;
+     } else {
+	  return responseText;
+     }
+
+     return result;     
 }
 /**
  * 指定された文字列でdatファイルへのファイルパスを組み立てる

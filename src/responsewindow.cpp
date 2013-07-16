@@ -667,6 +667,8 @@ void ResponseWindow::SetPreviewWindow(wxNotebookEvent& event) {
      res.Append(wxT("</table>"));
      // レス内部のURLに<a>タグをつける
      res = JaneCloneUtil::ReplaceURLText(res);
+     // アンカーを処理する
+     res = JaneCloneUtil::AddAnchorTag(res);
      // レスの最後に改行
      res.Append(wxT("<br>"));
 
