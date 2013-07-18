@@ -1,5 +1,5 @@
 # 依存関係にあるソース群
-SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 curl curlpp src
+SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 curl curlpp src test
 
 # パッケージ作成用サブディレクトリも設定する
 DIST_SUBDIRS = $(SUBDIRS)
@@ -12,7 +12,7 @@ endif
 # janeclone.wrapper向けルール
 bin_SCRIPTS = janeclone
 CLEANFILES  = $(bin_SCRIPTS)
-EXTRA_DIST  = misc/janeclone.wrapper misc/janeclone.menu
+EXTRA_DIST  = misc/janeclone.wrapper misc/janeclone.menu test
 
 # 書き換えスクリプト
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
