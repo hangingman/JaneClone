@@ -12,7 +12,7 @@ endif
 # janeclone.wrapper向けルール
 bin_SCRIPTS = janeclone
 CLEANFILES  = $(bin_SCRIPTS)
-EXTRA_DIST  = janeclone.wrapper misc/janeclone.menu
+EXTRA_DIST  = misc/janeclone.wrapper misc/janeclone.menu
 
 # 書き換えスクリプト
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
@@ -25,7 +25,7 @@ do_subst_menu 	 =  sed -e 's,%%%bindir%%%,$(bindir),g' \
 
 # janecloneスクリプトを作成する
 janeclone:
-	$(do_subst_wrapper) janeclone.wrapper > janeclone
+	$(do_subst_wrapper) misc/janeclone.wrapper > janeclone
 	chmod +x janeclone
 if USE_LINUX
 	if [-d debian] then ;
@@ -53,7 +53,7 @@ EXT	= .exe
 
 # NSISの設定ファイル
 MAKENSIS    = makensis
-NSIS_NSI_IN = $(top_builddir)/janeclone.nsi.in
+NSIS_NSI_IN = $(top_builddir)/misc/janeclone.nsi.in
 NSIS_NSI    = $(top_builddir)/extras/janeclone.nsi
 
 # RPM用設定ファイル
