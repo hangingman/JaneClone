@@ -2026,7 +2026,7 @@ void JaneClone::Initialize2chBoardList() {
 	  hashID++;
      }
 
-#ifndef __WXMAC__
+#if !wxCHECK_VERSION(2, 9, 0)
      m_tree_ctrl->Expand(m_rootId);
 #endif
 
@@ -2080,7 +2080,7 @@ void JaneClone::InitializeShingetsuNodeList() {
 	  m_shingetsu_tree_ctrl->AppendItem(m_shingetsu_tree_ctrl->GetRootItem(), shingetsuInfoArray[i], 1, 1);
      }
 
-#ifndef __WXMAC__
+#if !wxCHECK_VERSION(2, 9, 0)
      m_tree_ctrl->Expand(m_rootId);
 #endif
 
@@ -2148,7 +2148,7 @@ void JaneClone::SetBoardList(const bool thisIsFirst) {
 	  hashID++;
      }
 
-#ifndef __WXMAC__
+#if !wxCHECK_VERSION(2, 9, 0)
      m_tree_ctrl->Expand(m_tree_ctrl->GetRootItem());
 #endif
 
@@ -3370,12 +3370,12 @@ void JaneClone::SearchBoardTree(const wxString& keyword) {
 
 	  wxTreeItemId tmp = m_tree_ctrl->AppendItem(category, boardName);
 	  m_tree_ctrl->SetItemImage(tmp, 1, wxTreeItemIcon_Normal);
-#ifndef __WXMAC__
+#if !wxCHECK_VERSION(2, 9, 0)
 	  m_tree_ctrl->Expand(category);
 #endif
 	  
      }
-#ifndef __WXMAC__
+#if !wxCHECK_VERSION(2, 9, 0)
      m_tree_ctrl->Expand(m_tree_ctrl->GetRootItem());
 #endif
 }
