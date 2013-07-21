@@ -1,5 +1,5 @@
 ========== ========== ==========  
-  JaneClone  ver.0.7  
+  JaneClone  ver.1.1.1  
 ========== ========== ==========  
   
 【 ソフト名 】JaneClone  
@@ -12,8 +12,8 @@
   Mac OSX  (Lion~)  
   BSD      (GTK2 or 3)  
   
-【バージョン】1.1.0
-【最終更新日】2013/05/25
+【バージョン】1.1.1
+【最終更新日】2013/07/21
 
 【 ウ ェ ブ 】http://nantonaku-shiawase.hatenablog.com/
 【 E - mail 】newserver002@gmail.com
@@ -35,9 +35,12 @@ x86_64-w64-mingw32-gcc.exe (tdm64-1) 4.7.1
 wxWidgets-2.8.12
 
 【Linux(64bit)】
+gcc-4.7以降
+wxWidgets-2.8.12
 
 【Mac OSX(64bit)】
-
+clang-mp-3.3以降
+wxWidgets-2.9.5
 
 ◇ ライセンス ◇
 GNU 一般公衆利用許諾契約書のバージョン2に従います
