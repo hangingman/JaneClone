@@ -571,7 +571,15 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
  */
 int wxNKF::SetOption(const wxString option) {
 
-     unsigned char* cp = reinterpret_cast<unsigned char*>(options.c_str());
+     std::vector<unsigned char> buf;
+     const char* str = option.ToAscii();
+
+     for (int i=0; i < strlen(str);i++){
+	  buf.push_back(str[i]);
+     }
+     
+     unsigned char* cp = &buf[0];
+
      nkf_char i, j;
      unsigned char *p;
      unsigned char *cp_back = NULL;
