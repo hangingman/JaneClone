@@ -129,6 +129,10 @@ class wxNKF {
   */
  int SetOption(const wxString option);
  /**
+  * set flag to convert cp932 to UTF-8
+  */
+ int SetCP932ToUTF8();
+ /**
   * define charcter code convert method by set flags
   */
  int ModuleConnection();

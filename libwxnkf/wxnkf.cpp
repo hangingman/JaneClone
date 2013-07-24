@@ -571,6 +571,10 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
  */
 int wxNKF::SetOption(const wxString option) {
 
+     if (option == wxT("--ic=CP932 --oc=UTF-8")) {
+	  return this->SetCP932ToUTF8();
+     }
+
      std::vector<unsigned char> buf;
      const char* str = option.ToAscii();
 
@@ -1137,6 +1141,16 @@ int wxNKF::SetOption(const wxString option) {
 	       return -1;
 	  }
      }
+     return 0;
+}
+/**
+ * set flag to convert cp932 to UTF-8
+ */
+int wxNKF::SetCP932ToUTF8() {
+
+     Util::NKFEncFind("CP932", wxEnc, SET_INPUT_MODE);
+     Util::NKFEncFind("UTF-8", wxEnc, SET_OUTPUT_MODE);
+     
      return 0;
 }
 /**
