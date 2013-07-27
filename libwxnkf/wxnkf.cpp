@@ -93,6 +93,8 @@ int wxNKF::Convert(const wxString& inputFilePath, const wxString& outputFilePath
 	// delete resource
 	delete file;
 	delete fileSystem;
+
+	return 0;
 }
 /**
  * main method of this class convert character code
