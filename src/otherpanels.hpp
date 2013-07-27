@@ -20,7 +20,7 @@ class NetworkSettingPanel: public wxPanel {
 public:
      // begin wxGlade: NetworkSettingPanel::ids
      // end wxGlade
-     NetworkSettingPanel(wxWindow* parent, int id=ID_NetworkPanel, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+     NetworkSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
 private:
      // begin wxGlade: NetworkSettingPanel::methods
@@ -77,7 +77,7 @@ class PathSettingPanel: public wxPanel {
 public:
      // begin wxGlade: PathSettingPanel::ids
      // end wxGlade
-     PathSettingPanel(wxWindow* parent, int id=wxID_ANY, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+     PathSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
 private:
      // begin wxGlade: PathSettingPanel::methods
@@ -119,6 +119,51 @@ protected:
      wxDirPickerCtrl* dirPicker3;
      // end wxGlade
      DECLARE_EVENT_TABLE() 
+}; // wxGlade: end class
+
+// begin wxGlade: ::extracode
+// end wxGlade
+
+/**
+ * 各種動作設定用画面
+ */
+class BehaviorPanel: public wxPanel {
+public:
+    // begin wxGlade: BehaviorPanel::ids
+    // end wxGlade
+
+    BehaviorPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+
+private:
+    // begin wxGlade: BehaviorPanel::methods
+    void set_properties();
+    void do_layout();
+    // end wxGlade
+
+protected:
+    // begin wxGlade: BehaviorPanel::attributes
+    wxStaticBox* sizer_7_staticbox;
+    wxStaticBox* sizer_5_staticbox;
+    wxStaticBox* sizer_3_staticbox;
+    wxStaticBox* sizer_2_staticbox;
+    wxCheckBox* openBNewTabCheck;
+    wxCheckBox* onlyOneCategoryCheck;
+    wxPanel* panel_2;
+    wxCheckBox* openTNewTabCheck;
+    wxComboBox* threadNewTabCombo;
+    wxPanel* panel_6;
+    wxCheckBox* lastReadThreadPosCheck;
+    wxPanel* panel_3;
+    wxRadioBox* threadJumpSettingRadio;
+    wxCheckBox* redrawNewThreadCheck;
+    wxStaticText* label_1;
+    wxComboBox* showResponseCombo;
+    wxPanel* panel_7;
+    wxPanel* panel_4;
+    wxCheckBox* favoriteNewTabCheck;
+    wxCheckBox* favoriteOnlyOneFolderCheck;
+    wxPanel* panel_5;
+    // end wxGlade
 }; // wxGlade: end class
 
 #endif // OTHERPANELS_H

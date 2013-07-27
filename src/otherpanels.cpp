@@ -5,8 +5,8 @@
 /**
  * 各種ネットワーク設定用画面
  */
-NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long style):
-     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL) {
+NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+     wxPanel(parent, ID_NetworkPanel, pos, size, wxTAB_TRAVERSAL) {
 
      // begin wxGlade: NetworkSettingPanel::NetworkSettingPanel
      panel_5 = new wxPanel(this, wxID_ANY);
@@ -134,8 +134,9 @@ END_EVENT_TABLE()
 /**
  * 各種パス設定用画面
  */
-PathSettingPanel::PathSettingPanel(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long style):
-wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL) {
+PathSettingPanel::PathSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+wxPanel(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
+
      // begin wxGlade: PathSettingPanel::PathSettingPanel
      browserCheck = new wxCheckBox(this, ID_BrowserCheck, wxT("ブラウザを指定する"));
      label_1 = new wxStaticText(this, wxID_ANY, wxT("ブラウザのパス"));
@@ -202,5 +203,103 @@ void PathSettingPanel::do_layout() {
     grid_sizer_1->Add(dirPicker3, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(grid_sizer_1);
     grid_sizer_1->Fit(this);
+    // end wxGlade
+}
+
+/**
+ * 各種動作設定用画面
+ */
+BehaviorPanel::BehaviorPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+    wxPanel(parent, ID_BehaviorPanel, pos, size, wxTAB_TRAVERSAL)
+{
+    // begin wxGlade: BehaviorPanel::BehaviorPanel
+    panel_5 = new wxPanel(this, wxID_ANY);
+    panel_4 = new wxPanel(this, wxID_ANY);
+    panel_7 = new wxPanel(panel_4, wxID_ANY);
+    panel_3 = new wxPanel(this, wxID_ANY);
+    panel_6 = new wxPanel(panel_3, wxID_ANY);
+    panel_2 = new wxPanel(this, wxID_ANY);
+    sizer_3_staticbox = new wxStaticBox(panel_3, -1, wxT("スレ一覧"));
+    sizer_5_staticbox = new wxStaticBox(panel_4, -1, wxT("スレ"));
+    sizer_7_staticbox = new wxStaticBox(panel_5, -1, wxT("お気に入り"));
+    sizer_2_staticbox = new wxStaticBox(panel_2, -1, wxT("板一覧"));
+    openBNewTabCheck = new wxCheckBox(panel_2, ID_OpenBNewTabCheck, wxT("新しいタブで板を開く"));
+    onlyOneCategoryCheck = new wxCheckBox(panel_2, ID_OnlyOneCategoryCheck, wxT("カテゴリを一つしか開かない"));
+    openTNewTabCheck = new wxCheckBox(panel_6, ID_OpenTNewTabCheck, wxT("新しいタブでスレを開く"));
+    const wxString threadNewTabCombo_choices[] = {
+        wxT("常に最大化"),
+        wxT("常に通常サイズ")
+    };
+    threadNewTabCombo = new wxComboBox(panel_6, ID_ThreadNewTabCombo, wxT(""), wxDefaultPosition, wxDefaultSize, 2, threadNewTabCombo_choices, wxCB_DROPDOWN|wxCB_READONLY);
+    lastReadThreadPosCheck = new wxCheckBox(panel_3, ID_LastReadThreadPosCheck, wxT("最後に見たスレの位置にジャンプ"));
+    const wxString threadJumpSettingRadio_choices[] = {
+        wxT("見ていたところにジャンプする"),
+        wxT("新着にジャンプする")
+    };
+    threadJumpSettingRadio = new wxRadioBox(panel_4, ID_ThreadJumpSetting, wxEmptyString, wxDefaultPosition, wxDefaultSize, 2, threadJumpSettingRadio_choices, 0, wxRA_SPECIFY_ROWS);
+    redrawNewThreadCheck = new wxCheckBox(panel_4, ID_RedrawNewThreadCheck, wxT("新着チェック時に既得レスを描き直す"));
+    label_1 = new wxStaticText(panel_7, wxID_ANY, wxT("既得スレの表示レス数"));
+    const wxString showResponseCombo_choices[] = {
+        wxT("全レス表示"),
+        wxT("最新50レス"),
+        wxT("最新100レス"),
+        wxT("最新250レス"),
+        wxT("最新500レス")
+    };
+    showResponseCombo = new wxComboBox(panel_7, ID_ShowResponseCombo, wxT(""), wxDefaultPosition, wxDefaultSize, 5, showResponseCombo_choices, wxCB_DROPDOWN|wxCB_READONLY);
+    favoriteNewTabCheck = new wxCheckBox(panel_5, ID_FavoriteNewTabCheck, wxT("新しいタブで開く"));
+    favoriteOnlyOneFolderCheck = new wxCheckBox(panel_5, ID_FavoriteOnlyOneFolder, wxT("フォルダを一つしか開かない"));
+
+    set_properties();
+    do_layout();
+    // end wxGlade
+}
+
+
+void BehaviorPanel::set_properties()
+{
+    // begin wxGlade: BehaviorPanel::set_properties
+    threadNewTabCombo->SetSelection(0);
+    threadJumpSettingRadio->SetSelection(0);
+    showResponseCombo->SetSelection(-1);
+    // end wxGlade
+}
+
+
+void BehaviorPanel::do_layout()
+{
+    // begin wxGlade: BehaviorPanel::do_layout
+    wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+    wxStaticBoxSizer* sizer_7 = new wxStaticBoxSizer(sizer_7_staticbox, wxVERTICAL);
+    wxStaticBoxSizer* sizer_5 = new wxStaticBoxSizer(sizer_5_staticbox, wxVERTICAL);
+    wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticBoxSizer* sizer_3 = new wxStaticBoxSizer(sizer_3_staticbox, wxVERTICAL);
+    wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticBoxSizer* sizer_2 = new wxStaticBoxSizer(sizer_2_staticbox, wxVERTICAL);
+    sizer_2->Add(openBNewTabCheck, 1, wxEXPAND, 0);
+    sizer_2->Add(onlyOneCategoryCheck, 1, wxEXPAND, 0);
+    panel_2->SetSizer(sizer_2);
+    sizer_1->Add(panel_2, 0, wxEXPAND, 0);
+    sizer_4->Add(openTNewTabCheck, 1, wxEXPAND, 0);
+    sizer_4->Add(threadNewTabCombo, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    panel_6->SetSizer(sizer_4);
+    sizer_3->Add(panel_6, 1, wxEXPAND, 0);
+    sizer_3->Add(lastReadThreadPosCheck, 0, wxALIGN_CENTER_VERTICAL, 0);
+    panel_3->SetSizer(sizer_3);
+    sizer_1->Add(panel_3, 0, wxEXPAND, 0);
+    sizer_5->Add(threadJumpSettingRadio, 0, 0, 0);
+    sizer_5->Add(redrawNewThreadCheck, 0, 0, 0);
+    sizer_6->Add(label_1, 1, wxEXPAND|wxALIGN_CENTER_VERTICAL, 0);
+    sizer_6->Add(showResponseCombo, 1, 0, 0);
+    panel_7->SetSizer(sizer_6);
+    sizer_5->Add(panel_7, 1, wxEXPAND, 0);
+    panel_4->SetSizer(sizer_5);
+    sizer_1->Add(panel_4, 0, wxEXPAND, 0);
+    sizer_7->Add(favoriteNewTabCheck, 0, 0, 0);
+    sizer_7->Add(favoriteOnlyOneFolderCheck, 0, 0, 0);
+    panel_5->SetSizer(sizer_7);
+    sizer_1->Add(panel_5, 0, wxEXPAND, 0);
+    SetSizer(sizer_1);
+    sizer_1->Fit(this);
     // end wxGlade
 }

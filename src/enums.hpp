@@ -167,7 +167,7 @@ enum {
 	ID_OnOkSetting,                 // 設定画面をOkで終了
 	ID_SettingPanelTree,            // 設定画面の描画を切り替える
 	// otherpanels.hpp
-        ID_NetworkPanel,                // ネットワーク設定用パネル
+        ID_NetworkPanel,                // ネットワーク設定用画面
         ID_NetworkPanelUseProxy,        // プロキシを使用するかどうか
         ID_NetworkPanelUseProxyCache,   // プロキシでキャッシュを使用するかどうか
         ID_NetworkPanelBasicAuthUserName,// ベーシック認証のユーザー名
@@ -178,6 +178,7 @@ enum {
         ID_NetworkPanelProxySendPort,    // Proxy送信用ポート
         ID_NetworkPanelProxySSLAuthAddr, // Proxy SSL認証用アドレス
         ID_NetworkPanelProxySSLAuthPort, // Proxy SSL認証用ポート
+	ID_PathSettingPanel,             // 各種パス設定用画面
 	ID_BrowserCheck,                 // 使用するブラウザを指定するかどうか 
 	ID_BrowserPathTC,                // ブラウザのパスをもつテキストコントロール
 	ID_DirPickerBrowser,             // ブラウザのパスを参照する
@@ -185,6 +186,18 @@ enum {
 	ID_DirPickerBoardList,           // 板一覧リストのパスを参照する
 	ID_SkinPathTC,                   // スキン用のファイルのパスをもつテキストコントロール
 	ID_DirPickerSkin,                // スキン用ファイルのパスを参照する
+	ID_BehaviorPanel,                // 動作設定用パネル
+	ID_OpenBNewTabCheck,             // 新しいタブで板を開く
+	ID_OnlyOneCategoryCheck,         // カテゴリを一つしか開かない
+	ID_OpenTNewTabCheck,             // 新しいタブでスレを開く
+	ID_ThreadNewTabCombo,            // 新しいタブでスレを開く
+	ID_LastReadThreadPosCheck,       // 最後に見たスレの位置にジャンプ
+	ID_ThreadJumpSetting,            // 最後に見たスレの位置にジャンプ
+	ID_RedrawNewThreadCheck,         // 新着チェック時に既得レスを描き直す
+	ID_ShowResponseCombo,            // 既得スレの表示レス数
+	ID_FavoriteNewTabCheck,          // お気に入りを新しいタブで開く
+	ID_FavoriteOnlyOneFolder,        // お気に入りフォルダを一つしか開かない
+	
 	ID_UserLastClosedThreadClick = 1000,  // ユーザーが最後に閉じたスレッドの情報をクリックした(動的なIDのため1000~)
 	ID_UserLastClosedBoardClick  = 1100,  // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
 	ID_ThreadContentBar          = 1500   // ThreadContentBar自体のID(動的なIDのため1500~)
