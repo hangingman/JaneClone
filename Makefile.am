@@ -226,9 +226,11 @@ remove_distdir :
 	rm -rf $(distdir).tar.gz
 # パッケージを消す
 	rm -rf janeclone_*
+# application bundle
+	rm -rf $(BUNDLE)
 
 # OSX向けのバイナリ作成
-osx-make-hook : $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST)
+osx-make-hook : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST)
 
 # Bundleその他の生成方法を書く
 #  This builds the bundle's directory structure.
