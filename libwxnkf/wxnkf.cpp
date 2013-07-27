@@ -569,11 +569,11 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
  *    0: success
  *   -1: ArgumentError
  */
-int wxNKF::SetOption(const wxString option) {
+int wxNKF::SetOption(const wxString& option) {
 
-     if (option == wxT("--ic=CP932 --oc=UTF-8")) {
+     //if (option == wxT("--ic=CP932 --oc=UTF-8")) {
 	  return this->SetCP932ToUTF8();
-     }
+	  //}
 
      std::vector<unsigned char> buf;
      const char* str = option.ToAscii();

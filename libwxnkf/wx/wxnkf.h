@@ -127,7 +127,7 @@ class wxNKF {
   *    0: success
   *   -1: ArgumentError
   */
- int SetOption(const wxString option);
+ int SetOption(const wxString& option);
  /**
   * set flag to convert cp932 to UTF-8
   */
