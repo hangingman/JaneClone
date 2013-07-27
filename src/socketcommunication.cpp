@@ -103,8 +103,8 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
-	  *m_logCtrl << wxT("2chの板一覧情報を取得 (ん`　 )") << wxT("\n");
-	  *m_logCtrl << server + path << wxT("\n");
+	  //*m_logCtrl << wxT("2chの板一覧情報を取得 (ん`　 )") << wxT("\n");
+	  //*m_logCtrl << server + path << wxT("\n");
 	  myRequest.perform();
 
 	  // レスポンスヘッダーの書き出し

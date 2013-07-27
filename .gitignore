@@ -7,6 +7,7 @@ JaneClone.app*
 JaneClone.app/*
 autom4te*
 autom4te*/*
+*.libs
 *.Plo
 *.Po
 *.dll
@@ -14,4 +15,6 @@ autom4te*/*
 *.a
 *.la
 *.lai
+*.so
+*.so.*
 *~
