@@ -318,4 +318,7 @@ static const wxRegEx regexHtmlTag(_T("<(\"[^\"]*\"|'[^']*'|[^'\">])*>"), wxRE_AD
 // レスアンカーマッチング用正規表現
 static const wxRegEx regexResAnchor(_T(">>([[:digit:]]{1,4})"), wxRE_ADVANCED + wxRE_ICASE);
 
+// 2chのIDマッチング用正規表現
+static const wxRegEx regexID(_T("ID:(([-/\\.a-zA-Z0-9_#~:.?+=&%!@]){8,9})"), wxRE_ADVANCED + wxRE_ICASE);
+
 #endif /* DATATYPE_HPP_ */

@@ -136,7 +136,11 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
      }
 
      htmlSource += HTML_FOOTER;
+
      datfile.Close();
+
+     // ID:xxxxxxxxxx を置換する
+     htmlSource = JaneCloneUtil::AddID(htmlSource);
 
      return htmlSource;
 }

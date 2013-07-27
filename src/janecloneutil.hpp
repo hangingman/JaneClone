@@ -96,6 +96,10 @@ public:
       */
      static wxString AddAnchorTag(wxString& responseText);
      /**
+      * プレインテキスト内に2chのIDがあれば<a>タグをつける
+      */
+     static wxString AddID(wxString& responseText);
+     /**
       * 指定された文字列でdatファイルへのファイルパスを組み立てる
       */
      static wxString AssembleFilePath(wxString& boardNameAscii, wxString& origNumber);

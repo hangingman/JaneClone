@@ -557,6 +557,33 @@ wxString JaneCloneUtil::AddAnchorTag(wxString& responseText) {
      return result;     
 }
 /**
+ * プレインテキスト内に2chのIDがあれば<a>タグをつける
+ */
+wxString JaneCloneUtil::AddID(wxString& responseText) {
+
+     wxString text = responseText;
+     wxString tmp, result;
+     size_t start, len;
+
+     if (regexID.IsValid() && regexID.Matches(responseText)) {
+	  for (tmp = text; regexID.Matches(tmp);
+	       tmp = tmp.SubString(start + len, tmp.Len())) {
+	       regexID.GetMatch(&start, &len, 0);
+	       result += tmp.SubString(0, start - 1);
+	       result += wxT("<a href=\"#");
+	       result += tmp.SubString(start+3, start + len - 1);
+	       result += wxT("\"/>ID</a>:");
+	       result += tmp.SubString(start+3, start + len - 1);
+	       
+	  }
+	  result += tmp;
+     } else {
+	  return responseText;
+     }
+
+     return result;     
+}
+/**
  * 指定された文字列でdatファイルへのファイルパスを組み立てる
  */
 wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,
