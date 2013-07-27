@@ -119,7 +119,7 @@ class wxNKF {
  /**
   * Instance of class for IO char code setting and process
   */
- wxNKFEncoding* wxEnc;
+ wxNKFEncoding wxEnc;
  /**
   * SetOption : setting and judge options
   *
@@ -163,8 +163,8 @@ class wxNKF {
  /**
   * set flag for Input & Output
   */
- void SetInputEncoding(wxNKFEncoding *enc);
- void SetOutputEncoding(wxNKFEncoding *enc);
+ void SetInputEncoding(wxNKFEncoding& enc);
+ void SetOutputEncoding(wxNKFEncoding& enc);
  /**
   * other class value etc.
   */

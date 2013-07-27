@@ -45,13 +45,12 @@ wxNKF::wxNKF() {
 	delete flag;
 
 	/* prepare encode setting class */
-	wxEnc = new wxNKFEncoding();
+	wxNKFEncoding wxEnc;
 }
 /**
  * destructor
  */
 wxNKF::~wxNKF() {
-	delete wxEnc;
 }
 /**
  * convert charcter code in file, with option
@@ -119,10 +118,10 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 	/**
 	 * If input encode is utf16, process here
 	 */
-	if (wxEnc->inputMode == UTF_32) {
+	if (wxEnc.inputMode == UTF_32) {
 		// prepare UTF-16 processing class
 		UTF16Util* utf16 = new UTF16Util();
-		utf16->SetInputEndian(wxEnc->iEndian);
+		utf16->SetInputEndian(wxEnc.iEndian);
 
 		// for 4byte process
 		while ((c1 = in->GetC()) != EOF && (c2 = in->GetC()) != EOF
@@ -131,10 +130,10 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 		}
 		goto finished;
 
-	} else if (wxEnc->inputMode == UTF_16) {
+	} else if (wxEnc.inputMode == UTF_16) {
 		// prepare UTF-16 processing class
 		UTF16Util* utf16 = new UTF16Util();
-		utf16->SetInputEndian(wxEnc->iEndian);
+		utf16->SetInputEndian(wxEnc.iEndian);
 
 		// for 2byte process
 		while ((c1 = in->GetC()) != EOF && (c2 = in->GetC()) != EOF) {
@@ -150,7 +149,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 	 * Loop process of except UTF-16 characters
 	 */
 	while ((c1 = in->GetC()) != EOF) {
-		if (!wxEnc->inputMode)
+		if (!wxEnc.inputMode)
 			CodeStatus(c1);
 		if (c2) {
 			/* second byte */
@@ -184,15 +183,15 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 				SEND;
 			}
 		} else if (nkf_char_unicode_p(c1)) {
-			wxEnc->Oconv(0, c1, nkfFlags, out);
+			wxEnc.Oconv(0, c1, nkfFlags, out);
 			NEXT;
 		} else {
 			/* first byte */
-			if (wxEnc->inputMode == JIS_X_0208 && DEL <= c1 && c1 < 0x92) {
+			if (wxEnc.inputMode == JIS_X_0208 && DEL <= c1 && c1 < 0x92) {
 				/* CP5022x */
 				MORE
 				;
-			} else if (!wxEnc->iCharName.IsEmpty() && wxEnc->iCharName[0] == 'I'
+			} else if (!wxEnc.iCharName.IsEmpty() && wxEnc.iCharName[0] == 'I'
 					&& 0xA1 <= c1 && c1 <= 0xDF) {
 				/* JIS X 0201 Katakana in 8bit JIS */
 				c2 = JIS_X_0201_1976_K;
@@ -209,7 +208,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 						c2 = ISO_8859_1;
 						c1 &= 0x7f;
 						SEND;
-					} else if ((wxEnc->inputMode == SHIFT_JIS && 0xA0 <= c1
+					} else if ((wxEnc.inputMode == SHIFT_JIS && 0xA0 <= c1
 							&& c1 <= 0xDF)
 							|| (nkfFlags[ms_ucs_map_f] == UCS_MAP_CP10001
 									&& (c1 == 0xFD || c1 == 0xFE))) {
@@ -239,17 +238,17 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 						SKIP
 						;
 					}
-				} else if (wxEnc->inputMode == JIS_X_0208
-						|| wxEnc->inputMode == JIS_X_0212
-						|| wxEnc->inputMode == JIS_X_0213_1
-						|| wxEnc->inputMode == JIS_X_0213_2) {
+				} else if (wxEnc.inputMode == JIS_X_0208
+						|| wxEnc.inputMode == JIS_X_0212
+						|| wxEnc.inputMode == JIS_X_0213_1
+						|| wxEnc.inputMode == JIS_X_0213_2) {
 					/* in case of Kanji shifted */
 					MORE
 					;
 				} else if (c1 == '=' && nkfFlags[mime_f] && !mime_decode_mode) {
 					/* Check MIME code */
 					if ((c1 = in->GetC()) == EOF) {
-						wxEnc->Oconv(0, '=', nkfFlags, out);
+						wxEnc.Oconv(0, '=', nkfFlags, out);
 						LAST;
 					} else if (c1 == '?') {
 						/* =? is mime conversion start sequence */
@@ -264,7 +263,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 						  //SKIP
 						  //;
 					} else {
-						wxEnc->Oconv(0, '=', nkfFlags, out);
+						wxEnc.Oconv(0, '=', nkfFlags, out);
 						in->Ungetch(c1);
 						SKIP
 						;
@@ -283,7 +282,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 				;
 			} else if (c1 == ESC && (!is_8bit || mime_decode_mode)) {
 				if ((c1 = in->GetC()) == EOF) {
-					wxEnc->Oconv(0, ESC, nkfFlags, out);
+					wxEnc.Oconv(0, ESC, nkfFlags, out);
 					LAST;
 				} else if (c1 == '&') {
 					/* IRR */
@@ -333,23 +332,23 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 							;
 						} else {
 							/* could be some special code */
-							wxEnc->Oconv(0, ESC, nkfFlags, out);
-							wxEnc->Oconv(0, '$', nkfFlags, out);
-							wxEnc->Oconv(0, '(', nkfFlags, out);
-							wxEnc->Oconv(0, c1, nkfFlags, out);
+							wxEnc.Oconv(0, ESC, nkfFlags, out);
+							wxEnc.Oconv(0, '$', nkfFlags, out);
+							wxEnc.Oconv(0, '(', nkfFlags, out);
+							wxEnc.Oconv(0, c1, nkfFlags, out);
 							SKIP
 							;
 						}
 					} else if (nkfFlags[broken_f] & 0x2) {
 						/* accept any ESC-(-x as broken code ... */
-						wxEnc->inputMode = JIS_X_0208;
+						wxEnc.inputMode = JIS_X_0208;
 						shift_mode = 0;
 						SKIP
 						;
 					} else {
-						wxEnc->Oconv(0, ESC, nkfFlags, out);
-						wxEnc->Oconv(0, '$', nkfFlags, out);
-						wxEnc->Oconv(0, c1, nkfFlags, out);
+						wxEnc.Oconv(0, ESC, nkfFlags, out);
+						wxEnc.Oconv(0, '$', nkfFlags, out);
+						wxEnc.Oconv(0, c1, nkfFlags, out);
 						SKIP
 						;
 					}
@@ -375,8 +374,8 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 						SKIP
 						;
 					} else {
-						wxEnc->Oconv(0, ESC, nkfFlags, out);
-						wxEnc->Oconv(0, '(', nkfFlags, out);
+						wxEnc.Oconv(0, ESC, nkfFlags, out);
+						wxEnc.Oconv(0, '(', nkfFlags, out);
 						SEND;
 					}
 				} else if (c1 == '.') {
@@ -389,8 +388,8 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 						SKIP
 						;
 					} else {
-						wxEnc->Oconv(0, ESC, nkfFlags, out);
-						wxEnc->Oconv(0, '.', nkfFlags, out);
+						wxEnc.Oconv(0, ESC, nkfFlags, out);
+						wxEnc.Oconv(0, '.', nkfFlags, out);
 						SEND;
 					}
 				} else if (c1 == 'N') {
@@ -402,18 +401,18 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 					} else {
 						in->Ungetch(c1);
 						/* lonely ESC  */
-						wxEnc->Oconv(0, ESC, nkfFlags, out);
+						wxEnc.Oconv(0, ESC, nkfFlags, out);
 						SEND;
 					}
 				} else {
 					/* lonely ESC  */
-					wxEnc->Oconv(0, ESC, nkfFlags, out);
+					wxEnc.Oconv(0, ESC, nkfFlags, out);
 					SEND;
 				}
-			} else if (c1 == ESC && wxEnc->inputMode == SHIFT_JIS) {
+			} else if (c1 == ESC && wxEnc.inputMode == SHIFT_JIS) {
 				/* ESC in Shift_JIS */
 				if ((c1 = in->GetC()) == EOF) {
-					wxEnc->Oconv(0, ESC, nkfFlags, out);
+					wxEnc.Oconv(0, ESC, nkfFlags, out);
 					LAST;
 				} else if (c1 == '$') {
 					/* J-PHONE emoji */
@@ -436,25 +435,25 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 						if ((c1 = in->GetC()) == EOF)
 							LAST;
 						while (SP <= c1 && c1 <= 'z') {
-							wxEnc->Oconv(0, c1 + c3, nkfFlags, out);
+							wxEnc.Oconv(0, c1 + c3, nkfFlags, out);
 							if ((c1 = in->GetC()) == EOF)
 								LAST;
 						}
 						SKIP
 						;
 					} else {
-						wxEnc->Oconv(0, ESC, nkfFlags, out);
-						wxEnc->Oconv(0, '$', nkfFlags, out);
+						wxEnc.Oconv(0, ESC, nkfFlags, out);
+						wxEnc.Oconv(0, '$', nkfFlags, out);
 						SEND;
 					}
 				} else {
 					/* lonely ESC  */
-					wxEnc->Oconv(0, ESC, nkfFlags, out);
+					wxEnc.Oconv(0, ESC, nkfFlags, out);
 					SEND;
 				}
 			} else if (c1 == LF || c1 == CR) {
 				if (nkfFlags[broken_f] & 4) {
-					wxEnc->inputMode = ASCII;
+					wxEnc.inputMode = ASCII;
 					//SetIconv(FALSE, 0, nkfFlags, oConvStr);
 					SEND;
 				} else if (nkfFlags[mime_decode_f] && !mime_decode_mode) {
@@ -491,14 +490,14 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 				SEND;
 		}
 		/* send: */
-		switch (wxEnc->inputMode) {
+		switch (wxEnc.inputMode) {
 
 		/* process ASCII/SJIS/EUC/UTF here */
 		case ASCII:
 		case SHIFT_JIS:
 		case EUC_JP:
 		case UTF_8:
-			switch (wxEnc->Iconv(c2, c1, 0, nkfFlags, out)) { /* can be EUC / SJIS / UTF-8 */
+			switch (wxEnc.Iconv(c2, c1, 0, nkfFlags, out)) { /* can be EUC / SJIS / UTF-8 */
 			case -2:
 				/* 4 bytes UTF-8 */
 				if ((c3 = in->GetC()) != EOF) {
@@ -506,7 +505,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 					c3 <<= 8;
 					if ((c4 = in->GetC()) != EOF) {
 						//GuessConv::CodeStatus(c4, flagPool);
-						wxEnc->Iconv(c2, c1, c3 | c4, nkfFlags, out);
+						wxEnc.Iconv(c2, c1, c3 | c4, nkfFlags, out);
 					}
 				}
 				break;
@@ -514,7 +513,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 				/* 3 bytes EUC or UTF-8 */
 				if ((c3 = in->GetC()) != EOF) {
 					//GuessConv::CodeStatus(c3, flagPool);
-					wxEnc->Iconv(c2, c1, c3, nkfFlags, out);
+					wxEnc.Iconv(c2, c1, c3, nkfFlags, out);
 				}
 				break;
 			}
@@ -527,16 +526,16 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 				c1 = nkf_char_unicode_new((c2 - 0x7F) * 94 + c1 - 0x21 + 0xE000);
 				c2 = 0;
 			}
-			wxEnc->Oconv(c2, c1, nkfFlags, out); /* this is JIS, not SJIS/EUC case */
+			wxEnc.Oconv(c2, c1, nkfFlags, out); /* this is JIS, not SJIS/EUC case */
 			break;
 		case JIS_X_0212:
-			wxEnc->Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, out);
+			wxEnc.Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, out);
 			break;
 		case JIS_X_0213_2:
-			wxEnc->Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, out);
+			wxEnc.Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, out);
 			break;
 		default:
-			wxEnc->Oconv(wxEnc->inputMode, c1, nkfFlags, out); /* other special case */
+			wxEnc.Oconv(wxEnc.inputMode, c1, nkfFlags, out); /* other special case */
 		}
 
 		c2 = 0;
@@ -547,7 +546,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 
 	finished:
 
-	if (wxEnc->iCharName.IsEmpty()) {
+	if (wxEnc.iCharName.IsEmpty()) {
 		if (is_8bit) {
 //			struct input_code *p = input_code_list;
 //			struct input_code *result = p;
@@ -639,7 +638,7 @@ int wxNKF::SetOption(const wxString& option) {
 		    if (strcmp(long_option[i].name, "oc=") == 0) {
 			 Util::NKFEncFind((char *) p, wxEnc, SET_OUTPUT_MODE);
 			 /* if (enc <= 0) continue; */
-			 if (!wxEnc->oCharName.Len())
+			 if (!wxEnc.oCharName.Len())
 			      continue;
 			 continue;
 		    }
@@ -912,7 +911,7 @@ int wxNKF::SetOption(const wxString& option) {
 		    }
 		    if (cp[0] == 'L') {
 			 cp++;
-			 wxEnc->oEndian = ENDIAN_LITTLE;
+			 wxEnc.oEndian = ENDIAN_LITTLE;
 			 nkfFlags[output_bom_f] = TRUE;
 		    } else if (cp[0] == 'B') {
 			 cp++;
@@ -923,16 +922,16 @@ int wxNKF::SetOption(const wxString& option) {
 			 cp++;
 			 enc_idx =
 			      enc_idx == UTF_16 ?
-			      (wxEnc->oEndian == ENDIAN_LITTLE ?
+			      (wxEnc.oEndian == ENDIAN_LITTLE ?
 			       UTF_16LE : UTF_16BE) :
-			      (wxEnc->oEndian == ENDIAN_LITTLE ?
+			      (wxEnc.oEndian == ENDIAN_LITTLE ?
 			       UTF_32LE : UTF_32BE);
 		    } else {
 			 enc_idx =
 			      enc_idx == UTF_16 ?
-			      (wxEnc->oEndian == ENDIAN_LITTLE ?
+			      (wxEnc.oEndian == ENDIAN_LITTLE ?
 			       UTF_16LE_BOM : UTF_16BE_BOM) :
-			      (wxEnc->oEndian == ENDIAN_LITTLE ?
+			      (wxEnc.oEndian == ENDIAN_LITTLE ?
 			       UTF_32LE_BOM : UTF_32BE_BOM);
 		    }
 		    Util::NKFEncFromIndex(enc_idx, wxEnc, SET_OUTPUT_MODE);
@@ -947,11 +946,11 @@ int wxNKF::SetOption(const wxString& option) {
 		    int enc_idx;
 		    if ('1' == cp[0] && '6' == cp[1]) {
 			 cp += 2;
-			 wxEnc->iEndian = ENDIAN_BIG;
+			 wxEnc.iEndian = ENDIAN_BIG;
 			 enc_idx = UTF_16;
 		    } else if ('3' == cp[0] && '2' == cp[1]) {
 			 cp += 2;
-			 wxEnc->iEndian = ENDIAN_BIG;
+			 wxEnc.iEndian = ENDIAN_BIG;
 			 enc_idx = UTF_32;
 		    } else {
 			 Util::NKFEncFromIndex(UTF_8, wxEnc, SET_OUTPUT_MODE);
@@ -959,16 +958,16 @@ int wxNKF::SetOption(const wxString& option) {
 		    }
 		    if (cp[0] == 'L') {
 			 cp++;
-			 wxEnc->iEndian = ENDIAN_LITTLE;
+			 wxEnc.iEndian = ENDIAN_LITTLE;
 		    } else if (cp[0] == 'B') {
 			 cp++;
-			 wxEnc->iEndian = ENDIAN_BIG;
+			 wxEnc.iEndian = ENDIAN_BIG;
 		    }
 		    enc_idx = (
 			 enc_idx == UTF_16 ?
-			 (wxEnc->iEndian == ENDIAN_LITTLE ?
+			 (wxEnc.iEndian == ENDIAN_LITTLE ?
 			  UTF_16LE : UTF_16BE) :
-			 (wxEnc->iEndian == ENDIAN_LITTLE ?
+			 (wxEnc.iEndian == ENDIAN_LITTLE ?
 			  UTF_32LE : UTF_32BE));
 		    Util::NKFEncFromIndex(enc_idx, wxEnc, SET_INPUT_MODE);
 	       }
@@ -1201,9 +1200,9 @@ void wxNKF::ShowVersion() {
 /**
  * set flag for Input
  */
-void wxNKF::SetInputEncoding(wxNKFEncoding* enc) {
+void wxNKF::SetInputEncoding(wxNKFEncoding& enc) {
 
-	switch (enc->iCharID) {
+	switch (enc.iCharID) {
 
 	case ISO_8859_1:
 		nkfFlags[iso8859_f] = TRUE;
@@ -1278,20 +1277,20 @@ void wxNKF::SetInputEncoding(wxNKFEncoding* enc) {
 	case UTF_16:
 	case UTF_16BE:
 	case UTF_16BE_BOM:
-		enc->iEndian = ENDIAN_BIG;
+		enc.iEndian = ENDIAN_BIG;
 		break;
 	case UTF_16LE:
 	case UTF_16LE_BOM:
-		enc->iEndian = ENDIAN_LITTLE;
+		enc.iEndian = ENDIAN_LITTLE;
 		break;
 	case UTF_32:
 	case UTF_32BE:
 	case UTF_32BE_BOM:
-		enc->iEndian = ENDIAN_BIG;
+		enc.iEndian = ENDIAN_BIG;
 		break;
 	case UTF_32LE:
 	case UTF_32LE_BOM:
-		enc->iEndian = ENDIAN_LITTLE;
+		enc.iEndian = ENDIAN_LITTLE;
 		break;
 	}
 }
@@ -1302,10 +1301,10 @@ int wxNKF::ModuleConnection() {
 	// set input encode flag
 	SetInputEncoding(wxEnc);
 	// set output encode if not set output encode
-	if (!wxEnc->oCharID)
+	if (!wxEnc.oCharID)
 		Util::NKFDefaultEncoding(wxEnc, SET_OUTPUT_MODE);
 	// if couldn't set default encode, set guess mode flag
-	if (!wxEnc->oCharID) {
+	if (!wxEnc.oCharID) {
 		if (nkfFlags[noout_f] || nkfFlags[guess_f]) {
 			Util::NKFEncFromIndex(ISO_2022_JP, wxEnc, SET_OUTPUT_MODE);
 		} else {
@@ -1315,8 +1314,8 @@ int wxNKF::ModuleConnection() {
 	// set output encode flag
 	SetOutputEncoding(wxEnc);
 
-	if (wxEnc->oCharID == UTF_8) {
-		wxEnc->outputMode = UTF_8;
+	if (wxEnc.oCharID == UTF_8) {
+		wxEnc.outputMode = UTF_8;
 	}
 
 	if (nkfFlags[x0201_f] == NKF_UNSPECIFIED) {
@@ -1324,7 +1323,7 @@ int wxNKF::ModuleConnection() {
 	}
 
 	/* set input encoding and process method */
-	if (wxEnc->inputMode) {
+	if (wxEnc.inputMode) {
 		if (nkfFlags[estab_f] != -TRUE) {
 			nkfFlags[estab_f] = -TRUE;
 		}
@@ -1332,7 +1331,7 @@ int wxNKF::ModuleConnection() {
 		if (nkfFlags[estab_f] != FALSE) {
 			nkfFlags[estab_f] = FALSE;
 		}
-		wxEnc->inputMode = ISO_2022_JP;
+		wxEnc.inputMode = ISO_2022_JP;
 	}
 
 	return 0;
@@ -1348,10 +1347,10 @@ void wxNKF::CheckBom(wxInputStream* in) {
 		if ((c2 = in->GetC()) == 0x00) {
 			if ((c2 = in->GetC()) == 0xFE) {
 				if ((c2 = in->GetC()) == 0xFF) {
-					if (!wxEnc->inputMode) {
+					if (!wxEnc.inputMode) {
 						// if input encode is not set, set UTF-8
-						wxEnc->inputMode = UTF_8;
-						wxEnc->iEndian = ENDIAN_BIG;
+						wxEnc.inputMode = UTF_8;
+						wxEnc.iEndian = ENDIAN_BIG;
 						return;
 					}
 					in->Ungetch(0xFF);
@@ -1361,10 +1360,10 @@ void wxNKF::CheckBom(wxInputStream* in) {
 				in->Ungetch(0xFE);
 			} else if (c2 == 0xFF) {
 				if ((c2 = in->GetC()) == 0xFE) {
-					if (!wxEnc->inputMode) {
+					if (!wxEnc.inputMode) {
 						// if input encode is not set, set UTF-8
-						wxEnc->inputMode = UTF_8;
-						wxEnc->iEndian = ENDIAN_2143;
+						wxEnc.inputMode = UTF_8;
+						wxEnc.iEndian = ENDIAN_2143;
 						return;
 					}
 					in->Ungetch(0xFF);
@@ -1384,9 +1383,9 @@ void wxNKF::CheckBom(wxInputStream* in) {
 	case 0xEF:
 		if ((c2 = in->GetC()) == 0xBB) {
 			if ((c2 = in->GetC()) == 0xBF) {
-				if (!wxEnc->inputMode) {
+				if (!wxEnc.inputMode) {
 					// if input encode is not set, set UTF-8
-					wxEnc->inputMode = UTF_8;
+					wxEnc.inputMode = UTF_8;
 					return;
 				}
 				in->Ungetch(0xBF);
@@ -1401,10 +1400,10 @@ void wxNKF::CheckBom(wxInputStream* in) {
 		if ((c2 = in->GetC()) == 0xFF) {
 			if ((c2 = in->GetC()) == 0x00) {
 				if ((c2 = in->GetC()) == 0x00) {
-					if (!wxEnc->inputMode) {
+					if (!wxEnc.inputMode) {
 						// if input encode is not set, set UTF-8
-						wxEnc->inputMode = UTF_8;
-						wxEnc->iEndian = ENDIAN_3412;
+						wxEnc.inputMode = UTF_8;
+						wxEnc.iEndian = ENDIAN_3412;
 						return;
 					}
 					in->Ungetch(0x00);
@@ -1414,10 +1413,10 @@ void wxNKF::CheckBom(wxInputStream* in) {
 			} else
 				in->Ungetch(c2);
 
-			if (!wxEnc->inputMode) {
+			if (!wxEnc.inputMode) {
 				// if input encode is not set, set UTF-8
-				wxEnc->inputMode = UTF_16;
-				wxEnc->iEndian = ENDIAN_BIG;
+				wxEnc.inputMode = UTF_16;
+				wxEnc.iEndian = ENDIAN_BIG;
 				return;
 			}
 			in->Ungetch(0xFF);
@@ -1430,10 +1429,10 @@ void wxNKF::CheckBom(wxInputStream* in) {
 		if ((c2 = in->GetC()) == 0xFE) {
 			if ((c2 = in->GetC()) == 0x00) {
 				if ((c2 = in->GetC()) == 0x00) {
-					if (!wxEnc->inputMode) {
+					if (!wxEnc.inputMode) {
 						// if input encode is not set, set UTF-8
-						wxEnc->inputMode = UTF_32;
-						wxEnc->iEndian = ENDIAN_LITTLE;
+						wxEnc.inputMode = UTF_32;
+						wxEnc.iEndian = ENDIAN_LITTLE;
 						return;
 					}
 					in->Ungetch(0x00);
@@ -1443,10 +1442,10 @@ void wxNKF::CheckBom(wxInputStream* in) {
 			} else
 				in->Ungetch(c2);
 
-			if (!wxEnc->inputMode) {
+			if (!wxEnc.inputMode) {
 				// if input encode is not set, set UTF-8
-				wxEnc->inputMode = UTF_16;
-				wxEnc->iEndian = ENDIAN_LITTLE;
+				wxEnc.inputMode = UTF_16;
+				wxEnc.iEndian = ENDIAN_LITTLE;
 				return;
 			}
 			in->Ungetch(0xFE);
@@ -1503,15 +1502,15 @@ void wxNKF::CodeStatus(nkf_char c) {
  * setting input encode
  */
 void wxNKF::SetInputMode(int mode) {
-	wxEnc->inputMode = mode;
-	wxEnc->inputBaseName = wxT("ISO-2022-JP");
+	wxEnc.inputMode = mode;
+	wxEnc.inputBaseName = wxT("ISO-2022-JP");
 }
 /**
  * set flag for Output
  */
-void wxNKF::SetOutputEncoding(wxNKFEncoding* enc) {
+void wxNKF::SetOutputEncoding(wxNKFEncoding& enc) {
 
-	switch (enc->oCharID) {
+	switch (enc.oCharID) {
 
 	case CP50220:
 		if (nkfFlags[cp932inv_f] == TRUE)
@@ -1602,11 +1601,11 @@ void wxNKF::SetOutputEncoding(wxNKFEncoding* enc) {
 		nkfFlags[output_bom_f] = TRUE;
 		break;
 	case UTF_16LE:
-		enc->oEndian = ENDIAN_LITTLE;
+		enc.oEndian = ENDIAN_LITTLE;
 		nkfFlags[output_bom_f] = FALSE;
 		break;
 	case UTF_16LE_BOM:
-		enc->oEndian = ENDIAN_LITTLE;
+		enc.oEndian = ENDIAN_LITTLE;
 		nkfFlags[output_bom_f] = TRUE;
 		break;
 	case UTF_32:
@@ -1614,11 +1613,11 @@ void wxNKF::SetOutputEncoding(wxNKFEncoding* enc) {
 		nkfFlags[output_bom_f] = TRUE;
 		break;
 	case UTF_32LE:
-		enc->oEndian = ENDIAN_LITTLE;
+		enc.oEndian = ENDIAN_LITTLE;
 		nkfFlags[output_bom_f] = FALSE;
 		break;
 	case UTF_32LE_BOM:
-		enc->oEndian = ENDIAN_LITTLE;
+		enc.oEndian = ENDIAN_LITTLE;
 		nkfFlags[output_bom_f] = TRUE;
 		break;
 	}
@@ -1694,7 +1693,7 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
       * Loop process of except UTF-16 characters
       */
      while ((c1 = in->GetC()) != EOF) {
-	  if (!wxEnc->inputMode)
+	  if (!wxEnc.inputMode)
 	       CodeStatus(c1);
 	  if (c2) {
 	       /* second byte */
@@ -1728,15 +1727,15 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 		    SEND;
 	       }
 	  } else if (nkf_char_unicode_p(c1)) {
-	       wxEnc->Oconv(0, c1, nkfFlags, oConvStr);
+	       wxEnc.Oconv(0, c1, nkfFlags, oConvStr);
 	       NEXT;
 	  } else {
 	       /* first byte */
-	       if (wxEnc->inputMode == JIS_X_0208 && DEL <= c1 && c1 < 0x92) {
+	       if (wxEnc.inputMode == JIS_X_0208 && DEL <= c1 && c1 < 0x92) {
 		    /* CP5022x */
 		    MORE
 			 ;
-	       } else if (!wxEnc->iCharName.IsEmpty() && wxEnc->iCharName[0] == 'I'
+	       } else if (!wxEnc.iCharName.IsEmpty() && wxEnc.iCharName[0] == 'I'
 			  && 0xA1 <= c1 && c1 <= 0xDF) {
 		    /* JIS X 0201 Katakana in 8bit JIS */
 		    c2 = JIS_X_0201_1976_K;
@@ -1753,7 +1752,7 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 			      c2 = ISO_8859_1;
 			      c1 &= 0x7f;
 			      SEND;
-			 } else if ((wxEnc->inputMode == SHIFT_JIS && 0xA0 <= c1
+			 } else if ((wxEnc.inputMode == SHIFT_JIS && 0xA0 <= c1
 				     && c1 <= 0xDF)
 				    || (nkfFlags[ms_ucs_map_f] == UCS_MAP_CP10001
 					&& (c1 == 0xFD || c1 == 0xFE))) {
@@ -1783,17 +1782,17 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 			      SKIP
 				   ;
 			 }
-		    } else if (wxEnc->inputMode == JIS_X_0208
-			       || wxEnc->inputMode == JIS_X_0212
-			       || wxEnc->inputMode == JIS_X_0213_1
-			       || wxEnc->inputMode == JIS_X_0213_2) {
+		    } else if (wxEnc.inputMode == JIS_X_0208
+			       || wxEnc.inputMode == JIS_X_0212
+			       || wxEnc.inputMode == JIS_X_0213_1
+			       || wxEnc.inputMode == JIS_X_0213_2) {
 			 /* in case of Kanji shifted */
 			 MORE
 			      ;
 		    } else if (c1 == '=' && nkfFlags[mime_f] && !mime_decode_mode) {
 			 /* Check MIME code */
 			 if ((c1 = in->GetC()) == EOF) {
-			      wxEnc->Oconv(0, '=', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '=', nkfFlags, oConvStr);
 			      LAST;
 			 } else if (c1 == '?') {
 			      /* =? is mime conversion start sequence */
@@ -1808,7 +1807,7 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 			      //SKIP
 			      //;
 			 } else {
-			      wxEnc->Oconv(0, '=', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '=', nkfFlags, oConvStr);
 			      in->Ungetch(c1);
 			      SKIP
 				   ;
@@ -1827,7 +1826,7 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 			 ;
 	       } else if (c1 == ESC && (!is_8bit || mime_decode_mode)) {
 		    if ((c1 = in->GetC()) == EOF) {
-			 wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
+			 wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
 			 LAST;
 		    } else if (c1 == '&') {
 			 /* IRR */
@@ -1877,23 +1876,23 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 					;
 			      } else {
 				   /* could be some special code */
-				   wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
-				   wxEnc->Oconv(0, '$', nkfFlags, oConvStr);
-				   wxEnc->Oconv(0, '(', nkfFlags, oConvStr);
-				   wxEnc->Oconv(0, c1, nkfFlags, oConvStr);
+				   wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
+				   wxEnc.Oconv(0, '$', nkfFlags, oConvStr);
+				   wxEnc.Oconv(0, '(', nkfFlags, oConvStr);
+				   wxEnc.Oconv(0, c1, nkfFlags, oConvStr);
 				   SKIP
 					;
 			      }
 			 } else if (nkfFlags[broken_f] & 0x2) {
 			      /* accept any ESC-(-x as broken code ... */
-			      wxEnc->inputMode = JIS_X_0208;
+			      wxEnc.inputMode = JIS_X_0208;
 			      shift_mode = 0;
 			      SKIP
 				   ;
 			 } else {
-			      wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
-			      wxEnc->Oconv(0, '$', nkfFlags, oConvStr);
-			      wxEnc->Oconv(0, c1, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '$', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, c1, nkfFlags, oConvStr);
 			      SKIP
 				   ;
 			 }
@@ -1919,8 +1918,8 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 			      SKIP
 				   ;
 			 } else {
-			      wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
-			      wxEnc->Oconv(0, '(', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '(', nkfFlags, oConvStr);
 			      SEND;
 			 }
 		    } else if (c1 == '.') {
@@ -1933,8 +1932,8 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 			      SKIP
 				   ;
 			 } else {
-			      wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
-			      wxEnc->Oconv(0, '.', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '.', nkfFlags, oConvStr);
 			      SEND;
 			 }
 		    } else if (c1 == 'N') {
@@ -1946,18 +1945,18 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 			 } else {
 			      in->Ungetch(c1);
 			      /* lonely ESC  */
-			      wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
 			      SEND;
 			 }
 		    } else {
 			 /* lonely ESC  */
-			 wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
+			 wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
 			 SEND;
 		    }
-	       } else if (c1 == ESC && wxEnc->inputMode == SHIFT_JIS) {
+	       } else if (c1 == ESC && wxEnc.inputMode == SHIFT_JIS) {
 		    /* ESC in Shift_JIS */
 		    if ((c1 = in->GetC()) == EOF) {
-			 wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
+			 wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
 			 LAST;
 		    } else if (c1 == '$') {
 			 /* J-PHONE emoji */
@@ -1980,25 +1979,25 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 			      if ((c1 = in->GetC()) == EOF)
 				   LAST;
 			      while (SP <= c1 && c1 <= 'z') {
-				   wxEnc->Oconv(0, c1 + c3, nkfFlags, oConvStr);
+				   wxEnc.Oconv(0, c1 + c3, nkfFlags, oConvStr);
 				   if ((c1 = in->GetC()) == EOF)
 					LAST;
 			      }
 			      SKIP
 				   ;
 			 } else {
-			      wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
-			      wxEnc->Oconv(0, '$', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '$', nkfFlags, oConvStr);
 			      SEND;
 			 }
 		    } else {
 			 /* lonely ESC  */
-			 wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
+			 wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
 			 SEND;
 		    }
 	       } else if (c1 == LF || c1 == CR) {
 		    if (nkfFlags[broken_f] & 4) {
-			 wxEnc->inputMode = ASCII;
+			 wxEnc.inputMode = ASCII;
 			 //SetIconv(FALSE, 0, nkfFlags, oConvStr);
 			 SEND;
 		    } else if (nkfFlags[mime_decode_f] && !mime_decode_mode) {
@@ -2035,14 +2034,14 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 		    SEND;
 	  }
 	  /* send: */
-	  switch (wxEnc->inputMode) {
+	  switch (wxEnc.inputMode) {
 
 	       /* process ASCII/SJIS/EUC/UTF here */
 	  case ASCII:
 	  case SHIFT_JIS:
 	  case EUC_JP:
 	  case UTF_8:
-	       switch (wxEnc->Iconv(c2, c1, 0, nkfFlags, oConvStr)) { /* can be EUC / SJIS / UTF-8 */
+	       switch (wxEnc.Iconv(c2, c1, 0, nkfFlags, oConvStr)) { /* can be EUC / SJIS / UTF-8 */
 	       case -2:
 		    /* 4 bytes UTF-8 */
 		    if ((c3 = in->GetC()) != EOF) {
@@ -2050,7 +2049,7 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 			 c3 <<= 8;
 			 if ((c4 = in->GetC()) != EOF) {
 			      //GuessConv::CodeStatus(c4, flagPool);
-			      wxEnc->Iconv(c2, c1, c3 | c4, nkfFlags, oConvStr);
+			      wxEnc.Iconv(c2, c1, c3 | c4, nkfFlags, oConvStr);
 			 }
 		    }
 		    break;
@@ -2058,7 +2057,7 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 		    /* 3 bytes EUC or UTF-8 */
 		    if ((c3 = in->GetC()) != EOF) {
 			 //GuessConv::CodeStatus(c3, flagPool);
-			 wxEnc->Iconv(c2, c1, c3, nkfFlags, oConvStr);
+			 wxEnc.Iconv(c2, c1, c3, nkfFlags, oConvStr);
 		    }
 		    break;
 	       }
@@ -2071,16 +2070,16 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 		    c1 = nkf_char_unicode_new((c2 - 0x7F) * 94 + c1 - 0x21 + 0xE000);
 		    c2 = 0;
 	       }
-	       wxEnc->Oconv(c2, c1, nkfFlags, oConvStr); /* this is JIS, not SJIS/EUC case */
+	       wxEnc.Oconv(c2, c1, nkfFlags, oConvStr); /* this is JIS, not SJIS/EUC case */
 	       break;
 	  case JIS_X_0212:
-	       wxEnc->Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, oConvStr);
+	       wxEnc.Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, oConvStr);
 	       break;
 	  case JIS_X_0213_2:
-	       wxEnc->Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, oConvStr);
+	       wxEnc.Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, oConvStr);
 	       break;
 	  default:
-	       wxEnc->Oconv(wxEnc->inputMode, c1, nkfFlags, oConvStr); /* other special case */
+	       wxEnc.Oconv(wxEnc.inputMode, c1, nkfFlags, oConvStr); /* other special case */
 	  }
 
 	  c2 = 0;
@@ -2113,7 +2112,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
       * Loop process of except UTF-16 characters
       */
      while ((c1 = in->get()) != EOF) {
-	  if (!wxEnc->inputMode)
+	  if (!wxEnc.inputMode)
 	       CodeStatus(c1);
 	  if (c2) {
 	       /* second byte */
@@ -2147,15 +2146,15 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 		    SEND;
 	       }
 	  } else if (nkf_char_unicode_p(c1)) {
-	       wxEnc->Oconv(0, c1, nkfFlags, oConvStr);
+	       wxEnc.Oconv(0, c1, nkfFlags, oConvStr);
 	       NEXT;
 	  } else {
 	       /* first byte */
-	       if (wxEnc->inputMode == JIS_X_0208 && DEL <= c1 && c1 < 0x92) {
+	       if (wxEnc.inputMode == JIS_X_0208 && DEL <= c1 && c1 < 0x92) {
 		    /* CP5022x */
 		    MORE
 			 ;
-	       } else if (!wxEnc->iCharName.IsEmpty() && wxEnc->iCharName[0] == 'I'
+	       } else if (!wxEnc.iCharName.IsEmpty() && wxEnc.iCharName[0] == 'I'
 			  && 0xA1 <= c1 && c1 <= 0xDF) {
 		    /* JIS X 0201 Katakana in 8bit JIS */
 		    c2 = JIS_X_0201_1976_K;
@@ -2172,7 +2171,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			      c2 = ISO_8859_1;
 			      c1 &= 0x7f;
 			      SEND;
-			 } else if ((wxEnc->inputMode == SHIFT_JIS && 0xA0 <= c1
+			 } else if ((wxEnc.inputMode == SHIFT_JIS && 0xA0 <= c1
 				     && c1 <= 0xDF)
 				    || (nkfFlags[ms_ucs_map_f] == UCS_MAP_CP10001
 					&& (c1 == 0xFD || c1 == 0xFE))) {
@@ -2202,17 +2201,17 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			      SKIP
 				   ;
 			 }
-		    } else if (wxEnc->inputMode == JIS_X_0208
-			       || wxEnc->inputMode == JIS_X_0212
-			       || wxEnc->inputMode == JIS_X_0213_1
-			       || wxEnc->inputMode == JIS_X_0213_2) {
+		    } else if (wxEnc.inputMode == JIS_X_0208
+			       || wxEnc.inputMode == JIS_X_0212
+			       || wxEnc.inputMode == JIS_X_0213_1
+			       || wxEnc.inputMode == JIS_X_0213_2) {
 			 /* in case of Kanji shifted */
 			 MORE
 			      ;
 		    } else if (c1 == '=' && nkfFlags[mime_f] && !mime_decode_mode) {
 			 /* Check MIME code */
 			 if ((c1 = in->get()) == EOF) {
-			      wxEnc->Oconv(0, '=', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '=', nkfFlags, oConvStr);
 			      LAST;
 			 } else if (c1 == '?') {
 			      /* =? is mime conversion start sequence */
@@ -2227,7 +2226,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			      //SKIP
 			      //;
 			 } else {
-			      wxEnc->Oconv(0, '=', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '=', nkfFlags, oConvStr);
 			      in->putback(c1);
 			      SKIP
 				   ;
@@ -2246,7 +2245,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			 ;
 	       } else if (c1 == ESC && (!is_8bit || mime_decode_mode)) {
 		    if ((c1 = in->get()) == EOF) {
-			 wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
+			 wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
 			 LAST;
 		    } else if (c1 == '&') {
 			 /* IRR */
@@ -2296,23 +2295,23 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 					;
 			      } else {
 				   /* could be some special code */
-				   wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
-				   wxEnc->Oconv(0, '$', nkfFlags, oConvStr);
-				   wxEnc->Oconv(0, '(', nkfFlags, oConvStr);
-				   wxEnc->Oconv(0, c1, nkfFlags, oConvStr);
+				   wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
+				   wxEnc.Oconv(0, '$', nkfFlags, oConvStr);
+				   wxEnc.Oconv(0, '(', nkfFlags, oConvStr);
+				   wxEnc.Oconv(0, c1, nkfFlags, oConvStr);
 				   SKIP
 					;
 			      }
 			 } else if (nkfFlags[broken_f] & 0x2) {
 			      /* accept any ESC-(-x as broken code ... */
-			      wxEnc->inputMode = JIS_X_0208;
+			      wxEnc.inputMode = JIS_X_0208;
 			      shift_mode = 0;
 			      SKIP
 				   ;
 			 } else {
-			      wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
-			      wxEnc->Oconv(0, '$', nkfFlags, oConvStr);
-			      wxEnc->Oconv(0, c1, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '$', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, c1, nkfFlags, oConvStr);
 			      SKIP
 				   ;
 			 }
@@ -2338,8 +2337,8 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			      SKIP
 				   ;
 			 } else {
-			      wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
-			      wxEnc->Oconv(0, '(', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '(', nkfFlags, oConvStr);
 			      SEND;
 			 }
 		    } else if (c1 == '.') {
@@ -2352,8 +2351,8 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			      SKIP
 				   ;
 			 } else {
-			      wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
-			      wxEnc->Oconv(0, '.', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '.', nkfFlags, oConvStr);
 			      SEND;
 			 }
 		    } else if (c1 == 'N') {
@@ -2365,18 +2364,18 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			 } else {
 			      in->putback(c1);
 			      /* lonely ESC  */
-			      wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
 			      SEND;
 			 }
 		    } else {
 			 /* lonely ESC  */
-			 wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
+			 wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
 			 SEND;
 		    }
-	       } else if (c1 == ESC && wxEnc->inputMode == SHIFT_JIS) {
+	       } else if (c1 == ESC && wxEnc.inputMode == SHIFT_JIS) {
 		    /* ESC in Shift_JIS */
 		    if ((c1 = in->get()) == EOF) {
-			 wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
+			 wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
 			 LAST;
 		    } else if (c1 == '$') {
 			 /* J-PHONE emoji */
@@ -2399,25 +2398,25 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			      if ((c1 = in->get()) == EOF)
 				   LAST;
 			      while (SP <= c1 && c1 <= 'z') {
-				   wxEnc->Oconv(0, c1 + c3, nkfFlags, oConvStr);
+				   wxEnc.Oconv(0, c1 + c3, nkfFlags, oConvStr);
 				   if ((c1 = in->get()) == EOF)
 					LAST;
 			      }
 			      SKIP
 				   ;
 			 } else {
-			      wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
-			      wxEnc->Oconv(0, '$', nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
+			      wxEnc.Oconv(0, '$', nkfFlags, oConvStr);
 			      SEND;
 			 }
 		    } else {
 			 /* lonely ESC  */
-			 wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
+			 wxEnc.Oconv(0, ESC, nkfFlags, oConvStr);
 			 SEND;
 		    }
 	       } else if (c1 == LF || c1 == CR) {
 		    if (nkfFlags[broken_f] & 4) {
-			 wxEnc->inputMode = ASCII;
+			 wxEnc.inputMode = ASCII;
 			 //SetIconv(FALSE, 0, nkfFlags, oConvStr);
 			 SEND;
 		    } else if (nkfFlags[mime_decode_f] && !mime_decode_mode) {
@@ -2454,14 +2453,14 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 		    SEND;
 	  }
 	  /* send: */
-	  switch (wxEnc->inputMode) {
+	  switch (wxEnc.inputMode) {
 
 	       /* process ASCII/SJIS/EUC/UTF here */
 	  case ASCII:
 	  case SHIFT_JIS:
 	  case EUC_JP:
 	  case UTF_8:
-	       switch (wxEnc->Iconv(c2, c1, 0, nkfFlags, oConvStr)) { /* can be EUC / SJIS / UTF-8 */
+	       switch (wxEnc.Iconv(c2, c1, 0, nkfFlags, oConvStr)) { /* can be EUC / SJIS / UTF-8 */
 	       case -2:
 		    /* 4 bytes UTF-8 */
 		    if ((c3 = in->get()) != EOF) {
@@ -2469,7 +2468,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			 c3 <<= 8;
 			 if ((c4 = in->get()) != EOF) {
 			      //GuessConv::CodeStatus(c4, flagPool);
-			      wxEnc->Iconv(c2, c1, c3 | c4, nkfFlags, oConvStr);
+			      wxEnc.Iconv(c2, c1, c3 | c4, nkfFlags, oConvStr);
 			 }
 		    }
 		    break;
@@ -2477,7 +2476,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 		    /* 3 bytes EUC or UTF-8 */
 		    if ((c3 = in->get()) != EOF) {
 			 //GuessConv::CodeStatus(c3, flagPool);
-			 wxEnc->Iconv(c2, c1, c3, nkfFlags, oConvStr);
+			 wxEnc.Iconv(c2, c1, c3, nkfFlags, oConvStr);
 		    }
 		    break;
 	       }
@@ -2490,16 +2489,16 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 		    c1 = nkf_char_unicode_new((c2 - 0x7F) * 94 + c1 - 0x21 + 0xE000);
 		    c2 = 0;
 	       }
-	       wxEnc->Oconv(c2, c1, nkfFlags, oConvStr); /* this is JIS, not SJIS/EUC case */
+	       wxEnc.Oconv(c2, c1, nkfFlags, oConvStr); /* this is JIS, not SJIS/EUC case */
 	       break;
 	  case JIS_X_0212:
-	       wxEnc->Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, oConvStr);
+	       wxEnc.Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, oConvStr);
 	       break;
 	  case JIS_X_0213_2:
-	       wxEnc->Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, oConvStr);
+	       wxEnc.Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, oConvStr);
 	       break;
 	  default:
-	       wxEnc->Oconv(wxEnc->inputMode, c1, nkfFlags, oConvStr); /* other special case */
+	       wxEnc.Oconv(wxEnc.inputMode, c1, nkfFlags, oConvStr); /* other special case */
 	  }
 
 	  c2 = 0;
