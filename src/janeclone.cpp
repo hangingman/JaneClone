@@ -149,6 +149,8 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_HTML_CELL_HOVER(wxID_ANY, JaneClone::OnCellHover)
    // URL入力ウィンドウのボタンイベント処理
    EVT_BUTTON(ID_URLWindowButton, JaneClone::OnClickURLWindowButton)
+   // ログ出力制御用イベント
+   EVT_TEXT(ID_Logging, JaneClone::Logging)
 END_EVENT_TABLE()
 
 // 画像ビューアのインスタンスを初期化
@@ -643,7 +645,7 @@ void JaneClone::SetProperties() {
 	  cURLpp::initialize();
 
 	  // ソケット通信を行う
-	  SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+	  SocketCommunication* sock = new SocketCommunication();
 	  int rc = sock->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
 	  delete sock;
 
@@ -1179,7 +1181,7 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, 
      JaneCloneUtil::GenerateOldThreadMap(oldThreadMap, boardInfo);
 
      // スレ一覧をダウンロードする
-     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+     SocketCommunication* sock = new SocketCommunication();
      wxString outputPath = sock->DownloadThreadList(boardName, boardURL, boardNameAscii);
      delete sock;
 
@@ -1248,10 +1250,11 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName, const wxString
  */
 void JaneClone::OnGetBoardList(wxCommandEvent&) {
 
-     *m_logCtrl << wxT("三┏（ ；´ん｀）┛…板一覧更新\n");
+     wxString message1 = wxT("三┏（ ；´ん｀）┛…板一覧更新\n");
+     SendLogging(message1);
 
      // ソケット通信を行う
-     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+     SocketCommunication* sock = new SocketCommunication();
      int rc = sock->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
      delete sock;
 
@@ -1269,7 +1272,8 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 	  // 板一覧更新
 	  SetBoardList();
 	  
-	  *m_logCtrl << wxT("　　　(ヽ´ん`) 完了\n");
+	  wxString message2 = wxT("　　　(ヽ´ん`) 完了\n");
+	  SendLogging(message2);
      }
 }
 /**
@@ -1866,7 +1870,7 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
      }
 
      // ソケット通信を行う
-     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+     SocketCommunication* sock = new SocketCommunication();
      const wxString threadContentPath = sock->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
      delete sock;
      // 無事に通信が終了したならばステータスバーに表示
@@ -1892,7 +1896,8 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
      info.boardNameAscii = boardNameAscii;
      tiHash[title] = info;
 
-     *m_logCtrl << wxT("完了…　(´ん｀/)三\n");
+     wxString message = wxT("完了…　(´ん｀/)三\n");
+     SendLogging(message);
 
      // スレッドを表示させる
 #ifndef __WXMSW__
@@ -1937,7 +1942,6 @@ void JaneClone::CallResponseWindow(wxCommandEvent& event) {
      wxPoint point(wScreenPx/2 - 320, hScreenPx/2 - 240);
      ResponseWindow* response = new ResponseWindow(this, title, boardInfoHash, threadInfoHash, point, m_logCtrl);
      // ログ出力ウィンドウのインスタンスのポインタを渡す
-     response->SetLogWindow(m_logCtrl);
      response->Show(true);
 }
 /**
@@ -2310,7 +2314,8 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
  */
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 
-     *m_logCtrl << wxT("スレッド取得　三　(　＾ν）\n");
+     wxString message1 = wxT("スレッド取得　三　(　＾ν）\n");
+     SendLogging(message1);
 
      switch (event.GetId()) {
 
@@ -2325,7 +2330,8 @@ void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
 	  break;
      }
 
-     *m_logCtrl << wxT("完了…　(´ん｀/)三\n");
+     wxString message2 = wxT("完了…　(´ん｀/)三\n");
+     SendLogging(message2);
 }
 /**
  * スレッドのダウンロード2ch向け
@@ -2358,7 +2364,7 @@ void JaneClone::OnLeftClickAtListCtrl2ch(wxListEvent& event) {
      const wxString title(vbListCtrl->OnGetItemText(index, static_cast<long>(VirtualBoardListCtrl::Columns::COL_TITLE)));
 
      // ソケット通信を行う
-     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+     SocketCommunication* sock = new SocketCommunication();
      const wxString threadContentPath = sock->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
      delete sock;
      // 無事に通信が終了したならばステータスバーに表示
@@ -2399,7 +2405,7 @@ void JaneClone::OnLeftClickAtListCtrlShingetsu(wxListEvent& event) {
 
      // ソケット通信を行う
      this->SetStatusText(wxT(" 取得 - ") + filename);
-     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+     SocketCommunication* sock = new SocketCommunication();
      const wxString threadContentPath = sock->DownloadShingetsuThread(nodeHostname, title, filename);
      delete sock;
      // 無事に通信が終了したならばステータスバーに表示
@@ -2838,7 +2844,8 @@ wxFont JaneClone::ReadFontInfo(const wxString& widgetName) {
 	 : result = wxT("NG");
 
      // ログを出力する
-     *m_logCtrl << nativeFontInfo + wxT(":") + result;
+     wxString message = nativeFontInfo + wxT(":") + result;
+     SendLogging(message);
 
      return f;
 }
@@ -2892,7 +2899,8 @@ void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
 
      } else {
 	  // その他などないのでエラー
-	  *m_logCtrl << wxT("(ヽ´ん`)…板タブ変更時にエラーあったみたい…\n");
+	  wxString message = wxT("(ヽ´ん`)…板タブ変更時にエラーあったみたい…\n");
+	  SendLogging(message);
 	  boardNoteBook->Thaw();
 	  m_mgr.Update();
 
@@ -2940,7 +2948,8 @@ void JaneClone::OnChangeThreadTab(wxAuiNotebookEvent& event) {
 
      } else {
 	  // その他などないのでエラー
-	  *m_logCtrl << wxT("(ヽ´ん`)…スレタブ変更時にエラーあったみたい…\n");
+	  wxString message = wxT("(ヽ´ん`)…スレタブ変更時にエラーあったみたい…\n");
+	  SendLogging(message);
 	  threadNoteBook->Thaw();
 	  m_mgr.Update();
 
@@ -3621,9 +3630,9 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
      if (separateIsX) {
 	  // 現在横分割状態なので縦分割に変更
 	  separateIsX = false;
-
 	  // ペインの状態を変更する
-	  *m_logCtrl << wxT("現在横分割状態なので縦分割に変更\n");
+	  wxString message = wxT("現在横分割状態なので縦分割に変更\n");
+	  SendLogging(message);
 	  // 変更した情報をもとに、ペインを入れなおす
 	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo, wxAUI_INSERT_DOCK);
 	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo, wxAUI_INSERT_DOCK);
@@ -3631,7 +3640,8 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
      } else {
 	  // 現在縦分割状態なので横分割に変更
 	  separateIsX = true;
-	  *m_logCtrl << wxT("現在縦分割状態なので横分割に変更\n");
+	  wxString message = wxT("現在縦分割状態なので横分割に変更\n");
+	  SendLogging(message);
 
 	  // 板一覧ツリーを表示するかどうか
 	  const bool enableBoardListTree = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
@@ -3734,7 +3744,7 @@ void JaneClone::SetShingetsuNodeToNoteBook(const wxString& nodeHostname) {
      wxString outputFilePath;
 
      // 通信用クラスの呼び出し
-     SocketCommunication* sock = new SocketCommunication(m_logCtrl);
+     SocketCommunication* sock = new SocketCommunication();
      bool success = sock->DownloadShingetsuThreadList(nodeHostname, outputFilePath);
      delete sock;
 

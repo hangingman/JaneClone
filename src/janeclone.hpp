@@ -25,6 +25,7 @@
 
 // 純粋なwxWidgetsライブラリはここに
 #include <wx/wx.h>
+#include <wx/app.h>
 #include <wx/image.h>
 #include <wx/statusbr.h>
 #include <wx/splitter.h>
@@ -140,7 +141,21 @@ private:
      void OnOpen2chViewerOfficial(wxCommandEvent& event) {
 	  wxLaunchDefaultBrowser(IICH_VIEWER_OFFICIAL);
      };
+     // ログ出力
+     void Logging(wxCommandEvent& event) {
+	  *m_logCtrl << event.GetString();
+     };
+     // メインのスレッドにログとイベントを送る
+     void SendLogging(wxString& message) {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
+	  event->SetString(message.c_str());
 
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetEventHandler()->QueueEvent(event.Clone());
+#else
+	  this->GetEventHandler()->AddPendingEvent(*event);
+#endif
+     };
      // ユーザーが最後に閉じた板を開く
      void OnUserLastClosedBoardClick(wxCommandEvent& event);
      // ユーザーが最後に閉じたスレッドを開く

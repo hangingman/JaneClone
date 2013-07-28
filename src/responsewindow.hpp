@@ -72,16 +72,23 @@ public:
      // end wxGlade
      ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName& boardInfoHash,
 		    ThreadInfo& threadInfoHash, wxPoint& point, wxTextCtrl* logCtrl);
-     /**
-      * ログ出力用のウィンドウを設定する
-      */
-     void SetLogWindow(wxTextCtrl* logCtrl) {
-	  this->m_logCtrl = logCtrl;
-     };
      // レス投稿時にテキスト情報を付加する
      void AddKakikomiText(const wxString& text);
 
 private:
+
+     // メインのスレッドにログとイベントを送る
+     void SendLogging(wxString& message) {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
+	  event->SetString(message.c_str());
+
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetEventHandler()->QueueEvent(event.Clone());
+#else
+	  wxTheApp->GetTopWindow()->GetEventHandler()->AddPendingEvent(*event);
+#endif
+     };
+
      // begin wxGlade: ResponseWindow::methods
      void set_properties(const wxString& title);
      void do_layout();
@@ -113,10 +120,6 @@ private:
      // 内部で保持するスレッドや板情報
      URLvsBoardName  m_boardInfo;
      ThreadInfo      m_threadInfo;
-     /**
-      * ログとして出力するためのテキストコントロールのポインタ
-      */
-     wxTextCtrl* m_logCtrl;
      /**
       * 投稿内容を保持するオブジェクトのインスタンス
       */

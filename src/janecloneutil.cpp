@@ -771,11 +771,10 @@ wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,
 /**
  * 現在時刻をUNIX Timeで返す
  */
-wxString JaneCloneUtil::GetTimeNow(wxTextCtrl* logCtrl) {
+wxString JaneCloneUtil::GetTimeNow() {
 
      long unixTime = wxGetUTCTime();
      wxString utc = wxString::Format(_("%ld"), unixTime);
-     *logCtrl << wxT("UnixTime:") << utc << wxT("\n");
 
      return utc;
 }

@@ -30,6 +30,7 @@ enum {
         ID_Quit = 1,                    // 終了
 	ID_Restart,      		// 再起動
 	ID_Test,                        // テスト用ID
+	ID_Logging,                     // ログ出力制御用
 	ID_WindowMinimize,              // ウィンドウを最小化する
 	ID_GetBoardList,        	// 板一覧情報取得
 	ID_CheckLogDirectory,           // 保存されているログをスレッド一覧に表示する

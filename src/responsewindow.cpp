@@ -156,9 +156,6 @@ ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName
 			       ThreadInfo& threadInfoHash, wxPoint& point, wxTextCtrl* logCtrl):
      wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE) {
 
-     // ログ出力用のポインタを設定
-     this->m_logCtrl = logCtrl;
-
      // アイコンの設定を行う
 #ifdef __WXMSW__
      SetIcon(wxICON(wxicon));
@@ -267,23 +264,29 @@ void ResponseWindow::do_layout() {
 void ResponseWindow::OnPostResponse(wxCommandEvent &event) {
 
      // ソケット通信用のクラスのインスタンスを用意する
-     SocketCommunication* socketCommunication = new SocketCommunication(m_logCtrl);
+     SocketCommunication* socketCommunication = new SocketCommunication();
      // クッキーの状態チェック
      int cookieStatus = CheckCookie();
 
      if (cookieStatus == NO_COOKIE) {
 	  // クッキーがない状態
-	  *m_logCtrl << wxT("初回書き込みを実行\n");
+	  wxString message = wxT("初回書き込みを実行\n");
+	  SendLogging(message);
+	  
 	  PostFirstResponse(socketCommunication);
 	  delete socketCommunication;
      } else if (cookieStatus == HAS_COOKIE_HIDDEN) {
 	  // 最初のレスの後クッキーのみもらった状態
-	  *m_logCtrl << wxT("2chの規約に許諾後の書き込みを実行\n");
+	  wxString message = wxT("2chの規約に許諾後の書き込みを実行\n");
+	  SendLogging(message);
+
 	  PostConfirm(socketCommunication);
 	  delete socketCommunication;
      } else if (cookieStatus == HAS_PREN) {
 	  // PRENをもらった状態；通常の書き込み
-	  *m_logCtrl << wxT("通常書き込みを実行\n");
+	  wxString message = wxT("通常書き込みを実行\n");
+	  SendLogging(message);
+
 	  PostResponse(socketCommunication);
 	  delete socketCommunication;
      }
@@ -411,14 +414,18 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
 
      if (m_postContent->kakikomi.IsEmpty()) {
      	  // 内容が無ければエラー
-     	  *m_logCtrl << wxT("内部エラー…(ヽ´ん`)…やり直してみて…\n");
+     	  wxString message = wxT("内部エラー…(ヽ´ん`)…やり直してみて…\n");
+	  SendLogging(message);
+
      	  return;
      }
 
      sock->SetPostContent(m_postContent);
 
      if (m_boardInfo.boardName.Len() == 0 || m_threadInfo.title.Len() == 0) {
-     	  *m_logCtrl << wxT("内部エラー…(ヽ´ん`)……板情報とスレッド情報がおかしいです\n");
+     	  wxString message = wxT("内部エラー…(ヽ´ん`)……板情報とスレッド情報がおかしいです\n");
+	  SendLogging(message);
+
      	  return;
      }
      

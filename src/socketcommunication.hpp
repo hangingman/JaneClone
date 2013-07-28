@@ -47,6 +47,7 @@
 #include <curlpp/Options.hpp>
 #include <curlpp/Infos.hpp>
 
+#include "enums.hpp"
 #include "janecloneutil.hpp"
 
 class SocketCommunication {
@@ -60,11 +61,6 @@ public:
      SocketCommunication(){
 	  this->respBuf.clear();
 	  this->bodyBuf.clear();
-     };
-     SocketCommunication(wxTextCtrl* logCtrl) {
-	  this->respBuf.clear();
-	  this->bodyBuf.clear();
-	  this->m_logCtrl = logCtrl;
      };
      /**
       * デストラクタ
@@ -131,12 +127,6 @@ public:
       */
      void SetPostContent(PostContent* postContent);
      /**
-      * ログ出力用のウィンドウを設定する
-      */
-     void SetLogWindow(wxTextCtrl* logCtrl) {
-	  this->m_logCtrl = logCtrl;
-     };
-     /**
       * 指定されたURLからデータをダウンロードする
       */
      void DownloadImageFile(const wxString& href, DownloadImageResult* result);
@@ -154,6 +144,19 @@ public:
      bool DownloadShingetsuThreadList(const wxString& nodeHostname, wxString& outputFilePath);
 
 private:
+
+     // メインのスレッドにログとイベントを送る
+     void SendLogging(wxString& message) {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
+	  event->SetString(message.c_str());
+
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetEventHandler()->QueueEvent(event.Clone());
+#else
+	  wxTheApp->GetTopWindow()->GetEventHandler()->AddPendingEvent(*event);
+#endif
+     };
+
      /**
       * ファイル区切り文字
       */
@@ -279,11 +282,6 @@ private:
       * COOKIEのデータ書き出しを行う
       */
      void WriteCookieData(const wxString& dataFilePath);
-     /**
-      * ログとして出力するためのテキストコントロールのポインタ
-      */
-     wxTextCtrl* m_logCtrl;
-
      // wxFileConfigクラスのインスタンス(書き込みの際のみ確保される)
      wxFileConfig* config;
      // 投稿内容を保存するクラス(書き込みの際のみ確保される)

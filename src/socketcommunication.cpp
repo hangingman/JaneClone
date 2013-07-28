@@ -103,8 +103,12 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
-	  //*m_logCtrl << wxT("2chの板一覧情報を取得 (ん`　 )") << wxT("\n");
-	  //*m_logCtrl << server + path << wxT("\n");
+	  wxString message = wxT("2chの板一覧情報を取得 (ん`　 )\n");
+	  message += server;
+	  message += path;
+	  message += wxT("\n");
+	  SendLogging(message);
+
 	  myRequest.perform();
 
 	  // レスポンスヘッダーの書き出し
@@ -116,9 +120,11 @@ int SocketCommunication::DownloadBoardListNew(const wxString outputPath,
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-          *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)outputPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)outputPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)outputPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)outputPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 
      return -1;
@@ -169,14 +175,17 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
-	  *m_logCtrl << wxT("2chの板一覧情報を取得 (ん`　 )") << wxT("\n");
-	  *m_logCtrl << server + path << wxT("\n");
+	  wxString message = wxT("2chの板一覧情報を取得 (ん`　 )\n");
+	  message += server;
+	  message += path;
+	  message += wxT("\n");
+	  SendLogging(message);
 	  
 	  myRequest.perform();
 
 	  long rc = curlpp::infos::ResponseCode::get(myRequest);
-	  *m_logCtrl << wxT("HTTP") << wxString::Format(wxT("%lu"), rc) << wxT("\n");
-
+	  message = wxT("HTTP") + wxString::Format(wxT("%lu"), rc) + wxT("\n");
+	  SendLogging(message);
 	  
 	  if (rc == 304) {
 	       // レスポンスコードが304ならば変更なしなので正常終了
@@ -197,9 +206,11 @@ int SocketCommunication::DownloadBoardListMod(const wxString outputPath,
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)outputPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)outputPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)outputPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)outputPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 
      return -1;
@@ -371,8 +382,11 @@ int SocketCommunication::DownloadThreadListNew(const wxString gzipPath,
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
-	  *m_logCtrl << wxT("スレッド一覧を取得 (ん`　 )") << wxT("\n");
-	  *m_logCtrl << server + path << wxT("\n");
+	  wxString message = wxT("スレッド一覧を取得 (ん`　 )\n");
+	  message += server;
+	  message += path;
+	  message += wxT("\n");
+	  SendLogging(message);
 
 	  myRequest.perform();
 
@@ -385,9 +399,11 @@ int SocketCommunication::DownloadThreadListNew(const wxString gzipPath,
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 
      return -1;
@@ -462,8 +478,12 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
-	  *m_logCtrl << wxT("スレッド一覧を取得 (ん`　 )") << wxT("\n");
-	  *m_logCtrl << server + path << wxT("\n");
+	  wxString message = wxT("スレッド一覧を取得 (ん`　 )\n");
+	  message += server;
+	  message += path;
+	  message += wxT("\n");
+	  SendLogging(message);
+
 	  myRequest.perform();
 
 	  // レスポンスヘッダーの書き出し
@@ -475,9 +495,11 @@ int SocketCommunication::DownloadThreadListMod(const wxString gzipPath,
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 
      return -1;
@@ -622,26 +644,34 @@ void SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
-	  *m_logCtrl << wxT("2chのスレッドを取得 (ん`　 )") << wxT("\n");
-	  *m_logCtrl << server + path << wxT("\n");
+	  wxString message = wxT("2chのスレッドを取得 (ん`　 )\n");
+	  message += server;
+	  message += path;
+	  message += wxT("\n");
+	  SendLogging(message);
+
 	  myRequest.perform();
 
 	  long rc = curlpp::infos::ResponseCode::get(myRequest);
 	  
 	  if (rc == 200) {
 	       // 通常スレッド取得
-	       *m_logCtrl << wxT("新規取得 (ヽ´ん`)") << wxT("\n");
+	       wxString message = wxT("新規取得 (ヽ´ん`)\n");
+	       SendLogging(message);
 	  } else if (rc == 203) {
 	       // dat落ち確定
-	       *m_logCtrl << wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       wxString message = wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       SendLogging(message);
 	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
 	  } else if (rc == 302) {
 	       // dat落ちか削除
-	       *m_logCtrl << wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       wxString message = wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       SendLogging(message);
 	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
 	  } else if (rc == 404) {
 	       // dat落ちか削除
-	       *m_logCtrl << wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       wxString message = wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       SendLogging(message);
 	  }
 
 	  // レスポンスヘッダーの書き出し
@@ -651,9 +681,11 @@ void SocketCommunication::DownloadThreadNew(const wxString gzipPath,
 	  }
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 }
 
@@ -740,8 +772,12 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 	  myRequest.setOpt(new curlpp::options::WriteFunction(
 				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteDataInternal)));	  
 
-	  *m_logCtrl << wxT("2chのスレッドを取得 (ん`　 )") << wxT("\n");
-	  *m_logCtrl << server + path << wxT("\n");
+	  wxString message = wxT("2chのスレッドを取得 (ん`　 )\n");
+	  message += server;
+	  message += path;
+	  message += wxT("\n");
+	  SendLogging(message);
+
 	  myRequest.perform();
 
 	  long rc = curlpp::infos::ResponseCode::get(myRequest);
@@ -753,11 +789,14 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 	       }	       
 	  } else if (rc == 304) {
 	       // レスポンスコードが304ならば変更なし、何もしない
-	       *m_logCtrl << wxT("更新なし (ヽ´ん`)") << wxT("\n");
+	       wxString message = wxT("更新なし (ヽ´ん`)\n");
+	       SendLogging(message);
 
 	  } else if (rc == 206) {
 	       // スレッドに更新ありの場合の処理、更新部分を追加する
-	       *m_logCtrl << wxT("更新あり (ヽ´ん`)") << wxT("\n");
+	       wxString message = wxT("更新あり (ヽ´ん`)\n");
+	       SendLogging(message);
+
 	       if (!bodyBuf.empty()) {
 
 		    // sjisファイルの更新を実施
@@ -770,17 +809,22 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 
 	  } else if (rc == 203) {
 	       // dat落ち確定
-	       *m_logCtrl << wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       wxString message = wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       SendLogging(message);
+
 	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
 	       
 	  } else if (rc == 302) {
 	       // dat落ちか削除
-	       *m_logCtrl << wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       wxString message = wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       SendLogging(message);
+
 	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
 
 	  } else if (rc == 404) {
 	       // dat落ちか削除
-	       *m_logCtrl << wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       wxString message = wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       SendLogging(message);
 	  }
 
 	  // レスポンスヘッダーの書き出し
@@ -792,9 +836,11 @@ int SocketCommunication::DownloadThreadMod(const wxString gzipPath,
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)datFilePath.mb_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)datFilePath.mb_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 
      return -1;
@@ -881,8 +927,11 @@ int SocketCommunication::DownloadThreadPast(const wxString gzipPath, const wxStr
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
-	  *m_logCtrl << wxT("2chのスレッド(過去スレ)を取得 (ん`　 )") << wxT("\n");
-	  *m_logCtrl << server + path << wxT("\n");
+	  wxString message = wxT("2chのスレッド(過去スレ)を取得 (ん`　 )\n");
+	  message += server;
+	  message += path;
+	  message += wxT("\n");
+	  SendLogging(message);
 
 	  // 過去スレ取得は２回目のクラスメソッド起動になるはずなので
 	  // 文字列をクリアーしておく
@@ -894,16 +943,20 @@ int SocketCommunication::DownloadThreadPast(const wxString gzipPath, const wxStr
 	  
 	  if (rc == 200) {
 	       // 通常スレッド取得
-	       *m_logCtrl << wxT("新規取得 (ヽ´ん`)") << wxT("\n");
+	       wxString message = wxT("新規取得 (ヽ´ん`)\n");
+	       SendLogging(message);
 	  } else if (rc == 203) {
 	       // dat落ち確定
-	       *m_logCtrl << wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       wxString message = wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       SendLogging(message);
 	  } else if (rc == 302) {
 	       // dat落ちか削除
-	       *m_logCtrl << wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       wxString message = wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       SendLogging(message);
 	  } else if (rc == 404) {
 	       // dat落ちか削除
-	       *m_logCtrl << wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん") << wxT("\n");
+	       wxString message = wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       SendLogging(message);
 	  }
 
 	  // レスポンスヘッダーの書き出し
@@ -915,9 +968,11 @@ int SocketCommunication::DownloadThreadPast(const wxString gzipPath, const wxStr
 	  return 0;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString((const char*)gzipPath.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
      
      return -1;
@@ -941,7 +996,8 @@ size_t SocketCommunication::WriteHeaderData(char *ptr, size_t size, size_t nmemb
 
      // ログに出力する
      if (std::string::npos != line.find("HTTP")) {
-	  *m_logCtrl << wxString(line.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString(line.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
      
      // クッキーを書き出す
@@ -1021,7 +1077,9 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      }
 
      // 投稿時間を算出する(UNIX Time)
-     wxString timeNow = JaneCloneUtil::GetTimeNow(m_logCtrl);
+     wxString timeNow = JaneCloneUtil::GetTimeNow();
+     wxString message = wxT("UNIX Time:") + timeNow;
+     SendLogging(message);
 
      wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString headerPath = dir.GetName();
@@ -1107,7 +1165,8 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
-	  *m_logCtrl << wxT("書き込み実行 (ヽ´ん`)") << wxT("\n");
+	  wxString message = wxT("書き込み実行 (ヽ´ん`)\n");
+	  SendLogging(message);
 
 	  // 文字列をクリアーしておく
 	  this->respBuf.clear();
@@ -1117,9 +1176,11 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
 	  myRequest.perform();
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 
      // Shift_JIS から UTF-8への変換処理
@@ -1183,7 +1244,9 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      }
 
      // 投稿時間を算出する(UNIX Time)
-     wxString timeNow = JaneCloneUtil::GetTimeNow(m_logCtrl);
+     wxString timeNow = JaneCloneUtil::GetTimeNow();
+     wxString message = wxT("UNIX Time:") + timeNow;
+     SendLogging(message);
 
      wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString headerPath = dir.GetName();
@@ -1270,7 +1333,8 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
-	  *m_logCtrl << wxT("書き込み実行 (ヽ´ん`)") << wxT("\n");
+	  wxString message = wxT("書き込み実行 (ヽ´ん`)\n");
+	  SendLogging(message);
 
 	  // 文字列をクリアーしておく
 	  this->respBuf.clear();
@@ -1280,9 +1344,11 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 	  myRequest.perform();
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 
      // Shift_JIS から UTF-8への変換処理
@@ -1347,7 +1413,9 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      }
 
      // 投稿時間を算出する(UNIX Time)
-     wxString timeNow = JaneCloneUtil::GetTimeNow(m_logCtrl);
+     wxString timeNow = JaneCloneUtil::GetTimeNow();
+     wxString message = wxT("UNIX Time:") + timeNow;
+     SendLogging(message);
 
      wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString headerPath = dir.GetName();
@@ -1434,7 +1502,8 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
-	  *m_logCtrl << wxT("書き込み実行 (ヽ´ん`)") << wxT("\n");
+	  wxString message = wxT("書き込み実行 (ヽ´ん`)\n");
+	  SendLogging(message);
 
 	  // 文字列をクリアーしておく
 	  this->respBuf.clear();
@@ -1444,9 +1513,11 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 	  myRequest.perform();
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << headerPath << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 
      // Shift_JIS から UTF-8への変換処理
@@ -1744,17 +1815,19 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
 	  myRequest.setOpt(ws);
 	  
 	  // ログ出力
-	  *m_logCtrl << wxT("新月にアクセス (ん`　 )") << wxString(requestQuery.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxT("新月にアクセス (ん`　 )") + wxString(requestQuery.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
+
 	  myRequest.perform();
 
 	  return true;
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
-	  return false;
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)outputFilename.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
-	  return false;
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)outputFilename.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 
      return false;
@@ -1820,15 +1893,19 @@ wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostna
 	  myRequest.setOpt(ws);
 	  
 	  // ログ出力
-	  *m_logCtrl << wxT("新月のスレッドを取得 (ん`　 )") << wxString(requestQuery.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxT("新月にアクセス (ん`　 )") + wxString(requestQuery.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
+
 	  myRequest.perform();
 
 	  return wxString(outputFilename.c_str(), wxConvUTF8);
 
      } catch (curlpp::RuntimeError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)outputFilename.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      } catch (curlpp::LogicError &e) {
-	  *m_logCtrl << wxString((const char*)e.what(), wxConvUTF8) << wxString(outputFilename.c_str(), wxConvUTF8) << wxT("\n");
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)outputFilename.c_str(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
      }
 
      return wxEmptyString;

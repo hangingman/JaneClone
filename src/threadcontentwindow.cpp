@@ -459,8 +459,6 @@ void ThreadContentWindow::CallResponseWindowWithAnchor(wxCommandEvent& event) {
 		    // レス用のウィンドウは 640:480なので、ちょうど中央にくるように調整する
 		    wxPoint point(wScreenPx/2 - 320, hScreenPx/2 - 240);
 		    ResponseWindow* response = new ResponseWindow(wxJaneClone, title, boardInfoHash, threadInfoHash, point, m_logCtrl);
-		    // ログ出力ウィンドウのインスタンスのポインタを渡す
-		    response->SetLogWindow(m_logCtrl);
 		    // ウィンドウにテキストを設定する
 		    response->AddKakikomiText(wxString::Format(wxT(">>%ld"), m_response));
 		    response->Show(true);
@@ -508,9 +506,7 @@ void ThreadContentWindow::CallResponseWindowWithQuote(wxCommandEvent& event) {
 		    // レス用のウィンドウは 640:480なので、ちょうど中央にくるように調整する
 		    wxPoint point(wScreenPx/2 - 320, hScreenPx/2 - 240);
 		    ResponseWindow* response = new ResponseWindow(wxJaneClone, title, boardInfoHash, threadInfoHash, point, m_logCtrl);
-		    // ログ出力ウィンドウのインスタンスのポインタを渡す
-		    response->SetLogWindow(m_logCtrl);
-
+		
 		    // ウィンドウにテキストを設定する
 		    wxString quote  = wxString::Format(wxT(">>%ld\n"), m_response);
 		    quote += JaneCloneUtil::FindAnchoredResponseText(threadInfoHash.boardNameAscii, threadInfoHash.origNumber, m_response);
