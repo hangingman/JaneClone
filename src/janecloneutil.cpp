@@ -839,7 +839,8 @@ wxString JaneCloneUtil::DetermineContentType(const wxString& href) {
      } else if (href.EndsWith(wxT(".bmp")) || href.EndsWith(wxT(".BMP"))) {
 	  return wxT("image/bmp; charset=utf-8");
      }
-     
+
+     return wxEmptyString;
 }
 /**
  * URIから各パラメーターを抜き取る
@@ -974,7 +975,6 @@ void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThrea
 	  
 	  // ループ変数をインクリメント
 	  ++loopNumber;
-	  std::cout << "old thread number:" << loopNumber << std::endl;
      }
 
      datfile.Close();

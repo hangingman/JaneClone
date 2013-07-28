@@ -2909,9 +2909,11 @@ void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
 
      // 選択したタブの板名を取得する
      wxString selectedBoardName = boardNoteBook->GetPageText(event.GetSelection());
-     // リストコントロールを引き出してくる
-     for (  wxWindowList::const_iterator i = boardNoteBook->GetChildren().begin(); i != GetChildren().end(); ++i  ) {
 
+#if !wxCHECK_VERSION(2, 9, 0)
+     // リストコントロールを引き出してくる
+     for (  wxWindowList::const_iterator i = boardNoteBook->GetChildren().begin(); 
+	    i != GetChildren().end(); ++i  ) {
 	  if ( wxDynamicCast(*i, wxWindow) && (*i)->GetLabel() == selectedBoardName ) {
 	       // 板名が一致するwindowクラスを再描画させる
 	       VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(*i);
@@ -2919,6 +2921,8 @@ void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
 	       break;
 	  }	       
      }
+#endif
+
      // タイトルを設定する
      SetTitle(selectedBoardName + wxT(" - JaneClone"));
      // ノートブックの解放
@@ -2926,6 +2930,8 @@ void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
      boardNoteBook->Thaw();
 #endif
      m_mgr.Update();
+
+     return;
 }
 /**
  * スレッド一覧タブを変更した時のイベント
