@@ -690,22 +690,51 @@ wxString JaneCloneUtil::AddAnchorTag(wxString& responseText) {
  */
 wxString JaneCloneUtil::AddID(wxString& responseText) {
 
+     // 必要な変数を宣言
      wxString text = responseText;
      wxString tmp, result;
      size_t start, len;
 
+     // IDを数えるためのハッシュ
+     WX_DECLARE_STRING_HASH_MAP( int, ExtractIdHash );
+     ExtractIdHash hashmap;
+
      if (regexID.IsValid() && regexID.Matches(responseText)) {
-	  for (tmp = text; regexID.Matches(tmp);
-	       tmp = tmp.SubString(start + len, tmp.Len())) {
+	  for ( tmp = text; regexID.Matches(tmp); tmp = tmp.SubString(start + len, tmp.Len()) ) {
+
 	       regexID.GetMatch(&start, &len, 0);
+
+	       wxString id = tmp.SubString(start+3, start + len - 1);
+	       if (hashmap.find( id ) == hashmap.end()) {
+		    // 初めてのIDなので新しく追加する
+		    hashmap[id] = 1;
+	       } else {
+		    // レス数を増やす
+		    hashmap[id] = hashmap[id]++;
+	       }
+
 	       result += tmp.SubString(0, start - 1);
 	       result += wxT("<a href=\"#_");
-	       result += tmp.SubString(start+3, start + len - 1);
+	       result += id;
 	       result += wxT("\"/>ID</a>:");
-	       result += tmp.SubString(start+3, start + len - 1);
-	       
+	       result += id;
+	       result += wxString::Format(wxT(" [%d/yyy%syyy] "), hashmap[id], id.c_str());
 	  }
-	  result += tmp;
+	  // カウント数の合計を置換
+	  ExtractIdHash::iterator it;
+	  for ( it = hashmap.begin(); it != hashmap.end(); ++it ) {
+	       // スレッド内での総レス数を追記
+	       result.Replace(wxString::Format(wxT("yyy%syyy"), it->first.c_str()), wxString::Format(wxT("%d"), it->second), true);
+	       // 総レス数が5を超えていれば赤くする
+	       if (it->second >= 5) {
+		    result.Replace(wxString::Format(wxT("<a href=\"#_%s\"/>ID</a>"), it->first.c_str()),
+				   wxString::Format(wxT("<a href=\"#_%s\"/><font color=\"#ff0000\">ID</font></a>"), it->first.c_str()),
+				   true);
+	       }
+	  }
+	  
+	  //result += tmp;
+
      } else {
 	  return responseText;
      }
