@@ -1280,32 +1280,48 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
      wxHtmlCell* cell = event.GetCell();
      wxHtmlLinkInfo* linkInfo = cell->GetLink(cell->GetPosX(), cell->GetPosY());
 
-     if (linkInfo) {
-	  if (linkInfo->GetHref() != wxEmptyString && linkInfo->GetTarget()
-	      == _T("_blank")) {
+     if (linkInfo && linkInfo->GetHref() != wxEmptyString) {
+
+	  wxString rest;
+
+	  if ( linkInfo->GetTarget() == _T("_blank") ) {
 	       // レスアンカーを察知した場合の処理
 	       // <a>タグ内サンプル　<a href="../test/read.cgi/poverty/1345636335/20" target="_blank">
 	       wxString href = linkInfo->GetHref();
 	       wxStringTokenizer tkz(href, wxT("//"));
-	       wxString boardNameAscii, orgNumber, resNumber;
+	       wxString boardNameAscii, origNumber, resNumber;
 
 	       while (tkz.HasMoreTokens()) {
 		    wxString tmp = tkz.GetNextToken();
 		    if (tmp == _T("read.cgi")) {
 			 boardNameAscii = tkz.GetNextToken();
-			 orgNumber = tkz.GetNextToken();
+			 origNumber = tkz.GetNextToken();
 			 resNumber = tkz.GetNextToken();
 			 break;
 		    }
 	       }
 
-	       if (orgNumber == wxEmptyString || resNumber == wxEmptyString || boardNameAscii == wxEmptyString) {
+	       if (origNumber == wxEmptyString || resNumber == wxEmptyString || boardNameAscii == wxEmptyString) {
 		    return;
 	       }
 	       // アンカーの出現位置
 	       wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
 	       // 取得した情報を元に新しいポップアップウィンドウを出現させる
-	       SetPopUpWindow(event, boardNameAscii, orgNumber, resNumber, anchorPoint);
+	       SetPopUpWindow(event, boardNameAscii, origNumber, resNumber, anchorPoint);
+
+	  } else if ( linkInfo->GetHref().StartsWith(wxT("#_"), &rest) ) {
+	       // ID:xxxxxxxxx の形式であればポップアップさせる
+	       if (regexID.IsValid() && regexID.Matches(wxT("ID:") + rest)) {
+		    // アンカーの出現位置
+		    wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
+
+		    const wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+		    wxString boardNameAscii = tiHash[title].boardNameAscii;
+		    wxString origNumber = tiHash[title].origNumber;
+
+		    // 取得した情報を元に新しいポップアップウィンドウを出現させる
+		    SetPopUpWindowForID(event, boardNameAscii, origNumber, rest, anchorPoint);		    
+	       }
 	  }
      }
 }
@@ -2619,11 +2635,31 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
      }
 
      // 取得したレスをポップアップさせる
-     AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook,
-							      anchorPoint, wxSize(640, 300), htmlDOM);
+     AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook, anchorPoint, wxSize(640, 300), htmlDOM);
      // マウスカーソルの位置に調整する
      wxPoint p = ClientToScreen(wxGetMousePosition());
      popup->Position(anchorPoint, wxSize(p.x + 50, p.y - 150));
+     popup->Popup();
+}
+/**
+ * 取得した情報を元に新しいポップアップウィンドウを出現させる
+ */
+void JaneClone::SetPopUpWindowForID(wxHtmlCellEvent& event, wxString& boardNameAscii,
+				    wxString& origNumber, wxString& extractId, wxPoint& anchorPoint) {
+
+     // ポップアップさせるHTMLソース
+     wxString htmlDOM = JaneCloneUtil::FindResponseById(boardNameAscii, origNumber, extractId);
+
+     if (wxEmptyString == htmlDOM) {
+	  // 空文字で帰ってきたらリターン
+	  return;
+     }
+
+     // 取得したレスをポップアップさせる
+     AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook, anchorPoint, wxSize(640, 300), htmlDOM);
+     // マウスカーソルの位置に調整する
+     wxPoint p = ClientToScreen(wxGetMousePosition());
+     popup->Position(p, popup->GetSize());
      popup->Popup();
 }
 /**

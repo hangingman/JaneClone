@@ -69,6 +69,11 @@ public:
      static size_t GetFileSize(const wxString& filePath);
      /**
       * アンカーで指定されたレスをファイルから読み取ってDOM形式にして送り返す
+      * @param  const wxString& boardNameAscii         板名の英語名  
+      * @param  const wxString& origNumber             UNIXタイムベースのオリジナルな番号
+      * @param  const wxString& resNumberStart         取得するレスの番号(開始点)
+      * @param  const wxString& resNumberEnd           取得するレスの番号(終了点)
+      * @return wxString        取得したレスの内容
       */
      static wxString FindAnchoredResponse(const wxString& boardNameAscii, const wxString& origNumber, 
 					  const wxString& resNumberStart, const wxString& resNumberEnd=wxEmptyString);
@@ -83,6 +88,15 @@ public:
       */
      static wxString FindAnchoredResponseText(const wxString& boardNameAscii, const wxString& origNumber, 
 					      const long resNumber, const bool useTriangularBrackets=true);
+     /**
+      * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
+      * @param  const wxString& boardNameAscii         板名の英語名  
+      * @param  const wxString& origNumber             UNIXタイムベースのオリジナルな番号
+      * @param  const wxString& extractId              抽出対象のID
+      * @return wxString        取得したレスの内容
+      */
+     static wxString FindResponseById(const wxString& boardNameAscii, const wxString& origNumber, 
+				      const wxString& extractId);
      /**
       * レス内にURLがあれば<a>タグを付ける
       */

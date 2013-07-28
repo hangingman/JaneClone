@@ -50,7 +50,7 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
      html+=HTML_FOOTER;
      wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
      // wxHtmlWindowにHTMLソースを設定する
-     htmlWin = new wxHtmlWindow(this, wxID_ANY, point, size, wxHW_SCROLLBAR_AUTO);
+     htmlWin = new wxHtmlWindow(this, wxID_ANY, wxPoint(0, 0), size, wxHW_SCROLLBAR_AUTO);
      this->SetInternalFonts(htmlWin);
      htmlWin->SetBorders(0);
      htmlWin->SetPage(html);
