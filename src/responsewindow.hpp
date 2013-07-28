@@ -83,7 +83,7 @@ private:
 	  event->SetString(message.c_str());
 
 #if wxCHECK_VERSION(2, 9, 0)
-	  wxTheApp->GetEventHandler()->QueueEvent(event.Clone());
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
 #else
 	  wxTheApp->GetTopWindow()->GetEventHandler()->AddPendingEvent(*event);
 #endif
