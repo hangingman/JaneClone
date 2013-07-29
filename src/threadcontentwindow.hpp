@@ -73,6 +73,19 @@ private:
       * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
       */
      const wxString GetConvertedDatFile(const wxString& threadContentPath);
+     /**
+      * メインのスレッドにログとイベントを送る
+      */
+     void SendLogging(wxString& message) {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
+	  event->SetString(message.c_str());
+
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+#else
+	  this->GetEventHandler()->AddPendingEvent(*event);
+#endif
+     };
 
      // HtmlWindowで選択しているテキストをクリップボードにコピーする
      void CopyFromHtmlWindow(wxCommandEvent& event);

@@ -719,7 +719,11 @@ wxString JaneCloneUtil::AddID(wxString& responseText) {
 	       result += wxT("\"/>ID</a>:");
 	       result += id;
 	       result += wxString::Format(wxT(" [%d/yyy%syyy] "), hashmap[id], id.c_str());
+	       
 	  }
+	  // 残りをくっつける
+	  result += tmp;
+
 	  // カウント数の合計を置換
 	  ExtractIdHash::iterator it;
 	  for ( it = hashmap.begin(); it != hashmap.end(); ++it ) {
@@ -733,7 +737,6 @@ wxString JaneCloneUtil::AddID(wxString& responseText) {
 	       }
 	  }
 	  
-	  //result += tmp;
 
      } else {
 	  return responseText;
