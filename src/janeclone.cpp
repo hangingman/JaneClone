@@ -1878,19 +1878,15 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
 
      // 既存のページから情報を取得して削除する
      ThreadContentBar* oldThreadBar = dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(page));
-     wxPoint p;
 
      if (oldThreadBar) {
+	  wxPoint p;
 	  oldThreadBar->GetThreadContentWindowScrollPos(&p);
+	  oldThreadBar->ReloadThreadContentWindow(threadContentPath);
+	  oldThreadBar->SetThreadContentWindowScroll(&p);
+	  m_mgr.Update();
      }
      
-     threadNoteBook->DeletePage(threadNoteBook->GetSelection());
-
-     // スレッド用の検索バー等のインスタンスを用意する
-     ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, ID_ThreadContentBar + page);
-     threadBar->SetTitle(title);
-     threadBar->SetThreadContentWindow(threadContentPath);
-
      // ノートブックに登録されたスレッド情報をハッシュに登録する
      info.origNumber = origNumber;
      info.boardNameAscii = boardNameAscii;
@@ -1898,19 +1894,6 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
 
      wxString message = wxT("完了…　(´ん｀/)三\n");
      SendLogging(message);
-
-     // スレッドを表示させる
-#ifndef __WXMSW__
-     threadNoteBook->Freeze();
-#endif
-
-     threadNoteBook->InsertPage(page, threadBar, title, false, wxNullBitmap);
-     threadNoteBook->SetSelection(page);
-     threadBar->SetThreadContentWindowScroll(&p);
-     
-#ifndef __WXMSW__
-     threadNoteBook->Thaw();
-#endif
 }
 /**
  *  書き込み用のウィンドウを呼び出す

@@ -34,8 +34,8 @@
 // end wxGlade
 
 // 各ウィジェットのサイズなど
-static const wxSize   threadContentBarImgSize = wxSize(32, 32);
-static const wxSize   searchWordComboSize = wxSize(320, 32);
+static const wxSize   threadContentBarImgSize = wxSize(16, 16);
+static const wxSize   searchWordComboSize     = wxSize(320, 32);
 
 class ThreadContentBar: public wxPanel {
 
@@ -50,6 +50,9 @@ public:
 
      // スレッドの内容を設定する
      void SetThreadContentWindow(const wxString& threadContentPath);
+     // スレッドの内容をリロードする
+     void ReloadThreadContentWindow(const wxString& threadContentPath);
+
      // 開いているHTMLのスクロール位置を取得する
      void GetThreadContentWindowScrollPos(wxPoint* p) {
 	  tcw->GetHtmlWindowScrollPos(p);

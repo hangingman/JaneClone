@@ -257,3 +257,14 @@ void ThreadContentBar::SetThreadContentWindow(const wxString& threadContentPath)
      vbox->Add(tcw, 1, wxEXPAND | wxALL, 5);
      threadContentPanel->SetSizer(vbox);
 }
+
+void ThreadContentBar::ReloadThreadContentWindow(const wxString& threadContentPath) {
+
+     // 一度内部のウィンドウを崩す
+     tcw->Destroy();
+     // スレッドの内容を表すウィンドウをthreadContentPanelを親として宣言する
+     tcw = new ThreadContentWindow(threadContentPanel, threadContentPath);
+     wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
+     vbox->Add(tcw, 1, wxEXPAND | wxALL, 5);
+     threadContentPanel->SetSizer(vbox);
+}
