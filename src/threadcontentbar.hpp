@@ -34,7 +34,7 @@
 // end wxGlade
 
 // 各ウィジェットのサイズなど
-static const wxSize   threadContentBarImgSize = wxSize(16, 16);
+static const wxSize   threadContentBarImgSize = wxSize(32, 32);
 static const wxSize   searchWordComboSize     = wxSize(320, 32);
 
 class ThreadContentBar: public wxPanel {
@@ -83,12 +83,20 @@ protected:
      wxAuiToolBar* threadToolbar2;
 
      wxPanel* threadContentsBarUpperSizer;
-     wxBitmapButton* nomalSearchButton;
      wxComboBox* searchWordCombo;
+     wxPanel* panel_2;
+
+#if wxCHECK_VERSION(2, 9, 1)
+     wxButton* normalSearchButton;
+     wxButton* backwardButton;
+     wxButton* forwardButton;
+     wxButton* hideSearchBarButton;
+#else
+     wxBitmapButton* normalSearchButton;
      wxBitmapButton* backwardButton;
      wxBitmapButton* forwardButton;
-     wxPanel* panel_2;
      wxBitmapButton* hideSearchBarButton;
+#endif
 
      DECLARE_EVENT_TABLE()
      // end wxGlade

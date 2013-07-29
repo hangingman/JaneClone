@@ -176,20 +176,37 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 
      threadToolbar2->Realize();
 
+#if wxCHECK_VERSION(2, 9, 1)
      // 通常検索
-     nomalSearchButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(normalSearchImg, wxBITMAP_TYPE_ANY),
-					    wxDefaultPosition, threadContentBarImgSize);
-
+     normalSearchButton = wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     normalSearchButton->SetBitmap(wxBitmap(normalSearchImg, wxBITMAP_TYPE_PNG));
+#else
+     // 通常検索
+     normalSearchButton = new wxBitmapButton(this, wxID_ANY, 
+					     wxBitmap(normalSearchImg, wxBITMAP_TYPE_PNG),
+					     wxDefaultPosition, threadContentBarImgSize);
+#endif
      // スレッド内検索用コンボボックス
      searchWordCombo_choices = NULL;
-     searchWordCombo = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition, searchWordComboSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
-     searchWordCombo->SetFont(wxFont(12, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
+     searchWordCombo = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition, 
+				      searchWordComboSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
 
+#if wxCHECK_VERSION(2, 9, 1)
+     // 通常検索
+     backwardButton = wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     backwardButton->SetBitmap(wxBitmap(backwardImg, wxBITMAP_TYPE_PNG));
+     forwardButton  = wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     forwardButton->SetBitmap(wxBitmap(forwardImg, wxBITMAP_TYPE_PNG));     
+#else
      // 引っかかった検索ワードを前後させる
-     backwardButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(backwardImg, wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize,
+     backwardButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(backwardImg, wxBITMAP_TYPE_PNG), 
+					 wxDefaultPosition, threadContentBarImgSize,
 					 wxBU_AUTODRAW, wxDefaultValidator, wxT("前へ"));
-     forwardButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(forwardImg,wxBITMAP_TYPE_ANY), wxDefaultPosition, wxDefaultSize,
+     forwardButton  = new wxBitmapButton(this, wxID_ANY, wxBitmap(forwardImg , wxBITMAP_TYPE_PNG), 
+					 wxDefaultPosition, threadContentBarImgSize,
 					 wxBU_AUTODRAW, wxDefaultValidator, wxT("次へ"));
+#endif
+
      panel_2 = new wxPanel(this, wxID_ANY);
 
      // 検索バーを隠す
@@ -207,9 +224,7 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 void ThreadContentBar::set_properties()
 {
     // begin wxGlade: ThreadContentBar::set_properties
-    threadName->SetFont(wxFont(12, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
-
-    nomalSearchButton->SetSize(nomalSearchButton->GetBestSize());
+    normalSearchButton->SetSize(normalSearchButton->GetBestSize());
     hideSearchBarButton->SetSize(hideSearchBarButton->GetBestSize());
     // end wxGlade
 }
@@ -231,7 +246,7 @@ void ThreadContentBar::do_layout()
     threadContentsBarUpperSizer->SetSizer(horizonalSizer1);
     threadContentsBarSizer->Add(threadContentsBarUpperSizer, 0, wxEXPAND, 0);
 
-    horizonalSizer2->Add(nomalSearchButton, 0, 0, 0);
+    horizonalSizer2->Add(normalSearchButton, 0, 0, 0);
     horizonalSizer2->Add(searchWordCombo, 0, 0, 0);
     horizonalSizer2->Add(backwardButton, 0, 0, 0);
     horizonalSizer2->Add(forwardButton, 0, 0, 0);

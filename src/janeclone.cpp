@@ -1883,8 +1883,8 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
 	  wxPoint p;
 	  oldThreadBar->GetThreadContentWindowScrollPos(&p);
 	  oldThreadBar->ReloadThreadContentWindow(threadContentPath);
-	  oldThreadBar->SetThreadContentWindowScroll(&p);
 	  m_mgr.Update();
+	  oldThreadBar->SetThreadContentWindowScroll(&p);
      }
      
      // ノートブックに登録されたスレッド情報をハッシュに登録する
