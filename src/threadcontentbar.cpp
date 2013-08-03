@@ -49,6 +49,8 @@ END_EVENT_TABLE()
 ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoint& pos, const wxSize& size, long style):
 wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 {
+     wxInitAllImageHandlers();
+
      // begin wxGlade: ThreadContentBar::ThreadContentBar
      threadContentsBarUpperSizer = new wxPanel(this, wxID_ANY);
      threadContentsBarUpperSizer->SetBackgroundColour(*wxLIGHT_GREY);
@@ -178,7 +180,7 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 
 #if wxCHECK_VERSION(2, 9, 1)
      // 通常検索
-     normalSearchButton = wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     normalSearchButton = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
      normalSearchButton->SetBitmap(wxBitmap(normalSearchImg, wxBITMAP_TYPE_PNG));
 #else
      // 通常検索
@@ -193,10 +195,10 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 
 #if wxCHECK_VERSION(2, 9, 1)
      // 通常検索
-     backwardButton = wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     backwardButton = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
      backwardButton->SetBitmap(wxBitmap(backwardImg, wxBITMAP_TYPE_PNG));
-     forwardButton  = wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
-     forwardButton->SetBitmap(wxBitmap(forwardImg, wxBITMAP_TYPE_PNG));     
+     forwardButton  = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     forwardButton->SetBitmap(wxBitmap(forwardImg, wxBITMAP_TYPE_PNG));
 #else
      // 引っかかった検索ワードを前後させる
      backwardButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(backwardImg, wxBITMAP_TYPE_PNG), 
@@ -206,12 +208,18 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 					 wxDefaultPosition, threadContentBarImgSize,
 					 wxBU_AUTODRAW, wxDefaultValidator, wxT("次へ"));
 #endif
-
      panel_2 = new wxPanel(this, wxID_ANY);
 
+
+#if wxCHECK_VERSION(2, 9, 1)
+     // 検索バーを隠す
+     hideSearchBarButton = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     hideSearchBarButton->SetBitmap(wxBitmap(hideSearchBarImg, wxBITMAP_TYPE_PNG));
+#else
      // 検索バーを隠す
      hideSearchBarButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(hideSearchBarImg, wxBITMAP_TYPE_ANY),
 					      wxDefaultPosition, threadContentBarImgSize);
+#endif
      // スレッドの内容が乗るパネル
      threadContentPanel = new wxPanel(this, wxID_ANY);
 

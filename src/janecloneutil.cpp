@@ -617,7 +617,19 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 	  size_t start, len;
 
 	  // デフォルト画像の読み込み
-	  wxString imagePath = wxGetCwd() + wxFileSeparator + wxT("rc") + wxFileSeparator + wxT("image-x-generic.png");
+#ifndef __WXMAC__
+	  wxString imagePath = wxGetCwd() + 
+	                       wxFileSeparator + 
+	                       wxT("rc") + 
+	                       wxFileSeparator + 
+	                       wxT("image-x-generic.png");
+#else
+	  wxString imagePath = wxGetCwd() +
+	                       wxFileSeparator +
+                 	       wxT("JaneClone.app/Contents/MacOS/rc") +
+	                       wxFileSeparator + 
+	                       wxT("image-x-generic.png");
+#endif
 	  wxImage image;
 	  wxBitmap bitmap;
 

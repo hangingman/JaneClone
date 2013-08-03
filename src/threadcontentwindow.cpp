@@ -200,12 +200,19 @@ void ThreadContentWindow::OnRightClickHtmlWindow(wxMouseEvent& event) {
 	  itemGoogle->SetBitmap(bitmap);
 	  bitmap.LoadFile(wxT("rc\\amazon.png"), wxBITMAP_TYPE_PNG);
 	  itemAmazon->SetBitmap(bitmap);
-#else
+#elif __WXGTK__
 	  bitmap.LoadFile(wxT("rc/yahoo.png"), wxBITMAP_TYPE_PNG);
 	  itemYahoo->SetBitmap(bitmap);
 	  bitmap.LoadFile(wxT("rc/google.png"), wxBITMAP_TYPE_PNG);
 	  itemGoogle->SetBitmap(bitmap);
 	  bitmap.LoadFile(wxT("rc/amazon.png"), wxBITMAP_TYPE_PNG);
+	  itemAmazon->SetBitmap(bitmap);
+#elif __WXMAC__
+	  bitmap.LoadFile(wxT("JaneClone.app/Contents/MacOS/rc/yahoo.png"), wxBITMAP_TYPE_PNG);
+	  itemYahoo->SetBitmap(bitmap);
+	  bitmap.LoadFile(wxT("JaneClone.app/Contents/MacOS/rc/google.png"), wxBITMAP_TYPE_PNG);
+	  itemGoogle->SetBitmap(bitmap);
+	  bitmap.LoadFile(wxT("JaneClone.app/Contents/MacOS/rc/amazon.png"), wxBITMAP_TYPE_PNG);
 	  itemAmazon->SetBitmap(bitmap);
 #endif
 #endif

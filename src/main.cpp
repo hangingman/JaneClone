@@ -89,6 +89,7 @@ bool wxMain::OnInit() {
      }
 
      wxInitAllImageHandlers();
+     wxImage::AddHandler( new wxPNGHandler );
      wxFileSystem::AddHandler(new wxMemoryFSHandler);
      wxJaneClone = new JaneClone(NULL, wxID_ANY, wxEmptyString);
      wxJaneClone->pid = 0;
