@@ -160,6 +160,10 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new BehaviorPanel(settingPanel));
 	  settingPanel->SetSizer(vbox);
+     } else if (itemStr == wxT("色・フォント")) {
+	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  vbox->Add(new ColorFontSettingPanel(settingPanel));
+	  settingPanel->SetSizer(vbox);
      }
 
      // ウィンドウのタイトルを変える

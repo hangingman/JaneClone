@@ -7,6 +7,7 @@
 #include <wx/image.h>
 #include <wx/spinctrl.h>
 #include <wx/filepicker.h>
+#include <wx/colordlg.h>
 #include "enums.hpp"
 #include "janecloneutil.hpp"
 
@@ -164,6 +165,81 @@ protected:
     wxCheckBox* favoriteOnlyOneFolderCheck;
     wxPanel* panel_5;
     // end wxGlade
+}; // wxGlade: end class
+
+// begin wxGlade: ::extracode
+// end wxGlade
+
+/**
+ * 色・フォント設定用画面
+ */
+class ColorFontSettingPanel: public wxPanel {
+
+public:
+     // begin wxGlade: ColorFontSettingPanel::ids
+     // end wxGlade
+     ColorFontSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+
+private:
+     // begin wxGlade: ColorFontSettingPanel::methods
+     void set_properties();
+     void do_layout();
+     // end wxGlade
+
+     // 色選択用ダイアログを表示させる
+     void OnClickColorFontSettingButton(wxCommandEvent& event);
+
+protected:
+     // begin wxGlade: ColorFontSettingPanel::attributes
+     wxStaticBox* sizer_6_staticbox;
+     wxStaticBox* sizer_5_staticbox;
+     wxStaticBox* sizer_4_staticbox;
+     wxStaticText* treeSampleLabel;
+     wxStaticText* threadListSampleLabel;
+     wxStaticText* extractSampleLabel;
+     wxPanel* panel_7;
+     wxStaticText* logWindowSampleLabel;
+     wxStaticText* threadTitleSampleLabel;
+     wxStaticText* threadViewSampleLabel;
+     wxStaticText* kakikoSampleLabel;
+     wxStaticText* memoSampleLabel;
+     wxPanel* panel_8;
+     wxStaticText* hintSampleLabel;
+     wxStaticText* linkSampleLabel;
+     wxPanel* panel_9;
+     wxStaticText* othersSampleLabel;
+     wxPanel* panel_4;
+     wxButton* treeFontButton;
+     wxButton* threadListFontButton;
+     wxButton* extractFontButton;
+     wxPanel* panel_10;
+     wxButton* logWindowFontButton;
+     wxButton* threadTitleFontButton;
+     wxButton* kakikoFontButton;
+     wxButton* memoFontButton;
+     wxPanel* panel_11;
+     wxButton* hintFontButton;
+     wxButton* linkFontButton;
+     wxPanel* panel_12;
+     wxButton* otherFontButton;
+     wxButton* allFontButton;
+     wxPanel* panel_5;
+     wxButton* treeBGColorButton;
+     wxButton* threadListBGColorButton;
+     wxButton* logWindowBGColorButton;
+     wxButton* threadTitleBGColorButton;
+     wxButton* threadViewBGColorButton;
+     wxButton* memoBGColorButton;
+     wxButton* hintBGColorButton;
+     wxButton* popupBGColorButton_copy_1;
+     wxPanel* panel_13;
+     wxButton* allBGColorButton;
+     wxPanel* panel_6;
+     wxPanel* panel_2;
+     wxStaticText* label_1;
+     wxPanel* panel_3;
+     // end wxGlade
+     DECLARE_EVENT_TABLE() 
 }; // wxGlade: end class
 
 #endif // OTHERPANELS_H

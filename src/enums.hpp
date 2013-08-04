@@ -201,7 +201,39 @@ enum {
 	ID_ShowResponseCombo,            // 既得スレの表示レス数
 	ID_FavoriteNewTabCheck,          // お気に入りを新しいタブで開く
 	ID_FavoriteOnlyOneFolder,        // お気に入りフォルダを一つしか開かない
-	
+	ID_ColorFontSettingPanel,        // 色・フォント設定用画面
+        ID_TreeSampleLabel,              // ツリーサンプル
+        ID_ThreadListSampleLabel,        // スレ欄サンプル
+        ID_ExtractSampleLabel,           // 抽出サンプル
+        ID_LogWindowSampleLabel,	 // ログ出力画面サンプル
+        ID_ThreadTitleSampleLabel,	 // スレッドタイトルサンプル
+        ID_ThreadViewSampleLabel,	 // スレビューサンプル
+	ID_KakikoSampleLabel,		 // 書き込みサンプル
+	ID_MemoSampleLabel,		 // メモ欄サンプル
+	ID_HintSampleLabel,		 // ヒントサンプル
+	ID_LinkSampleLabel,		 // リンクサンプル
+	ID_OthersSampleLabel,		 // その他サンプル
+	ID_TreeFontButton,		 // ツリーフォント設定ボタン
+	ID_ThreadListFontButton,	 // スレ欄フォント設定ボタン
+	ID_ExtractFontButton,		 // 抽出フォント設定ボタン
+	ID_LogWindowFontButton,		 // ログ出力画面フォント設定ボタン
+	ID_ThreadTitleFontButton,	 // スレッドタイトルフォント設定ボタン
+	ID_KakikoFontButton,		 // 書き込みフォント設定ボタン
+	ID_MemoFontButton,		 // メモ欄フォント設定ボタン
+	ID_HintFontButton,		 // ヒントフォント設定ボタン
+	ID_LinkFontButton,		 // リンクフォント設定ボタン
+	ID_OthersFontButton,		 // その他フォント設定ボタン
+	ID_AllFontButton,		 // すべてフォント設定ボタン
+	ID_ThreadBGColorButton,		 // スレ欄背景色設定ボタン
+	ID_ThreadListBGColorButton,	 // 抽出背景色設定ボタン   
+	ID_LogWindowBGColorButton,	 // ログ出力画面背景色設定ボタン     
+	ID_ThreadTitleBGColorButton,	 // スレッドタイトル背景色設定ボタン
+	ID_ThreadViewBGColorButton,	 // スレビュー背景色設定ボタン
+	ID_MemoBGColorButton,		 // メモ欄背景色設定ボタン	     
+	ID_HintBGColorButton,		 // ヒント背景色設定ボタン   
+	ID_PopupBGColorButton,		 // ポップアップ背景色設定ボタン   
+	ID_AllBGColorButton,		 // すべての背景色設定ボタン	    
+
 	ID_UserLastClosedThreadClick = 1000,  // ユーザーが最後に閉じたスレッドの情報をクリックした(動的なIDのため1000~)
 	ID_UserLastClosedBoardClick  = 1100,  // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
 	ID_ThreadContentBar          = 1500   // ThreadContentBar自体のID(動的なIDのため1500~)

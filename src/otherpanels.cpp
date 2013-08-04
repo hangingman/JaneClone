@@ -3,6 +3,40 @@
 #include "otherpanels.hpp"
 
 /**
+ * イベントテーブル
+ */
+BEGIN_EVENT_TABLE(PathSettingPanel, wxPanel)
+   EVT_CHECKBOX(ID_BrowserCheck, PathSettingPanel::OnBrowserCheck)
+   EVT_DIRPICKER_CHANGED(ID_DirPickerBrowser, PathSettingPanel::OnChangeDirPickerBrowser)
+   EVT_DIRPICKER_CHANGED(ID_DirPickerBoardList, PathSettingPanel::OnChangeDirPickerBoardList)
+   EVT_DIRPICKER_CHANGED(ID_DirPickerSkin, PathSettingPanel::OnChangeDirPickerSkin)
+END_EVENT_TABLE()
+
+BEGIN_EVENT_TABLE(ColorFontSettingPanel, wxPanel)
+   EVT_BUTTON(ID_TreeFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_ThreadListFontButton,    ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_ExtractFontButton,       ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_LogWindowFontButton,     ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_ThreadTitleFontButton,   ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_KakikoFontButton,        ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_MemoFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_HintFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_LinkFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_OthersFontButton,        ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_AllFontButton,           ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_ThreadBGColorButton,     ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_ThreadListBGColorButton, ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_LogWindowBGColorButton,  ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_ThreadTitleBGColorButton,ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_ThreadViewBGColorButton, ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_MemoBGColorButton,       ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_HintBGColorButton,       ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_PopupBGColorButton,      ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_AllBGColorButton,        ColorFontSettingPanel::OnClickColorFontSettingButton) 
+END_EVENT_TABLE()
+
+
+/**
  * 各種ネットワーク設定用画面
  */
 NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
@@ -123,13 +157,6 @@ void NetworkSettingPanel::do_layout() {
      vbox->Fit(this);
      // end wxGlade
 }
-
-BEGIN_EVENT_TABLE(PathSettingPanel, wxPanel)
-   EVT_CHECKBOX(ID_BrowserCheck, PathSettingPanel::OnBrowserCheck)
-   EVT_DIRPICKER_CHANGED(ID_DirPickerBrowser, PathSettingPanel::OnChangeDirPickerBrowser)
-   EVT_DIRPICKER_CHANGED(ID_DirPickerBoardList, PathSettingPanel::OnChangeDirPickerBoardList)
-   EVT_DIRPICKER_CHANGED(ID_DirPickerSkin, PathSettingPanel::OnChangeDirPickerSkin)
-END_EVENT_TABLE()
 
 /**
  * 各種パス設定用画面
@@ -303,3 +330,171 @@ void BehaviorPanel::do_layout()
     sizer_1->Fit(this);
     // end wxGlade
 }
+
+/**
+ * 色・フォント設定用画面
+ */
+// begin wxGlade: ::extracode
+// end wxGlade
+ColorFontSettingPanel::ColorFontSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+    wxPanel(parent, ID_ColorFontSettingPanel, pos, size, wxTAB_TRAVERSAL)
+{
+    // begin wxGlade: ColorFontSettingPanel::ColorFontSettingPanel
+    panel_3 = new wxPanel(this, wxID_ANY);
+    panel_2 = new wxPanel(this, wxID_ANY);
+    panel_6 = new wxPanel(panel_2, wxID_ANY);
+    panel_13 = new wxPanel(panel_6, wxID_ANY);
+    panel_5 = new wxPanel(panel_2, wxID_ANY);
+    panel_12 = new wxPanel(panel_5, wxID_ANY);
+    panel_11 = new wxPanel(panel_5, wxID_ANY);
+    panel_10 = new wxPanel(panel_5, wxID_ANY);
+    panel_4 = new wxPanel(panel_2, wxID_ANY);
+    panel_9 = new wxPanel(panel_4, wxID_ANY);
+    panel_8 = new wxPanel(panel_4, wxID_ANY);
+    sizer_4_staticbox = new wxStaticBox(panel_4, -1, wxT("プレビュー"));
+    sizer_5_staticbox = new wxStaticBox(panel_5, -1, wxT("フォント"));
+    sizer_6_staticbox = new wxStaticBox(panel_6, -1, wxT("背景色"));
+    panel_7 = new wxPanel(panel_4, wxID_ANY);
+    treeSampleLabel = new wxStaticText(panel_4, ID_TreeSampleLabel, wxT("ツリー"));
+    threadListSampleLabel = new wxStaticText(panel_7, ID_ThreadListSampleLabel, wxT("スレ覧"));
+    extractSampleLabel = new wxStaticText(panel_7, ID_ExtractSampleLabel, wxT("抽出"));
+    logWindowSampleLabel = new wxStaticText(panel_4, ID_LogWindowSampleLabel, wxT("ログ出力画面"));
+    threadTitleSampleLabel = new wxStaticText(panel_4, ID_ThreadTitleSampleLabel, wxT("スレタイトル"));
+    threadViewSampleLabel = new wxStaticText(panel_4, ID_ThreadViewSampleLabel, wxT("スレビュー"));
+    kakikoSampleLabel = new wxStaticText(panel_8, ID_KakikoSampleLabel, wxT("書込み"));
+    memoSampleLabel = new wxStaticText(panel_8, ID_MemoSampleLabel, wxT("メモ欄"));
+    hintSampleLabel = new wxStaticText(panel_9, ID_HintSampleLabel, wxT("ヒント"));
+    linkSampleLabel = new wxStaticText(panel_9, ID_LinkSampleLabel, wxT("Link"));
+    othersSampleLabel = new wxStaticText(panel_4, ID_OthersSampleLabel, wxT("その他"));
+    treeFontButton = new wxButton(panel_5, ID_TreeFontButton, wxT("ツリー"));
+    threadListFontButton = new wxButton(panel_10, ID_ThreadListFontButton, wxT("スレ欄"));
+    extractFontButton = new wxButton(panel_10, ID_ExtractFontButton, wxT("抽出"));
+    logWindowFontButton = new wxButton(panel_5, ID_LogWindowFontButton, wxT("ログ出力画面"));
+    threadTitleFontButton = new wxButton(panel_5, ID_ThreadTitleFontButton, wxT("スレタイトル"));
+    kakikoFontButton = new wxButton(panel_11, ID_KakikoFontButton, wxT("書込み"));
+    memoFontButton = new wxButton(panel_11, ID_MemoFontButton, wxT("メモ"));
+    hintFontButton = new wxButton(panel_12, ID_HintFontButton, wxT("ヒント"));
+    linkFontButton = new wxButton(panel_12, ID_LinkFontButton, wxT("Link"));
+    otherFontButton = new wxButton(panel_5, ID_OthersFontButton, wxT("その他"));
+    allFontButton = new wxButton(panel_5, ID_AllFontButton, wxT("すべて"));
+    treeBGColorButton = new wxButton(panel_6, ID_ThreadBGColorButton, wxT("ツリー"));
+    threadListBGColorButton = new wxButton(panel_6, ID_ThreadListBGColorButton, wxT("スレ覧"));
+    logWindowBGColorButton = new wxButton(panel_6, ID_LogWindowBGColorButton, wxT("ログ出力画面"));
+    threadTitleBGColorButton = new wxButton(panel_6, ID_ThreadTitleBGColorButton, wxT("スレタイトル"));
+    threadViewBGColorButton = new wxButton(panel_6, ID_ThreadViewBGColorButton, wxT("スレビュー"));
+    memoBGColorButton = new wxButton(panel_6, ID_MemoBGColorButton, wxT("メモ欄"));
+    hintBGColorButton = new wxButton(panel_13, ID_HintBGColorButton, wxT("ヒント"));
+    popupBGColorButton_copy_1 = new wxButton(panel_13, ID_PopupBGColorButton, wxT("ポップアップ"));
+    allBGColorButton = new wxButton(panel_6, ID_AllBGColorButton, wxT("すべて"));
+    label_1 = new wxStaticText(panel_3, wxID_ANY, wxT("※スレビューのフォントの種類はスキン、大きさは表示メニューで設定"));
+
+    set_properties();
+    do_layout();
+    // end wxGlade
+}
+
+
+void ColorFontSettingPanel::set_properties()
+{
+    // begin wxGlade: ColorFontSettingPanel::set_properties
+    SetBackgroundColour(wxColour(192, 192, 192));
+    treeSampleLabel->SetBackgroundColour(wxColour(255, 255, 255));
+    // end wxGlade
+}
+
+
+void ColorFontSettingPanel::do_layout()
+{
+    // begin wxGlade: ColorFontSettingPanel::do_layout
+    wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticBoxSizer* sizer_6 = new wxStaticBoxSizer(sizer_6_staticbox, wxVERTICAL);
+    wxBoxSizer* sizer_13 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticBoxSizer* sizer_5 = new wxStaticBoxSizer(sizer_5_staticbox, wxVERTICAL);
+    wxBoxSizer* sizer_12 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizer_11 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizer_10 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticBoxSizer* sizer_4 = new wxStaticBoxSizer(sizer_4_staticbox, wxVERTICAL);
+    wxBoxSizer* sizer_9 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizer_8 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizer_7 = new wxBoxSizer(wxHORIZONTAL);
+    sizer_4->Add(treeSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    sizer_7->Add(threadListSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    sizer_7->Add(extractSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    panel_7->SetSizer(sizer_7);
+    sizer_4->Add(panel_7, 1, wxEXPAND, 0);
+    sizer_4->Add(logWindowSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    sizer_4->Add(threadTitleSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    sizer_4->Add(threadViewSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    sizer_8->Add(kakikoSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    sizer_8->Add(memoSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    panel_8->SetSizer(sizer_8);
+    sizer_4->Add(panel_8, 1, wxEXPAND, 0);
+    sizer_9->Add(hintSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    sizer_9->Add(linkSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    panel_9->SetSizer(sizer_9);
+    sizer_4->Add(panel_9, 1, wxEXPAND, 0);
+    sizer_4->Add(othersSampleLabel, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    panel_4->SetSizer(sizer_4);
+    sizer_3->Add(panel_4, 1, wxEXPAND, 0);
+    sizer_5->Add(treeFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_10->Add(threadListFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_10->Add(extractFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    panel_10->SetSizer(sizer_10);
+    sizer_5->Add(panel_10, 1, wxEXPAND, 0);
+    sizer_5->Add(logWindowFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_5->Add(threadTitleFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_11->Add(kakikoFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_11->Add(memoFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    panel_11->SetSizer(sizer_11);
+    sizer_5->Add(panel_11, 1, wxEXPAND, 0);
+    sizer_12->Add(hintFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_12->Add(linkFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    panel_12->SetSizer(sizer_12);
+    sizer_5->Add(panel_12, 1, wxEXPAND, 0);
+    sizer_5->Add(otherFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_5->Add(allFontButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    panel_5->SetSizer(sizer_5);
+    sizer_3->Add(panel_5, 1, wxEXPAND, 0);
+    sizer_6->Add(treeBGColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_6->Add(threadListBGColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_6->Add(logWindowBGColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_6->Add(threadTitleBGColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_6->Add(threadViewBGColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_6->Add(memoBGColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_13->Add(hintBGColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    sizer_13->Add(popupBGColorButton_copy_1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    panel_13->SetSizer(sizer_13);
+    sizer_6->Add(panel_13, 1, wxEXPAND, 0);
+    sizer_6->Add(allBGColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    panel_6->SetSizer(sizer_6);
+    sizer_3->Add(panel_6, 1, wxEXPAND, 0);
+    panel_2->SetSizer(sizer_3);
+    sizer_1->Add(panel_2, 1, wxEXPAND, 0);
+    sizer_2->Add(label_1, 0, 0, 0);
+    panel_3->SetSizer(sizer_2);
+    sizer_1->Add(panel_3, 0, wxEXPAND, 0);
+    SetSizer(sizer_1);
+    sizer_1->Fit(this);
+    // end wxGlade
+}
+
+// 色選択用ダイアログを表示させる
+void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
+{
+     // イベントで取得したIDはなにか
+     const int id = event.GetId();
+
+     switch (id) {
+     }
+     
+     // デフォルトのデータをもっておく
+     //wxColourData* data = new wxColourData();
+     wxColourDialog dlg(this);
+     
+     if (dlg.ShowModal() == wxID_OK) {
+	  // 取得した色がある
+     }
+}
+
