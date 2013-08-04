@@ -2,8 +2,10 @@ language: cpp
 compiler:
   - g++
   - clang++
+install:
+  - sudo apt-get install libwxgtk2.8-dev libxml2-dev
 before_script:
-  - ./configure
+  - ./configure && make
 script: 
 branches:
   only:
