@@ -61,6 +61,8 @@ public:
      void SetThreadContentWindowScroll(const wxPoint* p) {
 	  tcw->ForceScroll(p);
      };
+
+#ifdef __WXMAC__
      // 画像リソースの更新を行う
      void UpdateResources() {
 	  // リソースの更新
@@ -82,6 +84,7 @@ public:
 	  forwardButton->SetSize(forwardButton->GetBestSize());
 	  hideSearchBarButton->SetSize(hideSearchBarButton->GetBestSize());
      };
+#endif
 
 private:
      // begin wxGlade: ThreadContentBar::methods
