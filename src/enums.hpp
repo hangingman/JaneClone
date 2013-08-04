@@ -123,6 +123,9 @@ enum {
 	ID_TCBHideSearchBar,
 	ID_TCBForward,
 	ID_TCBBackward,
+#ifdef __WXMAC__
+	ID_ThreadContentBarUpdate,      // スレッドバーの更新が起きたときに通知されるイベント
+#endif
 	// threadcontentwindow.hpp
 	ID_CopyFromHtmlWindow,          // HtmlWindowで選択しているテキストをクリップボードにコピーする
 	ID_CopyURLFromHtmlWindow,       // HtmlWindowで選択しているURLをクリップボードにコピーする

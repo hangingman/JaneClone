@@ -35,7 +35,7 @@
 
 // 各ウィジェットのサイズなど
 static const wxSize   threadContentBarImgSize = wxSize(32, 32);
-static const wxSize   searchWordComboSize     = wxSize(320, 32);
+static const wxSize   searchWordComboSize     = wxSize(64, 32);
 
 class ThreadContentBar: public wxPanel {
 
@@ -61,6 +61,27 @@ public:
      void SetThreadContentWindowScroll(const wxPoint* p) {
 	  tcw->ForceScroll(p);
      };
+     // 画像リソースの更新を行う
+     void UpdateResources() {
+	  // リソースの更新
+	  wxBitmap* normalSearch = new wxBitmap();
+	  if (normalSearch->LoadFile(normalSearchImg, wxBITMAP_TYPE_PNG))
+	       normalSearchButton->SetBitmap(*normalSearch);
+	  wxBitmap* backward = new wxBitmap();
+	  if (backward->LoadFile(backwardImg, wxBITMAP_TYPE_PNG))
+	       backwardButton->SetBitmap(*backward);
+	  wxBitmap* forward = new wxBitmap();
+	  if (forward->LoadFile(forwardImg, wxBITMAP_TYPE_PNG))
+	       forwardButton->SetBitmap(*forward);
+	  wxBitmap* hideSearch = new wxBitmap();
+	  if (hideSearch->LoadFile(hideSearchBarImg, wxBITMAP_TYPE_PNG))
+	       hideSearchBarButton->SetBitmap(*hideSearch);
+	  // サイズを調整する
+	  normalSearchButton->SetSize(normalSearchButton->GetBestSize());
+	  backwardButton->SetSize(backwardButton->GetBestSize());
+	  forwardButton->SetSize(forwardButton->GetBestSize());
+	  hideSearchBarButton->SetSize(hideSearchBarButton->GetBestSize());
+     };
 
 private:
      // begin wxGlade: ThreadContentBar::methods
@@ -73,6 +94,20 @@ private:
      ThreadContentWindow* tcw;
      // 検索ワードの履歴管理用文字列
      wxString* searchWordCombo_choices;
+
+#ifdef __WXMAC__
+     // メインのスレッドにログとイベントを送る
+     void SendUIUpdateEvent() {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_ThreadContentBarUpdate);
+	  event->SetEventObject(this);
+
+   #if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+   #else
+	  this->GetEventHandler()->AddPendingEvent(*event);
+   #endif
+     };
+#endif
 
 protected:
      // begin wxGlade: ThreadContentBar::attributes

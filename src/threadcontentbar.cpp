@@ -49,7 +49,8 @@ END_EVENT_TABLE()
 ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoint& pos, const wxSize& size, long style):
 wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 {
-     wxInitAllImageHandlers();
+     // PNGファイル読み込み準備
+     wxImage::AddHandler( new wxPNGHandler );
 
      // begin wxGlade: ThreadContentBar::ThreadContentBar
      threadContentsBarUpperSizer = new wxPanel(this, wxID_ANY);
@@ -181,7 +182,12 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 #if wxCHECK_VERSION(2, 9, 1)
      // 通常検索
      normalSearchButton = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
-     normalSearchButton->SetBitmap(wxBitmap(normalSearchImg, wxBITMAP_TYPE_PNG));
+
+   #ifndef __WXMAC__ // Macでは子スレッドでの画像リソース更新は許されない
+     wxBitmap* normalSearch = new wxBitmap();
+     if (normalSearch->LoadFile(normalSearchImg, wxBITMAP_TYPE_PNG))
+	  normalSearchButton->SetBitmap(*normalSearch);
+   #endif
 #else
      // 通常検索
      normalSearchButton = new wxBitmapButton(this, wxID_ANY, 
@@ -189,16 +195,28 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 					     wxDefaultPosition, threadContentBarImgSize);
 #endif
      // スレッド内検索用コンボボックス
+   #ifndef __WXMAC__
      searchWordCombo_choices = NULL;
-     searchWordCombo = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition, 
-				      searchWordComboSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
+     searchWordCombo = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition,
+     wxDefaultSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
+   #endif
 
 #if wxCHECK_VERSION(2, 9, 1)
      // 通常検索
      backwardButton = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
-     backwardButton->SetBitmap(wxBitmap(backwardImg, wxBITMAP_TYPE_PNG));
+   #ifndef __WXMAC__
+     wxBitmap* backward = new wxBitmap();
+     if (backward->LoadFile(backwardImg, wxBITMAP_TYPE_PNG))
+	  backwardButton->SetBitmap(*backward);
+   #endif
+
      forwardButton  = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
-     forwardButton->SetBitmap(wxBitmap(forwardImg, wxBITMAP_TYPE_PNG));
+   #ifndef __WXMAC__
+     wxBitmap* forward = new wxBitmap();
+     if (forward->LoadFile(forwardImg, wxBITMAP_TYPE_PNG))
+	  forwardButton->SetBitmap(*forward);
+   #endif
+
 #else
      // 引っかかった検索ワードを前後させる
      backwardButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(backwardImg, wxBITMAP_TYPE_PNG), 
@@ -214,7 +232,12 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 #if wxCHECK_VERSION(2, 9, 1)
      // 検索バーを隠す
      hideSearchBarButton = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
-     hideSearchBarButton->SetBitmap(wxBitmap(hideSearchBarImg, wxBITMAP_TYPE_PNG));
+   #ifndef __WXMAC__
+     wxBitmap* hideSearch = new wxBitmap();
+     if (hideSearch->LoadFile(hideSearchBarImg, wxBITMAP_TYPE_PNG))
+	  hideSearchBarButton->SetBitmap(*hideSearch);
+   #endif
+
 #else
      // 検索バーを隠す
      hideSearchBarButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(hideSearchBarImg, wxBITMAP_TYPE_ANY),
@@ -226,6 +249,11 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
      set_properties();
      do_layout();
      // end wxGlade
+
+     // このクラスの描画が終わったことを通知する
+#ifdef __WXMAC__
+     SendUIUpdateEvent();
+#endif
 }
 
 
@@ -255,7 +283,9 @@ void ThreadContentBar::do_layout()
     threadContentsBarSizer->Add(threadContentsBarUpperSizer, 0, wxEXPAND, 0);
 
     horizonalSizer2->Add(normalSearchButton, 0, 0, 0);
+#ifndef __WXMAC__
     horizonalSizer2->Add(searchWordCombo, 0, 0, 0);
+#endif
     horizonalSizer2->Add(backwardButton, 0, 0, 0);
     horizonalSizer2->Add(forwardButton, 0, 0, 0);
     horizonalSizer2->Add(panel_2, 1, wxEXPAND, 0);

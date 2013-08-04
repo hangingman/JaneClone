@@ -151,6 +151,12 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_BUTTON(ID_URLWindowButton, JaneClone::OnClickURLWindowButton)
    // ログ出力制御用イベント
    EVT_TEXT(ID_Logging, JaneClone::Logging)
+
+#ifdef __WXMAC__
+   // UIの更新通知
+   EVT_UPDATE_UI(ID_ThreadContentBarUpdate, JaneClone::UpdateJaneCloneUI)
+#endif
+
 END_EVENT_TABLE()
 
 // 画像ビューアのインスタンスを初期化
@@ -2426,9 +2432,6 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 					   const wxString& origNumber, const wxString& title) {
 
      // スレッド用の検索バー等のインスタンスを用意する
-#ifndef __WXMSW__
-     threadNoteBook->Freeze();
-#endif
      size_t page = threadNoteBook->GetPageCount();
      ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, ID_ThreadContentBar + page );
      threadBar->SetTitle(title);
@@ -2436,10 +2439,6 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
      // スレッドの内容はThreadContentBarの中で設定する
      threadBar->SetThreadContentWindow(threadContentPath);
      threadNoteBook->AddPage(threadBar, title, true);
-
-#ifndef __WXMSW__
-     threadNoteBook->Thaw();
-#endif
 }
 /**
  * 板一覧ノートブックで右クリックされた時の処理

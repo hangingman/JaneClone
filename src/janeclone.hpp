@@ -156,6 +156,18 @@ private:
 	  this->GetEventHandler()->AddPendingEvent(*event);
 #endif
      };
+
+#ifdef __WXMAC__
+     // 送られてきた情報をもとにGUIを更新
+     void UpdateJaneCloneUI(wxUpdateUIEvent& event) {
+	  wxObject* obj = event.GetEventObject();
+	  if ( ThreadContentBar* threadBar = dynamic_cast<ThreadContentBar*>(obj) ) {
+	       threadBar->UpdateResources();
+	  }
+	  m_mgr.Update();
+     };
+#endif
+
      // ユーザーが最後に閉じた板を開く
      void OnUserLastClosedBoardClick(wxCommandEvent& event);
      // ユーザーが最後に閉じたスレッドを開く
