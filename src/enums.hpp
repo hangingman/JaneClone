@@ -173,10 +173,15 @@ enum JANECLONE_ENUMS
 	ID_OnCancelSetting,             // 設定画面をキャンセル
 	ID_OnOkSetting,                 // 設定画面をOkで終了
 	ID_SettingPanelTree,            // 設定画面の描画を切り替える
+
+#ifdef __WXMAC__
+	ID_SettingPanelUpdate,          // 設定画面の更新をメインスレッドに伝える
+	ID_NetworkPanelUpdate,          // ネットワーク設定画面の更新をメインスレッドに伝える
+#endif
 	// otherpanels.hpp
-        ID_NetworkPanel,                // ネットワーク設定用画面
-        ID_NetworkPanelUseProxy,        // プロキシを使用するかどうか
-        ID_NetworkPanelUseProxyCache,   // プロキシでキャッシュを使用するかどうか
+        ID_NetworkPanel,                 // ネットワーク設定用画面
+        ID_NetworkPanelUseProxy,         // プロキシを使用するかどうか
+        ID_NetworkPanelUseProxyCache,    // プロキシでキャッシュを使用するかどうか
         ID_NetworkPanelBasicAuthUserName,// ベーシック認証のユーザー名
         ID_NetworkPanelBasicAuthPassword,// ベーシック認証のパスワード
         ID_NetworkPanelProxyReceiveAddr, // Proxy受信用アドレス

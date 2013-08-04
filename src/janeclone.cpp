@@ -154,7 +154,10 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
 
 #ifdef __WXMAC__
    // UIの更新通知
+   // OSXはGUIの更新をマルチスレッドで行えない 
    EVT_UPDATE_UI(ID_ThreadContentBarUpdate, JaneClone::UpdateJaneCloneUI)
+   EVT_UPDATE_UI(ID_SettingPanelUpdate, JaneClone::UpdateJaneCloneUI)
+   EVT_UPDATE_UI(ID_NetworkPanelUpdate, JaneClone::UpdateJaneCloneUI)
 #endif
 
 END_EVENT_TABLE()

@@ -52,8 +52,10 @@ NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, c
      panel_9 = new wxPanel(panel_7, wxID_ANY);
      panel_8 = new wxPanel(panel_7, wxID_ANY);
      panel_6 = new wxPanel(panel_1, wxID_ANY);
+#ifndef __WXMAC__
      proxyUseCheck = new wxCheckBox(panel_6, wxID_ANY, wxT("Proxyを使用する"));
      proxyCacheUseCheck = new wxCheckBox(panel_6, wxID_ANY, wxT("Proxy使用時にキャッシュを使用しない"));
+#endif
      label_6 = new wxStaticText(panel_7, wxID_ANY, wxT("使用するProxyのアドレス"));
      label_7 = new wxStaticText(panel_7, wxID_ANY, wxT("ポート"));
      label_8 = new wxStaticText(panel_7, wxID_ANY, wxT("受信用"));
@@ -84,6 +86,12 @@ NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, c
      set_properties();
      do_layout();
      // end wxGlade
+
+#ifdef __WXMAC__
+     // メインスレッドに更新してもらう
+     SendUIUpdateEvent();
+#endif
+
 }
 
 
@@ -106,8 +114,10 @@ void NetworkSettingPanel::do_layout() {
      wxBoxSizer* sizer_8 = new wxBoxSizer(wxHORIZONTAL);
      wxBoxSizer* sizer_7 = new wxBoxSizer(wxHORIZONTAL);
      wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
+#ifndef __WXMAC__
      sizer_6->Add(proxyUseCheck, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
      sizer_6->Add(proxyCacheUseCheck, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+#endif
      panel_6->SetSizer(sizer_6);
      sizer_4->Add(panel_6, 0, wxEXPAND, 0);
      grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
@@ -485,7 +495,6 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 {
      // イベントで取得したIDはなにか
      const int id = event.GetId();
-     wxMessageBox(wxT(ENUM_NAME(id)));
 
      switch (id) {
      }

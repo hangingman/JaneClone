@@ -61,9 +61,14 @@ wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE) {
      // end wxGlade
 
      // 初回は通信パネルを開く
+#ifndef __WXMAC__
      wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
      vbox->Add(new NetworkSettingPanel(settingPanel));
      settingPanel->SetSizer(vbox);
+#else
+     // メインスレッドに更新してもらう
+     SendUIUpdateEvent();
+#endif
      this->SetTitle(wxT("設定 - 通信"));
 }
 /**

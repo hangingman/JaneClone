@@ -161,10 +161,22 @@ private:
      // 送られてきた情報をもとにGUIを更新
      void UpdateJaneCloneUI(wxUpdateUIEvent& event) {
 	  wxObject* obj = event.GetEventObject();
-	  if ( ThreadContentBar* threadBar = dynamic_cast<ThreadContentBar*>(obj) ) {
-	       threadBar->UpdateResources();
+	  wxString  ui  = event.GetString();
+
+	  if ( ui == wxT("ThreadContentBar") ) {
+	       if ( ThreadContentBar* threadBar = dynamic_cast<ThreadContentBar*>(obj) ) {
+		    threadBar->UpdateResources();
+		    m_mgr.Update();
+	       }
+	  } else if ( ui == wxT("SettingDialog") ) {
+	       if ( SettingDialog* settingDlg = dynamic_cast<SettingDialog*>(obj) ) {
+		    settingDlg->UpdateResources();
+	       }
+	  } else if ( ui == wxT("NetworkSettingPanel") ) {
+	       if ( NetworkSettingPanel* net = dynamic_cast<NetworkSettingPanel*>(obj) ) {
+		    net->UpdateResources();
+	       }
 	  }
-	  m_mgr.Update();
      };
 #endif
 

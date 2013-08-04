@@ -102,6 +102,8 @@ private:
      // メインのスレッドにログとイベントを送る
      void SendUIUpdateEvent() {
 	  wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_ThreadContentBarUpdate);
+	  wxString ui = wxT("ThreadContentBar");
+	  event->SetString(ui.c_str());
 	  event->SetEventObject(this);
 
    #if wxCHECK_VERSION(2, 9, 0)

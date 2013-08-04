@@ -23,11 +23,39 @@ public:
      // end wxGlade
      NetworkSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
+#ifdef __WXMAC__
+     // リソースの更新を行う
+     void UpdateResources() {
+	  wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
+	  proxyUseCheck = new wxCheckBox(panel_6, wxID_ANY, wxT("Proxyを使用する"));
+	  proxyCacheUseCheck = new wxCheckBox(panel_6, wxID_ANY, wxT("Proxy使用時にキャッシュを使用しない"));
+	  sizer_6->Add(proxyUseCheck, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+	  sizer_6->Add(proxyCacheUseCheck, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+	  panel_6->SetSizer(sizer_6);
+     };
+#endif
+
 private:
      // begin wxGlade: NetworkSettingPanel::methods
      void set_properties();
      void do_layout();
      // end wxGlade
+
+#ifdef __WXMAC__
+     // メインのスレッドにイベントを送る
+     void SendUIUpdateEvent() {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_NetworkPanelUpdate);
+	  wxString ui = wxT("NetworkSettingPanel");
+	  event->SetString(ui.c_str());
+	  event->SetEventObject(this);
+
+   #if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+   #else
+	  this->GetEventHandler()->AddPendingEvent(*event);
+   #endif
+     };
+#endif
 
 protected:
      // begin wxGlade: NetworkSettingPanel::attributes
