@@ -485,7 +485,6 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 {
      // イベントで取得したIDはなにか
      const int id = event.GetId();
-     wxMessageBox(wxT(ENUM_NAME(id)));
 
      switch (id) {
      }
