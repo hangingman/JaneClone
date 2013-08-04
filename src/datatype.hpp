@@ -33,6 +33,7 @@
 #include <wx/hashmap.h>
 
 // マクロ置換用マクロ
+#define ENUM_NAME(x) ##x
 #define XSTR(x) #x
 #define STR(x)  XSTR(x)
 

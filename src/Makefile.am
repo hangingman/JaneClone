@@ -35,6 +35,7 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    otherpanels.cpp		\
 		    otherpanels.hpp		\
 		    enums.hpp			\
+		    enumstring.hpp              \
 		    $(wildcard rc/*)
 
 # common build rule

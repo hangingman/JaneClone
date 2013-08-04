@@ -24,8 +24,11 @@
 #ifndef ENUMS_HPP_
 #define ENUMS_HPP_
 
-// enum
-enum {
+#include "enumstring.hpp"
+
+// 列挙型の宣言
+enum JANECLONE_ENUMS
+{
         // janeclone.hpp
         ID_Quit = 1,                    // 終了
 	ID_Restart,      		// 再起動
@@ -238,5 +241,13 @@ enum {
 	ID_UserLastClosedBoardClick  = 1100,  // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
 	ID_ThreadContentBar          = 1500   // ThreadContentBar自体のID(動的なIDのため1500~)
 };
+
+// 列挙型を文字列化
+// Begin_Enum_String( JANECLONE_ENUMS )
+// {
+//     Enum_String( Sunday );
+//     Enum_String( Saturday );
+// }
+// End_Enum_String;
 
 #endif /* ENUMS_HPP_ */
