@@ -5,7 +5,7 @@ compiler:
 install:
   - sudo apt-get install libwxgtk2.8-dev libxml2-dev
 before_script:
-  - ./configure && make
+  - ./bootstrap && ./configure && make
 script: 
 branches:
   only:
