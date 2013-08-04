@@ -1,0 +1,16 @@
+language: cpp
+compiler:
+  - g++
+  - clang++
+before_script:
+  - ./configure
+script: 
+branches:
+  only:
+    - master
+notifications:
+  recipients:
+    - newserver002@gmail.com
+  email:
+    on_success: change
+    on_failure: always
