@@ -942,6 +942,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      // 各ウィンドウで識別用のラベルを設定する
      this->SetLabel(JANECLONE_WINDOW);
      m_search_ctrl->SetLabel(SEARCH_BAR);
+     m_search_ctrl->Clear(); // ウィンドウに文字列が入るので削除
      m_url_input_panel->SetLabel(URL_BAR);
      m_logCtrl->SetLabel(LOG_WINDOW);
      boardNoteBook->SetLabel(BOARD_NOTEBOOK);
@@ -2925,7 +2926,7 @@ void JaneClone::OnChangeThreadTab(wxAuiNotebookEvent& event) {
 
      // ノートブックの変更中はノートブックに触れないようにする
 #ifndef __WXMSW__
-     threadNoteBook->Freeze();
+     //threadNoteBook->Freeze();
 #endif
      if (wxEmptyString != threadNoteBook->GetPageText(event.GetSelection())) {
 	  // スレタブの場合
@@ -2947,7 +2948,7 @@ void JaneClone::OnChangeThreadTab(wxAuiNotebookEvent& event) {
 	  return;
      }
 #ifndef __WXMSW__
-     threadNoteBook->Thaw();
+     //threadNoteBook->Thaw();
 #endif
      m_mgr.Update();
 }

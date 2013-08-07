@@ -722,7 +722,7 @@ wxString JaneCloneUtil::AddID(wxString& responseText) {
 		    hashmap[id] = 1;
 	       } else {
 		    // レス数を増やす
-		    hashmap[id] = hashmap[id]++;
+		    hashmap[id] = hashmap[id] + 1; // hashmap[id]++ と書くとclangでは最適化されて思うように動かない
 	       }
 
 	       result += tmp.SubString(0, start - 1);
