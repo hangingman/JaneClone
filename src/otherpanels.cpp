@@ -490,21 +490,63 @@ void ColorFontSettingPanel::do_layout()
     // end wxGlade
 }
 
-// 色選択用ダイアログを表示させる
+/*
+ * 色選択/フォント選択用ダイアログを表示させる
+ */
 void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 {
      // イベントで取得したIDはなにか
      const int id = event.GetId();
 
      switch (id) {
-     }
-     
-     // デフォルトのデータをもっておく
-     //wxColourData* data = new wxColourData();
-     wxColourDialog dlg(this);
-     
-     if (dlg.ShowModal() == wxID_OK) {
-	  // 取得した色がある
+	  /**
+	   * フォント設定
+	   */
+     ID_TreeFontButton:			// ツリーフォント設定ボタン
+     ID_ThreadListFontButton:		// スレ欄フォント設定ボタン
+     ID_ExtractFontButton:              // 抽出フォント設定ボタン
+     ID_LogWindowFontButton:		// ログ出力画面フォント設定ボタン
+     ID_ThreadTitleFontButton:		// スレッドタイトルフォント設定ボタン
+     ID_KakikoFontButton:		// 書き込みフォント設定ボタン
+     ID_MemoFontButton:			// メモ欄フォント設定ボタン
+     ID_HintFontButton:			// ヒントフォント設定ボタン
+     ID_LinkFontButton:			// リンクフォント設定ボタン
+     ID_OthersFontButton:		// その他フォント設定ボタン
+     ID_AllFontButton:			// すべてフォント設定ボタン
+
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, id);
+
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+#else
+	  this->GetEventHandler()->AddPendingEvent(*event);
+#endif
+	  break;
+	  
+	  /**
+	   * 背景色設定
+	   */
+     ID_ThreadBGColorButton:		// スレ欄背景色設定ボタン
+     ID_ThreadListBGColorButton:	// 抽出背景色設定ボタン	  
+     ID_LogWindowBGColorButton:		// ログ出力画面背景色設定ボタン     
+     ID_ThreadTitleBGColorButton:	// スレッドタイトル背景色設定ボタン
+     ID_ThreadViewBGColorButton:	// スレビュー背景色設定ボタン
+     ID_MemoBGColorButton:		// メモ欄背景色設定ボタン	     
+     ID_HintBGColorButton:		// ヒント背景色設定ボタン   
+     ID_PopupBGColorButton:		// ポップアップ背景色設定ボタン	  
+     ID_AllBGColorButton:		// すべての背景色設定ボタン
+
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, id);
+
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+#else
+	  this->GetEventHandler()->AddPendingEvent(*event);
+#endif
+	  break;
+
+     default:
+	  break;
      }
 }
 
