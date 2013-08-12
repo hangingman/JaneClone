@@ -3726,8 +3726,8 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
  */
 void JaneClone::CallSettingWindow(wxCommandEvent& event) {
 
-     SettingDialog* dialog = new SettingDialog(this, wxID_ANY, wxT("設定 - "));
-     dialog->ShowModal();
+     SettingDialog dialog(this, wxID_ANY, wxT("設定 - "));
+     dialog.ShowModal();
 }
 /**
  * 新月公開ノードをクリックして、それをノートブックに反映するメソッド

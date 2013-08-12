@@ -133,7 +133,7 @@ void SettingDialog::DoLayout() {
  * 設定画面のクローズ
  */
 void SettingDialog::OnQuit(wxCommandEvent& event) {
-     this->Destroy();
+     this->EndModal(0);
 }
 /**
  * ツリーコントロールでのウィンドウ描画切り替え

@@ -513,16 +513,19 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
      ID_LinkFontButton:			// リンクフォント設定ボタン
      ID_OthersFontButton:		// その他フォント設定ボタン
      ID_AllFontButton:			// すべてフォント設定ボタン
-
-	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, id);
+	  {
+	       
+	       wxCommandEvent* fontEvent = new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, id);
 
 #if wxCHECK_VERSION(2, 9, 0)
-	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+	       wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(fontEvent->Clone());
 #else
-	  this->GetEventHandler()->AddPendingEvent(*event);
+	       this->GetEventHandler()->AddPendingEvent(*fontEvent);
 #endif
-	  break;
+	       break;
 	  
+	  }
+     
 	  /**
 	   * 背景色設定
 	   */
@@ -536,14 +539,16 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
      ID_PopupBGColorButton:		// ポップアップ背景色設定ボタン	  
      ID_AllBGColorButton:		// すべての背景色設定ボタン
 
-	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, id);
+	  {
+	       wxCommandEvent* bgEvent = new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, id);
 
 #if wxCHECK_VERSION(2, 9, 0)
-	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+	       wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(bgEvent->Clone());
 #else
-	  this->GetEventHandler()->AddPendingEvent(*event);
+	       this->GetEventHandler()->AddPendingEvent(*bgEvent);
 #endif
-	  break;
+	       break;
+	  }
 
      default:
 	  break;
