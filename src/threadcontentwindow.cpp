@@ -104,6 +104,11 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 	  // 読み込みに失敗した場合
 	  return FAIL_TO_READ_PAGE;
 
+     // スキンがあれば使う
+     SkinInfo skinInfo;
+     bool     useSkin = false;
+     useSkin  = CheckSkinFiles(skinInfo);
+
      // 取得サイズ分だけwxStringを確保する
      wxString htmlSource;
      htmlSource.Alloc(fileSize);
@@ -709,4 +714,26 @@ void ThreadContentWindow::CopyTAllToClipBoard(wxCommandEvent& event) {
 	  wxTheClipboard->SetData(new wxTextDataObject(threadInfoHash.title + wxT("\n") + threadURL + wxT("\n") + response));
 	  wxTheClipboard->Close();
      }
+}
+/**
+ * スキン用のファイルが有るかどうか確認する
+ */
+bool ThreadContentWindow::CheckSkinFiles(SkinInfo& skin) {
+
+     // スキン用のパスが設定されていなければ即リターン
+     const wxString key = wxT("DEFAULT_SKINFILE_PATH");
+     wxString skinPath = wxEmptyString;
+     JaneCloneUtil::GetJaneCloneProperties(key, &skinPath);
+
+     if (skinPath == wxEmptyString) {
+	  return false;
+     }
+
+     if (!wxDir::Exists(skinPath)) {
+	  wxMessageBox(wxT("スキン用のディレクトリが存在しません、設定画面を開いてスキンのパス設定を確認してください。"), 
+		       wxT("スキン設定"), wxICON_ERROR);
+	  return false;
+     }
+
+     return false;
 }

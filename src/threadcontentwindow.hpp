@@ -103,7 +103,6 @@ private:
      void SearchThreadBySelectWord(wxCommandEvent& event);
      // HTMLのデバッグ用イベント
      void HtmlSourceDebug(wxCommandEvent& event);
-
      // linkを左クリックした時に起こるイベント
      void OnLeftClickHtmlWindow(wxHtmlLinkEvent& event);
      // レス番号を左クリックした時に起こるイベント
@@ -114,14 +113,14 @@ private:
      void CallResponseWindowWithQuote(wxCommandEvent& event);
      // 画像ビューアの状態を確認し、設定する
      void SetJaneCloneImageViewer(const wxString& href, const wxString& ext);
-
      // レスの内容をクリップボードにコピーする
      void CopyTContentsToClipBoard(wxCommandEvent& event);
      // 指定されたレスの内容をすべてクリップボードにコピーする
      void CopyTAllToClipBoard(wxCommandEvent& event);
-
      // リサイズ時のイベント
      void OnSize(wxSizeEvent& event);
+     // スキン用のファイルが有るかどうか確認する
+     bool CheckSkinFiles(SkinInfo& skin);
 
      DECLARE_EVENT_TABLE()
      DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
