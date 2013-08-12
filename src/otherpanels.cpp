@@ -177,28 +177,35 @@ wxPanel(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
      // begin wxGlade: PathSettingPanel::PathSettingPanel
      browserCheck = new wxCheckBox(this, ID_BrowserCheck, wxT("ブラウザを指定する"));
      label_1 = new wxStaticText(this, wxID_ANY, wxT("ブラウザのパス"));
+
+#ifdef __WXGTK__
      browserPathTC = new wxTextCtrl(this, 
 				    ID_BrowserPathTC, 
 				    wxEmptyString, 
 				    wxDefaultPosition, 
 				    wxDefaultSize,
 				    wxTE_READONLY);
+#endif
      dirPicker1 = new wxDirPickerCtrl(this, ID_DirPickerBrowser);
      label_2 = new wxStaticText(this, wxID_ANY, wxT("ログとボード一覧のフォルダ（次回起動時から有効）"));
+#ifdef __WXGTK__
      boardListTC = new wxTextCtrl(this, 
 				  ID_BoardListTC, 
 				  wxEmptyString,
 				  wxDefaultPosition, 
 				  wxDefaultSize,
 				  wxTE_READONLY);
+#endif
      dirPicker2 = new wxDirPickerCtrl(this, ID_DirPickerBoardList);
      label_3 = new wxStaticText(this, wxID_ANY, wxT("スキンのフォルダ（次回起動時から有効）"));
+#ifdef __WXGTK__
      skinPathTC = new wxTextCtrl(this, 
 			       ID_SkinPathTC, 
 			       wxEmptyString,
 			       wxDefaultPosition, 
 			       wxDefaultSize,
 			       wxTE_READONLY);
+#endif
      dirPicker3 = new wxDirPickerCtrl(this, ID_DirPickerSkin);
 
      set_properties();
@@ -215,9 +222,16 @@ void PathSettingPanel::set_properties() {
      JaneCloneUtil::GetJaneCloneProperties(wxT("DEFAULT_BOARDLIST_PATH"), &boardListPath);
      JaneCloneUtil::GetJaneCloneProperties(wxT("DEFAULT_SKINFILE_PATH"), &skinPath);
      browserCheck->SetValue(specifyBrowser);
+
+#ifdef __WXGTK__
      browserPathTC->SetValue(browserPath);
      boardListTC->SetValue(boardListPath);
      skinPathTC->SetValue(skinPath);
+#else
+     dirPicker1->SetPath(browserPath);
+     dirPicker2->SetPath(boardListPath);
+     dirPicker3->SetPath(skinPath);
+#endif
 }
 
 
@@ -226,18 +240,36 @@ void PathSettingPanel::do_layout() {
     wxGridSizer* grid_sizer_1 = new wxGridSizer(7, 2, 0, 0);
     grid_sizer_1->Add(browserCheck, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
-    grid_sizer_1->Add(label_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-    grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
+
+#ifdef __WXGTK__
+    grid_sizer_1->Add(label_1, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(browserPathTC, 0, wxALL|wxEXPAND, 5);
     grid_sizer_1->Add(dirPicker1, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-    grid_sizer_1->Add(label_2, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
+#else
+    grid_sizer_1->Add(label_1, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    grid_sizer_1->Add(dirPicker1, 1, wxALL|wxEXPAND, 5);
+#endif
+
+#ifdef __WXGTK__
+    grid_sizer_1->Add(label_2, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(boardListTC, 0, wxALL|wxEXPAND, 5);
     grid_sizer_1->Add(dirPicker2, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-    grid_sizer_1->Add(label_3, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
+#else
+    grid_sizer_1->Add(label_2, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    grid_sizer_1->Add(dirPicker2, 1, wxALL|wxEXPAND, 5);
+#endif
+
+#ifdef __WXGTK__
+    grid_sizer_1->Add(label_3, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(skinPathTC, 0, wxALL|wxEXPAND, 5);
     grid_sizer_1->Add(dirPicker3, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+#else
+    grid_sizer_1->Add(label_3, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    grid_sizer_1->Add(dirPicker3, 1, wxALL|wxEXPAND, 5);
+#endif
+
     SetSizer(grid_sizer_1);
     grid_sizer_1->Fit(this);
     // end wxGlade
