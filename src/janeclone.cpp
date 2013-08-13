@@ -577,7 +577,7 @@ void JaneClone::SetJaneCloneManuBar() {
      menu9->AppendCheckItem(wxID_ANY, wxT("サウンド"));
      menu9->AppendSeparator();
      menu9->Append(wxID_ANY, wxT("ビューア設定"));
-     menu9->Append(wxID_ANY, wxT("設定"));
+     menu9->Append(ID_CallSettingWindow, wxT("設定"));
      /**
       * ヘルプ部分
       */
