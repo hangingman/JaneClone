@@ -133,19 +133,39 @@ private:
 	  JaneCloneUtil::SetJaneCloneProperties<wxString>(wxT("DEFAULT_SKINFILE_PATH"), event.GetPath());
 	  this->set_properties();
      };
+     void ClearPathSetting(wxCommandEvent& event) {
+	  // パス設定をクリアする
+	  const int id = event.GetId();
+
+	  if (id == ID_ClearBrowserPath) {     
+	       JaneCloneUtil::DeleteJaneClonePropertyEntry(wxT("DEFAULT_BROWSER_PATH"));
+	  } else if (id == ID_ClearBoardListPath) {
+	       JaneCloneUtil::DeleteJaneClonePropertyEntry(wxT("DEFAULT_BOARDLIST_PATH"));
+	  } else if (id == ID_ClearSkinPath) {
+	       JaneCloneUtil::DeleteJaneClonePropertyEntry(wxT("DEFAULT_SKINFILE_PATH"));
+	  }
+	  this->set_properties();
+     };
 
 protected:
      // begin wxGlade: PathSettingPanel::attributes
      wxCheckBox* browserCheck;
      wxStaticText* label_1;
-     wxTextCtrl* browserPathTC;
      wxDirPickerCtrl* dirPicker1;
+     wxButton* clearButton_1;
      wxStaticText* label_2;
-     wxTextCtrl* boardListTC;
      wxDirPickerCtrl* dirPicker2;
+     wxButton* clearButton_2;
      wxStaticText* label_3;
-     wxTextCtrl* skinPathTC;
      wxDirPickerCtrl* dirPicker3;
+     wxButton* clearButton_3;
+
+#ifdef __WXGTK__
+     wxTextCtrl* browserPathTC;
+     wxTextCtrl* boardListTC;
+     wxTextCtrl* skinPathTC;
+#endif
+
      // end wxGlade
      DECLARE_EVENT_TABLE() 
 }; // wxGlade: end class

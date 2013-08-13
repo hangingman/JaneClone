@@ -10,6 +10,9 @@ BEGIN_EVENT_TABLE(PathSettingPanel, wxPanel)
    EVT_DIRPICKER_CHANGED(ID_DirPickerBrowser, PathSettingPanel::OnChangeDirPickerBrowser)
    EVT_DIRPICKER_CHANGED(ID_DirPickerBoardList, PathSettingPanel::OnChangeDirPickerBoardList)
    EVT_DIRPICKER_CHANGED(ID_DirPickerSkin, PathSettingPanel::OnChangeDirPickerSkin)
+   EVT_BUTTON(ID_ClearBrowserPath, PathSettingPanel::ClearPathSetting)
+   EVT_BUTTON(ID_ClearBoardListPath, PathSettingPanel::ClearPathSetting)
+   EVT_BUTTON(ID_ClearSkinPath, PathSettingPanel::ClearPathSetting)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(ColorFontSettingPanel, wxPanel)
@@ -187,6 +190,8 @@ wxPanel(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
 				    wxTE_READONLY);
 #endif
      dirPicker1 = new wxDirPickerCtrl(this, ID_DirPickerBrowser);
+     clearButton_1 = new wxButton(this, ID_ClearBrowserPath, wxT("設定のクリア"));
+
      label_2 = new wxStaticText(this, wxID_ANY, wxT("ログとボード一覧のフォルダ（次回起動時から有効）"));
 #ifdef __WXGTK__
      boardListTC = new wxTextCtrl(this, 
@@ -197,6 +202,8 @@ wxPanel(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
 				  wxTE_READONLY);
 #endif
      dirPicker2 = new wxDirPickerCtrl(this, ID_DirPickerBoardList);
+     clearButton_2 = new wxButton(this, ID_ClearBoardListPath, wxT("設定のクリア"));
+
      label_3 = new wxStaticText(this, wxID_ANY, wxT("スキンのフォルダ（次回起動時から有効）"));
 #ifdef __WXGTK__
      skinPathTC = new wxTextCtrl(this, 
@@ -207,6 +214,7 @@ wxPanel(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
 			       wxTE_READONLY);
 #endif
      dirPicker3 = new wxDirPickerCtrl(this, ID_DirPickerSkin);
+     clearButton_3 = new wxButton(this, ID_ClearSkinPath, wxT("設定のクリア"));
 
      set_properties();
      do_layout();
@@ -245,7 +253,7 @@ void PathSettingPanel::do_layout() {
     grid_sizer_1->Add(label_1, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(browserPathTC, 0, wxALL|wxEXPAND, 5);
     grid_sizer_1->Add(dirPicker1, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-    grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
+    grid_sizer_1->Add(clearButton_1, 2, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
 #else
     grid_sizer_1->Add(label_1, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(dirPicker1, 1, wxALL|wxEXPAND, 5);
@@ -255,7 +263,7 @@ void PathSettingPanel::do_layout() {
     grid_sizer_1->Add(label_2, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(boardListTC, 0, wxALL|wxEXPAND, 5);
     grid_sizer_1->Add(dirPicker2, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-    grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
+    grid_sizer_1->Add(clearButton_2, 2, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
 #else
     grid_sizer_1->Add(label_2, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(dirPicker2, 1, wxALL|wxEXPAND, 5);
@@ -265,6 +273,7 @@ void PathSettingPanel::do_layout() {
     grid_sizer_1->Add(label_3, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(skinPathTC, 0, wxALL|wxEXPAND, 5);
     grid_sizer_1->Add(dirPicker3, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    grid_sizer_1->Add(clearButton_3, 2, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
 #else
     grid_sizer_1->Add(label_3, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(dirPicker3, 1, wxALL|wxEXPAND, 5);

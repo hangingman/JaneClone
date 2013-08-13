@@ -198,6 +198,9 @@ enum JANECLONE_ENUMS
 	ID_DirPickerBoardList,           // 板一覧リストのパスを参照する
 	ID_SkinPathTC,                   // スキン用のファイルのパスをもつテキストコントロール
 	ID_DirPickerSkin,                // スキン用ファイルのパスを参照する
+        ID_ClearBrowserPath,             // ブラウザパス設定値を削除 
+        ID_ClearBoardListPath,		 // 板一覧リストのパス設定値を削除
+        ID_ClearSkinPath,		 // スキンのパス設定値を削除
 	ID_BehaviorPanel,                // 動作設定用パネル
 	ID_OpenBNewTabCheck,             // 新しいタブで板を開く
 	ID_OnlyOneCategoryCheck,         // カテゴリを一つしか開かない

@@ -1041,6 +1041,28 @@ template void JaneCloneUtil::GetJaneCloneProperties<double>(const wxString& key,
 template void JaneCloneUtil::GetJaneCloneProperties<bool>(const wxString& key, bool* value);
 
 /**
+ * プロパティファイルの指定されたKEYを削除する
+ */
+void JaneCloneUtil::DeleteJaneClonePropertyEntry(const wxString& key) {
+
+     // 設定ファイルの準備をする
+     const wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     const wxDir jcDir(jc);
+     const wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
+
+     bool ret = config->DeleteEntry(key);
+     if (!ret) {
+	  wxMessageBox(wxT("コンフィグファイルの書き込みに失敗しました"),
+		       wxT("コンフィグファイル"),
+		       wxICON_ERROR);
+     }
+     
+     config->Flush();
+     delete config;
+}
+
+/**
  * 指定されたディレクトリの下に、指定された名前のディレクトリが存在するか確認して作成する
  */
 void JaneCloneUtil::CreateSpecifyDirectory(wxDir& specifyDir, const wxString& dirName) {
