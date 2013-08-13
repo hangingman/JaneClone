@@ -44,14 +44,43 @@ END_EVENT_TABLE()
 AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource )
 :wxPopupTransientWindow( parent ) {
 
+     // スキンを使わないならデフォルトフォントを設定する
+     SkinInfo* skinInfo = new SkinInfo;
      // HTMLのソース
-     wxString html = HTML_HEADER;
-     html+=htmlSource;
-     html+=HTML_FOOTER;
+     wxString html = wxEmptyString;
+     bool  useSkin = CheckSkinFiles(skinInfo);
+
      wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
      // wxHtmlWindowにHTMLソースを設定する
      htmlWin = new wxHtmlWindow(this, wxID_ANY, wxPoint(0, 0), size, wxHW_SCROLLBAR_AUTO);
-     this->SetInternalFonts(htmlWin);
+     
+     if (!useSkin) {
+	  const int p = 12;
+	  static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };
+
+#ifdef __WXMSW__
+	  wxString fontName = wxT("ＭＳ Ｐゴシック");
+	  htmlWin->SetFonts(fontName, wxEmptyString, f_size);
+#elif  __WXGTK__
+	  wxString fontName = wxT("Mona");
+	  htmlWin->SetFonts(fontName, wxEmptyString, f_size);
+#elif  __WXMAC__
+	  wxString fontName = wxT("Mona");
+	  htmlWin->SetFonts(fontName, wxEmptyString, f_size);
+#endif
+	  html += HTML_HEADER;
+	  html += htmlSource;
+	  html += HTML_FOOTER;
+     } else {
+	  // スキンを使用する
+	  html += skinInfo->header;
+	  html += htmlSource;
+	  html += skinInfo->footer;
+     }
+
+     // 後片付け
+     delete skinInfo;
+
      htmlWin->SetBorders(0);
      htmlWin->SetPage(html);
      // wxHtmlWindow内部での実質サイズを取得する
@@ -61,39 +90,6 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
      // このウィンドウ(popup)にサイザーをセットして最小の大きさに設定する
      topsizer->Add(htmlWin, 1, wxALL, 10);
      this->SetSize(hx, hy);
-}
-/**
- * ポップアップ内部のフォントを設定する
- * @param wxHtmlWindow
- */
-void AnchoredResponsePopup::SetInternalFonts(wxHtmlWindow* htmlWin) {
-
-     // ユーザーのホームディレクトリを取得
-     wxDir workDir(::wxGetHomeDir());
-     wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
-
-     // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-     if (!workDir.HasSubDirs(JANECLONE_DIR)) {
-	  ::wxMkdir(jcDir.GetName());
-     }
-     if (!jcDir.HasSubDirs(wxT("prop"))) {
-	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
-     }
-
-     // フォント設定を読み出し
-     wxString fontName = wxEmptyString;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("HTML.Font"), &fontName);
-     
-     long lp = 0;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("HTML.PointSize"), &lp);
-     const int p = static_cast<int>(lp);
-     // HTMLソース中のテキストの種類とサイズを決定する
-     static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };
-
-     // 設定ファイルにフォントが設定されていなければSetFontsは実行しない
-     if (fontName != wxEmptyString && p != 0) {
-	  htmlWin->SetFonts(fontName, wxEmptyString, f_size);
-     }
 }
 
 wxSize AnchoredResponsePopup::GetPopupWindowSize() {
@@ -131,4 +127,75 @@ void AnchoredResponsePopup::EnterWindow(wxMouseEvent &event) {
 }
 
 void AnchoredResponsePopup::LeaveWindow(wxMouseEvent &event) {
+}
+/**
+ * スキン用のファイルが有るかどうか確認する
+ */
+bool AnchoredResponsePopup::CheckSkinFiles(SkinInfo* skin) {
+
+     // スキン用のパスが設定されていなければ即リターン
+     const wxString key = wxT("DEFAULT_SKINFILE_PATH");
+     wxString skinPath = wxEmptyString;
+     JaneCloneUtil::GetJaneCloneProperties(key, &skinPath);
+     bool ret = false;
+
+     if (skinPath == wxEmptyString) {
+	  return false;
+     }
+
+     if (!wxDir::Exists(skinPath)) {
+	  wxMessageBox(wxT("スキン用のディレクトリが存在しません、設定画面を開いてスキンのパス設定を確認してください。"), 
+		       wxT("スキン設定"), wxICON_ERROR);
+	  return false;
+     }
+
+     // Footer.html
+     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("Footer.html"))) {
+	  const wxString filePath = skinPath + wxFileSeparator + wxT("Footer.html");
+	  skin->footer = ReadPlainTextFile(filePath);
+	  ret = true;
+     }	  
+     // Header.html
+     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("Header.html"))) {
+	  const wxString filePath = skinPath + wxFileSeparator + wxT("Header.html");
+	  skin->header = ReadPlainTextFile(filePath);
+	  ret = true;
+     }
+     // NewRes.html
+     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("NewRes.html"))) {
+	  const wxString filePath = skinPath + wxFileSeparator + wxT("NewRes.html");
+	  skin->newres = ReadPlainTextFile(filePath);
+	  ret = true;
+     }
+     // PopupRes.html
+     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("PopupRes.html"))) {
+	  const wxString filePath = skinPath + wxFileSeparator + wxT("PopupRes.html");
+	  skin->popup = ReadPlainTextFile(filePath);
+	  ret = true;
+     }
+     // Res.html
+     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("Res.html"))) {
+	  const wxString filePath = skinPath + wxFileSeparator + wxT("Res.html");
+	  skin->res = ReadPlainTextFile(filePath);
+	  ret = true;
+     }
+     // ***.js
+     // TODO: SpiderMonkeyの適用
+     
+     return ret;
+}
+/**
+ * 指定されたファイル中のテキストをメモリに展開する
+ */
+wxString AnchoredResponsePopup::ReadPlainTextFile(const wxString& filePath) {
+
+     wxTextFile textFile;
+     wxString   htmlDOM;
+     textFile.Open(filePath, wxConvUTF8);
+
+     for (int i = 0; i < textFile.GetLineCount(); i++) {
+	  htmlDOM += textFile[i];
+     }
+
+     return htmlDOM;
 }

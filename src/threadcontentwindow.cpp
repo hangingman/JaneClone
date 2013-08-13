@@ -23,29 +23,29 @@
 #include "janeclone.hpp"
 
 IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
-   BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
-   // 右クリック時のイベント
-   EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
-   // リンク押下時のイベント
-   EVT_HTML_LINK_CLICKED(wxID_ANY, ThreadContentWindow::OnLeftClickHtmlWindow)
-   // 右クリックメニューイベント
-   EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
-   EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
-   EVT_MENU(ID_SelectAllTextHtmlWindow, ThreadContentWindow::SelectAllTextHtmlWindow)
-   EVT_MENU(ID_SearchSelectWordByYahoo,ThreadContentWindow::SearchSelectWordByYahoo)
-   EVT_MENU(ID_SearchSelectWordByGoogle,ThreadContentWindow::SearchSelectWordByGoogle)
-   EVT_MENU(ID_SearchSelectWordByAmazon,ThreadContentWindow::SearchSelectWordByAmazon)
-   EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
-   // レス番号上で左クリックした際のイベント
-   EVT_MENU(ID_CallResponseWindowAnchor, ThreadContentWindow::CallResponseWindowWithAnchor)
-   EVT_MENU(ID_CallResponseWindowQuote, ThreadContentWindow::CallResponseWindowWithQuote)
-   EVT_MENU(ID_CopyTContentsToClipBoard, ThreadContentWindow::CopyTContentsToClipBoard) 
-   EVT_MENU(ID_CopyTAllToClipBoard, ThreadContentWindow::CopyTAllToClipBoard)   
-   // リサイズがかかった際のイベント
-   EVT_SIZE(ThreadContentWindow::OnSize) 
+BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
+// 右クリック時のイベント
+EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
+// リンク押下時のイベント
+EVT_HTML_LINK_CLICKED(wxID_ANY, ThreadContentWindow::OnLeftClickHtmlWindow)
+// 右クリックメニューイベント
+EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
+EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
+EVT_MENU(ID_SelectAllTextHtmlWindow, ThreadContentWindow::SelectAllTextHtmlWindow)
+EVT_MENU(ID_SearchSelectWordByYahoo,ThreadContentWindow::SearchSelectWordByYahoo)
+EVT_MENU(ID_SearchSelectWordByGoogle,ThreadContentWindow::SearchSelectWordByGoogle)
+EVT_MENU(ID_SearchSelectWordByAmazon,ThreadContentWindow::SearchSelectWordByAmazon)
+EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
+// レス番号上で左クリックした際のイベント
+EVT_MENU(ID_CallResponseWindowAnchor, ThreadContentWindow::CallResponseWindowWithAnchor)
+EVT_MENU(ID_CallResponseWindowQuote, ThreadContentWindow::CallResponseWindowWithQuote)
+EVT_MENU(ID_CopyTContentsToClipBoard, ThreadContentWindow::CopyTContentsToClipBoard) 
+EVT_MENU(ID_CopyTAllToClipBoard, ThreadContentWindow::CopyTAllToClipBoard)   
+// リサイズがかかった際のイベント
+EVT_SIZE(ThreadContentWindow::OnSize) 
 #ifdef DEBUG
-   // HTMLのデバッグ用イベント
-   EVT_MENU(ID_HtmlSourceDebug, ThreadContentWindow::HtmlSourceDebug)
+// HTMLのデバッグ用イベント
+EVT_MENU(ID_HtmlSourceDebug, ThreadContentWindow::HtmlSourceDebug)
 #endif
 END_EVENT_TABLE()
 
@@ -70,21 +70,29 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
 	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
      }
 
-     // フォント設定を読み出し
-     wxString fontName = wxEmptyString;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("HTML.Font"), &fontName);
+     // スキンを使わないならデフォルトフォントを設定する
+     SkinInfo* skinInfo = new SkinInfo;
+     bool       useSkin = CheckSkinFiles(skinInfo);
+     delete skinInfo;
      
-     long lp = 0;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("HTML.PointSize"), &lp);
-     const int p = static_cast<int>(lp);
-     
-     // HTMLソース中のテキストの種類とサイズを決定する
-     static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };
+     if (!useSkin) {
 
-     // 設定ファイルにフォントが設定されていなければSetFontsは実行しない
-     if (fontName != wxEmptyString && p != 0) {
+	  // フォントのポイント数
+	  const int p = 12;
+	  static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };
+
+#ifdef __WXMSW__
+	  wxString fontName = wxT("ＭＳ Ｐゴシック");
 	  this->SetFonts(fontName, wxEmptyString, f_size);
+#elif  __WXGTK__
+	  wxString fontName = wxT("Mona");
+	  this->SetFonts(fontName, wxEmptyString, f_size);
+#elif  __WXMAC__
+	  wxString fontName = wxT("Mona");
+	  this->SetFonts(fontName, wxEmptyString, f_size);
+#endif
      }
+
      // メモリに読み込んだHTMLを表示する
      this->SetPage(htmlSource);
      // 外部から参照可能なHTML
@@ -106,13 +114,17 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 
      // スキンがあれば使う
      SkinInfo* skinInfo = new SkinInfo;
-     bool       useSkin = false;
-     useSkin            = CheckSkinFiles(skinInfo);
+     bool       useSkin = CheckSkinFiles(skinInfo);
 
      // 取得サイズ分だけwxStringを確保する
      wxString htmlSource;
      htmlSource.Alloc(fileSize);
-     htmlSource += HTML_HEADER;
+
+     if (useSkin && skinInfo->header != wxEmptyString) {
+	  htmlSource += skinInfo->header;
+     } else {
+	  htmlSource += HTML_HEADER;
+     }     
 
      // テキストファイルの読み込み
      wxTextFile datfile;
@@ -140,7 +152,14 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 	  }
      }
 
-     htmlSource += HTML_FOOTER;
+     if (useSkin && skinInfo->footer != wxEmptyString) {
+	  htmlSource += skinInfo->footer;
+     } else {
+	  htmlSource += HTML_FOOTER;
+     }
+
+     // スキン用構造体を片付ける
+     delete skinInfo;
      datfile.Close();
 
      // ID:xxxxxxxxxx を置換する
@@ -737,38 +756,43 @@ bool ThreadContentWindow::CheckSkinFiles(SkinInfo* skin) {
      }
 
      // Footer.html
-     if (wxFile::Exists(skinPath + wxT("Footer.html"))) {
-	  const wxString filePath = skinPath + wxT("Footer.html");
+     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("Footer.html"))) {
+	  const wxString filePath = skinPath + wxFileSeparator + wxT("Footer.html");
 	  skin->footer = ReadPlainTextFile(filePath);
 	  ret = true;
      }	  
      // Header.html
-     if (wxFile::Exists(skinPath + wxT("Header.html"))) {
-	  const wxString filePath = skinPath + wxT("Header.html");
+     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("Header.html"))) {
+	  const wxString filePath = skinPath + wxFileSeparator + wxT("Header.html");
 	  skin->header = ReadPlainTextFile(filePath);
 	  ret = true;
      }
      // NewRes.html
-     if (wxFile::Exists(skinPath + wxT("NewRes.html"))) {
-	  const wxString filePath = skinPath + wxT("NewRes.html");
+     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("NewRes.html"))) {
+	  const wxString filePath = skinPath + wxFileSeparator + wxT("NewRes.html");
 	  skin->newres = ReadPlainTextFile(filePath);
 	  ret = true;
      }
      // PopupRes.html
-     if (wxFile::Exists(skinPath + wxT("PopupRes.html"))) {
-	  const wxString filePath = skinPath + wxT("PopupRes.html");
+     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("PopupRes.html"))) {
+	  const wxString filePath = skinPath + wxFileSeparator + wxT("PopupRes.html");
 	  skin->popup = ReadPlainTextFile(filePath);
 	  ret = true;
      }
      // Res.html
-     if (wxFile::Exists(skinPath + wxT("Res.html"))) {
-	  const wxString filePath = skinPath + wxT("Res.html");
+     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("Res.html"))) {
+	  const wxString filePath = skinPath + wxFileSeparator + wxT("Res.html");
 	  skin->res = ReadPlainTextFile(filePath);
 	  ret = true;
      }
      // ***.js
      // TODO: SpiderMonkeyの適用
 
+     if (ret) {  
+	  wxString message = wxT("スキンを適用します\n");
+	  SendLogging(message);
+     }
+     
      return ret;
 }
 /**
@@ -781,7 +805,7 @@ wxString ThreadContentWindow::ReadPlainTextFile(const wxString& filePath) {
      textFile.Open(filePath, wxConvUTF8);
 
      for (int i = 0; i < textFile.GetLineCount(); i++) {
-	  htmlDOM = textFile[i];
+	  htmlDOM += textFile[i];
      }
 
      return htmlDOM;

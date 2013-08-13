@@ -60,7 +60,10 @@ private:
      void OnSize( wxSizeEvent &event );
      void OnSetFocus( wxFocusEvent &event );
      void OnKillFocus( wxFocusEvent &event );
-     void SetInternalFonts(wxHtmlWindow* htmlWin);
+     // スキン用のファイルが有るかどうか確認する
+     bool CheckSkinFiles(SkinInfo* skin);
+     // 指定されたファイル中のテキストをメモリに展開する
+     wxString ReadPlainTextFile(const wxString& filePath);
 
 private:
      wxHtmlWindow *htmlWin;
