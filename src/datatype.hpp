@@ -29,6 +29,7 @@
 #include <wx/wx.h>
 #include <vector>
 #include <map>
+#include <memory>
 #include <wx/regex.h>
 #include <wx/hashmap.h>
 

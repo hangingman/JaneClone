@@ -105,9 +105,9 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 	  return FAIL_TO_READ_PAGE;
 
      // スキンがあれば使う
-     SkinInfo skinInfo;
-     bool     useSkin = false;
-     useSkin  = CheckSkinFiles(skinInfo);
+     SkinInfo* skinInfo = new SkinInfo;
+     bool       useSkin = false;
+     useSkin            = CheckSkinFiles(skinInfo);
 
      // 取得サイズ分だけwxStringを確保する
      wxString htmlSource;
@@ -718,12 +718,13 @@ void ThreadContentWindow::CopyTAllToClipBoard(wxCommandEvent& event) {
 /**
  * スキン用のファイルが有るかどうか確認する
  */
-bool ThreadContentWindow::CheckSkinFiles(SkinInfo& skin) {
+bool ThreadContentWindow::CheckSkinFiles(SkinInfo* skin) {
 
      // スキン用のパスが設定されていなければ即リターン
      const wxString key = wxT("DEFAULT_SKINFILE_PATH");
      wxString skinPath = wxEmptyString;
      JaneCloneUtil::GetJaneCloneProperties(key, &skinPath);
+     bool ret = false;
 
      if (skinPath == wxEmptyString) {
 	  return false;
@@ -735,5 +736,53 @@ bool ThreadContentWindow::CheckSkinFiles(SkinInfo& skin) {
 	  return false;
      }
 
-     return false;
+     // Footer.html
+     if (wxFile::Exists(skinPath + wxT("Footer.html"))) {
+	  const wxString filePath = skinPath + wxT("Footer.html");
+	  skin->footer = ReadPlainTextFile(filePath);
+	  ret = true;
+     }	  
+     // Header.html
+     if (wxFile::Exists(skinPath + wxT("Header.html"))) {
+	  const wxString filePath = skinPath + wxT("Header.html");
+	  skin->header = ReadPlainTextFile(filePath);
+	  ret = true;
+     }
+     // NewRes.html
+     if (wxFile::Exists(skinPath + wxT("NewRes.html"))) {
+	  const wxString filePath = skinPath + wxT("NewRes.html");
+	  skin->newres = ReadPlainTextFile(filePath);
+	  ret = true;
+     }
+     // PopupRes.html
+     if (wxFile::Exists(skinPath + wxT("PopupRes.html"))) {
+	  const wxString filePath = skinPath + wxT("PopupRes.html");
+	  skin->popup = ReadPlainTextFile(filePath);
+	  ret = true;
+     }
+     // Res.html
+     if (wxFile::Exists(skinPath + wxT("Res.html"))) {
+	  const wxString filePath = skinPath + wxT("Res.html");
+	  skin->res = ReadPlainTextFile(filePath);
+	  ret = true;
+     }
+     // ***.js
+     // TODO: SpiderMonkeyの適用
+
+     return ret;
+}
+/**
+ * 指定されたファイル中のテキストをメモリに展開する
+ */
+wxString ThreadContentWindow::ReadPlainTextFile(const wxString& filePath) {
+
+     wxTextFile textFile;
+     wxString   htmlDOM;
+     textFile.Open(filePath, wxConvUTF8);
+
+     for (int i = 0; i < textFile.GetLineCount(); i++) {
+	  htmlDOM = textFile[i];
+     }
+
+     return htmlDOM;
 }

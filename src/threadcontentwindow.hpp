@@ -120,7 +120,9 @@ private:
      // リサイズ時のイベント
      void OnSize(wxSizeEvent& event);
      // スキン用のファイルが有るかどうか確認する
-     bool CheckSkinFiles(SkinInfo& skin);
+     bool CheckSkinFiles(SkinInfo* skin);
+     // 指定されたファイル中のテキストをメモリに展開する
+     wxString ReadPlainTextFile(const wxString& filePath);
 
      DECLARE_EVENT_TABLE()
      DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
