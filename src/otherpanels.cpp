@@ -245,7 +245,11 @@ void PathSettingPanel::set_properties() {
 
 void PathSettingPanel::do_layout() {
     // begin wxGlade: PathSettingPanel::do_layout
+#ifdef __WXGTK__
     wxGridSizer* grid_sizer_1 = new wxGridSizer(7, 2, 0, 0);
+#else
+    wxGridSizer* grid_sizer_1 = new wxGridSizer(7, 3, 0, 0);
+#endif
     grid_sizer_1->Add(browserCheck, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
 
@@ -257,6 +261,7 @@ void PathSettingPanel::do_layout() {
 #else
     grid_sizer_1->Add(label_1, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(dirPicker1, 1, wxALL|wxEXPAND, 5);
+    grid_sizer_1->Add(clearButton_1, 2, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
 #endif
 
 #ifdef __WXGTK__
@@ -267,6 +272,7 @@ void PathSettingPanel::do_layout() {
 #else
     grid_sizer_1->Add(label_2, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(dirPicker2, 1, wxALL|wxEXPAND, 5);
+    grid_sizer_1->Add(clearButton_2, 2, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
 #endif
 
 #ifdef __WXGTK__
@@ -277,6 +283,7 @@ void PathSettingPanel::do_layout() {
 #else
     grid_sizer_1->Add(label_3, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(dirPicker3, 1, wxALL|wxEXPAND, 5);
+    grid_sizer_1->Add(clearButton_3, 2, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
 #endif
 
     SetSizer(grid_sizer_1);
@@ -537,62 +544,49 @@ void ColorFontSettingPanel::do_layout()
 void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 {
      // イベントで取得したIDはなにか
+     // switch文で書きたいけどうまく行かないのでif文
      const int id = event.GetId();
+     //const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
+     //const std::string &str = EnumString<JANECLONE_ENUMS>::From( ID_TreeFontButton );
+     //wxString message = wxString((const char*)str.c_str(), wxConvUTF8);
+     //wxMessageBox(message);
+     //return;
 
-     switch (id) {
-	  /**
-	   * フォント設定
+     if (id == ID_TreeFontButton        ||	// ツリーフォント設定ボタン	     
+	 id == ID_ThreadListFontButton	||	// スレ欄フォント設定ボタン	     
+	 id == ID_ExtractFontButton	||	// 抽出フォント設定ボタン		 
+	 id == ID_LogWindowFontButton	||	// ログ出力画面フォント設定ボタン    
+	 id == ID_ThreadTitleFontButton ||	// スレッドタイトルフォント設定ボタン
+	 id == ID_KakikoFontButton	||	// 書き込みフォント設定ボタン	     
+	 id == ID_MemoFontButton        ||	// メモ欄フォント設定ボタン	     
+	 id == ID_HintFontButton	||	// ヒントフォント設定ボタン	     
+	 id == ID_LinkFontButton	||	// リンクフォント設定ボタン	     
+	 id == ID_OthersFontButton      ||	// その他フォント設定ボタン	     
+	 id == ID_AllFontButton			// すべてフォント設定ボタン
+	  ) {
+          /**		  
+	   * フォント設定 
 	   */
-     ID_TreeFontButton:			// ツリーフォント設定ボタン
-     ID_ThreadListFontButton:		// スレ欄フォント設定ボタン
-     ID_ExtractFontButton:              // 抽出フォント設定ボタン
-     ID_LogWindowFontButton:		// ログ出力画面フォント設定ボタン
-     ID_ThreadTitleFontButton:		// スレッドタイトルフォント設定ボタン
-     ID_KakikoFontButton:		// 書き込みフォント設定ボタン
-     ID_MemoFontButton:			// メモ欄フォント設定ボタン
-     ID_HintFontButton:			// ヒントフォント設定ボタン
-     ID_LinkFontButton:			// リンクフォント設定ボタン
-     ID_OthersFontButton:		// その他フォント設定ボタン
-     ID_AllFontButton:			// すべてフォント設定ボタン
-	  {
-	       
-	       wxCommandEvent* fontEvent = new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, id);
-
-#if wxCHECK_VERSION(2, 9, 0)
-	       wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(fontEvent->Clone());
-#else
-	       this->GetEventHandler()->AddPendingEvent(*fontEvent);
-#endif
-	       break;
-	  
-	  }
-     
+	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
+	  wxString message = wxString((const char*)str.c_str(), wxConvUTF8);
+	  wxMessageBox(message);
+     } else if (
+	  id == ID_ThreadBGColorButton      ||	// スレ欄背景色設定ボタン	    
+	  id == ID_ThreadListBGColorButton  ||	// 抽出背景色設定ボタン		    
+	  id == ID_LogWindowBGColorButton   ||	// ログ出力画面背景色設定ボタン	    
+	  id == ID_ThreadTitleBGColorButton ||	// スレッドタイトル背景色設定ボタン 
+	  id == ID_ThreadViewBGColorButton  ||	// スレビュー背景色設定ボタン	    
+	  id == ID_MemoBGColorButton        ||	// メモ欄背景色設定ボタン	    
+	  id == ID_HintBGColorButton	    ||	// ヒント背景色設定ボタン	    
+	  id == ID_PopupBGColorButton	    ||	// ポップアップ背景色設定ボタン	    
+	  id == ID_AllBGColorButton		// すべての背景色設定ボタン	    
+	  ) {
 	  /**
 	   * 背景色設定
 	   */
-     ID_ThreadBGColorButton:		// スレ欄背景色設定ボタン
-     ID_ThreadListBGColorButton:	// 抽出背景色設定ボタン	  
-     ID_LogWindowBGColorButton:		// ログ出力画面背景色設定ボタン     
-     ID_ThreadTitleBGColorButton:	// スレッドタイトル背景色設定ボタン
-     ID_ThreadViewBGColorButton:	// スレビュー背景色設定ボタン
-     ID_MemoBGColorButton:		// メモ欄背景色設定ボタン	     
-     ID_HintBGColorButton:		// ヒント背景色設定ボタン   
-     ID_PopupBGColorButton:		// ポップアップ背景色設定ボタン	  
-     ID_AllBGColorButton:		// すべての背景色設定ボタン
-
-	  {
-	       wxCommandEvent* bgEvent = new wxCommandEvent(wxEVT_COMMAND_MENU_SELECTED, id);
-
-#if wxCHECK_VERSION(2, 9, 0)
-	       wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(bgEvent->Clone());
-#else
-	       this->GetEventHandler()->AddPendingEvent(*bgEvent);
-#endif
-	       break;
-	  }
-
-     default:
-	  break;
-     }
+	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
+	  wxString message = wxString((const char*)str.c_str(), wxConvUTF8);
+	  wxMessageBox(message);
+     }     
 }
 
