@@ -2873,16 +2873,29 @@ wxString JaneClone::GetThreadURL(const wxString title,const wxString boardNameAs
  * 板一覧リストタブを変更した時のイベント
  */
 void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
+     return;
+}
+/**
+ * スレッド一覧タブを変更した時のイベント
+ */
+void JaneClone::OnChangeThreadTab(wxAuiNotebookEvent& event) {
+     return;
+}
+/**
+ * 板一覧リストタブを変更した後のイベント
+ */
+void JaneClone::OnChangedBoardTab(wxAuiNotebookEvent& event) {
+     
+     // 選択したタブの板名を取得する
+     wxString selectedBoardName = boardNoteBook->GetPageText(event.GetSelection());
+     // タイトルを設定する
+     SetTitle(selectedBoardName + wxT(" - JaneClone"));
 
-     // ノートブックの変更中はノートブックに触れないようにする
-#ifndef __WXMSW__
-     boardNoteBook->Freeze();
-#endif
      // 選択したタブのURLをURL画面に設定する
      if (wxEmptyString != boardNoteBook->GetPageText(event.GetSelection())) {
 	  // 板一覧タブの場合
 	  wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
-	  URLvsBoardName hash = retainHash[boardName];
+	  URLvsBoardName hash = retainHash[boardName];	  
 	  m_url_input->SetValue(hash.boardURL);
 
      } else {
@@ -2894,9 +2907,6 @@ void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
 
 	  return;
      }
-
-     // 選択したタブの板名を取得する
-     wxString selectedBoardName = boardNoteBook->GetPageText(event.GetSelection());
 
 #if !wxCHECK_VERSION(2, 9, 0)
      // リストコントロールを引き出してくる
@@ -2913,23 +2923,18 @@ void JaneClone::OnChangeBoardTab(wxAuiNotebookEvent& event) {
 
      // タイトルを設定する
      SetTitle(selectedBoardName + wxT(" - JaneClone"));
-     // ノートブックの解放
-#ifndef __WXMSW__
-     boardNoteBook->Thaw();
-#endif
      m_mgr.Update();
-
-     return;
 }
 /**
- * スレッド一覧タブを変更した時のイベント
+ * スレッド一覧タブを変更した後のイベント
  */
-void JaneClone::OnChangeThreadTab(wxAuiNotebookEvent& event) {
+void JaneClone::OnChangedThreadTab(wxAuiNotebookEvent& event) {
 
-     // ノートブックの変更中はノートブックに触れないようにする
-#ifndef __WXMSW__
-     //threadNoteBook->Freeze();
-#endif
+     // 選択したタブのスレッド名を取得する
+     wxString selectedThreadName = threadNoteBook->GetPageText(event.GetSelection());
+     // タイトルを設定する
+     SetTitle(selectedThreadName + wxT(" - JaneClone"));
+
      if (wxEmptyString != threadNoteBook->GetPageText(event.GetSelection())) {
 	  // スレタブの場合
 	  const wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
@@ -2949,30 +2954,7 @@ void JaneClone::OnChangeThreadTab(wxAuiNotebookEvent& event) {
 
 	  return;
      }
-#ifndef __WXMSW__
-     //threadNoteBook->Thaw();
-#endif
      m_mgr.Update();
-}
-/**
- * 板一覧リストタブを変更した後のイベント
- */
-void JaneClone::OnChangedBoardTab(wxAuiNotebookEvent& event) {
-
-     // 選択したタブの板名を取得する
-     wxString selectedBoardName = boardNoteBook->GetPageText(event.GetSelection());
-     // タイトルを設定する
-     SetTitle(selectedBoardName + wxT(" - JaneClone"));
-}
-/**
- * スレッド一覧タブを変更した後のイベント
- */
-void JaneClone::OnChangedThreadTab(wxAuiNotebookEvent& event) {
-
-     // 選択したタブのスレッド名を取得する
-     wxString selectedThreadName = threadNoteBook->GetPageText(event.GetSelection());
-     // タイトルを設定する
-     SetTitle(selectedThreadName + wxT(" - JaneClone"));
 }
 
 void JaneClone::OnClickURLWindowButton(wxCommandEvent& event) {
