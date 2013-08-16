@@ -8,6 +8,7 @@
 #include <wx/spinctrl.h>
 #include <wx/filepicker.h>
 #include <wx/colordlg.h>
+#include <wx/fontdlg.h>
 #include "enums.hpp"
 #include "janecloneutil.hpp"
 
@@ -236,6 +237,10 @@ private:
 
      // 色選択用ダイアログを表示させる
      void OnClickColorFontSettingButton(wxCommandEvent& event);
+     // 各部位のフォントを設定し、プロパティファイルに書き出す
+     bool SetEachFontSetting(const wxString& font);
+     // 各部位の背景色を設定し、プロパティファイルに書き出す
+     bool SetEachBGColorSetting(const wxString& bgColor);
 
 protected:
      // begin wxGlade: ColorFontSettingPanel::attributes

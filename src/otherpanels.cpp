@@ -242,7 +242,10 @@ void PathSettingPanel::set_properties() {
 #endif
 }
 
-
+/**
+ * Linux(GTK) vs Windows & MacOSX で
+ * ファイル選択用UIの形が異なるためここで調整をしている
+ */
 void PathSettingPanel::do_layout() {
     // begin wxGlade: PathSettingPanel::do_layout
 #ifdef __WXGTK__
@@ -259,6 +262,7 @@ void PathSettingPanel::do_layout() {
     grid_sizer_1->Add(dirPicker1, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(clearButton_1, 2, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
 #else
+    grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
     grid_sizer_1->Add(label_1, 0, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     grid_sizer_1->Add(dirPicker1, 1, wxALL|wxEXPAND, 5);
     grid_sizer_1->Add(clearButton_1, 2, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
@@ -455,7 +459,6 @@ ColorFontSettingPanel::ColorFontSettingPanel(wxWindow* parent, const wxPoint& po
 void ColorFontSettingPanel::set_properties()
 {
     // begin wxGlade: ColorFontSettingPanel::set_properties
-    SetBackgroundColour(wxColour(192, 192, 192));
     treeSampleLabel->SetBackgroundColour(wxColour(255, 255, 255));
     // end wxGlade
 }
@@ -546,11 +549,6 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
      // イベントで取得したIDはなにか
      // switch文で書きたいけどうまく行かないのでif文
      const int id = event.GetId();
-     //const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
-     //const std::string &str = EnumString<JANECLONE_ENUMS>::From( ID_TreeFontButton );
-     //wxString message = wxString((const char*)str.c_str(), wxConvUTF8);
-     //wxMessageBox(message);
-     //return;
 
      if (id == ID_TreeFontButton        ||	// ツリーフォント設定ボタン	     
 	 id == ID_ThreadListFontButton	||	// スレ欄フォント設定ボタン	     
@@ -568,8 +566,9 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 	   * フォント設定 
 	   */
 	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
-	  wxString message = wxString((const char*)str.c_str(), wxConvUTF8);
-	  wxMessageBox(message);
+	  const wxString font = wxString((const char*)str.c_str(), wxConvUTF8);
+	  bool needToChangeFont = this->SetEachFontSetting(font);
+
      } else if (
 	  id == ID_ThreadBGColorButton      ||	// スレ欄背景色設定ボタン	    
 	  id == ID_ThreadListBGColorButton  ||	// 抽出背景色設定ボタン		    
@@ -585,8 +584,68 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 	   * 背景色設定
 	   */
 	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
-	  wxString message = wxString((const char*)str.c_str(), wxConvUTF8);
-	  wxMessageBox(message);
+	  const wxString bgColor = wxString((const char*)str.c_str(), wxConvUTF8);
+	  bool needToChangeBGColor = this->SetEachBGColorSetting(bgColor);
      }     
 }
+/**
+ * 各部位のフォントを設定し、プロパティファイルに書き出す
+ * @param  各部位の名称を列挙型で
+ * @return 変更があればtrueを返す
+ */
+bool ColorFontSettingPanel::SetEachFontSetting(const wxString& font)
+{
+     wxFontData data;
+     wxFont canvasFont;
+     wxColour canvasTextColour;
 
+     data.SetInitialFont(canvasFont);
+     data.SetColour(canvasTextColour);
+      
+     wxFontDialog dialog(this, data);
+     if (dialog.ShowModal() == wxID_OK) 
+     {
+	  // フォント設定用データを用意する
+	  wxFontData retData = dialog.GetFontData();
+	  canvasFont = retData.GetChosenFont();
+	  canvasTextColour = retData.GetColour();
+
+	  // 結果を受け取る
+	  const wxString fontInfo  = canvasFont.GetNativeFontInfoUserDesc();
+	  const wxString colorInfo = canvasTextColour.GetAsString();
+	  // フォント,色情報 の順でプロパティファイルに格納
+	  JaneCloneUtil::SetJaneCloneProperties(font, fontInfo + wxT(",") + colorInfo);
+	  return true;
+     }
+
+     return false;
+}
+/**
+ * 各部位の背景色を設定し、プロパティファイルに書き出す
+ * @param  各部位の名称を列挙型で
+ * @return 変更があればtrueを返す
+ */
+bool ColorFontSettingPanel::SetEachBGColorSetting(const wxString& bgColor)
+{
+     wxColourData data;
+     data.SetChooseFull(true);
+     for (int i = 0; i < 16; i++)
+     {
+	  wxColour colour(i*16, i*16, i*16);
+	  data.SetCustomColour(i, colour);
+     }
+
+     wxColourDialog dialog(this, &data);
+     if (dialog.ShowModal() == wxID_OK)
+     {
+	  wxColourData retData = dialog.GetColourData();
+	  wxColour col = retData.GetColour();
+	  // 結果を受け取る
+	  const wxString colorInfo = col.GetAsString();
+	  // フォント,色情報 の順でプロパティファイルに格納
+	  JaneCloneUtil::SetJaneCloneProperties(bgColor, colorInfo);
+	  return true;
+     }
+
+     return false;
+}
