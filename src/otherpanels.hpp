@@ -9,6 +9,7 @@
 #include <wx/filepicker.h>
 #include <wx/colordlg.h>
 #include <wx/fontdlg.h>
+#include <wx/tokenzr.h>
 #include "enums.hpp"
 #include "janecloneutil.hpp"
 
@@ -239,8 +240,12 @@ private:
      void OnClickColorFontSettingButton(wxCommandEvent& event);
      // 各部位のフォントを設定し、プロパティファイルに書き出す
      bool SetEachFontSetting(const wxString& font);
+     // 色・フォント設定用画面のサンプル部分のフォントを変更する
+     void SetSampleFontSetting(const int id);
      // 各部位の背景色を設定し、プロパティファイルに書き出す
      bool SetEachBGColorSetting(const wxString& bgColor);
+     // 色・フォント設定用画面のサンプル部分の背景色を変更する
+     void SetSampleBGColorSetting(const int id);
 
 protected:
      // begin wxGlade: ColorFontSettingPanel::attributes

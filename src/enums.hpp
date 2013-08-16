@@ -206,6 +206,7 @@ X_TABLE_ITEM(ID_MemoSampleLabel) \
 X_TABLE_ITEM(ID_HintSampleLabel) \
 X_TABLE_ITEM(ID_LinkSampleLabel) \
 X_TABLE_ITEM(ID_OthersSampleLabel) \
+X_TABLE_ITEM(ID_AllSampleLabel) \
 X_TABLE_ITEM(ID_TreeFontButton) \
 X_TABLE_ITEM(ID_ThreadListFontButton) \
 X_TABLE_ITEM(ID_ExtractFontButton) \

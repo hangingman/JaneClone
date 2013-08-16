@@ -569,6 +569,11 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 	  const wxString font = wxString((const char*)str.c_str(), wxConvUTF8);
 	  bool needToChangeFont = this->SetEachFontSetting(font);
 
+	  if (needToChangeFont)
+	  {
+	       SetSampleFontSetting(id);
+	  }
+
      } else if (
 	  id == ID_ThreadBGColorButton      ||	// スレ欄背景色設定ボタン	    
 	  id == ID_ThreadListBGColorButton  ||	// 抽出背景色設定ボタン		    
@@ -586,7 +591,12 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
 	  const wxString bgColor = wxString((const char*)str.c_str(), wxConvUTF8);
 	  bool needToChangeBGColor = this->SetEachBGColorSetting(bgColor);
-     }     
+
+	  if (needToChangeBGColor)
+	  {
+	       SetSampleBGColorSetting(id);
+	  }
+     }
 }
 /**
  * 各部位のフォントを設定し、プロパティファイルに書き出す
@@ -597,28 +607,83 @@ bool ColorFontSettingPanel::SetEachFontSetting(const wxString& font)
 {
      wxFontData data;
      wxFont canvasFont;
-     wxColour canvasTextColour;
-
      data.SetInitialFont(canvasFont);
-     data.SetColour(canvasTextColour);
-      
      wxFontDialog dialog(this, data);
-     if (dialog.ShowModal() == wxID_OK) 
-     {
-	  // フォント設定用データを用意する
-	  wxFontData retData = dialog.GetFontData();
-	  canvasFont = retData.GetChosenFont();
-	  canvasTextColour = retData.GetColour();
 
-	  // 結果を受け取る
-	  const wxString fontInfo  = canvasFont.GetNativeFontInfoUserDesc();
-	  const wxString colorInfo = canvasTextColour.GetAsString();
-	  // フォント,色情報 の順でプロパティファイルに格納
-	  JaneCloneUtil::SetJaneCloneProperties(font, fontInfo + wxT(",") + colorInfo);
-	  return true;
+     if ( wxID_OK == dialog.ShowModal() ) 
+     {
+     	  // フォント設定用データを用意する
+     	  wxFontData retData = dialog.GetFontData();
+     	  canvasFont = retData.GetChosenFont();
+
+     	  // 結果を受け取る
+     	  const wxString fontInfo  = canvasFont.GetNativeFontInfoUserDesc();
+     	  // プロパティファイルに格納
+     	  JaneCloneUtil::SetJaneCloneProperties(font, fontInfo);
+     	  return true;
      }
 
      return false;
+}
+/**
+ * 色・フォント設定用画面のサンプル部分のフォントを変更する
+ */
+void ColorFontSettingPanel::SetSampleFontSetting(const int id)
+{
+
+     int wannaChangeID = -1;
+
+     if (id == ID_TreeFontButton) {
+	  wannaChangeID = ID_TreeSampleLabel;	  
+     } else if (id == ID_ThreadListFontButton) {
+	  wannaChangeID = ID_ThreadListSampleLabel;	  
+     } else if (id == ID_ExtractFontButton) {
+	  wannaChangeID = ID_ExtractSampleLabel;	  
+     } else if (id == ID_LogWindowFontButton) {
+	  wannaChangeID = ID_LogWindowSampleLabel;	  
+     } else if (id == ID_ThreadTitleFontButton) {
+	  wannaChangeID = ID_ThreadTitleSampleLabel;	  
+     } else if (id == ID_KakikoFontButton) {
+	  wannaChangeID = ID_KakikoSampleLabel;	  
+     } else if (id == ID_MemoFontButton) {
+	  wannaChangeID = ID_MemoSampleLabel;	  
+     } else if (id == ID_HintFontButton) {
+	  wannaChangeID = ID_HintSampleLabel;	  
+     } else if (id == ID_LinkFontButton) {
+	  wannaChangeID = ID_LinkSampleLabel;	  
+     } else if (id == ID_OthersFontButton) {
+	  wannaChangeID = ID_OthersSampleLabel;	  
+     } else if (id == ID_AllFontButton) {
+	  wannaChangeID = ID_AllSampleLabel;
+     }
+
+     if (wannaChangeID < 0)
+	  return;
+
+     wxWindow* window = FindWindowById(static_cast<long>(wannaChangeID), this);
+     if ( wxStaticText* st = dynamic_cast<wxStaticText*>(window))
+     {
+	  wxString widgetsName = wxEmptyString;
+	  wxString widgetsInfo = wxEmptyString;
+	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
+	  widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
+	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+
+	  // カンマで区切ってそれぞれ設定する
+	  if (widgetsInfo != wxEmptyString)
+	  {
+	       wxFont font;
+	       bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
+	       if(ret) st->SetFont(font);
+
+	       this->Refresh();
+	       this->Update();
+	  }
+
+     } else {
+	  wxMessageBox(wxT("内部エラー, フォントの変更に失敗しました."), wxT("設定画面"), wxICON_ERROR);
+	  return;
+     }
 }
 /**
  * 各部位の背景色を設定し、プロパティファイルに書き出す
@@ -649,3 +714,10 @@ bool ColorFontSettingPanel::SetEachBGColorSetting(const wxString& bgColor)
 
      return false;
 }
+/**
+ * 色・フォント設定用画面のサンプル部分の背景色を変更する
+ */
+void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
+{
+}
+
