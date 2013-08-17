@@ -458,10 +458,6 @@ ColorFontSettingPanel::ColorFontSettingPanel(wxWindow* parent, const wxPoint& po
 
 void ColorFontSettingPanel::set_properties()
 {
-     // begin wxGlade: ColorFontSettingPanel::set_properties
-     treeSampleLabel->SetBackgroundColour(wxColour(255, 255, 255));
-     // end wxGlade
-
      // ウィジェットとウィジェット名のペアを作成
      static const int STATIC_TEXT_NUMBER = 11;
      
@@ -492,7 +488,7 @@ void ColorFontSettingPanel::set_properties()
 	  }
      }
 
-     delete pArray;
+     delete[] pArray;
 }
 
 

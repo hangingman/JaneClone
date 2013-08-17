@@ -169,6 +169,10 @@ public:
       */
      template <class T> static void GetJaneCloneProperties(const wxString& key, T* value);
      /**
+      * プロパティファイルの指定されたKEYがあるかどうか確認する
+      */
+     static bool GetJaneCloneEntryExist(const wxString& key);
+     /**
       * プロパティファイルの指定されたKEYを削除する
       */
      static void DeleteJaneClonePropertyEntry(const wxString& key);
