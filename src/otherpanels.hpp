@@ -3,6 +3,7 @@
 #ifndef OTHERPANELS_HPP
 #define OTHERPANELS_HPP
 
+#include <utility>
 #include <wx/wx.h>
 #include <wx/image.h>
 #include <wx/spinctrl.h>
@@ -249,23 +250,28 @@ private:
 
 protected:
      // begin wxGlade: ColorFontSettingPanel::attributes
-     wxStaticBox* sizer_6_staticbox;
-     wxStaticBox* sizer_5_staticbox;
-     wxStaticBox* sizer_4_staticbox;
+
+     /**
+      * サンプルのテキスト：全部で11ある
+      */
      wxStaticText* treeSampleLabel;
      wxStaticText* threadListSampleLabel;
      wxStaticText* extractSampleLabel;
-     wxPanel* panel_7;
      wxStaticText* logWindowSampleLabel;
      wxStaticText* threadTitleSampleLabel;
      wxStaticText* threadViewSampleLabel;
      wxStaticText* kakikoSampleLabel;
      wxStaticText* memoSampleLabel;
-     wxPanel* panel_8;
      wxStaticText* hintSampleLabel;
      wxStaticText* linkSampleLabel;
-     wxPanel* panel_9;
      wxStaticText* othersSampleLabel;
+
+     wxStaticBox* sizer_6_staticbox;
+     wxStaticBox* sizer_5_staticbox;
+     wxStaticBox* sizer_4_staticbox;
+     wxPanel* panel_7;
+     wxPanel* panel_8;
+     wxPanel* panel_9;
      wxPanel* panel_4;
      wxButton* treeFontButton;
      wxButton* threadListFontButton;

@@ -126,12 +126,6 @@ private:
      void OnGetBoardList(wxCommandEvent& event);
      void CheckLogDirectory(wxCommandEvent& event);
      void OnVersionInfo(wxCommandEvent& event);
-     void FontDialogBoardTree(wxCommandEvent& event);
-     void FontDialogLogWindow(wxCommandEvent& event);
-     void FontDialogBoardNotebook(wxCommandEvent& event);
-     void FontDialogThreadNotebook(wxCommandEvent& event);
-     void FontDialogThreadContents(wxCommandEvent& event);
-     void SetFontDialog(const int enumType);
 
      // JaneClone公式サイトをブラウザで開く
      void OnOpenJaneCloneOfficial(wxCommandEvent& event) {
@@ -401,12 +395,10 @@ private:
      /**
       *  フォント読み出し系の処理
       */
-     // 現在使用しているフォントの情報を取得する
-     wxFont GetCurrentFont();
-     // フォント情報をコンフィグファイルに書き出す
-     void WriteFontInfo(wxWindow* current);
      // ウィジェットの名前ごとにコンフィグファイルから設定を取り出す
      wxFont ReadFontInfo(const wxString& widgetName);
+     // 現在使用しているフォントを取得する
+     wxFont GetCurrentFont();
 
      /**
       *  検索ボックス系の処理

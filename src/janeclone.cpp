@@ -58,13 +58,6 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_DeleteDatFile, JaneClone::DeleteDatFile)
    EVT_MENU(ID_ReloadThisThread, JaneClone::ReloadThisThread)
    EVT_MENU(ID_CallResponseWindow, JaneClone::CallResponseWindow)
-   // フォントの設定用ダイアログを表示させる
-   EVT_MENU(ID_TreeFontButton, JaneClone::FontDialogBoardTree)
-   EVT_MENU(ID_LogWindowFontButton, JaneClone::FontDialogLogWindow)
-   EVT_MENU(ID_OthersFontButton, JaneClone::FontDialogBoardNotebook)
-   EVT_MENU(ID_OthersFontButton, JaneClone::FontDialogThreadNotebook)
-   EVT_MENU(ID_FontDialogThreadContents, JaneClone::FontDialogThreadContents)
-
    EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
    EVT_MENU(ID_OnOpen2chViewerOfficial, JaneClone::OnOpen2chViewerOfficial)
    EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
@@ -272,12 +265,6 @@ void JaneClone::SetJaneCloneManuBar() {
       */
      wxMenu *menu2 = new wxMenu;
      wxMenu* font = new wxMenu();
-     font->Append(ID_FontDialogBoardTree, wxT("板一覧ツリー"), wxT("板一覧ツリーで使用するフォントを設定します"));
-     font->Append(ID_FontDialogLogWindow, wxT("ログ出力画面"), wxT("ログ出力画面で使用するフォントを設定します"));
-     font->Append(ID_FontDialogBoardNotebook, wxT("スレッド一覧画面"), wxT("スレッド一覧画面で使用するフォントを設定します"));
-     font->Append(ID_FontDialogThreadNotebook, wxT("開いているスレ"), wxT("開いているスレ画面で使用するフォントを設定します"));
-     font->Append(ID_FontDialogThreadContents, wxT("スレッド内"), wxT("スレッド内で使用するフォントを設定します"));
-     menu2->AppendSubMenu(font, wxT("フォント設定"));
      /**
       * 板覧部分
       */
@@ -955,7 +942,10 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      if (enableBoardListTree) InitializeBoardList();
      // ツールバーの明示化
      m_floatToolBar->Realize();
-     // 前回設定されたフォント情報があれば設定する
+     /** 
+      * 前回設定されたフォント情報があれば設定する
+      * 板一覧ツリーのフォント設定は JaneClone::InitializeBoardListにて実施
+      */
      *m_logCtrl << wxT("前回使用したフォント情報の読み出し…\n");
      m_search_ctrl->SetFont(ReadFontInfo(SEARCH_BAR));
      m_url_input_panel->SetFont(ReadFontInfo(URL_BAR));
@@ -1972,6 +1962,16 @@ void JaneClone::Initialize2chBoardList() {
 				  wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
      vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
 
+     // プロパティファイルにフォント設定があれば使用する
+     wxString widgetsName = wxT("ID_TreeFontButton");
+     wxString widgetsInfo = wxEmptyString;
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+     if (widgetsInfo != wxEmptyString) {
+	  wxFont font;
+	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
+	  if(ret) m_tree_ctrl->SetFont(font);
+     }
+
      wxTreeItemData treeData;
      wxTreeItemId m_rootId;
 
@@ -2294,11 +2294,12 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
      JaneCloneUtil::SetJaneCloneProperties(wxT("SeparateXY"), separateIsX);
 
      // 各ウィジェットのフォント情報
+     /**
      for ( wxWindowList::const_iterator i = this->GetChildren().begin(); i != GetChildren().end(); ++i ) {
 	  if ( wxDynamicCast(*i, wxWindow) ) {
 	       WriteFontInfo((*i));
 	  }
-     }
+     }*/
 
      SetStatusText(wxT("終了前処理が終わりました！"));
 
@@ -2671,150 +2672,6 @@ wxFont JaneClone::GetCurrentFont() {
      // フォントが取得できなかった場合
      return *wxFont::New(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
 			 wxFONTWEIGHT_NORMAL, false, wxEmptyString, wxFONTENCODING_UTF8);
-}
-/**
- * 板一覧ツリー部分のフォント設定を呼び出す
- */
-void JaneClone::FontDialogBoardTree(wxCommandEvent& event) {
-     SetFontDialog(ID_FontDialogBoardTree);
-}
-/**
- * ログ出力画面のフォント設定を呼び出す
- */
-void JaneClone::FontDialogLogWindow(wxCommandEvent& event) {
-     SetFontDialog(ID_FontDialogLogWindow);
-}
-/**
- * 板一覧画面部分のフォント設定を呼び出す
- */
-void JaneClone::FontDialogBoardNotebook(wxCommandEvent& event) {
-     SetFontDialog(ID_FontDialogBoardNotebook);
-}
-/**
- * スレッド画面部分のフォント設定を呼び出す
- */
-void JaneClone::FontDialogThreadNotebook(wxCommandEvent& event) {
-     SetFontDialog(ID_FontDialogThreadNotebook);
-}
-/**
- * スレッド内で使用するフォント設定を呼び出す
- */
-void JaneClone::FontDialogThreadContents(wxCommandEvent& event) {
-     
-     wxFontData data;
-     wxFont font;
-     wxColour canvasTextColour;
-
-     data.SetInitialFont(font);
-     data.SetColour(canvasTextColour);
-      
-     wxFontDialog dialog((wxWindow*)this, data);
-     if (dialog.ShowModal() == wxID_OK) {
-	  // フォント設定用データを用意する
-	  wxFontData retData = dialog.GetFontData();
-	  font = retData.GetChosenFont();
-     }
-
-     // ex) Osaka
-     JaneCloneUtil::SetJaneCloneProperties(wxT("HTML.Font"), font.GetFaceName());
-     // ex) 10
-     JaneCloneUtil::SetJaneCloneProperties(wxT("HTML.PointSize"), wxString::Format(_("%d"), font.GetPointSize()));
-     this->Refresh();
-     this->Update();
-}
-/**
- * フォント設定処理の本体
- */
-void JaneClone::SetFontDialog(const int enumType) {
-
-     wxFontData data;
-     wxFont canvasFont;
-     wxColour canvasTextColour;
-
-     data.SetInitialFont(canvasFont);
-     data.SetColour(canvasTextColour);
-      
-     wxFontDialog dialog((wxWindow*)this, data);
-     if (dialog.ShowModal() == wxID_OK) {
-	  // フォント設定用データを用意する
-	  wxFontData retData = dialog.GetFontData();
-	  canvasFont = retData.GetChosenFont();
-	  canvasTextColour = retData.GetColour();
-
-	  // とりあえずthisの子ウィンドウを取得して初期化しておく
-	  wxWindowList::const_iterator i = this->GetChildren().begin();
-	  wxString wannaChange;
-
-	  // 設定対象ウィンドウを引き出してくる
-	  switch (enumType) {
-
-	  case ID_FontDialogBoardTree:
-	       wannaChange = BOARD_TREE;
-	       break;
-	  case ID_FontDialogLogWindow:
-	       wannaChange = LOG_WINDOW;
-	       break;
-	  case ID_FontDialogBoardNotebook:
-	       wannaChange = BOARD_NOTEBOOK;
-	       break;
-	  case ID_FontDialogThreadNotebook:
-	       wannaChange = THREAD_NOTEBOOK;
-	       break;
-	  }
-
-	  for ( wxWindowList::const_iterator i = this->GetChildren().begin(); i != GetChildren().end(); ++i ) {
-	       // boardNoteBookを親とするウィンドウクラスを引き出す
-	       if ( wxDynamicCast(*i, wxWindow) ) {
-		    if ((*i)->GetLabel() == wannaChange) {
-			 (*i)->SetFont(canvasFont);
-			 (*i)->Refresh();
-			 (*i)->Update();
-			 break;
-		    }
-	       }
-	  }
-     }
-}
-/**
- * フォント情報をコンフィグファイルに書き出す
- */
-void JaneClone::WriteFontInfo(wxWindow* current) {
-
-     if (current->GetLabel() == SEARCH_BAR) {
-	  wxFont f = current->GetFont();
-	  JaneCloneUtil::SetJaneCloneProperties(SEARCH_BAR, f.GetNativeFontInfoDesc());
-	  return;
-     }
-
-     if (current->GetLabel() == URL_BAR) {
-	  wxFont f = current->GetFont();
-	  JaneCloneUtil::SetJaneCloneProperties(URL_BAR, f.GetNativeFontInfoDesc());
-	  return; 
-     }
-
-     if (current->GetLabel() == BOARD_TREE) {
-	  wxFont f = current->GetFont();
-	  JaneCloneUtil::SetJaneCloneProperties(BOARD_TREE, f.GetNativeFontInfoDesc());
-	  return; 
-     }
-
-     if (current->GetLabel() == LOG_WINDOW) {
-	  wxFont f = current->GetFont();
-	  JaneCloneUtil::SetJaneCloneProperties(LOG_WINDOW, f.GetNativeFontInfoDesc());
-	  return; 
-     }
-
-     if (current->GetLabel() == BOARD_NOTEBOOK) {
-	  wxFont f = current->GetFont();
-	  JaneCloneUtil::SetJaneCloneProperties(BOARD_NOTEBOOK, f.GetNativeFontInfoDesc());
-	  return; 
-     }
-
-     if (current->GetLabel() == THREAD_NOTEBOOK) {
-	  wxFont f = current->GetFont();
-	  JaneCloneUtil::SetJaneCloneProperties(THREAD_NOTEBOOK, f.GetNativeFontInfoDesc());
-	  return; 
-     }
 }
 /**
  * フォント情報をコンフィグファイルから読み出す
