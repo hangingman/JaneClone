@@ -230,6 +230,47 @@ public:
      // end wxGlade
      ColorFontSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
+#ifdef __WXMAC__
+     // リソースの更新を行う
+     void UpdateResources() {
+
+	  // 内部で保存されたIDを元に文字列を生成する
+	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(m_id) );
+	  const wxString bgColor = wxString((const char*)str.c_str(), wxConvUTF8);
+
+	  // 背景色を変更する必要があるかどうかのフラグ
+	  bool needToChangeBGColor = false;
+
+	  wxColourData data;
+	  data.SetChooseFull(true);
+	  for (int i = 0; i < 16; i++)
+	  {
+	       wxColour colour(i*16, i*16, i*16);
+	       data.SetCustomColour(i, colour);
+	  }
+
+	  wxColourDialog dialog(this, &data);
+	  if (dialog.ShowModal() == wxID_OK)
+	  {
+	       wxColourData retData = dialog.GetColourData();
+	       wxColour col = retData.GetColour();
+	       // 結果を受け取る
+	       const wxString colorInfo = col.GetAsString();
+	       // フォント,色情報 の順でプロパティファイルに格納
+	       JaneCloneUtil::SetJaneCloneProperties(bgColor, colorInfo);
+	       needToChangeBGColor = true;
+	  }
+
+	  if (needToChangeBGColor)
+	  {
+	       SetSampleBGColorSetting(m_id);
+	  }
+
+	  return;
+     };
+#endif
+
+
 private:
      // begin wxGlade: ColorFontSettingPanel::methods
      void set_properties();
@@ -246,6 +287,23 @@ private:
      bool SetEachBGColorSetting(const wxString& bgColor);
      // 色・フォント設定用画面のサンプル部分の背景色を変更する
      void SetSampleBGColorSetting(const int id);
+
+#ifdef __WXMAC__
+     // メインのスレッドにイベントを送る
+     void SendUIUpdateEvent() {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_SettingPanelUpdate);
+	  wxString ui = wxT("ColorFontSettingPanel");
+	  event->SetString(ui.c_str());
+	  event->SetEventObject(this);
+
+   #if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+   #else
+	  this->GetEventHandler()->AddPendingEvent(*event);
+   #endif
+     };
+#endif
+
 
 protected:
      // begin wxGlade: ColorFontSettingPanel::attributes
@@ -302,6 +360,10 @@ protected:
      wxStaticText* label_1;
      wxPanel* panel_3;
      // end wxGlade
+
+     // 変数一時保存のため宣言
+     int m_id;
+
      DECLARE_EVENT_TABLE() 
 }; // wxGlade: end class
 

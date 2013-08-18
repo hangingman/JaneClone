@@ -619,13 +619,25 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 	   */
 	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
 	  const wxString bgColor = wxString((const char*)str.c_str(), wxConvUTF8);
+
+#ifndef __WXMAC__
 	  bool needToChangeBGColor = this->SetEachBGColorSetting(bgColor);
 
 	  if (needToChangeBGColor)
 	  {
 	       SetSampleBGColorSetting(id);
 	  }
+
      }
+     
+#else
+     // メインスレッドに更新してもらう
+     m_id = id;
+     SendUIUpdateEvent();
+
+     }
+
+#endif
 }
 /**
  * 各部位のフォントを設定し、プロパティファイルに書き出す

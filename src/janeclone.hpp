@@ -152,7 +152,9 @@ private:
      };
 
 #ifdef __WXMAC__
-     // 送られてきた情報をもとにGUIを更新
+     /** 
+      * 送られてきた情報をもとにGUIを更新するMacOSX特別処理 Macいい加減にしろよ...
+      */
      void UpdateJaneCloneUI(wxUpdateUIEvent& event) {
 	  wxObject* obj = event.GetEventObject();
 	  wxString  ui  = event.GetString();
@@ -169,6 +171,10 @@ private:
 	  } else if ( ui == wxT("NetworkSettingPanel") ) {
 	       if ( NetworkSettingPanel* net = dynamic_cast<NetworkSettingPanel*>(obj) ) {
 		    net->UpdateResources();
+	       }
+	  } else if ( ui == wxT("ColorFontSettingPanel") ) {
+	       if ( ColorFontSettingPanel* colour = dynamic_cast<ColorFontSettingPanel*>(obj) ) {
+		    colour->UpdateResources();
 	       }
 	  }
      };
