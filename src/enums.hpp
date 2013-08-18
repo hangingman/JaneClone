@@ -227,6 +227,13 @@ X_TABLE_ITEM(ID_MemoBGColorButton) \
 X_TABLE_ITEM(ID_HintBGColorButton) \
 X_TABLE_ITEM(ID_PopupBGColorButton) \
 X_TABLE_ITEM(ID_AllBGColorButton) \
+X_TABLE_ITEM(ID_UserSettingPanel) \
+X_TABLE_ITEM(ID_MaruUserID) \
+X_TABLE_ITEM(ID_MaruUserPassword) \
+X_TABLE_ITEM(ID_MaruAutoLoginCheck) \
+X_TABLE_ITEM(ID_MaruLogoutButton) \
+X_TABLE_ITEM(ID_BEMailAddress) \
+X_TABLE_ITEM(ID_BEPassword) \
 X_TABLE_ITEM(ID_JaneCloneEnumsEnd)
 
 // 列挙型の実体をマクロで生成する

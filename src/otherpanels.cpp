@@ -395,6 +395,103 @@ void BehaviorPanel::do_layout()
 }
 
 /**
+ * ユーザー設定設定用画面
+ */
+UserSettingPanel::UserSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+     wxPanel(parent, ID_UserSettingPanel, pos, size, wxTAB_TRAVERSAL)
+{
+     // begin wxGlade: UserSettingPanel::UserSettingPanel
+     panel_3 = new wxPanel(this, wxID_ANY);
+     panel_7 = new wxPanel(panel_3, wxID_ANY);
+     panel_6 = new wxPanel(panel_3, wxID_ANY);
+     panel_2 = new wxPanel(this, wxID_ANY);
+     panel_5 = new wxPanel(panel_2, wxID_ANY);
+     panel_9 = new wxPanel(panel_2, wxID_ANY);
+     sizer_2_staticbox = new wxStaticBox(panel_2, -1, wxT("２ちゃんねる"));
+     sizer_3_staticbox = new wxStaticBox(panel_3, -1, wxT("BE@2ch掲示板"));
+     panel_8 = new wxPanel(panel_2, wxID_ANY);
+     window_1 = new wxHtmlWindow(panel_2, wxID_ANY);
+     label_1 = new wxStaticText(panel_8, wxID_ANY, wxT("User ID:"));
+     maruUserID = new wxTextCtrl(panel_8, ID_MaruUserID, wxEmptyString);
+     label_2 = new wxStaticText(panel_9, wxID_ANY, wxT("Password:"));
+     maruUserPassword = new wxTextCtrl(panel_9, ID_MaruUserPassword, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
+     maruAutoLoginCheck = new wxCheckBox(panel_5, ID_MaruAutoLoginCheck, wxT("起動時に自動ログインする"));
+     maruLogoutButton = new wxButton(panel_5, ID_MaruLogoutButton, wxT("ログアウト"));
+     window_2 = new wxHtmlWindow(panel_3, wxID_ANY);
+     label_3 = new wxStaticText(panel_6, wxID_ANY, wxT("メールアドレス:"));
+     beMailAddress = new wxTextCtrl(panel_6, ID_BEMailAddress, wxEmptyString);
+     label_4 = new wxStaticText(panel_7, wxID_ANY, wxT("パスワード:"));
+     bePassword = new wxTextCtrl(panel_7, ID_BEPassword, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
+
+     set_properties();
+     do_layout();
+     // end wxGlade
+}
+
+
+void UserSettingPanel::set_properties()
+{
+     // begin wxGlade: UserSettingPanel::set_properties
+     // end wxGlade
+
+     // 2ch
+     const wxString text1 = 
+	  wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
+	       charset=UTF-8\"><title></title></head><body><span>２ちゃんねるビューア●に登録する</span>　<a href=\"http://2ch.tora3.net\">http://2ch.tora3.net</a></body></html>");
+     window_1->SetPage(text1);
+     // BE
+     const wxString text2 =
+	  wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
+	       charset=UTF-8\"><title></title></head><body><span>beユーザーに登録する</span>　<a href=\"http://be.2ch.net\">http://be.2ch.net</a></body></html>");
+     window_2->SetPage(text2);
+
+     // TODO:プロパティファイルから設定されている項目を読みだして設定する
+}
+
+
+void UserSettingPanel::do_layout()
+{
+     // begin wxGlade: UserSettingPanel::do_layout
+     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+     wxStaticBoxSizer* sizer_3 = new wxStaticBoxSizer(sizer_3_staticbox, wxVERTICAL);
+     wxBoxSizer* sizer_8 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_7 = new wxBoxSizer(wxHORIZONTAL);
+     wxStaticBoxSizer* sizer_2 = new wxStaticBoxSizer(sizer_2_staticbox, wxVERTICAL);
+     wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_5 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
+     sizer_2->Add(window_1, 2, wxEXPAND, 0);
+     sizer_4->Add(label_1, 1, wxALIGN_CENTER_VERTICAL, 5);
+     sizer_4->Add(maruUserID, 5, wxALIGN_CENTER_VERTICAL, 5);
+     panel_8->SetSizer(sizer_4);
+     sizer_2->Add(panel_8, 1, wxEXPAND, 0);
+     sizer_5->Add(label_2, 1, wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(maruUserPassword, 5, wxALIGN_CENTER_VERTICAL, 5);
+     panel_9->SetSizer(sizer_5);
+     sizer_2->Add(panel_9, 1, wxEXPAND, 0);
+     sizer_6->Add(maruAutoLoginCheck, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_6->Add(maruLogoutButton, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_5->SetSizer(sizer_6);
+     sizer_2->Add(panel_5, 1, wxEXPAND, 0);
+     panel_2->SetSizer(sizer_2);
+     sizer_1->Add(panel_2, 1, wxEXPAND, 0);
+     sizer_3->Add(window_2, 2, wxEXPAND, 0);
+     sizer_7->Add(label_3, 1, wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(beMailAddress, 5, wxALIGN_CENTER_VERTICAL, 5);
+     panel_6->SetSizer(sizer_7);
+     sizer_3->Add(panel_6, 1, wxEXPAND, 0);
+     sizer_8->Add(label_4, 1, wxALIGN_CENTER_VERTICAL, 5);
+     sizer_8->Add(bePassword, 5, wxALIGN_CENTER_VERTICAL, 5);
+     panel_7->SetSizer(sizer_8);
+     sizer_3->Add(panel_7, 1, wxEXPAND, 0);
+     panel_3->SetSizer(sizer_3);
+     sizer_1->Add(panel_3, 1, wxEXPAND, 0);
+     SetSizer(sizer_1);
+     sizer_1->Fit(this);
+     // end wxGlade
+}
+
+/**
  * 色・フォント設定用画面
  */
 // begin wxGlade: ::extracode
