@@ -798,7 +798,7 @@ void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
 	  {
 	       wxString widgetsName = wxEmptyString;
 	       wxString widgetsInfo = wxEmptyString;
-	       const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(iArray[i]) );
+	       const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
 	       widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
 	       JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
 
@@ -806,6 +806,10 @@ void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
 	       {
 		    wxColour bgColor;
 		    bool ret = bgColor.Set(widgetsInfo);
+		    /**
+		     * FIXME:wxWidgets-2.9以上でないと背景色が変更できない
+		     * wxStaticText -> wxGenericStaticText
+		     */
 		    if(ret) st->SetBackgroundColour(bgColor);
 
 		    this->Refresh();
