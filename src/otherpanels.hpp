@@ -10,7 +10,6 @@
 #include <wx/filepicker.h>
 #include <wx/colordlg.h>
 #include <wx/fontdlg.h>
-#include <wx/tokenzr.h>
 #include "enums.hpp"
 #include "janecloneutil.hpp"
 

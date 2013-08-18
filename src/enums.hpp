@@ -218,7 +218,7 @@ X_TABLE_ITEM(ID_HintFontButton) \
 X_TABLE_ITEM(ID_LinkFontButton) \
 X_TABLE_ITEM(ID_OthersFontButton) \
 X_TABLE_ITEM(ID_AllFontButton) \
-X_TABLE_ITEM(ID_ThreadBGColorButton) \
+X_TABLE_ITEM(ID_BoardListBGColorButton) \
 X_TABLE_ITEM(ID_ThreadListBGColorButton) \
 X_TABLE_ITEM(ID_LogWindowBGColorButton) \
 X_TABLE_ITEM(ID_ThreadTitleBGColorButton) \
