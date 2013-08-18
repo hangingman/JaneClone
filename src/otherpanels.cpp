@@ -445,7 +445,26 @@ void UserSettingPanel::set_properties()
 	       charset=UTF-8\"><title></title></head><body><span>beユーザーに登録する</span>　<a href=\"http://be.2ch.net\">http://be.2ch.net</a></body></html>");
      window_2->SetPage(text2);
 
-     // TODO:プロパティファイルから設定されている項目を読みだして設定する
+     // プロパティファイルから設定されている項目を読みだして設定する
+     std::pair <wxString, wxTextCtrl*> *pArray = new std::pair<wxString, wxTextCtrl*>[4];
+     pArray[0]  = std::make_pair(wxT("ID_MaruUserID"),            maruUserID);
+     pArray[1]  = std::make_pair(wxT("ID_MaruUserPassword"),      maruUserPassword);  
+     pArray[2]	= std::make_pair(wxT("ID_BEMailAddress"),	  beMailAddress);	 
+     pArray[3]	= std::make_pair(wxT("ID_BEPassword"),	          bePassword);	 
+
+     for (int i = 0; i < 4; i++ )
+     {
+	  wxString widgetsName = pArray[i].first;
+	  wxString widgetsInfo = wxEmptyString;
+	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+
+	  if (widgetsInfo != wxEmptyString) 
+	  {
+	       pArray[i].second->SetValue(widgetsInfo);
+	  }
+     }
+
+     delete[] pArray;
 }
 
 
