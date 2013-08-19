@@ -65,9 +65,41 @@ wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRT
      wxBitmap idx4(threadNewImg, wxBITMAP_TYPE_PNG);
      threadImage->Add(idx4);
      this->AssignImageList(threadImage, wxIMAGE_LIST_SMALL);
-     // 背景色の設定
-     m_attr.SetBackgroundColour(*wxLIGHT_GREY);
-     m_attr_search.SetBackgroundColour(wxColour(wxT("YELLOW")));
+
+     // プロパティファイルにフォント設定/背景色があれば使用する
+     wxString widgetsName = wxT("ID_ThreadListFontButton");
+     wxString widgetsInfo = wxEmptyString;
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+     if (widgetsInfo != wxEmptyString) {
+	  wxFont font;
+	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
+	  if(ret) m_attr.SetFont(font);
+     }
+     
+     widgetsName = wxT("ID_ExtractFontButton");
+     widgetsInfo.Clear();
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+     if (widgetsInfo != wxEmptyString) 
+     {
+	  wxFont font;
+	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
+	  if(ret) m_attr_search.SetFont(font);
+     }
+
+     widgetsName = wxT("ID_ThreadListBGColorButton");
+     widgetsInfo.Clear();
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+     if (widgetsInfo != wxEmptyString) 
+     {
+	  wxColour bgColor;
+	  bool ret = bgColor.Set(widgetsInfo);
+	  if(ret) m_attr.SetBackgroundColour(bgColor);
+	  if(ret) m_attr_search.SetBackgroundColour(bgColor);
+     } else {
+	  // デフォルト設定
+	  m_attr.SetBackgroundColour(*wxLIGHT_GREY);
+	  m_attr_search.SetBackgroundColour(wxColour(wxT("YELLOW")));
+     }     
      
      // ファイル読み出しメソッドの変更
      targetIsShingetsu ? FileLoadMethodShingetsu(boardName, outputPath, oldThreadMap)

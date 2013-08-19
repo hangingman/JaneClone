@@ -818,6 +818,25 @@ void JaneClone::DoLayout() {
      JaneCloneUtil::GetJaneCloneProperties(wxT("Perspective"), &perspective);
      m_mgr.LoadPerspective(perspective, true);
 
+     // プロパティファイルにフォント設定/背景色があれば使用する
+     wxString widgetsName = wxT("ID_LogWindowFontButton");
+     wxString widgetsInfo = wxEmptyString;
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+     if (widgetsInfo != wxEmptyString) {
+	  wxFont font;
+	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
+	  if(ret) m_logCtrl->SetFont(font);
+     }
+     widgetsName = wxT("ID_LogWindowBGColorButton");
+     widgetsInfo.Clear();
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+     if (widgetsInfo != wxEmptyString) 
+     {
+	  wxColour bgColor;
+	  bool ret = bgColor.Set(widgetsInfo);
+	  if(ret) m_logCtrl->SetBackgroundColour(bgColor);
+     }
+
      // Auiマネージャーの設定を反映する
      m_mgr.Update();
      // 初期設定はこのLayout()が呼ばれる前に行わなくてはいけない
