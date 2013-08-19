@@ -34,6 +34,8 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    settingwindow.hpp		\
 		    otherpanels.cpp		\
 		    otherpanels.hpp		\
+		    drawpane.cpp                \
+		    drawpane.hpp                \
 		    enums.hpp			\
 		    enumstring.hpp              \
 		    $(wildcard rc/*)
