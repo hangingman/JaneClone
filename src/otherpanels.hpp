@@ -375,17 +375,17 @@ protected:
      /**
       * サンプルのテキスト：全部で11ある
       */
-     wxStaticText* treeSampleLabel;
-     wxStaticText* threadListSampleLabel;
-     wxStaticText* extractSampleLabel;
-     wxStaticText* logWindowSampleLabel;
-     wxStaticText* threadTitleSampleLabel;
-     wxStaticText* threadViewSampleLabel;
-     wxStaticText* kakikoSampleLabel;
-     wxStaticText* memoSampleLabel;
-     wxStaticText* hintSampleLabel;
-     wxStaticText* linkSampleLabel;
-     wxStaticText* othersSampleLabel;
+     BasicDrawPane* treeSampleLabel;
+     BasicDrawPane* threadListSampleLabel;
+     BasicDrawPane* extractSampleLabel;
+     BasicDrawPane* logWindowSampleLabel;
+     BasicDrawPane* threadTitleSampleLabel;
+     BasicDrawPane* threadViewSampleLabel;
+     BasicDrawPane* kakikoSampleLabel;
+     BasicDrawPane* memoSampleLabel;
+     BasicDrawPane* hintSampleLabel;
+     BasicDrawPane* linkSampleLabel;
+     BasicDrawPane* othersSampleLabel;
 
      wxStaticBox* sizer_6_staticbox;
      wxStaticBox* sizer_5_staticbox;

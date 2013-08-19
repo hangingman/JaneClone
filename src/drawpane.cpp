@@ -51,9 +51,13 @@ END_EVENT_TABLE()
   void BasicDrawPane::keyReleased(wxKeyEvent& event) {}
 */
  
-BasicDrawPane::BasicDrawPane(wxFrame* parent) :
+BasicDrawPane::BasicDrawPane(wxWindow* parent, wxWindowID id, const wxString& title) :
 wxPanel(parent)
 {
+     // 内部テキスト
+     m_text = title;
+     // ID
+     this->SetId(id);
 }
  
 /*
@@ -92,7 +96,18 @@ void BasicDrawPane::Render(wxDC&  dc)
 {
      if ( !m_text.IsEmpty() )
      {
-	  dc.DrawText( m_text, 0, 0); 
+	  dc.SetFont( m_font );
+
+	  /*
+	   * ちょうど中央表示できるよう調整
+	   */
+	  int width, height;
+	  this->GetSize(&width, &height);
+	  const int cHeight = dc.GetCharHeight();
+	  const int cWidth  = dc.GetCharWidth();
+	  const int textLen = m_text.Len();
+	  const int textHalfSize = textLen * cWidth;
+	  dc.DrawText( m_text, width / 2 - textHalfSize, height / 2 - cHeight / 2 );
      }
 
      if ( m_bgColor.IsOk() ) 

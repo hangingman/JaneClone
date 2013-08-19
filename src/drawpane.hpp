@@ -33,11 +33,16 @@ class BasicDrawPane : public wxPanel
 {
     
 public:
-     BasicDrawPane(wxFrame* parent);
+     BasicDrawPane(wxWindow* parent, wxWindowID id, const wxString& title);
     
      void PaintEvent(wxPaintEvent & evt);
      void PaintNow();
      void Render(wxDC& dc);
+
+     void SetInnerFont(const wxFont& font)
+	  {
+	       m_font = font;
+	  };
 
      void SetInnerText(const wxString& text)
 	  {
@@ -63,6 +68,8 @@ public:
 
 private:
      
+     // 内部で保存するフォント
+     wxFont   m_font;
      // 内部で保存するテキスト
      wxString m_text;
      // 内部で保存する背景色
