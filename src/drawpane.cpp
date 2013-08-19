@@ -94,24 +94,28 @@ void BasicDrawPane::PaintNow()
  */
 void BasicDrawPane::Render(wxDC&  dc)
 {
+
+     int width, height;
+     this->GetSize(&width, &height);
+
+     if ( m_bgColor.IsOk() ) 
+     {
+	  dc.SetBrush(wxBrush(m_bgColor));
+	  dc.DrawRectangle(0, 0, width, height);
+     }
+
      if ( !m_text.IsEmpty() )
      {
+	  dc.SetBackgroundMode(wxTRANSPARENT);
 	  dc.SetFont( m_font );
 
 	  /*
 	   * ちょうど中央表示できるよう調整
 	   */
-	  int width, height;
-	  this->GetSize(&width, &height);
 	  const int cHeight = dc.GetCharHeight();
 	  const int cWidth  = dc.GetCharWidth();
 	  const int textLen = m_text.Len();
 	  const int textHalfSize = textLen * cWidth;
 	  dc.DrawText( m_text, width / 2 - textHalfSize, height / 2 - cHeight / 2 );
-     }
-
-     if ( m_bgColor.IsOk() ) 
-     {
-	  dc.SetBackground(wxBrush(m_bgColor));
      }
 }

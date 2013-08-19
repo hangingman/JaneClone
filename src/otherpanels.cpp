@@ -602,22 +602,22 @@ void ColorFontSettingPanel::set_properties()
      /**
       * フォントを設定する
       */
-     std::pair <wxString, BasicDrawPane*> *pArray = new std::pair<wxString, BasicDrawPane*>[STATIC_TEXT_NUMBER];
-     pArray[0]  = std::make_pair(wxT("ID_TreeFontButton"),        treeSampleLabel);
-     pArray[1]  = std::make_pair(wxT("ID_ThreadListFontButton"),  threadListSampleLabel);  
-     pArray[2]	= std::make_pair(wxT("ID_ExtractFontButton"),	  extractSampleLabel);	 
-     pArray[3]	= std::make_pair(wxT("ID_LogWindowFontButton"),	  logWindowSampleLabel);	 
-     pArray[4]	= std::make_pair(wxT("ID_ThreadTitleFontButton"), threadTitleSampleLabel);
-     pArray[5]	= std::make_pair(wxT("ID_KakikoFontButton"),	  threadViewSampleLabel); 
-     pArray[6]	= std::make_pair(wxT("ID_MemoFontButton"),	  kakikoSampleLabel);	 
-     pArray[7]	= std::make_pair(wxT("ID_HintFontButton"),	  memoSampleLabel);	 
-     pArray[8]	= std::make_pair(wxT("ID_LinkFontButton"),	  hintSampleLabel);	 
-     pArray[9]	= std::make_pair(wxT("ID_OthersFontButton"),	  linkSampleLabel);	 
-     pArray[10] = std::make_pair(wxT("ID_AllFontButton"),	  othersSampleLabel);	 
+     std::pair <wxString, BasicDrawPane*> *pFontArray = new std::pair<wxString, BasicDrawPane*>[STATIC_TEXT_NUMBER];
+     pFontArray[0]  = std::make_pair(wxT("ID_TreeFontButton"),        treeSampleLabel);
+     pFontArray[1]  = std::make_pair(wxT("ID_ThreadListFontButton"),  threadListSampleLabel);  
+     pFontArray[2]	= std::make_pair(wxT("ID_ExtractFontButton"),	  extractSampleLabel);	 
+     pFontArray[3]	= std::make_pair(wxT("ID_LogWindowFontButton"),	  logWindowSampleLabel);	 
+     pFontArray[4]	= std::make_pair(wxT("ID_ThreadTitleFontButton"), threadTitleSampleLabel);
+     pFontArray[5]	= std::make_pair(wxT("ID_KakikoFontButton"),	  threadViewSampleLabel); 
+     pFontArray[6]	= std::make_pair(wxT("ID_MemoFontButton"),	  kakikoSampleLabel);	 
+     pFontArray[7]	= std::make_pair(wxT("ID_HintFontButton"),	  memoSampleLabel);	 
+     pFontArray[8]	= std::make_pair(wxT("ID_LinkFontButton"),	  hintSampleLabel);	 
+     pFontArray[9]	= std::make_pair(wxT("ID_OthersFontButton"),	  linkSampleLabel);	 
+     pFontArray[10] = std::make_pair(wxT("ID_AllFontButton"),	  othersSampleLabel);	 
 
      for (int i = 0; i < STATIC_TEXT_NUMBER; i++ )
      {
-	  wxString widgetsName = pArray[i].first;
+	  wxString widgetsName = pFontArray[i].first;
 	  wxString widgetsInfo = wxEmptyString;
 	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
 
@@ -625,11 +625,47 @@ void ColorFontSettingPanel::set_properties()
 	  {
 	       wxFont font;
 	       bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
-	       if(ret) pArray[i].second->SetInnerFont(font);
+	       if(ret) pFontArray[i].second->SetInnerFont(font);
 	  }
      }
 
-     delete[] pArray;
+     delete[] pFontArray;
+
+     /**
+      * 背景色を設定する
+      */
+     std::pair <wxString, BasicDrawPane*> *pBGArray = new std::pair<wxString, BasicDrawPane*>[STATIC_TEXT_NUMBER];
+     pBGArray[0]  = std::make_pair(wxT("ID_BoardListBGColorButton"),   treeSampleLabel);
+     pBGArray[1]  = std::make_pair(wxT("ID_ThreadListBGColorButton"),  threadListSampleLabel);  
+     pBGArray[2]  = std::make_pair(wxT("ID_ThreadListBGColorButton"),  extractSampleLabel);	 
+     pBGArray[3]  = std::make_pair(wxT("ID_LogWindowBGColorButton"),   logWindowSampleLabel);	 
+     pBGArray[4]  = std::make_pair(wxT("ID_ThreadTitleBGColorButton"), threadTitleSampleLabel);
+     pBGArray[5]  = std::make_pair(wxT("ID_ThreadViewBGColorButton"),  threadViewSampleLabel); 
+     pBGArray[6]  = std::make_pair(wxT("ID_MemoBGColorButton"),	       kakikoSampleLabel);	 
+     pBGArray[7]  = std::make_pair(wxT("ID_MemoBGColorButton"),	       memoSampleLabel);	 
+     pBGArray[8]  = std::make_pair(wxT("ID_HintBGColorButton"),	       hintSampleLabel);	 
+     pBGArray[9]  = std::make_pair(wxT("ID_PopupBGColorButton"),       linkSampleLabel);	 
+     pBGArray[10] = std::make_pair(wxT("ID_AllFontButton"),	       othersSampleLabel);
+
+     for (int i = 0; i < STATIC_TEXT_NUMBER; i++ )
+     {
+	  wxString widgetsName = pBGArray[i].first;
+	  wxString widgetsInfo = wxEmptyString;
+	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+
+	  if (widgetsInfo != wxEmptyString) 
+	  {
+	       wxColour bgColor;
+	       bool ret = bgColor.Set(widgetsInfo);
+	       if(ret) pBGArray[i].second->SetInnerBGColor(bgColor);
+	  }
+     }
+
+     // 更新されたリソースの反映
+     this->Refresh();
+     this->Update();
+
+     delete[] pBGArray;
 }
 
 
@@ -831,7 +867,7 @@ void ColorFontSettingPanel::SetSampleFontSetting(const int id)
      } else if (id == ID_HintFontButton) {
 	  wannaChangeID = ID_HintSampleLabel;	  
      } else if (id == ID_LinkFontButton) {
-	  wannaChangeID = ID_LinkSampleLabel;	  
+	  wannaChangeID = ID_LinkSampleLabel;
      } else if (id == ID_OthersFontButton) {
 	  wannaChangeID = ID_OthersSampleLabel;	  
      } else if (id == ID_AllFontButton) {
@@ -842,7 +878,7 @@ void ColorFontSettingPanel::SetSampleFontSetting(const int id)
 	  return;
 
      wxWindow* window = FindWindowById(static_cast<long>(wannaChangeID), this);
-     if ( BasicDrawPane* st = dynamic_cast<BasicDrawPane*>(window))
+     if ( BasicDrawPane* bdp = dynamic_cast<BasicDrawPane*>(window))
      {
 	  wxString widgetsName = wxEmptyString;
 	  wxString widgetsInfo = wxEmptyString;
@@ -854,7 +890,7 @@ void ColorFontSettingPanel::SetSampleFontSetting(const int id)
 	  {
 	       wxFont font;
 	       bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
-	       if(ret) st->SetInnerFont(font);
+	       if(ret) bdp->SetInnerFont(font);
 
 	       this->Refresh();
 	       this->Update();
@@ -934,7 +970,7 @@ void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
      for (int i = 0; i < iArray.size(); i++ )
      {
 	  wxWindow* window = FindWindowById(static_cast<long>(iArray[i]), this);
-	  if ( BasicDrawPane* st = dynamic_cast<BasicDrawPane*>(window))
+	  if ( BasicDrawPane* bdp = dynamic_cast<BasicDrawPane*>(window))
 	  {
 	       wxString widgetsName = wxEmptyString;
 	       wxString widgetsInfo = wxEmptyString;
@@ -946,16 +982,17 @@ void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
 	       {
 		    wxColour bgColor;
 		    bool ret = bgColor.Set(widgetsInfo);
-		    if(ret) st->SetInnerBGColor(bgColor);
-
-		    this->Refresh();
-		    this->Update();
+		    if(ret) bdp->SetInnerBGColor(bgColor);
 	       }
 
 	  } else {
 	       wxMessageBox(wxT("内部エラー, 背景色の変更に失敗しました."), wxT("設定画面"), wxICON_ERROR);
 	       return;
 	  }
+
+	  // 更新されたリソースの反映
+	  this->Refresh();
+	  this->Update();
      }
 }
 

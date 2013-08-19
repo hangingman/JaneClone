@@ -1962,7 +1962,7 @@ void JaneClone::Initialize2chBoardList() {
 				  wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
      vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
 
-     // プロパティファイルにフォント設定があれば使用する
+     // プロパティファイルにフォント設定/背景色があれば使用する
      wxString widgetsName = wxT("ID_TreeFontButton");
      wxString widgetsInfo = wxEmptyString;
      JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
@@ -1970,6 +1970,15 @@ void JaneClone::Initialize2chBoardList() {
 	  wxFont font;
 	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
 	  if(ret) m_tree_ctrl->SetFont(font);
+     }
+     widgetsName = wxT("ID_BoardListBGColorButton");
+     widgetsInfo.Clear();
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+     if (widgetsInfo != wxEmptyString) 
+     {
+	  wxColour bgColor;
+	  bool ret = bgColor.Set(widgetsInfo);
+	  if(ret) m_tree_ctrl->SetBackgroundColour(bgColor);
      }
 
      wxTreeItemData treeData;
