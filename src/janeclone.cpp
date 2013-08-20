@@ -2068,10 +2068,8 @@ void JaneClone::Initialize2chBoardList() {
 	  // Hashのキー値をインクリメントしておく
 	  hashID++;
      }
-
-#if !wxCHECK_VERSION(2, 9, 0)
-     m_tree_ctrl->Expand(m_rootId);
-#endif
+     // 展開
+     m_tree_ctrl->Expand(m_tree_ctrl->GetRootItem());
 
      // パネルにSizerを設定する
      m_boardTreePanel->SetSizer(vbox);
@@ -2123,9 +2121,8 @@ void JaneClone::InitializeShingetsuNodeList() {
 	  m_shingetsu_tree_ctrl->AppendItem(m_shingetsu_tree_ctrl->GetRootItem(), shingetsuInfoArray[i], 1, 1);
      }
 
-#if !wxCHECK_VERSION(2, 9, 0)
-     m_tree_ctrl->Expand(m_rootId);
-#endif
+     // 展開
+     m_tree_ctrl->Expand(m_shingetsu_tree_ctrl->GetRootItem());
 
      // パネルにSizerを設定する
      m_shingetsuTreePanel->SetSizer(vbox);
@@ -3166,6 +3163,7 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 	  // 検索ボックスを設定する
 	  wxComboBox* searchWordCombo = new wxComboBox(searchBox, ID_ThreadSearchBarCombo, wxEmptyString, wxDefaultPosition, 
 						       wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
+	  searchWordCombo->SetLabel(boardName + wxT("_combo"));
 	  SupplySearchWords(searchWordCombo, ID_ThreadSearchBarCombo);
 
 	  // スレッド検索ボックスのID
@@ -3227,15 +3225,23 @@ void JaneClone::SupplySearchWords(wxComboBox* combo, const wxWindowID id) {
  */
 void JaneClone::SearchBoxDoSearch(wxCommandEvent& event) {
 
+     /**
+      * FIXME: ここ非常にソースが汚い
+      */
      wxWindow* window = dynamic_cast<wxWindow*>(event.GetEventObject());
      wxComboBox* combo = FindUserAttachedCombo(event, window);
-     const wxString keyword = combo->GetValue();
-     if (keyword.IsEmpty()) return;
+     wxString keyword = combo->GetValue();
 
      if (window != NULL && window->GetLabel() == BOARD_TREE_SEARCH) {
+	  if (keyword.IsEmpty()) return;
 	  SearchBoardTree(keyword);
      } else if (window != NULL && window->GetLabel() == THREADLIST_SEARCH) {
-	  SearchThreadList(keyword);
+	  const wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+	  if ( wxComboBox* threadListCombo = dynamic_cast<wxComboBox*>( this->FindWindowByLabel(boardName + wxT("_combo"))) ) {
+	       keyword = threadListCombo->GetValue();
+	       if (keyword.IsEmpty()) return;
+	       SearchThreadList(keyword);
+	  }
      }
      // コンボボックスに検索したキーワードをつめる
      combo->Append(keyword);
@@ -3276,6 +3282,7 @@ void JaneClone::SearchBoardTree(const wxString& keyword) {
 
 	  wxTreeItemId tmp = m_tree_ctrl->AppendItem(category, boardName);
 	  m_tree_ctrl->SetItemImage(tmp, 1, wxTreeItemIcon_Normal);
+
 #if !wxCHECK_VERSION(2, 9, 0)
 	  m_tree_ctrl->Expand(category);
 #endif
@@ -3294,14 +3301,13 @@ void JaneClone::SearchThreadList(const wxString& keyword) {
      wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
 
      // リストコントロールを引き出してくる
-     VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
-     if (vbListCtrl == NULL) {
+     if ( VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName)) ) {
+	  // スレッドタイトル検索を実施する
+	  vbListCtrl->SearchAndSortItems(keyword);
+     } else {
 	  wxMessageBox(wxT("内部エラー, スレッド検索処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
 	  return;
      }
-
-     // スレッドタイトル検索を実施する
-     vbListCtrl->SearchAndSortItems(keyword);
 }
 /**
  * スレッド検索ボックスを隠す
