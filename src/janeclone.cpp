@@ -2847,10 +2847,15 @@ void JaneClone::OnClickURLWindowButton(wxCommandEvent& event) {
 
      const wxString inputURL = m_url_input->GetValue();
 
-     if (inputURL.Contains(wxT("/test/read.cgi/"))) {
-	  // スレッドを表すURLの可能性がある場合
+     if (inputURL.Contains(wxT("2ch.net"))) {
+	  // 2chのURLである可能性が微粒子レベルで存在する？
+	  if (inputURL.Contains(wxT("/test/read.cgi/"))) {
+	       // スレッドを表すURLの可能性がある場合
+	  } else {
+	       // 板名を表すURLの可能性がある場合
+	  }
      } else {
-	  // 板名を表すURLの可能性がある場合
+	  wxLaunchDefaultBrowser(inputURL);
      }
 }
 /**
