@@ -996,3 +996,108 @@ void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
      }
 }
 
+/**
+ * タブ色設定用画面
+ */
+TabColorSettingPanel::TabColorSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+     wxPanel(parent, ID_TabColorSettingPanel, pos, size, wxTAB_TRAVERSAL)
+{
+     // begin wxGlade: TabColorSettingPanel::TabColorSettingPanel
+     panel_2 = new wxPanel(this, wxID_ANY);
+     panel_3 = new wxPanel(panel_2, wxID_ANY);
+     panel_5 = new wxPanel(panel_2, wxID_ANY);
+     panel_8 = new wxPanel(panel_5, wxID_ANY);
+     panel_7 = new wxPanel(panel_5, wxID_ANY);
+     panel_6 = new wxPanel(panel_5, wxID_ANY);
+     sizer_6_staticbox = new wxStaticBox(panel_7, -1, wxT("非アクティブタブ"));
+     sizer_5_staticbox = new wxStaticBox(panel_6, -1, wxT("アクティブタブ"));
+     threadTabColorCheck = new wxCheckBox(this, ID_ThreadTabColorCheck, wxT("スレタブの色を変更する"));
+     activeTabBGColorButton = new wxButton(panel_6, ID_ActiveTabBGColorButton, wxT("背景色"));
+     defaultActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_DefaultActiveTabSampleLabel, wxT("Dafault"));
+     readingActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_ReadingActiveTabSampleLabel, wxT("読み込み中"));
+     brokenActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_DefaultActiveTabSampleLabel, wxT("ログ破損時"));
+     cannotPostActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_CannotPostActiveTabSampleLabel, wxT("書き込み不可"));
+     updateActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_UpdateActiveTabSampleLabel, wxT("更新あり"));
+     partialContentActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_PartialContentActiveTabSampleLabel, wxT("新着あり"));
+     deactiveTabBGColorButton_copy = new wxButton(panel_7, ID_DeactiveTabBGColorButton, wxT("背景色"));
+     defaultDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_DefaultDeactiveTabSampleLabel, wxT("Dafault"));
+     readingDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_ReadingDeactiveTabSampleLabel, wxT("読み込み中"));
+     brokenDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_BrokenDeactiveTabSampleLabel, wxT("ログ破損時"));
+     cannotPostDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_CannotPostDeactiveTabSampleLabel, wxT("書き込み不可"));
+     updateDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_UpdateDeactiveTabSampleLabel, wxT("更新あり"));
+     partialContentDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_PartialContentDeactiveTabSampleLabel, wxT("新着あり"));
+     panel_9 = new wxPanel(panel_8, wxID_ANY);
+     threadTabDefaultFontColorButton = new wxButton(panel_8, ID_ThreadTabDefaultFontColorButton, wxT("デフォルト"));
+     threadTabReadingFontColorButton = new wxButton(panel_8, ID_ThreadTabReadingFontColorButton, wxT("読込中"));
+     threadTabBrokenFontColorButton = new wxButton(panel_8, ID_ThreadTabBrokenFontColorButton, wxT("ログ破損"));
+     threadTabCannotPostFontColorButton = new wxButton(panel_8, ID_ThreadTabCannotPostFontColorButton, wxT("書込不可"));
+     threadTabUpdateFontColorButton = new wxButton(panel_8, ID_ThreadTabUpdateFontColorButton, wxT("更新あり"));
+     threadTabPartialContentFontColorButton = new wxButton(panel_8, ID_ThreadTabPartialContentFontColorButton, wxT("新着あり"));
+     panel_4 = new wxPanel(panel_3, wxID_ANY);
+     autoReloadSampleLabel = new BasicDrawPane(panel_3, ID_AutoReloadSampleLabel, wxT("オートリロード中"));
+     autoReloadFontColorButton = new wxButton(panel_3, ID_AutoReloadFontColorButton, wxT("オートリロード中"));
+
+     set_properties();
+     do_layout();
+     // end wxGlade
+}
+
+
+void TabColorSettingPanel::set_properties()
+{
+     // begin wxGlade: TabColorSettingPanel::set_properties
+     threadTabColorCheck->SetValue(1);
+     // end wxGlade
+}
+
+void TabColorSettingPanel::do_layout()
+{
+     // begin wxGlade: TabColorSettingPanel::do_layout
+     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_2 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_7 = new wxBoxSizer(wxVERTICAL);
+     wxStaticBoxSizer* sizer_6 = new wxStaticBoxSizer(sizer_6_staticbox, wxVERTICAL);
+     wxStaticBoxSizer* sizer_5 = new wxStaticBoxSizer(sizer_5_staticbox, wxVERTICAL);
+     sizer_1->Add(threadTabColorCheck, 0, 0, 5);
+     sizer_5->Add(activeTabBGColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(defaultActiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     sizer_5->Add(readingActiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     sizer_5->Add(brokenActiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     sizer_5->Add(cannotPostActiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     sizer_5->Add(updateActiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     sizer_5->Add(partialContentActiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     panel_6->SetSizer(sizer_5);
+     sizer_4->Add(panel_6, 1, wxEXPAND, 0);
+     sizer_6->Add(deactiveTabBGColorButton_copy, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_6->Add(defaultDeactiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     sizer_6->Add(readingDeactiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     sizer_6->Add(brokenDeactiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     sizer_6->Add(cannotPostDeactiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     sizer_6->Add(updateDeactiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     sizer_6->Add(partialContentDeactiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
+     panel_7->SetSizer(sizer_6);
+     sizer_4->Add(panel_7, 1, wxEXPAND, 0);
+     sizer_7->Add(panel_9, 1, wxEXPAND, 0);
+     sizer_7->Add(threadTabDefaultFontColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(threadTabReadingFontColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(threadTabBrokenFontColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(threadTabCannotPostFontColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(threadTabUpdateFontColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(threadTabPartialContentFontColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_8->SetSizer(sizer_7);
+     sizer_4->Add(panel_8, 1, wxEXPAND, 0);
+     panel_5->SetSizer(sizer_4);
+     sizer_2->Add(panel_5, 1, wxEXPAND, 0);
+     sizer_3->Add(panel_4, 1, wxEXPAND, 0);
+     sizer_3->Add(autoReloadSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_3->Add(autoReloadFontColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_3->SetSizer(sizer_3);
+     sizer_2->Add(panel_3, 0, wxEXPAND, 0);
+     panel_2->SetSizer(sizer_2);
+     sizer_1->Add(panel_2, 1, wxEXPAND, 0);
+     SetSizer(sizer_1);
+     sizer_1->Fit(this);
+     // end wxGlade
+}

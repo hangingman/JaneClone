@@ -234,6 +234,29 @@ X_TABLE_ITEM(ID_MaruAutoLoginCheck) \
 X_TABLE_ITEM(ID_MaruLogoutButton) \
 X_TABLE_ITEM(ID_BEMailAddress) \
 X_TABLE_ITEM(ID_BEPassword) \
+X_TABLE_ITEM(ID_TabColorSettingPanel) \
+X_TABLE_ITEM(ID_ThreadTabColorCheck) \
+X_TABLE_ITEM(ID_ActiveTabBGColorButton) \
+X_TABLE_ITEM(ID_DefaultActiveTabSampleLabel) \
+X_TABLE_ITEM(ID_ReadingActiveTabSampleLabel) \
+X_TABLE_ITEM(ID_CannotPostActiveTabSampleLabel) \
+X_TABLE_ITEM(ID_UpdateActiveTabSampleLabel) \
+X_TABLE_ITEM(ID_PartialContentActiveTabSampleLabel) \
+X_TABLE_ITEM(ID_DeactiveTabBGColorButton) \
+X_TABLE_ITEM(ID_DefaultDeactiveTabSampleLabel) \
+X_TABLE_ITEM(ID_ReadingDeactiveTabSampleLabel) \
+X_TABLE_ITEM(ID_BrokenDeactiveTabSampleLabel) \
+X_TABLE_ITEM(ID_CannotPostDeactiveTabSampleLabel) \
+X_TABLE_ITEM(ID_UpdateDeactiveTabSampleLabel) \
+X_TABLE_ITEM(ID_PartialContentDeactiveTabSampleLabel) \
+X_TABLE_ITEM(ID_ThreadTabDefaultFontColorButton) \
+X_TABLE_ITEM(ID_ThreadTabReadingFontColorButton) \
+X_TABLE_ITEM(ID_ThreadTabBrokenFontColorButton) \
+X_TABLE_ITEM(ID_ThreadTabCannotPostFontColorButton) \
+X_TABLE_ITEM(ID_ThreadTabUpdateFontColorButton) \
+X_TABLE_ITEM(ID_ThreadTabPartialContentFontColorButton) \
+X_TABLE_ITEM(ID_AutoReloadSampleLabel) \
+X_TABLE_ITEM(ID_AutoReloadFontColorButton) \
 X_TABLE_ITEM(ID_JaneCloneEnumsEnd)
 
 // 列挙型の実体をマクロで生成する

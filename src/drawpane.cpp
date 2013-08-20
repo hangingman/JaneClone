@@ -115,7 +115,7 @@ void BasicDrawPane::Render(wxDC&  dc)
 	  const int cHeight = dc.GetCharHeight();
 	  const int cWidth  = dc.GetCharWidth();
 	  const int textLen = m_text.Len();
-	  const int textHalfSize = textLen * cWidth;
+	  const int textHalfSize = textLen * cWidth / 2;
 	  dc.DrawText( m_text, width / 2 - textHalfSize, height / 2 - cHeight / 2 );
      }
 }

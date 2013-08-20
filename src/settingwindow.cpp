@@ -173,6 +173,10 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new ColorFontSettingPanel(settingPanel));
 	  settingPanel->SetSizer(vbox);
+     } else if (itemStr == wxT("タブ色")) {
+	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  vbox->Add(new TabColorSettingPanel(settingPanel));
+	  settingPanel->SetSizer(vbox);
      }
 
      // ウィンドウのタイトルを変える

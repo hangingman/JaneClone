@@ -431,4 +431,63 @@ protected:
      DECLARE_EVENT_TABLE() 
 }; // wxGlade: end class
 
+
+// begin wxGlade: ::extracode
+// end wxGlade
+
+/**
+ * タブ色設定用画面
+ */
+class TabColorSettingPanel: public wxPanel {
+
+public:
+     // begin wxGlade: TabColorSettingPanel::ids
+     // end wxGlade
+     TabColorSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+
+private:
+     // begin wxGlade: TabColorSettingPanel::methods
+     void set_properties();
+     void do_layout();
+     // end wxGlade
+
+protected:
+     // begin wxGlade: TabColorSettingPanel::attributes
+     wxStaticBox* sizer_6_staticbox;
+     wxStaticBox* sizer_5_staticbox;
+     wxCheckBox* threadTabColorCheck;
+     wxButton* activeTabBGColorButton;
+     BasicDrawPane* defaultActiveTabSampleLabel;
+     BasicDrawPane* readingActiveTabSampleLabel;
+     BasicDrawPane* brokenActiveTabSampleLabel;
+     BasicDrawPane* cannotPostActiveTabSampleLabel;
+     BasicDrawPane* updateActiveTabSampleLabel;
+     BasicDrawPane* partialContentActiveTabSampleLabel;
+     wxPanel* panel_6;
+     wxButton* deactiveTabBGColorButton_copy;
+     BasicDrawPane* defaultDeactiveTabSampleLabel;
+     BasicDrawPane* readingDeactiveTabSampleLabel;
+     BasicDrawPane* brokenDeactiveTabSampleLabel;
+     BasicDrawPane* cannotPostDeactiveTabSampleLabel;
+     BasicDrawPane* updateDeactiveTabSampleLabel;
+     BasicDrawPane* partialContentDeactiveTabSampleLabel;
+     wxPanel* panel_7;
+     wxPanel* panel_9;
+     wxButton* threadTabDefaultFontColorButton;
+     wxButton* threadTabReadingFontColorButton;
+     wxButton* threadTabBrokenFontColorButton;
+     wxButton* threadTabCannotPostFontColorButton;
+     wxButton* threadTabUpdateFontColorButton;
+     wxButton* threadTabPartialContentFontColorButton;
+     wxPanel* panel_8;
+     wxPanel* panel_5;
+     wxPanel* panel_4;
+     BasicDrawPane* autoReloadSampleLabel;
+     wxButton* autoReloadFontColorButton;
+     /** ID_AutoReloadFontColorButton*/ 
+     wxPanel* panel_3;
+     wxPanel* panel_2;
+     // end wxGlade
+}; // wxGlade: end class
+
 #endif // OTHERPANELS_H
