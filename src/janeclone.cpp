@@ -2777,8 +2777,10 @@ void JaneClone::OnChangedBoardTab(wxAuiNotebookEvent& event) {
      if (wxEmptyString != boardNoteBook->GetPageText(event.GetSelection())) {
 	  // 板一覧タブの場合
 	  wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
-	  URLvsBoardName hash = retainHash[boardName];	  
-	  m_url_input->SetValue(hash.boardURL);
+	  URLvsBoardName hash = retainHash[boardName];
+
+	  if (hash.boardURL != wxT("test/read.cgi///"))
+	       m_url_input->SetValue(hash.boardURL);
 
      } else {
 	  // その他などないのでエラー
@@ -2825,7 +2827,9 @@ void JaneClone::OnChangedThreadTab(wxAuiNotebookEvent& event) {
 
 	  // URL表示部分にスレッドのURLを設定する
 	  wxString targetURL = GetThreadURL(title, boardNameAscii, origNumber);
-	  m_url_input->SetValue(targetURL);
+
+	  if (targetURL != wxT("test/read.cgi///"))
+	       m_url_input->SetValue(targetURL);
 
      } else {
 	  // その他などないのでエラー
