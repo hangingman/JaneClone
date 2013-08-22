@@ -3173,6 +3173,7 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 	  wxComboBox* searchWordCombo = new wxComboBox(searchBox, ID_ThreadSearchBarCombo, wxEmptyString, wxDefaultPosition, 
 						       wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
 	  searchWordCombo->SetLabel(boardName + wxT("_combo"));
+	  searchWordCombo->SetValue(wxEmptyString);
 	  SupplySearchWords(searchWordCombo, ID_ThreadSearchBarCombo);
 
 	  // スレッド検索ボックスのID
@@ -3194,6 +3195,7 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 						       wxCB_DROPDOWN);
 
 	  SupplySearchWords(searchWordCombo, ID_BoardSearchBarCombo);
+	  searchWordCombo->SetValue(wxEmptyString);
 
 	  // 板名検索ボックスのID
 	  searchBox->AddControl(searchWordCombo, wxT("board_tree_combo"));
