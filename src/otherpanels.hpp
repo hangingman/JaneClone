@@ -428,7 +428,7 @@ protected:
      // 変数一時保存のため宣言
      int m_id;
 
-     DECLARE_EVENT_TABLE() 
+     DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
 
 
@@ -451,43 +451,61 @@ private:
      void do_layout();
      // end wxGlade
 
+     // タブ色設定用画面のボタンイベントを処理する
+     void OnClickTabColorSettingButton(wxCommandEvent& event);
+     // 各部位の背景色を設定し、プロパティファイルに書き出す
+     bool SetEachBGColorSetting(const wxString& bgColor);
+     // タブ色設定用画面のサンプル部分の背景色を変更する
+     void SetSampleBGColorSetting(const int id);
+     // 色・フォント設定用画面のサンプル部分のフォント色を変更する
+     bool SetEachFontColorSetting(const wxString& fontColor);
+     // タブ色設定用画面のサンプル部分のフォント色を変更する
+     void SetSampleFontColorSetting(const int id);
+
 protected:
      // begin wxGlade: TabColorSettingPanel::attributes
-     wxStaticBox* sizer_6_staticbox;
-     wxStaticBox* sizer_5_staticbox;
-     wxCheckBox* threadTabColorCheck;
-     wxButton* activeTabBGColorButton;
+
+     /**
+      * サンプル用テキスト：全部で13
+      */
      BasicDrawPane* defaultActiveTabSampleLabel;
      BasicDrawPane* readingActiveTabSampleLabel;
      BasicDrawPane* brokenActiveTabSampleLabel;
      BasicDrawPane* cannotPostActiveTabSampleLabel;
      BasicDrawPane* updateActiveTabSampleLabel;
      BasicDrawPane* partialContentActiveTabSampleLabel;
-     wxPanel* panel_6;
-     wxButton* deactiveTabBGColorButton_copy;
      BasicDrawPane* defaultDeactiveTabSampleLabel;
      BasicDrawPane* readingDeactiveTabSampleLabel;
      BasicDrawPane* brokenDeactiveTabSampleLabel;
      BasicDrawPane* cannotPostDeactiveTabSampleLabel;
      BasicDrawPane* updateDeactiveTabSampleLabel;
      BasicDrawPane* partialContentDeactiveTabSampleLabel;
-     wxPanel* panel_7;
-     wxPanel* panel_9;
+     BasicDrawPane* autoReloadSampleLabel;
+
+     wxButton* activeTabBGColorButton;
      wxButton* threadTabDefaultFontColorButton;
      wxButton* threadTabReadingFontColorButton;
      wxButton* threadTabBrokenFontColorButton;
      wxButton* threadTabCannotPostFontColorButton;
      wxButton* threadTabUpdateFontColorButton;
      wxButton* threadTabPartialContentFontColorButton;
+     wxButton* deactiveTabBGColorButton;
+     wxButton* autoReloadFontColorButton; 
+
+     wxStaticBox* sizer_6_staticbox;
+     wxStaticBox* sizer_5_staticbox;
+     wxCheckBox* threadTabColorCheck;
+     wxPanel* panel_6;
+     wxPanel* panel_7;
+     wxPanel* panel_9;
      wxPanel* panel_8;
      wxPanel* panel_5;
      wxPanel* panel_4;
-     BasicDrawPane* autoReloadSampleLabel;
-     wxButton* autoReloadFontColorButton;
-     /** ID_AutoReloadFontColorButton*/ 
      wxPanel* panel_3;
      wxPanel* panel_2;
      // end wxGlade
+
+     DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
 
 #endif // OTHERPANELS_H

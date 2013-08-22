@@ -239,6 +239,7 @@ X_TABLE_ITEM(ID_ThreadTabColorCheck) \
 X_TABLE_ITEM(ID_ActiveTabBGColorButton) \
 X_TABLE_ITEM(ID_DefaultActiveTabSampleLabel) \
 X_TABLE_ITEM(ID_ReadingActiveTabSampleLabel) \
+X_TABLE_ITEM(ID_BrokenActiveTabSampleLabel) \
 X_TABLE_ITEM(ID_CannotPostActiveTabSampleLabel) \
 X_TABLE_ITEM(ID_UpdateActiveTabSampleLabel) \
 X_TABLE_ITEM(ID_PartialContentActiveTabSampleLabel) \

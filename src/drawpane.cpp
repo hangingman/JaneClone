@@ -104,6 +104,11 @@ void BasicDrawPane::Render(wxDC&  dc)
 	  dc.DrawRectangle(0, 0, width, height);
      }
 
+     if ( m_textForeGround.IsOk() )
+     {
+	  dc.SetTextForeground( m_textForeGround );
+     }
+
      if ( !m_text.IsEmpty() )
      {
 	  dc.SetBackgroundMode(wxTRANSPARENT);

@@ -54,6 +54,11 @@ public:
 	       m_bgColor = color;
 	  };
 
+     void SetInnerTextForeGroundColor(const wxColour& color)
+	  {
+	       m_textForeGround = color;
+	  };
+
      // some useful events
      /*
        void mouseMoved(wxMouseEvent& event);
@@ -74,6 +79,8 @@ private:
      wxString m_text;
      // 内部で保存する背景色
      wxColour m_bgColor;
+     // 内部で保存するテキストの色
+     wxColour m_textForeGround;
     
      DECLARE_EVENT_TABLE()
 };

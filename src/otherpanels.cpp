@@ -28,13 +28,13 @@
  * イベントテーブル
  */
 BEGIN_EVENT_TABLE(PathSettingPanel, wxPanel)
-   EVT_CHECKBOX(ID_BrowserCheck, PathSettingPanel::OnBrowserCheck)
-   EVT_DIRPICKER_CHANGED(ID_DirPickerBrowser, PathSettingPanel::OnChangeDirPickerBrowser)
+   EVT_CHECKBOX(ID_BrowserCheck,                PathSettingPanel::OnBrowserCheck)
+   EVT_DIRPICKER_CHANGED(ID_DirPickerBrowser,   PathSettingPanel::OnChangeDirPickerBrowser)
    EVT_DIRPICKER_CHANGED(ID_DirPickerBoardList, PathSettingPanel::OnChangeDirPickerBoardList)
-   EVT_DIRPICKER_CHANGED(ID_DirPickerSkin, PathSettingPanel::OnChangeDirPickerSkin)
-   EVT_BUTTON(ID_ClearBrowserPath, PathSettingPanel::ClearPathSetting)
-   EVT_BUTTON(ID_ClearBoardListPath, PathSettingPanel::ClearPathSetting)
-   EVT_BUTTON(ID_ClearSkinPath, PathSettingPanel::ClearPathSetting)
+   EVT_DIRPICKER_CHANGED(ID_DirPickerSkin,      PathSettingPanel::OnChangeDirPickerSkin)
+   EVT_BUTTON(ID_ClearBrowserPath,              PathSettingPanel::ClearPathSetting)
+   EVT_BUTTON(ID_ClearBoardListPath,            PathSettingPanel::ClearPathSetting)
+   EVT_BUTTON(ID_ClearSkinPath,                 PathSettingPanel::ClearPathSetting)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(ColorFontSettingPanel, wxPanel)
@@ -60,6 +60,17 @@ BEGIN_EVENT_TABLE(ColorFontSettingPanel, wxPanel)
    EVT_BUTTON(ID_AllBGColorButton,        ColorFontSettingPanel::OnClickColorFontSettingButton) 
 END_EVENT_TABLE()
 
+BEGIN_EVENT_TABLE(TabColorSettingPanel, wxPanel)
+   EVT_BUTTON(ID_ActiveTabBGColorButton                , TabColorSettingPanel::OnClickTabColorSettingButton) 	
+   EVT_BUTTON(ID_DeactiveTabBGColorButton              , TabColorSettingPanel::OnClickTabColorSettingButton) 	
+   EVT_BUTTON(ID_ThreadTabDefaultFontColorButton       , TabColorSettingPanel::OnClickTabColorSettingButton) 	
+   EVT_BUTTON(ID_ThreadTabReadingFontColorButton       , TabColorSettingPanel::OnClickTabColorSettingButton) 	
+   EVT_BUTTON(ID_ThreadTabBrokenFontColorButton        , TabColorSettingPanel::OnClickTabColorSettingButton) 	
+   EVT_BUTTON(ID_ThreadTabCannotPostFontColorButton    , TabColorSettingPanel::OnClickTabColorSettingButton) 	
+   EVT_BUTTON(ID_ThreadTabUpdateFontColorButton        , TabColorSettingPanel::OnClickTabColorSettingButton) 	
+   EVT_BUTTON(ID_ThreadTabPartialContentFontColorButton, TabColorSettingPanel::OnClickTabColorSettingButton) 	
+   EVT_BUTTON(ID_AutoReloadFontColorButton             , TabColorSettingPanel::OnClickTabColorSettingButton) 	
+END_EVENT_TABLE()
 
 /**
  * 各種ネットワーク設定用画面
@@ -1015,11 +1026,11 @@ TabColorSettingPanel::TabColorSettingPanel(wxWindow* parent, const wxPoint& pos,
      activeTabBGColorButton = new wxButton(panel_6, ID_ActiveTabBGColorButton, wxT("背景色"));
      defaultActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_DefaultActiveTabSampleLabel, wxT("Dafault"));
      readingActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_ReadingActiveTabSampleLabel, wxT("読み込み中"));
-     brokenActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_DefaultActiveTabSampleLabel, wxT("ログ破損時"));
+     brokenActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_BrokenActiveTabSampleLabel, wxT("ログ破損時"));
      cannotPostActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_CannotPostActiveTabSampleLabel, wxT("書き込み不可"));
      updateActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_UpdateActiveTabSampleLabel, wxT("更新あり"));
      partialContentActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_PartialContentActiveTabSampleLabel, wxT("新着あり"));
-     deactiveTabBGColorButton_copy = new wxButton(panel_7, ID_DeactiveTabBGColorButton, wxT("背景色"));
+     deactiveTabBGColorButton = new wxButton(panel_7, ID_DeactiveTabBGColorButton, wxT("背景色"));
      defaultDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_DefaultDeactiveTabSampleLabel, wxT("Dafault"));
      readingDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_ReadingDeactiveTabSampleLabel, wxT("読み込み中"));
      brokenDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_BrokenDeactiveTabSampleLabel, wxT("ログ破損時"));
@@ -1048,6 +1059,25 @@ void TabColorSettingPanel::set_properties()
      // begin wxGlade: TabColorSettingPanel::set_properties
      threadTabColorCheck->SetValue(1);
      // end wxGlade
+
+     // 背景色の設定
+     this->SetSampleBGColorSetting(ID_ActiveTabBGColorButton);
+     this->SetSampleBGColorSetting(ID_DeactiveTabBGColorButton);
+
+     // フォント色の設定
+     wxArrayInt iArray;
+     iArray.Add(ID_ThreadTabDefaultFontColorButton);
+     iArray.Add(ID_ThreadTabReadingFontColorButton);
+     iArray.Add(ID_ThreadTabBrokenFontColorButton);
+     iArray.Add(ID_ThreadTabCannotPostFontColorButton);
+     iArray.Add(ID_ThreadTabUpdateFontColorButton);
+     iArray.Add(ID_ThreadTabPartialContentFontColorButton);
+     iArray.Add(ID_AutoReloadFontColorButton);
+
+     for (int i = 0; i < iArray.size(); i++ )
+     {
+	  this->SetSampleFontColorSetting(iArray[i]);
+     }
 }
 
 void TabColorSettingPanel::do_layout()
@@ -1070,7 +1100,7 @@ void TabColorSettingPanel::do_layout()
      sizer_5->Add(partialContentActiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
      panel_6->SetSizer(sizer_5);
      sizer_4->Add(panel_6, 1, wxEXPAND, 0);
-     sizer_6->Add(deactiveTabBGColorButton_copy, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_6->Add(deactiveTabBGColorButton, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
      sizer_6->Add(defaultDeactiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
      sizer_6->Add(readingDeactiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
      sizer_6->Add(brokenDeactiveTabSampleLabel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5);
@@ -1100,4 +1130,210 @@ void TabColorSettingPanel::do_layout()
      SetSizer(sizer_1);
      sizer_1->Fit(this);
      // end wxGlade
+}
+/**
+ * タブ色設定用画面のボタンイベントを処理する
+ */
+void TabColorSettingPanel::OnClickTabColorSettingButton(wxCommandEvent& event)
+{
+
+     const int id = event.GetId();
+     
+     if ( id == ID_ActiveTabBGColorButton  ||
+	  id ==	ID_DeactiveTabBGColorButton )
+     {
+	  /**
+	   * 背景色設定
+	   */
+	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
+	  const wxString bgColor = wxString((const char*)str.c_str(), wxConvUTF8);
+
+	  bool needToChangeBGColor = this->SetEachBGColorSetting(bgColor);
+
+	  if (needToChangeBGColor)
+	  {
+	       SetSampleBGColorSetting(id);
+	  }
+     } else if ( id == ID_ThreadTabDefaultFontColorButton	 || 
+		 id == ID_ThreadTabReadingFontColorButton	 || 
+		 id == ID_ThreadTabBrokenFontColorButton	 || 
+		 id == ID_ThreadTabCannotPostFontColorButton	 || 
+		 id == ID_ThreadTabUpdateFontColorButton	 || 
+		 id == ID_ThreadTabPartialContentFontColorButton || 
+		 id == ID_AutoReloadFontColorButton )
+     {
+          /**		  
+	   * 文字色設定
+	   */
+	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
+	  const wxString fontColor = wxString((const char*)str.c_str(), wxConvUTF8);
+	  bool needToChangeFontColor = this->SetEachFontColorSetting(fontColor);
+
+	  if (needToChangeFontColor)
+	  {
+	       SetSampleFontColorSetting(id);
+	  }
+     }
+}
+/**
+ * 各部位の背景色を設定し、プロパティファイルに書き出す
+ * @param  各部位の名称を文字列で
+ * @return 変更があればtrueを返す
+ */
+bool TabColorSettingPanel::SetEachBGColorSetting(const wxString& bgColor)
+{
+     wxColourData data;
+     data.SetChooseFull(true);
+     for (int i = 0; i < 16; i++)
+     {
+	  wxColour colour(i*16, i*16, i*16);
+	  data.SetCustomColour(i, colour);
+     }
+
+     wxColourDialog dialog(this, &data);
+     if (dialog.ShowModal() == wxID_OK)
+     {
+	  wxColourData retData = dialog.GetColourData();
+	  wxColour col = retData.GetColour();
+	  // 結果を受け取る
+	  const wxString colorInfo = col.GetAsString();
+	  // フォント,色情報 の順でプロパティファイルに格納
+	  JaneCloneUtil::SetJaneCloneProperties(bgColor, colorInfo);
+	  return true;
+     }
+
+     return false;
+}
+/**
+ * 色・フォント設定用画面のサンプル部分の背景色を変更する
+ */
+void TabColorSettingPanel::SetSampleBGColorSetting(const int id)
+{
+     wxArrayInt iArray;
+
+     if (id == ID_ActiveTabBGColorButton) {
+	  iArray.Add(ID_DefaultActiveTabSampleLabel         ); 	  
+	  iArray.Add(ID_ReadingActiveTabSampleLabel	    ); 
+	  iArray.Add(ID_BrokenActiveTabSampleLabel	    ); 
+	  iArray.Add(ID_CannotPostActiveTabSampleLabel	    ); 
+	  iArray.Add(ID_UpdateActiveTabSampleLabel	    ); 
+	  iArray.Add(ID_PartialContentActiveTabSampleLabel  ); 
+	  iArray.Add(ID_AutoReloadSampleLabel		    ); 
+     } else if (id == ID_DeactiveTabBGColorButton) {
+	  iArray.Add(ID_DefaultDeactiveTabSampleLabel	    ); 
+	  iArray.Add(ID_ReadingDeactiveTabSampleLabel	    ); 
+	  iArray.Add(ID_BrokenDeactiveTabSampleLabel	    ); 
+	  iArray.Add(ID_CannotPostDeactiveTabSampleLabel    ); 
+	  iArray.Add(ID_UpdateDeactiveTabSampleLabel	    ); 
+	  iArray.Add(ID_PartialContentDeactiveTabSampleLabel); 
+     }
+
+     for (int i = 0; i < iArray.size(); i++ )
+     {
+	  wxWindow* window = FindWindowById(static_cast<long>(iArray[i]), this);
+	  if ( BasicDrawPane* bdp = dynamic_cast<BasicDrawPane*>(window))
+	  {
+	       wxString widgetsName = wxEmptyString;
+	       wxString widgetsInfo = wxEmptyString;
+	       const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
+	       widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
+	       JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+
+	       if (widgetsInfo != wxEmptyString)
+	       {
+		    wxColour bgColor;
+		    bool ret = bgColor.Set(widgetsInfo);
+		    if(ret) bdp->SetInnerBGColor(bgColor);
+	       }
+
+	  } else {
+	       wxMessageBox(wxT("内部エラー, 背景色の変更に失敗しました."), wxT("設定画面"), wxICON_ERROR);
+	       return;
+	  }
+
+	  // 更新されたリソースの反映
+	  this->Refresh();
+	  this->Update();
+     }
+}
+/**
+ * 各部位のフォントを設定し、プロパティファイルに書き出す
+ * @param  各部位の名称の文字列型
+ * @return 変更があればtrueを返す
+ */
+bool TabColorSettingPanel::SetEachFontColorSetting(const wxString& fontColor)
+{
+     return SetEachBGColorSetting(fontColor);
+}
+/**
+ * タブ色設定用画面のサンプル部分のフォントを変更する
+ */
+void TabColorSettingPanel::SetSampleFontColorSetting(const int id)
+{
+
+     wxArrayInt iArray;
+
+     if ( id == ID_ThreadTabDefaultFontColorButton ) 
+     {
+	  iArray.Add(ID_DefaultActiveTabSampleLabel);
+	  iArray.Add(ID_DefaultDeactiveTabSampleLabel);
+     }
+     else if ( id == ID_ThreadTabReadingFontColorButton	)
+     {
+	  iArray.Add(ID_ReadingActiveTabSampleLabel);
+	  iArray.Add(ID_ReadingDeactiveTabSampleLabel);
+     }
+     else if ( id == ID_ThreadTabBrokenFontColorButton )
+     {
+	  iArray.Add(ID_BrokenActiveTabSampleLabel);
+	  iArray.Add(ID_BrokenDeactiveTabSampleLabel);
+     }
+     else if ( id == ID_ThreadTabCannotPostFontColorButton )
+     {
+	  iArray.Add(ID_CannotPostActiveTabSampleLabel);
+	  iArray.Add(ID_CannotPostDeactiveTabSampleLabel);
+     }
+     else if ( id == ID_ThreadTabUpdateFontColorButton )
+     {
+	  iArray.Add(ID_UpdateActiveTabSampleLabel);
+	  iArray.Add(ID_UpdateDeactiveTabSampleLabel);
+     }
+     else if ( id == ID_ThreadTabPartialContentFontColorButton )
+     {
+	  iArray.Add(ID_PartialContentActiveTabSampleLabel);
+	  iArray.Add(ID_PartialContentDeactiveTabSampleLabel);
+     }
+     else if ( id == ID_AutoReloadFontColorButton )
+     {
+	  iArray.Add(ID_AutoReloadSampleLabel);
+     }
+
+
+     for ( int i = 0; i < iArray.size(); i++ )
+     {	  
+	  wxWindow* window = FindWindowById(static_cast<long>(iArray[i]), this);
+	  if ( BasicDrawPane* bdp = dynamic_cast<BasicDrawPane*>(window))
+	  {
+	       wxString widgetsName = wxEmptyString;
+	       wxString widgetsInfo = wxEmptyString;
+	       const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
+	       widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
+	       JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+
+	       if (widgetsInfo != wxEmptyString)
+	       {
+		    wxColour bgColor;
+		    bool ret = bgColor.Set(widgetsInfo);
+		    if(ret) bdp->SetInnerTextForeGroundColor(bgColor);
+	       }
+
+	  } else {
+	       wxMessageBox(wxT("内部エラー, 背景色の変更に失敗しました."), wxT("設定画面"), wxICON_ERROR);
+	       return;
+	  }
+
+	  // 更新されたリソースの反映
+	  this->Refresh();
+	  this->Update();
+     }
 }
