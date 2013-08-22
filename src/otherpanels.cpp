@@ -1241,10 +1241,24 @@ void TabColorSettingPanel::SetSampleBGColorSetting(const int id)
 
 	       if (widgetsInfo != wxEmptyString)
 	       {
+		    // プロパティファイルに設定がある場合
 		    wxColour bgColor;
 		    bool ret = bgColor.Set(widgetsInfo);
 		    if(ret) bdp->SetInnerBGColor(bgColor);
+	       } else {
+		    // プロパティファイルに設定がない場合
+		    if ( id == ID_ActiveTabBGColorButton )
+		    {
+			 bdp->SetInnerBGColor(wxColour(wxT("rgb(255,255,255)")));
+			 widgetsInfo = wxT("rgb(255,255,255)");
+			 JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+		    } else if (id == ID_DeactiveTabBGColorButton) {
+			 bdp->SetInnerBGColor(wxColour(wxT("rgb(212,208,200)")));
+			 widgetsInfo = wxT("rgb(212,208,200)");
+			 JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+		    }
 	       }
+	       
 
 	  } else {
 	       wxMessageBox(wxT("内部エラー, 背景色の変更に失敗しました."), wxT("設定画面"), wxICON_ERROR);
@@ -1272,39 +1286,47 @@ void TabColorSettingPanel::SetSampleFontColorSetting(const int id)
 {
 
      wxArrayInt iArray;
+     wxString defaultRGB = wxEmptyString;
 
      if ( id == ID_ThreadTabDefaultFontColorButton ) 
      {
+	  defaultRGB = wxT("rgb(0,0,0)");
 	  iArray.Add(ID_DefaultActiveTabSampleLabel);
 	  iArray.Add(ID_DefaultDeactiveTabSampleLabel);
      }
      else if ( id == ID_ThreadTabReadingFontColorButton	)
      {
+	  defaultRGB = wxT("rgb(255,188,0)");
 	  iArray.Add(ID_ReadingActiveTabSampleLabel);
 	  iArray.Add(ID_ReadingDeactiveTabSampleLabel);
      }
      else if ( id == ID_ThreadTabBrokenFontColorButton )
      {
+	  defaultRGB = wxT("rgb(255,0,0)");
 	  iArray.Add(ID_BrokenActiveTabSampleLabel);
 	  iArray.Add(ID_BrokenDeactiveTabSampleLabel);
      }
      else if ( id == ID_ThreadTabCannotPostFontColorButton )
      {
+	  defaultRGB = wxT("rgb(128,128,128)");
 	  iArray.Add(ID_CannotPostActiveTabSampleLabel);
 	  iArray.Add(ID_CannotPostDeactiveTabSampleLabel);
      }
      else if ( id == ID_ThreadTabUpdateFontColorButton )
      {
+	  defaultRGB = wxT("rgb(30,144,255)");
 	  iArray.Add(ID_UpdateActiveTabSampleLabel);
 	  iArray.Add(ID_UpdateDeactiveTabSampleLabel);
      }
      else if ( id == ID_ThreadTabPartialContentFontColorButton )
      {
+	  defaultRGB = wxT("rgb(0,0,255)");
 	  iArray.Add(ID_PartialContentActiveTabSampleLabel);
 	  iArray.Add(ID_PartialContentDeactiveTabSampleLabel);
      }
      else if ( id == ID_AutoReloadFontColorButton )
      {
+	  defaultRGB = wxT("rgb(224,255,255)");
 	  iArray.Add(ID_AutoReloadSampleLabel);
      }
 
@@ -1322,9 +1344,14 @@ void TabColorSettingPanel::SetSampleFontColorSetting(const int id)
 
 	       if (widgetsInfo != wxEmptyString)
 	       {
+		    // プロパティファイルに設定がある場合
 		    wxColour bgColor;
 		    bool ret = bgColor.Set(widgetsInfo);
 		    if(ret) bdp->SetInnerTextForeGroundColor(bgColor);
+	       } else {
+		    // プロパティファイルに設定がない場合
+		    bdp->SetInnerTextForeGroundColor(wxColour(defaultRGB));
+		    JaneCloneUtil::SetJaneCloneProperties(widgetsName, defaultRGB);
 	       }
 
 	  } else {
