@@ -33,7 +33,7 @@
 #include <wx/fontdlg.h>
 #include <wx/html/htmlwin.h>
 
-#ifdef __WXMAC__
+#if wxCHECK_VERSION(2, 9, 1)
    #include <wx/generic/stattextg.h>
 #endif
 
@@ -473,21 +473,7 @@ protected:
      /**
       * サンプル用テキスト：全部で13
       */
-#ifndef __WXMAC__
-     BasicDrawPane* defaultActiveTabSampleLabel;
-     BasicDrawPane* readingActiveTabSampleLabel;
-     BasicDrawPane* brokenActiveTabSampleLabel;
-     BasicDrawPane* cannotPostActiveTabSampleLabel;
-     BasicDrawPane* updateActiveTabSampleLabel;
-     BasicDrawPane* partialContentActiveTabSampleLabel;
-     BasicDrawPane* defaultDeactiveTabSampleLabel;
-     BasicDrawPane* readingDeactiveTabSampleLabel;
-     BasicDrawPane* brokenDeactiveTabSampleLabel;
-     BasicDrawPane* cannotPostDeactiveTabSampleLabel;
-     BasicDrawPane* updateDeactiveTabSampleLabel;
-     BasicDrawPane* partialContentDeactiveTabSampleLabel;
-     BasicDrawPane* autoReloadSampleLabel;
-#else
+#if wxCHECK_VERSION(2, 9, 1)
      wxGenericStaticText* defaultActiveTabSampleLabel;
      wxGenericStaticText* readingActiveTabSampleLabel;
      wxGenericStaticText* brokenActiveTabSampleLabel;
@@ -501,6 +487,20 @@ protected:
      wxGenericStaticText* updateDeactiveTabSampleLabel;
      wxGenericStaticText* partialContentDeactiveTabSampleLabel;
      wxGenericStaticText* autoReloadSampleLabel;
+#else
+     BasicDrawPane* defaultActiveTabSampleLabel;
+     BasicDrawPane* readingActiveTabSampleLabel;
+     BasicDrawPane* brokenActiveTabSampleLabel;
+     BasicDrawPane* cannotPostActiveTabSampleLabel;
+     BasicDrawPane* updateActiveTabSampleLabel;
+     BasicDrawPane* partialContentActiveTabSampleLabel;
+     BasicDrawPane* defaultDeactiveTabSampleLabel;
+     BasicDrawPane* readingDeactiveTabSampleLabel;
+     BasicDrawPane* brokenDeactiveTabSampleLabel;
+     BasicDrawPane* cannotPostDeactiveTabSampleLabel;
+     BasicDrawPane* updateDeactiveTabSampleLabel;
+     BasicDrawPane* partialContentDeactiveTabSampleLabel;
+     BasicDrawPane* autoReloadSampleLabel;
 #endif
 
      wxButton* activeTabBGColorButton;
