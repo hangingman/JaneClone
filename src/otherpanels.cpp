@@ -1024,19 +1024,35 @@ TabColorSettingPanel::TabColorSettingPanel(wxWindow* parent, const wxPoint& pos,
      sizer_5_staticbox = new wxStaticBox(panel_6, -1, wxT("アクティブタブ"));
      threadTabColorCheck = new wxCheckBox(this, ID_ThreadTabColorCheck, wxT("スレタブの色を変更する"));
      activeTabBGColorButton = new wxButton(panel_6, ID_ActiveTabBGColorButton, wxT("背景色"));
+
+#ifndef __WXMAC__
      defaultActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_DefaultActiveTabSampleLabel, wxT("Dafault"));
      readingActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_ReadingActiveTabSampleLabel, wxT("読み込み中"));
      brokenActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_BrokenActiveTabSampleLabel, wxT("ログ破損時"));
      cannotPostActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_CannotPostActiveTabSampleLabel, wxT("書き込み不可"));
      updateActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_UpdateActiveTabSampleLabel, wxT("更新あり"));
      partialContentActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_PartialContentActiveTabSampleLabel, wxT("新着あり"));
-     deactiveTabBGColorButton = new wxButton(panel_7, ID_DeactiveTabBGColorButton, wxT("背景色"));
      defaultDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_DefaultDeactiveTabSampleLabel, wxT("Dafault"));
      readingDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_ReadingDeactiveTabSampleLabel, wxT("読み込み中"));
      brokenDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_BrokenDeactiveTabSampleLabel, wxT("ログ破損時"));
      cannotPostDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_CannotPostDeactiveTabSampleLabel, wxT("書き込み不可"));
      updateDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_UpdateDeactiveTabSampleLabel, wxT("更新あり"));
      partialContentDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_PartialContentDeactiveTabSampleLabel, wxT("新着あり"));
+#else
+     defaultActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_DefaultActiveTabSampleLabel, wxT("Dafault"));
+     readingActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_ReadingActiveTabSampleLabel, wxT("読み込み中"));
+     brokenActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_BrokenActiveTabSampleLabel, wxT("ログ破損時"));
+     cannotPostActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_CannotPostActiveTabSampleLabel, wxT("書き込み不可"));
+     updateActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_UpdateActiveTabSampleLabel, wxT("更新あり"));
+     partialContentActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_PartialContentActiveTabSampleLabel, wxT("新着あり"));
+     defaultDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_DefaultDeactiveTabSampleLabel, wxT("Dafault"));
+     readingDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_ReadingDeactiveTabSampleLabel, wxT("読み込み中"));
+     brokenDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_BrokenDeactiveTabSampleLabel, wxT("ログ破損時"));
+     cannotPostDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_CannotPostDeactiveTabSampleLabel, wxT("書き込み不可"));
+     updateDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_UpdateDeactiveTabSampleLabel, wxT("更新あり"));
+     partialContentDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_PartialContentDeactiveTabSampleLabel, wxT("新着あり"));
+#endif
+     deactiveTabBGColorButton = new wxButton(panel_7, ID_DeactiveTabBGColorButton, wxT("背景色"));
      panel_9 = new wxPanel(panel_8, wxID_ANY);
      threadTabDefaultFontColorButton = new wxButton(panel_8, ID_ThreadTabDefaultFontColorButton, wxT("デフォルト"));
      threadTabReadingFontColorButton = new wxButton(panel_8, ID_ThreadTabReadingFontColorButton, wxT("読込中"));
@@ -1045,7 +1061,12 @@ TabColorSettingPanel::TabColorSettingPanel(wxWindow* parent, const wxPoint& pos,
      threadTabUpdateFontColorButton = new wxButton(panel_8, ID_ThreadTabUpdateFontColorButton, wxT("更新あり"));
      threadTabPartialContentFontColorButton = new wxButton(panel_8, ID_ThreadTabPartialContentFontColorButton, wxT("新着あり"));
      panel_4 = new wxPanel(panel_3, wxID_ANY);
+
+#ifndef __WXMAC__
      autoReloadSampleLabel = new BasicDrawPane(panel_3, ID_AutoReloadSampleLabel, wxT("オートリロード中"));
+#else
+     autoReloadSampleLabel = new wxGenericStaticText(panel_3, ID_AutoReloadSampleLabel, wxT("オートリロード中"));
+#endif
      autoReloadFontColorButton = new wxButton(panel_3, ID_AutoReloadFontColorButton, wxT("オートリロード中"));
 
      set_properties();
@@ -1231,7 +1252,12 @@ void TabColorSettingPanel::SetSampleBGColorSetting(const int id)
      for (int i = 0; i < iArray.size(); i++ )
      {
 	  wxWindow* window = FindWindowById(static_cast<long>(iArray[i]), this);
+
+#ifndef __WXMAC__
 	  if ( BasicDrawPane* bdp = dynamic_cast<BasicDrawPane*>(window))
+#else
+	  if ( wxGenericStaticText* bdp = dynamic_cast<wxGenericStaticText*>(window))
+#endif
 	  {
 	       wxString widgetsName = wxEmptyString;
 	       wxString widgetsInfo = wxEmptyString;
@@ -1244,16 +1270,28 @@ void TabColorSettingPanel::SetSampleBGColorSetting(const int id)
 		    // プロパティファイルに設定がある場合
 		    wxColour bgColor;
 		    bool ret = bgColor.Set(widgetsInfo);
+#ifndef __WXMAC__
 		    if(ret) bdp->SetInnerBGColor(bgColor);
+#else
+		    if(ret) bdp->SetBackgroundColour(bgColor);
+#endif
 	       } else {
 		    // プロパティファイルに設定がない場合
 		    if ( id == ID_ActiveTabBGColorButton )
 		    {
+#ifndef __WXMAC__
 			 bdp->SetInnerBGColor(wxColour(wxT("rgb(255,255,255)")));
+#else
+			 bdp->SetBackgroundColour(wxColour(wxT("rgb(255,255,255)")));
+#endif
 			 widgetsInfo = wxT("rgb(255,255,255)");
 			 JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
 		    } else if (id == ID_DeactiveTabBGColorButton) {
+#ifndef __WXMAC__
 			 bdp->SetInnerBGColor(wxColour(wxT("rgb(212,208,200)")));
+#else
+			 bdp->SetBackgroundColour(wxColour(wxT("rgb(212,208,200)")));
+#endif
 			 widgetsInfo = wxT("rgb(212,208,200)");
 			 JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
 		    }
@@ -1334,7 +1372,11 @@ void TabColorSettingPanel::SetSampleFontColorSetting(const int id)
      for ( int i = 0; i < iArray.size(); i++ )
      {	  
 	  wxWindow* window = FindWindowById(static_cast<long>(iArray[i]), this);
+#ifndef __WXMAC__
 	  if ( BasicDrawPane* bdp = dynamic_cast<BasicDrawPane*>(window))
+#else
+	  if ( wxGenericStaticText* bdp = dynamic_cast<wxGenericStaticText*>(window))
+#endif
 	  {
 	       wxString widgetsName = wxEmptyString;
 	       wxString widgetsInfo = wxEmptyString;
@@ -1347,10 +1389,18 @@ void TabColorSettingPanel::SetSampleFontColorSetting(const int id)
 		    // プロパティファイルに設定がある場合
 		    wxColour bgColor;
 		    bool ret = bgColor.Set(widgetsInfo);
+#ifndef __WXMAC__
 		    if(ret) bdp->SetInnerTextForeGroundColor(bgColor);
+#else
+		    if(ret) bdp->SetForegroundColour(bgColor);
+#endif
 	       } else {
 		    // プロパティファイルに設定がない場合
+#ifndef __WXMAC__
 		    bdp->SetInnerTextForeGroundColor(wxColour(defaultRGB));
+#else
+		    bdp->SetForegroundColour(wxColour(defaultRGB));
+#endif
 		    JaneCloneUtil::SetJaneCloneProperties(widgetsName, defaultRGB);
 	       }
 

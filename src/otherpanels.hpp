@@ -32,6 +32,11 @@
 #include <wx/colordlg.h>
 #include <wx/fontdlg.h>
 #include <wx/html/htmlwin.h>
+
+#ifdef __WXMAC__
+   #include <wx/generic/stattextg.h>
+#endif
+
 #include "enums.hpp"
 #include "janecloneutil.hpp"
 #include "drawpane.hpp"
@@ -468,6 +473,7 @@ protected:
      /**
       * サンプル用テキスト：全部で13
       */
+#ifndef __WXMAC__
      BasicDrawPane* defaultActiveTabSampleLabel;
      BasicDrawPane* readingActiveTabSampleLabel;
      BasicDrawPane* brokenActiveTabSampleLabel;
@@ -481,6 +487,21 @@ protected:
      BasicDrawPane* updateDeactiveTabSampleLabel;
      BasicDrawPane* partialContentDeactiveTabSampleLabel;
      BasicDrawPane* autoReloadSampleLabel;
+#else
+     wxGenericStaticText* defaultActiveTabSampleLabel;
+     wxGenericStaticText* readingActiveTabSampleLabel;
+     wxGenericStaticText* brokenActiveTabSampleLabel;
+     wxGenericStaticText* cannotPostActiveTabSampleLabel;
+     wxGenericStaticText* updateActiveTabSampleLabel;
+     wxGenericStaticText* partialContentActiveTabSampleLabel;
+     wxGenericStaticText* defaultDeactiveTabSampleLabel;
+     wxGenericStaticText* readingDeactiveTabSampleLabel;
+     wxGenericStaticText* brokenDeactiveTabSampleLabel;
+     wxGenericStaticText* cannotPostDeactiveTabSampleLabel;
+     wxGenericStaticText* updateDeactiveTabSampleLabel;
+     wxGenericStaticText* partialContentDeactiveTabSampleLabel;
+     wxGenericStaticText* autoReloadSampleLabel;
+#endif
 
      wxButton* activeTabBGColorButton;
      wxButton* threadTabDefaultFontColorButton;
