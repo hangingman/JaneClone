@@ -566,6 +566,20 @@ ColorFontSettingPanel::ColorFontSettingPanel(wxWindow* parent, const wxPoint& po
      sizer_5_staticbox = new wxStaticBox(panel_5, -1, wxT("フォント"));
      sizer_6_staticbox = new wxStaticBox(panel_6, -1, wxT("背景色"));
      panel_7 = new wxPanel(panel_4, wxID_ANY);
+
+#if wxCHECK_VERSION(2, 9, 1)
+     treeSampleLabel = new wxGenericStaticText(panel_4, ID_TreeSampleLabel, wxT("ツリー"));
+     threadListSampleLabel = new wxGenericStaticText(panel_7, ID_ThreadListSampleLabel, wxT("スレ覧"));
+     extractSampleLabel = new wxGenericStaticText(panel_7, ID_ExtractSampleLabel, wxT("抽出"));
+     logWindowSampleLabel = new wxGenericStaticText(panel_4, ID_LogWindowSampleLabel, wxT("ログ出力画面"));
+     threadTitleSampleLabel = new wxGenericStaticText(panel_4, ID_ThreadTitleSampleLabel, wxT("スレタイトル"));
+     threadViewSampleLabel = new wxGenericStaticText(panel_4, ID_ThreadViewSampleLabel, wxT("スレビュー"));
+     kakikoSampleLabel = new wxGenericStaticText(panel_8, ID_KakikoSampleLabel, wxT("書込み"));
+     memoSampleLabel = new wxGenericStaticText(panel_8, ID_MemoSampleLabel, wxT("メモ欄"));
+     hintSampleLabel = new wxGenericStaticText(panel_9, ID_HintSampleLabel, wxT("ヒント"));
+     linkSampleLabel = new wxGenericStaticText(panel_9, ID_LinkSampleLabel, wxT("Link"));
+     othersSampleLabel = new wxGenericStaticText(panel_4, ID_OthersSampleLabel, wxT("その他"));
+#else
      treeSampleLabel = new BasicDrawPane(panel_4, ID_TreeSampleLabel, wxT("ツリー"));
      threadListSampleLabel = new BasicDrawPane(panel_7, ID_ThreadListSampleLabel, wxT("スレ覧"));
      extractSampleLabel = new BasicDrawPane(panel_7, ID_ExtractSampleLabel, wxT("抽出"));
@@ -577,6 +591,8 @@ ColorFontSettingPanel::ColorFontSettingPanel(wxWindow* parent, const wxPoint& po
      hintSampleLabel = new BasicDrawPane(panel_9, ID_HintSampleLabel, wxT("ヒント"));
      linkSampleLabel = new BasicDrawPane(panel_9, ID_LinkSampleLabel, wxT("Link"));
      othersSampleLabel = new BasicDrawPane(panel_4, ID_OthersSampleLabel, wxT("その他"));
+#endif
+
      treeFontButton = new wxButton(panel_5, ID_TreeFontButton, wxT("ツリー"));
      threadListFontButton = new wxButton(panel_10, ID_ThreadListFontButton, wxT("スレ欄"));
      extractFontButton = new wxButton(panel_10, ID_ExtractFontButton, wxT("抽出"));
@@ -613,7 +629,11 @@ void ColorFontSettingPanel::set_properties()
      /**
       * フォントを設定する
       */
+#if wxCHECK_VERSION(2, 9, 1)
+     std::pair <wxString, wxGenericStaticText*> *pFontArray = new std::pair<wxString, wxGenericStaticText*>[STATIC_TEXT_NUMBER];
+#else
      std::pair <wxString, BasicDrawPane*> *pFontArray = new std::pair<wxString, BasicDrawPane*>[STATIC_TEXT_NUMBER];
+#endif
      pFontArray[0]  = std::make_pair(wxT("ID_TreeFontButton"),        treeSampleLabel);
      pFontArray[1]  = std::make_pair(wxT("ID_ThreadListFontButton"),  threadListSampleLabel);  
      pFontArray[2]	= std::make_pair(wxT("ID_ExtractFontButton"),	  extractSampleLabel);	 
@@ -636,7 +656,11 @@ void ColorFontSettingPanel::set_properties()
 	  {
 	       wxFont font;
 	       bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
+#if wxCHECK_VERSION(2, 9, 1)
+	       if(ret) pFontArray[i].second->SetFont(font);
+#else
 	       if(ret) pFontArray[i].second->SetInnerFont(font);
+#endif
 	  }
      }
 
@@ -645,7 +669,12 @@ void ColorFontSettingPanel::set_properties()
      /**
       * 背景色を設定する
       */
+#if wxCHECK_VERSION(2, 9, 1)
+     std::pair <wxString, wxGenericStaticText*> *pBGArray = new std::pair<wxString, wxGenericStaticText*>[STATIC_TEXT_NUMBER];
+#else
      std::pair <wxString, BasicDrawPane*> *pBGArray = new std::pair<wxString, BasicDrawPane*>[STATIC_TEXT_NUMBER];
+#endif
+
      pBGArray[0]  = std::make_pair(wxT("ID_BoardListBGColorButton"),   treeSampleLabel);
      pBGArray[1]  = std::make_pair(wxT("ID_ThreadListBGColorButton"),  threadListSampleLabel);  
      pBGArray[2]  = std::make_pair(wxT("ID_ThreadListBGColorButton"),  extractSampleLabel);	 
@@ -668,7 +697,11 @@ void ColorFontSettingPanel::set_properties()
 	  {
 	       wxColour bgColor;
 	       bool ret = bgColor.Set(widgetsInfo);
+#if wxCHECK_VERSION(2, 9, 1)
+	       if(ret) pBGArray[i].second->SetBackgroundColour(bgColor);
+#else
 	       if(ret) pBGArray[i].second->SetInnerBGColor(bgColor);
+#endif
 	  }
      }
 
@@ -889,7 +922,12 @@ void ColorFontSettingPanel::SetSampleFontSetting(const int id)
 	  return;
 
      wxWindow* window = FindWindowById(static_cast<long>(wannaChangeID), this);
+
+#if wxCHECK_VERSION(2, 9, 1)
+     if ( wxGenericStaticText* bdp = dynamic_cast<wxGenericStaticText*>(window))
+#else
      if ( BasicDrawPane* bdp = dynamic_cast<BasicDrawPane*>(window))
+#endif
      {
 	  wxString widgetsName = wxEmptyString;
 	  wxString widgetsInfo = wxEmptyString;
@@ -901,7 +939,12 @@ void ColorFontSettingPanel::SetSampleFontSetting(const int id)
 	  {
 	       wxFont font;
 	       bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
+
+#if wxCHECK_VERSION(2, 9, 1)
+	       if(ret) bdp->SetFont(font);
+#else
 	       if(ret) bdp->SetInnerFont(font);
+#endif
 
 	       this->Refresh();
 	       this->Update();
@@ -981,7 +1024,12 @@ void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
      for (int i = 0; i < iArray.size(); i++ )
      {
 	  wxWindow* window = FindWindowById(static_cast<long>(iArray[i]), this);
+
+#if wxCHECK_VERSION(2, 9, 1)
+	  if ( wxGenericStaticText* bdp = dynamic_cast<wxGenericStaticText*>(window))
+#else
 	  if ( BasicDrawPane* bdp = dynamic_cast<BasicDrawPane*>(window))
+#endif
 	  {
 	       wxString widgetsName = wxEmptyString;
 	       wxString widgetsInfo = wxEmptyString;
@@ -993,7 +1041,11 @@ void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
 	       {
 		    wxColour bgColor;
 		    bool ret = bgColor.Set(widgetsInfo);
+#if wxCHECK_VERSION(2, 9, 1)
+		    if(ret) bdp->SetBackgroundColour(bgColor);
+#else
 		    if(ret) bdp->SetInnerBGColor(bgColor);
+#endif
 	       }
 
 	  } else {

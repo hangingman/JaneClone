@@ -380,6 +380,19 @@ protected:
      /**
       * サンプルのテキスト：全部で11ある
       */
+#if wxCHECK_VERSION(2, 9, 1)
+     wxGenericStaticText* treeSampleLabel;
+     wxGenericStaticText* threadListSampleLabel;
+     wxGenericStaticText* extractSampleLabel;
+     wxGenericStaticText* logWindowSampleLabel;
+     wxGenericStaticText* threadTitleSampleLabel;
+     wxGenericStaticText* threadViewSampleLabel;
+     wxGenericStaticText* kakikoSampleLabel;
+     wxGenericStaticText* memoSampleLabel;
+     wxGenericStaticText* hintSampleLabel;
+     wxGenericStaticText* linkSampleLabel;
+     wxGenericStaticText* othersSampleLabel;
+#else
      BasicDrawPane* treeSampleLabel;
      BasicDrawPane* threadListSampleLabel;
      BasicDrawPane* extractSampleLabel;
@@ -391,6 +404,7 @@ protected:
      BasicDrawPane* hintSampleLabel;
      BasicDrawPane* linkSampleLabel;
      BasicDrawPane* othersSampleLabel;
+#endif
 
      wxStaticBox* sizer_6_staticbox;
      wxStaticBox* sizer_5_staticbox;
