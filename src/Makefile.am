@@ -49,14 +49,14 @@ if USE_WINDRES
 # Platform is Windows
 JaneClone_LDADD    = JaneClone_rc.o $(top_builddir)/libwxnkf/libwxnkf.la $(top_builddir)/libwxuuid/libwxuuid.la $(top_builddir)/wxsqlite3/libwxsqlite3.la $(top_builddir)/sqlite3/libsqlite3.la $(top_builddir)/curl/lib/libcurl.la $(top_builddir)/curlpp/src/curlpp/libcurlpp.la $(top_builddir)/curlpp/src/utilspp/libutilspp.la $(top_builddir)/curlpp/src/curlpp/internal/libinternal.la
 
-JaneClone_LDFLAGS  = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ JaneClone_rc.o
+JaneClone_LDFLAGS  = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ JaneClone_rc.o
 
 JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 	@WX_RESCOMP@ -i $^ -O coff -o $@
 
 else
 # Platform is not Windows
-JaneClone_LDFLAGS  = `@WX_CONFIG_PATH@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3 -L$(top_builddir)/curl/lib -lcurl -L$(top_builddir)/curlpp/src/curlpp -lcurlpp -L$(top_builddir)/curlpp/src/utilspp -lutilspp -L$(top_builddir)/curlpp/src/curlpp/internal -linternal 
+JaneClone_LDFLAGS  = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ -L$(top_builddir)/libwxnkf -lwxnkf -L$(top_builddir)/libwxuuid -lwxuuid -L$(top_builddir)/wxsqlite3 -lwxsqlite3 -L$(top_builddir)/sqlite3 -lsqlite3 -L$(top_builddir)/curl/lib -lcurl -L$(top_builddir)/curlpp/src/curlpp -lcurlpp -L$(top_builddir)/curlpp/src/utilspp -lutilspp -L$(top_builddir)/curlpp/src/curlpp/internal -linternal 
 endif
 
 # target for debug

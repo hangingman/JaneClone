@@ -44,7 +44,7 @@ ChangeLog: configure.ac
 MINGWBIN= `@WX_CONFIG_PATH@ --prefix`/bin
 MINGWLIB= `@WX_CONFIG_PATH@ --prefix`/lib
 DEPDLLS = $(shell find $(top_builddir) -type f -name '*.dll')
-WXDLLS  = $(shell find `@WX_CONFIG_PATH@ --prefix`/lib -type f -name 'wx*.dll')
+WXDLLS  = $(shell find `@WX_CONFIG_PATH@ --prefix`/lib -type f -name 'wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll')
 STDCDLL	= $(shell find `@WX_CONFIG_PATH@ --prefix` -type f -name 'libstdc++*.dll')
 RESTDLL = $(MINGWBIN)/libjpeg-*.dll $(MINGWBIN)/libpng*.dll $(MINGWBIN)/libtiff-*.dll $(MINGWBIN)/libxml2*.dll $(MINGWBIN)/zlib*.dll
 LIBGCC  = $(shell find `@WX_CONFIG_PATH@ --prefix` -type f -name 'libgcc*.dll')

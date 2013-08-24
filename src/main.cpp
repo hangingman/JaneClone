@@ -32,7 +32,7 @@
 static const wxCmdLineEntryDesc gCmdLineDesc[] =
 {
      // コマンドラインオプションに -p or pid=xxx と入力された場合
-     { wxCMD_LINE_OPTION, wxT("p"), wxT("pid"), wxT("past worked JaneClone pid"), 
+     { wxCMD_LINE_OPTION, "p", "pid", "past worked JaneClone pid", 
        wxCMD_LINE_VAL_NUMBER, wxCMD_LINE_PARAM_OPTIONAL },
      { wxCMD_LINE_NONE }
 };
