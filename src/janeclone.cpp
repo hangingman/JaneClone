@@ -794,10 +794,12 @@ void JaneClone::DoLayout() {
      JaneCloneUtil::GetJaneCloneProperties(wxT("FramePy"), &py);
      this->Move(static_cast<int>(px), static_cast<int>(py));
 
+#ifndef __WXMAC__ // MaximizeはMacOSXではサポートされない
      // ウィンドウの最大化情報
      bool isMaximized = false;
      JaneCloneUtil::GetJaneCloneProperties(wxT("IsMaximized"), &isMaximized);
      this->Maximize(isMaximized);
+#endif
 
      // 板一覧ツリーを表示するかどうか
      bool toggled = true;
@@ -2307,9 +2309,11 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
      JaneCloneUtil::SetJaneCloneProperties(wxT("FramePx"), static_cast<long>(px));
      JaneCloneUtil::SetJaneCloneProperties(wxT("FramePy"), static_cast<long>(py));
 
+#ifndef __WXMAC__ // MaximizeはMacOSXではサポートされない
      // ウィンドウの最大化情報
      bool isMaximized = this->IsMaximized();
      JaneCloneUtil::SetJaneCloneProperties(wxT("IsMaximaized"), isMaximized);     
+#endif
 
      // 板一覧ツリーの情報
      const bool toggled = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
