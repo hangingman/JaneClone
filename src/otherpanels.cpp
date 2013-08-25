@@ -37,6 +37,10 @@ BEGIN_EVENT_TABLE(PathSettingPanel, wxPanel)
    EVT_BUTTON(ID_ClearSkinPath,                 PathSettingPanel::ClearPathSetting)
 END_EVENT_TABLE()
 
+BEGIN_EVENT_TABLE(UserSettingPanel, wxPanel)
+   EVT_HTML_LINK_CLICKED(wxID_ANY, UserSettingPanel::OnLinkClocked)
+END_EVENT_TABLE()
+
 BEGIN_EVENT_TABLE(ColorFontSettingPanel, wxPanel)
    EVT_BUTTON(ID_TreeFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton) 
    EVT_BUTTON(ID_ThreadListFontButton,    ColorFontSettingPanel::OnClickColorFontSettingButton) 
@@ -465,16 +469,23 @@ void UserSettingPanel::set_properties()
 {
      // begin wxGlade: UserSettingPanel::set_properties
      // end wxGlade
+     const wxColour bgColor    = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME);
+     const wxString bgColorStr = bgColor.GetAsString(wxC2S_HTML_SYNTAX);     
 
      // 2ch
      const wxString text1 = 
-	  wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
-	       charset=UTF-8\"><title></title></head><body><span>２ちゃんねるビューア●に登録する</span>　<a href=\"http://2ch.tora3.net\">http://2ch.tora3.net</a></body></html>");
+	  wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;\
+	       charset=UTF-8\"><title></title></head><body BGCOLOR=\"") + bgColorStr + wxT("\">\
+               <span>２ちゃんねるビューア●に登録する　</span><a href=\"http://2ch.tora3.net\">http://2ch.tora3.net</a>\
+               </body></html>");
      window_1->SetPage(text1);
+
      // BE
      const wxString text2 =
-	  wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
-	       charset=UTF-8\"><title></title></head><body><span>beユーザーに登録する</span>　<a href=\"http://be.2ch.net\">http://be.2ch.net</a></body></html>");
+	  wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;\
+	       charset=UTF-8\"><title></title></head><body BGCOLOR=\"") + bgColorStr + wxT("\">\
+               <span>beユーザーに登録する　</span><a href=\"http://be.2ch.net\">http://be.2ch.net</a>\
+               </body></html>");
      window_2->SetPage(text2);
 
      // プロパティファイルから設定されている項目を読みだして設定する

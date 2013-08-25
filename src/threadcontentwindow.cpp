@@ -23,30 +23,25 @@
 #include "janeclone.hpp"
 
 IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxHtmlWindow)
+
 BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
-// 右クリック時のイベント
-EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
-// リンク押下時のイベント
-EVT_HTML_LINK_CLICKED(wxID_ANY, ThreadContentWindow::OnLeftClickHtmlWindow)
-// 右クリックメニューイベント
-EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
-EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
-EVT_MENU(ID_SelectAllTextHtmlWindow, ThreadContentWindow::SelectAllTextHtmlWindow)
-EVT_MENU(ID_SearchSelectWordByYahoo,ThreadContentWindow::SearchSelectWordByYahoo)
-EVT_MENU(ID_SearchSelectWordByGoogle,ThreadContentWindow::SearchSelectWordByGoogle)
-EVT_MENU(ID_SearchSelectWordByAmazon,ThreadContentWindow::SearchSelectWordByAmazon)
-EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
-// レス番号上で左クリックした際のイベント
-EVT_MENU(ID_CallResponseWindowAnchor, ThreadContentWindow::CallResponseWindowWithAnchor)
-EVT_MENU(ID_CallResponseWindowQuote, ThreadContentWindow::CallResponseWindowWithQuote)
-EVT_MENU(ID_CopyTContentsToClipBoard, ThreadContentWindow::CopyTContentsToClipBoard) 
-EVT_MENU(ID_CopyTAllToClipBoard, ThreadContentWindow::CopyTAllToClipBoard)   
-// リサイズがかかった際のイベント
-EVT_SIZE(ThreadContentWindow::OnSize) 
-#ifdef DEBUG
-// HTMLのデバッグ用イベント
-EVT_MENU(ID_HtmlSourceDebug, ThreadContentWindow::HtmlSourceDebug)
-#endif
+   EVT_RIGHT_DOWN(ThreadContentWindow::OnRightClickHtmlWindow)
+   EVT_HTML_LINK_CLICKED(wxID_ANY, ThreadContentWindow::OnLeftClickHtmlWindow)
+   EVT_MENU(ID_CopyFromHtmlWindow, ThreadContentWindow::CopyFromHtmlWindow)
+   EVT_MENU(ID_CopyURLFromHtmlWindow, ThreadContentWindow::CopyURLFromHtmlWindow)
+   EVT_MENU(ID_SelectAllTextHtmlWindow, ThreadContentWindow::SelectAllTextHtmlWindow)
+   EVT_MENU(ID_SearchSelectWordByYahoo,ThreadContentWindow::SearchSelectWordByYahoo)
+   EVT_MENU(ID_SearchSelectWordByGoogle,ThreadContentWindow::SearchSelectWordByGoogle)
+   EVT_MENU(ID_SearchSelectWordByAmazon,ThreadContentWindow::SearchSelectWordByAmazon)
+   EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
+   EVT_MENU(ID_CallResponseWindowAnchor, ThreadContentWindow::CallResponseWindowWithAnchor)
+   EVT_MENU(ID_CallResponseWindowQuote, ThreadContentWindow::CallResponseWindowWithQuote)
+   EVT_MENU(ID_CopyTContentsToClipBoard, ThreadContentWindow::CopyTContentsToClipBoard) 
+   EVT_MENU(ID_CopyTAllToClipBoard, ThreadContentWindow::CopyTAllToClipBoard)   
+   EVT_SIZE(ThreadContentWindow::OnSize) 
+   #ifdef DEBUG
+   EVT_MENU(ID_HtmlSourceDebug, ThreadContentWindow::HtmlSourceDebug)
+   #endif
 END_EVENT_TABLE()
 
 /**

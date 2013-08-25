@@ -197,7 +197,7 @@ protected:
 #endif
 
      // end wxGlade
-     DECLARE_EVENT_TABLE() 
+     DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
 
 // begin wxGlade: ::extracode
@@ -263,6 +263,14 @@ private:
      void do_layout();
      // end wxGlade
 
+     // ユーザーがリンクをクリックした場合ブラウザでジャンプ
+     void OnLinkClocked(wxHtmlLinkEvent& event)
+	  {
+	       const wxHtmlLinkInfo linkInfo = event.GetLinkInfo();
+	       const wxString href = linkInfo.GetHref();
+	       wxLaunchDefaultBrowser(href);
+	  };
+
 protected:
      // begin wxGlade: UserSettingPanel::attributes
      wxStaticBox* sizer_3_staticbox;
@@ -287,6 +295,7 @@ protected:
      wxPanel* panel_7;
      wxPanel* panel_3;
      // end wxGlade
+     DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
 
 /**
