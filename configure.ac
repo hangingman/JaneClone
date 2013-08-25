@@ -242,6 +242,10 @@ else
    AC_MSG_ERROR([libcurl directory not found. please do git submodule init; git submodule update;])
 fi
 
+# Configure for SpiderMonkey
+ac_configure_args="$ac_configure_args --disable-man-pages --disable-manual --disable-debug --bindir=$prefix/lib/$PACKAGE --includedir=$prefix/lib/$PACKAGE/include --datadir=$prefix/lib/$PACKAGE --libdir=$prefix/lib/$PACKAGE"
+AC_CONFIG_SUBDIRS([js-1.5-rc6a])
+
 # Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile
                  libwxnkf/Makefile
