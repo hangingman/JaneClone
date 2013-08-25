@@ -17,7 +17,24 @@ LT_INIT
 
 # Checks for HostOS
 case "$host" in
-        *-*-mingw*|*-*-cygwin*)
+        *-*-mingw*)
+		AC_DEFINE([SVR4], [1], [description])
+		AC_DEFINE([SYSV], [1], [description])
+		AC_DEFINE([_BSD_SOURCE], [1], [description])
+		AC_DEFINE([POSIX_SOURCE], [1], [description])
+		AC_DEFINE([HAVE_LOCALTIME_R], [1], [description])
+		OS_LIBS="-lm"
+		OS_CONFIG_DONE="1"
+		;;
+	*-*-cygwin*)
+		AC_DEFINE([XP_UNIX], [1], [description])
+		AC_DEFINE([SVR4], [1], [description])
+		AC_DEFINE([SYSV], [1], [description])
+		AC_DEFINE([_BSD_SOURCE], [1], [description])
+		AC_DEFINE([POSIX_SOURCE], [1], [description])
+		AC_DEFINE([HAVE_LOCALTIME_R], [1], [description])
+		OS_LIBS="-lm"
+		OS_CONFIG_DONE="1"
                 ;;
         *-*-linux*)
 		AC_DEFINE([XP_UNIX], [1], [description])
