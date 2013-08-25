@@ -89,6 +89,14 @@ private:
 #endif
      };
 
+     // ユーザーがリンクをクリックした場合ブラウザでジャンプ
+     void OnLinkClocked(wxHtmlLinkEvent& event)
+	  {
+	       const wxHtmlLinkInfo linkInfo = event.GetLinkInfo();
+	       const wxString href = linkInfo.GetHref();
+	       wxLaunchDefaultBrowser(href);
+	  };
+
      // begin wxGlade: ResponseWindow::methods
      void set_properties(const wxString& title);
      void do_layout();

@@ -33,10 +33,11 @@
 
 // event table
 BEGIN_EVENT_TABLE(ResponseWindow, wxDialog)
-   EVT_BUTTON(ID_PostResponse, ResponseWindow::OnPostResponse)
-   EVT_BUTTON(ID_QuitResponseWindow, ResponseWindow::QuitResponseWindow)
-   EVT_BUTTON(ID_PostConfirmForm, ResponseWindow::PostConfirmForm)
+   EVT_BUTTON(ID_PostResponse,                   ResponseWindow::OnPostResponse)
+   EVT_BUTTON(ID_QuitResponseWindow,             ResponseWindow::QuitResponseWindow)
+   EVT_BUTTON(ID_PostConfirmForm,                ResponseWindow::PostConfirmForm)
    EVT_NOTEBOOK_PAGE_CHANGING(ID_ResponseWindow, ResponseWindow::OnChangeResponseTab)
+   EVT_HTML_LINK_CLICKED(wxID_ANY,               ResponseWindow::OnLinkClocked)
 END_EVENT_TABLE()
 
 
@@ -153,8 +154,8 @@ TAGS_MODULE_BEGIN(Form)
 TAGS_MODULE_END(Form)
 
 ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName& boardInfoHash, 
-			       ThreadInfo& threadInfoHash, wxPoint& point, wxTextCtrl* logCtrl):
-     wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE) {
+			       ThreadInfo& threadInfoHash, wxPoint& point, wxTextCtrl* logCtrl) :
+     wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
 
      // アイコンの設定を行う
 #ifdef __WXMSW__
@@ -173,7 +174,13 @@ ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName
      localRulePane = new wxPanel(resNoteBook, wxID_ANY);
      previewPane = new wxPanel(resNoteBook, wxID_ANY);
      resPane = new wxPanel(resNoteBook, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTAB_TRAVERSAL);
-     boardNameTitle = new wxStaticText(resPane, wxID_ANY, wxT("【板名】 - スレッドタイトル"));
+
+     // レス用ウィンドウの情報表示
+     const wxString boardName = boardInfoHash.boardName;
+     const wxString threadTitle     = threadInfoHash.title;
+     const wxString responseInfo    = wxString::Format(wxT("【%s】 - %s"), boardName.c_str(), threadTitle.c_str());
+     boardNameTitle = new wxStaticText(resPane, wxID_ANY, responseInfo);
+
      name = new wxStaticText(resPane, wxID_ANY, wxT("名前："));
      const wxString *nameCombo_choices = NULL;
      nameCombo = new wxComboBox(resPane, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, nameCombo_choices, wxCB_DROPDOWN);
