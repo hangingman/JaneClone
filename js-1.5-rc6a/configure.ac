@@ -18,11 +18,12 @@ LT_INIT
 # Checks for HostOS
 case "$host" in
         *-*-mingw*)
+# MinGW have no localtime_r, so use localtime.
+		AC_DEFINE([XP_WIN], [1], [description])
 		AC_DEFINE([SVR4], [1], [description])
 		AC_DEFINE([SYSV], [1], [description])
 		AC_DEFINE([_BSD_SOURCE], [1], [description])
 		AC_DEFINE([POSIX_SOURCE], [1], [description])
-		AC_DEFINE([HAVE_LOCALTIME_R], [1], [description])
 		OS_LIBS="-lm"
 		OS_CONFIG_DONE="1"
 		;;

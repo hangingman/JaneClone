@@ -77,59 +77,57 @@
 **
 **
 ***********************************************************************/
-#ifdef WIN32
-/* These also work for __MWERKS__ */
-#define JS_EXTERN_API(__type) extern __declspec(dllexport) __type
-#define JS_EXPORT_API(__type) __declspec(dllexport) __type
-#define JS_EXTERN_DATA(__type) extern __declspec(dllexport) __type
-#define JS_EXPORT_DATA(__type) __declspec(dllexport) __type
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 
-#define JS_DLL_CALLBACK
-#define JS_STATIC_DLL_CALLBACK(__x) static __x
+   /* These also work for __MWERKS__ */
+   #define JS_EXTERN_API(__type) extern __declspec(dllexport) __type
+   #define JS_EXPORT_API(__type) __declspec(dllexport) __type
+   #define JS_EXTERN_DATA(__type) extern __declspec(dllexport) __type
+   #define JS_EXPORT_DATA(__type) __declspec(dllexport) __type
+    
+   #define JS_DLL_CALLBACK
+   #define JS_STATIC_DLL_CALLBACK(__x) static __x
 
-#elif defined(WIN16)
+#elif defined(WIN16) && !defined(__MINGW32__) && !defined(__MINGW64__)
 
-#ifdef _WINDLL
-#define JS_EXTERN_API(__type) extern __type _cdecl _export _loadds
-#define JS_EXPORT_API(__type) __type _cdecl _export _loadds
-#define JS_EXTERN_DATA(__type) extern __type _export
-#define JS_EXPORT_DATA(__type) __type _export
-
-#define JS_DLL_CALLBACK             __cdecl __loadds
-#define JS_STATIC_DLL_CALLBACK(__x) static __x CALLBACK
-
-#else /* this must be .EXE */
-#define JS_EXTERN_API(__type) extern __type _cdecl _export
-#define JS_EXPORT_API(__type) __type _cdecl _export
-#define JS_EXTERN_DATA(__type) extern __type _export
-#define JS_EXPORT_DATA(__type) __type _export
-
-#define JS_DLL_CALLBACK             __cdecl __loadds
-#define JS_STATIC_DLL_CALLBACK(__x) __x JS_DLL_CALLBACK
-#endif /* _WINDLL */
+   #ifdef _WINDLL
+   #define JS_EXTERN_API(__type) extern __type _cdecl _export _loadds
+   #define JS_EXPORT_API(__type) __type _cdecl _export _loadds
+   #define JS_EXTERN_DATA(__type) extern __type _export
+   #define JS_EXPORT_DATA(__type) __type _export
+    
+   #define JS_DLL_CALLBACK             __cdecl __loadds
+   #define JS_STATIC_DLL_CALLBACK(__x) static __x CALLBACK
+    
+   #else /* this must be .EXE */
+   #define JS_EXTERN_API(__type) extern __type _cdecl _export
+   #define JS_EXPORT_API(__type) __type _cdecl _export
+   #define JS_EXTERN_DATA(__type) extern __type _export
+   #define JS_EXPORT_DATA(__type) __type _export
+    
+   #define JS_DLL_CALLBACK             __cdecl __loadds
+   #define JS_STATIC_DLL_CALLBACK(__x) __x JS_DLL_CALLBACK
+   #endif /* _WINDLL */
 
 #elif defined(XP_MAC)
-#define JS_EXTERN_API(__type) extern __declspec(export) __type
-#define JS_EXPORT_API(__type) __declspec(export) __type
-#define JS_EXTERN_DATA(__type) extern __declspec(export) __type
-#define JS_EXPORT_DATA(__type) __declspec(export) __type
-
-#define JS_DLL_CALLBACK
-#define JS_STATIC_DLL_CALLBACK(__x) static __x
-
-#else /* Unix */
-
-#define JS_EXTERN_API(__type) extern __type
-#define JS_EXPORT_API(__type) __type
-#define JS_EXTERN_DATA(__type) extern __type
-#define JS_EXPORT_DATA(__type) __type
-
-#define JS_DLL_CALLBACK
-#define JS_STATIC_DLL_CALLBACK(__x) static __x
-
+   #define JS_EXTERN_API(__type) extern __declspec(export) __type
+   #define JS_EXPORT_API(__type) __declspec(export) __type
+   #define JS_EXTERN_DATA(__type) extern __declspec(export) __type
+   #define JS_EXPORT_DATA(__type) __declspec(export) __type
+    
+   #define JS_DLL_CALLBACK
+   #define JS_STATIC_DLL_CALLBACK(__x) static __x
+#else /* Unix/MinGW */
+   #define JS_EXTERN_API(__type) extern __type
+   #define JS_EXPORT_API(__type) __type
+   #define JS_EXTERN_DATA(__type) extern __type
+   #define JS_EXPORT_DATA(__type) __type
+    
+   #define JS_DLL_CALLBACK
+   #define JS_STATIC_DLL_CALLBACK(__x) static __x
 #endif
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #  if defined(__MWERKS__) || defined(__GNUC__)
 #    define JS_IMPORT_API(__x)      __x
 #  else
@@ -139,7 +137,7 @@
 #    define JS_IMPORT_API(__x)      JS_EXPORT_API (__x)
 #endif
 
-#if defined(_WIN32) && !defined(__MWERKS__)
+#if defined(_WIN32) && !defined(__MWERKS__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #    define JS_IMPORT_DATA(__x)      __declspec(dllimport) __x
 #else
 #    define JS_IMPORT_DATA(__x)     __x
@@ -162,7 +160,7 @@
 #define JS_FRIEND_API(t)    JS_PUBLIC_API(t)
 #define JS_FRIEND_DATA(t)   JS_PUBLIC_DATA(t)
 
-#ifdef _WIN32
+#ifdef _WIN32 && !defined(__MINGW32__) && !defined(__MINGW64__)
 #   define JS_INLINE __inline
 #elif defined(__GNUC__)
 #   define JS_INLINE

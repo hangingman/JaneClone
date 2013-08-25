@@ -617,11 +617,14 @@ static struct NumArgState* BuildArgArray( const char *fmt, va_list ap, int* rv, 
             continue;
         }
 
-#if HAVE_VA_LIST_AS_ARRAY
-        VARARGS_ASSIGN(nas[cn].ap, ap);
-#else
-        VARARGS_ASSIGN( (va_list *) nas[cn].ap, ap);
-#endif
+
+        VARARGS_ASSIGN( nas[cn].ap, ap);
+
+// #ifdef HAVE_VA_LIST_AS_ARRAY
+//         VARARGS_ASSIGN( (va_list *) nas[cn].ap, ap);
+// #else
+//         VARARGS_ASSIGN( &nas[cn].ap, ap);
+// #endif
 
         switch( nas[cn].type ){
         case TYPE_INT16:

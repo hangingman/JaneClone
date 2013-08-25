@@ -54,7 +54,7 @@
  * by default since there can be problems with endian-ness and such.
  */
 
-#if defined(_WIN32) && !defined(__MWERKS__)
+#if defined(_WIN32) && !defined(__MWERKS__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #define JS_USE_FDLIBM_MATH 1
 
 #elif defined(SUNOS4)
@@ -69,7 +69,7 @@
 #elif defined(HPUX)
 #define JS_USE_FDLIBM_MATH 1
 
-#elif defined(linux)
+#elif defined(linux) || defined(__MINGW32__) || defined(__MINGW64__)
 /* fdlibm がよくわからんので使わない方向で */
 #define JS_USE_FDLIBM_MATH 0
 
