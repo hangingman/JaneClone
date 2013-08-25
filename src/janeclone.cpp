@@ -1242,9 +1242,7 @@ void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString ou
      // wxAuiToolBarを宣言する
      wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath, oldThreadMap);
      // スレッドリストを表示させる
-     boardNoteBook->AddPage(panel, boardName, false);
-     // ノートブックの選択処理
-     boardNoteBook->SetSelection(boardNoteBook->GetPageCount());
+     boardNoteBook->AddPage(panel, boardName, true);
 }
 /**
  * ノートブックに、スレッド一覧情報の更新を反映するメソッド
