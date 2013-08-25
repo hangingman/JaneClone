@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.67])
-AC_INIT(SpiderMonkey, 1.5-rc6a, newserver002@gmail.com)
+AC_INIT([js], [1.5.6], [newserver002@gmail.com])
 AC_CANONICAL_TARGET
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE(SpiderMonkey, 1.5-rc6a)
@@ -26,6 +26,7 @@ case "$host" in
 		AC_DEFINE([_BSD_SOURCE], [1], [description])
 		AC_DEFINE([POSIX_SOURCE], [1], [description])
 		AC_DEFINE([HAVE_LOCALTIME_R], [1], [description])
+		OS_LIBS="-lm"
 		OS_CONFIG_DONE="1"
                 ;;
         *-*-darwin*)
@@ -71,5 +72,35 @@ if test "$OS_CONFIG_DONE" = '1'; then
 else
     AC_MSG_ERROR([unknown. $OS_CONFIG])
 fi
+
+# Does this platform require array notation to assign to a va_list?
+# If cross-compiling, we assume va_list is "normal".  If this breaks
+# you, set ac_cv_valistisarray=true and maybe define HAVE_VA_LIST_AS_ARRAY
+# also just to be sure.
+AC_MSG_CHECKING(whether va_list assignments need array notation)
+AC_CACHE_VAL(ac_cv_valistisarray,
+	[AC_TRY_RUN([#include <stdlib.h>
+		     #include <stdarg.h>
+		     void foo(int i, ...) {
+			va_list ap1, ap2;
+			va_start(ap1, i);
+			ap2 = ap1;
+			if (va_arg(ap2, int) != 123 || va_arg(ap1, int) != 123)
+			    { exit(1); }
+			va_end(ap1); va_end(ap2);
+		     }
+		     int main() { foo(0, 123); return(0); }],
+		    [ac_cv_valistisarray=false],
+		    [ac_cv_valistisarray=true],
+		    [ac_cv_valistisarray=false])])
+
+if test "$ac_cv_valistisarray" = true ; then
+	AC_DEFINE(HAVE_VA_LIST_AS_ARRAY, 1,
+		[Define as 1 if your va_list type is an array])
+	AC_MSG_RESULT(yes)
+else
+       AC_MSG_RESULT(no)
+fi
+
 
 AC_OUTPUT(Makefile src/Makefile)

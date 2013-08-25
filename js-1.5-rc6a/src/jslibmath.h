@@ -70,7 +70,8 @@
 #define JS_USE_FDLIBM_MATH 1
 
 #elif defined(linux)
-#define JS_USE_FDLIBM_MATH 1
+/* fdlibm がよくわからんので使わない方向で */
+#define JS_USE_FDLIBM_MATH 0
 
 #elif defined(OSF1)
 /* Want to use some fdlibm functions but fdlibm broken on OSF1/alpha. */

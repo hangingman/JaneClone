@@ -617,27 +617,24 @@ static struct NumArgState* BuildArgArray( const char *fmt, va_list ap, int* rv, 
             continue;
         }
 
+#if HAVE_VA_LIST_AS_ARRAY
         VARARGS_ASSIGN(nas[cn].ap, ap);
+#else
+        VARARGS_ASSIGN( (va_list *) nas[cn].ap, ap);
+#endif
 
         switch( nas[cn].type ){
         case TYPE_INT16:
         case TYPE_UINT16:
         case TYPE_INTN:
         case TYPE_UINTN:                (void)va_arg( ap, JSIntn );             break;
-
         case TYPE_INT32:                (void)va_arg( ap, JSInt32 );            break;
-
-        case TYPE_UINT32:       (void)va_arg( ap, JSUint32 );   break;
-
-        case TYPE_INT64:        (void)va_arg( ap, JSInt64 );            break;
-
-        case TYPE_UINT64:       (void)va_arg( ap, JSUint64 );           break;
-
-        case TYPE_STRING:       (void)va_arg( ap, char* );              break;
-
-        case TYPE_INTSTR:       (void)va_arg( ap, JSIntn* );            break;
-
-        case TYPE_DOUBLE:       (void)va_arg( ap, double );             break;
+        case TYPE_UINT32:               (void)va_arg( ap, JSUint32 );           break;
+        case TYPE_INT64:                (void)va_arg( ap, JSInt64 );            break;
+        case TYPE_UINT64:               (void)va_arg( ap, JSUint64 );           break;
+        case TYPE_STRING:               (void)va_arg( ap, char* );              break;
+        case TYPE_INTSTR:               (void)va_arg( ap, JSIntn* );            break;
+        case TYPE_DOUBLE:               (void)va_arg( ap, double );             break;
 
         default:
             if( nas != nasArray )
