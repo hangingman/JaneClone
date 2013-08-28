@@ -2649,16 +2649,27 @@ void JaneClone::SetPopUpWindowForID(wxHtmlCellEvent& event, wxString& boardNameA
  */
 wxFont JaneClone::GetCurrentFont() {
      // wxFontのサンプルコードを参照
+#ifndef __WXMSW__
      wxFont font(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT,
 		 wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false /* !underlined */,
 		 wxEmptyString /* facename */, wxFONTENCODING_UTF8);
+#else
+     wxFont font(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT,
+		 wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false /* !underlined */,
+		 wxEmptyString /* facename */, wxFONTENCODING_CP932);
+#endif
 
      if (font.IsOk()) {
 	  return font;
      }
      // フォントが取得できなかった場合
+#ifndef __WXMSW__
      return *wxFont::New(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
 			 wxFONTWEIGHT_NORMAL, false, wxEmptyString, wxFONTENCODING_UTF8);
+#else
+     return *wxFont::New(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
+			 wxFONTWEIGHT_NORMAL, false, wxEmptyString, wxFONTENCODING_CP932);
+#endif
 }
 /**
  * フォント情報をコンフィグファイルから読み出す
