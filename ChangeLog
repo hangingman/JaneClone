@@ -1,3 +1,1356 @@
+commit 4cf7e1b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-25
+
+    ・Makefile.amの修正(libjsのリンク)
+    ・レス用ウィンドウの細かい修正
+
+src/Makefile.am
+src/responsewindow.cpp
+src/responsewindow.hpp
+
+commit ad276b2
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-25
+
+    ・MinGW向けビルドを通した
+
+.gitignore
+js-1.5-rc6a/configure.ac
+js-1.5-rc6a/src/jslibmath.h
+js-1.5-rc6a/src/jsprf.c
+js-1.5-rc6a/src/jstypes.h
+
+commit f9a542f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-25
+
+    ・MinGW/Cygwin向けルートをconfigure.acに追加
+
+js-1.5-rc6a/configure.ac
+
+commit 193913c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-25
+
+    ・SpiderMonkeyの設定を少し書き換えてコンパイル可能にした
+
+js-1.5-rc6a/configure.ac
+js-1.5-rc6a/src/jscpucfg
+js-1.5-rc6a/src/jslibmath.h
+js-1.5-rc6a/src/jsprf.c
+
+commit 87b7314
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-25
+
+    ・SpiderMonkey-1.5-rc6aをプロジェクトに編入
+    (Autoconf対応についてはhttp://module.jp/blog/autotoolize_spidermonkey.htmlを参照)
+
+Makefile.am
+configure.ac
+js-1.5-rc6a/AUTHORS
+js-1.5-rc6a/COPYING
+js-1.5-rc6a/ChangeLog
+js-1.5-rc6a/INSTALL
+js-1.5-rc6a/Makefile.am
+js-1.5-rc6a/NEWS
+js-1.5-rc6a/README
+js-1.5-rc6a/TODO
+js-1.5-rc6a/configure
+js-1.5-rc6a/configure.ac
+js-1.5-rc6a/src/Makefile.am
+js-1.5-rc6a/src/js.c
+js-1.5-rc6a/src/js.msg
+js-1.5-rc6a/src/jsapi.c
+js-1.5-rc6a/src/jsapi.h
+js-1.5-rc6a/src/jsarena.c
+js-1.5-rc6a/src/jsarena.h
+js-1.5-rc6a/src/jsarray.c
+js-1.5-rc6a/src/jsarray.h
+js-1.5-rc6a/src/jsatom.c
+js-1.5-rc6a/src/jsatom.h
+js-1.5-rc6a/src/jsautocfg.h
+js-1.5-rc6a/src/jsautotoolscfg.h
+js-1.5-rc6a/src/jsautotoolscfg.h.in
+js-1.5-rc6a/src/jsbit.h
+js-1.5-rc6a/src/jsbool.c
+js-1.5-rc6a/src/jsbool.h
+js-1.5-rc6a/src/jsclist.h
+js-1.5-rc6a/src/jscntxt.c
+js-1.5-rc6a/src/jscntxt.h
+js-1.5-rc6a/src/jscompat.h
+js-1.5-rc6a/src/jsconfig.h
+js-1.5-rc6a/src/jscpucfg
+js-1.5-rc6a/src/jscpucfg.c
+js-1.5-rc6a/src/jscpucfg.h
+js-1.5-rc6a/src/jsdate.c
+js-1.5-rc6a/src/jsdate.h
+js-1.5-rc6a/src/jsdbgapi.c
+js-1.5-rc6a/src/jsdbgapi.h
+js-1.5-rc6a/src/jsdhash.c
+js-1.5-rc6a/src/jsdhash.h
+js-1.5-rc6a/src/jsdtoa.c
+js-1.5-rc6a/src/jsdtoa.h
+js-1.5-rc6a/src/jsemit.c
+js-1.5-rc6a/src/jsemit.h
+js-1.5-rc6a/src/jsexn.c
+js-1.5-rc6a/src/jsexn.h
+js-1.5-rc6a/src/jsfile.c
+js-1.5-rc6a/src/jsfile.h
+js-1.5-rc6a/src/jsfun.c
+js-1.5-rc6a/src/jsfun.h
+js-1.5-rc6a/src/jsgc.c
+js-1.5-rc6a/src/jsgc.h
+js-1.5-rc6a/src/jshash.c
+js-1.5-rc6a/src/jshash.h
+js-1.5-rc6a/src/jsinterp.c
+js-1.5-rc6a/src/jsinterp.h
+js-1.5-rc6a/src/jslibmath.h
+js-1.5-rc6a/src/jslock.c
+js-1.5-rc6a/src/jslock.h
+js-1.5-rc6a/src/jslog2.c
+js-1.5-rc6a/src/jslong.c
+js-1.5-rc6a/src/jslong.h
+js-1.5-rc6a/src/jsmath.c
+js-1.5-rc6a/src/jsmath.h
+js-1.5-rc6a/src/jsnum.c
+js-1.5-rc6a/src/jsnum.h
+js-1.5-rc6a/src/jsobj.c
+js-1.5-rc6a/src/jsobj.h
+js-1.5-rc6a/src/jsopcode.c
+js-1.5-rc6a/src/jsopcode.h
+js-1.5-rc6a/src/jsopcode.tbl
+js-1.5-rc6a/src/jsosdep.h
+js-1.5-rc6a/src/jsotypes.h
+js-1.5-rc6a/src/jsparse.c
+js-1.5-rc6a/src/jsparse.h
+js-1.5-rc6a/src/jsprf.c
+js-1.5-rc6a/src/jsprf.h
+js-1.5-rc6a/src/jsprvtd.h
+js-1.5-rc6a/src/jspubtd.h
+js-1.5-rc6a/src/jsregexp.c
+js-1.5-rc6a/src/jsregexp.h
+js-1.5-rc6a/src/jsscan.c
+js-1.5-rc6a/src/jsscan.h
+js-1.5-rc6a/src/jsscope.c
+js-1.5-rc6a/src/jsscope.h
+js-1.5-rc6a/src/jsscript.c
+js-1.5-rc6a/src/jsscript.h
+js-1.5-rc6a/src/jsshell.msg
+js-1.5-rc6a/src/jsstddef.h
+js-1.5-rc6a/src/jsstr.c
+js-1.5-rc6a/src/jsstr.h
+js-1.5-rc6a/src/jstypes.h
+js-1.5-rc6a/src/jsutil.c
+js-1.5-rc6a/src/jsutil.h
+js-1.5-rc6a/src/jsxdrapi.c
+js-1.5-rc6a/src/jsxdrapi.h
+js-1.5-rc6a/src/prmjtime.c
+js-1.5-rc6a/src/prmjtime.h
+js-1.5-rc6a/src/resource.h
+js-1.5-rc6a/src/stamp-h1
+
+commit 38f4989
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-25
+
+    ・板一覧リスト新規取得時の挙動変更
+
+src/janeclone.cpp
+
+commit 69393af
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-25
+
+    ・UI上の細かい修正
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/threadcontentwindow.cpp
+
+commit 6428927
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-25
+
+    Mac OSX向けの修正：wxFrame::MaximizeはWindows/GTKのみ使用できるメソッドのため、削除
+
+src/janeclone.cpp
+
+commit d64ff39
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-25
+
+    Mac OSX向けの修正：GenericStaticTextを使用
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 993920a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-24
+
+    ・Windows向けビルドがwx-2.9でも可能であることを確認
+    ・ビルドスクリプトを一部修正
+
+Makefile.am
+src/Makefile.am
+src/main.cpp
+
+commit 57e5c09
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-24
+
+    ・wxCHECK_VERSIONで#ifdefを構成
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit a7a9145
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-23
+
+    Mac OSX向けの修正
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit fad3399
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-23
+
+    コンボボックスの初期値は空文字とする
+
+src/janeclone.cpp
+
+commit 6783c42
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-22
+
+    ・タブ色にデフォルト色を追加
+
+src/otherpanels.cpp
+
+commit 2fd467a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-22
+
+    ・タブ色の設定画面を実装
+
+src/drawpane.cpp
+src/drawpane.hpp
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 321771e
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-20
+
+    ・細かい修正
+
+src/janeclone.cpp
+
+commit 6da5c93
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-20
+
+    ・細かい修正
+
+src/janeclone.cpp
+
+commit 89480b8
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-20
+
+    ・スレッド一覧から文字列を検索した際に、１つ目のタブの文字列しか検索対象にならないバグを修正
+
+src/janeclone.cpp
+
+commit e78b911
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-20
+
+    ・タブ色設定用画面を追加
+    ・drawpane.cpp, drawpane.hppを修正
+
+src/drawpane.cpp
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit 2b37412
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-20
+
+    ・ログ出力/スレッド一覧/スレッド一覧抽出部分にフォント/背景色の適用が可能になった
+
+src/janeclone.cpp
+src/virtualboardlistctrl.cpp
+
+commit 535a939
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-19
+
+    ・フォント/背景色変更処理を板一覧ツリーに実装
+
+src/drawpane.cpp
+src/janeclone.cpp
+src/otherpanels.cpp
+
+commit 0b947df
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-19
+
+    ・wxDCの文字列を中央寄せ/中央揃えできるよう修正
+
+src/drawpane.cpp
+src/drawpane.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 67360a6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-19
+
+    ・BasicDrawPaneクラスを修正
+
+src/drawpane.cpp
+src/drawpane.hpp
+
+commit f68dfbb
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-19
+
+    ・BasicDrawPaneクラスを追加
+    ・ライセンス表記を追加
+
+src/Makefile.am
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 2baaa53
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-19
+
+    ・ユーザー個別設定処理を追加
+
+src/otherpanels.cpp
+
+commit 301fc1a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-19
+
+    ・ユーザー個別設定用画面を作成
+
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit 9fda933
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-18
+
+    ・背景色選択処理を修正
+
+src/otherpanels.cpp
+
+commit c2c6ea9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-18
+
+    MacOSXにて背景色選択処理を実施した際クラッシュしないように対応した
+
+src/janeclone.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit f050065
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-18
+
+    ・ボタン別の背景色選択処理を作成. あいかわらずMacOSXはクラッシュするので対処必要
+
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 8a83b5b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-17
+
+    ・プロパティファイルの項目があるかどうか確認する関数作成 \
+
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/otherpanels.cpp
+
+commit ab44a3d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-17
+
+    ・フォント読み出し処理を修正 \
+    ・臨時的に用意していたフォント読み出し処理を削除
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit f0d2711
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-17
+
+    ・板/スレッドタブ変更時にURLが正確に表示されないバグを修正
+
+src/janeclone.cpp
+
+commit ba819e7
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-16
+
+    ・フォントの変更後サンプル部分のフォントが切り替わるようにした
+
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit b724c26
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-16
+
+    ・Windows/MacOSX向けにパス設定の画面表示を修正した
+    ・フォントと色選択ダイアログを作成した
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 0dd95e4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-16
+
+    ・列挙型の生成と同時に文字列化を実施
+
+src/enums.hpp
+src/otherpanels.cpp
+
+commit 7211b87
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-13
+
+    ・メニューから設定画面を呼び出し可能にした
+
+src/janeclone.cpp
+
+commit df40032
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-13
+
+    ・パス設定画面に既存のパス設定をクリアするボタンを追加（何気にJaneStyleにはない機能）
+
+src/enums.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 4185fb5
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-13
+
+    ・簡単なスキンならば読み込めるようになった
+
+src/anchoredresponsepopup.cpp
+src/anchoredresponsepopup.hpp
+src/threadcontentwindow.cpp
+
+commit 28327de
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-13
+
+    ・スキン読みとり処理を追加
+
+src/datatype.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+
+commit 785791a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-13
+
+    ・スキン読み込み用構造体を定義
+
+src/datatype.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+
+commit 4f9d428
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-13
+
+    ・設定画面のwxDirPickerCtrlを修正
+
+src/otherpanels.cpp
+
+commit b878760
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-13
+
+    ・設定画面の表示方法を変更.Mac OSX, 設定画面を消したあとに操作が効かなくなるバグを修正.
+
+src/janeclone.cpp
+src/otherpanels.cpp
+src/settingwindow.cpp
+
+commit e195e9a
+Merge: 02b31d9 c9e8651
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-13
+
+    Merge branch 'master' of github.com:Hiroyuki-Nagata/JaneClone
+
+commit 02b31d9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-08
+
+    ・検索ボックスの初期値に不要な文字列が入るので削除
+
+src/janeclone.cpp
+src/janecloneutil.cpp
+
+commit c9e8651
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-10
+
+    ・IDごとの動作切り替え部分を作成
+
+src/janeclone.cpp
+src/otherpanels.cpp
+
+commit ffc49a0
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-08
+
+    Mac OSXでIDが正常に抽出できない問題を修正
+
+src/janecloneutil.cpp
+
+commit 33de909
+Merge: 0ac0290 73028d6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-07
+
+    Merge branch 'master' of github.com:Hiroyuki-Nagata/JaneClone
+
+commit 0ac0290
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-05
+
+    Mac OSXで設定画面を開くとクラッシュするバグを修正
+
+src/datatype.hpp
+src/enums.hpp
+src/enumstring.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+src/settingwindow.hpp
+src/threadcontentbar.hpp
+
+commit 73028d6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-05
+
+    enumstring.hppを追加
+
+src/datatype.hpp
+src/enumstring.hpp
+src/otherpanels.cpp
+
+commit 94939e3
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-05
+
+    ・列挙型の文字列化を行うヘッダファイルを追加
+
+src/Makefile.am
+src/datatype.hpp
+src/enums.hpp
+src/otherpanels.cpp
+
+commit 1fdd257
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-04
+
+    ・JaneClone各ウィンドウのフォントと色の設定画面を追加
+
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit f607cdd
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-04
+
+    ・sedによる書き換え処理の修正
+
+Makefile.am
+
+commit 53463bb
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-04
+
+    ・#ifdefの一部修正
+
+src/threadcontentbar.hpp
+
+commit 09e18d2
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-04
+
+    ・.travis.ymlを修正
+
+.travis.yml
+
+commit 98aed84
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-04
+
+    ・.travis.ymlを修正
+
+.travis.yml
+
+commit 7f71aa6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-04
+
+    ・travis.ymlを登録.CIお試し
+
+.travis.yml
+
+commit 57418df
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-04
+
+    Mac OSXでのスレッド取得処理中のクラッシュバグを修正
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+
+commit f07451e
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-04
+
+    Mac OSXの画像読み込み処理が動作できるよう修正
+
+src/janecloneutil.cpp
+src/main.cpp
+src/threadcontentbar.cpp
+src/threadcontentwindow.cpp
+
+commit e8ba072
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-29
+
+    ・微調整；スレッド表示部分のバグ修正
+
+src/janecloneutil.cpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+
+commit c1a03d7
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-29
+
+    ・wxBitmapButtonはMacでのクラッシュの原因になっている臭いので少し修正
+
+src/janeclone.cpp
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+
+commit c7860fe
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-29
+
+    ・スレッドの更新処理を改良
+
+src/janeclone.cpp
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+
+commit b4c2813
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-29
+
+    wx-2.9向けの#ifdefを新たに設定
+
+src/janeclone.cpp
+src/janecloneutil.cpp
+
+commit 4da8242
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-28
+
+    wx-2.9向けにイベント処理を修正
+
+src/janeclone.hpp
+src/responsewindow.hpp
+src/socketcommunication.hpp
+
+commit 907e1cc
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-28
+
+    ・スレッド間通信でクラッシュするMacのためにロギングをイベント形式に変更
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/threadcontentwindow.cpp
+
+commit aad6198
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-28
+
+    ・５レス以上レスするとリンクを赤くする機能を追加
+
+src/janecloneutil.cpp
+
+commit 16a22af
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-28
+
+    ・ID抽出を機能を実装
+
+src/anchoredresponsepopup.cpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+
+commit 3eb9698
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-28
+
+    ・スレッドウィンドウでIDをリンク化
+
+src/datatype.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/threadcontentwindow.cpp
+
+commit 1082494
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-28
+
+    ・各種動作設定用画面を追加
+
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit f7273ec
+Merge: 1875fd5 19c3c5a
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2013-07-27
+
+    Merge pull request #8 from Hiroyuki-Nagata/jc_mac_osx
+    
+    JaneClone for MacOSXをマージしますた
+
+commit 19c3c5a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-27
+
+    libwxnkfのリターン文忘れを修正
+
+libwxnkf/wxnkf.cpp
+
+commit 33c278c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-27
+
+    ・libwxnkfのオブジェクトの渡し方を変更
+
+libwxnkf/util.cpp
+libwxnkf/util.h
+libwxnkf/wx/wxnkf.h
+libwxnkf/wxnkf.cpp
+
+commit 29f6f91
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-27
+
+    libwxnkf向け修正
+
+Makefile.am
+aclocal.m4
+configure
+libwxnkf/wx/wxnkf.h
+libwxnkf/wxnkf.cpp
+
+commit 6db5af3
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-24
+
+    ・libwxnkfのオプションを簡略化
+
+libwxnkf/wx/wxnkf.h
+libwxnkf/wxnkf.cpp
+
+commit 6b18f40
+Author: hiroyuki <newserver002@gmail.com>
+Date:   2013-07-23
+
+    ・libwxnkfのオプション設定部分を修正
+
+.gitignore
+libwxnkf/wxnkf.cpp
+
+commit c42c4ca
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-22
+
+    ・MacOSX向け修正
+
+libwxnkf/wxnkf.cpp
+src/socketcommunication.cpp
+
+commit 1875fd5
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2013-07-22
+
+    Update README
+
+README
+
+commit dc5b532
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-18
+
+    ・テストコード修正
+
+aclocal.m4
+configure
+test/jc-test1.cpp
+
+commit 6c7b3a3
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-18
+
+    ・テストコードを追加
+
+.gitignore
+Makefile.am
+Makefile.in
+configure.ac
+curlpp/Makefile.in
+curlpp/include/Makefile.in
+curlpp/include/curlpp/Makefile.in
+curlpp/include/curlpp/internal/Makefile.in
+curlpp/include/utilspp/Makefile.in
+curlpp/include/utilspp/functor/Makefile.in
+curlpp/include/utilspp/singleton/Makefile.in
+curlpp/src/Makefile.in
+curlpp/src/curlpp/Makefile.in
+curlpp/src/curlpp/internal/Makefile.in
+curlpp/src/utilspp/Makefile.in
+libwxnkf/Makefile.in
+libwxuuid/Makefile.in
+sqlite3/Makefile.in
+src/Makefile.in
+test/Makefile.am
+test/jc-test1.cpp
+wxsqlite3/Makefile.in
+
+commit def4918
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-18
+
+    ・雑多なファイルの移動
+
+Makefile.am
+janeclone.nsi.in
+janeclone.wrapper
+misc/janeclone.nsi.in
+misc/janeclone.wrapper
+
+commit 562f786
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-18
+
+    ・wxTreeCtrl::Expandはwx-2.9以上では使わないように修正
+
+src/janeclone.cpp
+
+commit e77b623
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-17
+
+    ・複数レスのポップアップに対応
+
+src/janeclone.cpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+
+commit 5c22c04
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-17
+
+    ・指定したレスのコピー機能を実装
+
+src/enums.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+
+commit be0f0ed
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-16
+
+    ・プレビュー画面でアンカーをURLとして処理させるよう変更
+
+src/datatype.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/responsewindow.cpp
+
+commit 4c3974d
+Merge: 106d515 55fd366
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-16
+
+    Merge branch 'master' of https://github.com/Hiroyuki-Nagata/JaneClone
+    
+    pullするのを忘れてた
+    Merge branch 'master' of https://github.com/Hiroyuki-Nagata/JaneClone
+    
+    pullするのを忘れてた
+    Merge branch 'master' of https://github.com/Hiroyuki-Nagata/JaneClone
+    
+    pullするのを忘れてた
+
+commit 106d515
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-16
+
+    ・設定画面の初期表示サッシュの位置を修正
+    ・２ちゃんねるビューワ公式サイトを開く機能を追加
+
+src/datatype.hpp
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/settingwindow.cpp
+
+commit 55fd366
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-15
+
+     Info.plist   .MacOSX Finder                 .
+
+Makefile.am
+
+commit 70b1d69
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-15
+
+    ・書き込み時のプレビュー連携を修正(SetSelection -> ChangeSelection)
+
+src/responsewindow.cpp
+
+commit df5f13b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-15
+
+    ・libpngの警告メッセージ「known incorrect sRGB profile」が出力されないように画像ファイルを修正
+
+.gitignore
+src/rc/amazon.png
+src/rc/application-side-tree.png
+src/rc/application-tile-horizontal.png
+src/rc/appointment-new.png
+src/rc/bookmark-new.png
+src/rc/configure-2.png
+src/rc/dialog-accept.png
+src/rc/dialog-error.png
+src/rc/download-3.png
+src/rc/edit-add-3.png
+src/rc/edit-delete.png
+src/rc/edit-find-replace.png
+src/rc/emblem-favorite.png
+src/rc/emblem-regex.png
+src/rc/emblem-system.png
+src/rc/emblem-unreadable.png
+src/rc/folder.png
+src/rc/format-justify-left.png
+src/rc/go-bottom.png
+src/rc/go-down-4.png
+src/rc/go-down.png
+src/rc/go-last.png
+src/rc/go-next.png
+src/rc/go-up.png
+src/rc/google.png
+src/rc/help-browser.png
+src/rc/image-x-generic.png
+src/rc/page-edit.png
+src/rc/site_search.png
+src/rc/system-search-5.png
+src/rc/system-search.png
+src/rc/text-html.png
+src/rc/view-choose.png
+src/rc/view-file-columns.png
+src/rc/view-refresh.png
+src/rc/yahoo.png
+
+commit a8f40f4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-15
+
+    ・投稿時に書き込みのプレビューを実施できるようにした
+
+src/janeclone.cpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+
+commit a55e3f3
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-14
+
+    ・引用付きレスを投稿する機能を追加
+
+src/datatype.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/threadcontentwindow.cpp
+
+commit c69fb6d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-14
+
+    ・レス番号をクリックすると、それに対してレスができる機能を追加
+    ・JaneCloneクラスの構成の変更
+
+src/datatype.hpp
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+
+commit 9314e2b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-13
+
+    Mac OSXでの画像読み込みを考慮したコードを追加\nINSTALLファイルを更新
+
+.gitignore
+INSTALL
+src/datatype.hpp
+src/janeclone.cpp
+
+commit b83ba97
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-13
+
+    ・wx-2.8との互換性のためのコードを追加
+
+src/janeclone.cpp
+
+commit 20bf3b8
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-13
+
+    ・MacOSX上でのビルドに成功(clang++-mp-3.3, -stdlib=libc++, -std=c++11, libtool(MacPorts)
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 722f29e
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-12
+
+    wxWindowList::NodeをwxWindowList::const_iteratorで書き直し
+
+src/janeclone.cpp
+
+commit 312fe48
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-12
+
+    MacOSX上での修正
+
+src/socketcommunication.cpp
+
+commit e778839
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-12
+
+    ・clang++向けの修正２
+
+src/virtualboardlistctrl.hpp
+
+commit e74acd0
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-12
+
+    clang++がテンプレートをデフォルト引数とした時にコンパイルできないので、コードを修正
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 67eca12
+Merge: a9a4552 50dfec9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-10
+
+    Merge branch 'master' of https://github.com/Hiroyuki-Nagata/JaneClone
+
+commit a9a4552
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-10
+
+     Mac OSX
+
+configure.ac
+m4/ax_compiler_vendor.m4
+m4/wxwin.m4
+
+commit 50dfec9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-01
+
+    ・curlppにてMinGW向けビルドの修正
+
+curlpp/include/curlpp/internal/buildconfig.h
+
+commit 1d18f9e
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-07-01
+
+    ・MinGWにてビルドの調整
+
+configure
+configure.ac
+src/Makefile.am
+src/Makefile.in
+src/socketcommunication.cpp
+
+commit 425dd21
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-30
+
+    ・改行コードを含んだテキストを投稿した際に文字化けするバグを修正
+
+src/responsewindow.cpp
+src/responsewindow.hpp
+
+commit 23e5a32
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-30
+
+    ・忍法帳に対応
+
+src/datatype.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit f103058
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-30
+
+    ・wxHttpで記述されている箇所をcurlppに書きなおし
+    ・書き込み処理を動作するように修正（忍法帳非対応）
+
+src/janeclone.cpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit adc4fd4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-28
+
+    ・スレタイ検索に一致した項目の色を変える機能を追加
+
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit 82cf62d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-26
+
+    ・スレッド一覧リストにてキーワードでスレタイを検索できるようにした
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit ecc37bc
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-26
+
+    ・datファイルの更新取得に対応
+
+libwxnkf/wx/wxnkf.h
+libwxnkf/wxnkf.cpp
+src/socketcommunication.cpp
+
+commit 78d5c2e
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-25
+
+    ・マクロの展開方法を変更、config.hをインクルードするようにした
+
+src/Makefile.am
+src/Makefile.in
+src/datatype.hpp
+src/janeclone.cpp
+src/socketcommunication.cpp
+
+commit 56b9551
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-25
+
+    ・スレッド一覧リストが更新できないバグを修正
+    ・過去スレを取得しに行く時無限ループになるバグを修正
+
+src/socketcommunication.cpp
+
+commit 9b2dceb
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-24
+
+    ・過去スレ取得処理を追加
+
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit 5da4850
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-24
+
+    ・画像ファイルダウンロードの際に、スクロール位置が最初に戻ってしまう問題に対処
+    ・画像ファイルダウンロードの際に、UUID生成に失敗しセグメンテーション違反になるバグを修正
+
+libwxuuid/wxUUID.cpp
+libwxuuid/wxUUID.h
+src/threadcontentwindow.cpp
+
+commit d1617f4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-24
+
+    ・スレッド再読み込みの際、直前に読んでいた位置までスクロールさせるようにした
+
+src/enums.hpp
+src/janeclone.cpp
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+
+commit 8b482e9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-24
+
+    ・HTTP/GET処理部分をcurlppにて書き換え.処理速度が早くなった.
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit 0c89f6a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-23
+
+    ・HTTP/GET処理部分をcurlppにて書き換え
+
+src/janeclone.cpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit 1650c7b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-20
+
+    ・一部通信処理をcurlppにて書き換え
+
+Makefile.am
+Makefile.in
+configure
+src/janeclone.cpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit 634ad82
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-14
+
+    INSTALLとconfigure.acの修正
+
+INSTALL
+configure.ac
+
+commit 6a2cbc2
+Merge: 9ddcccf d8489ef
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-13
+
+    Merge branch 'master' of https://github.com/Hiroyuki-Nagata/JaneClone
+
+commit 9ddcccf
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-13
+
+    bootstrap時のsedの環境依存問題を修正
+
+bootstrap
+
+commit d8489ef
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-06-13
+
+    ・メニューにショートカットを追加する処理を追加
+
+ChangeLog
+Makefile.am
+Makefile.in
+configure
+configure.ac
+misc/janeclone.menu
+
 commit 8b67ec6
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-06-12

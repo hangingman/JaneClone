@@ -68,6 +68,23 @@ public:
       */
      void ForceScroll(const wxPoint* p);
 
+     /**
+      * wx-2.9.5ではインターフェースとして規定されている関数が実装されず
+      * そのままになっている…
+      */
+#if wxCHECK_VERSION(2, 9, 5)
+     void SetHTMLWindowTitle(wxString const&){};
+     void OnHTMLLinkClicked(wxHtmlLinkInfo const&){};
+     wxHtmlOpeningStatus OnHTMLOpeningURL(wxHtmlURLType, wxString const&, wxString*) const {};
+     wxPoint HTMLCoordsToWindow(wxHtmlCell*, wxPoint const&) const {};
+     wxWindow* GetHTMLWindow(){};
+     wxColour GetHTMLBackgroundColour() const {};
+     void SetHTMLBackgroundColour(wxColour const&){};
+     void SetHTMLBackgroundImage(wxBitmap const&){};
+     void SetHTMLStatusText(wxString const&){};
+     wxCursor GetHTMLCursor(wxHtmlWindowInterface::HTMLCursor) const {};
+#endif
+
 private:
      /**
       * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
