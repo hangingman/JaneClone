@@ -99,9 +99,21 @@ package-win32-msi: prepare-package
 	@echo 'makensis start...'
 	$(MAKENSIS) $(NSIS_NSI)
 
+# Windows(x86)向けのzip作成
+package-win32-zip: prepare-package
+	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
+	cp -p $(top_builddir)/README $(top_builddir)/extras/package
+	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
+	cp -p $(DEPDLLS) $(top_builddir)/extras/package
+	cp -p $(WXDLLS) $(top_builddir)/extras/package
+	cp -p $(STDCDLL) $(top_builddir)/extras/package
+	cp -p $(RESTDLL) $(top_builddir)/extras/package
+	cp -p $(LIBGCC) $(top_builddir)/extras/package
+	cp -p $(JANEEXE)$(EXT) $(top_builddir)/extras/package
+	( cd $(top_builddir)/extras && zip -r $(PACKAGE)-win32-$(VERSION).zip package/ && mv $(PACKAGE)-win32-$(VERSION).zip ../ )
+
 # Windows(x64)向けのインストーラ作成
 package-win64-msi: prepare-package
-	touch $(NSIS_NSI)
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
@@ -119,6 +131,19 @@ package-win64-msi: prepare-package
 	sed -i 's/%%%DEFAULT_PROGRAMFILES%%%/$$PROGRAMFILES64/g' $(NSIS_NSI)
 	@echo 'makensis start...'
 	$(MAKENSIS) $(NSIS_NSI)
+
+# Windows(x64)向けのzip作成
+package-win64-zip: prepare-package
+	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
+	cp -p $(top_builddir)/README $(top_builddir)/extras/package
+	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
+	cp -p $(DEPDLLS) $(top_builddir)/extras/package
+	cp -p $(WXDLLS) $(top_builddir)/extras/package
+	cp -p $(STDCDLL) $(top_builddir)/extras/package
+	cp -p $(RESTDLL) $(top_builddir)/extras/package
+	cp -p $(LIBGCC) $(top_builddir)/extras/package
+	cp -p $(JANEEXE)$(EXT) $(top_builddir)/extras/package
+	( cd $(top_builddir)/extras && zip -r $(PACKAGE)-win64-$(VERSION).zip package/ && mv $(PACKAGE)-win64-$(VERSION).zip ../ )
 
 # RH系ディストリビューション向けのインストーラ作成
 package-rpm: package-clean
@@ -222,11 +247,9 @@ remove_distdir :
 	&& rm -rf "$(distdir)" \
 	|| { sleep 5 && rm -rf "$(distdir)"; }; \
 	else :; fi
-# 圧縮ファイルも消す
 	rm -rf $(distdir).tar.gz
-# パッケージを消す
+	rm -rf $(distdir).zip
 	rm -rf janeclone_*
-# application bundle
 	rm -rf $(BUNDLE)
 
 # OSX向けのバイナリ作成
