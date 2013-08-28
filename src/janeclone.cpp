@@ -1250,21 +1250,12 @@ void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString ou
 void JaneClone::SetThreadListItemUpdate(const wxString boardName, const wxString outputPath, 
 					const size_t selectedPage, const std::map<wxString,ThreadList>& oldThreadMap) {
 
-     // HashMapから対象の板のオブジェクトを取り出す
-     if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
-	  wxMessageBox(wxT("スレッド一覧更新処理に失敗しました。"));
-	  boardNoteBook->Thaw();
-     } else {
-	  // ハッシュ内部の情報を削除する
-	  vbListCtrlHash.erase(boardName);
-	  vbListHash.erase(boardName);
-	  // wxAuiToolBarを宣言する
-	  wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath, oldThreadMap);     
-	  boardNoteBook->DeletePage(selectedPage);
-	  boardNoteBook->InsertPage(selectedPage, panel, boardName, false, wxNullBitmap);
-	  // ノートブックの選択処理
-	  boardNoteBook->SetSelection(selectedPage);
-     }
+     // wxAuiToolBarを宣言する
+     wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath, oldThreadMap);     
+     boardNoteBook->DeletePage(selectedPage);
+     boardNoteBook->InsertPage(selectedPage, panel, boardName, false, wxNullBitmap);
+     // ノートブックの選択処理
+     boardNoteBook->SetSelection(selectedPage);
 }
 /**
  * 板一覧更新処理
@@ -1644,11 +1635,6 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
 
 	  // ログ一覧用のインスタンスを準備する
 	  vbListCtrl = new VirtualBoardListCtrl(boardNoteBook, boardName, datList);
-
-	  //　boardName(key),boardTabAndTh(value)としてHashに格納する
-	  vbListCtrlHash[(const wxString) boardName] = (const VirtualBoardListCtrl&) vbListCtrl;
-	  // listctrl内のリストをJaneCloneのメモリに持たせる
-	  vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
 	  // スレッドリストを表示させる
 	  boardNoteBook->AddPage(vbListCtrl, boardName, false);
 
@@ -1657,18 +1643,8 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
 	   * 既にログ一覧がタブにある場合
 	   */
 
-	  // ハッシュ内部の情報を削除する
-	  vbListCtrlHash.erase(boardName);
-	  vbListHash.erase(boardName);
-
 	  // ログ一覧用のインスタンスを準備する
 	  vbListCtrl = new VirtualBoardListCtrl(boardNoteBook, boardName, datList);
-
-	  //　boardName(key),boardTabAndTh(value)としてHashに格納する
-	  vbListCtrlHash[(const wxString) boardName] = (const VirtualBoardListCtrl&) vbListCtrl;
-	  // listctrl内のリストをJaneCloneのメモリに持たせる
-	  vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
-
 	  boardNoteBook->DeletePage(selectedPage);
 	  boardNoteBook->InsertPage(selectedPage, vbListCtrl, boardName, false, wxNullBitmap);
      }
@@ -2364,11 +2340,6 @@ void JaneClone::OnLeftClickAtListCtrl2ch(wxListEvent& event) {
      // 現在アクティブになっているタブの板名を取得する
      wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
 
-     if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
-	  wxMessageBox(wxT("すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
-	  return;
-     }
-
      // リストコントロールを引き出してくる
      VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
      if (vbListCtrl == NULL) {
@@ -2409,11 +2380,6 @@ void JaneClone::OnLeftClickAtListCtrlShingetsu(wxListEvent& event) {
      // 現在アクティブになっているタブの板名を取得する
      wxString nodeHostname = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
 
-     if (vbListCtrlHash.find(nodeHostname) == vbListCtrlHash.end()) {
-	  wxMessageBox(wxT("すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
-	  return;
-     }
-
      // リストコントロールを引き出してくる
      VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(nodeHostname));
      if (vbListCtrl == NULL) {
@@ -2441,23 +2407,17 @@ void JaneClone::OnLeftClickAtListCtrlShingetsu(wxListEvent& event) {
 void JaneClone::OnLeftClickAtListCtrlCol(wxListEvent& event) {
      
      // 現在アクティブになっているタブの板名を取得する
-     wxString boardName = boardNoteBook->GetPageText(
-	  boardNoteBook->GetSelection());
+     wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
 
-     if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
-	  wxMessageBox(wxT("すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
-     } else {
-
-	  // リストコントロールを引き出してくる
-	  VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
-	  if (vbListCtrl == NULL) {
-	       wxMessageBox(wxT("内部エラー, スレッドソート処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
-	       return;
-	  }
-
-	  // 板名が一致するwindowクラスでソートをかける
-	  vbListCtrl->SortVectorItems(event.GetColumn());
+     // リストコントロールを引き出してくる
+     VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
+     if (vbListCtrl == NULL) {
+	  wxMessageBox(wxT("内部エラー, スレッドソート処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
+	  return;
      }
+
+     // 板名が一致するwindowクラスでソートをかける
+     vbListCtrl->SortVectorItems(event.GetColumn());
 }
 /**
  * スレッドをノートブックに反映するメソッド
@@ -3086,11 +3046,6 @@ wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName
      vbListCtrl->SetName(boardName);
      vbox->Add(vbListCtrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 10);
 
-     //　boardName(key),boardTabAndTh(value)としてHashに格納する
-     vbListCtrlHash[(const wxString) boardName] = (const VirtualBoardListCtrl&) vbListCtrl;
-     // listctrl内のリストをJaneCloneのメモリに持たせる
-     vbListHash[(const wxString) boardName] = vbListCtrl->m_vBoardList;
-
      // カラムの幅を最大化
      wxFont font = GetCurrentFont();
      int pointSize = font.GetPointSize();
@@ -3408,59 +3363,54 @@ void JaneClone::OnThreadListSort(wxCommandEvent& event) {
      // 現在アクティブになっているタブの板名を取得する
      wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
 
-     if (vbListCtrlHash.find(boardName) == vbListCtrlHash.end()) {
-	  wxMessageBox(wxT("すでにダウンロードされているスレッド一覧ファイルの読み出しに失敗しました。datフォルダ内のデータを削除していませんか？"));
-     } else {
+     // リストコントロールを引き出してくる
+     VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
+     if (vbListCtrl == NULL) {
+	  wxMessageBox(wxT("内部エラー, スレッドソート処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
+	  return;
+     }
 
-	  // リストコントロールを引き出してくる
-	  VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
-	  if (vbListCtrl == NULL) {
-	       wxMessageBox(wxT("内部エラー, スレッドソート処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
-	       return;
-	  }
+     switch(event.GetId()) {
 
-	  switch(event.GetId()) {
-
-	  case ID_OnClickMenuCOL_CHK:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_CHK);
-	       break;
-	  case ID_OnClickMenuCOL_NUM:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_NUM);
-	       break;
-	  case ID_OnClickMenuCOL_TITLE:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_TITLE);
-	       break;
-	  case ID_OnClickMenuCOL_RESP:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_RESP);
-	       break;
-	  case ID_OnClickMenuCOL_CACHEDRES:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_CACHEDRES);
-	       break;
-	  case ID_OnClickMenuCOL_NEWRESP:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_NEWRESP);
-	       break;
-	  case ID_OnClickMenuCOL_INCRESP:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_INCRESP);
-	       break;
-	  case ID_OnClickMenuCOL_MOMENTUM:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_MOMENTUM);
-	       break;
-	  case ID_OnClickMenuCOL_LASTUP:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_LASTUP);
-	       break;
-	  case ID_OnClickMenuCOL_SINCE:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_SINCE);
-	       break;
-	  case ID_OnClickMenuCOL_OID:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_OID);
-	       break;
-	  case ID_OnClickMenuCOL_BOARDNAME:
-	       vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_BOARDNAME);
-	       break;
-	  default:
-	       break;
-	  }
-     }     
+     case ID_OnClickMenuCOL_CHK:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_CHK);
+	  break;
+     case ID_OnClickMenuCOL_NUM:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_NUM);
+	  break;
+     case ID_OnClickMenuCOL_TITLE:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_TITLE);
+	  break;
+     case ID_OnClickMenuCOL_RESP:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_RESP);
+	  break;
+     case ID_OnClickMenuCOL_CACHEDRES:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_CACHEDRES);
+	  break;
+     case ID_OnClickMenuCOL_NEWRESP:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_NEWRESP);
+	  break;
+     case ID_OnClickMenuCOL_INCRESP:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_INCRESP);
+	  break;
+     case ID_OnClickMenuCOL_MOMENTUM:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_MOMENTUM);
+	  break;
+     case ID_OnClickMenuCOL_LASTUP:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_LASTUP);
+	  break;
+     case ID_OnClickMenuCOL_SINCE:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_SINCE);
+	  break;
+     case ID_OnClickMenuCOL_OID:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_OID);
+	  break;
+     case ID_OnClickMenuCOL_BOARDNAME:
+	  vbListCtrl->SortVectorItems(VirtualBoardListCtrl::Columns::COL_BOARDNAME);
+	  break;
+     default:
+	  break;
+     }
 }
 /**
  * ツリーコントロールの表示・非表示切り替え
@@ -3687,11 +3637,6 @@ void JaneClone::SetShingetsuThreadListItemNew(const wxString& nodeHostname, cons
      vbListCtrl->SetName(nodeHostname);
      vbox->Add(vbListCtrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 10);
 
-     //　boardName(key),boardTabAndTh(value)としてHashに格納する
-     vbListCtrlHash[nodeHostname] = (const VirtualBoardListCtrl&) vbListCtrl;
-     // listctrl内のリストをJaneCloneのメモリに持たせる
-     vbListHash[nodeHostname] = vbListCtrl->m_vBoardList;
-
      // カラムの幅を最大化
      wxFont font = GetCurrentFont();
      int pointSize = font.GetPointSize();
@@ -3718,19 +3663,10 @@ void JaneClone::SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, c
 						 ,wxString& outputFilePath
 						 ,const std::map<wxString,ThreadList>& oldThreadMap) {
 
-     // HashMapから対象の板のオブジェクトを取り出す
-     if (vbListCtrlHash.find(nodeHostname) == vbListCtrlHash.end()) {
-	  wxMessageBox(wxT("スレッド一覧更新処理に失敗しました。"));
-	  boardNoteBook->Thaw();
-     } else {
-	  // ハッシュ内部の情報を削除する
-	  vbListCtrlHash.erase(nodeHostname);
-	  vbListHash.erase(nodeHostname);
-	  // wxAuiToolBarを宣言する
-	  wxPanel* panel;// = CreateAuiToolBar(boardNoteBook, nodeHostname, outputPath, oldThreadMap);     
-	  boardNoteBook->DeletePage(selectedPage);
-	  boardNoteBook->InsertPage(selectedPage, panel, nodeHostname, false, wxNullBitmap);
-	  // ノートブックの選択処理
-	  boardNoteBook->SetSelection(selectedPage);
-     }
+     // wxAuiToolBarを宣言する
+     wxPanel* panel;// = CreateAuiToolBar(boardNoteBook, nodeHostname, outputPath, oldThreadMap);     
+     boardNoteBook->DeletePage(selectedPage);
+     boardNoteBook->InsertPage(selectedPage, panel, nodeHostname, false, wxNullBitmap);
+     // ノートブックの選択処理
+     boardNoteBook->SetSelection(selectedPage);
 }

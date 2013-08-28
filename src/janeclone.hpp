@@ -347,24 +347,6 @@ private:
 					   ,wxString& outputFilePath
 					   ,const std::map<wxString,ThreadList>& oldThreadMap);
 
-     // VirtualBoardListCtrlのHashMap（板名をkeyとしてリストコントロールのオブジェクトを管理する）
-     WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			  VirtualBoardListCtrl,		// type of the values
-			  wxStringHash ,				// hasher
-			  wxStringEqual,				// key equality predicate
-			  VirtualBoardListCtrlHash);	// name of the class
-     // JaneCloneが管理するBoardTabAndThreadHashのオブジェクト
-     VirtualBoardListCtrlHash vbListCtrlHash;
-
-     // VirtualBoardListのHashMap（板名をkeyとしてリストコントロール内部のリストを管理する）
-     WX_DECLARE_HASH_MAP( wxString, 		// type of the keys
-			  VirtualBoardList,			// type of the values
-			  wxStringHash ,				// hasher
-			  wxStringEqual,				// key equality predicate
-			  VirtualBoardListHash);		// name of the class
-
-     VirtualBoardListHash vbListHash;
-
      /**
       * 右下のオブジェクトとメソッド
       */
