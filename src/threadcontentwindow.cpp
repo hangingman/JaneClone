@@ -561,7 +561,9 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
 
      // wxMemoryFSHandlerに登録されているファイルを削除し、新しいファイルを登録する
      wxString filename = wxFileSystem::URLToFileName(result->imageURL).GetFullName();
-     wxMemoryFSHandler::RemoveFile(filename);
+
+     // FIXME: JaneClone-1.1.3
+     //wxMemoryFSHandler::RemoveFile(filename);
 
      // wxBitmapTypeの判別
      wxBitmapType type;
@@ -611,7 +613,9 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
 	  return;
      }
      // 画像を登録する
-     wxMemoryFSHandler::AddFile(filename, bitmap, type);
+
+     // FIXME: JaneClone-1.1.3
+     //wxMemoryFSHandler::AddFile(filename, bitmap, type);
      // 現在位置の取得とスクロール
      int x, y; 
      GetViewStart(&x, &y);

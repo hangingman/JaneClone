@@ -663,7 +663,8 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 	  for (int i = 0; i < array.GetCount();i++) {
 	       // ex) <img src=\"memory:logo.pcx\">
 	       wxString filename = wxFileSystem::URLToFileName(array[i]).GetFullName();
-	       wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
+	       // FIXME: JaneClone-1.1.3
+	       //wxMemoryFSHandler::AddFile(filename, bitmap, wxBITMAP_TYPE_PNG);
 	       responseText.Append(wxT("<p><img src=\"memory:") + filename + wxT("\" width=16 height=16 /></p>"));
 	  }
 	  // HTMLに改行を加える
