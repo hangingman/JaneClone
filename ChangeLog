@@ -1,3 +1,60 @@
+commit 2d74b44
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-30
+
+    ・wxMemoryFSHandlerについてはJaneClone-1.1.3まで実装を持ち越し、コメントアウトしておく
+
+src/janecloneutil.cpp
+src/threadcontentwindow.cpp
+
+commit 4b24119
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-30
+
+    ・最近閉じたスレの表示で、数回マウスカーソルを合わせるとハングするバグを修正
+    ・最近閉じた板/スレは直近16個までに限定させた
+    ・最近閉じた板/スレのデータが何もないときには仮のデータを入れる
+
+src/janeclone.cpp
+src/sqliteaccessor.cpp
+
+commit 82c6e32
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-29
+
+    ・zipファイル作成用のバッチ処理を追加
+
+Makefile.am
+
+commit d54e640
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-29
+
+    ・"No font for displaying text in encoding"というダイアログが表示されるバグを修正
+    ・wxWidgets-2.8.12-mswにて、main.cppの一部修正
+
+src/janeclone.cpp
+src/main.cpp
+
+commit 39347d1
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-28
+
+    ・不要コードを削除
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 944bdcd
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-28
+
+    ・ChangeLogの更新
+    ・wx-2.9.5での仮想関数対策
+
+ChangeLog
+src/threadcontentwindow.hpp
+
 commit 4cf7e1b
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-08-25
