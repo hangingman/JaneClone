@@ -214,7 +214,7 @@ package-deb: remove_distdir dist
 	echo "Section: net" >> $(distdir)/debian/control
 	echo "Priority: extra" >> $(distdir)/debian/control
 	echo "Maintainer: hiroyuki nagata <$(PACKAGE_BUGREPORT)>" >> $(distdir)/debian/control
-	echo "Build-Depends: debhelper (>= 8.0.0), autotools-dev, libatk1.0-0 (>= 1.29.3), libc6 (>= 2.7), libcairo2 (>= 1.2.4), libdbus-1-3 (>= 1.1.1), libfontconfig1 (>= 2.8.0), libfreetype6 (>= 2.2.1), libgcc1 (>= 1:4.1.1), libglib2.0-0 (>= 2.12.0), libgtk2.0-0 (>= 2.8.0), libpango1.0-0 (>= 1.14.0), libstdc++6 (>= 4.1.1),libwxbase2.8-0 (>= 2.8.10.1), libwxgtk2.8-0 (>= 2.8.10.1), libxml2-dev (>= 2.8.0)" >> $(distdir)/debian/control
+	echo "Build-Depends: debhelper (>= 8.0.0), autotools-dev, libatk1.0-0 (>= 1.29.3), libc6 (>= 2.7), libcairo2 (>= 1.2.4), libdbus-1-3 (>= 1.1.1), libfontconfig1 (>= 2.8.0), libfreetype6 (>= 2.2.1), libgcc1 (>= 1:4.1.1), libglib2.0-0 (>= 2.12.0), libgtk2.0-0 (>= 2.8.0), libpango1.0-0 (>= 1.14.0), libstdc++6 (>= 4.1.1),libwxbase2.8-0 (>= 2.8.10.1), libwxgtk2.8-0 (>= 2.8.10.1), libxml2-dev (>= 2.8.0), fonts-mona" >> $(distdir)/debian/control
 	echo "Standards-Version: $(VERSION)" >> $(distdir)/debian/control
 	echo "Homepage: https://github.com/Hiroyuki-Nagata/JaneClone" >> $(distdir)/debian/control
 	echo "" >> $(distdir)/debian/control
