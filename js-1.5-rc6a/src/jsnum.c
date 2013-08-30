@@ -42,9 +42,11 @@
  * JS number type and wrapper class.
  */
 #include "jsstddef.h"
+
 #if defined(XP_WIN) || defined(XP_OS2)
-#include <float.h>
+   #include <float.h>
 #endif
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -425,20 +427,44 @@ static jsdouble NaN;
 
 #if (defined XP_WIN || defined XP_OS2) &&                                     \
     !defined __MWERKS__ &&                                                    \
-    (defined _M_IX86 ||                                                       \
-     (defined __GNUC__ && !defined __MINGW32__))
+    (defined _M_IX86 || (defined (__GNUC__) && !defined (__MINGW32__) ))
+   /*
+    * Set the exception mask to mask all exceptions and set the FPU precision
+    * to 53 bit mantissa.
+    * On Alpha platform this is handled via Compiler option.
+    */
 
-/*
- * Set the exception mask to mask all exceptions and set the FPU precision
- * to 53 bit mantissa.
- * On Alpha platform this is handled via Compiler option.
- */
-#define FIX_FPU() _control87(MCW_EM | PC_53, MCW_EM | MCW_PC)
+   /** According to MinGW version, constants may not be defined. */
+   #ifndef MCW_EM
+      #ifdef _MCW_EM
+         #define MCW_EM _MCW_EM
+      #else
+         #define _MCW_EM 0x0008001F /* Error masks */
+         #define MCW_EM  _MCW_EM
+      #endif
+   #endif
 
+   #ifndef PC_53
+      #ifdef _PC_53
+         #define PC_53 _PC_53
+      #else
+         #define _PC_53 0x00010000
+         #define PC_53 _PC_53
+      #endif
+   #endif
+
+   #ifndef MCW_PC
+      #ifdef _MCW_PC
+         #define MCW_PC _MCW_PC
+      #else
+         #define _MCW_PC 0x00030000 /* Precision */
+         #define MCW_PC _MCW_PC
+      #endif
+   #endif
+
+   #define FIX_FPU() _control87(MCW_EM | PC_53, MCW_EM | MCW_PC)
 #else
-
-#define FIX_FPU() ((void)0)
-
+   #define FIX_FPU() ((void)0)
 #endif
 
 JSBool
