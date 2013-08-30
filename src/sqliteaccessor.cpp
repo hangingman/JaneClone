@@ -421,7 +421,7 @@ wxArrayString SQLiteAccessor::GetClosedBoardInfo() {
 	  // リザルトセットを用意する
 	  wxSQLite3ResultSet rs;
 	  // SQL文を用意する
-	  wxString SQL_QUERY = wxT("SELECT BOARDNAME_KANJI from USER_CLOSED_BOARDLIST");
+	  wxString SQL_QUERY = wxT("select BOARDNAME_KANJI from USER_CLOSED_BOARDLIST order by timeinfo desc limit 16");
 
 	  // SQL文を実行する
 	  rs = db.ExecuteQuery(SQL_QUERY);
@@ -499,7 +499,7 @@ wxArrayString SQLiteAccessor::GetClosedThreadInfo() {
 	  // リザルトセットを用意する
 	  wxSQLite3ResultSet rs;
 	  // SQL文を用意する
-	  wxString SQL_QUERY = wxT("SELECT THREAD_TITLE from USER_CLOSED_THREADLIST");
+	  wxString SQL_QUERY = wxT("SELECT THREAD_TITLE from USER_CLOSED_THREADLIST order by timeinfo desc limit 16");
 
 	  // SQL文を実行する
 	  rs = db.ExecuteQuery(SQL_QUERY);

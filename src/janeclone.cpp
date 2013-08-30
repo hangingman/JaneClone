@@ -2849,26 +2849,33 @@ void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
      wxMenuItemList::Node* current_menuitem_node;
 #endif
      wxMenuItem* current_menuitem;
-
-     while ( current_menuitem_node = closeB->GetMenuItems().GetLast() ) {
+     if ( closeB->GetMenuItems().GetLast() ) {
+	  // そもそも要素があるかどうかチェック
+	  while ( current_menuitem_node = closeB->GetMenuItems().GetLast() ) {
 #if wxCHECK_VERSION(2, 9, 0)
-	  current_menuitem = current_menuitem_node.GetData();
+	       current_menuitem = current_menuitem_node.GetData();
 #else
-	  current_menuitem = current_menuitem_node->GetData();
+	       current_menuitem = current_menuitem_node->GetData();
 #endif
-	  if (!current_menuitem->IsSeparator()) {
-	       // menuの区切りでなければ削除する
-	       closeB->Delete( current_menuitem );
-	  } else {
-	       // そうでなければ削除は終わりなので脱出
-	       break;
+	       if (!current_menuitem->IsSeparator()) {
+		    // menuの区切りでなければ削除する
+		    closeB->Delete( current_menuitem );
+	       } else {
+		    // そうでなければ削除は終わりなので脱出
+		    break;
+	       }
 	  }
-     }
-     // ユーザが閉じたスレッドのうち、データベースに保存されている数
-     wxArrayString array = SQLiteAccessor::GetClosedBoardInfo();
-     for (unsigned int i = 0; i < array.GetCount(); i++ ) {
-	  closeB->Append(ID_UserLastClosedBoardClick + i, array[i]);
-     }
+	  // ユーザが閉じたスレッドのうち、データベースに保存されている数
+	  wxArrayString array = SQLiteAccessor::GetClosedBoardInfo();
+	  if ( array.GetCount() == 0 ) {
+	       closeB->Append(wxID_ANY, wxT("過去に閉じた板がないよ"));
+	       return;
+	  }
+
+	  for (unsigned int i = 0; i < array.GetCount(); i++ ) {
+	       closeB->Append(ID_UserLastClosedBoardClick + i, array[i]);
+	  }
+     }     
 }
 /**
  * ユーザーが最後に閉じた板を開く
@@ -2930,25 +2937,32 @@ void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
      wxMenuItemList::Node* current_menuitem_node;
 #endif
      wxMenuItem* current_menuitem;
-
-     while ( current_menuitem_node = closeB->GetMenuItems().GetLast() ) {
+     if ( closeT->GetMenuItems().GetLast() ) {
+	  // そもそも要素があるかどうかチェック
+	  while ( current_menuitem_node = closeT->GetMenuItems().GetLast() ) {
 #if wxCHECK_VERSION(2, 9, 0)
-	  current_menuitem = current_menuitem_node.GetData();
+	       current_menuitem = current_menuitem_node.GetData();
 #else
-	  current_menuitem = current_menuitem_node->GetData();
+	       current_menuitem = current_menuitem_node->GetData();
 #endif
-	  if (!current_menuitem->IsSeparator()) {
-	       // menuの区切りでなければ削除する
-	       closeT->Delete( current_menuitem );
-	  } else {
-	       // そうでなければ削除は終わりなので脱出
-	       break;
+	       if (!current_menuitem->IsSeparator()) {
+		    // menuの区切りでなければ削除する
+		    closeT->Delete( current_menuitem );
+	       } else {
+		    // そうでなければ削除は終わりなので脱出
+		    break;
+	       }
 	  }
-     }
-     // ユーザが閉じたスレッドのうち、データベースに保存されている数
-     wxArrayString array = SQLiteAccessor::GetClosedThreadInfo();
-     for (unsigned int i = 0; i < array.GetCount(); i++ ) {
-	  closeT->Append(ID_UserLastClosedThreadClick + i, array[i]);
+	  // ユーザが閉じたスレッドのうち、データベースに保存されている数
+	  wxArrayString array = SQLiteAccessor::GetClosedThreadInfo();
+	  if ( array.GetCount() == 0 ) {
+	       closeT->Append(wxID_ANY, wxT("過去に閉じたスレッドがないよ"));
+	       return;
+	  }
+
+	  for (unsigned int i = 0; i < array.GetCount(); i++ ) {
+	       closeT->Append(ID_UserLastClosedThreadClick + i, array[i]);
+	  }
      }
 }
 /**
