@@ -276,7 +276,7 @@ GetLine(JSContext *cx, char *bufp, FILE *file, const char *prompt) {
 #endif
     {
         char line[256];
-        fprintf(gOutFile, prompt);
+        fprintf(gOutFile, "%s", prompt);
         fflush(gOutFile);
 #ifdef XP_MAC_MPW
         /* Print a CR after the prompt because MPW grabs the entire line when entering an interactive command */
