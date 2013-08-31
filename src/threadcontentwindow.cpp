@@ -80,8 +80,15 @@ wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_
 	  wxString fontName = wxT("ＭＳ Ｐゴシック");
 	  this->SetFonts(fontName, wxEmptyString, f_size);
 #elif  __WXGTK__
-	  wxString fontName = wxT("Mona");
-	  this->SetFonts(fontName, wxEmptyString, f_size);
+	  wxFont f;
+	  if (f.SetFaceName(wxT("Mona"))) {
+	       this->SetFonts(wxT("Mona"), wxEmptyString, f_size);
+	  } else if (f.SetFaceName(wxT("Mona-VLGothic"))) {
+	       this->SetFonts(wxT("Mona-VLGothic"), wxEmptyString, f_size);
+	  } else if (f.SetFaceName(wxT("Mona-sazanami"))) {
+	       this->SetFonts(wxT("Mona-sazanami"), wxEmptyString, f_size);
+	  }
+
 #elif  __WXMAC__
 	  wxString fontName = wxT("Mona");
 	  this->SetFonts(fontName, wxEmptyString, f_size);

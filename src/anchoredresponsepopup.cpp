@@ -62,8 +62,14 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
 	  wxString fontName = wxT("ＭＳ Ｐゴシック");
 	  htmlWin->SetFonts(fontName, wxEmptyString, f_size);
 #elif  __WXGTK__
-	  wxString fontName = wxT("Mona");
-	  htmlWin->SetFonts(fontName, wxEmptyString, f_size);
+	  wxFont f;
+	  if (f.SetFaceName(wxT("Mona"))) {
+	       htmlWin->SetFonts(wxT("Mona"), wxEmptyString, f_size);
+	  } else if (f.SetFaceName(wxT("Mona-VLGothic"))) {
+	       htmlWin->SetFonts(wxT("Mona-VLGothic"), wxEmptyString, f_size);
+	  } else if (f.SetFaceName(wxT("Mona-sazanami"))) {
+	       htmlWin->SetFonts(wxT("Mona-sazanami"), wxEmptyString, f_size);
+	  }
 #elif  __WXMAC__
 	  wxString fontName = wxT("Mona");
 	  htmlWin->SetFonts(fontName, wxEmptyString, f_size);
