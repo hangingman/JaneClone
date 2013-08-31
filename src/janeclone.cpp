@@ -2648,6 +2648,7 @@ void JaneClone::SetPopUpWindowForID(wxHtmlCellEvent& event, wxString& boardNameA
  * 現在使用しているフォントの情報を取得する
  */
 wxFont JaneClone::GetCurrentFont() {
+
      // wxFontのサンプルコードを参照
 #ifndef __WXMSW__
      wxFont font(wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT,
@@ -2678,19 +2679,28 @@ wxFont JaneClone::ReadFontInfo(const wxString& widgetName) {
 
      wxString nativeFontInfo = wxEmptyString;
      JaneCloneUtil::GetJaneCloneProperties(widgetName, &nativeFontInfo);
-
      wxFont f;
-     const bool ret = f.SetNativeFontInfo(nativeFontInfo);
-     wxString result;
 
-     ret ? result = wxT("OK")
-	 : result = wxT("NG");
+     if ( nativeFontInfo != wxEmptyString ) 
+     {
+	  const bool ret = f.SetNativeFontInfo(nativeFontInfo);
+	  wxString result;
 
-     // ログを出力する
-     wxString message = nativeFontInfo + wxT(":") + result;
-     SendLogging(message);
+	  ret ? result = wxT("OK")
+	       : result = wxT("NG");
 
-     return f;
+	  // ログを出力する
+	  wxString message = nativeFontInfo + wxT(":") + result;
+	  SendLogging(message);
+
+	  if (ret)
+	  {
+	       return f;
+	  } else
+	  {
+	       return this->GetCurrentFont();
+	  }
+     }     
 }
 /**
  * スレタブ上に存在するスレッドのURLを返す

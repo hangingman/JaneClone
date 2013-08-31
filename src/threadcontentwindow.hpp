@@ -72,7 +72,7 @@ public:
       * wx-2.9.5ではインターフェースとして規定されている関数が実装されず
       * そのままになっている…
       */
-#if wxCHECK_VERSION(2, 9, 5)
+#if wxCHECK_VERSION(2, 9, 5) && !defined(__WXMAC__)
      void SetHTMLWindowTitle(wxString const&){};
      void OnHTMLLinkClicked(wxHtmlLinkInfo const&){};
      wxHtmlOpeningStatus OnHTMLOpeningURL(wxHtmlURLType, wxString const&, wxString*) const {};
