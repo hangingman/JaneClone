@@ -967,13 +967,24 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
       * 前回設定されたフォント情報があれば設定する
       * 板一覧ツリーのフォント設定は JaneClone::InitializeBoardListにて実施
       */
-     *m_logCtrl << wxT("前回使用したフォント情報の読み出し…\n");
-     m_search_ctrl->SetFont(ReadFontInfo(SEARCH_BAR));
-     m_url_input_panel->SetFont(ReadFontInfo(URL_BAR));
-     m_logCtrl->SetFont(ReadFontInfo(LOG_WINDOW));
-     boardNoteBook->SetFont(ReadFontInfo(BOARD_NOTEBOOK));
-     threadNoteBook->SetFont(ReadFontInfo(THREAD_NOTEBOOK));
-     *m_logCtrl << wxT("フォント情報の読み出し終了…\n");
+
+     // もし初回起動であればフォント設定は行わない
+     // すればセグメンテーション違反が起こりやすい
+     const wxString prop = ::wxGetHomeDir() \
+	  + wxFileSeparator  \
+	  + JANECLONE_DIR    \
+	  + wxFileSeparator  \
+	  + APP_CONFIG_FILE;
+
+     if ( wxFile::Exists(prop) ) {
+	  *m_logCtrl << wxT("前回使用したフォント情報の読み出し…\n");
+	  m_search_ctrl->SetFont(ReadFontInfo(SEARCH_BAR));
+	  m_url_input_panel->SetFont(ReadFontInfo(URL_BAR));
+	  m_logCtrl->SetFont(ReadFontInfo(LOG_WINDOW));
+	  boardNoteBook->SetFont(ReadFontInfo(BOARD_NOTEBOOK));
+	  threadNoteBook->SetFont(ReadFontInfo(THREAD_NOTEBOOK));
+	  *m_logCtrl << wxT("フォント情報の読み出し終了…\n");
+     }
 }
 /**
  * SetPreviousUserLookedTab
@@ -2684,21 +2695,13 @@ wxFont JaneClone::ReadFontInfo(const wxString& widgetName) {
      if ( nativeFontInfo != wxEmptyString ) 
      {
 	  const bool ret = f.SetNativeFontInfo(nativeFontInfo);
-	  wxString result;
-
-	  ret ? result = wxT("OK")
-	       : result = wxT("NG");
-
-	  // ログを出力する
-	  wxString message = nativeFontInfo + wxT(":") + result;
-	  SendLogging(message);
 
 	  if (ret)
 	  {
 	       return f;
 	  } else
 	  {
-	       return this->GetCurrentFont();
+	       return wxFont(10, wxDEFAULT, wxNORMAL, wxNORMAL, 0, wxT(""));
 	  }
      }     
 }
