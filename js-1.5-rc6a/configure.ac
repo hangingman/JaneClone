@@ -24,7 +24,7 @@ case "$host" in
 		AC_DEFINE([SYSV], [1], [description])
 		AC_DEFINE([_BSD_SOURCE], [1], [description])
 		AC_DEFINE([POSIX_SOURCE], [1], [description])
-		OS_LIBS="-lm"
+		AC_CHECK_LIB(m,asin,LIBS="$LIBS -lm", AC_MSG_ERROR("ERROR: cannot find libm."))
 		OS_CONFIG_DONE="1"
 		;;
 	*-*-cygwin*)
@@ -34,7 +34,7 @@ case "$host" in
 		AC_DEFINE([_BSD_SOURCE], [1], [description])
 		AC_DEFINE([POSIX_SOURCE], [1], [description])
 		AC_DEFINE([HAVE_LOCALTIME_R], [1], [description])
-		OS_LIBS="-lm"
+		AC_CHECK_LIB(m,asin,LIBS="$LIBS -lm", AC_MSG_ERROR("ERROR: cannot find libm."))
 		OS_CONFIG_DONE="1"
                 ;;
         *-*-linux*)
@@ -44,7 +44,7 @@ case "$host" in
 		AC_DEFINE([_BSD_SOURCE], [1], [description])
 		AC_DEFINE([POSIX_SOURCE], [1], [description])
 		AC_DEFINE([HAVE_LOCALTIME_R], [1], [description])
-		OS_LIBS="-lm"
+		AC_CHECK_LIB(m,asin,LIBS="$LIBS -lm", AC_MSG_ERROR("ERROR: cannot find libm."))
 		OS_CONFIG_DONE="1"
                 ;;
         *-*-darwin*)
@@ -75,7 +75,7 @@ case "$host" in
 		AC_DEFINE([SYSV], [1], [description])
 		AC_DEFINE([_BSD_SOURCE], [1], [description])
 		AC_DEFINE([POSIX_SOURCE], [1], [description])
-		OS_LIBS="-lm"
+		AC_CHECK_LIB(m,asin,LIBS="$LIBS -lm", AC_MSG_ERROR("ERROR: cannot find libm."))
 		OS_CONFIG_DONE="1"
 		;;
         *)
@@ -86,7 +86,7 @@ esac
 # Setting for libraries needed each OS
 if test "$OS_CONFIG_DONE" = '1'; then
     AC_MSG_RESULT([$OS_CONFIG])
-    AC_SUBST(OS_LIBS)
+    AC_SUBST(LIBS)
 else
     AC_MSG_ERROR([unknown. $OS_CONFIG])
 fi

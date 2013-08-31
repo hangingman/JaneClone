@@ -160,7 +160,7 @@
 #define JS_FRIEND_API(t)    JS_PUBLIC_API(t)
 #define JS_FRIEND_DATA(t)   JS_PUBLIC_DATA(t)
 
-#ifdef _WIN32 && !defined(__MINGW32__) && !defined(__MINGW64__)
+#if defined(_WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #   define JS_INLINE __inline
 #elif defined(__GNUC__)
 #   define JS_INLINE

@@ -9,9 +9,9 @@ pkginclude_HEADERS = jsautotoolscfg.h \
                      jsutil.h jsxdrapi.h
 noinst_HEADERS = resource.h prmjtime.h
 
-lib_LTLIBRARIES = libjs.la
-libjs_la_LIBADD = @OS_LIBS@
-libjs_la_SOURCES = \
+noinst_LTLIBRARIES = libjs.la
+libjs_la_LIBADD    = @LIBS@
+libjs_la_SOURCES   = \
 jsapi.c \
 jsarena.c \
 jsarray.c \
@@ -98,11 +98,11 @@ jsopcode.tbl
 bin_PROGRAMS = jscpucfg js
 jscpucfg_SOURCES = jscpucfg.c jscpucfg.h
 jscpucfg_CFLAGS = $(AM_CFLAGS)
-jscpucfg_LDADD = @OS_LIBS@
+jscpucfg_LDADD = @LIBS@
 
 js_SOURCES = js.c jsshell.msg 
 js_CFLAGS = $(AM_CFLAGS)
-js_LDADD = libjs.la @OS_LIBS@
+js_LDADD = libjs.la @LIBS@
 
 jsapi.c: jsautocfg.h
 
