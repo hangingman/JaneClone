@@ -4,11 +4,6 @@ SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 curl curlpp js-1.5-rc6a src test
 # パッケージ作成用サブディレクトリも設定する
 DIST_SUBDIRS = $(SUBDIRS)
 
-# MacOSXの場合特殊な処理を入れる
-if USE_MAC_OSX
-	all-am += osx-make-hook
-endif
-
 # janeclone.wrapper向けルール
 bin_SCRIPTS = janeclone
 CLEANFILES  = $(bin_SCRIPTS)
@@ -72,11 +67,11 @@ PROGVER			= $(VERSION)
 BUNDLE			= $(top_builddir)/$(PACKAGE_NAME).app
 MACICON			= $(BUNDLE)/Contents/$(ICONFILE)
 MACPKGINFO		= $(BUNDLE)/Contents/PkgInfo
-MACINFOPLIST	= $(BUNDLE)/Contents/Info.plist 
+MACINFOPLIST		= $(BUNDLE)/Contents/Info.plist
 # OSX Info.plist用の設定
-COMPANY		= ????
-BUNDLEPACKAGE	= APPL
-BUNDLESIGNATURE	= ????
+COMPANY			= ????
+BUNDLEPACKAGE		= APPL
+BUNDLESIGNATURE		= ???
 
 # Windows(x86)向けのインストーラ作成
 package-win32-msi: prepare-package
@@ -253,7 +248,7 @@ remove_distdir :
 	rm -rf $(BUNDLE)
 
 # OSX向けのバイナリ作成
-osx-make-hook : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST)
+osx-make-hook : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) wxmac-dist-shared-lib
 
 # Bundleその他の生成方法を書く
 #  This builds the bundle's directory structure.
@@ -314,6 +309,36 @@ $(MACINFOPLIST):
 	@echo "   <string>$(PACKAGE_NAME), Version $(PROGVER), $(COMPANY)</string>" >> $(MACINFOPLIST)
 	@echo "</dict>" >> $(MACINFOPLIST)
 	@echo "</plist>" >> $(MACINFOPLIST)
+
+# OSX向けにライブラリをBUNDLEに設定する
+WXLIBPOSTFIX = *wx*@WX_VERSION_MAJOR@.@WX_VERSION_MINOR.@WX_VERSION_MICRO@.dylib
+WXLIBDIR     = `@WX_CONFIG_PATH@ --prefix`/lib
+BINDIR	     = $(BUNDLE)/Contents/MacOS
+LIBDEFDIR    = /usr/local/lib
+
+wxmac-dist-shared-lib:
+	@echo "Copying dynamic libraries to " $BINDIR " ..."
+	cp $WXLIBDIR/*wx*.dylib $BINDIR
+# change directory
+	@echo "Changing directory to " $BINDIR " ..."
+	export TMP=$PWD
+	cd $BINDIR
+# patch all wx dynlibs and Saracon executable
+	for file in `ls $WXLIBPOSTFIX` ; 	 ¥
+	do      				 ¥
+# patch all library internal cross references
+           echo "Patching " $file "...";         ¥
+           for fileother in `ls $WXLIBPOSTFIX `; ¥
+           do					 ¥
+                 echo "Patching " $fileother " with " $file "..."; ¥
+                 install_name_tool -change $LIBDEFDIR/$file @executable_path/$file $fileother; ¥
+           done ¥
+# patch current library itself
+           install_name_tool -id @executable_path/$file $file; ¥
+# patch executable
+           install_name_tool -change $LIBDEFDIR/$file @executable_path/$file $(PACKAGE_NAME); ¥
+	done
+	cd $TMP
 
 # OSX向けのインストーラ作成
 package-osx-intel32-dmg: prepare-package
