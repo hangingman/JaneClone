@@ -38,7 +38,6 @@ case "$host" in
                 PLATFORM_STRING="Apple"
 		AC_SUBST(PLATFORM_STRING)
 		need_no_undefined=no
-		LDFLAGS="$LDFLAGS -static-libtool-libs"
                 ;;
         *)
                 AC_MSG_WARN([*** Please add $host to configure.ac checks!])

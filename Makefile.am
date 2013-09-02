@@ -311,34 +311,27 @@ $(MACINFOPLIST):
 	@echo "</plist>" >> $(MACINFOPLIST)
 
 # OSX向けにライブラリをBUNDLEに設定する
-WXLIBPOSTFIX = *wx*@WX_VERSION_MAJOR@.@WX_VERSION_MINOR.@WX_VERSION_MICRO@.dylib
+WXLIBPOSTFIX = *wx*@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@.@WX_VERSION_MICRO@.dylib
 WXLIBDIR     = `@WX_CONFIG_PATH@ --prefix`/lib
 BINDIR	     = $(BUNDLE)/Contents/MacOS
 LIBDEFDIR    = /usr/local/lib
+MACJANEEXE   = $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME)
 
 wxmac-dist-shared-lib:
-	@echo "Copying dynamic libraries to " $BINDIR " ..."
-	cp $WXLIBDIR/*wx*.dylib $BINDIR
+	@echo "Copying dynamic libraries to " $(BINDIR) " ..."
+	cp $(WXLIBDIR)/*wx*.dylib $(BINDIR)
 # change directory
-	@echo "Changing directory to " $BINDIR " ..."
+	@echo "Changing directory to " $(BINDIR) " ..."
 	export TMP=$PWD
-	cd $BINDIR
-# patch all wx dynlibs and Saracon executable
-	for file in `ls $WXLIBPOSTFIX` ; 	 ¥
-	do      				 ¥
-# patch all library internal cross references
-           echo "Patching " $file "...";         ¥
-           for fileother in `ls $WXLIBPOSTFIX `; ¥
-           do					 ¥
-                 echo "Patching " $fileother " with " $file "..."; ¥
-                 install_name_tool -change $LIBDEFDIR/$file @executable_path/$file $fileother; ¥
-           done ¥
-# patch current library itself
-           install_name_tool -id @executable_path/$file $file; ¥
-# patch executable
-           install_name_tool -change $LIBDEFDIR/$file @executable_path/$file $(PACKAGE_NAME); ¥
+	cd $(BINDIR)
+# patch all wx dylibs
+	for file in `ls $(BINDIR)/*wx*.dylib`; do                             \
+	   echo "Patching " $$file "...";                                     \
+	   install_name_tool -id @executable_path/$$file $$file; \
+	   install_name_tool -change $(LIBDEFDIR)/`basename $$file` @executable_path/$$file $(MACJANEEXE); \
 	done
-	cd $TMP
+	@echo "Patching end..."
+
 
 # OSX向けのインストーラ作成
 package-osx-intel32-dmg: prepare-package
