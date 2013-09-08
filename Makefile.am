@@ -327,14 +327,14 @@ wxmac-dist-shared-lib:
 	   install_name_tool -id @executable_path/$(BINDIR)/`basename $$file`   \
                              $(BINDIR)/`basename $$file`;                       \
 	   install_name_tool -change /usr/local/lib/`basename $$file`           \
-                             @executable_path/$(BINDIR)/`basename $$file`       \
+                             @executable_path/`basename $$file`                 \
                              $(MACJANEEXE); \
 	   install_name_tool -change /usr/local/lib/janeclone/`basename $$file` \
-                             @executable_path/$(BINDIR)/`basename $$file`       \
+                             @executable_path/`basename $$file`                 \
                              $(MACJANEEXE); \
 	   for wxlibs in $$(ls $(WXLIBDIR)/*wx*.dylib) ; do                     \
 	      install_name_tool -change $$wxlibs                                \
-	                        @executable_path/$(BINDIR)/`basename $$wxlibs`  \
+	                        @executable_path/`basename $$wxlibs`            \
 	                        $$file ;                                        \
 	   done \
 	done
