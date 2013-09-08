@@ -320,12 +320,15 @@ MACJANEEXE   = $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME)
 wxmac-dist-shared-lib:
 # patch JaneClone subdirectory libraries
 	@echo "Copying and Patching JaneClone subdirectory libraries to " $(BINDIR) " ..."
-	@for file in `find $(top_builddir) -name \*.dylib -print`; do \
+	@for file in `find $(top_builddir) -name \*.\*.dylib -print`; do \
 	   echo "Copying " $$file " to " $(BINDIR); \
 	   cp -p $$file $(BINDIR); \
 	   echo "Patching " $$file "..."; \
 	   install_name_tool -id @executable_path/$(BINDIR)/`basename $$file`   \
                              $(BINDIR)/`basename $$file`;                       \
+	   install_name_tool -change /usr/local/lib/`basename $$file`           \
+                             @executable_path/$(BINDIR)/`basename $$file`       \
+                             $(MACJANEEXE); \
 	   install_name_tool -change /usr/local/lib/janeclone/`basename $$file` \
                              @executable_path/$(BINDIR)/`basename $$file`       \
                              $(MACJANEEXE); \
@@ -337,11 +340,19 @@ wxmac-dist-shared-lib:
 	done
 # patch all wx libraries
 	@echo "Copying wxWidgets dynamic libraries to " $(BINDIR) " ..."
-	cp $(WXLIBDIR)/*wx*.dylib $(BINDIR)
-	@for file in `ls $(BINDIR)/*wx*.dylib`; do \
-	   echo "Patching " $$file "..."; \
-	   install_name_tool -id @executable_path/$$file $$file; \
-	   install_name_tool -change $(LIBDEFDIR)/`basename $$file` @executable_path/$$file $(MACJANEEXE); \
+	cp $(WXLIBDIR)/*wx*-@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@.dylib $(BINDIR)
+	@for file in `ls $(BINDIR)/*wx*.dylib`; do                                              \
+	   echo "Patching " $$file "...";                                                       \
+	   install_name_tool -id @executable_path/$$file $$file;                                \
+	   install_name_tool -change $(LIBDEFDIR)/`basename $$file`                             \
+	                     @executable_path/$$file $(MACJANEEXE);                             \
+	   for wx_micro_suffix in `ls $(BINDIR)/*wx*.dylib`; do				        \
+	      micro_suffix_lib=`basename $$wx_micro_suffix | sed -e 's/.dylib/.@WX_VERSION_MICRO@.0.0.dylib/g'` ; \
+	      echo "Patching dependency " $$file " of " $$micro_suffix_lib " to " `basename $$wx_micro_suffix`;   \
+	      install_name_tool -change $(LIBDEFDIR)/$(basename $$micro_suffix_lib)	        \
+	    		       @executable_path/$$wx_micro_suffix			        \
+	    		       $$file;							        \
+	   done										        \
 	done
 # end of copying and patching
 	@echo "Patching end..."
