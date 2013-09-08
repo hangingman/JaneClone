@@ -318,20 +318,33 @@ LIBDEFDIR    = /usr/local/lib
 MACJANEEXE   = $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME)
 
 wxmac-dist-shared-lib:
-	@echo "Copying dynamic libraries to " $(BINDIR) " ..."
+# patch JaneClone subdirectory libraries
+	@echo "Copying and Patching JaneClone subdirectory libraries to " $(BINDIR) " ..."
+	@for file in `find $(top_builddir) -name \*.dylib -print`; do \
+	   echo "Copying " $$file " to " $(BINDIR); \
+	   cp -p $$file $(BINDIR); \
+	   echo "Patching " $$file "..."; \
+	   install_name_tool -id @executable_path/$(BINDIR)/`basename $$file`   \
+                             $(BINDIR)/`basename $$file`;                       \
+	   install_name_tool -change /usr/local/lib/janeclone/`basename $$file` \
+                             @executable_path/$(BINDIR)/`basename $$file`       \
+                             $(MACJANEEXE); \
+	   for wxlibs in $$(ls $(WXLIBDIR)/*wx*.dylib) ; do                     \
+	      install_name_tool -change $$wxlibs                                \
+	                        @executable_path/$(BINDIR)/`basename $$wxlibs`  \
+	                        $$file ;                                        \
+	   done \
+	done
+# patch all wx libraries
+	@echo "Copying wxWidgets dynamic libraries to " $(BINDIR) " ..."
 	cp $(WXLIBDIR)/*wx*.dylib $(BINDIR)
-# change directory
-	@echo "Changing directory to " $(BINDIR) " ..."
-	export TMP=$PWD
-	cd $(BINDIR)
-# patch all wx dylibs
-	for file in `ls $(BINDIR)/*wx*.dylib`; do                             \
-	   echo "Patching " $$file "...";                                     \
+	@for file in `ls $(BINDIR)/*wx*.dylib`; do \
+	   echo "Patching " $$file "..."; \
 	   install_name_tool -id @executable_path/$$file $$file; \
 	   install_name_tool -change $(LIBDEFDIR)/`basename $$file` @executable_path/$$file $(MACJANEEXE); \
 	done
+# end of copying and patching
 	@echo "Patching end..."
-
 
 # OSX向けのインストーラ作成
 package-osx-intel32-dmg: prepare-package
