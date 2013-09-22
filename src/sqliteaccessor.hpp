@@ -38,6 +38,28 @@ static const wxString SQLITE_FILE_PATH = wxT("\\janeclone.db");
 static const wxString SQLITE_FILE_PATH = wxT("/janeclone.db");
 #endif
 
+// SQL処理
+#define INITIALIZE_JC_WXSQLITE3(db, now)    \
+     try {                                  \
+     wxString dbFile = GetDBFilePath();     \
+     wxSQLite3Database::InitializeSQLite(); \
+     db.Open(dbFile);                       \
+     db.Begin();			    \
+
+#define CLOSE_CONN_JC_WXSQLITE3(db) \
+     db.Commit(); \
+     db.Close();  \
+     } catch (wxSQLite3Exception& e) {  \
+	  wxMessageBox(e.GetMessage()); \
+     }                                  \
+
+#define CLOSE_CONNONLY_JC_WXSQLITE3(db) \
+     db.Close();  \
+     } catch (wxSQLite3Exception& e) {  \
+	  wxMessageBox(e.GetMessage()); \
+     }                                  \
+
+
 class SQLiteAccessor {
 
 public:
@@ -121,6 +143,30 @@ public:
       * 新月の公開ノードを登録する
       */
      static void SetShingetsuNode(const wxString& nodeURL);
+     /**
+      * ダウンロードした画像のファイル名とUUIDをデータベースに格納する
+      * @param const std::vector<ImageFileInfo>* ファイル情報の配列
+      */
+     static void SetImageFileName(std::vector<ImageFileInfo>& imageFileInfoArray);
+     /**
+      * ダウンロードした画像のファイル名とUUIDをデータベースに格納する
+      * @param const ImageFileInfo* imageFileInfo ファイル情報
+      */
+     static void SetImageFileName(ImageFileInfo& imageFileInfo);
+     /**
+      * 画像のファイル名とUUIDのリストをデータベースから取得する
+      * @param  const wxArrayString&        画像ファイル名の配列
+      * @param  std::vector<ImageFileInfo>& ファイル情報の配列
+      * @return bool                        取得可否 true:取得成功 false:取得失敗
+      */
+     static bool GetImageFileName(const wxArrayString& fileNameArray, std::vector<ImageFileInfo>& imageFileInfoArray);
+     /**
+      * 画像のファイル名とUUIDのをデータベースから取得する
+      * @param  const wxString&        画像ファイル名
+      * @param  ImageFileInfo>&        ファイル情報
+      * @return bool                   取得可否 true:取得成功 false:取得失敗
+      */
+     static bool GetImageFileName(const wxString& fileName, ImageFileInfo& imageFileInfo);
 
 private:
 

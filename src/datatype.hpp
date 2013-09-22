@@ -273,6 +273,12 @@ typedef struct {
      wxArrayString jsPath; // Javascriptファイルのパス
 } SkinInfo;
 
+// ダウンロードした画像情報
+typedef struct {
+     wxString fileName;     // URLを含んだファイル名    ex) http://hogehoge/donwload0x0x.jpg
+     wxString uuidFileName; // UUIDを配られたファイル名 ex) XXXXXXXXXXXXXXXX.jpg
+} ImageFileInfo;
+
 // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
 // URLvsBoardNameのHashMap（板名をkeyとしてBoardURLとascii文字の固有名を持つ）
 WX_DECLARE_HASH_MAP( wxString,	 // type of the keys

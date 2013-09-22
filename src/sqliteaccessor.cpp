@@ -49,6 +49,9 @@ SQLiteAccessor::SQLiteAccessor() {
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_SEARCHED_THREADNAME(TIMEINFO TIMESTAMP, KEYWORD TEXT)"));
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_SEARCHED_THREADCONTENTS(TIMEINFO TIMESTAMP, KEYWORD TEXT)"));
 
+	  // 画像データの保存先
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS CACHED_IMAGE(TIMEINFO TIMESTAMP, FILENAME TEXT, UUID_FILENAME TEXT)"));
+
 	  db.Commit();
 	  db.Close();
 
@@ -783,4 +786,116 @@ void SQLiteAccessor::SetShingetsuNode(const wxString& nodeURL) {
      } catch (wxSQLite3Exception& e) {
 	  wxMessageBox(e.GetMessage());
      }
+}
+/**
+ * ダウンロードした画像のファイル名とUUIDをデータベースに格納する
+ */
+void SQLiteAccessor::SetImageFileName(std::vector<ImageFileInfo>& imageFileInfo)
+{
+     wxSQLite3Database db;
+     wxDateTime now = wxDateTime::Now();
+
+     INITIALIZE_JC_WXSQLITE3(db, now)
+
+     for (std::vector<ImageFileInfo>::iterator it = imageFileInfo.begin(); it != imageFileInfo.end(); it++) {
+          const wxString sqlIn = wxT("INSERT INTO CACHED_IMAGE (TIMEINFO, FILENAME, UUID_FILENAME) VALUES (?,?,?)");
+	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+	  stmt.ClearBindings();
+
+	  stmt.BindTimestamp(1, now);
+	  stmt.Bind(2, *it->fileName);
+	  stmt.Bind(3, *it->uuidFileName);
+	  stmt.ExecuteUpdate();
+      }
+
+     CLOSE_CONN_JC_WXSQLITE3(db)
+}
+/**
+ * ダウンロードした画像のファイル名とUUIDをデータベースに格納する
+ * @param const ImageFileInfo* imageFileInfo ファイル情報
+ */
+void SQLiteAccessor::SetImageFileName(ImageFileInfo& imageFileInfo)
+{
+     wxSQLite3Database db;
+     wxDateTime now = wxDateTime::Now();
+
+     INITIALIZE_JC_WXSQLITE3(db, now)
+
+     const wxString sqlIn = wxT("INSERT INTO CACHED_IMAGE (TIMEINFO, FILENAME, UUID_FILENAME) VALUES (?,?,?)");
+     wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+     stmt.ClearBindings();
+
+     stmt.BindTimestamp(1, now);
+     stmt.Bind(2, imageFileInfo.fileName);
+     stmt.Bind(3, imageFileInfo.uuidFileName);
+     stmt.ExecuteUpdate();
+
+     CLOSE_CONN_JC_WXSQLITE3(db)
+}
+/**
+ * 画像のファイル名とUUIDのリストをデータベースから取得する
+ */
+bool SQLiteAccessor::GetImageFileName(const wxArrayString& fileNameArray, std::vector<ImageFileInfo>& imageFileInfoArray)
+{
+     wxSQLite3Database db;
+     wxDateTime now = wxDateTime::Now();
+
+     INITIALIZE_JC_WXSQLITE3(db, now)
+
+     // リザルトセットを用意する
+     wxSQLite3ResultSet rs;      
+
+     for (int i = 0; i < fileNameArray.GetCount(); i++) {
+          const wxString sqlSe = wxT("select UUID_FILENAME from CACHED_IMAGE where FILENAME = ? ");
+	  wxSQLite3Statement stmt = db.PrepareStatement (sqlSe);
+	  stmt.ClearBindings();
+
+	  stmt.Bind(1, fileNameArray[i]);
+	  rs = stmt.ExecuteQuery();
+
+	  ImageFileInfo iFile;
+	  iFile.fileName = fileNameArray[i];
+
+	  while (rs.NextRow()) {
+	       iFile.uuidFileName = rs.GetAsString(wxT("UUID_FILENAME"));
+	  }
+
+	  imageFileInfoArray.push_back(iFile);
+     }
+
+     CLOSE_CONN_JC_WXSQLITE3(db)
+}
+/**
+ * 画像のファイル名とUUIDのをデータベースから取得する
+ * @param  const wxString&	  画像ファイル名
+ * @return ImageFileInfo>&	  ファイル情報 
+ */
+bool SQLiteAccessor::GetImageFileName(const wxString& fileName, ImageFileInfo& imageFileInfo)
+{
+     wxSQLite3Database db;
+     wxDateTime now = wxDateTime::Now();
+
+     INITIALIZE_JC_WXSQLITE3(db, now)
+
+     // リザルトセットを用意する
+     wxSQLite3ResultSet rs;      
+
+     // SQL文を用意する
+     const wxString SQL_QUERY = wxT("select UUID_FILENAME from CACHED_IMAGE where FILENAME = ? ");
+      
+     // SQL文を実行する
+     wxSQLite3Statement stmt = db.PrepareStatement (SQL_QUERY);
+     rs = stmt.ExecuteQuery();
+      
+     while (rs.NextRow()) {
+          wxString uuidFileName = rs.GetAsString(wxT("UUID_FILENAME"));
+      
+          // 各項目がNULLで無ければArrayStringに詰める
+          if (uuidFileName.Length() > 0) {
+	       imageFileInfo.fileName = fileName;
+	       imageFileInfo.uuidFileName = uuidFileName;
+          }
+     }
+
+     CLOSE_CONNONLY_JC_WXSQLITE3(db)
 }
