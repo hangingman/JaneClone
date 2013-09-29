@@ -1089,26 +1089,26 @@ TabColorSettingPanel::TabColorSettingPanel(wxWindow* parent, const wxPoint& pos,
      activeTabBGColorButton = new wxButton(panel_6, ID_ActiveTabBGColorButton, wxT("背景色"));
 
 #if wxCHECK_VERSION(2, 9, 1)
-     defaultActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_DefaultActiveTabSampleLabel, wxT("Dafault"));
+     defaultActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_DefaultActiveTabSampleLabel, wxT("Default"));
      readingActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_ReadingActiveTabSampleLabel, wxT("読み込み中"));
      brokenActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_BrokenActiveTabSampleLabel, wxT("ログ破損時"));
      cannotPostActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_CannotPostActiveTabSampleLabel, wxT("書き込み不可"));
      updateActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_UpdateActiveTabSampleLabel, wxT("更新あり"));
      partialContentActiveTabSampleLabel = new wxGenericStaticText(panel_6, ID_PartialContentActiveTabSampleLabel, wxT("新着あり"));
-     defaultDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_DefaultDeactiveTabSampleLabel, wxT("Dafault"));
+     defaultDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_DefaultDeactiveTabSampleLabel, wxT("Default"));
      readingDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_ReadingDeactiveTabSampleLabel, wxT("読み込み中"));
      brokenDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_BrokenDeactiveTabSampleLabel, wxT("ログ破損時"));
      cannotPostDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_CannotPostDeactiveTabSampleLabel, wxT("書き込み不可"));
      updateDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_UpdateDeactiveTabSampleLabel, wxT("更新あり"));
      partialContentDeactiveTabSampleLabel = new wxGenericStaticText(panel_7, ID_PartialContentDeactiveTabSampleLabel, wxT("新着あり"));
 #else
-     defaultActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_DefaultActiveTabSampleLabel, wxT("Dafault"));
+     defaultActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_DefaultActiveTabSampleLabel, wxT("Default"));
      readingActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_ReadingActiveTabSampleLabel, wxT("読み込み中"));
      brokenActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_BrokenActiveTabSampleLabel, wxT("ログ破損時"));
      cannotPostActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_CannotPostActiveTabSampleLabel, wxT("書き込み不可"));
      updateActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_UpdateActiveTabSampleLabel, wxT("更新あり"));
      partialContentActiveTabSampleLabel = new BasicDrawPane(panel_6, ID_PartialContentActiveTabSampleLabel, wxT("新着あり"));
-     defaultDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_DefaultDeactiveTabSampleLabel, wxT("Dafault"));
+     defaultDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_DefaultDeactiveTabSampleLabel, wxT("Default"));
      readingDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_ReadingDeactiveTabSampleLabel, wxT("読み込み中"));
      brokenDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_BrokenDeactiveTabSampleLabel, wxT("ログ破損時"));
      cannotPostDeactiveTabSampleLabel = new BasicDrawPane(panel_7, ID_CannotPostDeactiveTabSampleLabel, wxT("書き込み不可"));
