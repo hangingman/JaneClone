@@ -7,7 +7,7 @@ DIST_SUBDIRS = $(SUBDIRS)
 # janeclone.wrapper向けルール
 bin_SCRIPTS = janeclone
 CLEANFILES  = $(bin_SCRIPTS)
-EXTRA_DIST  = misc/janeclone.wrapper misc/janeclone.menu test
+EXTRA_DIST  = misc/janeclone.wrapper misc/janeclone.menu misc/jc_install_name_tool.awk test
 
 # 書き換えスクリプト
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
@@ -248,7 +248,7 @@ remove_distdir :
 	rm -rf $(BUNDLE)
 
 # OSX向けのバイナリ作成
-osx-make-hook : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) wxmac-dist-shared-lib
+osx-make-hook : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) check-dylibbundler wxmac-dist-shared-lib
 
 # Bundleその他の生成方法を書く
 #  This builds the bundle's directory structure.
@@ -316,46 +316,44 @@ WXLIBDIR     = `@WX_CONFIG_PATH@ --prefix`/lib
 BINDIR	     = $(BUNDLE)/Contents/MacOS
 LIBDEFDIR    = /usr/local/lib
 MACJANEEXE   = $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME)
+DYLIBBUNDLER = dylibbundler
 
 wxmac-dist-shared-lib:
-# patch JaneClone subdirectory libraries
-	@echo "Copying and Patching JaneClone subdirectory libraries to " $(BINDIR) " ..."
-	@for file in `find $(top_builddir) -name \*.\*.dylib -print`; do \
-	   echo "Copying " $$file " to " $(BINDIR); \
-	   cp -p $$file $(BINDIR); \
-	   echo "Patching " $$file "..."; \
-	   install_name_tool -id @executable_path/$(BINDIR)/`basename $$file`   \
-                             $(BINDIR)/`basename $$file`;                       \
-	   install_name_tool -change /usr/local/lib/`basename $$file`           \
-                             @executable_path/`basename $$file`                 \
-                             $(MACJANEEXE); \
-	   install_name_tool -change /usr/local/lib/janeclone/`basename $$file` \
-                             @executable_path/`basename $$file`                 \
-                             $(MACJANEEXE); \
-	   for wxlibs in $$(ls $(WXLIBDIR)/*wx*.dylib) ; do                     \
-	      install_name_tool -change $$wxlibs                                \
-	                        @executable_path/`basename $$wxlibs`            \
-	                        $$file ;                                        \
-	   done \
+	@echo "Copying and Patching JaneClone subdirectory libraries to " $(BINDIR)/lib " ..."
+	mkdir $(BINDIR)/lib
+	@for dylibs in `otool -L $(MACJANEEXE) | grep -o /.\*.dylib | sort -u `; do \
+	   if [[ $$dylibs != /usr/lib/* ]]; then                                    \
+	      echo "Copying " $$dylibs " to " $(BINDIR)/lib;                        \
+	      cp -p $$dylibs $(BINDIR)/lib;                                         \
+	      echo "Patching " $$dylibs " to " $(BINDIR)/lib;                       \
+	      install_name_tool -change $$dylibs                                    \
+	                        @executable_path/lib/`basename $$dylibs`            \
+	                        $(MACJANEEXE);                                      \
+	   fi                                                                       \
 	done
-# patch all wx libraries
-	@echo "Copying wxWidgets dynamic libraries to " $(BINDIR) " ..."
-	cp $(WXLIBDIR)/*wx*-@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@.dylib $(BINDIR)
-	@for file in `ls $(BINDIR)/*wx*.dylib`; do                                              \
-	   echo "Patching " $$file "...";                                                       \
-	   install_name_tool -id @executable_path/$$file $$file;                                \
-	   install_name_tool -change $(LIBDEFDIR)/`basename $$file`                             \
-	                     @executable_path/$$file $(MACJANEEXE);                             \
-	   for wx_micro_suffix in `ls $(BINDIR)/*wx*.dylib`; do				        \
-	      micro_suffix_lib=`basename $$wx_micro_suffix | sed -e 's/.dylib/.@WX_VERSION_MICRO@.0.0.dylib/g'` ; \
-	      echo "Patching dependency " $$file " of " $$micro_suffix_lib " to " `basename $$wx_micro_suffix`;   \
-	      install_name_tool -change $(LIBDEFDIR)/$(basename $$micro_suffix_lib)	        \
-	    		       @executable_path/$$wx_micro_suffix			        \
-	    		       $$file;							        \
-	   done										        \
+	@echo "=====================================================================";
+	@echo "End of JaneClone's dependency patching...                            ";
+	@echo "=====================================================================";
+	@for deplibs in `otool -L $(BINDIR)/lib/*.dylib | grep -o /.\*dylib | sort -u`; do   \
+	   if [[ $$deplibs = /usr/local/lib/* ]] || [[ $$deplibs = /opt/local/lib/* ]]; then \
+	      if [[ ! -e $(BINDIR)/lib/`basename $$deplibs` ]]; then \
+	         echo "Copying " $$deplibs " to " $(BINDIR)/lib;     \
+	         cp -p $$deplibs $(BINDIR)/lib;                      \
+	      fi;                 \
+	   fi;                    \
 	done
-# end of copying and patching
-	@echo "Patching end..."
+	@echo "=====================================================================";
+	@echo "End of JaneClone's dependency libraries copying...                   ";
+	@echo "=====================================================================";
+	@for file in `ls $(BINDIR)/lib/*.dylib` ; do \
+	   otool -L $$file | egrep -v /\(usr/lib\|System\) | awk {'print $$1'} | while read line; \
+	   do                 \
+	      if [[ $$line != *: ]]; then \
+	         echo "Patching " $$line " to @executable_path/lib/" `basename $$line` ;              \
+	         install_name_tool -change $${line} @executable_path/lib/`basename $$line` $${file};  \
+	      fi                          \
+	   done                           \
+	done
 
 # OSX向けのインストーラ作成
 package-osx-intel32-dmg: prepare-package
@@ -367,7 +365,7 @@ package-osx-intel64-dmg: prepare-package
 prepare-package: package-clean
 	@echo 'create working directory...'
 	mkdir $(top_builddir)/extras
-	mkdir $(top_builddir)/extras/package
+	Mkdir $(top_builddir)/extras/package
 # check NSIS
 	@echo 'check NSIS...'
 	@if makensis -VERSION >/dev/null 2>&1; then \
@@ -382,6 +380,19 @@ prepare-package: package-clean
 	    echo 'Error: cannot locate makensis tool'; exit 1; \
 	fi; \
 	echo 'NSIS is exist'
+
+# check dylibbundler
+check-dylibbundler:
+	@echo 'check dylibbundler...'
+	@if dylibbundler -VERSION >/dev/null 2>&1; then \
+	    DYLIBBUNDLER="dylibbundler"; \
+	elif [ -x "/usr/local/bin/dylibbundler" ]; then \
+	    DYLIBBUNDLER="/usr/local/bin/dylibbundler"; \
+	else \
+	    echo 'Error: cannot locate dylibbundler'; exit 1; \
+	fi; \
+	echo 'dylibbundler is exist'
+
 
 # 独自設定のクリーン用ターゲット
 clean-local: package-clean remove_distdir
