@@ -552,4 +552,42 @@ protected:
      DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
 
+
+
+/**
+ * タブ操作設定用画面
+ */
+class TabControlSettingPanel: public wxPanel {
+public:
+    // begin wxGlade: TabControlSettingPanel::ids
+    // end wxGlade
+
+    TabControlSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+
+private:
+    // begin wxGlade: TabControlSettingPanel::methods
+    void set_properties();
+    void do_layout();
+    // end wxGlade
+
+protected:
+    // begin wxGlade: TabControlSettingPanel::attributes
+    wxStaticBox* sizer_4_staticbox;
+    wxStaticBox* sizer_3_staticbox;
+    wxStaticText* label_1;
+    wxChoice* choice_1;
+    wxStaticText* label_2;
+    wxChoice* choice_2;
+    wxPanel* panel_6;
+    wxPanel* panel_4;
+    wxStaticText* label_3;
+    wxChoice* choice_3;
+    wxStaticText* label_4;
+    wxChoice* choice_4;
+    wxPanel* panel_7;
+    wxPanel* panel_5;
+    // end wxGlade
+}; // wxGlade: end class
+
+
 #endif // OTHERPANELS_H

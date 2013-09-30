@@ -1477,3 +1477,93 @@ void TabColorSettingPanel::SetSampleFontColorSetting(const int id)
 	  this->Update();
      }
 }
+
+
+TabControlSettingPanel::TabControlSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+    wxPanel(parent, ID_TabControlSettingPanel, pos, size, wxTAB_TRAVERSAL)
+{
+    // begin wxGlade: TabControlSettingPanel::TabControlSettingPanel
+    panel_5 = new wxPanel(this, wxID_ANY);
+    panel_7 = new wxPanel(panel_5, wxID_ANY);
+    panel_4 = new wxPanel(this, wxID_ANY);
+    sizer_3_staticbox = new wxStaticBox(panel_4, wxID_ANY, wxT("タブを追加する位置"));
+    sizer_4_staticbox = new wxStaticBox(panel_5, wxID_ANY, wxT("タブを閉じたとき"));
+    panel_6 = new wxPanel(panel_4, wxID_ANY);
+    label_1 = new wxStaticText(panel_6, wxID_ANY, wxT("通常"));
+    const wxString choice_1_choices[] = {
+        wxT("先頭"),
+        wxT("アクティブの左"),
+        wxT("アクティブの右"),
+        wxT("最後")
+    };
+    choice_1 = new wxChoice(panel_6, ID_TabControlSettingPanelOpenTabChoice, wxDefaultPosition, wxDefaultSize, 4, choice_1_choices, 0);
+    label_2 = new wxStaticText(panel_6, wxID_ANY, wxT("タブから開く時"));
+    const wxString choice_2_choices[] = {
+        wxT("先頭"),
+        wxT("アクティブの左"),
+        wxT("アクティブの右"),
+        wxT("最後")
+    };
+    choice_2 = new wxChoice(panel_6, ID_TabControlSettingPanelOpenTabFromOtherTabChoice, wxDefaultPosition, wxDefaultSize, 4, choice_2_choices, 0);
+    label_3 = new wxStaticText(panel_7, wxID_ANY, wxT("スレビュー"));
+    const wxString choice_3_choices[] = {
+        wxT("左をアクティブ"),
+        wxT("右をアクティブ"),
+        wxT("アクティブにした順")
+    };
+    choice_3 = new wxChoice(panel_7, ID_TabControlSettingPanelCloseThreadViewTabChoice, wxDefaultPosition, wxDefaultSize, 3, choice_3_choices, 0);
+    label_4 = new wxStaticText(panel_7, wxID_ANY, wxT("スレ覧"));
+    const wxString choice_4_choices[] = {
+        wxT("左をアクティブ"),
+        wxT("右をアクティブ")
+    };
+    choice_4 = new wxChoice(panel_7, ID_TabControlSettingPanelCloseThreadTabChoice, wxDefaultPosition, wxDefaultSize, 2, choice_4_choices, 0);
+
+    set_properties();
+    do_layout();
+    // end wxGlade
+}
+
+
+void TabControlSettingPanel::set_properties()
+{
+    // begin wxGlade: TabControlSettingPanel::set_properties
+    choice_1->SetSelection(0);
+    choice_2->SetSelection(0);
+    choice_3->SetSelection(0);
+    choice_4->SetSelection(0);
+    // end wxGlade
+}
+
+
+void TabControlSettingPanel::do_layout()
+{
+    // begin wxGlade: TabControlSettingPanel::do_layout
+    wxBoxSizer* sizer_2 = new wxBoxSizer(wxVERTICAL);
+    sizer_4_staticbox->Lower();
+    wxStaticBoxSizer* sizer_4 = new wxStaticBoxSizer(sizer_4_staticbox, wxHORIZONTAL);
+    wxFlexGridSizer* grid_sizer_4 = new wxFlexGridSizer(2, 2, 0, 0);
+    sizer_3_staticbox->Lower();
+    wxStaticBoxSizer* sizer_3 = new wxStaticBoxSizer(sizer_3_staticbox, wxHORIZONTAL);
+    wxFlexGridSizer* grid_sizer_3 = new wxFlexGridSizer(2, 2, 0, 0);
+    grid_sizer_3->Add(label_1, 0, wxALIGN_CENTER_VERTICAL, 0);
+    grid_sizer_3->Add(choice_1, 0, 0, 0);
+    grid_sizer_3->Add(label_2, 0, wxALIGN_CENTER_VERTICAL, 0);
+    grid_sizer_3->Add(choice_2, 0, 0, 0);
+    panel_6->SetSizer(grid_sizer_3);
+    sizer_3->Add(panel_6, 1, wxEXPAND, 0);
+    panel_4->SetSizer(sizer_3);
+    sizer_2->Add(panel_4, 0, 0, 0);
+    grid_sizer_4->Add(label_3, 0, wxALIGN_CENTER_VERTICAL, 0);
+    grid_sizer_4->Add(choice_3, 0, 0, 0);
+    grid_sizer_4->Add(label_4, 0, wxALIGN_CENTER_VERTICAL, 0);
+    grid_sizer_4->Add(choice_4, 0, 0, 0);
+    panel_7->SetSizer(grid_sizer_4);
+    sizer_4->Add(panel_7, 1, wxEXPAND, 0);
+    panel_5->SetSizer(sizer_4);
+    sizer_2->Add(panel_5, 0, 0, 0);
+    SetSizer(sizer_2);
+    sizer_2->Fit(this);
+    // end wxGlade
+}
+
