@@ -165,6 +165,10 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new BehaviorPanel(settingPanel));
 	  settingPanel->SetSizer(vbox);
+     } else if (itemStr == wxT("タブ操作")) {
+       wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+       vbox->Add(new TabControlSettingPanel(settingPanel));
+       settingPanel->SetSizer(vbox);
      } else if (itemStr == wxT("User")) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new UserSettingPanel(settingPanel));
