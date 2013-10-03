@@ -248,7 +248,7 @@ remove_distdir :
 	rm -rf $(BUNDLE)
 
 # OSX向けのバイナリ作成
-osx-make-hook : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) check-dylibbundler wxmac-dist-shared-lib
+osx-make-hook : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) check-dylibbundler wxmac-dist-shared-lib package-osx-intel64-dmg
 
 # Bundleその他の生成方法を書く
 #  This builds the bundle's directory structure.
@@ -356,10 +356,11 @@ wxmac-dist-shared-lib:
 	done
 
 # OSX向けのインストーラ作成
-package-osx-intel32-dmg: prepare-package
-
-# OSX向けのインストーラ作成
-package-osx-intel64-dmg: prepare-package
+package-osx-intel64-dmg:
+	@echo "!!! Start make disk image file !!!";
+	hdiutil create -ov -srcfolder $(BUNDLE) -fs HFS+ -format UDZO \
+               -imagekey zlib-level=9 -volname "JaneClone.app" $(PACKAGE)-osx64-$(VERSION).dmg;
+	@echo "!!! Finish make disk image file !!!";
 
 # インストーラ作成のための準備
 prepare-package: package-clean
