@@ -102,6 +102,8 @@ wxArrayString SQLiteAccessor::GetBoardInfo() {
 
      // dbファイルの初期化
      wxString dbFile = GetDBFilePath();
+     // リザルトセットをArrayStringに設定する
+     wxArrayString array;
 
      try {	  
 	  // dbファイルの初期化
@@ -109,8 +111,6 @@ wxArrayString SQLiteAccessor::GetBoardInfo() {
 	  wxSQLite3Database db;
 	  db.Open(dbFile);
 
-	  // リザルトセットをArrayStringに設定する
-	  wxArrayString array;
 	  // リザルトセットを用意する
 	  wxSQLite3ResultSet rs;
 	  const wxString sqlSe = wxT("SELECT BOARDNAME_KANJI, BOARD_URL, CATEGORY FROM BOARD_INFO");
@@ -137,6 +137,8 @@ wxArrayString SQLiteAccessor::GetBoardInfo() {
      } catch (wxSQLite3Exception& e) {
 	  wxMessageBox(e.GetMessage());
      }
+
+     return array;
 }
 /**
  * 指定されたテーブルに情報が存在するかどうか聞く(トランザクション処理なし単独)
@@ -803,8 +805,14 @@ void SQLiteAccessor::SetImageFileName(std::vector<ImageFileInfo>& imageFileInfo)
 	  stmt.ClearBindings();
 
 	  stmt.BindTimestamp(1, now);
+
+#ifndef __clang__
 	  stmt.Bind(2, *it->fileName);
 	  stmt.Bind(3, *it->uuidFileName);
+#else
+	  stmt.Bind(2, it->fileName);
+	  stmt.Bind(3, it->uuidFileName);
+#endif
 	  stmt.ExecuteUpdate();
       }
 
@@ -834,6 +842,8 @@ void SQLiteAccessor::SetImageFileName(ImageFileInfo& imageFileInfo)
 }
 /**
  * 画像のファイル名とUUIDのリストをデータベースから取得する
+ * true : データあり
+ * false: データなし
  */
 bool SQLiteAccessor::GetImageFileName(const wxArrayString& fileNameArray, std::vector<ImageFileInfo>& imageFileInfoArray)
 {
@@ -864,11 +874,18 @@ bool SQLiteAccessor::GetImageFileName(const wxArrayString& fileNameArray, std::v
      }
 
      CLOSE_CONN_JC_WXSQLITE3(db)
+     
+     if (imageFileInfoArray.size() != 0 ) {
+          return true;
+     } else {
+          return false;
+     }
 }
 /**
- * 画像のファイル名とUUIDのをデータベースから取得する
+ * 画像のファイル名とUUIDをデータベースから取得する
  * @param  const wxString&	  画像ファイル名
- * @return ImageFileInfo>&	  ファイル情報 
+ * @param  ImageFileInfo>&	  ファイル情報 
+ * @return true: データあり false: データなし
  */
 bool SQLiteAccessor::GetImageFileName(const wxString& fileName, ImageFileInfo& imageFileInfo)
 {
@@ -890,7 +907,6 @@ bool SQLiteAccessor::GetImageFileName(const wxString& fileName, ImageFileInfo& i
      while (rs.NextRow()) {
           wxString uuidFileName = rs.GetAsString(wxT("UUID_FILENAME"));
       
-          // 各項目がNULLで無ければArrayStringに詰める
           if (uuidFileName.Length() > 0) {
 	       imageFileInfo.fileName = fileName;
 	       imageFileInfo.uuidFileName = uuidFileName;
@@ -898,4 +914,10 @@ bool SQLiteAccessor::GetImageFileName(const wxString& fileName, ImageFileInfo& i
      }
 
      CLOSE_CONNONLY_JC_WXSQLITE3(db)
+
+     if ( imageFileInfo.uuidFileName != wxEmptyString ) {
+          return true;
+     } else {
+          return false;
+     }
 }

@@ -1652,10 +1652,12 @@ void SocketCommunication::DownloadImageFile(const wxString& href, DownloadImageR
      if (href.StartsWith(wxT("http")) || href.StartsWith(wxT("ttp"))) {
 	  // http もしくは ttpの場合
 	  DownloadImageFileByHttp(href, result);
+	  SaveImageFileInfoDB(href, result);
 
      } else if (href.StartsWith(wxT("ftp"))) {
 	  // ftp の場合(これってあんまり無くね？)
 	  DownloadImageFileByFtp(href, result);
+	  SaveImageFileInfoDB(href, result);
 
      } else {
 	  wxMessageBox(wxT("ダウンロード対象のURLがhttp, ftpいずれでもありません."), wxT("画像ダウンロード"), wxICON_ERROR);
@@ -1686,6 +1688,7 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
      imageFilePath += uuid;
      imageFilePath += ext;
      result->imagePath = imageFilePath;
+     result->fileName  = uuid + ext;
 
      /** Content-typeの判別 */
      wxString contentType = JaneCloneUtil::DetermineContentType(href);
@@ -1714,7 +1717,6 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
 
 	  if (stream == NULL) {
 	       output.Close();
-	       //return -1;
 	  } else {
 	       unsigned char buffer[1024];
 	       int byteRead;
@@ -1909,4 +1911,22 @@ wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostna
      }
 
      return wxEmptyString;
+}
+/**
+ * ダウンロードした画像ファイル情報をDBに格納する
+ */
+void SocketCommunication::SaveImageFileInfoDB(const wxString& href, DownloadImageResult* result)
+{
+     if ( ! href || ! result) {
+	  wxString message = wxT("ダウンロードした画像ファイル情報が取得できませんでした.");
+	  SendLogging(message);
+	  return;
+     }
+
+     ImageFileInfo imageInfo;
+     imageInfo.fileName = href;
+     imageInfo.uuidFileName = result->fileName;
+     
+     // ファイル情報を格納
+     SQLiteAccessor::SetImageFileName(imageInfo);
 }

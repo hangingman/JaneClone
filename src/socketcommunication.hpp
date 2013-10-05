@@ -49,6 +49,7 @@
 
 #include "enums.hpp"
 #include "janecloneutil.hpp"
+#include "sqliteaccessor.hpp"
 
 class SocketCommunication {
 
@@ -248,8 +249,7 @@ private:
      /**
       * 通信ログに残っているHTTPレスポンスコードを取得する
       */
-     wxString GetHTTPResponseCode(const wxString headerPath,
-				  const wxString reqCode);
+     wxString GetHTTPResponseCode(const wxString headerPath, const wxString reqCode);
      /**
       * 一時ファイルを消す
       */
@@ -286,6 +286,11 @@ private:
      wxFileConfig* config;
      // 投稿内容を保存するクラス(書き込みの際のみ確保される)
      PostContent* postContent;
+
+     /**
+      * ダウンロードした画像ファイル情報をDBに格納する
+      */
+     void SaveImageFileInfoDB(const wxString& href, DownloadImageResult* result);
 };
 
 #endif /* SOCKETCOMMUNICATION_HPP_ */

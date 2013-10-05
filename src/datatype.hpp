@@ -252,6 +252,7 @@ typedef struct {
      wxString imagePath; // 画像ファイルのパス
      wxString imageURL;  // 画像ファイルのURL
      wxString ext;       // 画像ファイルの拡張子
+     wxString fileName;  // 画像ファイル名      ex) xxx.jpg
      bool     result;    // 取得の成否
 } DownloadImageResult;
 

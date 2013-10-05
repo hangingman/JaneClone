@@ -150,7 +150,7 @@ public:
      static void SetImageFileName(std::vector<ImageFileInfo>& imageFileInfoArray);
      /**
       * ダウンロードした画像のファイル名とUUIDをデータベースに格納する
-      * @param const ImageFileInfo* imageFileInfo ファイル情報
+      * @param ImageFileInfo& imageFileInfo ファイル情報
       */
      static void SetImageFileName(ImageFileInfo& imageFileInfo);
      /**
