@@ -257,6 +257,11 @@ X_TABLE_ITEM(ID_ThreadTabUpdateFontColorButton) 		\
 X_TABLE_ITEM(ID_ThreadTabPartialContentFontColorButton) 		\
 X_TABLE_ITEM(ID_AutoReloadSampleLabel) 		\
 X_TABLE_ITEM(ID_AutoReloadFontColorButton) 		\
+X_TABLE_ITEM(ID_TabControlSettingPanel) \
+X_TABLE_ITEM(ID_TabControlSettingPanelOpenTabChoice) \
+X_TABLE_ITEM(ID_TabControlSettingPanelOpenTabFromOtherTabChoice) \
+X_TABLE_ITEM(ID_TabControlSettingPanelCloseThreadViewTabChoice) \
+X_TABLE_ITEM(ID_TabControlSettingPanelCloseThreadTabChoice) \
 X_TABLE_ITEM(ID_JaneCloneEnumsEnd)
 
 // 列挙型の実体をマクロで生成する
