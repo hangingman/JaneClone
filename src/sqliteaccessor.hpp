@@ -64,7 +64,7 @@ class SQLiteAccessor {
 
 public:
      /**
-      * Metakitデータベースの初期化・トランザクションあり
+      * SQLiteデータベースの初期化・トランザクションあり
       */
      SQLiteAccessor();
      /**
@@ -72,7 +72,7 @@ public:
       */
      void SetBoardInfoCommit(wxArrayString* boardInfoArray);
      /**
-      * 板一覧情報をMetakit内のテーブルから取得しArrayStringの形で返す
+      * 板一覧情報をSQLite内のテーブルから取得しArrayStringの形で返す
       */
      static wxArrayString GetBoardInfo();
      /**

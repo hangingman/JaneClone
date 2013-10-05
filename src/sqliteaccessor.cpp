@@ -75,17 +75,21 @@ void SQLiteAccessor::SetBoardInfoCommit(wxArrayString* boardInfoArray) {
 	  db.Open(dbFile);
 	  db.Begin();
 
-	  // PreparedStatementを準備する
+	  // 既存のデータは消しておく
+	  const wxString sqlDel = wxT("DELETE FROM BOARD_INFO");
+	  wxSQLite3Statement stmt1 = db.PrepareStatement(sqlDel);
+	  stmt1.ExecuteUpdate();	  
+
 	  const wxString sqlIn = wxT("INSERT INTO BOARD_INFO (BOARDNAME_KANJI, BOARD_URL, CATEGORY) VALUES (?, ?, ?)");
-	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+	  wxSQLite3Statement stmt2 = db.PrepareStatement (sqlIn);
 
 	  for (unsigned int i = 0; i < boardInfoArray->GetCount(); i += 3) {
 	       // レコードを追加する
-	       stmt.ClearBindings();
-	       stmt.Bind(1, boardInfoArray->Item(i));
-	       stmt.Bind(2, boardInfoArray->Item(i+1));
-	       stmt.Bind(3, boardInfoArray->Item(i+2));
-	       stmt.ExecuteUpdate();
+	       stmt2.ClearBindings();
+	       stmt2.Bind(1, boardInfoArray->Item(i));
+	       stmt2.Bind(2, boardInfoArray->Item(i+1));
+	       stmt2.Bind(3, boardInfoArray->Item(i+2));
+	       stmt2.ExecuteUpdate();
 	  }
 	  // コミット実行
 	  db.Commit();
