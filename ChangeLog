@@ -1,3 +1,233 @@
+commit 93911c8
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-10-07
+
+    板一覧更新の際、既存のデータは削除するようにした
+
+src/janeclone.cpp
+
+commit 02093e4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-10-06
+
+    板一覧更新の際、既存のデータは削除するようにした
+
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit bac7faa
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-10-06
+
+    ダウンロードした画像ファイル情報をSQLiteに格納する処理を追加
+
+src/datatype.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit d514660
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-10-05
+
+    ファイルの修正漏れを修正
+
+src/enums.hpp
+
+commit f9ea835
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-10-05
+
+    ファイルの修正
+
+src/enums.hpp
+
+commit 0ce9761
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-10-05
+
+    列挙型の記述形式を変更しコメントを復帰
+
+src/enums.hpp
+
+commit 0e6a76b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-10-04
+
+    MacOSX向けdmgファイル作成バッチ処理を追加
+
+Makefile.am
+
+commit eab0f14
+Author: K.Watanabe <kwtnb@outlook.com>
+Date:   2013-10-01
+
+    タブ操作設定画面のモックアップを追加した。
+
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit 1dbcbb7
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-09-30
+
+    dylibの配布処理を改良
+
+Makefile.am
+
+commit 05f3ec9
+Merge: e38639d 6aba131
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2013-09-28
+
+    Merge pull request #13 from k-watanabe/fixtypo
+    
+    fix typo
+
+commit 6aba131
+Author: K.Watanabe <kwtnb@outlook.com>
+Date:   2013-09-29
+
+    fix typo
+    
+    Dafault => Default
+
+src/otherpanels.cpp
+
+commit e38639d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-09-22
+
+    ・画像ファイル管理用のSQLアクセサコードを追加
+
+src/datatype.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit 1fc58ef
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-09-09
+
+    ・MacOSX向け動的リンクライブラリのチェック用シェルを追加
+
+Makefile.am
+misc/osx-dependency-check.sh
+
+commit b4f4b33
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-09-09
+
+    ・MacOSX向け動的リンクライブラリの配布処理を修正
+
+Makefile.am
+
+commit d953851
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-09-08
+
+    ・MacOSX向け動的リンクライブラリのバッチ処理を途中まで追加
+
+Makefile.am
+
+commit a9815ca
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-09-03
+
+    ・MacOSX向けの動的リンクライブラリの配布処理を修正
+
+Makefile.am
+configure.ac
+
+commit 37bb8ca
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-09-02
+
+    ・MacOSX向け動的リンクライブラリの配布処理を追加
+
+Makefile.am
+
+commit 05f62c1
+Author: hiroyuki <newserver002@gmail.com>
+Date:   2013-09-01
+
+    ・Linuxのデフォルトフォント設定の処理方法を変更
+
+src/anchoredresponsepopup.cpp
+src/threadcontentwindow.cpp
+
+commit 86aa426
+Author: hiroyuki <newserver002@gmail.com>
+Date:   2013-09-01
+
+    ・フォント未設定時のクラッシュバグを防ぐ実装を追加
+
+src/janeclone.cpp
+
+commit 656f164
+Author: hiroyuki <newserver002@gmail.com>
+Date:   2013-08-31
+
+    ・SpiderMonkeyがLinuxでビルドできていなかったためconfigure.acを一部修正
+
+js-1.5-rc6a/configure.ac
+js-1.5-rc6a/src/Makefile.am
+js-1.5-rc6a/src/jstypes.h
+
+commit 834801c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-31
+
+    ・MacOSXでのバイナリ配布はスタティックビルド
+
+configure.ac
+js-1.5-rc6a/src/jsprf.c
+
+commit dbf759b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-31
+
+    ・MacOSX向けのいくつかの修正
+
+src/janeclone.cpp
+src/threadcontentwindow.hpp
+
+commit c478de2
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-31
+
+    ・MinGW32でSpiderMonkeyをビルドする際、未定義の定数値がある場合に対応した
+
+js-1.5-rc6a/src/jsnum.c
+
+commit fc3ec41
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-31
+
+    ・Debian向けパッケージ作成時の[-Werror=format-security]によるエラーに対処
+
+js-1.5-rc6a/src/js.c
+
+commit 6ef05b3
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-30
+
+    ・DebianパッケージにはMonaフォントを依存関係に追加
+
+Makefile.am
+
+commit f09a92a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-08-30
+
+    ・configure.acのバージョンをコミットし忘れているので追加
+
+ChangeLog
+configure
+configure.ac
+
 commit d8ff7c6
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-08-30

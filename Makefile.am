@@ -7,7 +7,7 @@ DIST_SUBDIRS = $(SUBDIRS)
 # janeclone.wrapper向けルール
 bin_SCRIPTS = janeclone
 CLEANFILES  = $(bin_SCRIPTS)
-EXTRA_DIST  = misc/janeclone.wrapper misc/janeclone.menu misc/jc_install_name_tool.awk test
+EXTRA_DIST  = misc/janeclone.wrapper misc/janeclone.menu test
 
 # 書き換えスクリプト
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
