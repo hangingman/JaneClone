@@ -55,11 +55,11 @@
 ** and requires array notation.
 */
 #ifdef HAVE_VA_COPY
-#define VARARGS_ASSIGN(foo, bar)        VA_COPY(foo,bar)
+   #define VARARGS_ASSIGN(foo, bar)        va_copy(foo,bar)
 #elif defined(HAVE_VA_LIST_AS_ARRAY)
-#define VARARGS_ASSIGN(foo, bar)        foo[0] = bar[0]
+   #define VARARGS_ASSIGN(foo, bar)        foo[0] = bar[0]
 #else
-#define VARARGS_ASSIGN(foo, bar)        (foo) = (bar)
+   #define VARARGS_ASSIGN(foo, bar)        (foo) = (bar)
 #endif
 
 /*
@@ -616,9 +616,9 @@ static struct NumArgState* BuildArgArray( const char *fmt, va_list ap, int* rv, 
             cn++;
             continue;
         }
-#ifndef __clang__
+
         VARARGS_ASSIGN( nas[cn].ap, ap);
-#endif
+
         switch( nas[cn].type ){
         case TYPE_INT16:
         case TYPE_UINT16:

@@ -94,7 +94,6 @@ resource.h \
 js.msg \
 jsopcode.tbl
 
-
 bin_PROGRAMS = jscpucfg js
 jscpucfg_SOURCES = jscpucfg.c jscpucfg.h
 jscpucfg_CFLAGS = $(AM_CFLAGS)

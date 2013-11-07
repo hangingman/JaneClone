@@ -91,34 +91,25 @@ else
     AC_MSG_ERROR([unknown. $OS_CONFIG])
 fi
 
-# Does this platform require array notation to assign to a va_list?
-# If cross-compiling, we assume va_list is "normal".  If this breaks
-# you, set ac_cv_valistisarray=true and maybe define HAVE_VA_LIST_AS_ARRAY
-# also just to be sure.
-AC_MSG_CHECKING(whether va_list assignments need array notation)
-AC_CACHE_VAL(ac_cv_valistisarray,
-	[AC_TRY_RUN([#include <stdlib.h>
-		     #include <stdarg.h>
-		     void foo(int i, ...) {
-			va_list ap1, ap2;
-			va_start(ap1, i);
-			ap2 = ap1;
-			if (va_arg(ap2, int) != 123 || va_arg(ap1, int) != 123)
-			    { exit(1); }
-			va_end(ap1); va_end(ap2);
-		     }
-		     int main() { foo(0, 123); return(0); }],
-		    [ac_cv_valistisarray=false],
-		    [ac_cv_valistisarray=true],
-		    [ac_cv_valistisarray=false])])
-
-if test "$ac_cv_valistisarray" = true ; then
-	AC_DEFINE(HAVE_VA_LIST_AS_ARRAY, 1,
-		[Define as 1 if your va_list type is an array])
-	AC_MSG_RESULT(yes)
+dnl Checking for va_copy availability
+AC_MSG_CHECKING([for va_copy])
+AC_TRY_LINK([#include <stdarg.h>
+va_list ap1,ap2;], [va_copy(ap1,ap2);],
+have_va_copy=yes,
+have_va_copy=no)
+AC_MSG_RESULT($have_va_copy)
+if test x"$have_va_copy" = x"yes"; then
+    AC_DEFINE(HAVE_VA_COPY,1,[Whether va_copy() is available])
 else
-       AC_MSG_RESULT(no)
+    AC_MSG_CHECKING([for __va_copy])
+    AC_TRY_LINK([#include <stdarg.h>
+    va_list ap1,ap2;], [__va_copy(ap1,ap2);],
+    have___va_copy=yes,
+    have___va_copy=no)
+    AC_MSG_RESULT($have___va_copy)
+    if test x"$have___va_copy" = x"yes"; then
+        AC_DEFINE(HAVE___VA_COPY,1,[Whether __va_copy() is available])
+    fi
 fi
-
 
 AC_OUTPUT(Makefile src/Makefile)
