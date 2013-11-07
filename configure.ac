@@ -39,6 +39,12 @@ case "$host" in
 		AC_SUBST(PLATFORM_STRING)
 		need_no_undefined=no
                 ;;
+        *-*-*bsd*)
+                AC_DEFINE(PLATFORM_BSD, 1, [Platform is BSD])
+                PLATFORM_STRING="BSD"
+		AC_SUBST(PLATFORM_STRING)
+		need_no_undefined=no
+                ;;
         *)
                 AC_MSG_WARN([*** Please add $host to configure.ac checks!])
                 ;;
@@ -197,7 +203,11 @@ case "${ax_cv_c_compiler_vendor}" in
 	fi
 	;;
    clang)
-	CXXFLAGS="$CXXFLAGS -std=c++11 -stdlib=libc++"	       
+	if test "$PLATFORM_STRING" = "BSD"; then
+	   CXXFLAGS="$CXXFLAGS -std=c++11"
+	else
+	   CXXFLAGS="$CXXFLAGS -std=c++11 -stdlib=libc++"
+	fi
         ;;	
    *)
 	AC_MSG_ERROR("ERROR: JaneClone cannot compile with gnu gcc or clang.")

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # sed for libcurl configure.ac
 curdir=`pwd`
@@ -6,8 +6,8 @@ curdir=`pwd`
 HOST=`uname -s`
 SED=sed
 
-if test ${HOST} = "Darwin"; then
-   if type -P gsed >/dev/null; then
+if test ${HOST} = "Darwin" -o "*BSD"; then
+   if hash gsed 2>/dev/null; then
        SED='gsed'
    else 
        echo "gsed is not found. Please install gsed."
