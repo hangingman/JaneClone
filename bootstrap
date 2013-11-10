@@ -6,7 +6,7 @@ curdir=`pwd`
 HOST=`uname -s`
 SED=sed
 
-if test ${HOST} = "Darwin" -o "*BSD"; then
+if test ${HOST} = Darwin -o ${HOST} = FreeBSD; then
    if hash gsed 2>/dev/null; then
        SED='gsed'
    else 
