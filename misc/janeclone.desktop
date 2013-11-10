@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Encoding=UTF-8
+Name=JaneClone
+Comment=Cross Platform 2ch browser
+Icon=%%%janecloneexecrcdir%%%/janeclone.xpm
+Exec=janeclone
+Categories=Application;Network;
+StartupNotify=true

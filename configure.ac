@@ -203,11 +203,7 @@ case "${ax_cv_c_compiler_vendor}" in
 	fi
 	;;
    clang)
-	if test "$PLATFORM_STRING" = "BSD"; then
-	   CXXFLAGS="$CXXFLAGS -std=c++11"
-	else
-	   CXXFLAGS="$CXXFLAGS -std=c++11 -stdlib=libc++"
-	fi
+	CXXFLAGS="$CXXFLAGS -std=c++11 -stdlib=libc++"
         ;;	
    *)
 	AC_MSG_ERROR("ERROR: JaneClone cannot compile with gnu gcc or clang.")

@@ -1811,7 +1811,7 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
 	  myRequest.setOpt(new cURLpp::Options::Url(requestQuery));
 	  myRequest.setOpt(new cURLpp::Options::Port(portInteger));
 
-	  std::ofstream ofs(outputFilename , std::ios::out | std::ios::trunc );
+	  std::ofstream ofs(outputFilename.c_str() , std::ios::out | std::ios::trunc );
 
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
@@ -1889,7 +1889,7 @@ wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostna
 	  myRequest.setOpt(new cURLpp::Options::Url(requestQuery));
 	  myRequest.setOpt(new cURLpp::Options::Port(portInteger));
 
-	  std::ofstream ofs(outputFilename , std::ios::out | std::ios::trunc );
+	  std::ofstream ofs(outputFilename.c_str() , std::ios::out | std::ios::trunc );
 
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);

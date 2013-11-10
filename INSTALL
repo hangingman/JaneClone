@@ -293,16 +293,35 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   必要なものを準備する
   # pkg_add -r autoconf automake autoreconf
   # pkg_add -r gsed
+  # pkg_add -r subversion
 
-  clang-3.3をportsからインストールする必要がある
-  # cd /usr/ports/lang/clang33
-  # make && make install && make clean
+  libc++/libcxxrtをビルドする必要がある(面倒ですねえ。。。)
+  # svn co svn://svn.freebsd.org/base/releng/9.1/lib /usr/src/lib
+  # svn co svn://svn.freebsd.org/base/releng/9.1/contrib /usr/src/contrib
+  # cd /usr/src/lib/libcxxrt
+  # make
+  # make install
+  # cd /usr/src/lib/libc++
+  # make CXX=clang++
+  # make install
 
   wxWidgetsのライブラリのインストール
-  # cd /usr/ports/x11-toolkits/wxgtk28-unicode
-  # make && make install && make clean
-  # cd /usr/ports/x11-toolkits/wxgtk28-common
-  # make && make install && make clean
+  (wx-2.8はバグがあるので最新版をインストールする)
+  # git clone https://github.com/wxWidgets/wxWidgets.git
+  # cd wxWidgets
+  # git checkout WX_3_0_0-rc2
+  # cd ../
+  # mkdir wxWidgets-3.0.0-rc2
+  # cd wxWidgets-3.0.0-rc2/
+  # ../wxWidgets/configure CXXFLAGS="-stdlib=libc++ -std=c++11"       \
+    OBJCXXFLAGS="-stdlib=libc++ -std=c++11" CPPFLAGS="-stdlib=libc++" \
+    LDFLAGS="-stdlib=libc++" CXX=clang++ CXXCPP="clang++ -E" CC=clang \
+    CPP="clang -E" --enable-unicode --enable-debug --enable-gdb-debug \
+    --with-libjpeg=builtin --with-libpng=builtin --with-regex=builtin \
+    --with-libtiff=builtin --with-zlib=builtin --with-expat=builtin   \
+    --enable-std_containers --enable-std_iostreams --enable-std_string
+  # make
+  # make install
 
   wx-configのリンク張りなおし
   # ln -s /usr/local/bin/wxgtk2u-2.8-config /usr/local/bin/wx-config
@@ -317,7 +336,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ git submodule init
   $ git submodule update
   $ ./bootstrap
-  $ ./configure CC='clang33' CXX='clang++33'
+  $ ./configure CC='clang' CXX='clang++ -stdlib=libc++'  
   $ make
 
 コンパイラとそのオプション
