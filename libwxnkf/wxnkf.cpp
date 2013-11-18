@@ -1673,6 +1673,42 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 	  return -1;
      }
 
+     CheckBom(in);
+
+     /**
+      * If input encode is utf16, process here
+      */
+     if (wxEnc->inputMode == UTF_32) {
+	  // prepare UTF-16 processing class
+	  UTF16Util* utf16 = new UTF16Util();
+	  utf16->SetInputEndian(wxEnc->iEndian);
+
+	  // for 4byte process
+	  while ((c1 = in->GetC()) != EOF && (c2 = in->GetC()) != EOF
+		 && (c3 = in->GetC()) != EOF && (c4 = in->GetC()) != EOF) 
+	  {
+	       oConvStr->push_back(utf16->NKFIconvUTF16(c1, c2, c3, c4));
+	  }
+	  goto finished;
+
+     } else if (wxEnc->inputMode == UTF_16) {
+	  // prepare UTF-16 processing class
+	  UTF16Util* utf16 = new UTF16Util();
+	  utf16->SetInputEndian(wxEnc->iEndian);
+
+	  // for 2byte process
+	  while ((c1 = in->GetC()) != EOF && (c2 = in->GetC()) != EOF) 
+	  {
+	       if (utf16->NKFIconvUTF16(c1, c2, 0, 0) == NKF_ICONV_NEED_TWO_MORE_BYTES 
+		   && (c3 = in->GetC()) != EOF
+		   && (c4 = in->GetC()) != EOF) 
+	       {
+		    oConvStr->push_back(utf16->NKFIconvUTF16(c1, c2, c3, c4));
+	       }
+	  }
+	  goto finished;
+     }
+
      /**
       * Loop process of except UTF-16 characters
       */
