@@ -119,7 +119,7 @@ class wxNKF {
  /**
   * Instance of class for IO char code setting and process
   */
- wxNKFEncoding wxEnc;
+ wxNKFEncoding* wxEnc;
  /**
   * SetOption : setting and judge options
   *
@@ -127,11 +127,7 @@ class wxNKF {
   *    0: success
   *   -1: ArgumentError
   */
- int SetOption(const wxString& option);
- /**
-  * set flag to convert cp932 to UTF-8
-  */
- int SetCP932ToUTF8();
+ int SetOption(const wxString option);
  /**
   * define charcter code convert method by set flags
   */
@@ -163,8 +159,8 @@ class wxNKF {
  /**
   * set flag for Input & Output
   */
- void SetInputEncoding(wxNKFEncoding& enc);
- void SetOutputEncoding(wxNKFEncoding& enc);
+ void SetInputEncoding(wxNKFEncoding *enc);
+ void SetOutputEncoding(wxNKFEncoding *enc);
  /**
   * other class value etc.
   */

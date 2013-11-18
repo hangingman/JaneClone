@@ -32,11 +32,11 @@ public:
 	 * 0: set input
 	 * 1: set output
 	 */
-	static void NKFEncFind(const char *name, wxNKFEncoding& enc, int io);
+	static void NKFEncFind(const char *name, wxNKFEncoding* enc, int io);
 	/**
 	 * return wxNKFEncoding class per encoding ID
 	 */
-	static void NKFEncFromIndex(int idx, wxNKFEncoding& enc, int io);
+	static void NKFEncFromIndex(int idx, wxNKFEncoding* enc, int io);
 	/**
 	 * get encode ID by name
 	 */
@@ -44,7 +44,7 @@ public:
 	/**
 	 * Initialize character code
 	 */
-	static void NKFDefaultEncoding(wxNKFEncoding& enc, int io);
+	static void NKFDefaultEncoding(wxNKFEncoding* enc, int io);
 	/**
 	 * convert EUC-JP to UTF-8
 	 */
@@ -68,7 +68,7 @@ public:
 	/**
 	 * get default os locale
 	 */
-	static void NKFLocaleEncoding(wxNKFEncoding& enc, int io);
+	static void NKFLocaleEncoding(wxNKFEncoding* enc, int io);
 	/**
 	 * convert Unicode to UTF-8
 	 */
