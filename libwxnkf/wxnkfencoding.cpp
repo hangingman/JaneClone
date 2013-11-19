@@ -12,67 +12,67 @@
  * According to inputMode, convert input char
  */
 nkf_char wxNKFEncoding::Iconv(nkf_char c2, nkf_char c1, nkf_char c0,
-		std::bitset<nkf_flag_num> nkfFlags, std::string* oConvStr) {
+			      std::bitset<nkf_flag_num> nkfFlags, std::string* oConvStr) {
 
-	switch (this->inputMode) {
+     switch (this->inputMode) {
 
-	case ASCII:
-		return EIconv(c2, c1, c0, nkfFlags, oConvStr);
-		break;
-	case ISO_2022_JP:
-		return EIconv(c2, c1, c0, nkfFlags, oConvStr);
-		break;
-	case SHIFT_JIS:
-		return SIconv(c2, c1, c0, nkfFlags, oConvStr);
-		break;
-	case EUC_JP:
-		return EIconv(c2, c1, c0, nkfFlags, oConvStr);
-		break;
-	case UTF_8:
-		return WIconv(c2, c1, c0, nkfFlags, oConvStr);
-		break;
-	case UTF_16:
-		return WIconv16(c2, c1, c0, nkfFlags, oConvStr);
-		break;
-	case UTF_32:
-		return WIconv32(c2, c1, c0, nkfFlags, oConvStr);
-		break;
-	default:
-		return -1;
-	}
+     case ASCII:
+	  return EIconv(c2, c1, c0, nkfFlags, oConvStr);
+	  break;
+     case ISO_2022_JP:
+	  return EIconv(c2, c1, c0, nkfFlags, oConvStr);
+	  break;
+     case SHIFT_JIS:
+	  return SIconv(c2, c1, c0, nkfFlags, oConvStr);
+	  break;
+     case EUC_JP:
+	  return EIconv(c2, c1, c0, nkfFlags, oConvStr);
+	  break;
+     case UTF_8:
+	  return WIconv(c2, c1, c0, nkfFlags, oConvStr);
+	  break;
+     case UTF_16:
+	  return WIconv16(c2, c1, c0, nkfFlags, oConvStr);
+	  break;
+     case UTF_32:
+	  return WIconv32(c2, c1, c0, nkfFlags, oConvStr);
+	  break;
+     default:
+	  return -1;
+     }
 }
 /**
  * According to inputMode, convert input char
  */
 nkf_char wxNKFEncoding::Iconv(nkf_char c2, nkf_char c1, nkf_char c0,
-		std::bitset<nkf_flag_num> nkfFlags, wxDataOutputStream* out) {
+			      std::bitset<nkf_flag_num> nkfFlags, wxDataOutputStream* out) {
 
-	switch (this->inputMode) {
+     switch (this->inputMode) {
 
-	case ASCII:
-		return EIconv(c2, c1, c0, nkfFlags, out);
-		break;
-	case ISO_2022_JP:
-		return EIconv(c2, c1, c0, nkfFlags, out);
-		break;
-	case SHIFT_JIS:
-		return SIconv(c2, c1, c0, nkfFlags, out);
-		break;
-	case EUC_JP:
-		return EIconv(c2, c1, c0, nkfFlags, out);
-		break;
-	case UTF_8:
-		return WIconv(c2, c1, c0, nkfFlags, out);
-		break;
-	case UTF_16:
-		return WIconv16(c2, c1, c0, nkfFlags, out);
-		break;
-	case UTF_32:
-		return WIconv32(c2, c1, c0, nkfFlags, out);
-		break;
-	default:
-		return -1;
-	}
+     case ASCII:
+	  return EIconv(c2, c1, c0, nkfFlags, out);
+	  break;
+     case ISO_2022_JP:
+	  return EIconv(c2, c1, c0, nkfFlags, out);
+	  break;
+     case SHIFT_JIS:
+	  return SIconv(c2, c1, c0, nkfFlags, out);
+	  break;
+     case EUC_JP:
+	  return EIconv(c2, c1, c0, nkfFlags, out);
+	  break;
+     case UTF_8:
+	  return WIconv(c2, c1, c0, nkfFlags, out);
+	  break;
+     case UTF_16:
+	  return WIconv16(c2, c1, c0, nkfFlags, out);
+	  break;
+     case UTF_32:
+	  return WIconv32(c2, c1, c0, nkfFlags, out);
+	  break;
+     default:
+	  return -1;
+     }
 }
 /**
  * According to outputMode, convert output char
@@ -665,7 +665,8 @@ void wxNKFEncoding::SOconv(nkf_char c2, nkf_char c1,
 	  oConvStr->push_back(EOF);
 	  return;
      } else if (c2 == 0) {
-	  this->outputMode = ASCII;
+	  /** this->outputMode = ASCII; */
+	  /** If above process execute, outputMode cannot return original status. */ 
 	  oConvStr->push_back(c1);
      } else if (c2 == JIS_X_0201_1976_K) {
 	  this->outputMode = SHIFT_JIS;

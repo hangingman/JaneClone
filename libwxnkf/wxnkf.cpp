@@ -39,13 +39,21 @@
  * constructor
  */
 wxNKF::wxNKF() {
-     /* prepare nkf flag set */
+     /** prepare nkf flag set */
      FlagSet* flag = new FlagSet();
      nkfFlags = flag->GetFlagSet();
      delete flag;
 
-     /* prepare encode setting class */
+     /** prepare encode setting class */
      wxEnc = new wxNKFEncoding();
+     /** for InputCode struct */
+     nkf_char buf[] = {0, 0, 0};
+     inputCodeList.push_back(InputCode("EUC-JP"   , 0, 0, 0, buf, 0));
+     inputCodeList.push_back(InputCode("Shift_JIS", 0, 0, 0, buf, 0));
+     inputCodeList.push_back(InputCode("UTF-8"    , 0, 0, 0, buf, 0));
+     inputCodeList.push_back(InputCode("UTF-16"   , 0, 0, 0, buf, 0));
+     inputCodeList.push_back(InputCode("UTF-32"   , 0, 0, 0, buf, 0));
+     inputCodeList.push_back(InputCode(NULL       , 0, 0, 0, buf, 0));
 }
 /**
  * destructor
@@ -175,8 +183,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 			 /* in case of already established */
 			 if (c1 < 0x40) {
 			      /* ignore bogus code */
-			      SKIP
-				   ;
+			      SKIP;
 			 } else {
 			      SEND;
 			 }
@@ -273,6 +280,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 			 }
 		    } else {
 			 /* normal ASCII code */
+			 wxEnc->inputMode = ASCII;
 			 SEND;
 		    }
 	       } else if (c1 == SI && (!is_8bit || mime_decode_mode)) {
@@ -457,7 +465,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 	       } else if (c1 == LF || c1 == CR) {
 		    if (nkfFlags[broken_f] & 4) {
 			 wxEnc->inputMode = ASCII;
-			 //SetIconv(FALSE, 0, nkfFlags, oConvStr);
+			 SetIconv(FALSE, ASCII);
 			 SEND;
 		    } else if (nkfFlags[mime_decode_f] && !mime_decode_mode) {
 			 if (c1 == LF) {
@@ -492,7 +500,7 @@ int wxNKF::KanjiConvert(wxInputStream* in, wxDataOutputStream* out) {
 	       } else
 		    SEND;
 	  }
-	  /* send: */
+send:
 	  switch (wxEnc->inputMode) {
 
 	       /* process ASCII/SJIS/EUC/UTF here */
@@ -1447,40 +1455,77 @@ void wxNKF::CheckBom(wxInputStream* in) {
  */
 void wxNKF::CodeStatus(nkf_char c) {
 
-//	/**
-//	 * 最初に入力コードが何であるか総当りで調べる
-//	 * "EUC-JP","Shift_JIS","UTF-8","UTF-16","UTF-32"の順
-//	 */
-//	int action_flag = 1;
-//	InputCode* result = 0;
-//	std::string inputCodeList[] = { "EUC-JP", "Shift_JIS", "UTF-8", "UTF-16",
-//			"UTF-32" };
-//
-//	/**
-//	 * InputCode->statが決まるまでループする
-//	 */
-//	for (int i = 0; i < 5; i++) {
-//		InputCode* p;
-//		p->name = inputCodeList[i];
-//		p->StatusFunc(p, c, nkfFlags);
-//		if (p->stat > 0) {
-//			action_flag = 0;
-//		} else if (p->stat == 0) {
-//			if (result) {
-//				action_flag = 0;
-//			} else {
-//				result = p;
-//			}
-//		}
-//		++i;
-//	}
-//
-//	if (action_flag) {
-//		// resultが確定している場合
-//		if (result && !nkfFlags[estab_f]) {
-//			//SetIconv(TRUE, result->name, nkfFlags);
-//		}
-//	}
+     int actionFlag   = 1;
+     InputCode* result = 0;
+
+     for (int i = 0; i < inputCodeList.size(); i++) {
+	  if ( i > 2 ) {
+	       i++;
+	       continue;
+	  }
+	  // status check...
+	  inputCodeList.at(i).Status(&inputCodeList.at(i), c);
+
+	  if (inputCodeList.at(i).getStat() > 0){
+	       actionFlag = 0;
+	  }else if(inputCodeList.at(i).getStat() == 0){
+	       if (result){
+		    actionFlag = 0;
+	       } else {
+		    result = &inputCodeList.at(i);
+	       }
+	  }
+     } 
+
+     if (actionFlag) {
+	  if (result && !nkfFlags[estab_f]) {
+
+	       if (strcmp(result->getName(), "EUC-JP") == 0) {
+		    SetIconv(TRUE, EUC_JP);
+	       } else if (strcmp(result->getName(), "Shift_JIS") == 0) {
+		    SetIconv(TRUE, SHIFT_JIS);
+	       } else if (strcmp(result->getName(), "UTF-8") == 0) {
+		    SetIconv(TRUE, UTF_8);
+	       } else if (strcmp(result->getName(), "UTF-16") == 0) {
+		    SetIconv(TRUE, UTF_16);
+	       } else if (strcmp(result->getName(), "UTF-32") == 0) {
+		    SetIconv(TRUE, UTF_32);
+	       } else {
+		    // do nothing
+	       }
+
+	  } else if (c <= DEL){
+	       /** InputCode reset */
+	       inputCodeList.clear();
+
+	       nkf_char buf[] = {0, 0, 0};
+	       inputCodeList.push_back(InputCode("EUC-JP"   , 0, 0, 0, buf, 0));
+	       inputCodeList.push_back(InputCode("Shift_JIS", 0, 0, 0, buf, 0));
+	       inputCodeList.push_back(InputCode("UTF-8"    , 0, 0, 0, buf, 0));
+	       inputCodeList.push_back(InputCode("UTF-16"   , 0, 0, 0, buf, 0));
+	       inputCodeList.push_back(InputCode("UTF-32"   , 0, 0, 0, buf, 0));
+	       inputCodeList.push_back(InputCode(NULL       , 0, 0, 0, buf, 0));
+	  }
+     }
+}
+/**
+ * change input code setting
+ * @param nkf_char f         ... 
+ * @param int      inputMode ... base character code id
+ */
+void wxNKF::SetIconv(nkf_char f, int inputMode) {
+
+     if ( f || wxEnc->inputMode == 0 )
+     {
+	  nkfFlags[estab_f] = (nkfFlags[estab_f] != f) ? f : nkfFlags[estab_f];
+     }
+     
+     if ( inputMode != 0
+	  && ( f == -TRUE || wxEnc->inputMode == 0 ) /* -TRUE means "FORCE" */
+	  ) {
+	  // set inputMode
+	  wxEnc->inputMode = inputMode;
+     }     
 }
 /**
  * setting input encode
@@ -1662,6 +1707,7 @@ int wxNKF::ConvertSTDString(const std::string& inputString, std::string& outputS
  */
 int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 
+     DEBUG("In wxNKF::KanjiConvert...\n");
      nkf_char c1 = 0, c2 = 0, c3 = 0, c4 = 0;
      int shift_mode = 0; /* 0, 1, 2, 3 */
      int g2 = 0;
@@ -1834,6 +1880,8 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 			 }
 		    } else {
 			 /* normal ASCII code */
+			 /* TODO: Fix */
+			 //wxEnc->inputMode = ASCII;
 			 SEND;
 		    }
 	       } else if (c1 == SI && (!is_8bit || mime_decode_mode)) {
@@ -2018,7 +2066,7 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 	       } else if (c1 == LF || c1 == CR) {
 		    if (nkfFlags[broken_f] & 4) {
 			 wxEnc->inputMode = ASCII;
-			 //SetIconv(FALSE, 0, nkfFlags, oConvStr);
+			 SetIconv(FALSE, ASCII);
 			 SEND;
 		    } else if (nkfFlags[mime_decode_f] && !mime_decode_mode) {
 			 if (c1 == LF) {
@@ -2053,8 +2101,10 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 	       } else
 		    SEND;
 	  }
-	  /* send: */
+
+send:
 	  switch (wxEnc->inputMode) {
+	       DEBUG("switch...\n");
 
 	       /* process ASCII/SJIS/EUC/UTF here */
 	  case ASCII:
@@ -2064,6 +2114,11 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 	       switch (wxEnc->Iconv(c2, c1, 0, nkfFlags, oConvStr)) { /* can be EUC / SJIS / UTF-8 */
 	       case -2:
 		    /* 4 bytes UTF-8 */
+		    DEBUG("/* 4 bytes UTF-8 */...\n");
+		    DEBUG(  "c1: " + std::to_string(c1) 
+			  + " c2: " + std::to_string(c2) 
+			  + " c3: " + std::to_string(c3) 
+			  + " c4: " + std::to_string(c4) + "\n");
 		    if ((c3 = in->GetC()) != EOF) {
 			 //GuessConv::CodeStatus(c3, flagPool);
 			 c3 <<= 8;
@@ -2075,6 +2130,11 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 		    break;
 	       case -1:
 		    /* 3 bytes EUC or UTF-8 */
+		    DEBUG("/* 3 bytes EUC or UTF-8 */ ...\n");
+		    DEBUG(  "c1: " + std::to_string(c1) 
+			  + " c2: " + std::to_string(c2) 
+			  + " c3: " + std::to_string(c3) 
+			  + " c4: " + std::to_string(c4) + "\n");
 		    if ((c3 = in->GetC()) != EOF) {
 			 //GuessConv::CodeStatus(c3, flagPool);
 			 wxEnc->Iconv(c2, c1, c3, nkfFlags, oConvStr);
@@ -2087,18 +2147,38 @@ int wxNKF::KanjiConvert(wxStringInputStream* in, std::string* oConvStr) {
 	       if (nkfFlags[ms_ucs_map_f] && 0x7F <= c2 && c2 <= 0x92 && 0x21 <= c1
 		   && c1 <= 0x7E) {
 		    /* CP932 UDC */
+		    DEBUG("/* CP932 UDC */ ...\n");
+		    DEBUG(  "c1: " + std::to_string(c1) 
+			  + " c2: " + std::to_string(c2) 
+			  + " c3: " + std::to_string(c3) 
+			  + " c4: " + std::to_string(c4) + "\n");
 		    c1 = nkf_char_unicode_new((c2 - 0x7F) * 94 + c1 - 0x21 + 0xE000);
 		    c2 = 0;
 	       }
 	       wxEnc->Oconv(c2, c1, nkfFlags, oConvStr); /* this is JIS, not SJIS/EUC case */
 	       break;
 	  case JIS_X_0212:
+	       DEBUG("/* JIS_X_0212 */ ...\n");
+		    DEBUG(  "c1: " + std::to_string(c1) 
+			  + "c2: " + std::to_string(c2) 
+			  + "c3: " + std::to_string(c3) 
+			  + "c4: " + std::to_string(c4) + "\n");
 	       wxEnc->Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, oConvStr);
 	       break;
 	  case JIS_X_0213_2:
+	       DEBUG("/* JIS_X_0213_2 */ ...\n");
+	       DEBUG(  "c1: " + std::to_string(c1) 
+		       + " c2: " + std::to_string(c2) 
+		       + " c3: " + std::to_string(c3) 
+		       + " c4: " + std::to_string(c4) + "\n");
 	       wxEnc->Oconv(PREFIX_EUCG3 | c2, c1, nkfFlags, oConvStr);
 	       break;
 	  default:
+	       DEBUG("/* default */ ...\n");
+	       DEBUG(	"c1: " + std::to_string(c1) 
+			+ " c2: " + std::to_string(c2) 
+			+ " c3: " + std::to_string(c3) 
+			+ " c4: " + std::to_string(c4) + "\n");
 	       wxEnc->Oconv(wxEnc->inputMode, c1, nkfFlags, oConvStr); /* other special case */
 	  }
 
@@ -2155,8 +2235,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			 /* in case of already established */
 			 if (c1 < 0x40) {
 			      /* ignore bogus code */
-			      SKIP
-				   ;
+			      SKIP;
 			 } else {
 			      SEND;
 			 }
@@ -2172,8 +2251,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 	       /* first byte */
 	       if (wxEnc->inputMode == JIS_X_0208 && DEL <= c1 && c1 < 0x92) {
 		    /* CP5022x */
-		    MORE
-			 ;
+		    MORE;
 	       } else if (!wxEnc->iCharName.IsEmpty() && wxEnc->iCharName[0] == 'I'
 			  && 0xA1 <= c1 && c1 <= 0xDF) {
 		    /* JIS X 0201 Katakana in 8bit JIS */
@@ -2184,8 +2262,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 		    /* 8 bit code */
 		    if (!nkfFlags[estab_f] && !nkfFlags[iso8859_f]) {
 			 /* not established yet */
-			 MORE
-			      ;
+			 MORE;
 		    } else { /* estab_f==TRUE */
 			 if (nkfFlags[iso8859_f]) {
 			      c2 = ISO_8859_1;
@@ -2201,8 +2278,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			      SEND;
 			 } else {
 			      /* already established */
-			      MORE
-				   ;
+			      MORE;
 			 }
 		    }
 	       } else if (SP < c1 && c1 < DEL) {
@@ -2218,16 +2294,14 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			      SEND;
 			 } else {
 			      /* look like bogus code */
-			      SKIP
-				   ;
+			      SKIP;
 			 }
 		    } else if (wxEnc->inputMode == JIS_X_0208
 			       || wxEnc->inputMode == JIS_X_0212
 			       || wxEnc->inputMode == JIS_X_0213_1
 			       || wxEnc->inputMode == JIS_X_0213_2) {
 			 /* in case of Kanji shifted */
-			 MORE
-			      ;
+			 MORE;
 		    } else if (c1 == '=' && nkfFlags[mime_f] && !mime_decode_mode) {
 			 /* Check MIME code */
 			 if ((c1 = in->get()) == EOF) {
@@ -2248,21 +2322,19 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			 } else {
 			      wxEnc->Oconv(0, '=', nkfFlags, oConvStr);
 			      in->putback(c1);
-			      SKIP
-				   ;
+			      SKIP;
 			 }
 		    } else {
 			 /* normal ASCII code */
+			 wxEnc->inputMode = ASCII;
 			 SEND;
 		    }
 	       } else if (c1 == SI && (!is_8bit || mime_decode_mode)) {
 		    shift_mode = 0;
-		    SKIP
-			 ;
+		    SKIP;
 	       } else if (c1 == SO && (!is_8bit || mime_decode_mode)) {
 		    shift_mode = 1;
-		    SKIP
-			 ;
+		    SKIP;
 	       } else if (c1 == ESC && (!is_8bit || mime_decode_mode)) {
 		    if ((c1 = in->get()) == EOF) {
 			 wxEnc->Oconv(0, ESC, nkfFlags, oConvStr);
@@ -2272,8 +2344,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			 if ((c1 = in->get()) == EOF) {
 			      LAST;
 			 } else {
-			      SKIP
-				   ;
+			      SKIP;
 			 }
 		    } else if (c1 == '$') {
 			 /* GZDMx */
@@ -2285,8 +2356,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 			 } else if (c1 == '@' || c1 == 'B') {
 			      /* JIS X 0208 */
 			      SetInputMode(JIS_X_0208);
-			      SKIP
-				   ;
+			      SKIP;
 			 } else if (c1 == '(') {
 			      /* GZDM4 */
 			      if ((c1 = in->get()) == EOF) {
@@ -2437,7 +2507,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 	       } else if (c1 == LF || c1 == CR) {
 		    if (nkfFlags[broken_f] & 4) {
 			 wxEnc->inputMode = ASCII;
-			 //SetIconv(FALSE, 0, nkfFlags, oConvStr);
+			 SetIconv(FALSE, ASCII);
 			 SEND;
 		    } else if (nkfFlags[mime_decode_f] && !mime_decode_mode) {
 			 if (c1 == LF) {
@@ -2472,7 +2542,7 @@ int wxNKF::KanjiConvert(std::stringstream* in, std::string* oConvStr) {
 	       } else
 		    SEND;
 	  }
-	  /* send: */
+send:
 	  switch (wxEnc->inputMode) {
 
 	       /* process ASCII/SJIS/EUC/UTF here */

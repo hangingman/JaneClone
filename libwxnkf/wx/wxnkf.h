@@ -23,6 +23,7 @@
 #include "wxnkfencoding.h"
 #include "util.h"
 #include "utf16util.h"
+#include "inputcode.h"
 
 /* HELP_OUTPUT */
 #ifdef HELP_OUTPUT_STDERR
@@ -106,8 +107,13 @@ class wxNKF {
 #define NEXT continue        /* no output, get next */
 #define SKIP c2=0;continue   /* no output, get next */
 #define MORE c2=c1;continue  /* need one more byte */
-#define SEND (void)0         /* output c1 and c2, get next */
+#define SEND goto send         /* output c1 and c2, get next */
 #define LAST break           /* end of loop, go closing  */
+
+ /**
+  * input code status data
+  */
+ std::vector<InputCode> inputCodeList;
  /**
   * set of nkf flag
   */
@@ -157,6 +163,10 @@ class wxNKF {
   */
  void CodeStatus(nkf_char c);
  /**
+  * change input code setting
+  */
+ void SetIconv(nkf_char f, int inputMode);
+ /**
   * set flag for Input & Output
   */
  void SetInputEncoding(wxNKFEncoding *enc);
@@ -169,7 +179,7 @@ class wxNKF {
  int fold_len;
  int fold_margin;
  int mimeout_mode; /* 0, -1, 'Q', 'B', 1, 2 */
- int shift_mode;/* 0 or 1 */
+ int shift_mode;   /* 0 or 1 */
 };
 
 #endif /* WXNKF_H_ */
