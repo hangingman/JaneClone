@@ -665,7 +665,7 @@ void wxNKFEncoding::SOconv(nkf_char c2, nkf_char c1,
 	  oConvStr->push_back(EOF);
 	  return;
      } else if (c2 == 0) {
-	  this->outputMode = ASCII;
+	  //this->outputMode = ASCII;
 	  oConvStr->push_back(c1);
      } else if (c2 == JIS_X_0201_1976_K) {
 	  this->outputMode = SHIFT_JIS;
