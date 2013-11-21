@@ -26,25 +26,24 @@
 
 // event table
 BEGIN_EVENT_TABLE(ThreadContentBar, wxPanel)
-// マウスホバー時のイベントテーブル
-//EVT_MOUSE_EVENTS(ThreadContentBar::OnHoverTCBAutoReload)
-//EVT_BUTTON(ID_TCBAutoReload, ThreadContentBar::OnClickTCBAutoReload)
-// EVT_ENTER_WINDOW(ID_TCBRedResExtract, ThreadContentBar::OnClickTCBRedResExtract)
-// EVT_ENTER_WINDOW(ID_TCBRefresh, ThreadContentBar::OnClickTCBRefresh)
-// EVT_ENTER_WINDOW(ID_TCBScrollToNewRes,  ThreadContentBar::OnClickTCBScrollToNewRes)
-// EVT_ENTER_WINDOW(ID_TCBStop,            ThreadContentBar::OnClickTCBStop)
-// EVT_ENTER_WINDOW(ID_TCBResExtract,      ThreadContentBar::OnClickTCBResExtract)
-// EVT_ENTER_WINDOW(ID_TCBNewThread,       ThreadContentBar::OnClickTCBNewThread)
-// EVT_ENTER_WINDOW(ID_TCBResponse,        ThreadContentBar::OnClickTCBResponse)
-// EVT_ENTER_WINDOW(ID_TCBBookMark,        ThreadContentBar::OnClickTCBBookMark)
-// EVT_ENTER_WINDOW(ID_TCBDeleteLog,       ThreadContentBar::OnClickTCBDeleteLog)
-// EVT_ENTER_WINDOW(ID_TCBClose,           ThreadContentBar::OnClickTCBClose)
-// EVT_ENTER_WINDOW(ID_TCBNormalSearch,    ThreadContentBar::OnClickTCBNormalSearch)
-// EVT_ENTER_WINDOW(ID_TCBHideSearchBar,   ThreadContentBar::OnClickTCBHideSearchBar)
-// EVT_ENTER_WINDOW(ID_TCBForward,         ThreadContentBar::OnClickTCBForward)
-// EVT_ENTER_WINDOW(ID_TCBBackward,        ThreadContentBar::OnClickTCBBackward)
+   EVT_MENU(ID_TCBScrollToNewRes,  ThreadContentBar::OnClickTCBScrollToNewRes)
 END_EVENT_TABLE()
 
+// EVT_MOUSE_EVENTS(ThreadContentBar::OnHoverTCBAutoReload)
+// EVT_BUTTON(ID_TCBAutoReload, ThreadContentBar::OnClickTCBAutoReload)
+// EVT_BUTTON(ID_TCBRedResExtract, ThreadContentBar::OnClickTCBRedResExtract)
+// EVT_BUTTON(ID_TCBRefresh, ThreadContentBar::OnClickTCBRefresh)
+// EVT_BUTTON(ID_TCBStop,		   ThreadContentBar::OnClickTCBStop)
+// EVT_BUTTON(ID_TCBResExtract,	   ThreadContentBar::OnClickTCBResExtract)
+// EVT_BUTTON(ID_TCBNewThread,	   ThreadContentBar::OnClickTCBNewThread)
+// EVT_BUTTON(ID_TCBResponse,	   ThreadContentBar::OnClickTCBResponse)
+// EVT_BUTTON(ID_TCBBookMark,	   ThreadContentBar::OnClickTCBBookMark)
+// EVT_BUTTON(ID_TCBDeleteLog,	   ThreadContentBar::OnClickTCBDeleteLog)
+// EVT_BUTTON(ID_TCBClose,	   ThreadContentBar::OnClickTCBClose)
+// EVT_BUTTON(ID_TCBNormalSearch,	   ThreadContentBar::OnClickTCBNormalSearch)
+// EVT_BUTTON(ID_TCBHideSearchBar,   ThreadContentBar::OnClickTCBHideSearchBar)
+// EVT_BUTTON(ID_TCBForward,	   ThreadContentBar::OnClickTCBForward)
+// EVT_BUTTON(ID_TCBBackward,	   ThreadContentBar::OnClickTCBBackward)
 
 ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoint& pos, const wxSize& size, long style):
 wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
@@ -320,4 +319,18 @@ void ThreadContentBar::ReloadThreadContentWindow(const wxString& threadContentPa
      wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
      vbox->Add(tcw, 1, wxEXPAND | wxALL, 5);
      threadContentPanel->SetSizer(vbox);
+}
+
+/**
+ * 新着までスクロール
+ */
+void ThreadContentBar::OnClickTCBScrollToNewRes(wxCommandEvent& event) {
+
+     // TODO:とりあえず今は一番下段まで、実際は新着レスまで移動
+     int x = 0, y = 0;
+     tcw->GetVirtualSize(&x, &y);
+     wxPoint p;
+     tcw->GetHtmlWindowScrollPos(&p);
+     p.y = y - p.y;
+     tcw->ForceScroll(&p);
 }

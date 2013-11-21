@@ -98,6 +98,23 @@ private:
      // 検索ワードの履歴管理用文字列
      wxString* searchWordCombo_choices;
 
+     // 新着までスクロール
+     void OnClickTCBScrollToNewRes(wxCommandEvent& event);
+
+     /**
+      * メインのスレッドにログとイベントを送る
+      */
+     void SendLogging(wxString& message) {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
+	  event->SetString(message.c_str());
+
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+#else
+	  this->GetEventHandler()->AddPendingEvent(*event);
+#endif
+     };
+
 #ifdef __WXMAC__
      // メインのスレッドにログとイベントを送る
      void SendUIUpdateEvent() {
