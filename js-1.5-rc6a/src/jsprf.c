@@ -56,10 +56,8 @@
 */
 #ifdef HAVE_VA_COPY
    #define VARARGS_ASSIGN(foo, bar)        va_copy(foo,bar)
-#elif defined(HAVE_VA_LIST_AS_ARRAY)
-   #define VARARGS_ASSIGN(foo, bar)        foo[0] = bar[0]
 #else
-   #define VARARGS_ASSIGN(foo, bar)        (foo) = (bar)
+   #define VARARGS_ASSIGN(foo, bar)        __va_copy(foo,bar)
 #endif
 
 /*

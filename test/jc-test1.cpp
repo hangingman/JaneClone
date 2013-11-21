@@ -43,7 +43,7 @@ int JaneCloneTest1::Test1() {
 	  std::cout << (int)(*it & 0xff) << " ";
      }
 
-     std::cout << std::endl;
+     return 0;
 }
 
 int JaneCloneTest1::Test2() {
@@ -63,6 +63,6 @@ int JaneCloneTest1::Test2() {
 	  std::cout << (int)(*it & 0xff) << " ";
      }
 
-     std::cout << std::endl;
+     return 0;
 }
 
