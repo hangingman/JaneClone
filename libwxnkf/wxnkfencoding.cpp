@@ -793,12 +793,12 @@ void wxNKFEncoding::EOconv(nkf_char c2, nkf_char c1,
 		    c2 += c2 < 10 ? 0x75 : 0x8FEB;
 		    c1 = 0x21 + c1 % 94;
 		    if (is_eucg3(c2)) {
-			 oConvStr->push_back(0x8f);
-			 oConvStr->push_back((c2 & 0x7f) | 0x080);
-			 oConvStr->push_back(c1 | 0x080);
+			 oConvStr->push_back((unsigned char)0x8f);
+			 oConvStr->push_back((unsigned char)((c2 & 0x7f) | 0x080));
+			 oConvStr->push_back((unsigned char)(c1 | 0x080));
 		    } else {
-			 oConvStr->push_back((c2 & 0x7f) | 0x080);
-			 oConvStr->push_back(c1 | 0x080);
+			 oConvStr->push_back((unsigned char)((c2 & 0x7f) | 0x080));
+			 oConvStr->push_back((unsigned char)(c1 | 0x080));
 		    }
 		    return;
 	       } else {
@@ -813,14 +813,14 @@ void wxNKFEncoding::EOconv(nkf_char c2, nkf_char c1,
 	  oConvStr->push_back(EOF);
      } else if (c2 == 0) {
 	  this->outputMode = ASCII;
-	  oConvStr->push_back(c1);
+	  oConvStr->push_back((unsigned char)c1);
      } else if (c2 == JIS_X_0201_1976_K) {
 	  this->outputMode = EUC_JP;
-	  oConvStr->push_back(SS2);
-	  oConvStr->push_back(c1 | 0x80);
+	  oConvStr->push_back((unsigned char)SS2);
+	  oConvStr->push_back((unsigned char)(c1 | 0x80));
      } else if (c2 == ISO_8859_1) {
 	  this->outputMode = ISO_8859_1;
-	  oConvStr->push_back(c1 | 0x080);
+	  oConvStr->push_back((unsigned char)(c1 | 0x080));
      } else if (is_eucg3(c2)) {
 	  this->outputMode = EUC_JP;
 	  if (!nkfFlags[cp932inv_f]) {
@@ -831,12 +831,12 @@ void wxNKFEncoding::EOconv(nkf_char c2, nkf_char c1,
 	  }
 	  if (c2 == 0) {
 	       this->outputMode = ASCII;
-	       oConvStr->push_back(c1);
+	       oConvStr->push_back((unsigned char)(c1));
 	  } else if (is_eucg3(c2)) {
 	       if (nkfFlags[x0212_f]) {
-		    oConvStr->push_back(0x8f);
-		    oConvStr->push_back((c2 & 0x7f) | 0x080);
-		    oConvStr->push_back(c1 | 0x080);
+		    oConvStr->push_back((unsigned char)(0x8f));
+		    oConvStr->push_back((unsigned char)((c2 & 0x7f) | 0x080));
+		    oConvStr->push_back((unsigned char)(c1 | 0x080));
 	       }
 	  } else {
 	       oConvStr->push_back((c2 & 0x7f) | 0x080);
@@ -1039,11 +1039,11 @@ void wxNKFEncoding::WOconv16(nkf_char c2, nkf_char c1,
      if (nkfFlags[output_bom_f]) {
 	  nkfFlags[output_bom_f] = FALSE;
 	  if (this->iEndian == ENDIAN_LITTLE) {
-	       oConvStr->push_back(0xFF);
-	       oConvStr->push_back(0xFE);
+	       oConvStr->push_back((unsigned char)(0xFF));
+	       oConvStr->push_back((unsigned char)(0xFE));
 	  } else {
-	       oConvStr->push_back(0xFE);
-	       oConvStr->push_back(0xFF);
+	       oConvStr->push_back((unsigned char)(0xFE));
+	       oConvStr->push_back((unsigned char)(0xFF));
 	  }
      }
 
@@ -1161,20 +1161,20 @@ void wxNKFEncoding::WOconv32(nkf_char c2, nkf_char c1,
      if (nkfFlags[output_bom_f]) {
 	  nkfFlags[output_bom_f] = FALSE;
 	  if (this->iEndian == ENDIAN_LITTLE) {
-	       oConvStr->push_back(0xFF);
-	       oConvStr->push_back(0xFE);
-	       oConvStr->push_back(0);
-	       oConvStr->push_back(0);
+	       oConvStr->push_back((unsigned char)0xFF);
+	       oConvStr->push_back((unsigned char)0xFE);
+	       oConvStr->push_back((unsigned char)0);
+	       oConvStr->push_back((unsigned char)0);
 	  } else {
-	       oConvStr->push_back(0);
-	       oConvStr->push_back(0);
-	       oConvStr->push_back(0xFE);
-	       oConvStr->push_back(0xFF);
+	       oConvStr->push_back((unsigned char)0);
+	       oConvStr->push_back((unsigned char)0);
+	       oConvStr->push_back((unsigned char)0xFE);
+	       oConvStr->push_back((unsigned char)0xFF);
 	  }
      }
 
      if (c2 == EOF) {
-	  oConvStr->push_back(EOF);
+	  oConvStr->push_back((unsigned char)EOF);
 	  return;
      }
 

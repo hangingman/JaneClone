@@ -1337,11 +1337,11 @@ void wxNKF::CheckBom(wxInputStream* in) {
 			      wxEnc->iEndian = ENDIAN_BIG;
 			      return;
 			 }
-			 in->Ungetch(0xFF);
+			 in->Ungetch((unsigned char)0xFF);
 		    } else {
-			 in->Ungetch(c2);
+			 in->Ungetch((unsigned char)c2);
 		    }
-		    in->Ungetch(0xFE);
+		    in->Ungetch((unsigned char)0xFE);
 	       } else if (c2 == 0xFF) {
 		    if ((c2 = in->GetC()) == 0xFE) {
 			 if (!wxEnc->inputMode) {
@@ -1350,19 +1350,19 @@ void wxNKF::CheckBom(wxInputStream* in) {
 			      wxEnc->iEndian = ENDIAN_2143;
 			      return;
 			 }
-			 in->Ungetch(0xFF);
+			 in->Ungetch((unsigned char)0xFF);
 		    } else {
-			 in->Ungetch(c2);
+			 in->Ungetch((unsigned char)c2);
 		    }
-		    in->Ungetch(0xFF);
+		    in->Ungetch((unsigned char)0xFF);
 	       } else {
-		    in->Ungetch(c2);
+		    in->Ungetch((unsigned char)c2);
 	       }
-	       in->Ungetch(0x00);
+	       in->Ungetch((unsigned char)0x00);
 	  } else {
-	       in->Ungetch(c2);
+	       in->Ungetch((unsigned char)c2);
 	  }
-	  in->Ungetch(0x00);
+	  in->Ungetch((unsigned char)0x00);
 	  break;
      case 0xEF:
 	  if ((c2 = in->GetC()) == 0xBB) {
@@ -1372,13 +1372,13 @@ void wxNKF::CheckBom(wxInputStream* in) {
 			 wxEnc->inputMode = UTF_8;
 			 return;
 		    }
-		    in->Ungetch(0xBF);
+		    in->Ungetch((unsigned char)0xBF);
 	       } else
-		    in->Ungetch(c2);
-	       in->Ungetch(0xBB);
+		    in->Ungetch((unsigned char)c2);
+	       in->Ungetch((unsigned char)0xBB);
 	  } else
-	       in->Ungetch(c2);
-	  in->Ungetch(0xEF);
+	       in->Ungetch((unsigned char)c2);
+	  in->Ungetch((unsigned char)0xEF);
 	  break;
      case 0xFE:
 	  if ((c2 = in->GetC()) == 0xFF) {
@@ -1390,12 +1390,12 @@ void wxNKF::CheckBom(wxInputStream* in) {
 			      wxEnc->iEndian = ENDIAN_3412;
 			      return;
 			 }
-			 in->Ungetch(0x00);
+			 in->Ungetch((unsigned char)0x00);
 		    } else
-			 in->Ungetch(c2);
-		    in->Ungetch(0x00);
+			 in->Ungetch((unsigned char)c2);
+		    in->Ungetch((unsigned char)0x00);
 	       } else
-		    in->Ungetch(c2);
+		    in->Ungetch((unsigned char)c2);
 
 	       if (!wxEnc->inputMode) {
 		    // if input encode is not set, set UTF-8
@@ -1403,11 +1403,11 @@ void wxNKF::CheckBom(wxInputStream* in) {
 		    wxEnc->iEndian = ENDIAN_BIG;
 		    return;
 	       }
-	       in->Ungetch(0xFF);
+	       in->Ungetch((unsigned char)0xFF);
 	  } else
-	       in->Ungetch(c2);
+	       in->Ungetch((unsigned char)c2);
 
-	  in->Ungetch(0xFE);
+	  in->Ungetch((unsigned char)0xFE);
 	  break;
      case 0xFF:
 	  if ((c2 = in->GetC()) == 0xFE) {
@@ -1419,12 +1419,12 @@ void wxNKF::CheckBom(wxInputStream* in) {
 			      wxEnc->iEndian = ENDIAN_LITTLE;
 			      return;
 			 }
-			 in->Ungetch(0x00);
+			 in->Ungetch((unsigned char)0x00);
 		    } else
-			 in->Ungetch(c2);
-		    in->Ungetch(0x00);
+			 in->Ungetch((unsigned char)c2);
+		    in->Ungetch((unsigned char)0x00);
 	       } else
-		    in->Ungetch(c2);
+		    in->Ungetch((unsigned char)c2);
 
 	       if (!wxEnc->inputMode) {
 		    // if input encode is not set, set UTF-8
@@ -1432,13 +1432,13 @@ void wxNKF::CheckBom(wxInputStream* in) {
 		    wxEnc->iEndian = ENDIAN_LITTLE;
 		    return;
 	       }
-	       in->Ungetch(0xFE);
+	       in->Ungetch((unsigned char)0xFE);
 	  } else
-	       in->Ungetch(c2);
-	  in->Ungetch(0xFF);
+	       in->Ungetch((unsigned char)c2);
+	  in->Ungetch((unsigned char)0xFF);
 	  break;
      default:
-	  in->Ungetch(c2);
+	  in->Ungetch((unsigned char)c2);
 	  break;
      }
 }
