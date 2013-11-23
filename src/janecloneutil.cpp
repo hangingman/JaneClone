@@ -861,7 +861,7 @@ wxString JaneCloneUtil::DetermineContentType(const wxString& href) {
 /**
  * URIから各パラメーターを抜き取る
  */
-bool JaneCloneUtil::SubstringURI(wxString uri, PartOfURI* partOfUri) {
+bool JaneCloneUtil::SubstringURI(const wxString& uri, PartOfURI* partOfUri) {
 
      // 正規表現のコンパイルにエラーがなければ
      if (regexURI.IsValid()) {
@@ -1225,4 +1225,27 @@ wxString JaneCloneUtil::ProcessRestResponse(wxString& threadRecord, int number) 
      }
 
      return lumpOfHTML;
+}
+/**
+ * 文字列のスプリット関数(wxWidgets StringTokenizer is buggy :<)
+ * I refered here, thanks ! http://stackoverflow.com/questions/53849/how-do-i-tokenize-a-string-in-c
+ */
+void JaneCloneUtil::SplitStdString(std::vector<std::string>& theStringVector,	/* Altered/returned value */
+					  const std::string& theString,
+					  const std::string& theDelimiter)
+{
+    size_t  start = 0, end = 0;
+
+    while ( end != std::string::npos)
+    {
+        end = theString.find( theDelimiter, start);
+
+        // If at end, use length=maxLength.  Else use length=end-start.
+        theStringVector.push_back( theString.substr( start,
+                       (end == std::string::npos) ? std::string::npos : end - start));
+
+        // If at end, use start=maxSize.  Else use start=end+delimiter.
+        start = (   ( end > (std::string::npos - theDelimiter.size()) )
+                  ?  std::string::npos  :  end + theDelimiter.size());
+    }
 }

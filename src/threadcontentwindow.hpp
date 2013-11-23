@@ -124,6 +124,8 @@ private:
      void OnLeftClickHtmlWindow(wxHtmlLinkEvent& event);
      // レス番号を左クリックした時に起こるイベント
      void OnLeftClickResponseNumber(wxHtmlLinkEvent& event, const wxString& href, const long res);
+     // リンクが2chのものかどうか判定
+     void OnClickOrdinaryLink(const wxString& link);
      // レス番号を指定して書き込みウィンドウを開く
      void CallResponseWindowWithAnchor(wxCommandEvent& event);
      // レス番号を指定して書き込みウィンドウを開く

@@ -142,7 +142,7 @@ public:
      /**
       * URIから各パラメーターを抜き取る
       */
-     static bool SubstringURI(wxString uri, PartOfURI* partOfUri);
+     static bool SubstringURI(const wxString& uri, PartOfURI* partOfUri);
      /**
       * UUIDを生成する
       */
@@ -192,8 +192,13 @@ public:
       * スレッドの１以降を処理するメソッド
       */
      static wxString ProcessRestResponse(wxString& threadRecord, int number);
-
-
+     /**
+      * 文字列のスプリット関数(wxWidgets StringTokenizer is buggy :<)
+      * I refered here, thanks ! http://stackoverflow.com/questions/53849/how-do-i-tokenize-a-string-in-c
+      */
+     static void SplitStdString(std::vector<std::string> & theStringVector,  /* Altered/returned value */
+				const std::string& theString,
+				const std::string& theDelimiter);
 
 private:
 

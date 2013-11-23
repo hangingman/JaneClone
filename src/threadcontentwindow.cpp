@@ -399,8 +399,8 @@ void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
 		    OnLeftClickResponseNumber(event, href, res);
 	       }
 	  } else {
-	       // マッチしなければそのままデフォルトのブラウザで開く
-	       wxLaunchDefaultBrowser(href);
+	       // 通常のリンクかどうか判定して処理
+	       OnClickOrdinaryLink(href);
 	  }
      }
 }
@@ -446,6 +446,154 @@ void ThreadContentWindow::OnLeftClickResponseNumber(wxHtmlLinkEvent& event, cons
 
      // ポップアップメニューを表示させる
      PopupMenu(response);
+}
+/**
+ * リンクが2chのものかどうか判定
+ */
+void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link) {
+
+     // デフォルトのブラウザを使用するかどうか
+     bool useDefaultBrowser = true;
+     // URLからホスト名を取得する
+     PartOfURI uri;
+     bool ret = JaneCloneUtil::SubstringURI(link, &uri);
+     
+     if (ret) {
+	  if (uri.hostname.Contains(wxT("2ch.net"))) useDefaultBrowser = false;
+     } else {
+	  // エラー、とりあえずブラウザで開く
+	  useDefaultBrowser = true;
+     }
+
+     if (useDefaultBrowser) {
+	  wxLaunchDefaultBrowser(link);
+     } else {
+	  // 板の場合：      http://anago.2ch.net/software
+	  // スレッドの場合：http://anago.2ch.net/test/read.cgi/software/1365347301
+	  // レス番まで指定：http://anago.2ch.net/test/read.cgi/software/1365347301/369
+
+	  /** どちらにせよスレッドの名前を取得しなくてはいけないため、板でもスレッドでも
+	   *  まず、板一覧を取得してその後にスレッドを取得する。*/
+	  wxString path    = uri.path;
+	  wxString host    = uri.hostname;
+	  wxString rest    = wxEmptyString;
+	  bool urlIsThread = false;
+	  if (path.StartsWith(wxT("/test/read.cgi/"), &rest)) urlIsThread = true;
+
+	  // 文字列を分割する(StringTokenizerはなぜか使用できない...バグってる？)
+	  std::vector<std::string> container;
+	  JaneCloneUtil::SplitStdString(container, std::string(path.mb_str()), "/");
+
+	  wxString boardName;      // 板名
+	  wxString boardURL; 	   // URLを保持する文字列
+	  wxString boardNameAscii; // サーバー名を保持する文字列
+	  wxString origNumber;     // スレッドの固有番号
+	  wxString title;          // スレッドの名前
+
+	  if (urlIsThread) {
+	       if (container.size() < 4) {
+		    // ERROR
+		    wxLaunchDefaultBrowser(link);
+		    return;
+	       }
+	       
+	       boardNameAscii = wxString(container.at(3).c_str(), wxConvUTF8);
+	       boardURL       = wxT("http://") + host + wxT("/") + boardNameAscii;
+	       origNumber     = wxString(container.at(4).c_str(), wxConvUTF8);
+
+	  } else {
+	       if (container.size() < 1) {
+		    // ERROR
+		    wxLaunchDefaultBrowser(link);
+		    return;
+	       }
+	       boardNameAscii = wxString(container.at(1).c_str(), wxConvUTF8);
+	       boardURL       = wxT("http://") + host + wxT("/") + boardNameAscii;
+	  }
+
+	  if (wxWindow* grand = this->GetGrandParent()) {
+
+	       wxAuiNotebook* threadNoteBook = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(THREAD_NOTEBOOK));
+	       wxAuiNotebook* boardNoteBook  = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(BOARD_NOTEBOOK));
+	       wxTextCtrl*    m_logCtrl      = dynamic_cast<wxTextCtrl*>(grand->FindWindowByLabel(LOG_WINDOW));
+
+	       if (threadNoteBook && boardNoteBook) {
+		    // 必要な構造体を宣言する
+		    ThreadInfo threadInfoHash;
+		    URLvsBoardName boardInfoHash;
+	       
+		    if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(boardNoteBook->GetParent())) {
+
+			 // ハッシュから板名を探す
+			 NameURLHash::iterator it;
+			 for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it) {
+			      wxString key  = it->first;
+			      boardInfoHash = it->second;
+
+			      if (boardInfoHash.boardNameAscii == boardNameAscii) {
+				   boardName = boardInfoHash.boardName;
+				   break;
+			      }
+			 }
+
+			 // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
+			 wxJaneClone->SetBoardNameToNoteBook(boardName, boardURL, boardNameAscii);
+			 if (!urlIsThread) return; // スレッドでないならここで終了
+
+			 // スレッドタイトルを取得するため、リストコントロールを引き出してくる
+			 VirtualBoardListCtrl* vbListCtrl = 
+			      dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardInfoHash.boardName));
+			 if (vbListCtrl == NULL) {
+			      // ERROR
+			      wxLaunchDefaultBrowser(link);
+			      return;
+			 }
+
+			 // STLで見つけてやる.ラムダ式など使ってみる.
+			 std::vector<VirtualBoardListItem>::iterator it2 = 
+			      std::find_if(vbListCtrl->m_vBoardList.begin(), 
+					   vbListCtrl->m_vBoardList.end(),
+					   [&origNumber] (const VirtualBoardListItem& item) -> bool {
+						return item.getOid() == origNumber;
+					   });
+
+			 if (it2 != vbListCtrl->m_vBoardList.end()) {
+
+			      // タイトル取得
+			      const wxString title = (*it2).getTitle();
+ 
+			      // ソケット通信を行う
+			      SocketCommunication* sock = new SocketCommunication();
+			      const wxString threadContentPath = sock->DownloadThread(boardName, 
+										      boardURL, 
+										      boardNameAscii, 
+										      origNumber);
+			      delete sock;
+			      // 無事に通信が終了したならばステータスバーに表示
+			      wxJaneClone->SetStatusText(wxT(" スレッドのダウンロード終了"));
+
+			      // スレッドの内容をノートブックに反映する
+			      wxJaneClone->SetThreadContentToNoteBook(threadContentPath, origNumber, title);
+			      // ノートブックに登録されたスレッド情報をハッシュに登録する
+			      ThreadInfoHash tiHash;
+			      wxJaneClone->GetThreadInfoHash(tiHash);
+
+			      ThreadInfo info;
+			      info.origNumber = origNumber;
+			      info.boardNameAscii = boardNameAscii;
+			      tiHash[title] = info;
+
+			      wxJaneClone->SetThreadInfoHash(tiHash);
+
+			 } else {
+			      // ERROR
+			      wxLaunchDefaultBrowser(link);
+			      return;
+			 }
+		    }
+	       }
+	  }  
+     }
 }
 /*
  * レス番号を指定して書き込みウィンドウを開く

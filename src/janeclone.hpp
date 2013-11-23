@@ -100,7 +100,13 @@ public:
      JaneClone(wxWindow* parent, int id, const wxString& title,
 	       const wxPoint& pos = wxDefaultPosition, const wxSize& size =
 	       wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
+
      ~JaneClone();
+
+     // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
+     void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii);
+     // スレッド一覧をクリックすると、それをスレ表示画面に反映するメソッド
+     void SetThreadContentToNoteBook(const wxString&, const wxString&, const wxString&);
 
      // HashMapの本体
      NameURLHash retainHash;
@@ -331,8 +337,6 @@ private:
      /**
       * 右上のオブジェクトとメソッド
       */
-     // 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
-     void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii);
      // ノートブックに反映する際のコールバック
      void SetThreadListItemNew( wxString boardName, wxString outputPath, size_t selectedPage, 
 				const std::map<wxString,ThreadList>& oldThreadMap);
@@ -356,8 +360,6 @@ private:
       * 右下のオブジェクトとメソッド
       */
 
-     // スレッド一覧をクリックすると、それをスレ表示画面に反映するメソッド
-     void SetThreadContentToNoteBook(const wxString&, const wxString&, const wxString&);
      // ユーザーがタブに保持しているスレッドの情報を保存するHashSet
      ThreadInfoHash tiHash;
 
@@ -365,7 +367,11 @@ public:
      /**
       * 現在JaneCloneが保持しているスレッド情報を取得する
       */
-     void GetThreadInfoHash(ThreadInfoHash& tiHash);
+     void GetThreadInfoHash(ThreadInfoHash& threadInfoHash);
+     /**
+      * 現在JaneCloneが保持しているスレッド情報を設定する
+      */
+     void SetThreadInfoHash(ThreadInfoHash& threadInfoHash);
 
 private:
      /**

@@ -181,9 +181,17 @@ JaneCloneImageViewer* JaneClone::GetJaneCloneImageViewer () {
  * 現在JaneCloneが保持しているスレッド情報を取得する
  */
 void JaneClone::GetThreadInfoHash(ThreadInfoHash& threadInfoHash) {
-
-     if (!tiHash.empty()) {
-	  threadInfoHash = ThreadInfoHash(tiHash);
+     if (!this->tiHash.empty()) {
+	  threadInfoHash = ThreadInfoHash(this->tiHash); // copy
+     }
+}
+/**
+ * 現在JaneCloneが保持しているスレッド情報を設定する
+ */
+void JaneClone::SetThreadInfoHash(ThreadInfoHash& threadInfoHash) {
+     if (!threadInfoHash.empty()) {
+	  this->tiHash.clear();          // delete
+	  this->tiHash = threadInfoHash; // copy
      }
 }
 
