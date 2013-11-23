@@ -119,13 +119,16 @@ public:
 private:
 
      // begin wxGlade: JaneClone::methods
-     // イベントテーブル系
+
+     // メニュー上のイベント
      void OnQuit(wxCommandEvent& event);
      void OnAbout(wxCommandEvent& event);
      void OnRestart(wxCommandEvent& event);
      void OnGetBoardList(wxCommandEvent& event);
      void CheckLogDirectory(wxCommandEvent& event);
      void OnVersionInfo(wxCommandEvent& event);
+     void AddThreadFavorite(wxCommandEvent& event);
+     void DelThreadFavorite(wxCommandEvent& event);
 
      // JaneClone公式サイトをブラウザで開く
      void OnOpenJaneCloneOfficial(wxCommandEvent& event) {

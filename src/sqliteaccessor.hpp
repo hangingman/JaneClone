@@ -100,20 +100,20 @@ public:
       */
      static wxArrayString GetUserFavoriteThreadList();
      /**
-      * スレタブを閉じた際に情報をSQLiteに格納する
+      * スレタブの情報をSQLiteに格納する
       */
-     static void SetClosedThreadInfo(ThreadInfo* t);
+     static void SetThreadInfo(ThreadInfo* t, const wxWindowID id = wxID_ANY);
      /**
       * 最近閉じたスレッドタブ名を取得する
       */
-     static wxArrayString GetClosedThreadInfo();
+     static wxArrayString GetThreadInfo(const wxWindowID id = wxID_ANY);
      /**
       * スレッドタブ情報を取得する
       * @param number     メニューリストの何番目にあるか
       * @param threadInfo スレッド情報格納用クラス
       * @param id         イベントID
       */
-     static void GetClosedThreadFullInfo(const int number, ThreadInfo* threadInfo, const wxWindowID id);
+     static void GetThreadFullInfo(const int number, ThreadInfo* threadInfo, const wxWindowID id);
      /**
       * 板タブを閉じた際に情報をSQLiteに格納する
       */

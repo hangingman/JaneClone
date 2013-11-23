@@ -448,14 +448,23 @@ wxArrayString SQLiteAccessor::GetUserFavoriteThreadList() {
      return array;
 }
 /**
- * スレタブを閉じた際に情報をSQLiteに格納する
+ * スレタブの情報をSQLiteに格納する
  */
-void SQLiteAccessor::SetClosedThreadInfo(ThreadInfo* t) {
+void SQLiteAccessor::SetThreadInfo(ThreadInfo* t, const wxWindowID id) {
 
-     // ユーザが閉じたスレッドのうち、データベースに保存されている数
-     int userClosedThreadListNum = SQLiteAccessor::HowManyRecord(wxT("USER_CLOSED_THREADLIST"));
      // 現在時間timestamp
      wxDateTime now = wxDateTime::Now();
+
+     // テーブル名の決定
+     wxString tableName = wxEmptyString;
+     if ( id == wxID_ANY) {
+	  tableName = wxT("USER_CLOSED_THREADLIST");
+     } else if ( id == ID_AddThreadFavorite) {
+	  tableName = wxT("USER_FAVORITE_THREADLIST");
+     } else {
+	  // ERROR
+	  return;
+     }
 
      // dbファイルの初期化
      wxString dbFile = GetDBFilePath();
@@ -466,8 +475,10 @@ void SQLiteAccessor::SetClosedThreadInfo(ThreadInfo* t) {
 	  db.Open(dbFile);
 	  db.Begin();
 	  /** 閉じられたスレタブの情報をインサート */
-	  const wxString sqlIn = 
-	       wxT("INSERT INTO USER_CLOSED_THREADLIST(TIMEINFO, THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII) VALUES (?,?,?,?)");
+	  const wxString sqlIn = wxT("INSERT INTO ")
+	       + tableName
+	       + wxT(" (TIMEINFO, THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII ) VALUES (?,?,?,?)");
+
 	  wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
 	  stmt.ClearBindings();
 	  stmt.BindTimestamp(1, now);
@@ -565,11 +576,22 @@ void SQLiteAccessor::SetClosedBoardInfo(URLvsBoardName* hash) {
 /**
  * 最近閉じたスレタブ名リストを取得する
  */
-wxArrayString SQLiteAccessor::GetClosedThreadInfo() {
+wxArrayString SQLiteAccessor::GetThreadInfo(const wxWindowID id) {
 
      // dbファイルの初期化
      wxString dbFile = GetDBFilePath();
      wxArrayString array;
+
+     // テーブル名の決定
+     wxString tableName;
+     if (id == wxID_ANY) {
+	  tableName = wxT("USER_CLOSED_THREADLIST");
+     } else if (id == ID_UserFavoriteThreadClick) {
+	  tableName = wxT("USER_FAVORITE_THREADLIST");
+     } else {
+	  // ERROR
+	  return array;
+     }
 
      try {
 	  
@@ -580,7 +602,9 @@ wxArrayString SQLiteAccessor::GetClosedThreadInfo() {
 	  // リザルトセットを用意する
 	  wxSQLite3ResultSet rs;
 	  // SQL文を用意する
-	  wxString SQL_QUERY = wxT("SELECT THREAD_TITLE from USER_CLOSED_THREADLIST order by timeinfo desc limit 16");
+	  wxString SQL_QUERY = wxT("SELECT THREAD_TITLE from ")
+	       + tableName
+	       + wxT(" order by timeinfo desc limit 16");
 
 	  // SQL文を実行する
 	  rs = db.ExecuteQuery(SQL_QUERY);
@@ -606,7 +630,7 @@ wxArrayString SQLiteAccessor::GetClosedThreadInfo() {
 /**
  * 最近閉じたスレッドタブ情報を取得する
  */
-void SQLiteAccessor::GetClosedThreadFullInfo(const int number, ThreadInfo* threadInfo, const wxWindowID id) {
+void SQLiteAccessor::GetThreadFullInfo(const int number, ThreadInfo* threadInfo, const wxWindowID id) {
 
      // dbファイルの初期化
      wxString dbFile = GetDBFilePath();

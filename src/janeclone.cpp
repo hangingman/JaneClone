@@ -60,6 +60,8 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_CallResponseWindow, JaneClone::CallResponseWindow)
    EVT_MENU(ID_OnOpenJaneCloneOfficial, JaneClone::OnOpenJaneCloneOfficial)
    EVT_MENU(ID_OnOpen2chViewerOfficial, JaneClone::OnOpen2chViewerOfficial)
+   EVT_MENU(ID_AddThreadFavorite, JaneClone::AddThreadFavorite)
+   EVT_MENU(ID_DelThreadFavorite, JaneClone::DelThreadFavorite)
    EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
    EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
    EVT_MENU_RANGE(ID_UserFavoriteThreadClick,   ID_UserFavoriteThreadClick   + 99, JaneClone::OnUserFavoriteThreadClick)
@@ -317,8 +319,8 @@ void JaneClone::SetJaneCloneManuBar() {
      menu4->Append(wxID_ANY, wxT("選択中のスレをタブロック"));
      menu4->Append(wxID_ANY, wxT("既読にする"));
      menu4->Append(wxID_ANY, wxT("印を付ける"));
-     menu4->Append(wxID_ANY, wxT("お気に入りに追加"));
-     menu4->Append(wxID_ANY, wxT("お気に入りを削除"));
+     menu4->Append(ID_AddThreadFavorite, wxT("お気に入りに追加"));
+     menu4->Append(ID_DelThreadFavorite, wxT("お気に入りを削除"));
      menu4->AppendSeparator();
      menu4->Append(ID_ReloadOneBoard, wxT("スレ一覧更新"));
      menu4->Append(wxID_ANY, wxT("すべてのタブのスレ一覧更新"));
@@ -409,7 +411,7 @@ void JaneClone::SetJaneCloneManuBar() {
      menu5->AppendSeparator();
      menu5->Append(wxID_ANY, wxT("印を付ける"));
      wxMenu *addFav = new wxMenu;
-     addFav->Append(wxID_ANY, wxT("「お気に入り」に追加"));
+     addFav->Append(ID_AddThreadFavorite, wxT("「お気に入り」に追加"));
      addFav->AppendSeparator();
      addFav->Append(wxID_ANY, wxT("「リンク」に追加"));
      menu5->AppendSubMenu(addFav, wxT("お気に入りに追加"));
@@ -493,8 +495,7 @@ void JaneClone::SetJaneCloneManuBar() {
      menu6->Append(wxID_ANY, wxT("このフォルダを開く"));
      menu6->AppendSeparator();
 
-     // ユーザが閉じたスレッドのうち、データベースに保存されている数
-     wxArrayString array = SQLiteAccessor::GetUserFavoriteThreadList();
+     wxArrayString array = SQLiteAccessor::GetThreadInfo(ID_UserFavoriteThreadClick);
      if ( array.GetCount() == 0 ) {
           menu6->Append(wxID_ANY, wxT("お気に入りのスレッドがないよ"));
      } else {
@@ -1376,7 +1377,7 @@ void JaneClone::OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event) {
      t.title = title;
      t.origNumber = origNumber;
      t.boardNameAscii = tiHash[title].boardNameAscii;
-     SQLiteAccessor::SetClosedThreadInfo(&t);
+     SQLiteAccessor::SetThreadInfo(&t);
      // ハッシュからタイトルのキーを持つデータを削除
      tiHash.erase(title);
 }
@@ -2330,6 +2331,30 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
      Destroy();
 }
 /**
+ * お気に入りに追加
+ */
+void JaneClone::AddThreadFavorite(wxCommandEvent& event) {
+
+     // 消されようとしているタブのタイトルを取得
+     wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+     // 固有番号を取得
+     wxString origNumber = tiHash[title].origNumber;
+     // スレッドの情報をSQLiteに格納する
+     ThreadInfo t;
+     t.title = title;
+     t.origNumber = origNumber;
+     t.boardNameAscii = tiHash[title].boardNameAscii;
+     SQLiteAccessor::SetThreadInfo(&t, event.GetId());
+
+     wxString message = wxT("「") + title + wxT("」をお気に入りに追加") + wxT("（  ´ん｀）");
+     SendLogging(message);
+}
+/**
+ * お気に入りを削除
+ */
+void JaneClone::DelThreadFavorite(wxCommandEvent& event) {
+}
+/**
  * 板一覧リストでのクリック時のイベント
  */
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
@@ -2477,7 +2502,7 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
      boardTabUtil->AppendSeparator();
 
      wxMenu* addFav = new wxMenu();
-     addFav->Append(wxID_ANY, wxT("「お気に入り」に追加"));
+     addFav->Append(ID_AddThreadFavorite, wxT("「お気に入り」に追加"));
      addFav->AppendSeparator();
      addFav->Append(wxID_ANY, wxT("「リンク」に追加"));
      boardTabUtil->AppendSubMenu(addFav, wxT("お気に入りに追加"));
@@ -2546,7 +2571,7 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
      threadTabUtil->Append(wxID_ANY, wxT("印を付ける"));
 
      wxMenu* addFav = new wxMenu();
-     addFav->Append(wxID_ANY, wxT("「お気に入り」に追加"));
+     addFav->Append(ID_AddThreadFavorite, wxT("「お気に入り」に追加"));
      addFav->AppendSeparator();
      addFav->Append(wxID_ANY, wxT("「リンク」に追加"));
      threadTabUtil->AppendSubMenu(addFav, wxT("お気に入りに追加"));
@@ -2858,6 +2883,50 @@ void JaneClone::OnClickURLWindowButton(wxCommandEvent& event) {
  * メニューアイテムが開かれた場合呼ばれるイベント
  */
 void JaneClone::OnMenuOpen(wxMenuEvent& event) {
+
+     wxMenu* menu = event.GetMenu();
+     wxString menuTitle = menu->GetTitle();
+
+     if (menuTitle == wxT("お気に入り")) {
+
+	  wxMenuItemList itemList = menu->GetMenuItems();
+	  wxArrayString  array    = SQLiteAccessor::GetThreadInfo(ID_UserFavoriteThreadClick);
+
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxMenuItemList::compatibility_iterator current_menuitem_node;
+#else
+	  wxMenuItemList::Node* current_menuitem_node;
+#endif
+	  wxMenuItem* current_menuitem;
+	  if ( itemList.GetLast() ) {
+	       // そもそも要素があるかどうかチェック
+	       while ( current_menuitem_node = menu->GetMenuItems().GetLast() ) {
+		    
+#if wxCHECK_VERSION(2, 9, 0)
+		    current_menuitem = current_menuitem_node.GetData();
+#else
+		    current_menuitem = current_menuitem_node->GetData();
+#endif
+		    if (!current_menuitem->IsSeparator()) {
+		    	 // menuの区切りでなければ削除する
+			 menu->Delete( current_menuitem );
+		    } else {
+		    	 // そうでなければ削除は終わりなので脱出
+		    	 break;
+		    }
+	       }
+
+	       // 取得した値をメニューに設定する
+	       if ( array.GetCount() == 0 ) {
+		    menu->Append(wxID_ANY, wxT("お気に入りのスレッドがないよ"));
+	       } else {
+		    for (unsigned int i = 0; i < array.GetCount(); i++ ) {
+			 menu->Append(ID_UserFavoriteThreadClick + i, array[i]);
+		    }
+	       }
+	  }
+     }
+
      event.Skip();
 }
 /**
@@ -2977,7 +3046,7 @@ void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
 	       }
 	  }
 	  // ユーザが閉じたスレッドのうち、データベースに保存されている数
-	  wxArrayString array = SQLiteAccessor::GetClosedThreadInfo();
+	  wxArrayString array = SQLiteAccessor::GetThreadInfo();
 	  if ( array.GetCount() == 0 ) {
 	       closeT->Append(wxID_ANY, wxT("過去に閉じたスレッドがないよ"));
 	       return;
@@ -2996,7 +3065,7 @@ void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
      // メニューアイテムの項目番号を取得する
      const int number = event.GetId() - ID_UserLastClosedThreadClick;
      ThreadInfo* threadInfo = new ThreadInfo();
-     SQLiteAccessor::GetClosedThreadFullInfo(number, threadInfo, event.GetId());
+     SQLiteAccessor::GetThreadFullInfo(number, threadInfo, event.GetId());
 
      if (!threadInfo) {
 	  // 無ければ警告を出して終了
@@ -3035,7 +3104,7 @@ void JaneClone::OnUserFavoriteThreadClick(wxCommandEvent& event) {
      // メニューアイテムの項目番号を取得する
      const int number = event.GetId() - ID_UserFavoriteThreadClick;
      ThreadInfo* threadInfo = new ThreadInfo();
-     SQLiteAccessor::GetClosedThreadFullInfo(number, threadInfo, event.GetId());
+     SQLiteAccessor::GetThreadFullInfo(number, threadInfo, event.GetId());
 
      if (!threadInfo) {
 	  // 無ければ警告を出して終了
