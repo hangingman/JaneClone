@@ -272,6 +272,7 @@ enum JANECLONE_ENUMS {
      #undef X
      ID_UserLastClosedThreadClick = 1000,  // ユーザーが最後に閉じたスレッドの情報をクリックした(動的なIDのため1000~)
      ID_UserLastClosedBoardClick  = 1100,  // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)     
+     ID_UserFavoriteThreadClick   = 1200,  // ユーザーがお気に入りに登録したスレッドの情報をクリックした(動的なIDのため1200~)
      ID_ThreadContentBar  = 1500           // ThreadContentBar自体のID(動的なIDのため1500~)
 };
 

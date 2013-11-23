@@ -62,7 +62,8 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_OnOpen2chViewerOfficial, JaneClone::OnOpen2chViewerOfficial)
    EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
    EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
-    
+   EVT_MENU_RANGE(ID_UserFavoriteThreadClick,   ID_UserFavoriteThreadClick   + 99, JaneClone::OnUserFavoriteThreadClick)
+
    // メニューバーからスレッド一覧リストをソート
    EVT_MENU(ID_OnClickMenuCOL_CHK,      JaneClone::OnThreadListSort)
    EVT_MENU(ID_OnClickMenuCOL_NUM,      JaneClone::OnThreadListSort)
@@ -489,8 +490,18 @@ void JaneClone::SetJaneCloneManuBar() {
       * お気に入り部分
       */
      wxMenu *menu6 = new wxMenu;
+     menu6->Append(wxID_ANY, wxT("このフォルダを開く"));
+     menu6->AppendSeparator();
 
-     // ！ここはお気に入りスレッドを動的に確保する！
+     // ユーザが閉じたスレッドのうち、データベースに保存されている数
+     wxArrayString array = SQLiteAccessor::GetUserFavoriteThreadList();
+     if ( array.GetCount() == 0 ) {
+          menu6->Append(wxID_ANY, wxT("お気に入りのスレッドがないよ"));
+     } else {
+	  for (unsigned int i = 0; i < array.GetCount(); i++ ) {
+	       menu6->Append(ID_UserFavoriteThreadClick + i, array[i]);
+	  }
+     }      
 
      /**
       * 検索部分
@@ -2985,7 +2996,7 @@ void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
      // メニューアイテムの項目番号を取得する
      const int number = event.GetId() - ID_UserLastClosedThreadClick;
      ThreadInfo* threadInfo = new ThreadInfo();
-     SQLiteAccessor::GetClosedThreadFullInfo(number, threadInfo);
+     SQLiteAccessor::GetClosedThreadFullInfo(number, threadInfo, event.GetId());
 
      if (!threadInfo) {
 	  // 無ければ警告を出して終了
@@ -3002,6 +3013,45 @@ void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
      if (!wxFile::Exists(threadContentPath)) {
 	  // 無ければ警告を出して次へ
 	  wxMessageBox(wxT("前回読み込んでいたdatファイルの読み出しに失敗しました\n\
+                            datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
+	  delete threadInfo;
+	  return;
+     }
+
+     // スレッドの内容をノートブックに反映する
+     SetThreadContentToNoteBook(threadContentPath, threadInfo->origNumber, threadInfo->title);
+     // ノートブックに登録されたスレッド情報をハッシュに登録する
+     ThreadInfo info;
+     info.origNumber = threadInfo->origNumber;
+     info.boardNameAscii = threadInfo->boardNameAscii;
+     tiHash[threadInfo->title] = info;
+     delete threadInfo;
+}
+/**
+ * ユーザーがお気に入り登録したスレッドを開く
+ */
+void JaneClone::OnUserFavoriteThreadClick(wxCommandEvent& event) {
+
+     // メニューアイテムの項目番号を取得する
+     const int number = event.GetId() - ID_UserFavoriteThreadClick;
+     ThreadInfo* threadInfo = new ThreadInfo();
+     SQLiteAccessor::GetClosedThreadFullInfo(number, threadInfo, event.GetId());
+
+     if (!threadInfo) {
+	  // 無ければ警告を出して終了
+	  wxMessageBox(wxT("お気に入り登録されたdatファイルの読み出しに失敗しました\n\
+                            datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
+	  delete threadInfo;
+	  return;
+     }
+
+     // ファイルパスの組み立てとファイルの有無確認
+     wxString threadContentPath = JaneCloneUtil::AssembleFilePath(threadInfo->boardNameAscii, threadInfo->origNumber);
+
+     // ファイルの有無確認
+     if (!wxFile::Exists(threadContentPath)) {
+	  // 無ければ警告を出して次へ
+	  wxMessageBox(wxT("お気に入り登録されたdatファイルの読み出しに失敗しました\n\
                             datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
 	  delete threadInfo;
 	  return;

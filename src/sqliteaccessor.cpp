@@ -44,6 +44,7 @@ SQLiteAccessor::SQLiteAccessor() {
 	  // ユーザーが最近閉じたタブについての情報
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_CLOSED_BOARDLIST(TIMEINFO TIMESTAMP, BOARDNAME_KANJI TEXT, BOARD_URL TEXT, BOARDNAME_ASCII TEXT)"));
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_CLOSED_THREADLIST(TIMEINFO TIMESTAMP, THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_FAVORITE_THREADLIST(TIMEINFO TIMESTAMP, THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
 	  // ユーザーが検索したキーワードを保存する(板一覧ツリー、スレッド一覧リスト、スレッド表示ウィンドウでの検索)
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_SEARCHED_BOARDNAME(TIMEINFO TIMESTAMP, KEYWORD TEXT)"));
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_SEARCHED_THREADNAME(TIMEINFO TIMESTAMP, KEYWORD TEXT)"));
@@ -376,6 +377,77 @@ wxArrayString SQLiteAccessor::GetUserLookedThreadList() {
      return array;
 }
 /**
+ * ユーザーがスレッドの情報をお気に入りに登録する
+ */
+void SQLiteAccessor::SetUserFavoriteThreadList(wxArrayString& userFavoriteThreadListArray) {
+
+     // Tableの中身を削除する
+     DeleteTableData(wxT("USER_FAVORITE_THREADLIST"));
+
+     // dbファイルの初期化
+     wxString dbFile = GetDBFilePath();
+     wxSQLite3Database::InitializeSQLite();
+     wxSQLite3Database db;
+     db.Open(dbFile);
+     db.Begin();
+
+     // PreparedStatementを準備する
+     const wxString sqlIn 
+	  = wxT("insert into USER_FAVORITE_THREADLIST (THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII) VALUES (?, ?, ?)");
+     wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+
+     // 配列内のレコードを追加する
+     for (unsigned int i = 0; i < userFavoriteThreadListArray.GetCount();i+=3) {
+	  // レコードを追加する
+	  stmt.ClearBindings();
+	  stmt.Bind(1, userFavoriteThreadListArray.Item(i));
+	  stmt.Bind(2, userFavoriteThreadListArray.Item(i+1));
+	  stmt.Bind(3, userFavoriteThreadListArray.Item(i+2));
+	  stmt.ExecuteUpdate();
+     }
+     // コミット実行
+     db.Commit();
+     db.Close();
+     
+}
+/**
+ * ユーザーがお気に入りに登録しているスレッドの情報を取得する
+ */
+wxArrayString SQLiteAccessor::GetUserFavoriteThreadList() {
+
+     // dbファイルの初期化
+     wxString dbFile = GetDBFilePath();
+     wxSQLite3Database::InitializeSQLite();
+     wxSQLite3Database db;
+     db.Open(dbFile);
+
+     // リザルトセットを用意する
+     wxSQLite3ResultSet rs;
+     // SQL文を用意する
+     wxString sqlSe = wxT("select THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII from USER_FAVORITE_THREADLIST");
+
+     // SQL文を実行する
+     rs = db.ExecuteQuery(sqlSe);
+     db.Close();
+     
+     // リザルトセットをArrayStringに設定する
+     wxArrayString array;
+
+     while (rs.NextRow()) {
+	  wxString title = rs.GetAsString(wxT("THREAD_TITLE"));
+	  wxString origNumber = rs.GetAsString(wxT("THREAD_ORIG_NUM"));
+	  wxString boardNameAscii = rs.GetAsString(wxT("BOARDNAME_ASCII"));
+
+	  // 各項目がNULLで無ければArrayStringに詰める
+	  if (title.Len() > 0 && origNumber.Len() > 0 && boardNameAscii.Len() > 0) {
+	       array.Add(title);
+	       array.Add(origNumber);
+	       array.Add(boardNameAscii);
+	  }
+     }
+     return array;
+}
+/**
  * スレタブを閉じた際に情報をSQLiteに格納する
  */
 void SQLiteAccessor::SetClosedThreadInfo(ThreadInfo* t) {
@@ -534,11 +606,22 @@ wxArrayString SQLiteAccessor::GetClosedThreadInfo() {
 /**
  * 最近閉じたスレッドタブ情報を取得する
  */
-void SQLiteAccessor::GetClosedThreadFullInfo(const int number, ThreadInfo* threadInfo) {
+void SQLiteAccessor::GetClosedThreadFullInfo(const int number, ThreadInfo* threadInfo, const wxWindowID id) {
 
      // dbファイルの初期化
      wxString dbFile = GetDBFilePath();
      wxArrayString array;
+
+     // テーブル名の決定
+     wxString tableName;
+     if (1000 <= id && id < 1100) {
+	  tableName = wxT("USER_CLOSED_THREADLIST");
+     } else if (1200 <= id && id < 1300) {
+	  tableName = wxT("USER_FAVORITE_THREADLIST");
+     } else {
+	  // ERROR
+	  return;
+     }
 
      try {
 	  
@@ -550,7 +633,9 @@ void SQLiteAccessor::GetClosedThreadFullInfo(const int number, ThreadInfo* threa
 	  wxSQLite3ResultSet rs;
 	  // SQL文を用意する
 	  const wxString SQL_QUERY = 
-	         wxT("SELECT THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII from USER_CLOSED_THREADLIST limit 1 offset ")
+	       wxT("SELECT THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII from ") 
+	       + tableName
+	       + wxT(" limit 1 offset ")
 	       + wxString::Format(wxT("%d"), number);
 
 	  // SQL文を実行する

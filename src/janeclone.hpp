@@ -184,6 +184,8 @@ private:
      void OnUserLastClosedBoardClick(wxCommandEvent& event);
      // ユーザーが最後に閉じたスレッドを開く
      void OnUserLastClosedThreadClick(wxCommandEvent& event);
+     // ユーザーがお気に入り登録したスレッドを開く
+     void OnUserFavoriteThreadClick(wxCommandEvent& event);
 
      // 動的に要素を確保するメニュー
      wxMenu* closeT;
