@@ -375,7 +375,7 @@ package-osx-intel64-dmg:
 prepare-package: package-clean
 	@echo 'create working directory...'
 	mkdir $(top_builddir)/extras
-	Mkdir $(top_builddir)/extras/package
+	mkdir $(top_builddir)/extras/package
 # check NSIS
 	@echo 'check NSIS...'
 	@if makensis -VERSION >/dev/null 2>&1; then \
