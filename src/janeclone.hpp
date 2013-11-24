@@ -219,6 +219,7 @@ private:
      void AllRightBoardTabClose(wxCommandEvent& event);
      void OnOpenBoardByBrowser(wxCommandEvent& event);
      void ReloadOneBoard(wxCommandEvent& event);
+     void ReloadAllBoard(wxCommandEvent& event);
      void CopyBURLToClipBoard(wxCommandEvent& event);
      void CopyBTitleToClipBoard(wxCommandEvent& event);
      void CopyBBothDataToClipBoard(wxCommandEvent& event);

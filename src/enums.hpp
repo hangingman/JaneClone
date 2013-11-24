@@ -51,6 +51,7 @@ X_TABLE_ITEM(ID_AllLeftBoardTabClose)		/* これより左のスレッド一覧�
 X_TABLE_ITEM(ID_AllRightBoardTabClose)		/* これより右のスレッド一覧タブを閉じる				*/ \
 X_TABLE_ITEM(ID_OnOpenBoardByBrowser)		/* スレッド一覧をブラウザで開く					*/ \
 X_TABLE_ITEM(ID_ReloadOneBoard)			/* アクティブなスレッド一覧をひとつ更新する			*/ \
+X_TABLE_ITEM(ID_ReloadAllBoard)			/* すべてのタブのスレッド一覧を更新する　　　			*/ \
 X_TABLE_ITEM(ID_CopyBURLToClipBoard)		/* 板のURLをクリップボードにコピーする				*/ \
 X_TABLE_ITEM(ID_CopyBTitleToClipBoard)		/* 板のタイトルをクリップボードにコピーする			*/ \
 X_TABLE_ITEM(ID_CopyBBothDataToClipBoard)	/* 板のURLとタイトルをクリップボードにコピーする		*/ \

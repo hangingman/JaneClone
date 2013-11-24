@@ -41,6 +41,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_AllRightBoardTabClose, JaneClone::AllRightBoardTabClose)
    EVT_MENU(ID_OnOpenBoardByBrowser, JaneClone::OnOpenBoardByBrowser)
    EVT_MENU(ID_ReloadOneBoard, JaneClone::ReloadOneBoard)
+   EVT_MENU(ID_ReloadAllBoard, JaneClone::ReloadAllBoard)
    EVT_MENU(ID_CopyBURLToClipBoard, JaneClone::CopyBURLToClipBoard)
    EVT_MENU(ID_CopyBTitleToClipBoard, JaneClone::CopyBTitleToClipBoard)
    EVT_MENU(ID_CopyBBothDataToClipBoard, JaneClone::CopyBBothDataToClipBoard)
@@ -337,7 +338,7 @@ void JaneClone::SetJaneCloneManuBar() {
      menu4->Append(ID_DelBoardFavorite, wxT("お気に入りを削除"));
      menu4->AppendSeparator();
      menu4->Append(ID_ReloadOneBoard, wxT("スレ一覧更新"));
-     menu4->Append(wxID_ANY, wxT("すべてのタブのスレ一覧更新"));
+     menu4->Append(ID_ReloadAllBoard, wxT("すべてのタブのスレ一覧更新"));
      menu4->Append(wxID_ANY, wxT("板移転の追尾"));
      menu4->AppendSeparator();
      menu4->Append(wxID_ANY, wxT("スレッド新規作成"));
@@ -1511,6 +1512,17 @@ void JaneClone::ReloadOneBoard(wxCommandEvent& event) {
      wxString boardName = boardNoteBook->GetPageText(page);
      URLvsBoardName hash = retainHash[boardName];
      SetBoardNameToNoteBook(boardName, hash.boardURL, hash.boardNameAscii);
+}
+/**
+ * すべてのタブのスレッド一覧を更新する
+ */
+void JaneClone::ReloadAllBoard(wxCommandEvent& event) {
+
+     for ( size_t page = 0; page < boardNoteBook->GetPageCount(); page++ ) {
+	  wxString boardName = boardNoteBook->GetPageText(page);
+	  URLvsBoardName hash = retainHash[boardName];
+	  SetBoardNameToNoteBook(boardName, hash.boardURL, hash.boardNameAscii);
+     }     
 }
 /**
  * 板のURLをクリップボードにコピーする
