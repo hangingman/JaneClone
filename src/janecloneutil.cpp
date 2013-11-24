@@ -761,26 +761,44 @@ wxString JaneCloneUtil::AddID(wxString& responseText) {
  * 指定された文字列でdatファイルへのファイルパスを組み立てる
  */
 wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,
-					 wxString& origNumber) {
+					 wxString& origNumber,
+					 const int kind) {
 
-     const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
-     wxString filePath = dir.GetName();
+     wxString filePath = wxEmptyString;
 
-#ifdef __WXMSW__
-     // Windowsではパスの区切りは"\"
-     filePath += wxT("\\dat\\");
-     filePath += boardNameAscii;
-     filePath += wxT("\\");
-     filePath += origNumber;
-     filePath += wxT(".dat");
-#else
-     // それ以外ではパスの区切りは"/"
-     filePath += wxT("/dat/");
-     filePath += boardNameAscii;
-     filePath += wxT("/");
-     filePath += origNumber;
-     filePath += wxT(".dat");
-#endif
+     if (kind == KIND_THREAD_DAT) {
+	  // スレッドのdatファイル
+	  const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+	  filePath = dir.GetName();
+
+	  filePath += wxFileSeparator;
+	  filePath += wxT("dat");
+	  filePath += wxFileSeparator;
+	  filePath += boardNameAscii;
+	  filePath += wxFileSeparator;
+	  filePath += origNumber;
+	  filePath += wxT(".dat");
+
+     } else if (kind == KIND_BOARD__DAT) {
+	  // 板一覧リストのdatファイル
+	  const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+	  filePath = dir.GetName();
+
+	  filePath += wxFileSeparator;
+	  filePath += wxT("dat");
+	  filePath += wxFileSeparator;
+	  filePath += boardNameAscii;
+	  filePath += wxFileSeparator;
+	  filePath += boardNameAscii;
+	  filePath += wxT(".dat");
+     } else if (kind == KIND_DAT_PATH) {
+	  // datファイルのあるパス
+	  const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+	  filePath = dir.GetName();
+
+	  filePath += wxFileSeparator;
+	  filePath += wxT("dat");
+     }
 
      return filePath;
 }
@@ -1248,4 +1266,22 @@ void JaneCloneUtil::SplitStdString(std::vector<std::string>& theStringVector,	/*
         start = (   ( end > (std::string::npos - theDelimiter.size()) )
                   ?  std::string::npos  :  end + theDelimiter.size());
     }
+}
+/**
+ * あるディレクトリ以下のすべてのファイルとディレクトリを再帰的に取得する
+ * @param  targetDir 対象のディレクトリ
+ * @param  result    結果を格納する配列
+ * @result 取得したファイルとディレクトリの数
+ */
+size_t JaneCloneUtil::GetFileNamesRecursive(const wxDir& targetDir, wxArrayString& result)
+{
+     size_t ret = 1;
+     
+     JaneCloneDirTraverser* traverser = new JaneCloneDirTraverser();
+     targetDir.Traverse(*traverser);
+     traverser->GetResultFiles(result);
+     ret = result.GetCount();
+     delete traverser;
+
+     return ret;
 }

@@ -222,6 +222,9 @@ private:
      void CopyBURLToClipBoard(wxCommandEvent& event);
      void CopyBTitleToClipBoard(wxCommandEvent& event);
      void CopyBBothDataToClipBoard(wxCommandEvent& event);
+     void DeleteBSelectedDatFile(wxCommandEvent& event);
+     void DeleteBAllDatFile(wxCommandEvent& event);        
+     void DeleteBAllDatFileWithoutFav(wxCommandEvent& event);
      void CallResponseWindow(wxCommandEvent& event);
      void OnThreadListSort(wxCommandEvent& event);
      

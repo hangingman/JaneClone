@@ -44,6 +44,9 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_CopyBURLToClipBoard, JaneClone::CopyBURLToClipBoard)
    EVT_MENU(ID_CopyBTitleToClipBoard, JaneClone::CopyBTitleToClipBoard)
    EVT_MENU(ID_CopyBBothDataToClipBoard, JaneClone::CopyBBothDataToClipBoard)
+   EVT_MENU(ID_DeleteBSelectedDatFile,       JaneClone::DeleteBSelectedDatFile)     
+   EVT_MENU(ID_DeleteBAllDatFile,            JaneClone::DeleteBAllDatFile)        
+   EVT_MENU(ID_DeleteBAllDatFileWithoutFav,  JaneClone::DeleteBAllDatFileWithoutFav)
    EVT_MENU(ID_CopyTURLToClipBoard, JaneClone::CopyTURLToClipBoard)
    EVT_MENU(ID_CopyTTitleToClipBoard, JaneClone::CopyTTitleToClipBoard)
    EVT_MENU(ID_CopyTBothDataToClipBoard, JaneClone::CopyTBothDataToClipBoard)
@@ -352,8 +355,8 @@ void JaneClone::SetJaneCloneManuBar() {
      menu4->AppendSubMenu(copy, wxT("コピー"));
      menu4->AppendSeparator();
      wxMenu *deleteLog = new wxMenu;
-     deleteLog->Append(ID_DeleteBSelectedDatFile, wxT("選択中のログを削除"));
-     deleteLog->Append(ID_DeleteBAllDatFile, wxT("すべてのログを削除"));
+     deleteLog->Append(ID_DeleteBSelectedDatFile,      wxT("選択中のログを削除"));
+     deleteLog->Append(ID_DeleteBAllDatFile,           wxT("すべてのログを削除"));
      deleteLog->Append(ID_DeleteBAllDatFileWithoutFav, wxT("お気に入り以外のログを削除"));
      menu4->AppendSubMenu(deleteLog, wxT("ログ削除"));
      menu4->AppendSeparator();
@@ -1089,7 +1092,7 @@ void JaneClone::SetPreviousUserLookedTab() {
 	  wxString boardNameAscii = userLookedThreadList[i+2];
 
 	  // ファイルパスの組み立てとファイルの有無確認
-	  wxString threadContentPath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber);
+	  wxString threadContentPath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber, KIND_THREAD_DAT);
 
 	  // ファイルの有無確認
 	  if (!wxFile::Exists(threadContentPath)) {
@@ -1554,6 +1557,78 @@ void JaneClone::CopyBBothDataToClipBoard(wxCommandEvent& event) {
      }
 }
 /**
+ * 選択されている板のスレッド一覧情報を削除する
+ */
+void JaneClone::DeleteBSelectedDatFile(wxCommandEvent& event) {
+
+     // datファイル名の組み立て
+     wxString title, boardNameAscii, origNumber, boardURL;
+
+     wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+
+     // ハッシュから英字の板名を探す
+     NameURLHash::iterator it;
+     URLvsBoardName boardInfoHash;
+     for (it = retainHash.begin(); it != retainHash.end(); ++it) {
+	  wxString key = it->first;
+	  boardInfoHash = it->second;
+
+	  if (boardInfoHash.boardName == boardName) {
+	       boardNameAscii = boardInfoHash.boardNameAscii;
+	       break;
+	  }
+     }
+
+     // ファイルパスの組み立てとファイルの有無確認
+     wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber, KIND_BOARD__DAT);
+
+     if (!wxFile::Exists(filePath)) {
+	  // 無ければエラーメッセージ表示
+	  wxMessageBox(wxT("削除するためのdatファイルが見つかりませんでした"));
+	  return;
+     }
+
+     wxString message = wxT("ファイル") + filePath + wxT("を削除してよろしいですか？");
+     wxMessageDialog* dlg = new wxMessageDialog(this, message, wxT("ログファイル削除"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+     const int result = dlg->ShowModal();
+
+     if (result == wxID_YES) {
+	  wxRemoveFile(filePath);
+     }
+}
+/**
+ * すべてのスレッド一覧情報を削除する
+ */
+void JaneClone::DeleteBAllDatFile(wxCommandEvent& event) {
+
+     wxString message = wxT("すべてのスレッド一覧ログを削除してよろしいですか？");
+     wxMessageDialog* dlg = new wxMessageDialog(this, message, wxT("ログファイル削除"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+     const int result = dlg->ShowModal();
+
+     if (result == wxID_YES) {
+	  // datファイルがあるディレクトリを探す
+	  wxString empty = wxEmptyString;
+	  wxString dirname = JaneCloneUtil::AssembleFilePath(empty, empty, KIND_BOARD__DAT);
+	  wxDir targetDir(dirname);
+	  
+	  wxArrayString  files;
+	  size_t count = JaneCloneUtil::GetFileNamesRecursive(targetDir, files);
+	  // ファイル削除
+	  for ( size_t i = 0; i < count; i++ ) {
+	       wxString log = files[i] + wxT("__!\n");
+	       SendLogging(log);
+	  }
+	  
+	  //wxRemoveFile(filePath);
+     }
+}
+/**
+ * お気に入り以外のすべてのスレッド一覧情報を削除する
+ */
+void JaneClone::DeleteBAllDatFileWithoutFav(wxCommandEvent& event) {
+
+}
+/**
  * スレッドのURLをクリップボードにコピーする
  */
 void JaneClone::CopyTURLToClipBoard(wxCommandEvent& event) {
@@ -1817,7 +1892,7 @@ void JaneClone::SaveDatFile(wxCommandEvent& event) {
      origNumber = tiHash[title].origNumber;
 
      // ファイルパスの組み立てとファイルの有無確認
-     wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber);
+     wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber, KIND_THREAD_DAT);
 
      if (!wxFile::Exists(filePath)) {
 	  // 無ければエラーメッセージ表示
@@ -1848,7 +1923,7 @@ void JaneClone::SaveDatFileToClipBoard(wxCommandEvent& event) {
      origNumber = tiHash[title].origNumber;
 
      // ファイルパスの組み立てとファイルの有無確認
-     wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber);
+     wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber, KIND_THREAD_DAT);
 
      if (!wxFile::Exists(filePath)) {
 	  // 無ければエラーメッセージ表示
@@ -1878,7 +1953,7 @@ void JaneClone::DeleteDatFile(wxCommandEvent& event) {
      origNumber = tiHash[title].origNumber;
 
      // ファイルパスの組み立てとファイルの有無確認
-     wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber);
+     wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber, KIND_THREAD_DAT);
 
      if (!wxFile::Exists(filePath)) {
 	  // 無ければエラーメッセージ表示
@@ -1887,9 +1962,10 @@ void JaneClone::DeleteDatFile(wxCommandEvent& event) {
      }
 
      wxString message = wxT("ファイル") + filePath + wxT("を削除してよろしいですか？");
-     int result = wxMessageBox(message, wxEmptyString, wxOK | wxNO);
+     wxMessageDialog* dlg = new wxMessageDialog(this, message, wxT("ログファイル削除"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
+     const int result = dlg->ShowModal();
 
-     if (result == wxOK) {
+     if (result == wxID_YES) {
 	  wxRemoveFile(filePath);
      }
 }
@@ -2569,8 +2645,8 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
  * 板一覧ノートブックで右クリックされた時の処理
  */
 void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
-     wxString selectedBoardName = boardNoteBook->GetPageText(
-	  event.GetSelection());
+
+     wxString selectedBoardName = boardNoteBook->GetPageText(event.GetSelection());
 
      wxMenu* boardTabUtil = new wxMenu();
      boardTabUtil->Append(ID_OneBoardTabClose, wxT("このタブを閉じる"));
@@ -2587,7 +2663,7 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
      boardTabUtil->AppendSeparator();
 
      wxMenu* addFav = new wxMenu();
-     addFav->Append(ID_AddThreadFavorite, wxT("「お気に入り」に追加"));
+     addFav->Append(ID_AddBoardFavorite, wxT("「お気に入り」に追加"));
      addFav->AppendSeparator();
      addFav->Append(wxID_ANY, wxT("「リンク」に追加"));
      boardTabUtil->AppendSubMenu(addFav, wxT("お気に入りに追加"));
@@ -2609,8 +2685,9 @@ void JaneClone::OnRightClickBoardNoteBook(wxAuiNotebookEvent& event) {
      boardTabUtil->AppendSeparator();
 
      wxMenu* deleteLog = new wxMenu();
-     deleteLog->Append(wxID_ANY, wxT("すべてのログを削除"));
-     deleteLog->Append(wxID_ANY, wxT("お気に入り以外のログを削除"));
+     deleteLog->Append(ID_DeleteBSelectedDatFile,      wxT("選択中のログを削除"));
+     deleteLog->Append(ID_DeleteBAllDatFile,           wxT("すべてのログを削除"));
+     deleteLog->Append(ID_DeleteBAllDatFileWithoutFav, wxT("お気に入り以外のログを削除"));
      boardTabUtil->AppendSubMenu(deleteLog, wxT("ログ削除"));
      boardTabUtil->AppendSeparator();
 
@@ -3179,7 +3256,7 @@ void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
      }
 
      // ファイルパスの組み立てとファイルの有無確認
-     wxString threadContentPath = JaneCloneUtil::AssembleFilePath(threadInfo->boardNameAscii, threadInfo->origNumber);
+     wxString threadContentPath = JaneCloneUtil::AssembleFilePath(threadInfo->boardNameAscii, threadInfo->origNumber, KIND_THREAD_DAT);
 
      // ファイルの有無確認
      if (!wxFile::Exists(threadContentPath)) {
@@ -3229,7 +3306,7 @@ void JaneClone::OnUserFavoriteThreadClick(wxCommandEvent& event) {
      }
 
      // ファイルパスの組み立てとファイルの有無確認
-     wxString threadContentPath = JaneCloneUtil::AssembleFilePath(threadInfo->boardNameAscii, threadInfo->origNumber);
+     wxString threadContentPath = JaneCloneUtil::AssembleFilePath(threadInfo->boardNameAscii, threadInfo->origNumber, KIND_THREAD_DAT);
 
      // ファイルの有無確認
      if (!wxFile::Exists(threadContentPath)) {

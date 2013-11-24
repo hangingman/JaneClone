@@ -67,23 +67,28 @@
   #define wxExt wxT("") 
 #endif
 
-     /**
-      * テキストの終端文字が何で終わるのかを定義
-      */
+/**
+ * テキストの終端文字が何で終わるのかを定義
+ */
 #ifdef __WXMSW__
-#define TEXT_ENDLINE_TYPE wxTextFileType_Dos
+   #define TEXT_ENDLINE_TYPE wxTextFileType_Dos
 #endif
 #ifdef __WXGTK__
-#define TEXT_ENDLINE_TYPE wxTextFileType_Unix
+   #define TEXT_ENDLINE_TYPE wxTextFileType_Unix
 #endif
 #ifdef __WXMAC__
-#define TEXT_ENDLINE_TYPE wxTextFileType_Mac
+   #define TEXT_ENDLINE_TYPE wxTextFileType_Mac
 #endif
 
-     /** 定数化された書き込み前のCOOKIEの状態 */
+/** 定数化された書き込み前のCOOKIEの状態 */
 #define NO_COOKIE         10
 #define HAS_COOKIE_HIDDEN 11
 #define HAS_PREN          12
+
+/** 定数化されたdatファイルの種別 */
+#define KIND_THREAD_DAT   10
+#define KIND_BOARD__DAT   11
+#define KIND_DAT_PATH     12
 
 // 板一覧情報ファイルのパス
 #define BOARD_LIST_PATH ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR + wxFileSeparator + wxT("dat") + wxFileSeparator + wxT("boardlist.html")

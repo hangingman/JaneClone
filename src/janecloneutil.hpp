@@ -40,7 +40,54 @@
 #include "wx/wxnkf.h"
 #include "wxUUID.h"
 #include "datatype.hpp"
+#include "enums.hpp"
 
+/**
+ * JaneCloneのファイル操作用クラス
+ */
+class JaneCloneDirTraverser : public wxDirTraverser {
+
+public:
+     JaneCloneDirTraverser (){}
+
+     wxDirTraverseResult OnFile(const wxString& fileName) {
+	  m_files.Add(fileName);
+	  wxString log = wxString(fileName);
+	  SendLogging(log);
+	  return wxDIR_CONTINUE;
+     };
+
+     wxDirTraverseResult OnDir(const wxString& dirName) {
+	  m_files.Add(dirName);
+	  wxString log = wxString(dirName);
+	  SendLogging(log);
+	  return wxDIR_CONTINUE;
+     };
+
+     void GetResultFiles(wxArrayString& result) {
+	  result = m_files;
+     };
+
+private:
+     // 取得したファイル
+     wxArrayString m_files;
+
+     // メインのスレッドにログとイベントを送る
+     void SendLogging(wxString& message) {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
+	  event->SetString(message.c_str());
+
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+#else
+	  wxTheApp->GetTopWindow()->GetEventHandler()->AddPendingEvent(*event);
+#endif
+     };
+};
+
+/**
+ * JaneCloneのファイル操作用クラス
+ */
 class JaneCloneUtil {
 
 public:
@@ -115,8 +162,11 @@ public:
      static wxString AddID(wxString& responseText);
      /**
       * 指定された文字列でdatファイルへのファイルパスを組み立てる
+      * @param 英字の板名
+      * @param 固有番号
+      * @param datファイルの種別 (KIND_THREAD_DAT, KIND_BOARD__DAT)
       */
-     static wxString AssembleFilePath(wxString& boardNameAscii, wxString& origNumber);
+     static wxString AssembleFilePath(wxString& boardNameAscii, wxString& origNumber, const int kind);
      /**
       * 現在時刻をUNIX Timeで返す
       */
@@ -199,6 +249,13 @@ public:
      static void SplitStdString(std::vector<std::string> & theStringVector,  /* Altered/returned value */
 				const std::string& theString,
 				const std::string& theDelimiter);
+     /**
+      * あるディレクトリ以下のすべてのファイルとディレクトリを再帰的に取得する
+      * @param  targetDir 対象のディレクトリ
+      * @param  result    結果を格納する配列
+      * @result 取得したファイルとディレクトリの数
+      */
+     static size_t GetFileNamesRecursive(const wxDir& targetDir, wxArrayString& result);
 
 private:
 
