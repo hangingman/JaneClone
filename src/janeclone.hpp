@@ -138,6 +138,8 @@ private:
      void AddBoardFavorite(wxCommandEvent& event);
      void DelBoardFavorite(wxCommandEvent& event);
      void AddAllThreadFavorite(wxCommandEvent& event);
+     void MoveNextTab(wxCommandEvent& event);
+     void MovePrevTab(wxCommandEvent& event);
 
      // JaneClone公式サイトをブラウザで開く
      void OnOpenJaneCloneOfficial(wxCommandEvent& event) {
@@ -398,6 +400,10 @@ private:
      // 取得した情報を元に新しいポップアップウィンドウを出現させる
      void SetPopUpWindowForID(wxHtmlCellEvent& event, wxString& boardNameAscii,
 			 wxString& origNumber, wxString& extractId, wxPoint& anchorPoint);
+
+     // ユーザーが最後に触ったノートブックのオブジェクトを記憶する
+     wxString userLastAttachedNotebook = BOARD_NOTEBOOK; // 初期設定は板
+     
      /**
       *  フォント読み出し系の処理
       */

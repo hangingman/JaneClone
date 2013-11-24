@@ -86,6 +86,8 @@ X_TABLE_ITEM(ID_UserLastClosedThreadMenuUp)	/* ユーザーが最後に閉じた
 X_TABLE_ITEM(ID_UserLastClosedBoardMenuUp)	/* ユーザーが最後に閉じた板の情報を項目に			*/ \
 X_TABLE_ITEM(ID_UserLookingTabsMenuUp)		/* ユーザーが現在見ているスレタブ・板タブ			*/ \
 X_TABLE_ITEM(ID_UserLookingTabsControl)		/* ユーザーが現在フォーカスしているウィン			*/ \
+X_TABLE_ITEM(ID_MoveNextTab)                    /* 表示しているタブを移動する(次)				*/ \
+X_TABLE_ITEM(ID_MovePrevTab)			/* 表示しているタブを移動する(前)				*/ \
 X_TABLE_ITEM(ID_UserLookingTabsMenuClick)	/* ユーザーが現在見ているスレタブ・板タブ			*/ \
 X_TABLE_ITEM(ID_OnOpenJaneCloneOfficial)	/* JaneClone公式サイトをブラウザで開く				*/ \
 X_TABLE_ITEM(ID_OnOpen2chViewerOfficial)	/* ●公式サイトをブラウザで開く					*/ \

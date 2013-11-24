@@ -68,7 +68,9 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_DelThreadFavorite, JaneClone::DelThreadFavorite)
    EVT_MENU(ID_AddAllThreadFavorite, JaneClone::AddAllThreadFavorite)
    EVT_MENU(ID_AddBoardFavorite,  JaneClone::AddBoardFavorite) 	
-   EVT_MENU(ID_DelBoardFavorite,  JaneClone::DelBoardFavorite) 	
+   EVT_MENU(ID_DelBoardFavorite,  JaneClone::DelBoardFavorite)
+   EVT_MENU(ID_MoveNextTab,       JaneClone::MoveNextTab)   
+   EVT_MENU(ID_MovePrevTab,       JaneClone::MovePrevTab)   
    EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
    EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
    EVT_MENU_RANGE(ID_UserFavoriteThreadClick,   ID_UserFavoriteThreadClick   + 99, JaneClone::OnUserFavoriteThreadClick)
@@ -450,7 +452,7 @@ void JaneClone::SetJaneCloneManuBar() {
      menu5->Append(wxID_ANY, wxT("すべてのタブの新着チェック"));
      menu5->Append(wxID_ANY, wxT("すべてのタブの更新チェック"));
      menu5->Append(wxID_ANY, wxT("中止"));
-     menu5->Append(wxID_ANY, wxT("レス"));
+     menu5->Append(ID_CallResponseWindow, wxT("レス"));
      menu5->AppendSeparator();
      menu5->Append(ID_OnOpenThreadByBrowser, wxT("ブラウザで開く"));
      menu5->AppendSeparator();
@@ -566,8 +568,8 @@ void JaneClone::SetJaneCloneManuBar() {
      wxMenu* menu8 = new wxMenu;
      menu8->Append(ID_UserLookingTabsControl, wxT("閉じる"));
      menu8->AppendSeparator();
-     menu8->Append(wxID_ANY, wxT("次のタブ"));
-     menu8->Append(wxID_ANY, wxT("前のタブ"));
+     menu8->Append(ID_MoveNextTab, wxT("次のタブ"));
+     menu8->Append(ID_MovePrevTab, wxT("前のタブ"));
      menu8->AppendSeparator();
      menu8->Append(wxID_ANY, wxT("重ねて表示"));
      menu8->Append(wxID_ANY, wxT("左右に並べて表示"));
@@ -2528,6 +2530,28 @@ void JaneClone::AddAllThreadFavorite(wxCommandEvent& event) {
      }
 }
 /**
+ * 表示しているタブを移動する(次)
+ */
+void JaneClone::MoveNextTab(wxCommandEvent& event) {
+
+     if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) {
+	  boardNoteBook->AdvanceSelection(true);
+     } else if (this->userLastAttachedNotebook == THREAD_NOTEBOOK) {
+	  threadNoteBook->AdvanceSelection(true);
+     }
+}
+/**
+ * 表示しているタブを移動する(前)
+ */
+void JaneClone::MovePrevTab(wxCommandEvent& event) {
+
+     if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) {
+	  boardNoteBook->AdvanceSelection(false);
+     } else if (this->userLastAttachedNotebook == THREAD_NOTEBOOK) {
+	  threadNoteBook->AdvanceSelection(false);
+     }
+}
+/**
  * 板一覧リストでのクリック時のイベント
  */
 void JaneClone::OnLeftClickAtListCtrl(wxListEvent& event) {
@@ -3002,6 +3026,9 @@ void JaneClone::OnChangedBoardTab(wxAuiNotebookEvent& event) {
 
      // タイトルを設定する
      SetTitle(selectedBoardName + wxT(" - JaneClone"));
+     // 最後に選択したノートブックの記録
+     this->userLastAttachedNotebook = BOARD_NOTEBOOK;
+     
      m_mgr.Update();
 }
 /**
@@ -3035,6 +3062,10 @@ void JaneClone::OnChangedThreadTab(wxAuiNotebookEvent& event) {
 
 	  return;
      }
+
+     // 最後に選択したノートブックの記録
+     this->userLastAttachedNotebook = THREAD_NOTEBOOK;
+
      m_mgr.Update();
 }
 
