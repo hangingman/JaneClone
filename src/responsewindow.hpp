@@ -121,6 +121,8 @@ private:
      void OnChangeResponseTab(wxNotebookEvent& event);
      // プレビュー画面に書き込み内容のプレビューを表示する
      void SetPreviewWindow(wxNotebookEvent& event);
+     // 書き込み画面のsageチェックが押された時の処理
+     void OnChangeSageChk(wxCommandEvent& event);
 
      // レス投稿ウィンドウのモード設定
      bool f_threadPost;

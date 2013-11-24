@@ -38,6 +38,7 @@ BEGIN_EVENT_TABLE(ResponseWindow, wxDialog)
    EVT_BUTTON(ID_PostConfirmForm,                ResponseWindow::PostConfirmForm)
    EVT_NOTEBOOK_PAGE_CHANGING(ID_ResponseWindow, ResponseWindow::OnChangeResponseTab)
    EVT_HTML_LINK_CLICKED(wxID_ANY,               ResponseWindow::OnLinkClocked)
+   EVT_CHECKBOX(ID_ResponseWindowSageChk,        ResponseWindow::OnChangeSageChk) 
 END_EVENT_TABLE()
 
 
@@ -187,7 +188,7 @@ ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName
      mail = new wxStaticText(resPane, wxID_ANY, wxT("メール"));
      const wxString *mailCombo_choices = NULL;
      mailCombo = new wxComboBox(resPane, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, mailCombo_choices, wxCB_DROPDOWN);
-     sageCheck = new wxCheckBox(resPane, wxID_ANY, wxT("sage"));
+     sageCheck = new wxCheckBox(resPane, ID_ResponseWindowSageChk, wxT("sage"));
      kakikoTextCtrl = new wxTextCtrl(resPane, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxHSCROLL);
      previewWindow = new wxHtmlWindow(previewPane, wxID_ANY);
      localRuleWindow = new wxHtmlWindow(localRulePane, wxID_ANY);
@@ -212,10 +213,30 @@ ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName
 
 
 void ResponseWindow::set_properties(const wxString& title) {
-    // begin wxGlade: ResponseWindow::set_properties
-    SetTitle(wxT("『") + title + wxT("』にレス"));
-    SetSize(wxSize(640, 480));
-    // end wxGlade
+
+     // begin wxGlade: ResponseWindow::set_properties
+     SetTitle(wxT("『") + title + wxT("』にレス"));
+     SetSize(wxSize(640, 480));
+     // end wxGlade
+
+     wxString widgetsName = wxEmptyString;
+     bool     widgetsInfo = NULL;
+
+     const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(ID_ResponseWindowSageChk) );
+     widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+
+     if ( widgetsInfo ) {
+	  // チェックされている
+	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+	  mailCombo->SetValue(wxT("sage"));
+
+     } else {
+	  // チェックされていない
+	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+	  mailCombo->SetValue(wxEmptyString);
+
+     }
 }
 
 
@@ -712,4 +733,29 @@ void ResponseWindow::SetPreviewWindow(wxNotebookEvent& event) {
 	  return;
      }     
 }
+/**
+ * 書き込み画面のsageチェックが押された時の処理
+ */
+void ResponseWindow::OnChangeSageChk(wxCommandEvent& event) {
 
+     wxString widgetsName = wxEmptyString;
+     bool     widgetsInfo = NULL;
+
+     const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(event.GetId()) );
+     widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
+     //JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+
+     if ( sageCheck->IsChecked() ) {
+	  // チェックされている
+	  widgetsInfo = true;
+	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+	  mailCombo->SetValue(wxT("sage"));
+
+     } else {
+	  // チェックされていない
+	  widgetsInfo = false;
+	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+	  mailCombo->SetValue(wxEmptyString);
+
+     }
+}
