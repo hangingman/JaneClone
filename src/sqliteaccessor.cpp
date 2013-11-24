@@ -458,6 +458,8 @@ void SQLiteAccessor::SetThreadInfo(ThreadInfo* t, const wxWindowID id) {
 	  tableName = wxT("USER_CLOSED_THREADLIST");
      } else if ( id == ID_AddThreadFavorite) {
 	  tableName = wxT("USER_FAVORITE_THREADLIST");
+     } else if ( id == ID_AddBoardFavorite) {
+	  tableName = wxT("USER_FAVORITE_THREADLIST");
      } else {
 	  // ERROR
 	  return;

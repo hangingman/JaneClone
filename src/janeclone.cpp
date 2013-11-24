@@ -63,6 +63,8 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_AddThreadFavorite, JaneClone::AddThreadFavorite)
    EVT_MENU(ID_DelThreadFavorite, JaneClone::DelThreadFavorite)
    EVT_MENU(ID_AddAllThreadFavorite, JaneClone::AddAllThreadFavorite)
+   EVT_MENU(ID_AddBoardFavorite,  JaneClone::AddBoardFavorite) 	
+   EVT_MENU(ID_DelBoardFavorite,  JaneClone::DelBoardFavorite) 	
    EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
    EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
    EVT_MENU_RANGE(ID_UserFavoriteThreadClick,   ID_UserFavoriteThreadClick   + 99, JaneClone::OnUserFavoriteThreadClick)
@@ -328,8 +330,8 @@ void JaneClone::SetJaneCloneManuBar() {
      menu4->Append(wxID_ANY, wxT("選択中のスレをタブロック"));
      menu4->Append(wxID_ANY, wxT("既読にする"));
      menu4->Append(wxID_ANY, wxT("印を付ける"));
-     menu4->Append(ID_AddThreadFavorite, wxT("お気に入りに追加"));
-     menu4->Append(ID_DelThreadFavorite, wxT("お気に入りを削除"));
+     menu4->Append(ID_AddBoardFavorite, wxT("お気に入りに追加"));
+     menu4->Append(ID_DelBoardFavorite, wxT("お気に入りを削除"));
      menu4->AppendSeparator();
      menu4->Append(ID_ReloadOneBoard, wxT("スレ一覧更新"));
      menu4->Append(wxID_ANY, wxT("すべてのタブのスレ一覧更新"));
@@ -350,9 +352,9 @@ void JaneClone::SetJaneCloneManuBar() {
      menu4->AppendSubMenu(copy, wxT("コピー"));
      menu4->AppendSeparator();
      wxMenu *deleteLog = new wxMenu;
-     deleteLog->Append(wxID_ANY, wxT("選択中のログを削除"));
-     deleteLog->Append(wxID_ANY, wxT("すべてのログを削除"));
-     deleteLog->Append(wxID_ANY, wxT("お気に入り以外のログを削除"));
+     deleteLog->Append(ID_DeleteBSelectedDatFile, wxT("選択中のログを削除"));
+     deleteLog->Append(ID_DeleteBAllDatFile, wxT("すべてのログを削除"));
+     deleteLog->Append(ID_DeleteBAllDatFileWithoutFav, wxT("お気に入り以外のログを削除"));
      menu4->AppendSubMenu(deleteLog, wxT("ログ削除"));
      menu4->AppendSeparator();
      menu4->Append(wxID_ANY, wxT("このスレをチェック"));
@@ -511,13 +513,25 @@ void JaneClone::SetJaneCloneManuBar() {
           menu6->Append(wxID_ANY, wxT("お気に入りのスレッドがないよ"));
      } else {
 	  for (unsigned int i = 0; i < favoriteList.size(); i++ ) {
-	       // ex) http://engawa.2ch.net/test/read.cgi/linux/1044149677/
-	       wxString helperUrl = wxT("http://hostname/test/read.cgi/") 
-		    + std::get<2>(favoriteList.at(i)) 
-		    + wxT("/") 
-		    + std::get<1>(favoriteList.at(i));
 
-	       menu6->Append(ID_UserFavoriteThreadClick + i, std::get<0>(favoriteList.at(i)), helperUrl);
+	       if ( std::get<1>(favoriteList.at(i)) != wxT("0")) {
+		    // スレッドの場合
+		    // ex) http://engawa.2ch.net/test/read.cgi/linux/1044149677/
+		    wxString helperUrl = wxT("http://hostname/test/read.cgi/") 
+			 + std::get<2>(favoriteList.at(i)) 
+			 + wxT("/") 
+			 + std::get<1>(favoriteList.at(i));
+
+		    menu6->Append(ID_UserFavoriteThreadClick + i, std::get<0>(favoriteList.at(i)), helperUrl);
+	       } else {
+		    // 板の場合
+		    // ex) http://engawa.2ch.net/linux/
+		    wxString helperUrl = wxT("http://hostname/")
+			 + std::get<2>(favoriteList.at(i))
+		         + wxT("/");
+		
+		    menu6->Append(ID_UserFavoriteThreadClick + i, std::get<0>(favoriteList.at(i)), helperUrl);
+	       }
 	  }
      }  
 
@@ -2348,7 +2362,7 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
      Destroy();
 }
 /**
- * お気に入りに追加
+ * お気に入りに追加(スレッド)
  */
 void JaneClone::AddThreadFavorite(wxCommandEvent& event) {
 
@@ -2367,9 +2381,38 @@ void JaneClone::AddThreadFavorite(wxCommandEvent& event) {
      SendLogging(message);
 }
 /**
- * お気に入りを削除
+ * お気に入りを削除(スレッド)
  */
 void JaneClone::DelThreadFavorite(wxCommandEvent& event) {
+
+}
+/**
+ * お気に入りに追加(板)
+ */
+void JaneClone::AddBoardFavorite(wxCommandEvent& event) {
+
+     // お気に入りに追加するタブのタイトルを取得
+     wxString title = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+     // 固有番号は「0」で登録
+     wxString origNumber = wxT("0");
+     // 板名を取得
+     URLvsBoardName hash = retainHash[title];
+     wxString boardNameAscii = hash.boardNameAscii;
+
+     // 板の情報スレッドとしてをSQLiteに格納する
+     ThreadInfo t;
+     t.title = title;
+     t.origNumber = origNumber;
+     t.boardNameAscii = boardNameAscii;
+     SQLiteAccessor::SetThreadInfo(&t, event.GetId());
+
+     wxString message = wxT("「") + title + wxT("」をお気に入りに追加") + wxT("（  ´ん｀）");
+     SendLogging(message);
+}
+/**
+ * お気に入りを削除(板)
+ */
+void JaneClone::DelBoardFavorite(wxCommandEvent& event) {
 
 }
 /**
@@ -2964,13 +3007,24 @@ void JaneClone::OnMenuOpen(wxMenuEvent& event) {
 		    menu->Append(wxID_ANY, wxT("お気に入りのスレッドがないよ"));
 	       } else {
 		    for (unsigned int i = 0; i < favoriteList.size(); i++ ) {
-			 // ex) http://engawa.2ch.net/test/read.cgi/linux/1044149677/
-			 wxString helperUrl = wxT("http://hostname/test/read.cgi/") 
-			      + std::get<2>(favoriteList.at(i)) 
-			      + wxT("/") 
-			      + std::get<1>(favoriteList.at(i));
+			 if ( std::get<1>(favoriteList.at(i)) != wxT("0")) {
+			      // スレッドの場合
+			      // ex) http://engawa.2ch.net/test/read.cgi/linux/1044149677/
+			      wxString helperUrl = wxT("http://hostname/test/read.cgi/") 
+				   + std::get<2>(favoriteList.at(i)) 
+				   + wxT("/") 
+				   + std::get<1>(favoriteList.at(i));
 
-			 menu->Append(ID_UserFavoriteThreadClick + i, std::get<0>(favoriteList.at(i)), helperUrl);
+			      menu->Append(ID_UserFavoriteThreadClick + i, std::get<0>(favoriteList.at(i)), helperUrl);
+			 } else {
+			      // 板の場合
+			      // ex) http://engawa.2ch.net/linux/
+			      wxString helperUrl = wxT("http://hostname/")
+				   + std::get<2>(favoriteList.at(i))
+				   + wxT("/");
+		
+			      menu->Append(ID_UserFavoriteThreadClick + i, std::get<0>(favoriteList.at(i)), helperUrl);
+			 }
 		    }
 	       }
 	  }
@@ -3146,7 +3200,7 @@ void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
      delete threadInfo;
 }
 /**
- * ユーザーがお気に入り登録したスレッドを開く
+ * ユーザーがお気に入り登録したスレッド or 板を開く
  */
 void JaneClone::OnUserFavoriteThreadClick(wxCommandEvent& event) {
 
@@ -3155,10 +3209,21 @@ void JaneClone::OnUserFavoriteThreadClick(wxCommandEvent& event) {
      ThreadInfo* threadInfo = new ThreadInfo();
      SQLiteAccessor::GetThreadFullInfo(number, threadInfo, event.GetId());
 
+     if ( threadInfo->origNumber == wxT("0") ) {
+	  // 板情報なので板を表示する
+	  URLvsBoardName hash = retainHash[threadInfo->title];
+	  wxString boardNameAscii = hash.boardNameAscii;
+	  wxString boardURL = hash.boardURL;
+
+	  SetBoardNameToNoteBook(threadInfo->title, boardURL, boardNameAscii);
+	  return;
+     }
+
      if (!threadInfo) {
 	  // 無ければ警告を出して終了
 	  wxMessageBox(wxT("お気に入り登録されたdatファイルの読み出しに失敗しました\n\
-                            datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
+                            datファイルを削除しているか、datファイルの保存先を変更していませんか？"), 
+		       wxT("読み込んでいるスレッド"), wxICON_ERROR);
 	  delete threadInfo;
 	  return;
      }
@@ -3170,7 +3235,8 @@ void JaneClone::OnUserFavoriteThreadClick(wxCommandEvent& event) {
      if (!wxFile::Exists(threadContentPath)) {
 	  // 無ければ警告を出して次へ
 	  wxMessageBox(wxT("お気に入り登録されたdatファイルの読み出しに失敗しました\n\
-                            datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
+                            datファイルを削除しているか、datファイルの保存先を変更していませんか？"), 
+		       wxT("読み込んでいるスレッド"), wxICON_ERROR);
 	  delete threadInfo;
 	  return;
      }

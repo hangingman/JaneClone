@@ -54,6 +54,9 @@ X_TABLE_ITEM(ID_ReloadOneBoard)			/* アクティブなスレッド一覧をひ�
 X_TABLE_ITEM(ID_CopyBURLToClipBoard)		/* 板のURLをクリップボードにコピーする				*/ \
 X_TABLE_ITEM(ID_CopyBTitleToClipBoard)		/* 板のタイトルをクリップボードにコピーする			*/ \
 X_TABLE_ITEM(ID_CopyBBothDataToClipBoard)	/* 板のURLとタイトルをクリップボードにコピーする		*/ \
+X_TABLE_ITEM(ID_DeleteBSelectedDatFile)         /* 選択中のログを削除                                           */ \
+X_TABLE_ITEM(ID_DeleteBAllDatFile) 		/* すべてのログを削除                                           */ \
+X_TABLE_ITEM(ID_DeleteBAllDatFileWithoutFav)	/* お気に入り以外のログを削除                                   */ \
 X_TABLE_ITEM(ID_CopyTURLToClipBoard)		/* スレッドのURLをクリップボードにコピーする			*/ \
 X_TABLE_ITEM(ID_CopyTTitleToClipBoard)		/* スレッドのタイトルをクリップボードにコピーする		*/ \
 X_TABLE_ITEM(ID_CopyTBothDataToClipBoard)	/* スレッドのURLとタイトルをクリップボードにコピーする		*/ \
@@ -262,8 +265,10 @@ X_TABLE_ITEM(ID_TabControlSettingPanelOpenTabChoice) \
 X_TABLE_ITEM(ID_TabControlSettingPanelOpenTabFromOtherTabChoice) \
 X_TABLE_ITEM(ID_TabControlSettingPanelCloseThreadViewTabChoice) \
 X_TABLE_ITEM(ID_TabControlSettingPanelCloseThreadTabChoice) \
-X_TABLE_ITEM(ID_AddThreadFavorite)                /* お気に入りに追加	   	*/ \
-X_TABLE_ITEM(ID_DelThreadFavorite)		  /* お気に入りを削除	   	*/ \
+X_TABLE_ITEM(ID_AddThreadFavorite)                /* お気に入りに追加(スレッド) 	   	*/ \
+X_TABLE_ITEM(ID_DelThreadFavorite)		  /* お気に入りを削除(スレッド) 	   	*/ \
+X_TABLE_ITEM(ID_AddBoardFavorite)		  /* お気に入りに追加(板)	 		*/ \
+X_TABLE_ITEM(ID_DelBoardFavorite)		  /* お気に入りを削除(板)	 		*/ \
 X_TABLE_ITEM(ID_AddAllThreadFavorite)             /* すべてのタブをお気に入りに追加	   	*/ \
 X_TABLE_ITEM(ID_ResponseWindowSageChk)            /* レス用ウィンドウのsageチェック	   	*/ \
 X_TABLE_ITEM(ID_JaneCloneEnumsEnd)

@@ -228,11 +228,13 @@ void ResponseWindow::set_properties(const wxString& title) {
 
      if ( widgetsInfo ) {
 	  // チェックされている
+	  sageCheck->SetValue(widgetsInfo);
 	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
 	  mailCombo->SetValue(wxT("sage"));
 
      } else {
 	  // チェックされていない
+	  sageCheck->SetValue(widgetsInfo);
 	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
 	  mailCombo->SetValue(wxEmptyString);
 
@@ -743,7 +745,6 @@ void ResponseWindow::OnChangeSageChk(wxCommandEvent& event) {
 
      const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(event.GetId()) );
      widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
-     //JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
 
      if ( sageCheck->IsChecked() ) {
 	  // チェックされている
