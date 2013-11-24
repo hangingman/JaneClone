@@ -413,7 +413,7 @@ void SQLiteAccessor::SetUserFavoriteThreadList(wxArrayString& userFavoriteThread
 /**
  * ユーザーがお気に入りに登録しているスレッドの情報を取得する
  */
-wxArrayString SQLiteAccessor::GetUserFavoriteThreadList() {
+void SQLiteAccessor::GetUserFavoriteThreadList(std::vector<std::tuple<wxString, wxString, wxString>>& favoriteList) {
 
      // dbファイルの初期化
      wxString dbFile = GetDBFilePath();
@@ -424,28 +424,25 @@ wxArrayString SQLiteAccessor::GetUserFavoriteThreadList() {
      // リザルトセットを用意する
      wxSQLite3ResultSet rs;
      // SQL文を用意する
-     wxString sqlSe = wxT("select THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII from USER_FAVORITE_THREADLIST");
+     wxString sqlSe = wxT("select THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII ");
+	      sqlSe += wxT("from USER_FAVORITE_THREADLIST ");
+	      sqlSe += wxT("order by timeinfo desc");
 
      // SQL文を実行する
      rs = db.ExecuteQuery(sqlSe);
      db.Close();
      
-     // リザルトセットをArrayStringに設定する
-     wxArrayString array;
-
+     // リザルトセットをvectorに設定する
      while (rs.NextRow()) {
 	  wxString title = rs.GetAsString(wxT("THREAD_TITLE"));
 	  wxString origNumber = rs.GetAsString(wxT("THREAD_ORIG_NUM"));
 	  wxString boardNameAscii = rs.GetAsString(wxT("BOARDNAME_ASCII"));
 
-	  // 各項目がNULLで無ければArrayStringに詰める
+	  // 各項目がNULLで無ければvectorに詰める
 	  if (title.Len() > 0 && origNumber.Len() > 0 && boardNameAscii.Len() > 0) {
-	       array.Add(title);
-	       array.Add(origNumber);
-	       array.Add(boardNameAscii);
+	       favoriteList.push_back(std::make_tuple(title, origNumber, boardNameAscii));
 	  }
      }
-     return array;
 }
 /**
  * スレタブの情報をSQLiteに格納する
@@ -659,6 +656,7 @@ void SQLiteAccessor::GetThreadFullInfo(const int number, ThreadInfo* threadInfo,
 	  const wxString SQL_QUERY = 
 	       wxT("SELECT THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII from ") 
 	       + tableName
+	       + wxT(" order by timeinfo desc")
 	       + wxT(" limit 1 offset ")
 	       + wxString::Format(wxT("%d"), number);
 

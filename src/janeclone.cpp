@@ -62,6 +62,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_OnOpen2chViewerOfficial, JaneClone::OnOpen2chViewerOfficial)
    EVT_MENU(ID_AddThreadFavorite, JaneClone::AddThreadFavorite)
    EVT_MENU(ID_DelThreadFavorite, JaneClone::DelThreadFavorite)
+   EVT_MENU(ID_AddAllThreadFavorite, JaneClone::AddAllThreadFavorite)
    EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
    EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
    EVT_MENU_RANGE(ID_UserFavoriteThreadClick,   ID_UserFavoriteThreadClick   + 99, JaneClone::OnUserFavoriteThreadClick)
@@ -503,14 +504,22 @@ void JaneClone::SetJaneCloneManuBar() {
      menu6->Append(wxID_ANY, wxT("このフォルダを開く"));
      menu6->AppendSeparator();
 
-     wxArrayString array = SQLiteAccessor::GetThreadInfo(ID_UserFavoriteThreadClick);
-     if ( array.GetCount() == 0 ) {
+     std::vector<std::tuple<wxString, wxString, wxString>> favoriteList;
+     SQLiteAccessor::GetUserFavoriteThreadList(favoriteList);
+
+     if ( favoriteList.size() == 0 ) {
           menu6->Append(wxID_ANY, wxT("お気に入りのスレッドがないよ"));
      } else {
-	  for (unsigned int i = 0; i < array.GetCount(); i++ ) {
-	       menu6->Append(ID_UserFavoriteThreadClick + i, array[i]);
+	  for (unsigned int i = 0; i < favoriteList.size(); i++ ) {
+	       // ex) http://engawa.2ch.net/test/read.cgi/linux/1044149677/
+	       wxString helperUrl = wxT("http://hostname/test/read.cgi/") 
+		    + std::get<2>(favoriteList.at(i)) 
+		    + wxT("/") 
+		    + std::get<1>(favoriteList.at(i));
+
+	       menu6->Append(ID_UserFavoriteThreadClick + i, std::get<0>(favoriteList.at(i)), helperUrl);
 	  }
-     }      
+     }  
 
      /**
       * 検索部分
@@ -2343,7 +2352,7 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
  */
 void JaneClone::AddThreadFavorite(wxCommandEvent& event) {
 
-     // 消されようとしているタブのタイトルを取得
+     // お気に入りに追加するタブのタイトルを取得
      wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
      // 固有番号を取得
      wxString origNumber = tiHash[title].origNumber;
@@ -2361,6 +2370,31 @@ void JaneClone::AddThreadFavorite(wxCommandEvent& event) {
  * お気に入りを削除
  */
 void JaneClone::DelThreadFavorite(wxCommandEvent& event) {
+
+}
+/**
+ * すべてのタブをお気に入りに追加
+ */
+void JaneClone::AddAllThreadFavorite(wxCommandEvent& event) {
+
+     for ( size_t i = 0; i < threadNoteBook->GetPageCount(); i++ ) {
+
+	  wxAuiNotebook* page = dynamic_cast<wxAuiNotebook*>(threadNoteBook->GetPage(i));
+	  if (page == NULL) continue;
+	  
+	  wxString title = page->GetPageText(i);
+	  // 固有番号を取得
+	  wxString origNumber = tiHash[title].origNumber;
+	  // スレッドの情報をSQLiteに格納する
+	  ThreadInfo t;
+	  t.title = title;
+	  t.origNumber = origNumber;
+	  t.boardNameAscii = tiHash[title].boardNameAscii;
+	  SQLiteAccessor::SetThreadInfo(&t, ID_AddThreadFavorite);
+
+	  wxString message = wxT("「") + title + wxT("」をお気に入りに追加") + wxT("（  ´ん｀）");
+	  SendLogging(message);
+     }
 }
 /**
  * 板一覧リストでのクリック時のイベント
@@ -2586,7 +2620,7 @@ void JaneClone::OnRightClickThreadNoteBook(wxAuiNotebookEvent& event) {
      threadTabUtil->AppendSeparator();
 
      wxMenu* addFavAll = new wxMenu();
-     addFavAll->Append(wxID_ANY, wxT("「お気に入り」に追加"));
+     addFavAll->Append(ID_AddAllThreadFavorite, wxT("「お気に入り」に追加"));
      addFavAll->AppendSeparator();
      addFavAll->Append(wxID_ANY, wxT("「リンク」に追加"));
      threadTabUtil->AppendSubMenu(addFavAll, wxT("すべてのタブをお気に入りに追加"));
@@ -2898,7 +2932,8 @@ void JaneClone::OnMenuOpen(wxMenuEvent& event) {
      if (menuTitle == wxT("お気に入り")) {
 
 	  wxMenuItemList itemList = menu->GetMenuItems();
-	  wxArrayString  array    = SQLiteAccessor::GetThreadInfo(ID_UserFavoriteThreadClick);
+	  std::vector<std::tuple<wxString, wxString, wxString>> favoriteList;
+	  SQLiteAccessor::GetUserFavoriteThreadList(favoriteList);
 
 #if wxCHECK_VERSION(2, 9, 0)
 	  wxMenuItemList::compatibility_iterator current_menuitem_node;
@@ -2925,11 +2960,17 @@ void JaneClone::OnMenuOpen(wxMenuEvent& event) {
 	       }
 
 	       // 取得した値をメニューに設定する
-	       if ( array.GetCount() == 0 ) {
+	       if ( favoriteList.size() == 0 ) {
 		    menu->Append(wxID_ANY, wxT("お気に入りのスレッドがないよ"));
 	       } else {
-		    for (unsigned int i = 0; i < array.GetCount(); i++ ) {
-			 menu->Append(ID_UserFavoriteThreadClick + i, array[i]);
+		    for (unsigned int i = 0; i < favoriteList.size(); i++ ) {
+			 // ex) http://engawa.2ch.net/test/read.cgi/linux/1044149677/
+			 wxString helperUrl = wxT("http://hostname/test/read.cgi/") 
+			      + std::get<2>(favoriteList.at(i)) 
+			      + wxT("/") 
+			      + std::get<1>(favoriteList.at(i));
+
+			 menu->Append(ID_UserFavoriteThreadClick + i, std::get<0>(favoriteList.at(i)), helperUrl);
 		    }
 	       }
 	  }

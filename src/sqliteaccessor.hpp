@@ -23,6 +23,7 @@
 #define SQLITEACCESSOR_HPP_
 
 #include <iostream>
+#include <tuple>
 #include <wx/wx.h>
 #include <wx/dir.h>
 #include <wx/file.h>
@@ -98,7 +99,7 @@ public:
      /**
       * ユーザーがお気に入りに登録しているスレッドの情報を取得する
       */
-     static wxArrayString GetUserFavoriteThreadList();
+     static void GetUserFavoriteThreadList(std::vector<std::tuple<wxString, wxString, wxString>>& favoriteList);
      /**
       * スレタブの情報をSQLiteに格納する
       */

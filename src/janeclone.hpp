@@ -135,6 +135,7 @@ private:
      void OnVersionInfo(wxCommandEvent& event);
      void AddThreadFavorite(wxCommandEvent& event);
      void DelThreadFavorite(wxCommandEvent& event);
+     void AddAllThreadFavorite(wxCommandEvent& event);
 
      // JaneClone公式サイトをブラウザで開く
      void OnOpenJaneCloneOfficial(wxCommandEvent& event) {

@@ -264,6 +264,7 @@ X_TABLE_ITEM(ID_TabControlSettingPanelCloseThreadViewTabChoice) \
 X_TABLE_ITEM(ID_TabControlSettingPanelCloseThreadTabChoice) \
 X_TABLE_ITEM(ID_AddThreadFavorite)                /* お気に入りに追加	   	*/ \
 X_TABLE_ITEM(ID_DelThreadFavorite)		  /* お気に入りを削除	   	*/ \
+X_TABLE_ITEM(ID_AddAllThreadFavorite)             /* すべてのタブをお気に入りに追加	   	*/ \
 X_TABLE_ITEM(ID_JaneCloneEnumsEnd)
 
 // 列挙型の実体をマクロで生成する
