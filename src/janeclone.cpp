@@ -96,7 +96,8 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_CallSettingWindow, JaneClone::CallSettingWindow)
 
    // 検索バー系の命令
-   EVT_MENU(ID_SearchBoxDoSearch, JaneClone::SearchBoxDoSearch)
+   EVT_MENU(ID_ThreadSearchBoxDoSearch, JaneClone::ThreadSearchBoxDoSearch)
+   EVT_MENU(ID_BoardSearchBoxDoSearch, JaneClone::BoardSearchBoxDoSearch)
    EVT_MENU(ID_SearchBarHide, JaneClone::HideSearchBar)
    EVT_MENU(ID_SearchBoxUp, JaneClone::SearchBoxUp)
    EVT_MENU(ID_SearchBoxDown, JaneClone::SearchBoxDown)
@@ -287,7 +288,30 @@ void JaneClone::SetJaneCloneManuBar() {
       * 表示部分
       */
      wxMenu *menu2 = new wxMenu;
-     wxMenu* font = new wxMenu();
+     wxMenu *toolBar   = new wxMenu;
+     menu2->AppendSubMenu(toolBar, wxT("ツールバー"));
+     menu2->AppendCheckItem(wxID_ANY, wxT("ステータスバー"));
+     wxMenu *boardTree = new wxMenu;
+     menu2->AppendSubMenu(boardTree, wxT("板ツリー"));
+     wxMenu *memoWin   = new wxMenu;
+     menu2->AppendSubMenu(memoWin, wxT("メモ欄"));
+     wxMenu *tab       = new wxMenu;
+     menu2->AppendSubMenu(tab, wxT("タブ"));
+     wxMenu *searchBar = new wxMenu;
+     menu2->AppendSubMenu(searchBar, wxT("検索バー"));
+     menu2->Append(wxID_ANY, wxT("ビューア"));
+     menu2->AppendSeparator();
+     menu2->Append(ID_JaneCloneMgrUpdate, wxT("更新"));
+     menu2->AppendSeparator();
+     wxMenu *focus     = new wxMenu;
+     menu2->AppendSubMenu(focus, wxT("フォーカス"));
+     wxMenu *fontSize  = new wxMenu;
+     menu2->AppendSubMenu(fontSize, wxT("文字のサイズ"));
+     menu2->AppendSeparator();
+     menu2->Append(ID_SwitchSeparateXY, wxT("縦⇔横分割切り替え"));
+     menu2->Append(ID_SwitchTwoThreePane, wxT("２⇔３ペイン切り替え"));
+     menu2->Append(wxID_ANY, wxT("右側切替"));
+
      /**
       * 板覧部分
       */
@@ -3481,7 +3505,13 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 						wxDefaultSize, 
 						wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
      searchBox->SetToolBitmapSize(wxSize(32,32));
-     searchBox->AddTool(ID_SearchBoxDoSearch, SEARCH_BOX, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), wxT("検索"));
+
+     if (id == ID_ThreadSearchBar) {
+	  searchBox->AddTool(ID_ThreadSearchBoxDoSearch, SEARCH_BOX, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), wxT("検索"));
+     } else if (id == ID_BoardSearchBar) {
+	  searchBox->AddTool(ID_BoardSearchBoxDoSearch, SEARCH_BOX, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), wxT("検索"));
+     }
+
      // メニューの設定
      wxAuiToolBarItemArray prepend_items1;
      wxAuiToolBarItemArray append_items1;
@@ -3609,32 +3639,46 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 void JaneClone::SupplySearchWords(wxComboBox* combo, const wxWindowID id) {
 
 }
+
 /** 
- * 検索実行
+ * 検索実行(スレッド一覧)
  */
-void JaneClone::SearchBoxDoSearch(wxCommandEvent& event) {
+void JaneClone::ThreadSearchBoxDoSearch(wxCommandEvent& event) {
 
-     /**
-      * FIXME: ここ非常にソースが汚い
-      */
-     wxWindow* window = dynamic_cast<wxWindow*>(event.GetEventObject());
-     wxComboBox* combo = FindUserAttachedCombo(event, window);
-     wxString keyword = combo->GetValue();
+     wxWindow* target = boardNoteBook->GetPage(boardNoteBook->GetSelection());
+     if ( wxComboBox* combo = 
+	  dynamic_cast<wxComboBox*>(wxWindow::FindWindowById(ID_ThreadSearchBarCombo, target))) {
+	  const wxString keyword = combo->GetValue();
 
-     if (window != NULL && window->GetLabel() == BOARD_TREE_SEARCH) {
-	  if (keyword.IsEmpty()) return;
-	  SearchBoardTree(keyword);
-     } else if (window != NULL && window->GetLabel() == THREADLIST_SEARCH) {
-	  const wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
-	  if ( wxComboBox* threadListCombo = dynamic_cast<wxComboBox*>( this->FindWindowByLabel(boardName + wxT("_combo"))) ) {
-	       keyword = threadListCombo->GetValue();
-	       if (keyword.IsEmpty()) return;
+	  if (keyword.IsEmpty()) {
+	       return;
+	  } else {
 	       SearchThreadList(keyword);
+	       // コンボボックスに検索したキーワードをつめる
+	       combo->Append(keyword);
+	       SQLiteAccessor::SetUserSearchedKeyword(keyword,ID_ThreadSearchBarCombo);
 	  }
      }
-     // コンボボックスに検索したキーワードをつめる
-     combo->Append(keyword);
-     SQLiteAccessor::SetUserSearchedKeyword(keyword, FindUserAttachedWindowId(event, window));
+}
+/** 
+ * 検索実行(板一覧)
+ */
+void JaneClone::BoardSearchBoxDoSearch(wxCommandEvent& event) {
+
+     wxWindow* target = boardTreeNoteBook->GetPage(boardTreeNoteBook->GetSelection());
+     if ( wxComboBox* combo = 
+	  dynamic_cast<wxComboBox*>(wxWindow::FindWindowById(ID_BoardSearchBarCombo, target))) {
+	  const wxString keyword = combo->GetValue();
+
+	  if (keyword.IsEmpty()) { 
+	       return;
+	  } else {
+	       SearchBoardTree(keyword);
+	       // コンボボックスに検索したキーワードをつめる
+	       combo->Append(keyword);
+	       SQLiteAccessor::SetUserSearchedKeyword(keyword,ID_BoardSearchBarCombo);
+	  }	  
+     }     
 }
 /**
  * 板一覧ツリーを検索する
@@ -3846,8 +3890,11 @@ void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
           // ノートブックのサイズ調整
 	  wxSize client_size = GetClientSize();
 	  // 板一覧ツリーの再設定
-	  boardTreeNoteBook = new wxAuiNotebook(this, ID_BoardTreeNoteBook, wxPoint(client_size.x, client_size.y), 
-						wxDefaultSize, wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+	  boardTreeNoteBook = new wxAuiNotebook(this, 
+						ID_BoardTreeNoteBook, 
+						wxPoint(client_size.x, client_size.y), 
+						wxDefaultSize, 
+						wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
 	  // 2ch板一覧用ページ
 	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
 	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
@@ -4092,22 +4139,16 @@ void JaneClone::SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, c
      boardNoteBook->SetSelection(selectedPage);
 }
 /**
- * ショートカットキーのイベント
+ * ショートカットキー(Ctrl+F)のイベント
  */
 void JaneClone::CtrlF(wxKeyEvent& event) {
 
-     wxString targetLabel = wxEmptyString;
-
      if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) {
 	  // スレッド一覧ウィンドウの処理
-	  targetLabel = THREADLIST_SEARCH;
-	  targetLabel += wxT("_");
-	  // 対象のページをつかむためのラベルを作成
-	  wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
-	  targetLabel += boardName;
+	  wxWindow* target = boardNoteBook->GetPage(boardNoteBook->GetSelection());
 
 	  if ( wxAuiToolBar* toolBar 
-	       = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowByLabel(targetLabel, boardNoteBook))) {
+	       = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowById(ID_ThreadSearchBar, target))) {
 
 	       if (toolBar->IsShown()) {
 		    toolBar->GetNextSibling()->SetFocus();

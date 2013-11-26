@@ -98,7 +98,8 @@ X_TABLE_ITEM(ID_BoardSearchBar)			/* 板名検索ボックスのID						*/ \
 X_TABLE_ITEM(ID_ShingetsuBoardSearchBar)	/* 新月の板名検索ボックスのID					*/ \
 X_TABLE_ITEM(ID_ThreadSearchBarCombo)		/* スレッド検索ボックスのコンボボックス				*/ \
 X_TABLE_ITEM(ID_BoardSearchBarCombo)		/* 板名検索ボックスのコンボボックス				*/ \
-X_TABLE_ITEM(ID_SearchBoxDoSearch)		/* 検索ボックスで検索ボタンを押す				*/ \
+X_TABLE_ITEM(ID_ThreadSearchBoxDoSearch)        /* 検索ボックス(スレッド一覧)で検索ボタンを押す			*/ \
+X_TABLE_ITEM(ID_BoardSearchBoxDoSearch)		/* 検索ボックス(板一覧)で検索ボタンを押す			*/ \
 X_TABLE_ITEM(ID_SearchBoxUp)			/* 検索ボックスで上に移動					*/ \
 X_TABLE_ITEM(ID_SearchBoxDown)			/* 検索ボックスで下に移動					*/ \
 X_TABLE_ITEM(ID_SearchBoxCopy)			/* 検索ボックスでコピー実行					*/ \

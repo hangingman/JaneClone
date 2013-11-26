@@ -419,7 +419,8 @@ private:
       *  検索ボックス系の処理
       */
      // 検索実行
-     void SearchBoxDoSearch(wxCommandEvent& event);
+     void ThreadSearchBoxDoSearch(wxCommandEvent& event);
+     void BoardSearchBoxDoSearch(wxCommandEvent& event);
      // 板一覧ツリーを検索する
      void SearchBoardTree(const wxString& keyword);
      // スレッド一覧リストを検索する
@@ -457,7 +458,7 @@ private:
 
 	  wxComboBox* combo;
 	  wxWindowID id = FindUserAttachedWindowId(event, parent);
-	  combo = dynamic_cast<wxComboBox*>(wxWindow::FindWindowById(id));
+	  combo = dynamic_cast<wxComboBox*>(wxWindow::FindWindowById(id, parent));
 
 	  return combo;
      };
@@ -466,8 +467,12 @@ private:
      wxWindowID FindUserAttachedWindowId(wxCommandEvent& event, wxWindow* parent) {
 
 	  if (parent->GetLabel() == BOARD_TREE_SEARCH) {
+	       wxString message = wxT("BOARD_TREE_SEARCH");
+	       SendLogging(message);
 	       return ID_BoardSearchBarCombo;
 	  } else if (parent->GetLabel() == THREADLIST_SEARCH) {
+	       wxString message = wxT("THREADLIST_SEARCH");
+	       SendLogging(message);
 	       return ID_ThreadSearchBarCombo;
 	  }
 	  return wxID_ANY;
