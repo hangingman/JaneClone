@@ -208,6 +208,9 @@ void JaneClone::SetThreadInfoHash(ThreadInfoHash& threadInfoHash) {
      }
 }
 
+/**
+ * JaneCloneのコンストラクタ：すべての起点
+ */
 JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
      wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
 {
@@ -243,9 +246,9 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
      this->CreateStatusBar(2);
 
      // 各種GUI設定を行う
-     SetJaneCloneManuBar();
-     SetProperties();
-     DoLayout();
+     SetProperties();       // 前回までの設定を読み出す
+     DoLayout();            // 実際にレイアウトに展開する
+     SetJaneCloneManuBar(); // メニューバーを設定する
 
      // ユーザーが前回までに見ていた板一覧タブとスレッド一覧タブをセットする
      SetPreviousUserLookedTab();
@@ -289,23 +292,66 @@ void JaneClone::SetJaneCloneManuBar() {
       */
      wxMenu *menu2 = new wxMenu;
      wxMenu *toolBar   = new wxMenu;
+     toolBar->Append(wxID_ANY, wxT("メニュー"));
+     toolBar->Append(wxID_ANY, wxT("メインツールバー"));
+     toolBar->Append(wxID_ANY, wxT("リンク"));
+     toolBar->Append(wxID_ANY, wxT("アドレスバー"));
+     toolBar->Append(wxID_ANY, wxT("移動ボタン"));
+     toolBar->Append(wxID_ANY, wxT("メイン検索バー"));
+     toolBar->AppendSeparator();
+     toolBar->Append(wxID_ANY, wxT("ツールバーを固定する"));
      menu2->AppendSubMenu(toolBar, wxT("ツールバー"));
      menu2->AppendCheckItem(wxID_ANY, wxT("ステータスバー"));
      wxMenu *boardTree = new wxMenu;
+     boardTree->AppendCheckItem(wxID_ANY, wxT("ステータスバー"));
+     boardTree->AppendCheckItem(wxID_ANY, wxT("板ツリー全体"));
+     boardTree->AppendSeparator();
+     boardTree->AppendCheckItem(wxID_ANY, wxT("トップバー"));
+     boardTree->AppendSeparator();
+     boardTree->AppendRadioItem(wxID_ANY, wxT("板一覧"));
+     boardTree->AppendRadioItem(wxID_ANY, wxT("お気に入り"));
+     boardTree->AppendRadioItem(wxID_ANY, wxT("閲覧中"));
      menu2->AppendSubMenu(boardTree, wxT("板ツリー"));
      wxMenu *memoWin   = new wxMenu;
+     memoWin->AppendCheckItem(wxID_ANY, wxT("メモ欄全体"));
+     memoWin->AppendSeparator();
+     memoWin->AppendCheckItem(wxID_ANY, wxT("書き込みバー"));
+     memoWin->AppendCheckItem(wxID_ANY, wxT("メモツールバー"));
+     memoWin->AppendCheckItem(wxID_ANY, wxT("設定バー"));
+     memoWin->AppendSeparator();
+     memoWin->AppendCheckItem(wxID_ANY, wxT("メモ欄ツールバーの固定"));
      menu2->AppendSubMenu(memoWin, wxT("メモ欄"));
      wxMenu *tab       = new wxMenu;
+     tab->AppendCheckItem(wxID_ANY, wxT("ツリータブ"));
+     tab->AppendCheckItem(wxID_ANY, wxT("スレ覧タブ"));
+     tab->AppendCheckItem(wxID_ANY, wxT("スレタブ"));
+     tab->AppendCheckItem(wxID_ANY, wxT("メモ欄タブ"));
      menu2->AppendSubMenu(tab, wxT("タブ"));
      wxMenu *searchBar = new wxMenu;
+     searchBar->AppendCheckItem(wxID_ANY, wxT("スレ一覧検索バー"));
+     searchBar->AppendCheckItem(wxID_ANY, wxT("スレ検索バー"));
+     searchBar->AppendCheckItem(wxID_ANY, wxT("板ツリー検索バー"));
      menu2->AppendSubMenu(searchBar, wxT("検索バー"));
      menu2->Append(wxID_ANY, wxT("ビューア"));
      menu2->AppendSeparator();
      menu2->Append(ID_JaneCloneMgrUpdate, wxT("更新"));
      menu2->AppendSeparator();
      wxMenu *focus     = new wxMenu;
+     focus->Append(wxID_ANY, wxT("次のペイン"));
+     focus->Append(wxID_ANY, wxT("前のペイン"));
+     focus->AppendSeparator();
+     focus->Append(wxID_ANY, wxT("板"));
+     focus->Append(wxID_ANY, wxT("お気に入り"));
+     focus->Append(wxID_ANY, wxT("スレ一覧"));
+     focus->Append(wxID_ANY, wxT("スレ"));
+     focus->Append(wxID_ANY, wxT("メモ欄"));
      menu2->AppendSubMenu(focus, wxT("フォーカス"));
      wxMenu *fontSize  = new wxMenu;
+     fontSize->AppendRadioItem(wxID_ANY, wxT("最大"));
+     fontSize->AppendRadioItem(wxID_ANY, wxT("大"));
+     fontSize->AppendRadioItem(wxID_ANY, wxT("中"));
+     fontSize->AppendRadioItem(wxID_ANY, wxT("小"));
+     fontSize->AppendRadioItem(wxID_ANY, wxT("最小"));
      menu2->AppendSubMenu(fontSize, wxT("文字のサイズ"));
      menu2->AppendSeparator();
      menu2->Append(ID_SwitchSeparateXY, wxT("縦⇔横分割切り替え"));
