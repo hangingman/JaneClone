@@ -179,7 +179,7 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
      threadToolbar2->Realize();
 
      /** 検索バーを載せる */
-     searchBarPanel = new wxPanel(this, wxID_ANY);
+     searchBarPanel = new wxPanel(this, ID_ThreadContentSearchBar);
 
 #if wxCHECK_VERSION(2, 9, 1)
      // 通常検索

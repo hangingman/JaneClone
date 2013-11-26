@@ -92,6 +92,7 @@ X_TABLE_ITEM(ID_MovePrevTab)			/* 表示しているタブを移動する(前)		
 X_TABLE_ITEM(ID_UserLookingTabsMenuClick)	/* ユーザーが現在見ているスレタブ・板タブ			*/ \
 X_TABLE_ITEM(ID_OnOpenJaneCloneOfficial)	/* JaneClone公式サイトをブラウザで開く				*/ \
 X_TABLE_ITEM(ID_OnOpen2chViewerOfficial)	/* ●公式サイトをブラウザで開く					*/ \
+X_TABLE_ITEM(ID_ThreadContentSearchBar)		/* スレッド内容バーの検索ボックスのID				*/ \
 X_TABLE_ITEM(ID_ThreadSearchBar)		/* スレッド検索ボックスのID					*/ \
 X_TABLE_ITEM(ID_BoardSearchBar)			/* 板名検索ボックスのID						*/ \
 X_TABLE_ITEM(ID_ShingetsuBoardSearchBar)	/* 新月の板名検索ボックスのID					*/ \

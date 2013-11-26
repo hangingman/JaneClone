@@ -4099,6 +4099,7 @@ void JaneClone::CtrlF(wxKeyEvent& event) {
      wxString targetLabel = wxEmptyString;
 
      if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) {
+	  // スレッド一覧ウィンドウの処理
 	  targetLabel = THREADLIST_SEARCH;
 	  targetLabel += wxT("_");
 	  // 対象のページをつかむためのラベルを作成
@@ -4116,6 +4117,23 @@ void JaneClone::CtrlF(wxKeyEvent& event) {
 		    toolBar->Show();
 		    m_mgr.Update();
 	       }	  
+	  }
+     } else if (this->userLastAttachedNotebook == THREAD_NOTEBOOK) {
+	  // スレッド内容ウィンドウの処理
+	  ThreadContentBar* contentBar = 
+	       dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(threadNoteBook->GetSelection()));
+	  
+	  if ( wxPanel* searchBarPanel 
+	       = dynamic_cast<wxPanel*>(wxWindow::FindWindowById(ID_ThreadContentSearchBar, contentBar))) {
+	       // スレッド内容バーの子ウィンドウを取り出して命令する
+	       if (searchBarPanel->IsShown()) {
+		    searchBarPanel->GetNextSibling()->SetFocus();
+		    searchBarPanel->Hide();
+		    m_mgr.Update();
+	       } else {
+		    searchBarPanel->Show();
+		    m_mgr.Update();
+	       }	       
 	  }
      }
 }
