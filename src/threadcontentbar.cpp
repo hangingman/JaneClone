@@ -27,6 +27,7 @@
 // event table
 BEGIN_EVENT_TABLE(ThreadContentBar, wxPanel)
    EVT_MENU(ID_TCBScrollToNewRes,  ThreadContentBar::OnClickTCBScrollToNewRes)
+   EVT_BUTTON(ID_TCBHideSearchBar, ThreadContentBar::OnClickTCBHideSearchBar)
 END_EVENT_TABLE()
 
 // EVT_MOUSE_EVENTS(ThreadContentBar::OnHoverTCBAutoReload)
@@ -41,7 +42,6 @@ END_EVENT_TABLE()
 // EVT_BUTTON(ID_TCBDeleteLog,	   ThreadContentBar::OnClickTCBDeleteLog)
 // EVT_BUTTON(ID_TCBClose,	   ThreadContentBar::OnClickTCBClose)
 // EVT_BUTTON(ID_TCBNormalSearch,	   ThreadContentBar::OnClickTCBNormalSearch)
-// EVT_BUTTON(ID_TCBHideSearchBar,   ThreadContentBar::OnClickTCBHideSearchBar)
 // EVT_BUTTON(ID_TCBForward,	   ThreadContentBar::OnClickTCBForward)
 // EVT_BUTTON(ID_TCBBackward,	   ThreadContentBar::OnClickTCBBackward)
 
@@ -52,15 +52,15 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
      wxImage::AddHandler( new wxPNGHandler );
 
      // begin wxGlade: ThreadContentBar::ThreadContentBar
-     threadContentsBarUpperSizer = new wxPanel(this, wxID_ANY);
-     threadContentsBarUpperSizer->SetBackgroundColour(*wxLIGHT_GREY);
+     threadContentsBarPanel = new wxPanel(this, wxID_ANY);
+     threadContentsBarPanel->SetBackgroundColour(*wxLIGHT_GREY);
 
      // スレッドタイトルを保持する
-     threadName = new wxStaticText(threadContentsBarUpperSizer, wxID_ANY, wxEmptyString);
-     spacePanel1 = new wxPanel(threadContentsBarUpperSizer, wxID_ANY);
+     threadName = new wxStaticText(threadContentsBarPanel, wxID_ANY, wxEmptyString);
+     spacePanel1 = new wxPanel(threadContentsBarPanel, wxID_ANY);
 
      // wxAuiToolBar1を宣言する
-     threadToolbar1 = new wxAuiToolBar(threadContentsBarUpperSizer, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+     threadToolbar1 = new wxAuiToolBar(threadContentsBarPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 				       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
      threadToolbar1->SetToolBitmapSize(wxSize(32,32));
      threadToolbar1->AddTool(ID_TCBAutoReload, wxT("autoreload"), 
@@ -96,7 +96,7 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
      threadToolbar1->Realize();
 
      // wxAuiToolBar2を宣言する
-     threadToolbar2 = new wxAuiToolBar(threadContentsBarUpperSizer, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+     threadToolbar2 = new wxAuiToolBar(threadContentsBarPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 				       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
      threadToolbar2->SetToolBitmapSize(wxSize(32,32));
      threadToolbar2->AddTool(ID_TCBScrollToNewRes, wxT("scrolltonewres"), 
@@ -178,9 +178,12 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 
      threadToolbar2->Realize();
 
+     /** 検索バーを載せる */
+     searchBarPanel = new wxPanel(this, wxID_ANY);
+
 #if wxCHECK_VERSION(2, 9, 1)
      // 通常検索
-     normalSearchButton = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     normalSearchButton = new wxButton(searchBarPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
 
    #ifndef __WXMAC__ // Macでは子スレッドでの画像リソース更新は許されない
      wxBitmap* normalSearch = new wxBitmap();
@@ -189,27 +192,27 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
    #endif
 #else
      // 通常検索
-     normalSearchButton = new wxBitmapButton(this, wxID_ANY, 
+     normalSearchButton = new wxBitmapButton(searchBarPanel, wxID_ANY, 
 					     wxBitmap(normalSearchImg, wxBITMAP_TYPE_PNG),
 					     wxDefaultPosition, threadContentBarImgSize);
 #endif
      // スレッド内検索用コンボボックス
    #ifndef __WXMAC__
      searchWordCombo_choices = NULL;
-     searchWordCombo = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition,
+     searchWordCombo = new wxComboBox(searchBarPanel, wxID_ANY, wxT(""), wxDefaultPosition,
      wxDefaultSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
    #endif
 
 #if wxCHECK_VERSION(2, 9, 1)
      // 通常検索
-     backwardButton = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     backwardButton = new wxButton(searchBarPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
    #ifndef __WXMAC__
      wxBitmap* backward = new wxBitmap();
      if (backward->LoadFile(backwardImg, wxBITMAP_TYPE_PNG))
 	  backwardButton->SetBitmap(*backward);
    #endif
 
-     forwardButton  = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     forwardButton  = new wxButton(searchBarPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
    #ifndef __WXMAC__
      wxBitmap* forward = new wxBitmap();
      if (forward->LoadFile(forwardImg, wxBITMAP_TYPE_PNG))
@@ -218,19 +221,19 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 
 #else
      // 引っかかった検索ワードを前後させる
-     backwardButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(backwardImg, wxBITMAP_TYPE_PNG), 
+     backwardButton = new wxBitmapButton(searchBarPanel, wxID_ANY, wxBitmap(backwardImg, wxBITMAP_TYPE_PNG), 
 					 wxDefaultPosition, threadContentBarImgSize,
 					 wxBU_AUTODRAW, wxDefaultValidator, wxT("前へ"));
-     forwardButton  = new wxBitmapButton(this, wxID_ANY, wxBitmap(forwardImg , wxBITMAP_TYPE_PNG), 
+     forwardButton  = new wxBitmapButton(searchBarPanel, wxID_ANY, wxBitmap(forwardImg , wxBITMAP_TYPE_PNG), 
 					 wxDefaultPosition, threadContentBarImgSize,
 					 wxBU_AUTODRAW, wxDefaultValidator, wxT("次へ"));
 #endif
-     panel_2 = new wxPanel(this, wxID_ANY);
+     panel_2 = new wxPanel(searchBarPanel, wxID_ANY);
 
 
 #if wxCHECK_VERSION(2, 9, 1)
      // 検索バーを隠す
-     hideSearchBarButton = new wxButton(this, wxID_ANY, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
+     hideSearchBarButton = new wxButton(searchBarPanel, ID_TCBHideSearchBar, wxEmptyString, wxDefaultPosition, threadContentBarImgSize);
    #ifndef __WXMAC__
      wxBitmap* hideSearch = new wxBitmap();
      if (hideSearch->LoadFile(hideSearchBarImg, wxBITMAP_TYPE_PNG))
@@ -239,7 +242,7 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 
 #else
      // 検索バーを隠す
-     hideSearchBarButton = new wxBitmapButton(this, wxID_ANY, wxBitmap(hideSearchBarImg, wxBITMAP_TYPE_ANY),
+     hideSearchBarButton = new wxBitmapButton(searchBarPanel, ID_TCBHideSearchBar, wxBitmap(hideSearchBarImg, wxBITMAP_TYPE_ANY),
 					      wxDefaultPosition, threadContentBarImgSize);
 #endif
      // スレッドの内容が乗るパネル
@@ -269,18 +272,18 @@ void ThreadContentBar::do_layout()
 {
     // begin wxGlade: ThreadContentBar::do_layout
     wxBoxSizer* threadContentsBarSizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* horizonalSizer2 = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* horizonalSizer1 = new wxBoxSizer(wxHORIZONTAL);
-    horizonalSizer1->Add(threadName, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
-    horizonalSizer1->Add(spacePanel1, 1, wxEXPAND, 0);
+    wxBoxSizer* horizonalSizer2 = new wxBoxSizer(wxHORIZONTAL);
 
     // スレッド内容バー右上のボタン群
+    horizonalSizer1->Add(threadName, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    horizonalSizer1->Add(spacePanel1, 1, wxEXPAND, 0);
     horizonalSizer1->Add(threadToolbar1, 0, wxALIGN_RIGHT, 0);
     horizonalSizer1->Add(threadToolbar2, 0, wxALIGN_RIGHT, 0);
+    threadContentsBarPanel->SetSizer(horizonalSizer1);
+    threadContentsBarSizer->Add(threadContentsBarPanel, 0, wxEXPAND, 0);
 
-    threadContentsBarUpperSizer->SetSizer(horizonalSizer1);
-    threadContentsBarSizer->Add(threadContentsBarUpperSizer, 0, wxEXPAND, 0);
-
+    // 検索バー部分
     horizonalSizer2->Add(normalSearchButton, 0, 0, 0);
 #ifndef __WXMAC__
     horizonalSizer2->Add(searchWordCombo, 0, 0, 0);
@@ -289,7 +292,10 @@ void ThreadContentBar::do_layout()
     horizonalSizer2->Add(forwardButton, 0, 0, 0);
     horizonalSizer2->Add(panel_2, 1, wxEXPAND, 0);
     horizonalSizer2->Add(hideSearchBarButton, 0, wxALIGN_RIGHT, 0);
-    threadContentsBarSizer->Add(horizonalSizer2, 0, wxEXPAND, 0);
+    searchBarPanel->SetSizer(horizonalSizer2);
+    threadContentsBarSizer->Add(searchBarPanel, 0, wxEXPAND, 0);
+
+    // スレッドの内容部分
     threadContentsBarSizer->Add(threadContentPanel, 1, wxEXPAND | wxBOTTOM, 5);
     SetSizer(threadContentsBarSizer);
     Layout();
@@ -333,4 +339,25 @@ void ThreadContentBar::OnClickTCBScrollToNewRes(wxCommandEvent& event) {
      tcw->GetHtmlWindowScrollPos(&p);
      p.y = y - p.y;
      tcw->ForceScroll(&p);
+}
+/**
+ * スレッド内容バーの内容を隠す
+ */
+void ThreadContentBar::OnClickTCBHideSearchBar(wxCommandEvent& event) {
+
+     if (searchBarPanel->IsShown()) {
+	  searchBarPanel->GetNextSibling()->SetFocus();
+	  searchBarPanel->Hide();
+     } else {
+	  searchBarPanel->Show();
+     }
+
+     wxCommandEvent* cmEvent = new wxCommandEvent(wxEVT_UPDATE_UI, ID_JaneCloneMgrUpdate);
+
+#if wxCHECK_VERSION(2, 9, 0)
+     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(cmEvent->Clone());
+#else
+     this->GetEventHandler()->AddPendingEvent(*cmEvent);
+#endif
+
 }

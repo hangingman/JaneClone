@@ -100,6 +100,8 @@ private:
 
      // 新着までスクロール
      void OnClickTCBScrollToNewRes(wxCommandEvent& event);
+     // スレッド内容バーの内容を隠す
+     void OnClickTCBHideSearchBar(wxCommandEvent& event);
 
      /**
       * メインのスレッドにログとイベントを送る
@@ -139,7 +141,8 @@ protected:
      wxAuiToolBar* threadToolbar1;
      wxAuiToolBar* threadToolbar2;
 
-     wxPanel* threadContentsBarUpperSizer;
+     wxPanel* threadContentsBarPanel;
+     wxPanel* searchBarPanel;
      wxComboBox* searchWordCombo;
      wxPanel* panel_2;
 

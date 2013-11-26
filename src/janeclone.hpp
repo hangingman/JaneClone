@@ -213,6 +213,8 @@ private:
      void UserLastClosedThreadMenuUp(wxUpdateUIEvent& event);
      void UserLookingTabsMenuUp(wxUpdateUIEvent& event);
      void UserLookingTabsControl(wxUpdateUIEvent& event);
+     // Auiマネージャーの更新を行う
+     void JaneCloneMgrUpdate(wxUpdateUIEvent& event);
 
      // スレッド一覧タブ処理
      void OneBoardTabClose(wxCommandEvent& event);

@@ -110,6 +110,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_UPDATE_UI(ID_UserLastClosedThreadMenuUp, JaneClone::UserLastClosedThreadMenuUp)
    EVT_UPDATE_UI(ID_UserLastClosedBoardMenuUp, JaneClone::UserLastClosedBoardMenuUp)
    EVT_UPDATE_UI(ID_UserLookingTabsMenuUp, JaneClone::UserLookingTabsMenuUp)
+   EVT_UPDATE_UI(ID_JaneCloneMgrUpdate, JaneClone::JaneCloneMgrUpdate)
     
    // 2ch板一覧ツリーコントロールのイベント
    EVT_TREE_SEL_CHANGED(ID_BoardTreectrl, JaneClone::OnGetBoardInfo)
@@ -3412,6 +3413,12 @@ void JaneClone::UserLookingTabsMenuUp(wxUpdateUIEvent& event) {
      for (unsigned int i = 0; i < array.GetCount(); i++ ) {
 	  lookingTB->Append(ID_UserLookingTabsMenuClick, array[i]);
      }
+}
+/**
+ * Auiマネージャーの更新を行う
+ */
+void JaneClone::JaneCloneMgrUpdate(wxUpdateUIEvent& event) {
+     m_mgr.Update();
 }
 /**
  * ユーザーが現在フォーカスしているウィンドウの操作を行う

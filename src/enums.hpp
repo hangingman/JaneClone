@@ -85,6 +85,7 @@ X_TABLE_ITEM(ID_URLWindowButton)		/* URL入力ウィンドウのボタンを表�
 X_TABLE_ITEM(ID_UserLastClosedThreadMenuUp)	/* ユーザーが最後に閉じたスレッドの情報を			*/ \
 X_TABLE_ITEM(ID_UserLastClosedBoardMenuUp)	/* ユーザーが最後に閉じた板の情報を項目に			*/ \
 X_TABLE_ITEM(ID_UserLookingTabsMenuUp)		/* ユーザーが現在見ているスレタブ・板タブ			*/ \
+X_TABLE_ITEM(ID_JaneCloneMgrUpdate)		/* Auiマネージャーの更新を行う	         		        */ \
 X_TABLE_ITEM(ID_UserLookingTabsControl)		/* ユーザーが現在フォーカスしているウィン			*/ \
 X_TABLE_ITEM(ID_MoveNextTab)                    /* 表示しているタブを移動する(次)				*/ \
 X_TABLE_ITEM(ID_MovePrevTab)			/* 表示しているタブを移動する(前)				*/ \
@@ -127,7 +128,7 @@ X_TABLE_ITEM(ID_TCBBookMark)			/* */ \
 X_TABLE_ITEM(ID_TCBDeleteLog)			/* */ \
 X_TABLE_ITEM(ID_TCBClose)			/* */ \
 X_TABLE_ITEM(ID_TCBNormalSearch)		/* */ \
-X_TABLE_ITEM(ID_TCBHideSearchBar)		/* */ \
+X_TABLE_ITEM(ID_TCBHideSearchBar)		/* スレッド内容バーの内容を隠す                                  */ \
 X_TABLE_ITEM(ID_TCBForward)			/* */ \
 X_TABLE_ITEM(ID_TCBBackward)			/* */ \
 X_TABLE_ITEM(ID_ThreadContentBarUpdate)		/* */ \
