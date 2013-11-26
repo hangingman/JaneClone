@@ -35,11 +35,11 @@ static const wxCmdLineEntryDesc gCmdLineDesc[] =
 #if wxCHECK_VERSION(2, 9, 0)
      { wxCMD_LINE_OPTION, "p", "pid", "past worked JaneClone pid", 
 #else
-     { wxCMD_LINE_OPTION, wxT("p"), wxT("pid"), wxT("past worked JaneClone pid"),
+       { wxCMD_LINE_OPTION, wxT("p"), wxT("pid"), wxT("past worked JaneClone pid"),
 #endif
-       wxCMD_LINE_VAL_NUMBER, wxCMD_LINE_PARAM_OPTIONAL },
-     { wxCMD_LINE_NONE }
-};
+	 wxCMD_LINE_VAL_NUMBER, wxCMD_LINE_PARAM_OPTIONAL },
+       { wxCMD_LINE_NONE }
+     };
 #endif
 
 /*
@@ -47,24 +47,26 @@ static const wxCmdLineEntryDesc gCmdLineDesc[] =
  */
 class wxMain: public wxApp {
 
-     wxLocale m_Locale;
+  wxLocale m_Locale;
 
 public:
-     wxMain() : m_Locale(wxLANGUAGE_DEFAULT){}
-     virtual bool OnInit();
-     virtual int OnExit();
-
-     // 再起動時のコマンドライン読み込み用
-#ifdef __WXMSW__
-     virtual int OnRun();
-     virtual void OnInitCmdLine(wxCmdLineParser& parser);
-     virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
-#endif
+  wxMain() : m_Locale(wxLANGUAGE_DEFAULT){}
+  virtual bool OnInit();
+  virtual int OnExit();
 
 private:
-     wxSingleInstanceChecker* m_checker;
-     JaneClone* wxJaneClone;
-     long m_pid;
+  virtual int FilterEvent(wxEvent& event);
+
+  // 再起動時のコマンドライン読み込み用
+#ifdef __WXMSW__
+  virtual int OnRun();
+  virtual void OnInitCmdLine(wxCmdLineParser& parser);
+  virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
+#endif
+
+  wxSingleInstanceChecker* m_checker;
+  JaneClone* wxJaneClone;
+  long m_pid;
 };
 
 IMPLEMENT_APP(wxMain)
@@ -74,32 +76,32 @@ IMPLEMENT_APP(wxMain)
  */
 bool wxMain::OnInit() {
 
-     if (!wxApp::OnInit())
-	  return false;
-
-     // コマンドラインで与えられた引数を取得する
-     if (m_pid != 0 && m_pid == wxGetProcessId()) {
-	  // このプロセスをしばらく待機
-	  // ! Fix Me ! なんかここ実装しなくても動作してるけど…
-     }
-
-     // JaneClone起動前に複数起動をチェックする
-     const wxString name = wxString::Format(_("JaneClone-%s"), wxGetUserId().c_str());
-     m_checker = new wxSingleInstanceChecker(name);
-     if ( m_checker->IsAnotherRunning()) {
-	  wxMessageBox(wxT("誤作動防止のためJaneCloneは複数起動できません。終了します。"), 
-		       wxT("JaneClone起動"), wxOK | wxICON_ERROR);
-	  return false;
-     }
-
-     wxInitAllImageHandlers();
-     wxImage::AddHandler( new wxPNGHandler );
-     wxFileSystem::AddHandler(new wxMemoryFSHandler);
-     wxJaneClone = new JaneClone(NULL, wxID_ANY, wxEmptyString);
-     wxJaneClone->pid = 0;
-     SetTopWindow(wxJaneClone);
-     wxJaneClone->Show();
-     return true;
+    if (!wxApp::OnInit())
+	 return false;
+     
+    // コマンドラインで与えられた引数を取得する
+    if (m_pid != 0 && m_pid == wxGetProcessId()) {
+	 // このプロセスをしばらく待機
+	 // ! Fix Me ! なんかここ実装しなくても動作してるけど…
+    }
+     
+    // JaneClone起動前に複数起動をチェックする
+    const wxString name = wxString::Format(_("JaneClone-%s"), wxGetUserId().c_str());
+    m_checker = new wxSingleInstanceChecker(name);
+    if ( m_checker->IsAnotherRunning()) {
+	 wxMessageBox(wxT("誤作動防止のためJaneCloneは複数起動できません。終了します。"), 
+	    wxT("JaneClone起動"), wxOK | wxICON_ERROR);
+	 return false;
+    }
+     
+    wxInitAllImageHandlers();
+    wxImage::AddHandler( new wxPNGHandler );
+    wxFileSystem::AddHandler(new wxMemoryFSHandler);
+    wxJaneClone = new JaneClone(NULL, wxID_ANY, wxEmptyString);
+    wxJaneClone->pid = 0;
+    SetTopWindow(wxJaneClone);
+    wxJaneClone->Show();
+    return true;
 }
 /**
  * 終了後の後始末
@@ -118,13 +120,40 @@ int wxMain::OnExit() {
 
      return 0;
 }
+/**
+ * キーイベントをここで判断する
+ */
+int wxMain::FilterEvent(wxEvent& event) {
+
+    if (event.GetEventType() == wxEVT_KEY_DOWN) {
+	  wxKeyEvent e = dynamic_cast<wxKeyEvent&>(event);
+
+	  if(e.GetModifiers() == wxMOD_CONTROL) {
+
+	       bool ret = -1;
+	       switch(e.GetKeyCode()) {
+	       case 'F':
+		    wxJaneClone->CtrlF(e);
+		    return true;
+		    break;
+	       default:
+		    break;
+	       }
+
+	       return -1;
+	  }
+
+	  return -1;
+    }
+ 
+    return -1;
+}
 
 #ifdef __WXMSW__
 /**
  * コンソールを走らせるために必要？
  */
-int wxMain::OnRun()
-{
+int wxMain::OnRun() {
     int exitcode = wxApp::OnRun();
     if (exitcode!=0)
         return exitcode;

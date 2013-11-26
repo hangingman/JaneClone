@@ -31,6 +31,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    // メニューバー・ポップアップメニューにあるコマンド入力で起動するメソッドのイベントテーブル
    EVT_MENU(ID_Quit, JaneClone::OnQuit)
    EVT_MENU(ID_Restart, JaneClone::OnRestart)
+   EVT_MENU(ID_WindowMinimize, JaneClone::WindowMinimize)
    EVT_MENU(ID_GetBoardList, JaneClone::OnGetBoardList)
    EVT_MENU(ID_CheckLogDirectory, JaneClone::CheckLogDirectory)
    EVT_MENU(ID_GetVersionInfo, JaneClone::OnVersionInfo)
@@ -158,6 +159,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_BUTTON(ID_URLWindowButton, JaneClone::OnClickURLWindowButton)
    // ログ出力制御用イベント
    EVT_TEXT(ID_Logging, JaneClone::Logging)
+
 
 #ifdef __WXMAC__
    // UIの更新通知
@@ -577,7 +579,8 @@ void JaneClone::SetJaneCloneManuBar() {
      menu8->Append(wxID_ANY, wxT("すべて元のサイズに戻す"));
      menu8->Append(wxID_ANY, wxT("すべて最大化"));
      menu8->AppendSeparator();
-     menu8->Append(ID_WindowMinimize, wxT("最小化"));
+     menu8->Append(ID_WindowMinimize, wxT("最小化")); // 最小化メソッドがわからない
+     menu8->Enable(ID_WindowMinimize, false);
      menu8->AppendSeparator();
      this->lookingTB = new wxMenu();
      lookingTB->Append(ID_UserLookingTabsMenuUp, wxT("現在開いている板とスレッド"), wxT("現在開いている板とスレッドを開きます"));
@@ -1146,6 +1149,13 @@ void JaneClone::OnRestart(wxCommandEvent& event) {
      wxSleep(1);
      this->Show();
 #endif
+}
+/**
+ * JaneCloneのウィンドウを最小化する
+ */
+void JaneClone::WindowMinimize(wxCommandEvent& event) {
+
+     
 }
 /**
  * 板一覧のツリーがクリックされたときに起きるイベント
@@ -3458,7 +3468,11 @@ wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName
 void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindowID id, const wxString& boardName) {
 
      // wxAuiToolBarを宣言する
-     wxAuiToolBar* searchBox = new wxAuiToolBar(panel, id, wxDefaultPosition, wxDefaultSize, wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
+     wxAuiToolBar* searchBox = new wxAuiToolBar(panel, 
+						id,
+						wxDefaultPosition, 
+						wxDefaultSize, 
+						wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
      searchBox->SetToolBitmapSize(wxSize(32,32));
      searchBox->AddTool(ID_SearchBoxDoSearch, SEARCH_BOX, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), wxT("検索"));
      // メニューの設定
@@ -3511,12 +3525,21 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
      item.SetId(ID_SearchBarHide);
      item.SetLabel(wxT("閉じる"));
      append_items1.Add(item);
+
      searchBox->SetCustomOverflowItems(prepend_items1, append_items1);
-     searchBox->AddTool(ID_SearchBoxRegexSearch, wxT("正規表現"), wxBitmap(regexImg, wxBITMAP_TYPE_ANY), wxT("正規表現を使います"), wxITEM_CHECK);
+     searchBox->AddTool(ID_SearchBoxRegexSearch, 
+			wxT("正規表現"), 
+			wxBitmap(regexImg, wxBITMAP_TYPE_ANY), 
+			wxT("正規表現を使います"), 
+			wxITEM_CHECK);
 
      if (id == ID_ThreadSearchBar) {
-	  // ラベルを設定する
-	  searchBox->SetLabel(THREADLIST_SEARCH);
+	  // ラベルを設定する 
+	  wxString label = THREADLIST_SEARCH;
+	  label += wxT("_"); 
+	  label += boardName;
+
+	  searchBox->SetLabel(label);
 	  // 検索ボックスを設定する
 	  wxComboBox* searchWordCombo = new wxComboBox(searchBox, ID_ThreadSearchBarCombo, wxEmptyString, wxDefaultPosition, 
 						       wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
@@ -4060,4 +4083,32 @@ void JaneClone::SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, c
      boardNoteBook->InsertPage(selectedPage, panel, nodeHostname, false, wxNullBitmap);
      // ノートブックの選択処理
      boardNoteBook->SetSelection(selectedPage);
+}
+/**
+ * ショートカットキーのイベント
+ */
+void JaneClone::CtrlF(wxKeyEvent& event) {
+
+     wxString targetLabel = wxEmptyString;
+
+     if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) {
+	  targetLabel = THREADLIST_SEARCH;
+	  targetLabel += wxT("_");
+	  // 対象のページをつかむためのラベルを作成
+	  wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+	  targetLabel += boardName;
+
+	  if ( wxAuiToolBar* toolBar 
+	       = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowByLabel(targetLabel, boardNoteBook))) {
+
+	       if (toolBar->IsShown()) {
+		    toolBar->GetNextSibling()->SetFocus();
+		    toolBar->Hide();
+		    m_mgr.Update();
+	       } else {
+		    toolBar->Show();
+		    m_mgr.Update();
+	       }	  
+	  }
+     }
 }

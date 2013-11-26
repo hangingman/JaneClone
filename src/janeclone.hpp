@@ -130,6 +130,7 @@ private:
      void OnQuit(wxCommandEvent& event);
      void OnAbout(wxCommandEvent& event);
      void OnRestart(wxCommandEvent& event);
+     void WindowMinimize(wxCommandEvent& event);
      void OnGetBoardList(wxCommandEvent& event);
      void CheckLogDirectory(wxCommandEvent& event);
      void OnVersionInfo(wxCommandEvent& event);
@@ -478,6 +479,10 @@ private:
 	       wxTheClipboard->Close();
 	  }
      };
+
+public:
+     // ショートカットキーのイベント
+     void CtrlF(wxKeyEvent& event);
 
      DECLARE_EVENT_TABLE()
 };
