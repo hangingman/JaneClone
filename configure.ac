@@ -187,6 +187,14 @@ case $host in
     ;;
 esac
 
+# janeclone shingetsu support, default is disable
+AC_ARG_ENABLE([shingetsu],
+    AS_HELP_STRING([--enable-shingetsu], [Enable feature to connect p2p board system shingetsu]))
+
+AS_IF([test "x$enable_bar" = "xyes"], [
+    AC_DEFINE(USE_SHINGETSU, 1, [when building shingetsu support code])
+])
+
 # Check compile flag
 AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
 AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"])

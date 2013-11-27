@@ -807,6 +807,7 @@ with_wx_exec_prefix
 enable_readline
 enable_threadsafe
 enable_dynamic_extensions
+enable_shingetsu
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1453,6 +1454,7 @@ Optional Features:
   --enable-threadsafe     build a thread-safe library [default=yes]
   --enable-dynamic-extensions
                           support loadable extensions [default=yes]
+  --enable-shingetsu      Enable feature to connect p2p board system shingetsu
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -16426,6 +16428,14 @@ $as_echo "#define PLATFORM_APPLE 1" >>confdefs.h
 
 		need_no_undefined=no
                 ;;
+        *-*-*bsd*)
+
+$as_echo "#define PLATFORM_BSD 1" >>confdefs.h
+
+                PLATFORM_STRING="BSD"
+
+		need_no_undefined=no
+                ;;
         *)
                 { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: *** Please add $host to configure.ac checks!" >&5
 $as_echo "$as_me: WARNING: *** Please add $host to configure.ac checks!" >&2;}
@@ -17424,6 +17434,21 @@ $as_echo "no" >&6; }
 $as_echo "no" >&6; }
     ;;
 esac
+
+# janeclone shingetsu support, default is disable
+# Check whether --enable-shingetsu was given.
+if test "${enable_shingetsu+set}" = set; then :
+  enableval=$enable_shingetsu;
+fi
+
+
+if test "x$enable_bar" = "xyes"; then :
+
+
+$as_echo "#define USE_SHINGETSU 1" >>confdefs.h
+
+
+fi
 
 # Check compile flag
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -fno-stack-protector" >&5

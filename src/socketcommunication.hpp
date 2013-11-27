@@ -95,13 +95,16 @@ public:
      wxString DownloadThread(const wxString boardName, const wxString boardURL,
 			     const wxString boardNameAscii, const wxString origNumber);
 
+#ifdef USE_SHINGETSU
      /**
       * 新月のスレッドをダウンロードしてくるメソッド
       * @param  公開ノードのURL
       * @param  ファイル名
       * @return ダウンロードしたcsvファイルの保存先
       */
-     wxString DownloadShingetsuThread(const wxString& nodeHostname, const wxString& title, const wxString& filename);
+     wxString DownloadShingetsuThread(const wxString& nodeHostname, 
+				      const wxString& title, const wxString& filename);
+#endif /** USE_SHINGETSU */
 
      /**
       * スレッドへの初回書き込みを行うメソッド
@@ -139,10 +142,13 @@ public:
       * FTPでのダウンロード
       */
      void DownloadImageFileByFtp(const wxString& href, DownloadImageResult* result);
+
+#ifdef USE_SHINGETSU
      /**
       * 新月の公開ノードからスレッド一覧を取得する
       */
      bool DownloadShingetsuThreadList(const wxString& nodeHostname, wxString& outputFilePath);
+#endif /** USE_SHINGETSU */
 
 private:
 

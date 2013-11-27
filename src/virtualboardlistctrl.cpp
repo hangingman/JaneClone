@@ -102,8 +102,13 @@ wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRT
      }     
      
      // ファイル読み出しメソッドの変更
+#ifdef USE_SHINGETSU
      targetIsShingetsu ? FileLoadMethodShingetsu(boardName, outputPath, oldThreadMap)
 	  : FileLoadMethod2ch(boardName, outputPath, oldThreadMap);
+#else
+     FileLoadMethod2ch(boardName, outputPath, oldThreadMap);
+#endif /** USE_SHINGETSU */
+
 
      InsertColumn(COL_CHK, wxT("!"), wxLIST_FORMAT_CENTRE);
      InsertColumn(COL_NUM, wxT("番号"), wxLIST_FORMAT_RIGHT);
@@ -263,6 +268,7 @@ void VirtualBoardListCtrl::FileLoadMethod2ch(const wxString& boardName, const wx
      // データを挿入
      SetItemCount(m_vBoardList.size());
 }
+#ifdef USE_SHINGETSU
 /**
  * 新月ののcsvファイルを読み出す処理
  */
@@ -332,6 +338,7 @@ void VirtualBoardListCtrl::FileLoadMethodShingetsu(const wxString& boardName, co
      // データを挿入
      SetItemCount(m_vBoardList.size());
 }
+#endif /** USE_SHINGETSU */
 /**
  * 内部リストの更新処理
  * @param wxString boardName   板名

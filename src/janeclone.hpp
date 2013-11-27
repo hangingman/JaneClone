@@ -253,7 +253,6 @@ private:
      void OnCloseWindow(wxCloseEvent& event);
      void OnLeftClickAtListCtrl(wxListEvent& event);
      void OnLeftClickAtListCtrl2ch(wxListEvent& event);
-     void OnLeftClickAtListCtrlShingetsu(wxListEvent& event);
      void OnLeftClickAtListCtrlCol(wxListEvent& event);
      void OnChangeBoardTab(wxAuiNotebookEvent& event);
      void OnChangeThreadTab(wxAuiNotebookEvent& event);
@@ -261,18 +260,11 @@ private:
      void OnChangedThreadTab(wxAuiNotebookEvent& event);
      void OnRightClickBoardNoteBook(wxAuiNotebookEvent& event);
      void OnRightClickThreadNoteBook(wxAuiNotebookEvent& event);
-     void OnRightClickShingetsuNodeTree(wxTreeEvent& event);
      void OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event);
      void OnAboutCloseBoardNoteBook(wxAuiNotebookEvent& event);
      void OnCellHover(wxHtmlCellEvent& event);
      void OnClickURLWindowButton(wxCommandEvent& event);
      void OnSetFocus(wxFocusEvent& event);
-
-     // マウスモーション
-     //void MouseMotion(wxMouseEvent& event);
-     //void MotionEnterWindow(wxMouseEvent& event);
-     //void MotionLeaveWindow(wxMouseEvent& event);
-     //void OnDoubleClick(wxMouseEvent& event);
 
      // 各種GUI上の設定
      void SetJaneCloneManuBar();
@@ -281,6 +273,8 @@ private:
      void SetJaneCloneAuiPaneInfo();
      void SetPreviousUserLookedTab();
      void InitializeJaneClone(wxString& jc, wxDir& jcDir);
+     // 2ch板一覧ツリーの初期化
+     void Initialize2chBoardList();
 
      // ツリーコントロールを載せるノートブック
      wxAuiNotebook* boardTreeNoteBook;
@@ -290,18 +284,8 @@ private:
      wxTreeCtrl* m_tree_ctrl;
      // 取得した板一覧ファイルからデータを抽出したのちwxTreeCtrlのインスタンスを返す
      void SetBoardList(const bool thisIsFirst = true);
-
-     // 新月の公開ノード用ツリーコントロールが乗るパネル
-     wxPanel* m_shingetsuTreePanel;
-     // 新月の公開ノード用ツリーコントロール
-     wxTreeCtrl* m_shingetsu_tree_ctrl;
      // 板一覧ツリーの初期化
      void InitializeBoardList();
-     // 2ch板一覧ツリーの初期化
-     void Initialize2chBoardList();
-     // 新月公開ノードの初期化
-     void InitializeShingetsuNodeList();
-
      // すべてのウィジェットが載るAuiマネージャー
      wxAuiManager m_mgr;
      // ステータスバー表示用文字列
@@ -340,11 +324,8 @@ private:
      void SwitchSeparateXY(wxCommandEvent& event);
      // ビューア設定画面を呼び出す
      void CallSettingWindow(wxCommandEvent& event);
-
      // 2ch板一覧ツリーコントロールでクリックした時のイベント
      void OnGetBoardInfo(wxTreeEvent& event);
-     // 新月公開ノードツリーコントロールでクリックした時のイベント
-     void OnGetShingetsuNodeInfo(wxTreeEvent& event);
 
      /**
       * 右上のオブジェクトとメソッド
@@ -354,20 +335,6 @@ private:
 				const std::map<wxString,ThreadList>& oldThreadMap);
      void SetThreadListItemUpdate( wxString boardName,  wxString outputPath, size_t selectedPage, 
 				   const std::map<wxString,ThreadList>& oldThreadMap);
-
-     // 新月公開ノードをクリックして、それをノートブックに反映するメソッド
-     void SetShingetsuNodeToNoteBook(const wxString& nodeHostname);
-     // 新月公開ノード上のスレッド一覧をUIに反映するメソッド
-     void SetShingetsuThreadListToNoteBook(const wxString& nodeHostname, wxString& outputFilePath);
-     // 新月のスレッド一覧を新たに取得する
-     void SetShingetsuThreadListItemNew(const wxString& nodeHostname, const size_t selectedPage
-					,wxString& outputFilePath
-					,const std::map<wxString,ThreadList>& oldThreadMap);
-     // 新月のスレッド一覧を更新する
-     void SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, const size_t selectedPage
-					   ,wxString& outputFilePath
-					   ,const std::map<wxString,ThreadList>& oldThreadMap);
-
      /**
       * 右下のオブジェクトとメソッド
       */
@@ -486,6 +453,34 @@ private:
 	       wxTheClipboard->Close();
 	  }
      };
+
+#ifdef USE_SHINGETSU /** 新月オプションが有効であればビルドする */
+     void OnLeftClickAtListCtrlShingetsu(wxListEvent& event);
+     void OnRightClickShingetsuNodeTree(wxTreeEvent& event);
+
+     // 新月の公開ノード用ツリーコントロールが乗るパネル
+     wxPanel* m_shingetsuTreePanel;
+     // 新月の公開ノード用ツリーコントロール
+     wxTreeCtrl* m_shingetsu_tree_ctrl;
+     // 新月公開ノードの初期化
+     void InitializeShingetsuNodeList();
+     // 新月公開ノードツリーコントロールでクリックした時のイベント
+     void OnGetShingetsuNodeInfo(wxTreeEvent& event);
+
+     // 新月公開ノードをクリックして、それをノートブックに反映するメソッド
+     void SetShingetsuNodeToNoteBook(const wxString& nodeHostname);
+     // 新月公開ノード上のスレッド一覧をUIに反映するメソッド
+     void SetShingetsuThreadListToNoteBook(const wxString& nodeHostname, wxString& outputFilePath);
+     // 新月のスレッド一覧を新たに取得する
+     void SetShingetsuThreadListItemNew(const wxString& nodeHostname, const size_t selectedPage
+					,wxString& outputFilePath
+					,const std::map<wxString,ThreadList>& oldThreadMap);
+     // 新月のスレッド一覧を更新する
+     void SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, const size_t selectedPage
+					   ,wxString& outputFilePath
+					   ,const std::map<wxString,ThreadList>& oldThreadMap);
+
+#endif /** USE_SHINGETSU */
 
 public:
      // ショートカットキーのイベント

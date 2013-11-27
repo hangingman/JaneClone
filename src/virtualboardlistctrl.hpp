@@ -309,11 +309,14 @@ public:
       */
      void FileLoadMethod2ch(const wxString& boardName, const wxString& outputPath, 
 			    const std::map<wxString,ThreadList>& oldThreadMap);
+
+#ifdef USE_SHINGETSU
      /**
       * 新月ののcsvファイルを読み出す処理
       */
      void FileLoadMethodShingetsu(const wxString& boardName, const wxString& outputPath, 
 				  const std::map<wxString,ThreadList>& oldThreadMap);
+#endif /** USE_SHINGETSU */
      /**
       * コンストラクタ：ログ一覧リスト作成用
       * @param wxWindow* parent     親ウィンドウ

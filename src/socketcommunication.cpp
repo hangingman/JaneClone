@@ -1753,6 +1753,8 @@ void SocketCommunication::DownloadImageFileByFtp(const wxString& href, DownloadI
      imageFilePath += tmp;
 
 }
+
+#ifdef USE_SHINGETSU
 /**
  * 指定された新月公開ノードホストにぶら下がるスレッド一覧リストをダウンロードしてくるメソッド
  * もし前回通信した際のログが残っていれば更新の確認のみ行う
@@ -1912,6 +1914,8 @@ wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostna
 
      return wxEmptyString;
 }
+
+#endif /** USE_SHINGETSU */
 /**
  * ダウンロードした画像ファイル情報をDBに格納する
  */
