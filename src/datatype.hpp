@@ -101,7 +101,6 @@
 #define SEARCH_BOX             wxT("search_box")
 #define URL_BAR                wxT("m_url_input_panel")
 #define BOARD_TREE             wxT("m_tree_ctrl")
-#define BOARD_TREE_PANEL       wxT("m_tree_panel")
 #define SHINGETU_NODE_TREE     wxT("m_shingetsu_tree_ctrl")
 #define SHINGETU_NODE_PANEL    wxT("m_shingetsu_tree_panel")
 #define BOARD_TREE_SEARCH      wxT("board_tree_search")
@@ -110,6 +109,7 @@
 #define LOG_WINDOW             wxT("m_logCtrl")
 #define BOARD_NOTEBOOK         wxT("boardNoteBook")
 #define THREAD_NOTEBOOK        wxT("threadNoteBook")
+#define BOARD_TREE_NOTEBOOK    wxT("boardTreeNoteBook")
 
 // ユーザーエージェント
 static const std::string userAgent       = std::string("Monazilla/1.00 JaneClone(") + std::string(STR(PACKAGE_VERSION)) + std::string(")");

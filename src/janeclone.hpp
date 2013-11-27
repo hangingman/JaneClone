@@ -124,6 +124,9 @@ public:
 
 private:
 
+     // ユーザーが最後に触ったノートブックのオブジェクトを記憶する
+     static wxString userLastAttachedNotebook;
+
      // begin wxGlade: JaneClone::methods
 
      // メニュー上のイベント
@@ -157,6 +160,22 @@ private:
      // メインのスレッドにログとイベントを送る
      void SendLogging(wxString& message) {
 	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
+	  event->SetString(message.c_str());
+
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+#else
+	  this->GetEventHandler()->AddPendingEvent(*event);
+#endif
+     };
+
+
+     void ChangeUserLastAttached(wxCommandEvent& event) {
+	  this->userLastAttachedNotebook = event.GetString();
+     };
+
+     void ChangeUserLastAttachedEvent(wxString& message) {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_ChangeUserLastAttached);
 	  event->SetString(message.c_str());
 
 #if wxCHECK_VERSION(2, 9, 0)
@@ -265,6 +284,7 @@ private:
      void OnCellHover(wxHtmlCellEvent& event);
      void OnClickURLWindowButton(wxCommandEvent& event);
      void OnSetFocus(wxFocusEvent& event);
+     void OnEnterWindow(wxMouseEvent& event);
 
      // 各種GUI上の設定
      void SetJaneCloneManuBar();
@@ -370,9 +390,6 @@ private:
      // 取得した情報を元に新しいポップアップウィンドウを出現させる
      void SetPopUpWindowForID(wxHtmlCellEvent& event, wxString& boardNameAscii,
 			 wxString& origNumber, wxString& extractId, wxPoint& anchorPoint);
-
-     // ユーザーが最後に触ったノートブックのオブジェクトを記憶する
-     wxString userLastAttachedNotebook = BOARD_NOTEBOOK; // 初期設定は板
      
      /**
       *  フォント読み出し系の処理

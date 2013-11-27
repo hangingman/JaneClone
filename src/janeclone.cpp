@@ -156,7 +156,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_BUTTON(ID_URLWindowButton, JaneClone::OnClickURLWindowButton)
    // ログ出力制御用イベント
    EVT_TEXT(ID_Logging, JaneClone::Logging)
-
+   EVT_TEXT(ID_ChangeUserLastAttached, JaneClone::ChangeUserLastAttached)
 
 #ifdef __WXMAC__
    // UIの更新通知
@@ -170,6 +170,8 @@ END_EVENT_TABLE()
 
 // 画像ビューアのインスタンスを初期化
 JaneCloneImageViewer* JaneClone::imageViewer = NULL;
+// ユーザーが最後に触ったノートブック情報を初期化
+wxString JaneClone::userLastAttachedNotebook = wxEmptyString;
 
 // インスタンスを渡す処理
 JaneCloneImageViewer* JaneClone::GetJaneCloneImageViewer () {
@@ -249,6 +251,16 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
      SetPreviousUserLookedTab();
      boardNoteBook->Update();
      threadNoteBook->Update();
+
+     // フォーカスイベントをバインドする
+     boardNoteBook->Connect(wxID_ANY,
+			    wxEVT_ENTER_WINDOW,
+			    wxMouseEventHandler(JaneClone::OnEnterWindow),
+			    NULL, this);
+     threadNoteBook->Connect(wxID_ANY,
+			     wxEVT_ENTER_WINDOW,
+			     wxMouseEventHandler(JaneClone::OnEnterWindow),
+			     NULL, this);
 
      SetStatusText(wxT(" 完了"));
      *m_logCtrl << wxT("(ヽ´ん`)…レイアウト設定終わりです…\n");
@@ -1002,6 +1014,12 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 						wxPoint(client_size.x, client_size.y), 
 						wxDefaultSize, 
 						wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+	  boardTreeNoteBook->SetLabel(BOARD_TREE_NOTEBOOK);
+	  boardTreeNoteBook->Connect(wxID_ANY,
+			     wxEVT_ENTER_WINDOW,
+			     wxMouseEventHandler(JaneClone::OnEnterWindow),
+			     NULL, this);
+	  
           // 2ch板一覧用ページ
 	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
 	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
@@ -1081,7 +1099,7 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_logCtrl->SetLabel(LOG_WINDOW);
      boardNoteBook->SetLabel(BOARD_NOTEBOOK);
      threadNoteBook->SetLabel(THREAD_NOTEBOOK);
-     if (enableBoardListTree) boardTreeNoteBook->SetLabel(BOARD_TREE_PANEL);
+     if (enableBoardListTree) boardTreeNoteBook->SetLabel(BOARD_TREE_NOTEBOOK);
 
      // 板一覧更ツリーの初期化
      if (enableBoardListTree) InitializeBoardList();
@@ -3127,7 +3145,7 @@ void JaneClone::OnChangedBoardTab(wxAuiNotebookEvent& event) {
      // タイトルを設定する
      SetTitle(selectedBoardName + wxT(" - JaneClone"));
      // 最後に選択したノートブックの記録
-     this->userLastAttachedNotebook = BOARD_NOTEBOOK;
+     //this->userLastAttachedNotebook = BOARD_NOTEBOOK;
      
      m_mgr.Update();
 }
@@ -3164,7 +3182,7 @@ void JaneClone::OnChangedThreadTab(wxAuiNotebookEvent& event) {
      }
 
      // 最後に選択したノートブックの記録
-     this->userLastAttachedNotebook = THREAD_NOTEBOOK;
+     //this->userLastAttachedNotebook = THREAD_NOTEBOOK;
 
      m_mgr.Update();
 }
@@ -3960,6 +3978,12 @@ void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
 						wxPoint(client_size.x, client_size.y), 
 						wxDefaultSize, 
 						wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+	  boardTreeNoteBook->SetLabel(BOARD_TREE_NOTEBOOK);
+	  boardTreeNoteBook->Connect(wxID_ANY,
+			     wxEVT_ENTER_WINDOW,
+			     wxMouseEventHandler(JaneClone::OnEnterWindow),
+			     NULL, this);
+
 	  // 2ch板一覧用ページ
 	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
 	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
@@ -3977,7 +4001,6 @@ void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
 	  boardTree.CloseButton(false);
 	  boardTree.BestSize(boardTreeNoteBook->GetSize());
 	  m_mgr.AddPane(boardTreeNoteBook, boardTree);
-	  boardTreeNoteBook->SetLabel(BOARD_TREE_PANEL);
           // 板一覧更ツリーの初期化
 	  InitializeBoardList();
      }
@@ -4044,6 +4067,12 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
 							  wxPoint(client_size.x, client_size.y), 
 							  wxDefaultSize, 
 							  wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+		    boardTreeNoteBook->SetLabel(BOARD_TREE_NOTEBOOK);
+		    boardTreeNoteBook->Connect(wxID_ANY,
+					       wxEVT_ENTER_WINDOW,
+					       wxMouseEventHandler(JaneClone::OnEnterWindow),
+					       NULL, this);
+
 		    // 2ch板一覧用ページ
 		    m_boardTreePanel = new wxPanel(boardTreeNoteBook);
 		    boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
@@ -4261,5 +4290,47 @@ void JaneClone::CtrlF(wxKeyEvent& event) {
 		    m_mgr.Update();
 	       }	       
 	  }
+     } else if (this->userLastAttachedNotebook == BOARD_TREE_NOTEBOOK) {
+	  // スレッド一覧ウィンドウの処理
+	  wxWindow* target = boardTreeNoteBook->GetPage(boardTreeNoteBook->GetSelection());
+
+	  if ( wxAuiToolBar* toolBar 
+	       = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowById(ID_BoardSearchBar, target))) {
+
+	       if (toolBar->IsShown()) {
+		    toolBar->GetNextSibling()->SetFocus();
+		    toolBar->Hide();
+		    m_mgr.Update();
+	       } else {
+		    toolBar->Show();
+		    m_mgr.Update();
+	       }	  
+	  }
+     }
+}
+/**
+ * マウスのカーソルが特定のウィンドウに入った場合の処理
+ */
+void JaneClone::OnEnterWindow(wxMouseEvent& event) {
+
+     wxString widgetName = wxEmptyString;
+
+     if ( event.GetId() == ID_BoardNoteBook ) {
+	  // スレッド一覧ウィンドウ
+	  widgetName = BOARD_NOTEBOOK;
+	  ChangeUserLastAttachedEvent(widgetName);
+	  boardNoteBook->SetFocus();
+	  
+     } else if (event.GetId() == ID_ThreadNoteBook) {
+	  // スレ内容ウィンドウ
+	  widgetName = THREAD_NOTEBOOK;
+	  ChangeUserLastAttachedEvent(widgetName);
+	  threadNoteBook->SetFocus();
+
+     } else if (event.GetId() == ID_BoardTreeNoteBook) {
+	  // 板一覧リストウィンドウ
+	  widgetName = BOARD_TREE_NOTEBOOK;
+	  ChangeUserLastAttachedEvent(widgetName);
+	  boardTreeNoteBook->SetFocus();
      }
 }
