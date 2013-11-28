@@ -157,6 +157,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    // ログ出力制御用イベント
    EVT_TEXT(ID_Logging, JaneClone::Logging)
    EVT_TEXT(ID_ChangeUserLastAttached, JaneClone::ChangeUserLastAttached)
+   EVT_TEXT(ID_ReloadThreadByName, JaneClone::ReloadThreadByName)
 
 #ifdef __WXMAC__
    // UIの更新通知
@@ -2095,9 +2096,24 @@ void JaneClone::DeleteDatFile(wxCommandEvent& event) {
 void JaneClone::ReloadThisThread(wxCommandEvent& event) {
 
      // 選択されたスレタブの情報を集める
-     wxString boardName,boardURL, title, origNumber, boardNameAscii;
+     wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+     ReloadThread(title);
+}
+/**
+ * 指定された名前のスレッドを更新する
+ */
+void JaneClone::ReloadThreadByName(wxCommandEvent& event) {
+     
+     wxString title = event.GetString();
+     ReloadThread(title);
+}
+/**
+ * 指定されたタイトルのスレッドを更新する
+ */
+void JaneClone::ReloadThread(wxString& title) {
+
      size_t page = threadNoteBook->GetSelection();
-     title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+     wxString boardName,boardURL, origNumber, boardNameAscii;
      ThreadInfo info = tiHash[title];
      origNumber = info.origNumber;
      boardNameAscii = info.boardNameAscii;

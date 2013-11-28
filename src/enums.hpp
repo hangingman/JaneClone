@@ -278,6 +278,7 @@ X_TABLE_ITEM(ID_DelBoardFavorite)		  /* お気に入りを削除(板)	 		*/ \
 X_TABLE_ITEM(ID_AddAllThreadFavorite)             /* すべてのタブをお気に入りに追加	   	*/ \
 X_TABLE_ITEM(ID_ResponseWindowSageChk)            /* レス用ウィンドウのsageチェック	   	*/ \
 X_TABLE_ITEM(ID_ChangeUserLastAttached)           /* ユーザーが最後に触ったウィジェットを記録	*/ \
+X_TABLE_ITEM(ID_ReloadThreadByName)               /* スレッド名を元にスレッドを更新する      	*/ \
 X_TABLE_ITEM(ID_JaneCloneEnumsEnd)
 
 // 列挙型の実体をマクロで生成する

@@ -267,6 +267,8 @@ private:
      void SaveDatFileToClipBoard(wxCommandEvent& event);
      void DeleteDatFile(wxCommandEvent& event);
      void ReloadThisThread(wxCommandEvent& event);
+     void ReloadThreadByName(wxCommandEvent& event);
+     void ReloadThread(wxString& title);
 
      // いろいろなイベント処理
      void OnCloseWindow(wxCloseEvent& event);

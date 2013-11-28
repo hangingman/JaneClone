@@ -154,6 +154,9 @@ TAGS_MODULE_BEGIN(Form)
 
 TAGS_MODULE_END(Form)
 
+// スレッドタイトル
+wxString ResponseWindow::threadTitle = wxEmptyString;
+
 ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName& boardInfoHash, 
 			       ThreadInfo& threadInfoHash, wxPoint& point, wxTextCtrl* logCtrl) :
      wxDialog(parent, wxID_ANY, wxEmptyString, point, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
@@ -178,7 +181,7 @@ ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName
 
      // レス用ウィンドウの情報表示
      const wxString boardName = boardInfoHash.boardName;
-     const wxString threadTitle     = threadInfoHash.title;
+     threadTitle = threadInfoHash.title;
      const wxString responseInfo    = wxString::Format(wxT("【%s】 - %s"), boardName.c_str(), threadTitle.c_str());
      boardNameTitle = new wxStaticText(resPane, wxID_ANY, responseInfo);
 
@@ -320,6 +323,17 @@ void ResponseWindow::OnPostResponse(wxCommandEvent &event) {
 	  PostResponse(socketCommunication);
 	  delete socketCommunication;
      }
+
+     // 書き込み後にスレッドを更新する
+     wxCommandEvent* cmEvent = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_ReloadThreadByName);
+     cmEvent->SetString(threadTitle.c_str());
+
+#if wxCHECK_VERSION(2, 9, 0)
+     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(cmEvent->Clone());
+#else
+     wxTheApp->GetTopWindow()->GetEventHandler()->AddPendingEvent(*cmEvent);
+#endif
+
 }
 /**
  * クッキーがない状態

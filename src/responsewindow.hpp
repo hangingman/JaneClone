@@ -74,6 +74,8 @@ public:
 		    ThreadInfo& threadInfoHash, wxPoint& point, wxTextCtrl* logCtrl);
      // レス投稿時にテキスト情報を付加する
      void AddKakikomiText(const wxString& text);
+     // スレッドタイトル
+     static wxString threadTitle;
 
 private:
 
