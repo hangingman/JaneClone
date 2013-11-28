@@ -46,9 +46,16 @@ END_EVENT_TABLE()
 /**
  * Default constructor
  */
-wxImagePanel::wxImagePanel(wxWindow* parent, const wxString file, const wxBitmapType type) : wxPanel(parent) {
+wxImagePanel::wxImagePanel(wxWindow* parent, DownloadImageResult* result, const wxBitmapType type) : wxPanel(parent, ID_ImagePanel) {
      // load the file... ideally add a check to see if loading was successful
-     image.LoadFile(file, type);
+     image.LoadFile(result->imagePath, type);
+     // copy file information (better copy way is ?)
+
+     this->imageInfo.imagePath = wxString(result->imagePath);
+     this->imageInfo.imageURL  = wxString(result->imageURL);
+     this->imageInfo.ext       = wxString(result->ext);
+     this->imageInfo.fileName  = wxString(result->fileName);
+     this->imageInfo.result    = result->result;
 }
 /**
  * Copy constructor
@@ -103,4 +110,15 @@ void wxImagePanel::RightClick(wxMouseEvent& event) {
      // 親クラスのイベントを呼ぶ・戻ってこない
      return ((JaneCloneImageViewer*)this->GetParent())->OnRightClickImageViewer(event);
 }
-
+/**
+ * 画像のファイルパスを返す
+ */
+wxString wxImagePanel::GetFilePath() {
+     return imageInfo.imagePath;
+}
+/**
+ * 画像のダウンロード先を返す
+ */
+wxString wxImagePanel::GetImageURL() {
+     return imageInfo.imageURL;
+}

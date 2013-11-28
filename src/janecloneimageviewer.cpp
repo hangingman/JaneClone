@@ -40,6 +40,7 @@ BEGIN_EVENT_TABLE(JaneCloneImageViewer, wxFrame)
    EVT_MENU(ID_SelectRightThumbnailTab,JaneCloneImageViewer::SelectRightThumbnailTab)
    EVT_MENU(ID_OnOpenImageByBrowser,JaneCloneImageViewer::OnOpenImageByBrowser)
    EVT_MENU(ID_HideThumbnailTab,JaneCloneImageViewer::HideThumbnailTab)
+   EVT_MENU(ID_SaveAsImages,JaneCloneImageViewer::SaveAsImages)
 END_EVENT_TABLE()
 
 /**
@@ -166,7 +167,7 @@ void JaneCloneImageViewer::SetImageFile(DownloadImageResult* result) {
      	  type = wxBITMAP_TYPE_ANY;
      }
      // 読み取った画像をパネルに載せる
-     wxImagePanel* panel = new wxImagePanel(thumbnailNoteBook, result->imagePath, type);
+     wxImagePanel* panel = new wxImagePanel(thumbnailNoteBook, result, type);
 
      // サムネイルを作る
      wxBitmap thumbnail = wxBitmap(image.Scale(64, 64));
@@ -234,7 +235,7 @@ void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
      tabs->Append(wxID_ANY, wxT("すべてマーク"));
      tabs->Append(wxID_ANY, wxT("すべてマーク解除"));
      tabs->AppendSeparator();
-     tabs->Append(wxID_ANY, wxT("名前を付けて保存"));
+     tabs->Append(ID_SaveAsImages, wxT("名前を付けて保存"));
      tabs->Append(wxID_ANY, wxT("全て保存"));
      tabs->AppendSeparator();
      tabs->Append(wxID_ANY, wxT("再読み込み"));
@@ -332,6 +333,19 @@ void JaneCloneImageViewer::SelectRightThumbnailTab(wxCommandEvent& event) {
  * 画像をブラウザで開く
  */
 void JaneCloneImageViewer::OnOpenImageByBrowser(wxCommandEvent& event) {
+
+     wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
+
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) {
+	  wxString url  = image->GetImageURL();
+	  wxString rest = wxEmptyString;
+
+	  if (url.StartsWith(wxT("ttp"), &rest)) {
+	       url = wxT("http") + rest;
+	  }
+
+	  wxLaunchDefaultBrowser(url);
+     }     
 }
 /**
  * 画像ビューアを隠す
@@ -339,4 +353,37 @@ void JaneCloneImageViewer::OnOpenImageByBrowser(wxCommandEvent& event) {
 void JaneCloneImageViewer::HideThumbnailTab(wxCommandEvent& event) {
 
      this->Hide();
+}
+/**
+ * 名前をつけて保存
+ */
+void JaneCloneImageViewer::SaveAsImages(wxCommandEvent& event) {
+
+     wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
+
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) {
+	       
+	  wxString caption = wxT("画像ファイルに名前を付けて保存");
+	  wxString defaultDir = wxEmptyString; // OSのデフォルトに合わせる
+
+	  // ファイルパスの組み立てとファイルの有無確認
+	  wxString filePath = image->GetFilePath();
+
+	  if (!wxFile::Exists(filePath)) {
+	       // 無ければエラーメッセージ表示
+	       wxMessageBox(wxT("保存するための画像ファイルが見つかりませんでした"));
+	       return;
+	  }
+
+	  wxFileDialog dialog(this, caption, defaultDir, wxEmptyString, wxEmptyString, wxFD_SAVE);
+	  dialog.SetPath(filePath);
+
+	  if (dialog.ShowModal() == wxID_OK) {
+	       bool ret = wxCopyFile(filePath, dialog.GetPath(), true);
+	       if (!ret) {
+		    wxMessageBox(wxT("画像ファイルの保存に失敗しました"));
+	       }
+	  }
+
+     }
 }

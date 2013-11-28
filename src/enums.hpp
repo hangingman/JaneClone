@@ -144,8 +144,10 @@ X_TABLE_ITEM(ID_SearchThreadBySelectWord)	/* 選択したテキストでスレ�
 X_TABLE_ITEM(ID_CallResponseWindowAnchor)	/* 書き込み用のウィンドウをアンカー付きで呼び出す		 */ \
 X_TABLE_ITEM(ID_CallResponseWindowQuote)	/* 書き込み用のウィンドウをレス引用付きで呼び出す		 */ \
 X_TABLE_ITEM(ID_HtmlSourceDebug)		/* */ \
+X_TABLE_ITEM(ID_ImagePanel)		        /* 画像パネル                                                    */ \
 X_TABLE_ITEM(ID_OneThumbnailTabClose)		/* 画像タブをひとつ閉じる	                                 */ \
 X_TABLE_ITEM(ID_AllThumbnailTabClose)		/* すべての画像タブを閉じる					 */ \
+X_TABLE_ITEM(ID_SaveAsImages)		        /* 名前をつけて保存					         */ \
 X_TABLE_ITEM(ID_AllLeftThumbnailTabClose)	/* これより左の画像タブをを閉じる				 */ \
 X_TABLE_ITEM(ID_AllRightThumbnailTabClose)	/* これより右の画像タブを閉じる					 */ \
 X_TABLE_ITEM(ID_SelectLeftThumbnailTab)		/* 左の画像タブに移動						 */ \

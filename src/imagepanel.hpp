@@ -26,6 +26,7 @@
 
 #include <wx/wx.h>
 #include <wx/sizer.h>
+#include "datatype.hpp"
 
 class wxImagePanel : public wxPanel {
 
@@ -33,16 +34,22 @@ class wxImagePanel : public wxPanel {
 
 public:
      /// Default constructor
-     wxImagePanel(wxWindow* parent, const wxString file, const wxBitmapType type);
+     wxImagePanel(wxWindow* parent, DownloadImageResult* result, const wxBitmapType type);
      /// Copy constructor
      wxImagePanel(const wxImagePanel& rhs);
      /// Assignment operator
-     wxImagePanel& operator=(const wxImagePanel& rhs);
+     wxImagePanel& operator=(const wxImagePanel& rhs);     
 
      void PaintEvent(wxPaintEvent & evt);
      void PaintNow();
      void Render(wxDC& dc);
      void RightClick(wxMouseEvent& event);
+     wxString GetFilePath();
+     wxString GetImageURL();
+
+private:
+     // 画像ファイル情報
+     DownloadImageResult imageInfo;
 
      DECLARE_EVENT_TABLE()
 };

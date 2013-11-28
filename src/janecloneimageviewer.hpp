@@ -27,6 +27,7 @@
 #include <wx/aui/auibook.h>
 #include <wx/dc.h>
 #include <wx/dcclient.h>
+#include <wx/file.h>
 #include "enums.hpp"
 #include "datatype.hpp"
 #include "imagepanel.hpp"
@@ -87,6 +88,8 @@ private:
      void OnOpenImageByBrowser(wxCommandEvent& event);
      // 画像ビューアを隠す
      void HideThumbnailTab(wxCommandEvent& event);
+     // 名前をつけて保存
+     void SaveAsImages(wxCommandEvent& event);
 
      DECLARE_EVENT_TABLE()
 };
