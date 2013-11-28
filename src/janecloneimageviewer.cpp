@@ -39,8 +39,11 @@ BEGIN_EVENT_TABLE(JaneCloneImageViewer, wxFrame)
    EVT_MENU(ID_SelectLeftThumbnailTab,JaneCloneImageViewer::SelectLeftThumbnailTab)
    EVT_MENU(ID_SelectRightThumbnailTab,JaneCloneImageViewer::SelectRightThumbnailTab)
    EVT_MENU(ID_OnOpenImageByBrowser,JaneCloneImageViewer::OnOpenImageByBrowser)
+   EVT_MENU(ID_CopyImageURLToClipBoard, JaneCloneImageViewer::CopyImageURL)
    EVT_MENU(ID_HideThumbnailTab,JaneCloneImageViewer::HideThumbnailTab)
    EVT_MENU(ID_SaveAsImages,JaneCloneImageViewer::SaveAsImages)
+   EVT_MENU(ID_Rotate90AntiClockwise,JaneCloneImageViewer::Rotate90AntiClockwise)
+   EVT_MENU(ID_Rotate90Clockwise,JaneCloneImageViewer::Rotate90Clockwise)
 END_EVENT_TABLE()
 
 /**
@@ -243,12 +246,12 @@ void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
      tabs->Append(wxID_ANY, wxT("外部ビューアで開く"));
      tabs->Append(wxID_ANY, wxT("Windowsの関連付けで開く"));
      tabs->Append(wxID_ANY, wxT("参照元スレッドを開く"));
-     tabs->Append(wxID_ANY, wxT("URLをコピー"));
+     tabs->Append(ID_CopyImageURLToClipBoard, wxT("URLをコピー"));
      tabs->AppendSeparator();
      //tabs->Append(wxID_ANY, wxT("外部ビューアで開く"));
      tabs->AppendSeparator();
-     tabs->Append(wxID_ANY, wxT("左回転"));
-     tabs->Append(wxID_ANY, wxT("右回転"));
+     tabs->Append(ID_Rotate90AntiClockwise, wxT("左回転"));
+     tabs->Append(ID_Rotate90Clockwise,     wxT("右回転"));
      tabs->AppendSeparator();
      tabs->Append(wxID_ANY, wxT("ズームイン"));
      tabs->Append(wxID_ANY, wxT("ズームアウト"));
@@ -263,6 +266,8 @@ void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
      tabs->Append(ID_SelectLeftThumbnailTab, wxT("前のタブ"));
      tabs->AppendSeparator();
      tabs->Append(ID_HideThumbnailTab, wxT("ビューアを隠す"));
+
+
 
      // ポップアップメニューを表示させる
      PopupMenu(tabs);
@@ -385,5 +390,45 @@ void JaneCloneImageViewer::SaveAsImages(wxCommandEvent& event) {
 	       }
 	  }
 
+     }
+}
+/**
+ * URLをコピー
+ */
+void JaneCloneImageViewer::CopyImageURL(wxCommandEvent& event) {
+
+     wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
+
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) {
+	  wxString url  = image->GetImageURL();
+
+	  if (wxTheClipboard->Open()) {
+	       wxTheClipboard->Clear();
+	       wxTheClipboard->SetData(new wxTextDataObject(url));
+	       wxTheClipboard->Close();
+	  }
+     }
+}
+/**
+ * 左回転
+ */
+void JaneCloneImageViewer::Rotate90AntiClockwise(wxCommandEvent& event) {
+
+     wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
+
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) {
+	  image->Rotate90(false);
+     }
+}
+
+/**
+ * 右回転
+ */
+void JaneCloneImageViewer::Rotate90Clockwise(wxCommandEvent& event) {
+
+     wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
+
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) {
+	  image->Rotate90(true);
      }
 }

@@ -28,6 +28,7 @@
 #include <wx/dc.h>
 #include <wx/dcclient.h>
 #include <wx/file.h>
+#include <wx/clipbrd.h>
 #include "enums.hpp"
 #include "datatype.hpp"
 #include "imagepanel.hpp"
@@ -90,6 +91,12 @@ private:
      void HideThumbnailTab(wxCommandEvent& event);
      // 名前をつけて保存
      void SaveAsImages(wxCommandEvent& event);
+     // URLをコピー
+     void CopyImageURL(wxCommandEvent& event);
+     // 左回転
+     void Rotate90AntiClockwise(wxCommandEvent& event);
+     // 右回転
+     void Rotate90Clockwise(wxCommandEvent& event);
 
      DECLARE_EVENT_TABLE()
 };

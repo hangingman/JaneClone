@@ -100,6 +100,7 @@ void wxImagePanel::PaintNow() {
  * (e.g. wxPaintDC or wxClientDC) is used.
  */
 void wxImagePanel::Render(wxDC&  dc) {
+     dc.Clear();
      dc.DrawBitmap( image, 0, 0, false );
 }
 /**
@@ -121,4 +122,13 @@ wxString wxImagePanel::GetFilePath() {
  */
 wxString wxImagePanel::GetImageURL() {
      return imageInfo.imageURL;
+}
+/**
+ * 画像を90度回転させる
+ */
+void wxImagePanel::Rotate90(bool clockwise) {
+
+     wxImage copy = this->image.ConvertToImage();
+     image  = wxBitmap(copy.Rotate90(clockwise));
+     PaintNow();
 }

@@ -46,6 +46,7 @@ public:
      void RightClick(wxMouseEvent& event);
      wxString GetFilePath();
      wxString GetImageURL();
+     void Rotate90(bool clockwise);
 
 private:
      // 画像ファイル情報
