@@ -27,6 +27,7 @@
 #include <wx/wx.h>
 #include <wx/sizer.h>
 #include "datatype.hpp"
+#include "enums.hpp"
 
 class wxImagePanel : public wxPanel {
 
@@ -47,10 +48,33 @@ public:
      wxString GetFilePath();
      wxString GetImageURL();
      void Rotate90(bool clockwise);
+     void Resize(bool toBig);
+     void Reset();
+     double GetMagnification();
+     void SetMagnification(double magnification);
+
+     void SendLogging(wxString& message) {
+	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
+	  event->SetString(message.c_str());
+
+#if wxCHECK_VERSION(2, 9, 0)
+	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+#else
+	  this->GetEventHandler()->AddPendingEvent(*event);
+#endif
+     };
+
 
 private:
      // 画像ファイル情報
      DownloadImageResult imageInfo;
+     // ビットマップの種別
+     wxBitmapType m_type;
+     // 画像の倍率(0.1 ~ x ~ 2.0)
+     double magnification;
+     // 画像の元のサイズ
+     int originalHeight;
+     int originalWidth;
 
      DECLARE_EVENT_TABLE()
 };

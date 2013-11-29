@@ -156,6 +156,9 @@ X_TABLE_ITEM(ID_OnOpenImageByBrowser)		/* 画像をブラウザで開く						 *
 X_TABLE_ITEM(ID_CopyImageURLToClipBoard)	/* 画像URLをクリップボードにコピーする				 */ \
 X_TABLE_ITEM(ID_Rotate90AntiClockwise)          /* 画像を90度左回転させる                                        */ \
 X_TABLE_ITEM(ID_Rotate90Clockwise)              /* 画像を90度右回転させる                                        */ \
+X_TABLE_ITEM(ID_ZoomIn)                         /* 画像を拡大する                                                */ \
+X_TABLE_ITEM(ID_ZoomOut)                        /* 画像を縮小する                                                */ \
+X_TABLE_ITEM(ID_ResetImageOriginalSize)         /* 画像のサイズを元に戻す                                        */ \
 X_TABLE_ITEM(ID_HideThumbnailTab)		/* 画像ビューアを隠す						 */ \
 X_TABLE_ITEM(ID_OnClickMenuCOL_CHK) 		/* 新着チェック */ \
 X_TABLE_ITEM(ID_OnClickMenuCOL_NUM)		/* 番号	        */ \

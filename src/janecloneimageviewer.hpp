@@ -97,6 +97,12 @@ private:
      void Rotate90AntiClockwise(wxCommandEvent& event);
      // 右回転
      void Rotate90Clockwise(wxCommandEvent& event);
+     // 画像を拡大する
+     void ZoomIn(wxCommandEvent& event);
+     // 画像を縮小する
+     void ZoomOut(wxCommandEvent& event);
+     // 画像を元のサイズに戻す
+     void ResetImageOriginalSize(wxCommandEvent& event);
 
      DECLARE_EVENT_TABLE()
 };

@@ -44,6 +44,9 @@ BEGIN_EVENT_TABLE(JaneCloneImageViewer, wxFrame)
    EVT_MENU(ID_SaveAsImages,JaneCloneImageViewer::SaveAsImages)
    EVT_MENU(ID_Rotate90AntiClockwise,JaneCloneImageViewer::Rotate90AntiClockwise)
    EVT_MENU(ID_Rotate90Clockwise,JaneCloneImageViewer::Rotate90Clockwise)
+   EVT_MENU(ID_ZoomIn,JaneCloneImageViewer::ZoomIn)
+   EVT_MENU(ID_ZoomOut,JaneCloneImageViewer::ZoomOut)
+   EVT_MENU(ID_ResetImageOriginalSize,JaneCloneImageViewer::ResetImageOriginalSize)
 END_EVENT_TABLE()
 
 /**
@@ -233,7 +236,6 @@ void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
      tabs->Append(ID_AllLeftThumbnailTabClose, wxT("これより左を閉じる"));
      tabs->Append(ID_AllRightThumbnailTabClose, wxT("これより右を閉じる"));
      tabs->AppendSeparator();
-     //tabs->Append(wxID_ANY, wxT(""));
      tabs->Append(wxID_ANY, wxT("マーク/解除"));
      tabs->Append(wxID_ANY, wxT("すべてマーク"));
      tabs->Append(wxID_ANY, wxT("すべてマーク解除"));
@@ -248,26 +250,21 @@ void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
      tabs->Append(wxID_ANY, wxT("参照元スレッドを開く"));
      tabs->Append(ID_CopyImageURLToClipBoard, wxT("URLをコピー"));
      tabs->AppendSeparator();
-     //tabs->Append(wxID_ANY, wxT("外部ビューアで開く"));
-     tabs->AppendSeparator();
      tabs->Append(ID_Rotate90AntiClockwise, wxT("左回転"));
      tabs->Append(ID_Rotate90Clockwise,     wxT("右回転"));
      tabs->AppendSeparator();
-     tabs->Append(wxID_ANY, wxT("ズームイン"));
-     tabs->Append(wxID_ANY, wxT("ズームアウト"));
+     tabs->Append(ID_ZoomIn, wxT("ズームイン"));
+     tabs->Append(ID_ZoomOut, wxT("ズームアウト"));
      tabs->Append(wxID_ANY, wxT("ズーム変更"));
-     tabs->Append(wxID_ANY, wxT("元のサイズに戻す"));
+     tabs->Append(ID_ResetImageOriginalSize, wxT("元のサイズに戻す"));
      tabs->AppendSeparator();
      tabs->Append(wxID_ANY, wxT("ウィンドウに合わせて表示"));
-     //tabs->Append(wxID_ANY, wxT("ズームアウト"));
      tabs->Append(wxID_ANY, wxT("ビューア設定"));
      tabs->AppendSeparator();
      tabs->Append(ID_SelectRightThumbnailTab, wxT("次のタブ"));
      tabs->Append(ID_SelectLeftThumbnailTab, wxT("前のタブ"));
      tabs->AppendSeparator();
      tabs->Append(ID_HideThumbnailTab, wxT("ビューアを隠す"));
-
-
 
      // ポップアップメニューを表示させる
      PopupMenu(tabs);
@@ -420,7 +417,6 @@ void JaneCloneImageViewer::Rotate90AntiClockwise(wxCommandEvent& event) {
 	  image->Rotate90(false);
      }
 }
-
 /**
  * 右回転
  */
@@ -430,5 +426,38 @@ void JaneCloneImageViewer::Rotate90Clockwise(wxCommandEvent& event) {
 
      if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) {
 	  image->Rotate90(true);
+     }
+}
+/**
+ * 画像を拡大する
+ */
+void JaneCloneImageViewer::ZoomIn(wxCommandEvent& event) {
+
+     wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
+
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) {
+	  image->Resize(true);
+     }
+}
+/**
+ * 画像を縮小する
+ */
+void JaneCloneImageViewer::ZoomOut(wxCommandEvent& event) {
+
+     wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
+
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) {
+	  image->Resize(false);
+     }
+}
+/**
+ * 画像を元のサイズに戻す
+ */
+void JaneCloneImageViewer::ResetImageOriginalSize(wxCommandEvent& event) {
+
+     wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
+
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) {
+	  image->Reset();
      }
 }

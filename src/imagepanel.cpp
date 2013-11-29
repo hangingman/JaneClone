@@ -49,13 +49,17 @@ END_EVENT_TABLE()
 wxImagePanel::wxImagePanel(wxWindow* parent, DownloadImageResult* result, const wxBitmapType type) : wxPanel(parent, ID_ImagePanel) {
      // load the file... ideally add a check to see if loading was successful
      image.LoadFile(result->imagePath, type);
-     // copy file information (better copy way is ?)
 
+     // copy file information (better copy way is ?)
      this->imageInfo.imagePath = wxString(result->imagePath);
      this->imageInfo.imageURL  = wxString(result->imageURL);
      this->imageInfo.ext       = wxString(result->ext);
      this->imageInfo.fileName  = wxString(result->fileName);
      this->imageInfo.result    = result->result;
+     this->originalHeight      = image.GetHeight();
+     this->originalWidth       = image.GetWidth();
+     this->magnification       = 1.0;
+     this->m_type              = type;
 }
 /**
  * Copy constructor
@@ -125,6 +129,7 @@ wxString wxImagePanel::GetImageURL() {
 }
 /**
  * 画像を90度回転させる
+ * @param bool clockwise true:時計回り false:反時計回り
  */
 void wxImagePanel::Rotate90(bool clockwise) {
 
@@ -132,3 +137,78 @@ void wxImagePanel::Rotate90(bool clockwise) {
      image  = wxBitmap(copy.Rotate90(clockwise));
      PaintNow();
 }
+/**
+ * 画像をリサイズする
+ * @param bool toBig true:大きく false:小さく
+ */
+void wxImagePanel::Resize(bool toBig) {
+
+     wxString log = wxString::Format(wxT("originalHeight:%d originalWidth:%d\n"), originalHeight, originalWidth);
+     SendLogging(log);
+
+     if (this->originalHeight <= 0 || this->originalWidth <= 0) {
+	  return;
+     }
+
+     if ( 0.1 <= this->magnification && this->magnification <= 2.0 ) {
+	  if (toBig && magnification == 2.0) {
+	       return;
+	  } else if (toBig) {
+	       // 大きくする
+	       this->magnification += 0.1;	       
+	  } else if (!toBig && magnification == 0.1) {
+	       return;
+	  } else {
+	       // 小さくする
+	       this->magnification -= 0.1;
+	  }
+
+
+	  image = NULL;
+	  bool ret = image.LoadFile(imageInfo.imagePath, m_type);
+	  if (!ret) {
+	       wxMessageBox(wxT("リサイズ実行時に画像ファイルが見つかりませんでした"));
+	       return;
+	  }
+
+	  wxImage copy = image.ConvertToImage();
+	  int x = originalWidth*magnification;
+	  int y = originalHeight*magnification;
+
+	  log = wxString::Format(wxT("x:%d y:%d\n"), x, y);
+	  SendLogging(log);	  
+
+	  image  = wxBitmap(copy.Rescale(x, y, wxIMAGE_QUALITY_HIGH));
+	  PaintNow();
+     }
+}
+/**
+ * 画像を元のサイズに戻す
+ */
+void wxImagePanel::Reset() {
+
+     if (originalHeight <= 0 || originalWidth <= 0) {
+	  return;
+     }
+     
+     image = NULL;
+     bool ret = image.LoadFile(imageInfo.imagePath, m_type);	  
+     if (!ret) {
+	  wxMessageBox(wxT("リサイズ実行時に画像ファイルが見つかりませんでした"));
+	  return;
+     }
+
+     wxImage copy = image.ConvertToImage();
+     image  = wxBitmap(copy.Rescale(originalWidth, originalHeight, wxIMAGE_QUALITY_HIGH));
+     this->magnification = 1.0;
+     PaintNow();
+}
+
+double wxImagePanel::GetMagnification() {
+     return this->magnification;
+}
+
+void wxImagePanel::SetMagnification(double magnification) {
+     this->magnification = magnification;
+}
+
