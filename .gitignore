@@ -19,3 +19,4 @@ extras/*
 *.so
 *.so.*
 *~
+js-1.5-rc6a/src/jsautotoolscfg.h

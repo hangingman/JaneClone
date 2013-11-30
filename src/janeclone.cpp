@@ -2804,12 +2804,12 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
 
      // スレッド用の検索バー等のインスタンスを用意する
      size_t page = threadNoteBook->GetPageCount();
-     ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, ID_ThreadContentBar + page );
+     ThreadContentBar* threadBar = new ThreadContentBar(threadNoteBook, ID_ThreadContentBar);
      threadBar->SetTitle(title);
 
      // スレッドの内容はThreadContentBarの中で設定する
      threadBar->SetThreadContentWindow(threadContentPath);
-     threadNoteBook->AddPage(threadBar, title, true);
+     threadNoteBook->AddPage(threadBar, title, true, wxBitmap(threadTabNewImg, wxBITMAP_TYPE_ANY));
 }
 /**
  * 板一覧ノートブックで右クリックされた時の処理
