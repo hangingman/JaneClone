@@ -38,7 +38,8 @@ BEGIN_EVENT_TABLE(ResponseWindow, wxDialog)
    EVT_BUTTON(ID_PostConfirmForm,                ResponseWindow::PostConfirmForm)
    EVT_NOTEBOOK_PAGE_CHANGING(ID_ResponseWindow, ResponseWindow::OnChangeResponseTab)
    EVT_HTML_LINK_CLICKED(wxID_ANY,               ResponseWindow::OnLinkClocked)
-   EVT_CHECKBOX(ID_ResponseWindowSageChk,        ResponseWindow::OnChangeSageChk) 
+   EVT_CHECKBOX(ID_ResponseWindowSageChk,        ResponseWindow::OnChangeSageChk)
+   EVT_CHECKBOX(ID_ResponseWindowBeChk,          ResponseWindow::OnChangeBeChk)
 END_EVENT_TABLE()
 
 
@@ -199,7 +200,7 @@ ResponseWindow::ResponseWindow(wxWindow* parent, wxString& title, URLvsBoardName
      handleCheck = new wxCheckBox(this, wxID_ANY, wxT("コテハン記憶"));
      frontCheck = new wxCheckBox(this, wxID_ANY, wxT("最前面"));
      formatCheck = new wxCheckBox(this, wxID_ANY, wxT("末尾整形"));
-     beCheck = new wxCheckBox(this, wxID_ANY, wxT("BE"));
+     beCheck = new wxCheckBox(this, ID_ResponseWindowBeChk, wxT("BE"));
      const wxString *beMailCombo_choices = NULL;
      beMailCombo = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, beMailCombo_choices, wxCB_DROPDOWN);
      proxyCheck = new wxCheckBox(this, wxID_ANY, wxT("Proxy"));
@@ -225,6 +226,7 @@ void ResponseWindow::set_properties(const wxString& title) {
      wxString widgetsName = wxEmptyString;
      bool     widgetsInfo = NULL;
 
+     // sageチェック
      const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(ID_ResponseWindowSageChk) );
      widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
      JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
@@ -234,14 +236,34 @@ void ResponseWindow::set_properties(const wxString& title) {
 	  sageCheck->SetValue(widgetsInfo);
 	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
 	  mailCombo->SetValue(wxT("sage"));
-
      } else {
 	  // チェックされていない
 	  sageCheck->SetValue(widgetsInfo);
 	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
 	  mailCombo->SetValue(wxEmptyString);
-
      }
+
+     // BEログインチェック
+     const std::string &str2 = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(ID_ResponseWindowBeChk) );
+     widgetsName = wxString((const char*)str2.c_str(), wxConvUTF8);
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+
+     if ( beCheck->IsChecked() ) {
+	  // チェックされている
+	  widgetsInfo = true;
+	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+
+	  wxString addr = wxEmptyString;
+	  JaneCloneUtil::GetJaneCloneProperties(wxT("ID_BEMailAddress"), &addr);
+	  beMailCombo->SetValue(addr);
+
+     } else {
+	  // チェックされていない
+	  widgetsInfo = false;
+	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+	  beMailCombo->SetValue(wxEmptyString);
+
+     }     
 }
 
 
@@ -771,6 +793,34 @@ void ResponseWindow::OnChangeSageChk(wxCommandEvent& event) {
 	  widgetsInfo = false;
 	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
 	  mailCombo->SetValue(wxEmptyString);
+
+     }
+}
+/**
+ * 書き込み画面のBEチェックが押された時の処理
+ */
+void ResponseWindow::OnChangeBeChk(wxCommandEvent& event) {
+
+     wxString widgetsName = wxEmptyString;
+     bool     widgetsInfo = NULL;
+
+     const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(event.GetId()) );
+     widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
+
+     if ( beCheck->IsChecked() ) {
+	  // チェックされている
+	  widgetsInfo = true;
+	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+
+	  wxString addr = wxEmptyString;
+	  JaneCloneUtil::GetJaneCloneProperties(wxT("ID_BEMailAddress"), &addr);
+	  beMailCombo->SetValue(addr);
+
+     } else {
+	  // チェックされていない
+	  widgetsInfo = false;
+	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+	  beMailCombo->SetValue(wxEmptyString);
 
      }
 }

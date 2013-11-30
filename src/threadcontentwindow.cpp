@@ -711,8 +711,10 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      delete sock;
 
      // 画像ビューアに表示させる
-     JaneClone::GetJaneCloneImageViewer()->Show(true);
-     JaneClone::GetJaneCloneImageViewer()->SetImageFile(result);
+     JaneCloneImageViewer* imageViewer = JaneClone::GetJaneCloneImageViewer();
+     imageViewer->Show(true);
+     imageViewer->SetImageFile(result);
+     imageViewer->Raise();
 
      // wxMemoryFSHandlerに登録されているファイルを削除し、新しいファイルを登録する
      wxString filename = wxFileSystem::URLToFileName(result->imageURL).GetFullName();

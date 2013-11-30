@@ -125,6 +125,8 @@ private:
      void SetPreviewWindow(wxNotebookEvent& event);
      // 書き込み画面のsageチェックが押された時の処理
      void OnChangeSageChk(wxCommandEvent& event);
+     // 書き込み画面のBEチェックが押された時の処理
+     void OnChangeBeChk(wxCommandEvent& event);
 
      // レス投稿ウィンドウのモード設定
      bool f_threadPost;
