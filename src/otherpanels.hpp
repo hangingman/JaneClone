@@ -255,7 +255,12 @@ class UserSettingPanel: public wxPanel {
 public:
      // begin wxGlade: UserSettingPanel::ids
      // end wxGlade
-     UserSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+     UserSettingPanel(wxWindow* parent, 
+		      const wxPoint& pos=wxDefaultPosition, 
+		      const wxSize& size=wxDefaultSize, 
+		      long style=0);
+
+     void save_properties();
 
 private:
      // begin wxGlade: UserSettingPanel::methods

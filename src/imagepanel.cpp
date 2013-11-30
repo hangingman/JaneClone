@@ -160,8 +160,6 @@ void wxImagePanel::Resize(bool toBig) {
 	       this->magnification -= 0.1;
 	  }
 
-
-	  image = NULL;
 	  bool ret = image.LoadFile(imageInfo.imagePath, m_type);
 	  if (!ret) {
 	       wxMessageBox(wxT("リサイズ実行時に画像ファイルが見つかりませんでした"));
@@ -185,7 +183,6 @@ void wxImagePanel::Reset() {
 	  return;
      }
      
-     image = NULL;
      bool ret = image.LoadFile(imageInfo.imagePath, m_type);	  
      if (!ret) {
 	  wxMessageBox(wxT("リサイズ実行時に画像ファイルが見つかりませんでした"));

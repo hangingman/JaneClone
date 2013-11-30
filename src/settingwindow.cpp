@@ -133,6 +133,21 @@ void SettingDialog::DoLayout() {
  * 設定画面のクローズ
  */
 void SettingDialog::OnQuit(wxCommandEvent& event) {
+
+     if (settingPanel) {
+	  // 設定の保存
+	  wxString title = this->GetTitle();
+	  
+	  if ( title.Contains(wxT("User")) ) {
+	       if ( UserSettingPanel* user = 
+		    dynamic_cast<UserSettingPanel*>
+		    (wxWindow::FindWindowById(ID_UserSettingPanel, settingPanel))) {
+		    // ユーザー設定パネル
+		    user->save_properties();
+	       }
+	  }	  
+     }
+     
      this->EndModal(0);
 }
 /**
@@ -148,6 +163,21 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
      if (itemStr == wxEmptyString) return;
 
      if (settingPanel) {
+	  // settingPanel内の情報を保存する
+	  const wxTreeItemId oldPushedTree = event.GetOldItem();
+	  const wxString     oldItemStr(settingTreeCtrl->GetItemText(oldPushedTree));
+
+	  if (oldItemStr != wxEmptyString) {
+	       if (oldItemStr == wxT("User")) {
+		    if ( UserSettingPanel* user = 
+			 dynamic_cast<UserSettingPanel*>
+			 (wxWindow::FindWindowById(ID_UserSettingPanel, settingPanel))) {
+			 // ユーザー設定パネル
+			 user->save_properties();
+		    }
+	       }
+	  }
+	  
 	  // settingPanelのインスタンスが存在するならばDestroy
 	  // 子ウィンドウを殺す
 	  settingPanel->DestroyChildren();	  

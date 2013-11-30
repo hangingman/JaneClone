@@ -450,14 +450,24 @@ UserSettingPanel::UserSettingPanel(wxWindow* parent, const wxPoint& pos, const w
      label_1 = new wxStaticText(panel_8, wxID_ANY, wxT("User ID:"));
      maruUserID = new wxTextCtrl(panel_8, ID_MaruUserID, wxEmptyString);
      label_2 = new wxStaticText(panel_9, wxID_ANY, wxT("Password:"));
-     maruUserPassword = new wxTextCtrl(panel_9, ID_MaruUserPassword, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
+     maruUserPassword = new wxTextCtrl(panel_9, 
+				       ID_MaruUserPassword, 
+				       wxEmptyString, 
+				       wxDefaultPosition, 
+				       wxDefaultSize, 
+				       wxTE_PASSWORD);
      maruAutoLoginCheck = new wxCheckBox(panel_5, ID_MaruAutoLoginCheck, wxT("起動時に自動ログインする"));
      maruLogoutButton = new wxButton(panel_5, ID_MaruLogoutButton, wxT("ログアウト"));
      window_2 = new wxHtmlWindow(panel_3, wxID_ANY);
      label_3 = new wxStaticText(panel_6, wxID_ANY, wxT("メールアドレス:"));
      beMailAddress = new wxTextCtrl(panel_6, ID_BEMailAddress, wxEmptyString);
      label_4 = new wxStaticText(panel_7, wxID_ANY, wxT("パスワード:"));
-     bePassword = new wxTextCtrl(panel_7, ID_BEPassword, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PASSWORD);
+     bePassword = new wxTextCtrl(panel_7, 
+				 ID_BEPassword, 
+				 wxEmptyString, 
+				 wxDefaultPosition, 
+				 wxDefaultSize, 
+				 wxTE_PASSWORD);
 
      set_properties();
      do_layout();
@@ -510,6 +520,25 @@ void UserSettingPanel::set_properties()
      delete[] pArray;
 }
 
+void UserSettingPanel::save_properties()
+{
+     // GUIに入力されている項目を読みだして設定する
+     std::pair <wxString, wxTextCtrl*> *pArray = new std::pair<wxString, wxTextCtrl*>[4];
+     pArray[0]  = std::make_pair(wxT("ID_MaruUserID"),            maruUserID);
+     pArray[1]  = std::make_pair(wxT("ID_MaruUserPassword"),      maruUserPassword);  
+     pArray[2]	= std::make_pair(wxT("ID_BEMailAddress"),	  beMailAddress);	 
+     pArray[3]	= std::make_pair(wxT("ID_BEPassword"),	          bePassword);	 
+
+     for (int i = 0; i < 4; i++ )
+     {
+	  wxString widgetsName = pArray[i].first;
+	  wxString widgetsInfo = pArray[i].second->GetValue();
+
+	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+     }
+
+     delete[] pArray;     
+}
 
 void UserSettingPanel::do_layout()
 {
