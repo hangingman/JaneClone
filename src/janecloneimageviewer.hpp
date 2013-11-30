@@ -29,6 +29,7 @@
 #include <wx/dcclient.h>
 #include <wx/file.h>
 #include <wx/clipbrd.h>
+#include <wx/event.h>
 #include "enums.hpp"
 #include "datatype.hpp"
 #include "imagepanel.hpp"
@@ -99,8 +100,10 @@ private:
      void Rotate90Clockwise(wxCommandEvent& event);
      // 画像を拡大する
      void ZoomIn(wxCommandEvent& event);
+     void ZoomIn();
      // 画像を縮小する
      void ZoomOut(wxCommandEvent& event);
+     void ZoomOut();
      // 画像を元のサイズに戻す
      void ResetImageOriginalSize(wxCommandEvent& event);
 

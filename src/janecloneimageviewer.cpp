@@ -205,7 +205,15 @@ void JaneCloneImageViewer::OnMouseWheel(wxMouseEvent& event) {
      
      if (event.m_controlDown) {
 	  // コントロールキーが押されている => 画像の拡大縮小
-
+	  if (event.m_wheelRotation > 0) {
+	       // プラス値 ←
+	       ZoomIn();
+	       
+	  } else {
+	       // マイナス値 →
+	       ZoomOut();
+	  }	  
+	  
      } else {
 	  const int current = thumbnailNoteBook->GetSelection();		    
 	  const int max     = thumbnailNoteBook->GetPageCount();
@@ -432,6 +440,10 @@ void JaneCloneImageViewer::Rotate90Clockwise(wxCommandEvent& event) {
  * 画像を拡大する
  */
 void JaneCloneImageViewer::ZoomIn(wxCommandEvent& event) {
+     ZoomIn();
+}
+
+void JaneCloneImageViewer::ZoomIn() {
 
      wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
 
@@ -439,10 +451,15 @@ void JaneCloneImageViewer::ZoomIn(wxCommandEvent& event) {
 	  image->Resize(true);
      }
 }
+
 /**
  * 画像を縮小する
  */
 void JaneCloneImageViewer::ZoomOut(wxCommandEvent& event) {
+     ZoomOut();
+}
+
+void JaneCloneImageViewer::ZoomOut() {
 
      wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
 

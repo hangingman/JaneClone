@@ -143,9 +143,6 @@ void wxImagePanel::Rotate90(bool clockwise) {
  */
 void wxImagePanel::Resize(bool toBig) {
 
-     wxString log = wxString::Format(wxT("originalHeight:%d originalWidth:%d\n"), originalHeight, originalWidth);
-     SendLogging(log);
-
      if (this->originalHeight <= 0 || this->originalWidth <= 0) {
 	  return;
      }
@@ -174,9 +171,6 @@ void wxImagePanel::Resize(bool toBig) {
 	  wxImage copy = image.ConvertToImage();
 	  int x = originalWidth*magnification;
 	  int y = originalHeight*magnification;
-
-	  log = wxString::Format(wxT("x:%d y:%d\n"), x, y);
-	  SendLogging(log);	  
 
 	  image  = wxBitmap(copy.Rescale(x, y, wxIMAGE_QUALITY_HIGH));
 	  PaintNow();
