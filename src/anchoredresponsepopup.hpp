@@ -65,6 +65,15 @@ private:
      // 指定されたファイル中のテキストをメモリに展開する
      wxString ReadPlainTextFile(const wxString& filePath);
 
+     // ユーザーがリンクをクリックした場合ブラウザでジャンプ
+     void OnLinkClocked(wxHtmlLinkEvent& event)
+	  {
+	       const wxHtmlLinkInfo linkInfo = event.GetLinkInfo();
+	       const wxString href = linkInfo.GetHref();
+	       wxLaunchDefaultBrowser(href);
+	  };
+
+
 private:
      wxHtmlWindow *htmlWin;
 

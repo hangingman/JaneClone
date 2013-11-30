@@ -31,6 +31,7 @@ BEGIN_EVENT_TABLE(AnchoredResponsePopup,wxPopupTransientWindow)
    EVT_SIZE( AnchoredResponsePopup::OnSize )
    EVT_SET_FOCUS( AnchoredResponsePopup::OnSetFocus )
    EVT_KILL_FOCUS( AnchoredResponsePopup::OnKillFocus )
+   EVT_HTML_LINK_CLICKED(wxID_ANY, AnchoredResponsePopup::OnLinkClocked)
 END_EVENT_TABLE()
 
 /**
