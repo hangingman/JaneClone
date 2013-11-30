@@ -1010,9 +1010,13 @@ size_t SocketCommunication::WriteHeaderData(char *ptr, size_t size, size_t nmemb
 	       JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie-PON"), cookie);
 	  } else if (cookie.Contains(wxT("HAP"))) {
 	       JaneCloneUtil::SetJaneCloneProperties(wxT("Cookie-HAP"), cookie);
+	  } else if (cookie.Contains(wxT("DMDM"))) {
+	       JaneCloneUtil::SetJaneCloneProperties(wxT("DMDM"), cookie);
+	  } else if (cookie.Contains(wxT("MDMD"))) {
+	       JaneCloneUtil::SetJaneCloneProperties(wxT("MDMD"), cookie);
 	  } else {
 	       JaneCloneUtil::SetJaneCloneProperties(wxT("PREN"), cookie);
-	  }     
+	  }
      }
 
      respBuf.append(line);
@@ -1556,6 +1560,50 @@ void SocketCommunication::InitializeCookie() {
  */
 void SocketCommunication::AssembleCookie(wxString& cookie, const wxString& hiddenName, const wxString& hiddenVal) {
 
+     // まずクリア
+     cookie.Clear();
+
+     // BEログインチェック
+     wxString widgetsName = wxEmptyString;
+     bool     widgetsInfo = NULL;
+     const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(ID_ResponseWindowBeChk) );
+     widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+     if (widgetsInfo) {
+	  // BEログインして書き込む場合
+	  wxString dmdm = wxEmptyString;
+	  wxString mdmd = wxEmptyString;
+	  JaneCloneUtil::GetJaneCloneProperties(wxT("DMDM"), &dmdm);
+	  JaneCloneUtil::GetJaneCloneProperties(wxT("MDMD"), &mdmd);
+	  
+	  if ( dmdm.Len() == 0 || mdmd.Len() == 0 ) {
+	       // クッキーがないのでログインしてクッキー☆をもらう
+	       LoginBe2ch();
+	       JaneCloneUtil::GetJaneCloneProperties(wxT("DMDM"), &dmdm);
+	       JaneCloneUtil::GetJaneCloneProperties(wxT("MDMD"), &mdmd);
+	       SubstringCookie(dmdm);
+	       SubstringCookie(mdmd);
+
+	       if (dmdm.Len() != 0 && mdmd.Len() != 0) {
+		    cookie.Append(dmdm);
+		    cookie.Append(wxT("; "));
+		    cookie.Append(mdmd);
+		    cookie.Append(wxT("; "));
+	       }
+	       
+	  } else {
+	       // クッキーがあるのでそのまま処理する
+	       SubstringCookie(dmdm);
+	       SubstringCookie(mdmd);
+
+	       if (dmdm.Len() != 0 && mdmd.Len() != 0) {
+		    cookie.Append(dmdm);
+		    cookie.Append(wxT("; "));
+		    cookie.Append(mdmd);
+		    cookie.Append(wxT("; "));
+	       }
+	  }
+     } /** BEログインチェック処理終わり */
 
      // Cookie-PONの取得
      wxString cookiePon;
@@ -1574,8 +1622,6 @@ void SocketCommunication::AssembleCookie(wxString& cookie, const wxString& hidde
      wxString pren;
      JaneCloneUtil::GetJaneCloneProperties(wxT("PREN"), &pren);
      SubstringCookie(pren);
-
-     cookie.Clear();
 
      if (cookiePon.Len() != 0) {
 	  cookie.Append(cookiePon);
@@ -1933,4 +1979,101 @@ void SocketCommunication::SaveImageFileInfoDB(const wxString& href, DownloadImag
      
      // ファイル情報を格納
      SQLiteAccessor::SetImageFileName(imageInfo);
+}
+/**
+ * BE２ちゃんねるにログインしてプロパティファイルに情報を書き出す
+ */
+void SocketCommunication::LoginBe2ch()
+{
+     wxString beMailAddress, bePassword;
+
+     // プロパティファイルから設定されている項目を読みだして設定する
+     std::pair <wxString, wxString> *pArray = new std::pair<wxString, wxString>[2];
+     pArray[0]	= std::make_pair(wxT("ID_BEMailAddress"), beMailAddress);
+     pArray[1]	= std::make_pair(wxT("ID_BEPassword"),    bePassword);	 
+
+     for (int i = 0; i < 2; i++ )
+     {
+	  wxString widgetsName = pArray[i].first;
+	  wxString widgetsInfo = wxEmptyString;
+	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+	  
+	  if ( i == 0 ) {
+	       beMailAddress = widgetsInfo;
+	  } else if ( i == 1) {
+	       bePassword = widgetsInfo;
+	  }
+     }
+
+     delete[] pArray;
+
+     if ( beMailAddress == wxEmptyString || bePassword == wxEmptyString ) {
+	  wxString log = wxT("BEのアドレスとパスワードが設定されてないよ（´・ω・｀）\n");
+	  return;
+     }
+
+     /**
+      * BEログインの処理実体
+      */
+
+     // Postする内容のデータサイズを取得する
+     wxString kakikomiInfo = wxT("m=") 
+	  + beMailAddress 
+	  + wxT("&p=")
+	  + bePassword
+	  + wxT("&submit=") 
+	  + wxT("%C5%D0%CF%BF");
+
+     // ヘッダのサイズ
+     std::ostringstream stream;
+     stream << kakikomiInfo.Len();
+     const std::string kakikomiSize = stream.str();
+     
+     /**
+      * ヘッダを設定する
+      */
+     std::list<std::string> headers;
+     headers.push_back("POST /test/login.php HTTP/1.1");
+     headers.push_back("Accept-Encoding: gzip");
+     headers.push_back("Accept: */*");
+     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("Content-Type: application/x-www-form-urlencoded");
+     headers.push_back("Host: be.2ch.net");
+     headers.push_back("Content-Length: " + kakikomiSize);
+     headers.push_back("Connection: close");
+
+     std::string url = "be.2ch.net/test/login.php";
+
+     try {
+
+	  curlpp::Cleanup myCleanup;
+	  curlpp::Easy myRequest;
+	  myRequest.setOpt(new curlpp::options::Url(url));
+	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
+	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
+	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
+	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
+	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Verbose(true));
+	  // ヘッダー用ファンクタを設定する
+	  myRequest.setOpt(new curlpp::options::HeaderFunction(
+				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+
+	  wxString message = wxT("BEにログイン (ヽ´ん`)...\n");
+	  SendLogging(message);
+
+	  // 文字列をクリアーしておく
+	  this->respBuf.clear();
+	  this->bodyBuf.clear();
+
+	  wxSleep(2);
+	  myRequest.perform();
+
+     } catch (curlpp::RuntimeError &e) {
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
+     } catch (curlpp::LogicError &e) {
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
+     }
 }

@@ -297,6 +297,10 @@ private:
       * ダウンロードした画像ファイル情報をDBに格納する
       */
      void SaveImageFileInfoDB(const wxString& href, DownloadImageResult* result);
+     /**
+      * BE２ちゃんねるにログインしてプロパティファイルに情報を書き出す
+      */
+     void LoginBe2ch();
 };
 
 #endif /* SOCKETCOMMUNICATION_HPP_ */
