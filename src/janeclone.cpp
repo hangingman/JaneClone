@@ -1453,7 +1453,7 @@ void JaneClone::UpdateThreadTabIcons() {
 	  std::sort(vBoardList.begin(), 
 		    vBoardList.end(),
 		    [] (const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem) -> bool {
-		       return wxAtoi(lItem.getOid()) > wxAtoi(rItem.getOid());
+			 return wxAtoi(lItem.getOid()) > wxAtoi(rItem.getOid());
 		    });
 
      } else {
@@ -1472,20 +1472,35 @@ void JaneClone::UpdateThreadTabIcons() {
 	  if (boardNameAscii != tabBoardNameAscii) continue;
 
 	  // 固有番号を見つける
-	  std::vector<VirtualBoardListItem>::iterator it 
+	  std::vector<VirtualBoardListItem>::iterator itV 
 	       = std::find_if(vBoardList.begin(),
 			      vBoardList.end(),
 			      [&origNumber] (const VirtualBoardListItem& item) -> bool {
 				   return item.getOid().Contains(origNumber);		
 			      });
 
-	  if ( it != vBoardList.end() ) {
-	       // スレッド一覧情報内にスレッドがあった => 更新確認
+	  /**
+	   * まずスレタブを全部見る
+	   */
+	  for (size_t i = 0; i < threadNoteBook->GetPageCount(); i++) {
+	       if (key.Cmp(threadNoteBook->GetPageText(i)) == 0) {
 
-	  } else {
-	       // スレッド一覧情報を内にスレッドがない => dat落ち
-	       for (size_t i = 0; i < threadNoteBook->GetPageCount(); i++) {
-		    if (key.Cmp(threadNoteBook->GetPageText(i)) == 0) {
+		    if ( itV != vBoardList.end() ) {
+			 // スレッド一覧情報内にスレッドがあった => 更新確認
+			 int newResNumber = wxAtoi(itV->getResponse());
+			 if (ThreadContentBar* oldThreadBar = 
+			     dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(i))) {
+			      // スレッド情報をもってくる
+			      int oldResNumber = oldThreadBar->GetThreadContentThreadResponseNum();
+
+			      // もし取得数のほうが多かったら更新 "+" !
+			      if ( newResNumber > oldResNumber ) {
+				   threadNoteBook->SetPageBitmap(i, wxBitmap(threadTabAddImg, wxBITMAP_TYPE_ANY));
+			      }
+			 }
+
+		    } else {
+			 // スレッド一覧情報を内にスレッドがない => dat落ち
 			 threadNoteBook->SetPageBitmap(i, wxBitmap(threadTabDrpImg, wxBITMAP_TYPE_ANY));
 			 break;
 		    }

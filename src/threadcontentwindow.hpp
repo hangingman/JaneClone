@@ -67,6 +67,12 @@ public:
       * 外のクラスから強制的にスクロールさせる
       */
      void ForceScroll(const wxPoint* p);
+     /**
+      * このクラスが保持するスレッドのレス数を返す
+      */
+     int GetCurrentThreadResponseNum() {
+	  return m_response_number;
+     };
 
      /**
       * wx-2.9.5ではインターフェースとして規定されている関数が実装されず
@@ -155,6 +161,8 @@ private:
      wxString m_htmlSource;
      // リサイズ前のスクロール座標
      int m_x, m_y;
+     // このクラスが保持するスレッドのレス数
+     int m_response_number;
      // 書き込みウィンドウに渡すレス番号
      long m_response;
      // スクロールさせる必要があるかどうか

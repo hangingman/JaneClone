@@ -136,7 +136,8 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 
      // ファイルがオープンされているならば
      if (datfile.IsOpened()) {
-	  for (str = datfile.GetFirstLine(); !datfile.Eof();
+	  for (str = datfile.GetFirstLine(); 
+	       !datfile.Eof();
 	       str = datfile.GetNextLine()) {
 
 	       if (str.IsNull())
@@ -151,6 +152,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 	       }
 
 	       number++;
+	       this->m_response_number = number;
 	  }
      }
 

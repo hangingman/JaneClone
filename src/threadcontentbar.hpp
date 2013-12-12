@@ -61,6 +61,10 @@ public:
      void SetThreadContentWindowScroll(const wxPoint* p) {
 	  tcw->ForceScroll(p);
      };
+     // 開いているスレタブの保持するレス数を取得する
+     int GetThreadContentThreadResponseNum() {
+	  return tcw->GetCurrentThreadResponseNum();
+     };
 
 #ifdef __WXMAC__
      // 画像リソースの更新を行う
