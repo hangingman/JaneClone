@@ -1399,12 +1399,17 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, 
 	  SetThreadListItemUpdate((const wxString) boardName, (const wxString) outputPath, 
 				  (const size_t) selectedPage, oldThreadMap);
      }
+
+     // アイコンの更新を実施する
+     UpdateThreadTabIcons();
 }
 /**
  * ノートブックに、新規にダウンロードされたスレッド一覧情報を反映するメソッド
  */
-void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString outputPath, 
-				     const size_t selectedPage, const std::map<wxString,ThreadList>& oldThreadMap) {
+void JaneClone::SetThreadListItemNew(const wxString boardName, 
+				     const wxString outputPath, 
+				     const size_t selectedPage, 
+				     const std::map<wxString,ThreadList>& oldThreadMap) {
 
      // wxAuiToolBarを宣言する
      wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath, oldThreadMap);
@@ -1414,8 +1419,10 @@ void JaneClone::SetThreadListItemNew(const wxString boardName, const wxString ou
 /**
  * ノートブックに、スレッド一覧情報の更新を反映するメソッド
  */
-void JaneClone::SetThreadListItemUpdate(const wxString boardName, const wxString outputPath, 
-					const size_t selectedPage, const std::map<wxString,ThreadList>& oldThreadMap) {
+void JaneClone::SetThreadListItemUpdate(const wxString boardName, 
+					const wxString outputPath, 
+					const size_t selectedPage, 
+					const std::map<wxString,ThreadList>& oldThreadMap) {
 
      // wxAuiToolBarを宣言する
      wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath, oldThreadMap);     
@@ -1423,6 +1430,68 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName, const wxString
      boardNoteBook->InsertPage(selectedPage, panel, boardName, false, wxNullBitmap);
      // ノートブックの選択処理
      boardNoteBook->SetSelection(selectedPage);
+}
+/**
+ * アイコンの更新を実施する
+ */
+void JaneClone::UpdateThreadTabIcons() {
+
+     // 現在アクティブになっているタブの板名を取得する
+     wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+     URLvsBoardName hash = retainHash[boardName];
+     wxString tabBoardNameAscii = hash.boardNameAscii;
+
+     // スレッド一覧情報が入ったコンテナ
+     VirtualBoardList vBoardList;
+
+     // リストコントロールを引き出してくる
+     if ( VirtualBoardListCtrl* vbListCtrl = 
+	  dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName)) ) {
+
+	  // vectorをコピーしてソートしておく
+	  vbListCtrl->CopyVectorItems(vBoardList);
+	  std::sort(vBoardList.begin(), 
+		    vBoardList.end(),
+		    [] (const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem) -> bool {
+		       return wxAtoi(lItem.getOid()) > wxAtoi(rItem.getOid());
+		    });
+
+     } else {
+	  wxMessageBox(wxT("内部エラー, アイコンの更新処理に失敗しました."), wxT("スレタブ"), wxICON_ERROR);
+	  return;
+     }
+
+     ThreadInfoHash::iterator it;
+     for (it = tiHash.begin(); it != tiHash.end(); ++it) {
+	  wxString key = it->first;
+	  ThreadInfo value = it->second;
+	  wxString origNumber     = value.origNumber;
+	  wxString boardNameAscii = value.boardNameAscii;
+
+	  // 更新した板でなければアイコンは変えない
+	  if (boardNameAscii != tabBoardNameAscii) continue;
+
+	  // 固有番号を見つける
+	  std::vector<VirtualBoardListItem>::iterator it 
+	       = std::find_if(vBoardList.begin(),
+			      vBoardList.end(),
+			      [&origNumber] (const VirtualBoardListItem& item) -> bool {
+				   return item.getOid().Contains(origNumber);		
+			      });
+
+	  if ( it != vBoardList.end() ) {
+	       // スレッド一覧情報内にスレッドがあった => 更新確認
+
+	  } else {
+	       // スレッド一覧情報を内にスレッドがない => dat落ち
+	       for (size_t i = 0; i < threadNoteBook->GetPageCount(); i++) {
+		    if (key.Cmp(threadNoteBook->GetPageText(i)) == 0) {
+			 threadNoteBook->SetPageBitmap(i, wxBitmap(threadTabDrpImg, wxBITMAP_TYPE_ANY));
+			 break;
+		    }
+	       }
+	  }
+     }
 }
 /**
  * 板一覧更新処理
@@ -2098,6 +2167,7 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
      // 選択されたスレタブの情報を集める
      wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
      ReloadThread(title);
+     m_mgr.Update();
 }
 /**
  * 指定された名前のスレッドを更新する
@@ -2106,6 +2176,7 @@ void JaneClone::ReloadThreadByName(wxCommandEvent& event) {
      
      wxString title = event.GetString();
      ReloadThread(title);
+     m_mgr.Update();
 }
 /**
  * 指定されたタイトルのスレッドを更新する
@@ -2156,6 +2227,7 @@ void JaneClone::ReloadThread(wxString& title) {
 
      wxString message = wxT("完了…　(´ん｀/)三\n");
      SendLogging(message);
+     m_mgr.Update();
 }
 /**
  *  書き込み用のウィンドウを呼び出す
@@ -2808,7 +2880,7 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
      threadBar->SetTitle(title);
 
      // スレッドの内容はThreadContentBarの中で設定する
-     threadBar->SetThreadContentWindow(threadContentPath);
+     threadBar->SetThreadContentWindow(threadContentPath, origNumber);
      threadNoteBook->AddPage(threadBar, title, true, wxBitmap(threadTabNewImg, wxBITMAP_TYPE_ANY));
 }
 /**

@@ -155,6 +155,7 @@ static const wxString threadNewImg       = wxT("rc/download-3.png");
 // スレタブ用画像
 static const wxString threadTabNewImg    = wxT("rc/document-new-7.png");
 static const wxString threadTabAddImg    = wxT("rc/document-new-8.png");
+static const wxString threadTabDrpImg    = wxT("rc/document-close-4.png");
 
 #else
 
@@ -194,6 +195,7 @@ static const wxString threadNewImg       = wxT("JaneClone.app/Contents/MacOS/rc/
 // スレタブ用画像
 static const wxString threadTabNewImg    = wxT("JaneClone.app/Contents/MacOS/rc/document-new-7.png");
 static const wxString threadTabAddImg    = wxT("JaneClone.app/Contents/MacOS/rc/document-new-8.png");
+static const wxString threadTabDrpImg    = wxT("JaneClone.app/Contents/MacOS/rc/document-close-4.png");
 
 #endif
 

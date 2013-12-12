@@ -301,21 +301,30 @@ void ThreadContentBar::do_layout()
     Layout();
     // end wxGlade
 }
-
+/**
+ * スレッドタイトルを設定する
+ */
 void ThreadContentBar::SetTitle(const wxString& title) {
      // スレッドタイトルを設定する
      threadName->SetLabel(wxT("　") + title);
+     m_title = title;
 }
-
-void ThreadContentBar::SetThreadContentWindow(const wxString& threadContentPath) {
+/**
+ * スレッドを読み出す
+ */
+void ThreadContentBar::SetThreadContentWindow(const wxString& threadContentPath, const wxString& origNumber) {
 
      // スレッドの内容を表すウィンドウをthreadContentPanelを親として宣言する
      tcw = new ThreadContentWindow(threadContentPanel, threadContentPath);
      wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
      vbox->Add(tcw, 1, wxEXPAND | wxALL, 5);
      threadContentPanel->SetSizer(vbox);
+     // 内部に固有番号を持つ
+     m_origNumber = origNumber;
 }
-
+/**
+ * スレッドをリロードする
+ */
 void ThreadContentBar::ReloadThreadContentWindow(const wxString& threadContentPath) {
 
      // 一度内部のウィンドウを崩す
@@ -326,7 +335,6 @@ void ThreadContentBar::ReloadThreadContentWindow(const wxString& threadContentPa
      vbox->Add(tcw, 1, wxEXPAND | wxALL, 5);
      threadContentPanel->SetSizer(vbox);
 }
-
 /**
  * 新着までスクロール
  */

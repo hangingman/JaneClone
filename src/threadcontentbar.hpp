@@ -49,7 +49,7 @@ public:
      void SetTitle(const wxString& title);
 
      // スレッドの内容を設定する
-     void SetThreadContentWindow(const wxString& threadContentPath);
+     void SetThreadContentWindow(const wxString& threadContentPath, const wxString& origNumber);
      // スレッドの内容をリロードする
      void ReloadThreadContentWindow(const wxString& threadContentPath);
 
@@ -92,6 +92,7 @@ private:
      void do_layout();
      // end wxGlade
 
+     // スレッドが乗るパネル
      wxPanel* threadContentPanel;
      // スレッドの内容を描画するクラス
      ThreadContentWindow* tcw;
@@ -132,6 +133,11 @@ private:
    #endif
      };
 #endif
+
+     // スレッドのタイトル
+     wxString m_title;
+     // スレッドの固有番号
+     wxString m_origNumber;
 
 protected:
      // begin wxGlade: ThreadContentBar::attributes

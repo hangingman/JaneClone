@@ -357,6 +357,8 @@ private:
 				const std::map<wxString,ThreadList>& oldThreadMap);
      void SetThreadListItemUpdate( wxString boardName,  wxString outputPath, size_t selectedPage, 
 				   const std::map<wxString,ThreadList>& oldThreadMap);
+     void UpdateThreadTabIcons();
+
      /**
       * 右下のオブジェクトとメソッド
       */

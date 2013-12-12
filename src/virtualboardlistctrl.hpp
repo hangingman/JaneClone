@@ -347,6 +347,15 @@ public:
       */
      void SortVectorItems(int col);
      /**
+      * 内部のリストをコピーして渡す
+      */
+     void CopyVectorItems(VirtualBoardList& vBoardList) {
+
+	  //先にメモリ領域を確保する
+	  vBoardList.reserve(m_vBoardList.size());
+	  std::copy(m_vBoardList.begin(), m_vBoardList.end(), std::back_inserter(vBoardList));
+     };
+     /**
       * スレッドタイトル検索を実施する
       */
      void SearchAndSortItems(const wxString& keyword);
