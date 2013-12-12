@@ -71,7 +71,8 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_AddBoardFavorite,  JaneClone::AddBoardFavorite) 	
    EVT_MENU(ID_DelBoardFavorite,  JaneClone::DelBoardFavorite)
    EVT_MENU(ID_MoveNextTab,       JaneClone::MoveNextTab)   
-   EVT_MENU(ID_MovePrevTab,       JaneClone::MovePrevTab)   
+   EVT_MENU(ID_MovePrevTab,       JaneClone::MovePrevTab)
+   EVT_MENU(ID_CallNewBoardAddDialog, JaneClone::CallNewBoardAddDialog)
    EVT_MENU_RANGE(ID_UserLastClosedThreadClick, ID_UserLastClosedThreadClick + 99, JaneClone::OnUserLastClosedThreadClick)
    EVT_MENU_RANGE(ID_UserLastClosedBoardClick,  ID_UserLastClosedBoardClick  + 99, JaneClone::OnUserLastClosedBoardClick)
    EVT_MENU_RANGE(ID_UserFavoriteThreadClick,   ID_UserFavoriteThreadClick   + 99, JaneClone::OnUserFavoriteThreadClick)
@@ -386,7 +387,7 @@ void JaneClone::SetJaneCloneManuBar() {
      menu3->Append(wxID_ANY, wxT("ログ一覧制限変更"));
      menu3->Append(wxID_ANY, wxT("ログ一覧から取り込む"));
      menu3->AppendSeparator();
-     menu3->Append(wxID_ANY, wxT("新規板登録"));
+     menu3->Append(ID_CallNewBoardAddDialog, wxT("新規板登録"));
      /**
       * スレ覧部分
       */
@@ -4436,4 +4437,12 @@ void JaneClone::OnEnterWindow(wxMouseEvent& event) {
 	  ChangeUserLastAttachedEvent(widgetName);
 	  boardTreeNoteBook->SetFocus();
      }
+}
+/**
+ * 外部板登録用のダイアログを呼び出す
+ */
+void JaneClone::CallNewBoardAddDialog(wxCommandEvent& event)
+{
+     NewBoardAddDialog newBoardAddDlg(this, ID_NewBoardAddDialog, wxT("外部板登録"));
+     newBoardAddDlg.ShowModal();
 }

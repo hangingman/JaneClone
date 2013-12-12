@@ -594,5 +594,46 @@ protected:
     // end wxGlade
 }; // wxGlade: end class
 
+/**
+ * 外部板登録ダイアログ
+ */
+class NewBoardAddDialog: public wxDialog {
+
+public:
+    // begin wxGlade: NewBoardAddDialog::ids
+    // end wxGlade
+    NewBoardAddDialog(wxWindow* parent, 
+		      int id, 
+		      const wxString& title, 
+		      const wxPoint& pos=wxDefaultPosition, 
+		      const wxSize& size=wxDefaultSize, 
+		      long style=wxDEFAULT_DIALOG_STYLE);
+
+private:
+    // begin wxGlade: NewBoardAddDialog::methods
+    void set_properties();
+    void do_layout();
+    // end wxGlade
+
+protected:
+    // begin wxGlade: NewBoardAddDialog::attributes
+    wxStaticBox* sizer_3_staticbox;
+    wxStaticText* label_1;
+    wxTextCtrl* text_ctrl_1;
+    wxPanel* panel_4;
+    wxStaticText* label_2;
+    wxTextCtrl* text_ctrl_2;
+    wxButton* button_3;
+    wxPanel* panel_5;
+    wxStaticText* label_3;
+    wxComboBox* combo_box_1;
+    wxPanel* panel_7;
+    wxPanel* panel_6;
+    wxPanel* panel_3;
+    wxButton* button_1;
+    wxButton* button_2;
+    wxPanel* panel_1;
+    // end wxGlade
+}; // wxGlade: end class
 
 #endif // OTHERPANELS_H

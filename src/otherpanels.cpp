@@ -1596,3 +1596,78 @@ void TabControlSettingPanel::do_layout()
     // end wxGlade
 }
 
+NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& title, 
+				     const wxPoint& pos, const wxSize& size, long style):
+     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP)
+{
+     // begin wxGlade: NewBoardAddDialog::NewBoardAddDialog
+     panel_1 = new wxPanel(this, wxID_ANY);
+     panel_3 = new wxPanel(this, wxID_ANY);
+     panel_6 = new wxPanel(panel_3, wxID_ANY);
+     panel_5 = new wxPanel(panel_3, wxID_ANY);
+     sizer_3_staticbox = new wxStaticBox(panel_3, -1, wxEmptyString);
+     panel_4 = new wxPanel(panel_3, wxID_ANY);
+     label_1 = new wxStaticText(panel_4, wxID_ANY, wxT("板URL　"));
+     text_ctrl_1 = new wxTextCtrl(panel_4, wxID_ANY, wxEmptyString);
+     label_2 = new wxStaticText(panel_5, wxID_ANY, wxT("板名　　"));
+     text_ctrl_2 = new wxTextCtrl(panel_5, wxID_ANY, wxEmptyString);
+     button_3 = new wxButton(panel_5, wxID_ANY, wxT("板名取得"));
+     label_3 = new wxStaticText(panel_6, wxID_ANY, wxT("カテゴリ"));
+     const wxString *combo_box_1_choices = NULL;
+     combo_box_1 = new wxComboBox(panel_6, wxID_ANY, wxT(""), 
+				  wxDefaultPosition, 
+				  wxDefaultSize, 0, 
+				  combo_box_1_choices, 
+				  wxCB_DROPDOWN|wxCB_READONLY);
+     panel_7 = new wxPanel(panel_6, wxID_ANY);
+     button_1 = new wxButton(panel_1, wxID_ANY, wxT("OK"));
+     button_2 = new wxButton(panel_1, wxID_ANY, wxT("キャンセル"));
+
+     set_properties();
+     do_layout();
+     // end wxGlade
+}
+
+void NewBoardAddDialog::set_properties()
+{
+     // begin wxGlade: NewBoardAddDialog::set_properties
+     SetTitle(wxT("新規板登録"));
+     SetSize(wxSize(640, 200));
+     button_3->Enable(false);
+     // end wxGlade
+}
+
+
+void NewBoardAddDialog::do_layout()
+{
+     // begin wxGlade: NewBoardAddDialog::do_layout
+     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
+     wxStaticBoxSizer* sizer_3 = new wxStaticBoxSizer(sizer_3_staticbox, wxVERTICAL);
+     wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_5 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
+     sizer_4->Add(label_1, 0, wxALIGN_CENTER_VERTICAL, 1);
+     sizer_4->Add(text_ctrl_1, 1, wxALIGN_CENTER_VERTICAL, 1);
+     panel_4->SetSizer(sizer_4);
+     sizer_3->Add(panel_4, 1, wxEXPAND, 0);
+     sizer_5->Add(label_2, 0, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_5->Add(text_ctrl_2, 1, wxALIGN_CENTER_VERTICAL, 1);
+     sizer_5->Add(button_3, 0, wxALIGN_CENTER_VERTICAL, 0);
+     panel_5->SetSizer(sizer_5);
+     sizer_3->Add(panel_5, 1, wxEXPAND, 0);
+     sizer_6->Add(label_3, 0, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_6->Add(combo_box_1, 4, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_6->Add(panel_7, 1, wxEXPAND, 0);
+     panel_6->SetSizer(sizer_6);
+     sizer_3->Add(panel_6, 1, wxEXPAND, 0);
+     panel_3->SetSizer(sizer_3);
+     sizer_1->Add(panel_3, 1, wxALL|wxEXPAND, 0);
+     sizer_2->Add(button_1, 0, wxALIGN_CENTER_HORIZONTAL, 0);
+     sizer_2->Add(button_2, 0, wxALIGN_CENTER_HORIZONTAL, 0);
+     panel_1->SetSizer(sizer_2);
+     sizer_1->Add(panel_1, 0, 0, 0);
+     SetSizer(sizer_1);
+     Layout();
+     // end wxGlade
+}

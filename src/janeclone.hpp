@@ -144,6 +144,7 @@ private:
      void AddAllThreadFavorite(wxCommandEvent& event);
      void MoveNextTab(wxCommandEvent& event);
      void MovePrevTab(wxCommandEvent& event);
+     void CallNewBoardAddDialog(wxCommandEvent& event);
 
      // JaneClone公式サイトをブラウザで開く
      void OnOpenJaneCloneOfficial(wxCommandEvent& event) {

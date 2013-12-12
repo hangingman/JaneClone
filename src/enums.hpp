@@ -288,6 +288,8 @@ X_TABLE_ITEM(ID_ResponseWindowSageChk)            /* レス用ウィンドウの
 X_TABLE_ITEM(ID_ResponseWindowBeChk)              /* レス用ウィンドウのBEチェック	   	*/ \
 X_TABLE_ITEM(ID_ChangeUserLastAttached)           /* ユーザーが最後に触ったウィジェットを記録	*/ \
 X_TABLE_ITEM(ID_ReloadThreadByName)               /* スレッド名を元にスレッドを更新する      	*/ \
+X_TABLE_ITEM(ID_NewBoardAddDialog)                /* 外部板登録ダイアログ                       */ \
+X_TABLE_ITEM(ID_CallNewBoardAddDialog)            /* 外部板登録用ダイアログを呼び出す           */ \
 X_TABLE_ITEM(ID_JaneCloneEnumsEnd)
 
 // 列挙型の実体をマクロで生成する
