@@ -1601,29 +1601,48 @@ NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& t
      wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP)
 {
      // begin wxGlade: NewBoardAddDialog::NewBoardAddDialog
+     // イベントテーブル書くのがダルいのでConnectする
      panel_1 = new wxPanel(this, wxID_ANY);
      panel_3 = new wxPanel(this, wxID_ANY);
      panel_6 = new wxPanel(panel_3, wxID_ANY);
      panel_5 = new wxPanel(panel_3, wxID_ANY);
      sizer_3_staticbox = new wxStaticBox(panel_3, -1, wxEmptyString);
      panel_4 = new wxPanel(panel_3, wxID_ANY);
+
+     // 板URLは入力されたあとフォーカスがなくなったらイベントを起こす
      label_1 = new wxStaticText(panel_4, wxID_ANY, wxT("板URL　"));
      text_ctrl_1 = new wxTextCtrl(panel_4, wxID_ANY, wxEmptyString);
+     text_ctrl_1->Connect(wxID_ANY,					      
+			  wxEVT_KILL_FOCUS,
+			  wxCommandEventHandler(NewBoardAddDialog::CheckBoardUrl),
+			  NULL, this);					      
+
      label_2 = new wxStaticText(panel_5, wxID_ANY, wxT("板名　　"));
      text_ctrl_2 = new wxTextCtrl(panel_5, wxID_ANY, wxEmptyString);
      button_3 = new wxButton(panel_5, wxID_ANY, wxT("板名取得"));
      label_3 = new wxStaticText(panel_6, wxID_ANY, wxT("カテゴリ"));
 
      const wxArrayString categoryList = SQLiteAccessor::GetCategoryList();
-     combo_box_1 = new wxComboBox(panel_6, wxID_ANY, wxT(""), 
+     combo_box_1 = new wxComboBox(panel_6, wxID_ANY, wxT("外部板"), 
 				  wxDefaultPosition, 
 				  wxDefaultSize,
 				  categoryList,
 				  wxCB_DROPDOWN|wxCB_READONLY);
 
      panel_7 = new wxPanel(panel_6, wxID_ANY);
+     spacePanel = new wxPanel(panel_1, wxID_ANY);
+
      button_1 = new wxButton(panel_1, wxID_ANY, wxT("OK"));
+     button_1->Connect(wxID_ANY,
+		       wxEVT_COMMAND_BUTTON_CLICKED,				
+		       wxCommandEventHandler(NewBoardAddDialog::OnClickOK),
+		       NULL, this);
+
      button_2 = new wxButton(panel_1, wxID_ANY, wxT("キャンセル"));
+     button_2->Connect(wxID_ANY,					
+		       wxEVT_COMMAND_BUTTON_CLICKED,				
+		       wxCommandEventHandler(NewBoardAddDialog::OnClickCancel),
+		       NULL, this);
 
      set_properties();
      do_layout();
@@ -1665,11 +1684,74 @@ void NewBoardAddDialog::do_layout()
      sizer_3->Add(panel_6, 1, wxEXPAND, 0);
      panel_3->SetSizer(sizer_3);
      sizer_1->Add(panel_3, 1, wxALL|wxEXPAND, 0);
-     sizer_2->Add(button_1, 0, wxALIGN_CENTER_HORIZONTAL, 0);
-     sizer_2->Add(button_2, 0, wxALIGN_CENTER_HORIZONTAL, 0);
+     sizer_2->Add(spacePanel, 5, wxEXPAND, 0);
+     sizer_2->Add(button_1, 2, wxEXPAND, 0);
+     sizer_2->Add(button_2, 2, wxEXPAND, 0);
      panel_1->SetSizer(sizer_2);
      sizer_1->Add(panel_1, 0, 0, 0);
      SetSizer(sizer_1);
      Layout();
      // end wxGlade
+}
+
+void NewBoardAddDialog::OnClickOK(wxCommandEvent& event)
+{
+     wxString url       = text_ctrl_1->GetValue();
+     wxString boardName = text_ctrl_2->GetValue();
+     wxString category  = combo_box_1->GetValue();
+
+     if ( url       == wxEmptyString ||
+	  boardName == wxEmptyString ||
+	  category  == wxEmptyString ) 
+     {
+	  // 必須項目が抜けている
+	  wxMessageBox(wxT("エラー, 新規追加板のURL, 板名, カテゴリを入力してください."), 
+		       wxT("新規追加板の登録"), wxICON_ERROR);
+	  Close(true);
+     }
+     else
+     {
+	  // 入力項目をデータベースに格納する
+	  
+
+	  // 板一覧リスト更新のイベントを実行
+
+
+     }
+
+     Close(true);
+}
+
+void NewBoardAddDialog::OnClickCancel(wxCommandEvent& event)
+{
+     Close(true);
+}
+
+/**
+ * 対象がしたらば掲示板か
+ */
+void NewBoardAddDialog::CheckBoardUrl(wxCommandEvent& event)
+{
+
+     wxString url = text_ctrl_1->GetValue();
+     if ( url == wxEmptyString )
+     {
+	  button_3->Enable(false);
+	  return;
+     }
+
+     PartOfURI partOfUri;
+     if ( JaneCloneUtil::SubstringURI(url, &partOfUri))
+     {
+	  if ( partOfUri.hostname.Contains(wxT("jbbs.shitaraba.net")) ||
+	       partOfUri.hostname.Contains(wxT("jbbs.livedoor.jp")) )
+	  {
+	       // 入力されたURLはしたらば掲示板なので板名取得ボタンを有効化
+	       button_3->Enable(true);
+	       return;
+	  }
+     }
+
+     button_3->Enable(false);
+     return;
 }

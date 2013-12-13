@@ -565,34 +565,34 @@ protected:
  */
 class TabControlSettingPanel: public wxPanel {
 public:
-    // begin wxGlade: TabControlSettingPanel::ids
-    // end wxGlade
+     // begin wxGlade: TabControlSettingPanel::ids
+     // end wxGlade
 
-    TabControlSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+     TabControlSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
 private:
-    // begin wxGlade: TabControlSettingPanel::methods
-    void set_properties();
-    void do_layout();
-    // end wxGlade
+     // begin wxGlade: TabControlSettingPanel::methods
+     void set_properties();
+     void do_layout();
+     // end wxGlade
 
 protected:
-    // begin wxGlade: TabControlSettingPanel::attributes
-    wxStaticBox* sizer_4_staticbox;
-    wxStaticBox* sizer_3_staticbox;
-    wxStaticText* label_1;
-    wxChoice* choice_1;
-    wxStaticText* label_2;
-    wxChoice* choice_2;
-    wxPanel* panel_6;
-    wxPanel* panel_4;
-    wxStaticText* label_3;
-    wxChoice* choice_3;
-    wxStaticText* label_4;
-    wxChoice* choice_4;
-    wxPanel* panel_7;
-    wxPanel* panel_5;
-    // end wxGlade
+     // begin wxGlade: TabControlSettingPanel::attributes
+     wxStaticBox* sizer_4_staticbox;
+     wxStaticBox* sizer_3_staticbox;
+     wxStaticText* label_1;
+     wxChoice* choice_1;
+     wxStaticText* label_2;
+     wxChoice* choice_2;
+     wxPanel* panel_6;
+     wxPanel* panel_4;
+     wxStaticText* label_3;
+     wxChoice* choice_3;
+     wxStaticText* label_4;
+     wxChoice* choice_4;
+     wxPanel* panel_7;
+     wxPanel* panel_5;
+     // end wxGlade
 }; // wxGlade: end class
 
 /**
@@ -601,40 +601,45 @@ protected:
 class NewBoardAddDialog: public wxDialog {
 
 public:
-    // begin wxGlade: NewBoardAddDialog::ids
-    // end wxGlade
-    NewBoardAddDialog(wxWindow* parent, 
-		      int id, 
-		      const wxString& title, 
-		      const wxPoint& pos=wxDefaultPosition, 
-		      const wxSize& size=wxDefaultSize, 
-		      long style=wxDEFAULT_DIALOG_STYLE);
+     // begin wxGlade: NewBoardAddDialog::ids
+     // end wxGlade
+     NewBoardAddDialog(wxWindow* parent, 
+		       int id, 
+		       const wxString& title, 
+		       const wxPoint& pos=wxDefaultPosition, 
+		       const wxSize& size=wxDefaultSize, 
+		       long style=wxDEFAULT_DIALOG_STYLE);
 
 private:
-    // begin wxGlade: NewBoardAddDialog::methods
-    void set_properties();
-    void do_layout();
-    // end wxGlade
+     // begin wxGlade: NewBoardAddDialog::methods
+     void set_properties();
+     void do_layout();
+     // end wxGlade
+
+     void OnClickOK(wxCommandEvent& event);
+     void OnClickCancel(wxCommandEvent& event);
+     void CheckBoardUrl(wxCommandEvent& event);
 
 protected:
-    // begin wxGlade: NewBoardAddDialog::attributes
-    wxStaticBox* sizer_3_staticbox;
-    wxStaticText* label_1;
-    wxTextCtrl* text_ctrl_1;
-    wxPanel* panel_4;
-    wxStaticText* label_2;
-    wxTextCtrl* text_ctrl_2;
-    wxButton* button_3;
-    wxPanel* panel_5;
-    wxStaticText* label_3;
-    wxComboBox* combo_box_1;
-    wxPanel* panel_7;
-    wxPanel* panel_6;
-    wxPanel* panel_3;
-    wxButton* button_1;
-    wxButton* button_2;
-    wxPanel* panel_1;
-    // end wxGlade
+     // begin wxGlade: NewBoardAddDialog::attributes
+     wxStaticBox* sizer_3_staticbox;
+     wxStaticText* label_1;
+     wxTextCtrl* text_ctrl_1;
+     wxPanel* panel_4;
+     wxStaticText* label_2;
+     wxTextCtrl* text_ctrl_2;
+     wxButton* button_3;
+     wxPanel* panel_5;
+     wxStaticText* label_3;
+     wxComboBox* combo_box_1;
+     wxPanel* panel_7;
+     wxPanel* panel_6;
+     wxPanel* panel_3;
+     wxPanel* spacePanel;
+     wxButton* button_1;
+     wxButton* button_2;
+     wxPanel* panel_1;
+     // end wxGlade
 }; // wxGlade: end class
 
 #endif // OTHERPANELS_H
