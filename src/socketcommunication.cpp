@@ -2077,3 +2077,89 @@ void SocketCommunication::LoginBe2ch()
 	  SendLogging(message);
      }
 }
+
+/**
+ * したらば掲示板の情報を取得する
+ */
+bool SocketCommunication::GetShitarabaBoardInfo(const wxString& path, wxString& boardName, wxString& category)
+{
+     std::vector<std::string> container;
+     JaneCloneUtil::SplitStdString(container, std::string(path.mb_str()), "/");
+
+     if (container.size() < 3)
+     {
+	  return false;
+     }
+
+     // http://jbbs.livedoor.jp/bbs/api/setting.cgi/[カテゴリ]/[番地]/
+     std::string url = "jbbs.shitaraba.net/bbs/api/setting.cgi/" + container.at(1) + "/" + container.at(2) + "/";
+
+     // 書き込み先
+     wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     wxString dataFilePath = dir.GetName();
+     dataFilePath += wxFileSeparator;
+     dataFilePath += wxT("shitaraba_info.txt");
+
+     try {
+
+	  curlpp::Cleanup myCleanup;
+	  curlpp::Easy myRequest;
+	  myRequest.setOpt(new curlpp::options::Url(url));
+	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Verbose(true));
+
+	  std::ofstream ofs(dataFilePath.mb_str() , std::ios::out | std::ios::trunc );
+	  curlpp::options::WriteStream ws(&ofs);
+	  myRequest.setOpt(ws);
+
+	  wxString message = wxT("したらば掲示板にアクセス (ヽ´ん`)...\n");
+	  SendLogging(message);
+
+	  myRequest.perform();
+
+     } catch (curlpp::RuntimeError &e) {
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
+	  return false;
+     } catch (curlpp::LogicError &e) {
+	  wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxT("\n");
+	  SendLogging(message);
+	  return false;
+     }
+
+     /**
+      * したらば掲示板の文字コードはクソEUC-JPである
+      */
+     wxString outputPath = dataFilePath;
+     outputPath.Replace(wxT(".txt"), wxT(".out"));
+
+     std::unique_ptr<wxNKF> nkf(new wxNKF());
+     nkf->Convert(dataFilePath, outputPath, wxT("--ic=EUC-JP --oc=UTF-8"));
+     
+     wxTextFile shitarabaDataFile;
+     shitarabaDataFile.Open(outputPath, wxConvUTF8);
+     wxString str;
+
+     // ファイルがオープンされているならば
+     if (shitarabaDataFile.IsOpened()) {
+          for (str = shitarabaDataFile.GetFirstLine(); !shitarabaDataFile.Eof(); str = shitarabaDataFile.GetNextLine()) {
+	       // データを取得する
+	       wxString rest = wxEmptyString;
+
+               if (str.StartsWith(wxT("BBS_TITLE="), &rest)) {
+		    boardName = rest;
+               }
+
+               if (str.StartsWith(wxT("CATEGORY="), &rest)) {
+		    category = rest;
+               }
+          }
+     }
+
+     shitarabaDataFile.Close();
+     if ( boardName == wxEmptyString ) {
+	  return false;
+     } else {
+	  return true;
+     }
+}

@@ -41,6 +41,7 @@
 #include "janecloneutil.hpp"
 #include "drawpane.hpp"
 #include "sqliteaccessor.hpp"
+#include "socketcommunication.hpp"
 
 // begin wxGlade: ::extracode
 // end wxGlade
@@ -619,6 +620,7 @@ private:
      void OnClickOK(wxCommandEvent& event);
      void OnClickCancel(wxCommandEvent& event);
      void CheckBoardUrl(wxCommandEvent& event);
+     void GetShitarabaBoardInfo(wxCommandEvent& event);
 
 protected:
      // begin wxGlade: NewBoardAddDialog::attributes

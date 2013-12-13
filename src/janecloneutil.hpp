@@ -27,6 +27,7 @@
 #include <fstream>
 #include <iterator>
 #include <stdexcept>
+#include <memory>
 #include <wx/wx.h>
 #include <wx/textfile.h>
 #include <wx/file.h>

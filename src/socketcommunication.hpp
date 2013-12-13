@@ -142,6 +142,10 @@ public:
       * FTPでのダウンロード
       */
      void DownloadImageFileByFtp(const wxString& href, DownloadImageResult* result);
+     /**
+      * したらば掲示板の情報を取得する
+      */
+     bool GetShitarabaBoardInfo(const wxString& path, wxString& boardName, wxString& category);
 
 #ifdef USE_SHINGETSU
      /**

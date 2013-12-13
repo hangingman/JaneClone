@@ -1620,6 +1620,11 @@ NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& t
      label_2 = new wxStaticText(panel_5, wxID_ANY, wxT("板名　　"));
      text_ctrl_2 = new wxTextCtrl(panel_5, wxID_ANY, wxEmptyString);
      button_3 = new wxButton(panel_5, wxID_ANY, wxT("板名取得"));
+     button_3->Connect(wxID_ANY,
+		       wxEVT_COMMAND_BUTTON_CLICKED,
+		       wxCommandEventHandler(NewBoardAddDialog::GetShitarabaBoardInfo),
+		       NULL, this);					       
+
      label_3 = new wxStaticText(panel_6, wxID_ANY, wxT("カテゴリ"));
 
      const wxArrayString categoryList = SQLiteAccessor::GetCategoryList();
@@ -1627,14 +1632,14 @@ NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& t
 				  wxDefaultPosition, 
 				  wxDefaultSize,
 				  categoryList,
-				  wxCB_DROPDOWN|wxCB_READONLY);
+				  wxCB_DROPDOWN);
 
      panel_7 = new wxPanel(panel_6, wxID_ANY);
      spacePanel = new wxPanel(panel_1, wxID_ANY);
 
      button_1 = new wxButton(panel_1, wxID_ANY, wxT("OK"));
      button_1->Connect(wxID_ANY,
-		       wxEVT_COMMAND_BUTTON_CLICKED,				
+		       wxEVT_COMMAND_BUTTON_CLICKED,
 		       wxCommandEventHandler(NewBoardAddDialog::OnClickOK),
 		       NULL, this);
 
@@ -1726,7 +1731,6 @@ void NewBoardAddDialog::OnClickCancel(wxCommandEvent& event)
 {
      Close(true);
 }
-
 /**
  * 対象がしたらば掲示板か
  */
@@ -1754,4 +1758,43 @@ void NewBoardAddDialog::CheckBoardUrl(wxCommandEvent& event)
 
      button_3->Enable(false);
      return;
+}
+/**
+ * したらば掲示板の掲示板情報取得APIを叩く
+ */
+void NewBoardAddDialog::GetShitarabaBoardInfo(wxCommandEvent& event)
+{
+     wxString url = text_ctrl_1->GetValue();
+     if ( url == wxEmptyString )
+     {
+	  button_3->Enable(false);
+	  wxMessageBox(wxT("エラー, したらば掲示板の板情報取得に失敗しました."), 
+		       wxT("新規追加板の登録"), wxICON_ERROR);	  
+	  return;
+     }
+
+     PartOfURI partOfUri;
+     if ( JaneCloneUtil::SubstringURI(url, &partOfUri))
+     {
+	  if ( partOfUri.hostname.Contains(wxT("jbbs.shitaraba.net")) ||
+	       partOfUri.hostname.Contains(wxT("jbbs.livedoor.jp")) )
+	  {
+	       // 入力されたURLはしたらば掲示板なので板名取得APIを叩く
+	       wxString boardName, category;
+	       std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
+
+	       if (sock->GetShitarabaBoardInfo(partOfUri.path, boardName, category)) {
+		    // カテゴリ設定
+		    text_ctrl_2->SetValue(boardName);
+		    combo_box_1->SetValue(category);
+		    return;
+	       }
+	  }
+     }
+
+     wxMessageBox(wxT("エラー, したらば掲示板の板情報取得に失敗しました."), 
+		  wxT("新規追加板の登録"), wxICON_ERROR);	  
+
+     button_3->Enable(false);
+     return;     
 }
