@@ -1,3 +1,503 @@
+commit 21c79fa
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-13
+
+    新規板追加のダイアログボックスの機能追加
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 0adedbc
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-13
+
+    新規板追加のダイアログボックスの機能追加
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit 1b6f7a1
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-12
+
+    外部板登録用ダイアログを追加
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 41c20cf
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-12
+
+    更新があればスレタブのアイコンを変更
+
+src/janeclone.cpp
+src/threadcontentbar.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+
+commit 82697c9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-12
+
+    アイコンをコミット
+
+src/rc/document-close-4.png
+
+commit 729ace6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-12
+
+    スレッド一覧情報を更新した際に、スレタブのスレッドがdat落ちしていればアイコンを変更
+
+src/datatype.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+src/virtualboardlistctrl.hpp
+
+commit 582e953
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-30
+
+    スレタブにアイコンを追加
+
+.gitignore
+src/datatype.hpp
+src/janeclone.cpp
+src/rc/COPYING
+src/rc/document-new-7.png
+src/rc/document-new-8.png
+
+commit 8aa8b2c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-30
+
+    ポップアップ中でリンクをクリックするとブラウザで開く
+
+src/anchoredresponsepopup.cpp
+src/anchoredresponsepopup.hpp
+
+commit 999857c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-30
+
+    BEログインの通信処理を追加
+
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit 7a7bfa4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-30
+
+    BEのチェック機能と画像ウィンドウの最前面化を追加
+
+src/enums.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/threadcontentwindow.cpp
+
+commit 0a18fae
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-30
+
+    BEログイン設定の保存機能を作成
+
+src/imagepanel.cpp
+src/janeclone.cpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit 620f364
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-30
+
+    Ctrlキーを押しながらマウスのホイール上下で画像の拡大縮小を行う機能を追加
+
+src/imagepanel.cpp
+src/imagepanel.hpp
+src/janecloneimageviewer.cpp
+src/janecloneimageviewer.hpp
+
+commit 4318aef
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-30
+
+    画像ビューア上で画像のリサイズを行う機能を追加
+
+src/enums.hpp
+src/imagepanel.cpp
+src/imagepanel.hpp
+src/janecloneimageviewer.cpp
+src/janecloneimageviewer.hpp
+
+commit fb24768
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-29
+
+    画像ビューア上で画像の回転を行う機能を追加
+
+src/enums.hpp
+src/imagepanel.cpp
+src/imagepanel.hpp
+src/janecloneimageviewer.cpp
+src/janecloneimageviewer.hpp
+
+commit 8902444
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-28
+
+    画像をブラウザで開く機能、名前をつけて保存する機能を追加
+
+src/enums.hpp
+src/imagepanel.cpp
+src/imagepanel.hpp
+src/janecloneimageviewer.cpp
+src/janecloneimageviewer.hpp
+
+commit 19acb98
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-28
+
+    書き込み後にスレッドを更新する機能を追加
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+
+commit 5bdebd3
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-27
+
+    すべての検索バーについてCtrl+Fキーを使えるようにした
+
+src/datatype.hpp
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit f4286c1
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-27
+
+    新月のコードをオプショナルにした(--enable-shingetsuをconfigureで実行するとビルド)
+
+aclocal.m4
+configure
+configure.ac
+src/janeclone.cpp
+src/janeclone.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit d39cccd
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-26
+
+    メニューバー部分の実装を追加
+
+src/janeclone.cpp
+
+commit 217c13c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-26
+
+    メニューの表示タブを一部実装
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 6ffb79a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-26
+
+    スレッド内容の検索バーについてもCtrl+Fで表示切替出来るように修正
+
+src/enums.hpp
+src/janeclone.cpp
+src/threadcontentbar.cpp
+
+commit 816cfd1
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-26
+
+    スレッド内容バーの内容を隠す機能を追加
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+
+commit 56b20ca
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-26
+
+    スレッド一覧ウィンドウでCtrl+Fキーで検索ウィンドウを表示切替する機能を追加
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/main.cpp
+
+commit 041e9dc
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-25
+
+    全体的なタブの移動機能を追加
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 3931d64
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-25
+
+    すべてのタブのスレッド一覧を更新する機能を追加
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit e4b0feb
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-24
+
+    選択されている板のスレッド一覧情報を削除する機能を追加
+
+src/datatype.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+
+commit 118c62b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-24
+
+    板情報もお気に入り登録出来るように修正
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/responsewindow.cpp
+src/sqliteaccessor.cpp
+
+commit 661a838
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-24
+
+    書き込み時のsageチェック機能を追加
+
+src/enums.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+
+commit a21bb94
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-24
+
+    すべてのタブをお気に入り登録する機能を追加
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit f8b8806
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-24
+
+    誤記修正
+
+Makefile.am
+
+commit cf9fec5
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-24
+
+    スレッド中にあるURLを踏んだ場合の処理を追加
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+
+commit 83fd9b8
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-23
+
+    お気に入りの追加削除と表示を実装した
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit f865378
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-23
+
+    スレッドをお気に入りに登録する処理を追加
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit 1d49174
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-22
+
+    スレッドを最下段までスクロールさせる機能を追加
+
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+
+commit 33d9004
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-21
+
+    Mac OS Xでのビルド調整
+
+js-1.5-rc6a/src/jsprf.c
+test/jc-test1.cpp
+
+commit 076dd04
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-21
+
+    -pedanticをオプションにつけた際の警告を修正
+
+libwxnkf/Makefile.am
+libwxnkf/wxnkf.cpp
+libwxnkf/wxnkfencoding.cpp
+
+commit 54409c3
+Merge: 8651446 4bf0dc6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-20
+
+    Merge branch 'master' of github.com:Hiroyuki-Nagata/JaneClone
+    
+    Conflicts:
+    	libwxnkf/wxnkfencoding.cpp
+    
+    修正を前に戻してマージ
+
+commit 8651446
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-19
+
+    libwxnkfのバグ修正を最小限にした
+
+libwxnkf/wxnkfencoding.cpp
+
+commit 4bf0dc6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-19
+
+    libwxnkfの変換バグを修正
+
+libwxnkf/Makefile.am
+libwxnkf/inputcode.cpp
+libwxnkf/inputcode.h
+libwxnkf/wx/wxnkf.h
+libwxnkf/wxnkf.cpp
+libwxnkf/wxnkfbaseconfig.h
+libwxnkf/wxnkfencoding.cpp
+test/jc-test1.cpp
+
+commit e55f63d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-18
+
+    libwxnkfの調整
+
+libwxnkf/wxnkf.cpp
+
+commit 67e4526
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-18
+
+    とりあえずlibwxnkfでShift_JIS -> UTF-8変換ができていた状態に戻す
+
+libwxnkf/util.cpp
+libwxnkf/util.h
+libwxnkf/wx/wxnkf.h
+libwxnkf/wxnkf.cpp
+
+commit 8aacd91
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-11
+
+    ・bootstrapの一部修正
+
+bootstrap
+
+commit c737752
+Author: hiroyuki-nagata-bsd <newserver002@gmail.com>
+Date:   2013-11-11
+
+    FreeBSDでのビルドとメニューへの展開処理を追加
+
+INSTALL
+Makefile.am
+configure.ac
+misc/janeclone.desktop
+src/socketcommunication.cpp
+
+commit 0cbe3a7
+Author: hiroyuki-nagata-bsd <newserver002@gmail.com>
+Date:   2013-11-08
+
+    JaneClone can build with FreeBSD
+
+INSTALL
+bootstrap
+configure.ac
+
+commit 5e40814
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-11-07
+
+    ・SpiderMonkeyのva_list()関数への対処が仮だったものを恒久対処した
+    (configureでva_listが使えるならばva_listを使用するように変更, C99対応コンパイラならばOKのはず)
+
+js-1.5-rc6a/configure
+js-1.5-rc6a/configure.ac
+js-1.5-rc6a/src/Makefile.am
+js-1.5-rc6a/src/jsprf.c
+
+commit 81be452
+Author: hiroyuki nagata <hiroyuki@fox-girl>
+Date:   2013-10-19
+
+    debパッケージのビルドが通らなくなっていたので修正した
+    また、必要なパッケージについての記述を増やした
+
+ChangeLog
+INSTALL
+Makefile.am
+
 commit 93911c8
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-10-07
