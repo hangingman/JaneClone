@@ -1613,12 +1613,14 @@ NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& t
      text_ctrl_2 = new wxTextCtrl(panel_5, wxID_ANY, wxEmptyString);
      button_3 = new wxButton(panel_5, wxID_ANY, wxT("板名取得"));
      label_3 = new wxStaticText(panel_6, wxID_ANY, wxT("カテゴリ"));
-     const wxString *combo_box_1_choices = NULL;
+
+     const wxArrayString categoryList = SQLiteAccessor::GetCategoryList();
      combo_box_1 = new wxComboBox(panel_6, wxID_ANY, wxT(""), 
 				  wxDefaultPosition, 
-				  wxDefaultSize, 0, 
-				  combo_box_1_choices, 
+				  wxDefaultSize,
+				  categoryList,
 				  wxCB_DROPDOWN|wxCB_READONLY);
+
      panel_7 = new wxPanel(panel_6, wxID_ANY);
      button_1 = new wxButton(panel_1, wxID_ANY, wxT("OK"));
      button_2 = new wxButton(panel_1, wxID_ANY, wxT("キャンセル"));

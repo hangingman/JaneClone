@@ -77,6 +77,10 @@ public:
       */
      static wxArrayString GetBoardInfo();
      /**
+      * 板一覧情報(カテゴリ一覧)をSQLite内のテーブルから取得しArrayStringの形で返す
+      */
+     static wxArrayString GetCategoryList();
+     /**
       * ユーザーがJaneClone終了時にタブで開いていた板の名前を登録する
       */
      static void SetUserLookingBoardList(wxArrayString& userLookingBoardListArray);

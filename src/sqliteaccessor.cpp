@@ -146,6 +146,47 @@ wxArrayString SQLiteAccessor::GetBoardInfo() {
      return array;
 }
 /**
+ * 板一覧情報(カテゴリ一覧)をSQLite内のテーブルから取得しArrayStringの形で返す
+ */
+wxArrayString SQLiteAccessor::GetCategoryList() {
+
+     // dbファイルの初期化
+     wxString dbFile = GetDBFilePath();
+     // リザルトセットをArrayStringに設定する
+     wxArrayString array;
+
+     try {	  
+	  // dbファイルの初期化
+	  wxSQLite3Database::InitializeSQLite();
+	  wxSQLite3Database db;
+	  db.Open(dbFile);
+
+	  // リザルトセットを用意する
+	  wxSQLite3ResultSet rs;
+	  const wxString sqlSe = wxT("SELECT DISTINCT CATEGORY FROM BOARD_INFO");
+
+	  // SQL文を実行する
+	  rs = db.ExecuteQuery(sqlSe);
+	  db.Close();
+
+	  while (!rs.Eof()) {
+	       wxString category = rs.GetAsString(wxT("CATEGORY"));
+
+	       // 各項目がNULLで無ければArrayStringに詰める
+	       if (category.Length() > 0) {
+		    array.Add(category);
+	       }
+	       rs.NextRow();
+	  }
+	  return array;
+
+     } catch (wxSQLite3Exception& e) {
+	  wxMessageBox(e.GetMessage());
+     }
+
+     return array;
+}
+/**
  * 指定されたテーブルに情報が存在するかどうか聞く(トランザクション処理なし単独)
  */
 bool SQLiteAccessor::TableHasData(const wxString tableName) {

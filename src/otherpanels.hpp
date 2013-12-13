@@ -40,6 +40,7 @@
 #include "enums.hpp"
 #include "janecloneutil.hpp"
 #include "drawpane.hpp"
+#include "sqliteaccessor.hpp"
 
 // begin wxGlade: ::extracode
 // end wxGlade
