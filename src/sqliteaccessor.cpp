@@ -960,7 +960,7 @@ void SQLiteAccessor::SetImageFileName(std::vector<ImageFileInfo>& imageFileInfo)
 
 	  stmt.BindTimestamp(1, now);
 
-#ifndef __clang__
+#if !defined(__clang__) && !( defined(__MINGW32__) || defined(__MINGW64__) )
 	  stmt.Bind(2, *it->fileName);
 	  stmt.Bind(3, *it->uuidFileName);
 #else
