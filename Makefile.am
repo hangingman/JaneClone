@@ -18,6 +18,10 @@ do_subst_wrapper =  sed -e 's,%%%appdir%%%,$(datarootdir)/@PACKAGE@,g' \
 do_subst_menu 	 =  sed -e 's,%%%bindir%%%,$(bindir),g' \
 			-e 's,%%%janecloneexecrcdir%%%,$(janecloneexecrcdir),g'
 
+# Doxygen
+docs: src/*.cpp src/*.hpp Doxyfile
+	doxygen && cd docs/ && git add . && git commit -m 'updated docs' && git push origin gh-pages && cd .. && git commit -m 'updated docs' docs/
+
 # janecloneスクリプトを作成する
 janeclone:
 	$(do_subst_wrapper) misc/janeclone.wrapper > janeclone

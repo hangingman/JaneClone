@@ -1,3 +1,6 @@
 [submodule "curl"]
 	path = curl
 	url = git://github.com/bagder/curl.git
+[submodule "docs"]
+	path = docs
+	url = git@github.com:Hiroyuki-Nagata/JaneClone.git
