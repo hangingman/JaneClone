@@ -606,6 +606,131 @@ void OperationPanel::do_layout()
      // end wxGlade
 }
 
+// begin wxGlade: ::extracode
+// end wxGlade
+
+/**
+ * 書き込み設定用画面
+ */
+KakikomiPanel::KakikomiPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+     wxPanel(parent, ID_KakikomiPanel, pos, size, wxTAB_TRAVERSAL)
+{
+     // begin wxGlade: KakikomiPanel::KakikomiPanel
+     panel_3 = new wxPanel(this, wxID_ANY);
+     panel_6 = new wxPanel(panel_3, wxID_ANY);
+     panel_8 = new wxPanel(panel_6, wxID_ANY);
+     panel_10 = new wxPanel(panel_8, wxID_ANY);
+     panel_7 = new wxPanel(panel_6, wxID_ANY);
+     panel_9 = new wxPanel(panel_7, wxID_ANY);
+     panel_5 = new wxPanel(panel_3, wxID_ANY);
+     panel_4 = new wxPanel(panel_3, wxID_ANY);
+     panel_2 = new wxPanel(this, wxID_ANY);
+     checkbox_1 = new wxCheckBox(panel_2, wxID_ANY, wxT("書き込み履歴をkakikomi.txtに保存する"));
+     checkbox_2 = new wxCheckBox(panel_2, wxID_ANY, wxT("失敗時も保存する"));
+     checkbox_3 = new wxCheckBox(panel_2, wxID_ANY, wxT("書き込みが成功した気がするときには閉じる"));
+     checkbox_4 = new wxCheckBox(panel_2, wxID_ANY, wxT("スレッドタイトルパネル表示"));
+     checkbox_5 = new wxCheckBox(panel_2, wxID_ANY, wxT("タスクバーを使用する"));
+     checkbox_6 = new wxCheckBox(panel_2, wxID_ANY, wxT("デフォルトでsageチェック"));
+     checkbox_7 = new wxCheckBox(panel_2, wxID_ANY, wxT("ステータスバー非表示"));
+     checkbox_8 = new wxCheckBox(panel_2, wxID_ANY, wxT("デフォルトでBEチェック"));
+     checkbox_9 = new wxCheckBox(panel_2, wxID_ANY, wxT("Shift+Enterでの書き込みを無効にする"));
+     checkbox_10 = new wxCheckBox(panel_2, wxID_ANY, wxT("コテハン警告"));
+     checkbox_11 = new wxCheckBox(panel_2, wxID_ANY, wxT("誤爆警告"));
+     checkbox_12 = new wxCheckBox(panel_2, wxID_ANY, wxT("BEログイン警告"));
+     checkbox_13 = new wxCheckBox(panel_2, wxID_ANY, wxT("Samba警告"));
+     label_1 = new wxStaticText(panel_4, wxID_ANY, wxT("「これにレス」の記号"));
+     text_ctrl_1 = new wxTextCtrl(panel_4, wxID_ANY, wxT(">>"));
+     label_2 = new wxStaticText(panel_4, wxID_ANY, wxT("カウント補正(秒)"));
+     spin_ctrl_1 = new wxSpinCtrl(panel_4, wxID_ANY, wxT("0"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+     label_3 = new wxStaticText(panel_5, wxID_ANY, wxT("AAListの形式"));
+     const wxString combo_box_choices[] = {
+	  wxT("リスト形式"),
+	  wxT("メニュー形式")
+     };
+     
+     combo_box_1 = new wxComboBox(panel_5, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 2, combo_box_choices, wxCB_DROPDOWN);
+     label_4 = new wxStaticText(panel_9, wxID_ANY, wxT("名前"));
+     checkbox_14 = new wxCheckBox(panel_9, wxID_ANY, wxT("１行目をデフォルト"));
+     text_ctrl_2 = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxHSCROLL);
+     label_5 = new wxStaticText(panel_10, wxID_ANY, wxT("メール"));
+     checkbox_15 = new wxCheckBox(panel_10, wxID_ANY, wxT("１行目をデフォルト"));
+     text_ctrl_3 = new wxTextCtrl(panel_8, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxHSCROLL);
+
+     set_properties();
+     do_layout();
+     // end wxGlade
+}
+
+
+void KakikomiPanel::set_properties()
+{
+     // begin wxGlade: KakikomiPanel::set_properties
+     // end wxGlade
+}
+
+
+void KakikomiPanel::do_layout()
+{
+     // begin wxGlade: KakikomiPanel::do_layout
+     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_2 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_5 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_8 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_9 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_6 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_7 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
+     wxFlexGridSizer* grid_sizer_1 = new wxFlexGridSizer(7, 2, 0, 0);
+     grid_sizer_1->Add(checkbox_1, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_2, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_3, 1, wxALL, 5);
+     grid_sizer_1->Add(20, 20, 0, wxEXPAND, 0);
+     grid_sizer_1->Add(checkbox_4, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_5, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_6, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_7, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_8, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_9, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_10, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_11, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_12, 1, wxALL, 5);
+     grid_sizer_1->Add(checkbox_13, 1, wxALL, 5);
+     panel_2->SetSizer(grid_sizer_1);
+     sizer_1->Add(panel_2, 1, wxEXPAND, 0);
+     sizer_3->Add(label_1, 1, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+     sizer_3->Add(text_ctrl_1, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_3->Add(label_2, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_3->Add(spin_ctrl_1, 1, wxALIGN_CENTER_VERTICAL, 0);
+     panel_4->SetSizer(sizer_3);
+     sizer_2->Add(panel_4, 0, wxEXPAND, 0);
+     sizer_4->Add(label_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_4->Add(combo_box_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_5->SetSizer(sizer_4);
+     sizer_2->Add(panel_5, 0, wxEXPAND, 0);
+     sizer_7->Add(label_4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(checkbox_14, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_9->SetSizer(sizer_7);
+     sizer_6->Add(panel_9, 0, wxEXPAND, 0);
+     sizer_6->Add(text_ctrl_2, 1, wxALL|wxEXPAND, 5);
+     panel_7->SetSizer(sizer_6);
+     sizer_5->Add(panel_7, 1, wxEXPAND, 0);
+     sizer_9->Add(label_5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_9->Add(checkbox_15, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_10->SetSizer(sizer_9);
+     sizer_8->Add(panel_10, 0, wxEXPAND, 0);
+     sizer_8->Add(text_ctrl_3, 1, wxALL|wxEXPAND, 5);
+     panel_8->SetSizer(sizer_8);
+     sizer_5->Add(panel_8, 1, wxEXPAND, 0);
+     panel_6->SetSizer(sizer_5);
+     sizer_2->Add(panel_6, 1, wxEXPAND, 0);
+     panel_3->SetSizer(sizer_2);
+     sizer_1->Add(panel_3, 1, wxEXPAND, 0);
+     SetSizer(sizer_1);
+     sizer_1->Fit(this);
+     // end wxGlade
+}
+
 /**
  * ユーザー設定設定用画面
  */

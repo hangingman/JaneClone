@@ -322,6 +322,63 @@ protected:
      // end wxGlade
 }; // wxGlade: end class
 
+/**
+ * 書き込み設定用画面
+ */
+// begin wxGlade: ::extracode
+// end wxGlade
+
+class KakikomiPanel: public wxPanel {
+public:
+     // begin wxGlade: KakikomiPanel::ids
+     // end wxGlade
+     KakikomiPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+
+private:
+     // begin wxGlade: KakikomiPanel::methods
+     void set_properties();
+     void do_layout();
+     // end wxGlade
+
+protected:
+     // begin wxGlade: KakikomiPanel::attributes
+     wxCheckBox* checkbox_1;
+     wxCheckBox* checkbox_2;
+     wxCheckBox* checkbox_3;
+     wxCheckBox* checkbox_4;
+     wxCheckBox* checkbox_5;
+     wxCheckBox* checkbox_6;
+     wxCheckBox* checkbox_7;
+     wxCheckBox* checkbox_8;
+     wxCheckBox* checkbox_9;
+     wxCheckBox* checkbox_10;
+     wxCheckBox* checkbox_11;
+     wxCheckBox* checkbox_12;
+     wxCheckBox* checkbox_13;
+     wxPanel* panel_2;
+     wxStaticText* label_1;
+     wxTextCtrl* text_ctrl_1;
+     wxStaticText* label_2;
+     wxSpinCtrl* spin_ctrl_1;
+     wxPanel* panel_4;
+     wxStaticText* label_3;
+     wxComboBox* combo_box_1;
+     wxPanel* panel_5;
+     wxStaticText* label_4;
+     wxCheckBox* checkbox_14;
+     wxPanel* panel_9;
+     wxTextCtrl* text_ctrl_2;
+     wxPanel* panel_7;
+     wxStaticText* label_5;
+     wxCheckBox* checkbox_15;
+     wxPanel* panel_10;
+     wxTextCtrl* text_ctrl_3;
+     wxPanel* panel_8;
+     wxPanel* panel_6;
+     wxPanel* panel_3;
+     // end wxGlade
+}; // wxGlade: end class
+
 // begin wxGlade: ::extracode
 // end wxGlade
 

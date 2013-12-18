@@ -200,9 +200,13 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  vbox->Add(new OperationPanel(settingPanel));
 	  settingPanel->SetSizer(vbox);
      } else if (itemStr == wxT("タブ操作")) {
-       wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-       vbox->Add(new TabControlSettingPanel(settingPanel));
-       settingPanel->SetSizer(vbox);
+	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  vbox->Add(new TabControlSettingPanel(settingPanel));
+	  settingPanel->SetSizer(vbox);
+     } else if (itemStr == wxT("書き込み")) {
+	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  vbox->Add(new KakikomiPanel(settingPanel));
+	  settingPanel->SetSizer(vbox);
      } else if (itemStr == wxT("User")) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new UserSettingPanel(settingPanel));
