@@ -76,7 +76,7 @@ wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE) {
  */
 void SettingDialog::SetProperties() {
      // begin wxGlade: SettingDialog::set_properties
-     SetSize(wxSize(960, 640));
+     SetSize(wxSize(1160, 640));
 
      // ツリーコントロールの表示内容を設定する
      settingTreeCtrl->AddRoot(wxEmptyString);
@@ -195,6 +195,10 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new BehaviorPanel(settingPanel));
 	  settingPanel->SetSizer(vbox);
+     } else if (itemStr == wxT("操作")) {
+	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  vbox->Add(new OperationPanel(settingPanel));
+	  settingPanel->SetSizer(vbox);
      } else if (itemStr == wxT("タブ操作")) {
        wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
        vbox->Add(new TabControlSettingPanel(settingPanel));
@@ -212,6 +216,8 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  vbox->Add(new TabColorSettingPanel(settingPanel));
 	  settingPanel->SetSizer(vbox);
      }
+
+     settingPanel->GetSizer()->Fit(settingPanel);
 
      // ウィンドウのタイトルを変える
      this->SetTitle(wxT("設定 - ") + itemStr);

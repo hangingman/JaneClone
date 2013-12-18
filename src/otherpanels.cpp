@@ -430,6 +430,182 @@ void BehaviorPanel::do_layout()
      // end wxGlade
 }
 
+// begin wxGlade: ::extracode
+// end wxGlade
+
+/**
+ * 各種操作設定用画面
+ */
+OperationPanel::OperationPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+     wxPanel(parent, ID_OperationPanel, pos, size, wxTAB_TRAVERSAL)
+{
+     // begin wxGlade: OperationPanel::OperationPanel
+     panel_3 = new wxPanel(this, wxID_ANY);
+     panel_7 = new wxPanel(panel_3, wxID_ANY);
+     panel_14 = new wxPanel(panel_7, wxID_ANY);
+     panel_13 = new wxPanel(panel_7, wxID_ANY);
+     panel_12 = new wxPanel(panel_7, wxID_ANY);
+     panel_6 = new wxPanel(panel_3, wxID_ANY);
+     panel_11_copy = new wxPanel(panel_6, wxID_ANY);
+     panel_10_copy = new wxPanel(panel_6, wxID_ANY);
+     panel_9_copy = new wxPanel(panel_6, wxID_ANY);
+     panel_8_copy = new wxPanel(panel_6, wxID_ANY);
+     panel_2 = new wxPanel(this, wxID_ANY);
+     panel_5 = new wxPanel(panel_2, wxID_ANY);
+     panel_4 = new wxPanel(panel_2, wxID_ANY);
+     panel_11 = new wxPanel(panel_4, wxID_ANY);
+     panel_10 = new wxPanel(panel_4, wxID_ANY);
+     panel_9 = new wxPanel(panel_4, wxID_ANY);
+     sizer_4_staticbox = new wxStaticBox(panel_4, -1, wxT("板に関する操作"));
+     sizer_5_staticbox = new wxStaticBox(panel_5, -1, wxT("スレを裏で開く"));
+     sizer_6_staticbox = new wxStaticBox(panel_6, -1, wxT("スレに関する操作"));
+     sizer_7_staticbox = new wxStaticBox(panel_7, -1, wxT("リロード制限"));
+     panel_8 = new wxPanel(panel_4, wxID_ANY);
+     checkbox_1 = new wxCheckBox(this, wxID_ANY, wxT("シングルクリックでカテゴリーを開く"));
+     checkbox_2 = new wxCheckBox(this, wxID_ANY, wxT("未読があるスレタブを選択するとレス取得"));
+     checkbox_3 = new wxCheckBox(this, wxID_ANY, wxT("お気に入り板が対象でもスレッド一覧を更新する"));
+     label_1 = new wxStaticText(panel_8, wxID_ANY, wxT("シングルクリック"));
+
+     // コンボボックスの選択肢
+     const wxString combo_box_choices[] = {
+	  wxT("無効"),
+	  wxT("常にローカル"),
+	  wxT("無ければ取得"),
+	  wxT("更新チェック")
+     };
+     
+     combo_box_1 = new wxComboBox(panel_8, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
+     label_2 = new wxStaticText(panel_9, wxID_ANY, wxT("ダブルクリック"));
+     combo_box_2 = new wxComboBox(panel_9, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
+     label_3 = new wxStaticText(panel_10, wxID_ANY, wxT("メニュー・リンクバー"));
+     combo_box_3 = new wxComboBox(panel_10, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
+     label_4 = new wxStaticText(panel_11, wxID_ANY, wxT("その他"));
+     combo_box_4 = new wxComboBox(panel_11, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
+     checkbox_4 = new wxCheckBox(panel_5, wxID_ANY, wxT("スレ覧（ｼﾝｸﾞﾙｸﾘｯｸ）"));
+     checkbox_5 = new wxCheckBox(panel_5, wxID_ANY, wxT("お気に入り"));
+     checkbox_6 = new wxCheckBox(panel_5, wxID_ANY, wxT("閉じたスレ"));
+     checkbox_7 = new wxCheckBox(panel_5, wxID_ANY, wxT("アドレスバー直打ち"));
+     checkbox_8 = new wxCheckBox(panel_5, wxID_ANY, wxT("スレ内リンク"));
+     checkbox_9 = new wxCheckBox(panel_5, wxID_ANY, wxT("〜をすべて開く"));
+     label_1_copy = new wxStaticText(panel_8_copy, wxID_ANY, wxT("シングルクリック"));
+     combo_box_1_copy = new wxComboBox(panel_8_copy, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
+     label_2_copy = new wxStaticText(panel_9_copy, wxID_ANY, wxT("ダブルクリック"));
+     combo_box_2_copy = new wxComboBox(panel_9_copy, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
+     label_3_copy = new wxStaticText(panel_10_copy, wxID_ANY, wxT("メニュー・リンクバー"));
+     combo_box_3_copy = new wxComboBox(panel_10_copy, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
+     label_4_copy = new wxStaticText(panel_11_copy, wxID_ANY, wxT("その他"));
+     combo_box_4_copy = new wxComboBox(panel_11_copy, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
+     label_5 = new wxStaticText(panel_12, wxID_ANY, wxT("スレッド一覧(秒)"));
+     spin_ctrl_1 = new wxSpinCtrl(panel_12, wxID_ANY, wxT("15"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+     label_6 = new wxStaticText(panel_13, wxID_ANY, wxT("レス表示欄(秒)"));
+     spin_ctrl_2 = new wxSpinCtrl(panel_13, wxID_ANY, wxT("5"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+     label_7 = new wxStaticText(panel_14, wxID_ANY, wxT("更新チェック(秒)\n（板数×秒）"));
+     spin_ctrl_3 = new wxSpinCtrl(panel_14, wxID_ANY, wxT("15"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+
+     set_properties();
+     do_layout();
+     // end wxGlade
+}
+
+
+void OperationPanel::set_properties()
+{
+     // begin wxGlade: OperationPanel::set_properties
+     // end wxGlade
+}
+
+
+void OperationPanel::do_layout()
+{
+     // begin wxGlade: OperationPanel::do_layout
+     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_3 = new wxBoxSizer(wxHORIZONTAL);
+     wxStaticBoxSizer* sizer_7 = new wxStaticBoxSizer(sizer_7_staticbox, wxVERTICAL);
+     wxBoxSizer* sizer_14 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_13 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_12 = new wxBoxSizer(wxHORIZONTAL);
+     wxStaticBoxSizer* sizer_6 = new wxStaticBoxSizer(sizer_6_staticbox, wxVERTICAL);
+     wxBoxSizer* sizer_11_copy = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_10_copy = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_9_copy = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_8_copy = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
+     wxStaticBoxSizer* sizer_5 = new wxStaticBoxSizer(sizer_5_staticbox, wxVERTICAL);
+     wxStaticBoxSizer* sizer_4 = new wxStaticBoxSizer(sizer_4_staticbox, wxVERTICAL);
+     wxBoxSizer* sizer_11 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_10 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_9 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_8 = new wxBoxSizer(wxHORIZONTAL);
+     sizer_1->Add(checkbox_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_1->Add(checkbox_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_1->Add(checkbox_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_8->Add(label_1, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_8->Add(combo_box_1, 1, wxALIGN_CENTER_VERTICAL, 0);
+     panel_8->SetSizer(sizer_8);
+     sizer_4->Add(panel_8, 1, wxEXPAND, 0);
+     sizer_9->Add(label_2, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_9->Add(combo_box_2, 1, wxALIGN_CENTER_VERTICAL, 0);
+     panel_9->SetSizer(sizer_9);
+     sizer_4->Add(panel_9, 1, wxEXPAND, 0);
+     sizer_10->Add(label_3, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_10->Add(combo_box_3, 1, wxALIGN_CENTER_VERTICAL, 0);
+     panel_10->SetSizer(sizer_10);
+     sizer_4->Add(panel_10, 1, wxEXPAND, 0);
+     sizer_11->Add(label_4, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_11->Add(combo_box_4, 1, wxALIGN_CENTER_VERTICAL, 0);
+     panel_11->SetSizer(sizer_11);
+     sizer_4->Add(panel_11, 1, wxEXPAND, 0);
+     panel_4->SetSizer(sizer_4);
+     sizer_2->Add(panel_4, 1, wxALL|wxEXPAND, 5);
+     sizer_5->Add(checkbox_4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(checkbox_5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(checkbox_6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(checkbox_7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(checkbox_8, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(checkbox_9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_5->SetSizer(sizer_5);
+     sizer_2->Add(panel_5, 1, wxALL|wxEXPAND, 5);
+     panel_2->SetSizer(sizer_2);
+     sizer_1->Add(panel_2, 1, wxEXPAND, 0);
+     sizer_8_copy->Add(label_1_copy, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_8_copy->Add(combo_box_1_copy, 1, wxALIGN_CENTER_VERTICAL, 0);
+     panel_8_copy->SetSizer(sizer_8_copy);
+     sizer_6->Add(panel_8_copy, 1, wxEXPAND, 0);
+     sizer_9_copy->Add(label_2_copy, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_9_copy->Add(combo_box_2_copy, 1, wxALIGN_CENTER_VERTICAL, 0);
+     panel_9_copy->SetSizer(sizer_9_copy);
+     sizer_6->Add(panel_9_copy, 1, wxEXPAND, 0);
+     sizer_10_copy->Add(label_3_copy, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_10_copy->Add(combo_box_3_copy, 1, wxALIGN_CENTER_VERTICAL, 0);
+     panel_10_copy->SetSizer(sizer_10_copy);
+     sizer_6->Add(panel_10_copy, 1, wxEXPAND, 0);
+     sizer_11_copy->Add(label_4_copy, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_11_copy->Add(combo_box_4_copy, 1, wxALIGN_CENTER_VERTICAL, 0);
+     panel_11_copy->SetSizer(sizer_11_copy);
+     sizer_6->Add(panel_11_copy, 1, wxEXPAND, 0);
+     panel_6->SetSizer(sizer_6);
+     sizer_3->Add(panel_6, 1, wxALL|wxEXPAND, 5);
+     sizer_12->Add(label_5, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_12->Add(spin_ctrl_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+     panel_12->SetSizer(sizer_12);
+     sizer_7->Add(panel_12, 1, wxEXPAND, 0);
+     sizer_13->Add(label_6, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_13->Add(spin_ctrl_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+     panel_13->SetSizer(sizer_13);
+     sizer_7->Add(panel_13, 1, wxEXPAND, 0);
+     sizer_14->Add(label_7, 1, wxALIGN_CENTER_VERTICAL, 0);
+     sizer_14->Add(spin_ctrl_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+     panel_14->SetSizer(sizer_14);
+     sizer_7->Add(panel_14, 1, wxEXPAND, 0);
+     panel_7->SetSizer(sizer_7);
+     sizer_3->Add(panel_7, 1, wxALL|wxEXPAND, 5);
+     panel_3->SetSizer(sizer_3);
+     sizer_1->Add(panel_3, 1, wxEXPAND, 0);
+     SetSizer(sizer_1);
+     sizer_1->Fit(this);
+     // end wxGlade
+}
+
 /**
  * ユーザー設定設定用画面
  */

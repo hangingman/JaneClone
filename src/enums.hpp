@@ -290,6 +290,7 @@ X_TABLE_ITEM(ID_ChangeUserLastAttached)           /* ユーザーが最後に触
 X_TABLE_ITEM(ID_ReloadThreadByName)               /* スレッド名を元にスレッドを更新する      	*/ \
 X_TABLE_ITEM(ID_NewBoardAddDialog)                /* 外部板登録ダイアログ                       */ \
 X_TABLE_ITEM(ID_CallNewBoardAddDialog)            /* 外部板登録用ダイアログを呼び出す           */ \
+X_TABLE_ITEM(ID_OperationPanel)                   /* 各種操作設定用画面                         */ \
 X_TABLE_ITEM(ID_JaneCloneEnumsEnd)
 
 // 列挙型の実体をマクロで生成する

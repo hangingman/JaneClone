@@ -247,6 +247,81 @@ protected:
     // end wxGlade
 }; // wxGlade: end class
 
+/**
+ * 各種操作設定用画面
+ */
+// begin wxGlade: ::extracode
+// end wxGlade
+class OperationPanel: public wxPanel {
+public:
+     // begin wxGlade: OperationPanel::ids
+     // end wxGlade
+
+     OperationPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+
+private:
+     // begin wxGlade: OperationPanel::methods
+     void set_properties();
+     void do_layout();
+     // end wxGlade
+
+protected:
+     // begin wxGlade: OperationPanel::attributes
+     wxStaticBox* sizer_7_staticbox;
+     wxStaticBox* sizer_6_staticbox;
+     wxStaticBox* sizer_5_staticbox;
+     wxStaticBox* sizer_4_staticbox;
+     wxCheckBox* checkbox_1;
+     wxCheckBox* checkbox_2;
+     wxCheckBox* checkbox_3;
+     wxStaticText* label_1;
+     wxComboBox* combo_box_1;
+     wxPanel* panel_8;
+     wxStaticText* label_2;
+     wxComboBox* combo_box_2;
+     wxPanel* panel_9;
+     wxStaticText* label_3;
+     wxComboBox* combo_box_3;
+     wxPanel* panel_10;
+     wxStaticText* label_4;
+     wxComboBox* combo_box_4;
+     wxPanel* panel_11;
+     wxPanel* panel_4;
+     wxCheckBox* checkbox_4;
+     wxCheckBox* checkbox_5;
+     wxCheckBox* checkbox_6;
+     wxCheckBox* checkbox_7;
+     wxCheckBox* checkbox_8;
+     wxCheckBox* checkbox_9;
+     wxPanel* panel_5;
+     wxPanel* panel_2;
+     wxStaticText* label_1_copy;
+     wxComboBox* combo_box_1_copy;
+     wxPanel* panel_8_copy;
+     wxStaticText* label_2_copy;
+     wxComboBox* combo_box_2_copy;
+     wxPanel* panel_9_copy;
+     wxStaticText* label_3_copy;
+     wxComboBox* combo_box_3_copy;
+     wxPanel* panel_10_copy;
+     wxStaticText* label_4_copy;
+     wxComboBox* combo_box_4_copy;
+     wxPanel* panel_11_copy;
+     wxPanel* panel_6;
+     wxStaticText* label_5;
+     wxSpinCtrl* spin_ctrl_1;
+     wxPanel* panel_12;
+     wxStaticText* label_6;
+     wxSpinCtrl* spin_ctrl_2;
+     wxPanel* panel_13;
+     wxStaticText* label_7;
+     wxSpinCtrl* spin_ctrl_3;
+     wxPanel* panel_14;
+     wxPanel* panel_7;
+     wxPanel* panel_3;
+     // end wxGlade
+}; // wxGlade: end class
+
 // begin wxGlade: ::extracode
 // end wxGlade
 
