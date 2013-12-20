@@ -1,5 +1,5 @@
 # 依存関係にあるソース群
-SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 curl curlpp src test
+SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 curlpp src test
 
 # パッケージ作成用サブディレクトリも設定する
 DIST_SUBDIRS = $(SUBDIRS)
@@ -20,7 +20,8 @@ do_subst_menu 	 =  sed -e 's,%%%bindir%%%,$(bindir),g' \
 
 # Doxygen
 docs: src/*.cpp src/*.hpp Doxyfile
-	doxygen && cd docs/ && git add . && git commit -m 'updated docs' && git push origin gh-pages && cd .. && git commit -m 'updated docs' docs/
+	doxygen && cd docs/ && git add . && git commit -m 'updated docs' \
+	&& git push origin gh-pages && cd .. && git commit -m 'updated docs' docs/
 
 # janecloneスクリプトを作成する
 janeclone:
@@ -35,7 +36,7 @@ endif
 # インストール時のファイルコピー
 install-data-local:
 	cp -r $(top_builddir)/src/rc $(janecloneexecdir)
-	@if test "x`uname -s`" = "xFreeBSD"; then                                                     \
+	@if test "x`uname -s`" = "xFreeBSD"; then                   \
 	   $(do_subst_menu) $(top_builddir)/misc/janeclone.desktop > /usr/local/share/applications/janeclone.desktop; \
 	else                                                                                          \
 	   $(do_subst_menu) $(top_builddir)/misc/janeclone.desktop > /usr/share/applications/janeclone.desktop;       \

@@ -633,11 +633,9 @@ ac_includes_default="\
 #endif"
 
 ac_header_list=
-enable_option_checking=no
 ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
-subdirs
 LIBOBJS
 DYNAMIC_EXTENSION_FLAGS
 THREADSAFE_FLAGS
@@ -822,7 +820,7 @@ CXXFLAGS
 CCC
 CPP
 CXXCPP'
-ac_subdirs_all='curl'
+
 
 # Initialize some variables set by options.
 ac_init_help=
@@ -16707,7 +16705,9 @@ $as_echo "$XML2LIBS" >&6; }
 
 fi
 
+#-----------------------------------------------------------------------
 # Checks for wxWidgets.
+#
 
 
 # Check whether --with-wxdir was given.
@@ -17403,8 +17403,188 @@ fi
 if test $has_pthread = 0; then
   as_fn_error $? "\"ERROR: cannot find pthread.\"" "$LINENO" 5
 fi
+#-----------------------------------------------------------------------
 
-# curlpp build flag
+#-----------------------------------------------------------------------
+#   curlpp build flag
+#
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ANSI C header files" >&5
+$as_echo_n "checking for ANSI C header files... " >&6; }
+if ${ac_cv_header_stdc+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include <float.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_header_stdc=yes
+else
+  ac_cv_header_stdc=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+if test $ac_cv_header_stdc = yes; then
+  # SunOS 4.x string.h does not declare mem*, contrary to ANSI.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <string.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "memchr" >/dev/null 2>&1; then :
+
+else
+  ac_cv_header_stdc=no
+fi
+rm -f conftest*
+
+fi
+
+if test $ac_cv_header_stdc = yes; then
+  # ISC 2.0.2 stdlib.h does not declare free, contrary to ANSI.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdlib.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "free" >/dev/null 2>&1; then :
+
+else
+  ac_cv_header_stdc=no
+fi
+rm -f conftest*
+
+fi
+
+if test $ac_cv_header_stdc = yes; then
+  # /bin/cc in Irix-4.0.5 gets non-ANSI ctype macros unless using -ansi.
+  if test "$cross_compiling" = yes; then :
+  :
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ctype.h>
+#include <stdlib.h>
+#if ((' ' & 0x0FF) == 0x020)
+# define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
+# define TOUPPER(c) (ISLOWER(c) ? 'A' + ((c) - 'a') : (c))
+#else
+# define ISLOWER(c) \
+		   (('a' <= (c) && (c) <= 'i') \
+		     || ('j' <= (c) && (c) <= 'r') \
+		     || ('s' <= (c) && (c) <= 'z'))
+# define TOUPPER(c) (ISLOWER(c) ? ((c) | 0x40) : (c))
+#endif
+
+#define XOR(e, f) (((e) && !(f)) || (!(e) && (f)))
+int
+main ()
+{
+  int i;
+  for (i = 0; i < 256; i++)
+    if (XOR (islower (i), ISLOWER (i))
+	|| toupper (i) != TOUPPER (i))
+      return 2;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+
+else
+  ac_cv_header_stdc=no
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_header_stdc" >&5
+$as_echo "$ac_cv_header_stdc" >&6; }
+if test $ac_cv_header_stdc = yes; then
+
+$as_echo "#define STDC_HEADERS 1" >>confdefs.h
+
+fi
+
+for ac_header in \
+curl/curl.h \
+ostream
+
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+if test $ac_cv_header_curl_curl_h = no; then
+   as_fn_error $? "*** curl/curl.h. You need a working libcurl installation." "$LINENO" 5
+fi
+
+
+
+
+ if ${my_cv_curl_vers+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+ my_cv_curl_vers=NONE
+  check="7.10.0"
+  check_hex="070A00"
+
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for curl >= $check" >&5
+$as_echo_n "checking for curl >= $check... " >&6; }
+
+ if eval curl-config --version 2>/dev/null >/dev/null; then
+   ver=`curl-config --version | sed -e "s/libcurl //g"`
+   hex_ver=`curl-config --vernum | tr 'a-f' 'A-F'`
+   ok=`echo "ibase=16; if($hex_ver>=$check_hex) $hex_ver else 0" | bc`
+
+   if test x$ok != x0; then
+     my_cv_curl_vers="$ver"
+     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $my_cv_curl_vers" >&5
+$as_echo "$my_cv_curl_vers" >&6; }
+     CURL_LIBS=`curl-config --libs`
+     CURL_CFLAGS=`curl-config --cflags`
+     CURLPP_CXXFLAGS="$CURLPP_CXXFLAGS $CURL_CFLAGS"
+     LIBS="$LIBS $CURL_LIBS"
+   else
+     { $as_echo "$as_me:${as_lineno-$LINENO}: result: FAILED" >&5
+$as_echo "FAILED" >&6; }
+     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $ver is too old. Need version $check or higher." >&5
+$as_echo "$as_me: WARNING: $ver is too old. Need version $check or higher." >&2;}
+   fi
+ else
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: FAILED" >&5
+$as_echo "FAILED" >&6; }
+   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: curl-config was not found" >&5
+$as_echo "$as_me: WARNING: curl-config was not found" >&2;}
+ fi
+
+fi
+
+
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking if we need BUILDING_CURLPP" >&5
 $as_echo_n "checking if we need BUILDING_CURLPP... " >&6; }
 case $host in
@@ -17433,8 +17613,11 @@ $as_echo "no" >&6; }
 $as_echo "no" >&6; }
     ;;
 esac
+#-----------------------------------------------------------------------
 
+#-----------------------------------------------------------------------
 # janeclone shingetsu support, default is disable
+#
 # Check whether --enable-shingetsu was given.
 if test "${enable_shingetsu+set}" = set; then :
   enableval=$enable_shingetsu;
@@ -17448,6 +17631,7 @@ $as_echo "#define USE_SHINGETSU 1" >>confdefs.h
 
 
 fi
+#-----------------------------------------------------------------------
 
 # Check compile flag
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -fno-stack-protector" >&5
@@ -18272,26 +18456,6 @@ $as_echo "#define STRERROR_R_CHAR_P 1" >>confdefs.h
 
 fi
 
-
-# Set install paths.
-if test "x$prefix" = "xNONE" ; then
-  prefix="/usr/local"
-fi
-
-if test "x$exec_prefix" = "xNONE" ; then
-  exec_prefix=$prefix
-fi
-
-# Checks for libcurl
-if test -d "curl"; then
-   ac_configure_args="$ac_configure_args --disable-man-pages --disable-manual --disable-debug --disable-curldebug --bindir=$prefix/lib/$PACKAGE --includedir=$prefix/lib/$PACKAGE/include --datadir=$prefix/lib/$PACKAGE --libdir=$prefix/lib/$PACKAGE"
-
-
-subdirs="$subdirs curl"
-
-else
-   as_fn_error $? "libcurl directory not found. please do git submodule init; git submodule update;" "$LINENO" 5
-fi
 
 # Setting for generate Makefile location
 ac_config_files="$ac_config_files Makefile libwxnkf/Makefile libwxuuid/Makefile sqlite3/Makefile wxsqlite3/Makefile curlpp/Makefile curlpp/src/Makefile curlpp/src/curlpp/Makefile curlpp/src/curlpp/internal/Makefile curlpp/src/utilspp/Makefile curlpp/include/Makefile curlpp/include/curlpp/Makefile curlpp/include/curlpp/internal/Makefile curlpp/include/utilspp/Makefile curlpp/include/utilspp/functor/Makefile curlpp/include/utilspp/singleton/Makefile src/Makefile test/Makefile"
@@ -20976,151 +21140,6 @@ if test "$no_create" != yes; then
   # Use ||, not &&, to avoid exiting from the if with $? = 1, which
   # would make configure fail if this is the last instruction.
   $ac_cs_success || as_fn_exit 1
-fi
-
-#
-# CONFIG_SUBDIRS section.
-#
-if test "$no_recursion" != yes; then
-
-  # Remove --cache-file, --srcdir, and --disable-option-checking arguments
-  # so they do not pile up.
-  ac_sub_configure_args=
-  ac_prev=
-  eval "set x $ac_configure_args"
-  shift
-  for ac_arg
-  do
-    if test -n "$ac_prev"; then
-      ac_prev=
-      continue
-    fi
-    case $ac_arg in
-    -cache-file | --cache-file | --cache-fil | --cache-fi \
-    | --cache-f | --cache- | --cache | --cach | --cac | --ca | --c)
-      ac_prev=cache_file ;;
-    -cache-file=* | --cache-file=* | --cache-fil=* | --cache-fi=* \
-    | --cache-f=* | --cache-=* | --cache=* | --cach=* | --cac=* | --ca=* \
-    | --c=*)
-      ;;
-    --config-cache | -C)
-      ;;
-    -srcdir | --srcdir | --srcdi | --srcd | --src | --sr)
-      ac_prev=srcdir ;;
-    -srcdir=* | --srcdir=* | --srcdi=* | --srcd=* | --src=* | --sr=*)
-      ;;
-    -prefix | --prefix | --prefi | --pref | --pre | --pr | --p)
-      ac_prev=prefix ;;
-    -prefix=* | --prefix=* | --prefi=* | --pref=* | --pre=* | --pr=* | --p=*)
-      ;;
-    --disable-option-checking)
-      ;;
-    *)
-      case $ac_arg in
-      *\'*) ac_arg=`$as_echo "$ac_arg" | sed "s/'/'\\\\\\\\''/g"` ;;
-      esac
-      as_fn_append ac_sub_configure_args " '$ac_arg'" ;;
-    esac
-  done
-
-  # Always prepend --prefix to ensure using the same prefix
-  # in subdir configurations.
-  ac_arg="--prefix=$prefix"
-  case $ac_arg in
-  *\'*) ac_arg=`$as_echo "$ac_arg" | sed "s/'/'\\\\\\\\''/g"` ;;
-  esac
-  ac_sub_configure_args="'$ac_arg' $ac_sub_configure_args"
-
-  # Pass --silent
-  if test "$silent" = yes; then
-    ac_sub_configure_args="--silent $ac_sub_configure_args"
-  fi
-
-  # Always prepend --disable-option-checking to silence warnings, since
-  # different subdirs can have different --enable and --with options.
-  ac_sub_configure_args="--disable-option-checking $ac_sub_configure_args"
-
-  ac_popdir=`pwd`
-  for ac_dir in : $subdirs; do test "x$ac_dir" = x: && continue
-
-    # Do not complain, so a configure script can configure whichever
-    # parts of a large source tree are present.
-    test -d "$srcdir/$ac_dir" || continue
-
-    ac_msg="=== configuring in $ac_dir (`pwd`/$ac_dir)"
-    $as_echo "$as_me:${as_lineno-$LINENO}: $ac_msg" >&5
-    $as_echo "$ac_msg" >&6
-    as_dir="$ac_dir"; as_fn_mkdir_p
-    ac_builddir=.
-
-case "$ac_dir" in
-.) ac_dir_suffix= ac_top_builddir_sub=. ac_top_build_prefix= ;;
-*)
-  ac_dir_suffix=/`$as_echo "$ac_dir" | sed 's|^\.[\\/]||'`
-  # A ".." for each directory in $ac_dir_suffix.
-  ac_top_builddir_sub=`$as_echo "$ac_dir_suffix" | sed 's|/[^\\/]*|/..|g;s|/||'`
-  case $ac_top_builddir_sub in
-  "") ac_top_builddir_sub=. ac_top_build_prefix= ;;
-  *)  ac_top_build_prefix=$ac_top_builddir_sub/ ;;
-  esac ;;
-esac
-ac_abs_top_builddir=$ac_pwd
-ac_abs_builddir=$ac_pwd$ac_dir_suffix
-# for backward compatibility:
-ac_top_builddir=$ac_top_build_prefix
-
-case $srcdir in
-  .)  # We are building in place.
-    ac_srcdir=.
-    ac_top_srcdir=$ac_top_builddir_sub
-    ac_abs_top_srcdir=$ac_pwd ;;
-  [\\/]* | ?:[\\/]* )  # Absolute name.
-    ac_srcdir=$srcdir$ac_dir_suffix;
-    ac_top_srcdir=$srcdir
-    ac_abs_top_srcdir=$srcdir ;;
-  *) # Relative name.
-    ac_srcdir=$ac_top_build_prefix$srcdir$ac_dir_suffix
-    ac_top_srcdir=$ac_top_build_prefix$srcdir
-    ac_abs_top_srcdir=$ac_pwd/$srcdir ;;
-esac
-ac_abs_srcdir=$ac_abs_top_srcdir$ac_dir_suffix
-
-
-    cd "$ac_dir"
-
-    # Check for guested configure; otherwise get Cygnus style configure.
-    if test -f "$ac_srcdir/configure.gnu"; then
-      ac_sub_configure=$ac_srcdir/configure.gnu
-    elif test -f "$ac_srcdir/configure"; then
-      ac_sub_configure=$ac_srcdir/configure
-    elif test -f "$ac_srcdir/configure.in"; then
-      # This should be Cygnus configure.
-      ac_sub_configure=$ac_aux_dir/configure
-    else
-      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: no configuration information is in $ac_dir" >&5
-$as_echo "$as_me: WARNING: no configuration information is in $ac_dir" >&2;}
-      ac_sub_configure=
-    fi
-
-    # The recursion is here.
-    if test -n "$ac_sub_configure"; then
-      # Make the cache file name correct relative to the subdirectory.
-      case $cache_file in
-      [\\/]* | ?:[\\/]* ) ac_sub_cache_file=$cache_file ;;
-      *) # Relative name.
-	ac_sub_cache_file=$ac_top_build_prefix$cache_file ;;
-      esac
-
-      { $as_echo "$as_me:${as_lineno-$LINENO}: running $SHELL $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir" >&5
-$as_echo "$as_me: running $SHELL $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir" >&6;}
-      # The eval makes quoting arguments work.
-      eval "\$SHELL \"\$ac_sub_configure\" $ac_sub_configure_args \
-	   --cache-file=\"\$ac_sub_cache_file\" --srcdir=\"\$ac_srcdir\"" ||
-	as_fn_error $? "$ac_sub_configure failed for $ac_dir" "$LINENO" 5
-    fi
-
-    cd "$ac_popdir"
-  done
 fi
 if test -n "$ac_unrecognized_opts" && test "$enable_option_checking" != no; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: unrecognized options: $ac_unrecognized_opts" >&5

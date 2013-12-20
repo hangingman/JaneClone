@@ -11,7 +11,6 @@ sources = \
 
 
 libinternal_la_SOURCES = ${sources}
-libinternal_la_LIBADD  = $(top_builddir)/curl/lib/libcurl.la
 
 VERSION=-version-info 0:2:0
 

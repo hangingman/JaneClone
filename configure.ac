@@ -89,9 +89,11 @@ if test "x$XML2CONFIG" = "x"; then
    XML2LIBS=`$XML2CONFIG --libs`
    AC_MSG_RESULT($XML2LIBS)
    AC_SUBST(XML2LIBS)
-fi 
+fi
 
+#-----------------------------------------------------------------------
 # Checks for wxWidgets.
+#
 AM_OPTIONS_WXCONFIG
 reqwx=2.8.0
 AM_PATH_WXCONFIG($reqwx, wxWin=1)
@@ -166,8 +168,60 @@ AC_CHECK_LIB(pthread,pthread_create,has_pthread=1,has_pthread=0)
 if test $has_pthread = 0; then
   AC_MSG_ERROR("ERROR: cannot find pthread.")
 fi
+#-----------------------------------------------------------------------
 
-# curlpp build flag
+#-----------------------------------------------------------------------
+#   curlpp build flag
+#
+
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS( \
+curl/curl.h \
+ostream 
+)
+if test $ac_cv_header_curl_curl_h = no; then
+   AC_MSG_ERROR([*** curl/curl.h. You need a working libcurl installation.])
+fi
+
+dnl -------
+dnl set my_cv_curl_vers to the version of libcurl or NONE
+dnl if libcurl is not found or is too old
+AC_DEFUN([MY_CURL],[
+ AC_CACHE_VAL(my_cv_curl_vers,[
+ my_cv_curl_vers=NONE
+ dnl check is the plain-text version of the required version
+ check="7.10.0"
+ dnl check_hex must be UPPERCASE if any hex letters are present
+ check_hex="070A00"
+ 
+ AC_MSG_CHECKING([for curl >= $check])
+ 
+ if eval curl-config --version 2>/dev/null >/dev/null; then
+   ver=`curl-config --version | sed -e "s/libcurl //g"`
+   hex_ver=`curl-config --vernum | tr 'a-f' 'A-F'`
+   ok=`echo "ibase=16; if($hex_ver>=$check_hex) $hex_ver else 0" | bc`
+ 
+   if test x$ok != x0; then
+     my_cv_curl_vers="$ver"
+     AC_MSG_RESULT([$my_cv_curl_vers])
+     CURL_LIBS=`curl-config --libs`
+     CURL_CFLAGS=`curl-config --cflags`
+     CURLPP_CXXFLAGS="$CURLPP_CXXFLAGS $CURL_CFLAGS"
+     LIBS="$LIBS $CURL_LIBS"
+   else
+     AC_MSG_RESULT(FAILED)
+     AC_MSG_WARN([$ver is too old. Need version $check or higher.])
+   fi
+ else
+   AC_MSG_RESULT(FAILED)
+   AC_MSG_WARN([curl-config was not found])
+ fi
+ ])
+])
+
+MY_CURL
+
 AC_MSG_CHECKING([if we need BUILDING_CURLPP])
 case $host in
   *-*-mingw*)
@@ -186,14 +240,18 @@ case $host in
     AC_MSG_RESULT(no)
     ;;
 esac
+#-----------------------------------------------------------------------
 
+#-----------------------------------------------------------------------
 # janeclone shingetsu support, default is disable
+#
 AC_ARG_ENABLE([shingetsu],
     AS_HELP_STRING([--enable-shingetsu], [Enable feature to connect p2p board system shingetsu]))
 
 AS_IF([test "x$enable_bar" = "xyes"], [
     AC_DEFINE(USE_SHINGETSU, 1, [when building shingetsu support code])
 ])
+#-----------------------------------------------------------------------
 
 # Check compile flag
 AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
@@ -238,23 +296,6 @@ AC_FUNC_MMAP
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset munmap nl_langinfo strcasecmp strchr strcspn strpbrk strrchr strspn strstr fdatasync usleep fullfsync localtime_r gmtime_r])
 AC_FUNC_STRERROR_R
-
-# Set install paths.
-if test "x$prefix" = "xNONE" ; then
-  prefix="/usr/local"
-fi
-
-if test "x$exec_prefix" = "xNONE" ; then
-  exec_prefix=$prefix
-fi
-
-# Checks for libcurl
-if test -d "curl"; then
-   ac_configure_args="$ac_configure_args --disable-man-pages --disable-manual --disable-debug --disable-curldebug --bindir=$prefix/lib/$PACKAGE --includedir=$prefix/lib/$PACKAGE/include --datadir=$prefix/lib/$PACKAGE --libdir=$prefix/lib/$PACKAGE"
-   AC_CONFIG_SUBDIRS([curl])
-else
-   AC_MSG_ERROR([libcurl directory not found. please do git submodule init; git submodule update;])
-fi
 
 # Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile

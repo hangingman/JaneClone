@@ -1,43 +1,4 @@
 #!/bin/sh
 
-# sed for libcurl configure.ac
-curdir=`pwd`
-# are you Mac/BSD ?
-HOST=`uname -s`
-SED=sed
-
-if test ${HOST} = Darwin -o ${HOST} = FreeBSD; then
-   if hash gsed 2>/dev/null; then
-       SED='gsed'
-   else 
-       echo "gsed is not found. Please install gsed."
-       exit 1
-   fi
-fi
-
-# read to array
-ac_config_file_line=`grep -n -A 1000000 "AC_CONFIG_FILES(" ${curdir}/curl/configure.ac | grep -B 1000000 'AC_OUTPUT' | ${SED} -e "s/[:-].*//"`
-
-# get config begin end end
-begin=`echo ${ac_config_file_line} | awk -F' ' '{print $1}'`
-end=`echo ${ac_config_file_line} | awk -F' ' '{print $NF}'`
-
-# already sed ?
-differ=`expr ${end} - ${begin}`
-
-if test ${differ} -gt 10 ; then
-   # sed to libcurl configure.ac
-   echo "replace some str in curl/configure.ac !"
-   ${SED} -i "${begin},${end}d" ${curdir}/curl/configure.ac
-   begin=`expr ${begin} + 1`
-    
-   ${SED} -i "${begin}a AC_CONFIG_FILES([Makefile include/Makefile include/curl/Makefile src/Makefile lib/Makefile lib/libcurl.vers curl-config libcurl.pc])\\
-   AC_OUTPUT" ${curdir}/curl/configure.ac
-fi
-
-# sed to libcurl Makefile.am
-${SED} -i 's/^DIST_SUBDIRS/\#DIST_SUBDIRS/g' ${curdir}/curl/Makefile.am
-${SED} -i 's/^	cd docs && $(MAKE) install/\#	cd docs && $(MAKE) install/g' ${curdir}/curl/Makefile.am
-
 # exec autoreconf
 autoreconf -vi -I `pwd`/m4
