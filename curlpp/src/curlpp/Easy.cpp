@@ -33,8 +33,8 @@ curlpp::Easy::Easy()
 {}
 
 
-curlpp::Easy::Easy(std::auto_ptr<internal::CurlHandle> handle)
-  : mCurl(handle)
+curlpp::Easy::Easy(std::unique_ptr<internal::CurlHandle> handle)
+: mCurl(std::move(handle))
 {}
 
 
@@ -64,7 +64,7 @@ curlpp::Easy::setOpt(const OptionBase & option)
 
 
 void
-curlpp::Easy::setOpt(std::auto_ptr<OptionBase> option)
+curlpp::Easy::setOpt(std::unique_ptr<OptionBase> option)
 {
 	option->updateHandleToMe(mCurl.get());
 	mOptions.setOpt(option.release());    

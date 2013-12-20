@@ -17802,14 +17802,14 @@ else
 fi
 
 	else
-	   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -std=c++0x" >&5
-$as_echo_n "checking whether C compiler accepts -std=c++0x... " >&6; }
-if ${ax_cv_check_cflags___std_cpp0x+:} false; then :
+	   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -std=c++11" >&5
+$as_echo_n "checking whether C compiler accepts -std=c++11... " >&6; }
+if ${ax_cv_check_cflags___std_cpp11+:} false; then :
   $as_echo_n "(cached) " >&6
 else
 
   ax_check_save_flags=$CFLAGS
-  CFLAGS="$CFLAGS  -std=c++0x"
+  CFLAGS="$CFLAGS  -std=c++11"
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -17822,17 +17822,17 @@ main ()
 }
 _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
-  ax_cv_check_cflags___std_cpp0x=yes
+  ax_cv_check_cflags___std_cpp11=yes
 else
-  ax_cv_check_cflags___std_cpp0x=no
+  ax_cv_check_cflags___std_cpp11=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
   CFLAGS=$ax_check_save_flags
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___std_cpp0x" >&5
-$as_echo "$ax_cv_check_cflags___std_cpp0x" >&6; }
-if test x"$ax_cv_check_cflags___std_cpp0x" = xyes; then :
-  CXXFLAGS="$CXXFLAGS -std=c++0x"
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___std_cpp11" >&5
+$as_echo "$ax_cv_check_cflags___std_cpp11" >&6; }
+if test x"$ax_cv_check_cflags___std_cpp11" = xyes; then :
+  CXXFLAGS="$CXXFLAGS -std=c++11"
 else
   :
 fi
@@ -17840,7 +17840,80 @@ fi
 	fi
 	;;
    clang)
-	CXXFLAGS="$CXXFLAGS -std=c++11 -stdlib=libc++"
+	if test "$PLATFORM_STRING" = "Apple"; then
+	   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -std=c++11 -stdlib=libc++" >&5
+$as_echo_n "checking whether C compiler accepts -std=c++11 -stdlib=libc++... " >&6; }
+if ${ax_cv_check_cflags___std_cpp11__stdlib_libcpp+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -std=c++11 -stdlib=libc++"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___std_cpp11__stdlib_libcpp=yes
+else
+  ax_cv_check_cflags___std_cpp11__stdlib_libcpp=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___std_cpp11__stdlib_libcpp" >&5
+$as_echo "$ax_cv_check_cflags___std_cpp11__stdlib_libcpp" >&6; }
+if test x"$ax_cv_check_cflags___std_cpp11__stdlib_libcpp" = xyes; then :
+  CXXFLAGS="$CXXFLAGS -std=c++11 -stdlib=libc++"
+else
+  :
+fi
+
+	else
+	   { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C compiler accepts -std=c++11" >&5
+$as_echo_n "checking whether C compiler accepts -std=c++11... " >&6; }
+if ${ax_cv_check_cflags___std_cpp11+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  ax_check_save_flags=$CFLAGS
+  CFLAGS="$CFLAGS  -std=c++11"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ax_cv_check_cflags___std_cpp11=yes
+else
+  ax_cv_check_cflags___std_cpp11=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  CFLAGS=$ax_check_save_flags
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cflags___std_cpp11" >&5
+$as_echo "$ax_cv_check_cflags___std_cpp11" >&6; }
+if test x"$ax_cv_check_cflags___std_cpp11" = xyes; then :
+  CXXFLAGS="$CXXFLAGS -std=c++11"
+else
+  :
+fi
+
+	fi
+
         ;;
    *)
 	as_fn_error $? "\"ERROR: JaneClone cannot compile with gnu gcc or clang.\"" "$LINENO" 5

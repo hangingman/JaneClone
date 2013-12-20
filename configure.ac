@@ -265,11 +265,16 @@ case "${ax_cv_c_compiler_vendor}" in
 	if test "$PLATFORM_STRING" = "Win32"; then
    	   AX_CHECK_COMPILE_FLAG([-std=gnu++0x], [CXXFLAGS="$CXXFLAGS -std=gnu++0x"])
 	else
-	   AX_CHECK_COMPILE_FLAG([-std=c++0x], [CXXFLAGS="$CXXFLAGS -std=c++0x"])
+	   AX_CHECK_COMPILE_FLAG([-std=c++11], [CXXFLAGS="$CXXFLAGS -std=c++11"])
 	fi
 	;;
    clang)
-	CXXFLAGS="$CXXFLAGS -std=c++11 -stdlib=libc++"
+	if test "$PLATFORM_STRING" = "Apple"; then
+	   AX_CHECK_COMPILE_FLAG([-std=c++11 -stdlib=libc++],[CXXFLAGS="$CXXFLAGS -std=c++11 -stdlib=libc++"])
+	else
+	   AX_CHECK_COMPILE_FLAG([-std=c++11],[CXXFLAGS="$CXXFLAGS -std=c++11"])
+	fi
+	
         ;;	
    *)
 	AC_MSG_ERROR("ERROR: JaneClone cannot compile with gnu gcc or clang.")
