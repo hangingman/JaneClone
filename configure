@@ -822,8 +822,7 @@ CXXFLAGS
 CCC
 CPP
 CXXCPP'
-ac_subdirs_all='curl
-js-1.5-rc6a'
+ac_subdirs_all='curl'
 
 # Initialize some variables set by options.
 ac_init_help=
@@ -18293,11 +18292,6 @@ subdirs="$subdirs curl"
 else
    as_fn_error $? "libcurl directory not found. please do git submodule init; git submodule update;" "$LINENO" 5
 fi
-
-# Configure for SpiderMonkey
-ac_configure_args="$ac_configure_args --disable-man-pages --disable-manual --disable-debug --bindir=$prefix/lib/$PACKAGE --includedir=$prefix/lib/$PACKAGE/include --datadir=$prefix/lib/$PACKAGE --libdir=$prefix/lib/$PACKAGE"
-subdirs="$subdirs js-1.5-rc6a"
-
 
 # Setting for generate Makefile location
 ac_config_files="$ac_config_files Makefile libwxnkf/Makefile libwxuuid/Makefile sqlite3/Makefile wxsqlite3/Makefile curlpp/Makefile curlpp/src/Makefile curlpp/src/curlpp/Makefile curlpp/src/curlpp/internal/Makefile curlpp/src/utilspp/Makefile curlpp/include/Makefile curlpp/include/curlpp/Makefile curlpp/include/curlpp/internal/Makefile curlpp/include/utilspp/Makefile curlpp/include/utilspp/functor/Makefile curlpp/include/utilspp/singleton/Makefile src/Makefile test/Makefile"

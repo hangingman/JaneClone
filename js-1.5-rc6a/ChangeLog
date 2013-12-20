@@ -1,7 +1,0 @@
-Changes with Autotoolized SpiderMonkey.
-
-2004-10-10    Hiroyuki OYAMA <oyama@module.jp>
-	* Replaced the build system with GNU Autoconf, Automake, Libtool.
-	* Support Darwin(Mac OS X 10.3.5 PowerPC).
-	* Support SunOS 5.8(UltraAX-i2).
-	* Support FreeBSD(4.x i386).
