@@ -732,6 +732,112 @@ void KakikomiPanel::do_layout()
 }
 
 /**
+ * スレ表示欄の設定画面
+ */
+DoePanel::DoePanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+     wxPanel(parent, ID_DoePanel, pos, size, wxTAB_TRAVERSAL)
+{
+     // begin wxGlade: DoePanel::DoePanel
+     panel_8 = new wxPanel(this, wxID_ANY);
+     panel_7 = new wxPanel(this, wxID_ANY);
+     panel_6 = new wxPanel(this, wxID_ANY);
+     panel_5 = new wxPanel(this, wxID_ANY);
+     panel_4 = new wxPanel(this, wxID_ANY);
+     panel_3 = new wxPanel(this, wxID_ANY);
+     panel_9 = new wxPanel(panel_3, wxID_ANY);
+     sizer_3_staticbox = new wxStaticBox(panel_3, -1, wxT("スクロール"));
+     panel_2 = new wxPanel(this, wxID_ANY);
+     label_1 = new wxStaticText(panel_2, wxID_ANY, wxT("上下スクロール時に残す行数"));
+     text_ctrl_1 = new wxTextCtrl(panel_2, wxID_ANY, wxEmptyString);
+     radio_btn_1 = new wxRadioButton(panel_3, wxID_ANY, wxT("次の行数ごとスクロール"));
+     panel_10 = new wxPanel(panel_9, wxID_ANY);
+     text_ctrl_2 = new wxTextCtrl(panel_9, wxID_ANY, wxEmptyString);
+     label_2 = new wxStaticText(panel_9, wxID_ANY, wxT("スムーズネス"));
+     spin_ctrl_1 = new wxSpinCtrl(panel_9, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+     label_3 = new wxStaticText(panel_9, wxID_ANY, wxT("フレームレート"));
+     spin_ctrl_2 = new wxSpinCtrl(panel_9, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+     radio_btn_2 = new wxRadioButton(panel_3, wxID_ANY, wxT("１ページごとスクロール"));
+     checkbox_1 = new wxCheckBox(panel_3, wxID_ANY, wxT("オートスクロールを有効にする"));
+     checkbox_2 = new wxCheckBox(panel_4, wxID_ANY, wxT("キャレットを表示する"));
+     checkbox_3 = new wxCheckBox(panel_5, wxID_ANY, wxT("スクロールに同期する"));
+     label_4 = new wxStaticText(panel_6, wxID_ANY, wxT("ブラウザのフォントサイズ（最小→最大）"));
+     text_ctrl_3 = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     text_ctrl_4 = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     text_ctrl_5 = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     text_ctrl_6 = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     text_ctrl_7 = new wxTextCtrl(panel_7, wxID_ANY, wxEmptyString);
+     label_5 = new wxStaticText(panel_8, wxID_ANY, wxT("ハイライトの色"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+     button_1 = new wxButton(panel_8, wxID_ANY, wxT("..."));
+
+     set_properties();
+     do_layout();
+     // end wxGlade
+}
+
+
+void DoePanel::set_properties()
+{
+     // begin wxGlade: DoePanel::set_properties
+     label_5->SetMinSize(wxSize(250, 19));
+     // end wxGlade
+}
+
+
+void DoePanel::do_layout()
+{
+     // begin wxGlade: DoePanel::do_layout
+     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_8 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_7 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_6 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_5 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_4 = new wxBoxSizer(wxVERTICAL);
+     wxStaticBoxSizer* sizer_3 = new wxStaticBoxSizer(sizer_3_staticbox, wxVERTICAL);
+     wxFlexGridSizer* grid_sizer_1 = new wxFlexGridSizer(3, 2, 0, 0);
+     wxBoxSizer* sizer_2 = new wxBoxSizer(wxHORIZONTAL);
+     sizer_2->Add(label_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_2->Add(text_ctrl_1, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_2->SetSizer(sizer_2);
+     sizer_1->Add(panel_2, 0, wxEXPAND, 0);
+     sizer_3->Add(radio_btn_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(panel_10, 1, wxEXPAND, 0);
+     grid_sizer_1->Add(text_ctrl_2, 0, 0, 0);
+     grid_sizer_1->Add(label_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(spin_ctrl_1, 0, 0, 0);
+     grid_sizer_1->Add(label_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     grid_sizer_1->Add(spin_ctrl_2, 0, 0, 0);
+     panel_9->SetSizer(grid_sizer_1);
+     sizer_3->Add(panel_9, 1, wxEXPAND, 0);
+     sizer_3->Add(radio_btn_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_3->Add(checkbox_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_3->SetSizer(sizer_3);
+     sizer_1->Add(panel_3, 0, wxALL|wxEXPAND, 5);
+     sizer_4->Add(checkbox_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_4->SetSizer(sizer_4);
+     sizer_1->Add(panel_4, 0, wxEXPAND, 0);
+     sizer_5->Add(checkbox_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_5->SetSizer(sizer_5);
+     sizer_1->Add(panel_5, 0, wxEXPAND, 0);
+     sizer_6->Add(label_4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_6->SetSizer(sizer_6);
+     sizer_1->Add(panel_6, 0, wxEXPAND, 0);
+     sizer_7->Add(text_ctrl_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(text_ctrl_4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(text_ctrl_5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(text_ctrl_6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(text_ctrl_7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_7->SetSizer(sizer_7);
+     sizer_1->Add(panel_7, 0, wxEXPAND, 0);
+     sizer_8->Add(label_5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_8->Add(button_1, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxFIXED_MINSIZE, 5);
+     panel_8->SetSizer(sizer_8);
+     sizer_1->Add(panel_8, 0, wxEXPAND, 0);
+     SetSizer(sizer_1);
+     sizer_1->Fit(this);
+     // end wxGlade
+}
+
+/**
  * ユーザー設定設定用画面
  */
 UserSettingPanel::UserSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):

@@ -207,6 +207,10 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new KakikomiPanel(settingPanel));
 	  settingPanel->SetSizer(vbox);
+     } else if (itemStr == wxT("Doe")) {
+	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  vbox->Add(new DoePanel(settingPanel));
+	  settingPanel->SetSizer(vbox);
      } else if (itemStr == wxT("User")) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new UserSettingPanel(settingPanel));

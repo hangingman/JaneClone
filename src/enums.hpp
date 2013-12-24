@@ -292,6 +292,7 @@ X_TABLE_ITEM(ID_NewBoardAddDialog)                /* 外部板登録ダイアロ
 X_TABLE_ITEM(ID_CallNewBoardAddDialog)            /* 外部板登録用ダイアログを呼び出す           */ \
 X_TABLE_ITEM(ID_OperationPanel)                   /* 各種操作設定用画面                         */ \
 X_TABLE_ITEM(ID_KakikomiPanel)                    /* 書き込み設定用画面                         */ \
+X_TABLE_ITEM(ID_DoePanel)                         /* スレ表示欄の設定画面                       */ \
 X_TABLE_ITEM(ID_JaneCloneEnumsEnd)
 
 // 列挙型の実体をマクロで生成する

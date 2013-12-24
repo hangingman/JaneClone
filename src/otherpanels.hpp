@@ -379,6 +379,61 @@ protected:
      // end wxGlade
 }; // wxGlade: end class
 
+
+// begin wxGlade: ::extracode
+// end wxGlade
+
+/**
+ * スレ表示欄の設定画面
+ */
+class DoePanel: public wxPanel {
+public:
+     // begin wxGlade: DoePanel::ids
+     // end wxGlade
+
+     DoePanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+
+private:
+     // begin wxGlade: DoePanel::methods
+     void set_properties();
+     void do_layout();
+     // end wxGlade
+
+protected:
+     // begin wxGlade: DoePanel::attributes
+     wxStaticBox* sizer_3_staticbox;
+     wxStaticText* label_1;
+     wxTextCtrl* text_ctrl_1;
+     wxPanel* panel_2;
+     wxRadioButton* radio_btn_1;
+     wxPanel* panel_10;
+     wxTextCtrl* text_ctrl_2;
+     wxStaticText* label_2;
+     wxSpinCtrl* spin_ctrl_1;
+     wxStaticText* label_3;
+     wxSpinCtrl* spin_ctrl_2;
+     wxPanel* panel_9;
+     wxRadioButton* radio_btn_2;
+     wxCheckBox* checkbox_1;
+     wxPanel* panel_3;
+     wxCheckBox* checkbox_2;
+     wxPanel* panel_4;
+     wxCheckBox* checkbox_3;
+     wxPanel* panel_5;
+     wxStaticText* label_4;
+     wxPanel* panel_6;
+     wxTextCtrl* text_ctrl_3;
+     wxTextCtrl* text_ctrl_4;
+     wxTextCtrl* text_ctrl_5;
+     wxTextCtrl* text_ctrl_6;
+     wxTextCtrl* text_ctrl_7;
+     wxPanel* panel_7;
+     wxStaticText* label_5;
+     wxButton* button_1;
+     wxPanel* panel_8;
+     // end wxGlade
+}; // wxGlade: end class
+
 // begin wxGlade: ::extracode
 // end wxGlade
 
