@@ -75,10 +75,7 @@ TAG_HANDLER_PROC(tag) {
      if (m_pComboBox && tag.GetName() == wxT("OPTION")) {
 	  if (tag.HasParam(wxT("VALUE"))) {
 	       wxString strValue = tag.GetParam(wxT("VALUE"));
-	       wxString strName;
-	       strName = m_WParser->GetSource()->Mid(
-		    tag.GetBeginPos(),
-		    tag.GetEndPos1()-tag.GetBeginPos());
+	       wxString strName  = tag.GetName();
 #if !wxUSE_UNICODE
 	       wxCSConv conv(m_WParser->GetInputEncoding());
 	       strName = wxString(strName.wc_str(conv), wxConvLocal);
