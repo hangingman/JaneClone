@@ -50,8 +50,6 @@ ChangeLog: configure.ac
 	git log --stat --name-only --date=short --abbrev-commit > ChangeLog
 
 # 依存関係にあるDLL
-MINGWBIN= `@WX_CONFIG_PATH@ --prefix`/bin
-MINGWLIB= `@WX_CONFIG_PATH@ --prefix`/lib
 DEPDLLS = $(shell find $(top_builddir) -type f -name '*.dll')
 WXDLLS  = $(shell find `@WX_CONFIG_PATH@ --prefix`/lib -type f -name 'wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll')
 STDCDLL	= $(shell find `@WX_CONFIG_PATH@ --prefix` -type f -name 'libstdc++*.dll')
@@ -87,8 +85,10 @@ COMPANY			= ????
 BUNDLEPACKAGE		= APPL
 BUNDLESIGNATURE		= ???
 
-# Windows(x86)向けのインストーラ作成
-package-win32-msi: prepare-package
+#
+# Windows(x86)向けのインストーラ作成(クロスコンパイラ向け)
+#
+package-win32-msi: prepare-package check-nsis
 	touch $(NSIS_NSI)
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
@@ -110,19 +110,27 @@ package-win32-msi: prepare-package
 
 # Windows(x86)向けのzip作成
 package-win32-zip: prepare-package
-	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
-	cp -p $(top_builddir)/README $(top_builddir)/extras/package
-	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
-	cp -p $(DEPDLLS) $(top_builddir)/extras/package
-	cp -p $(WXDLLS) $(top_builddir)/extras/package
-	cp -p $(STDCDLL) $(top_builddir)/extras/package
-	cp -p $(RESTDLL) $(top_builddir)/extras/package
-	cp -p $(LIBGCC) $(top_builddir)/extras/package
-	cp -p $(JANEEXE)$(EXT) $(top_builddir)/extras/package
+	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
+	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
+	done
+	for f in `find $(top_builddir)/src/.libs -name $(PACKAGE_NAME).exe`; do                             \
+	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
+	done
+	for f in `find /mingw/bin /mingw/lib -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do        \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find /mingw/bin /mingw/lib -name libstdc++*.dll -or -name libgcc*.dll`; do                \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find /mingw/bin /mingw/lib -name libxml2*.dll -or -name zlib*.dll`; do                    \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
 	( cd $(top_builddir)/extras && zip -r $(PACKAGE)-win32-$(VERSION).zip package/ && mv $(PACKAGE)-win32-$(VERSION).zip ../ )
 
-# Windows(x64)向けのインストーラ作成
-package-win64-msi: prepare-package
+#
+# Windows(x64)向けのインストーラ作成(クロスコンパイラ向け)
+#
+package-win64-msi: prepare-package check-nsis
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
@@ -146,12 +154,21 @@ package-win64-zip: prepare-package
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
-	cp -p $(DEPDLLS) $(top_builddir)/extras/package
-	cp -p $(WXDLLS) $(top_builddir)/extras/package
-	cp -p $(STDCDLL) $(top_builddir)/extras/package
-	cp -p $(RESTDLL) $(top_builddir)/extras/package
-	cp -p $(LIBGCC) $(top_builddir)/extras/package
-	cp -p $(JANEEXE)$(EXT) $(top_builddir)/extras/package
+	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
+	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
+	done
+	for f in `find $(top_builddir)/src/.libs -name $(PACKAGE_NAME).exe`; do                             \
+	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
+	done
+	for f in `find /mingw/bin /mingw/lib -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do        \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find /mingw/bin /mingw/lib -name libstdc++*.dll -or -name libgcc*.dll`; do                \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find /mingw/bin /mingw/lib -name libxml2*.dll -or -name zlib*.dll`; do                    \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
 	( cd $(top_builddir)/extras && zip -r $(PACKAGE)-win64-$(VERSION).zip package/ && mv $(PACKAGE)-win64-$(VERSION).zip ../ )
 
 # RH系ディストリビューション向けのインストーラ作成
@@ -382,6 +399,7 @@ prepare-package: package-clean
 	mkdir $(top_builddir)/extras
 	mkdir $(top_builddir)/extras/package
 # check NSIS
+check-nsis:
 	@echo 'check NSIS...'
 	@if makensis -VERSION >/dev/null 2>&1; then \
 	    MAKENSIS="makensis"; \
