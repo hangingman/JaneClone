@@ -2183,7 +2183,6 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
      // 選択されたスレタブの情報を集める
      wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
      ReloadThread(title);
-     m_mgr.Update();
 }
 /**
  * 指定された名前のスレッドを更新する
@@ -2192,7 +2191,6 @@ void JaneClone::ReloadThreadByName(wxCommandEvent& event) {
      
      wxString title = event.GetString();
      ReloadThread(title);
-     m_mgr.Update();
 }
 /**
  * 指定されたタイトルのスレッドを更新する
@@ -2232,6 +2230,8 @@ void JaneClone::ReloadThread(wxString& title) {
 	  wxPoint p;
 	  oldThreadBar->GetThreadContentWindowScrollPos(&p);
 	  oldThreadBar->ReloadThreadContentWindow(threadContentPath);
+	  oldThreadBar->Fit();
+	  
 	  m_mgr.Update();
 	  oldThreadBar->SetThreadContentWindowScroll(&p);
      }
@@ -2243,7 +2243,6 @@ void JaneClone::ReloadThread(wxString& title) {
 
      wxString message = wxT("完了…　(´ん｀/)三\n");
      SendLogging(message);
-     m_mgr.Update();
 }
 /**
  *  書き込み用のウィンドウを呼び出す
