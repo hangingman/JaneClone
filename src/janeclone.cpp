@@ -769,15 +769,14 @@ void JaneClone::SetProperties() {
 	  // 存在しない場合は初期化処理を実施する
 	  InitializeJaneClone(jc, jcDir);
 	  // sqliteの初期化を行う
-	  SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
-	  delete sqliteAccessor;
+	  std::unique_ptr<SQLiteAccessor> sqliteAccessor(new SQLiteAccessor());
 	  // Curlの初期化を行う
 	  cURLpp::initialize();
 
 	  // ソケット通信を行う
-	  SocketCommunication* sock = new SocketCommunication();
+	  std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
 	  int rc = sock->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
-	  delete sock;
+	  
 
 	  // 実行コード別のダイアログを出す
 	  if (rc != 0) {
@@ -797,8 +796,7 @@ void JaneClone::SetProperties() {
 	  
      } else {
 	  // sqliteの初期化を行う
-	  SQLiteAccessor* sqliteAccessor = new SQLiteAccessor();
-	  delete sqliteAccessor;
+	  std::unique_ptr<SQLiteAccessor> sqliteAccessor(new SQLiteAccessor());
      }
 
      // 初回起動以外の際、確認のためディレクトリをチェックする
@@ -1372,9 +1370,9 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, 
      JaneCloneUtil::GenerateOldThreadMap(oldThreadMap, boardInfo);
 
      // スレ一覧をダウンロードする
-     SocketCommunication* sock = new SocketCommunication();
+     std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
      wxString outputPath = sock->DownloadThreadList(boardName, boardURL, boardNameAscii);
-     delete sock;
+     
 
      // 新規にセットされる板名かどうかのフラグを用意する
      bool itIsNewBoardName = true;
@@ -1518,9 +1516,9 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
      SendLogging(message1);
 
      // ソケット通信を行う
-     SocketCommunication* sock = new SocketCommunication();
+     std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
      int rc = sock->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
-     delete sock;
+     
 
      // 実行コード別のダイアログを出す
      if (rc != 0) {
@@ -2217,9 +2215,9 @@ void JaneClone::ReloadThread(wxString& title) {
      }
 
      // ソケット通信を行う
-     SocketCommunication* sock = new SocketCommunication();
+     std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
      const wxString threadContentPath = sock->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
-     delete sock;
+     
      // 無事に通信が終了したならばステータスバーに表示
      this->SetStatusText(wxT(" スレッドのダウンロード終了"));
 
@@ -2819,9 +2817,9 @@ void JaneClone::OnLeftClickAtListCtrl2ch(wxListEvent& event) {
      const wxString title(vbListCtrl->OnGetItemText(index, static_cast<long>(VirtualBoardListCtrl::Columns::COL_TITLE)));
 
      // ソケット通信を行う
-     SocketCommunication* sock = new SocketCommunication();
+     std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
      const wxString threadContentPath = sock->DownloadThread(boardName, boardURL, boardNameAscii, origNumber);
-     delete sock;
+     
      // 無事に通信が終了したならばステータスバーに表示
      this->SetStatusText(wxT(" スレッドのダウンロード終了"));
 
@@ -2857,9 +2855,9 @@ void JaneClone::OnLeftClickAtListCtrlShingetsu(wxListEvent& event) {
 
      // ソケット通信を行う
      this->SetStatusText(wxT(" 取得 - ") + filename);
-     SocketCommunication* sock = new SocketCommunication();
+     std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
      const wxString threadContentPath = sock->DownloadShingetsuThread(nodeHostname, title, filename);
-     delete sock;
+     
      // 無事に通信が終了したならばステータスバーに表示
      this->SetStatusText(wxT(" スレッドのダウンロード終了"));
 
@@ -3508,14 +3506,14 @@ void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
 
      // メニューアイテムの項目番号を取得する
      const int number = event.GetId() - ID_UserLastClosedThreadClick;
-     ThreadInfo* threadInfo = new ThreadInfo();
+     std::unique_ptr<ThreadInfo> threadInfo(new ThreadInfo());
+
      SQLiteAccessor::GetThreadFullInfo(number, threadInfo, event.GetId());
 
      if (!threadInfo) {
 	  // 無ければ警告を出して終了
 	  wxMessageBox(wxT("前回読み込んでいたdatファイルの読み出しに失敗しました\n\
                             datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
-	  delete threadInfo;
 	  return;
      }
 
@@ -3527,7 +3525,6 @@ void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
 	  // 無ければ警告を出して次へ
 	  wxMessageBox(wxT("前回読み込んでいたdatファイルの読み出しに失敗しました\n\
                             datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
-	  delete threadInfo;
 	  return;
      }
 
@@ -3538,7 +3535,6 @@ void JaneClone::OnUserLastClosedThreadClick(wxCommandEvent& event) {
      info.origNumber = threadInfo->origNumber;
      info.boardNameAscii = threadInfo->boardNameAscii;
      tiHash[threadInfo->title] = info;
-     delete threadInfo;
 }
 /**
  * ユーザーがお気に入り登録したスレッド or 板を開く
@@ -3547,7 +3543,7 @@ void JaneClone::OnUserFavoriteThreadClick(wxCommandEvent& event) {
 
      // メニューアイテムの項目番号を取得する
      const int number = event.GetId() - ID_UserFavoriteThreadClick;
-     ThreadInfo* threadInfo = new ThreadInfo();
+     std::unique_ptr<ThreadInfo> threadInfo(new ThreadInfo());
      SQLiteAccessor::GetThreadFullInfo(number, threadInfo, event.GetId());
 
      if ( threadInfo->origNumber == wxT("0") ) {
@@ -3565,7 +3561,6 @@ void JaneClone::OnUserFavoriteThreadClick(wxCommandEvent& event) {
 	  wxMessageBox(wxT("お気に入り登録されたdatファイルの読み出しに失敗しました\n\
                             datファイルを削除しているか、datファイルの保存先を変更していませんか？"), 
 		       wxT("読み込んでいるスレッド"), wxICON_ERROR);
-	  delete threadInfo;
 	  return;
      }
 
@@ -3578,7 +3573,6 @@ void JaneClone::OnUserFavoriteThreadClick(wxCommandEvent& event) {
 	  wxMessageBox(wxT("お気に入り登録されたdatファイルの読み出しに失敗しました\n\
                             datファイルを削除しているか、datファイルの保存先を変更していませんか？"), 
 		       wxT("読み込んでいるスレッド"), wxICON_ERROR);
-	  delete threadInfo;
 	  return;
      }
 
@@ -3589,7 +3583,6 @@ void JaneClone::OnUserFavoriteThreadClick(wxCommandEvent& event) {
      info.origNumber = threadInfo->origNumber;
      info.boardNameAscii = threadInfo->boardNameAscii;
      tiHash[threadInfo->title] = info;
-     delete threadInfo;
 }
 /**
  * ユーザーが現在開いているスレタブ、板タブの一覧を作成する
@@ -4251,9 +4244,9 @@ void JaneClone::SetShingetsuNodeToNoteBook(const wxString& nodeHostname) {
      wxString outputFilePath;
 
      // 通信用クラスの呼び出し
-     SocketCommunication* sock = new SocketCommunication();
+     std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
      bool success = sock->DownloadShingetsuThreadList(nodeHostname, outputFilePath);
-     delete sock;
+     
 
      if (success) {
 	  SetShingetsuThreadListToNoteBook(nodeHostname, outputFilePath);

@@ -670,7 +670,7 @@ wxArrayString SQLiteAccessor::GetThreadInfo(const wxWindowID id) {
 /**
  * 最近閉じたスレッドタブ情報を取得する
  */
-void SQLiteAccessor::GetThreadFullInfo(const int number, ThreadInfo* threadInfo, const wxWindowID id) {
+void SQLiteAccessor::GetThreadFullInfo(const int number, std::unique_ptr<ThreadInfo>& threadInfo, const wxWindowID id) {
 
      // dbファイルの初期化
      wxString dbFile = GetDBFilePath();

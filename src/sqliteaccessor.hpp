@@ -118,7 +118,7 @@ public:
       * @param threadInfo スレッド情報格納用クラス
       * @param id         イベントID
       */
-     static void GetThreadFullInfo(const int number, ThreadInfo* threadInfo, const wxWindowID id);
+     static void GetThreadFullInfo(const int number, std::unique_ptr<ThreadInfo>& threadInfo, const wxWindowID id);
      /**
       * 板タブを閉じた際に情報をSQLiteに格納する
       */
