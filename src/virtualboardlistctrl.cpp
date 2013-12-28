@@ -24,12 +24,6 @@
 
 IMPLEMENT_DYNAMIC_CLASS(VirtualBoardListCtrl, wxListCtrl)
 
-BEGIN_EVENT_TABLE(VirtualBoardListCtrl, wxListCtrl)
-   EVT_ENTER_WINDOW(VirtualBoardListCtrl::MotionEnterWindow)
-   EVT_LEAVE_WINDOW(VirtualBoardListCtrl::MotionLeaveWindow)
-   EVT_SET_FOCUS(VirtualBoardListCtrl::SetFocus)
-END_EVENT_TABLE()
-
 /**
  * コンストラクタ：配置するwindowと板名を指定
  * @param wxWindow*  parent			 親ウィンドウ
@@ -53,7 +47,15 @@ wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRT
 
      // クラス自体の目印を設置する
      SetLabel(boardName);
-     
+
+#ifdef __WXMSW__
+     // ウィンドウ内に入った際のイベント通知
+     this->Connect(id,
+		   wxEVT_ENTER_WINDOW,
+		   wxMouseEventHandler(JaneClone::OnEnterWindow),
+		   NULL, this);
+#endif
+
      // リストに使用する画像を設定する
      wxImageList* threadImage = new wxImageList(16, 16);
      wxBitmap idx1(threadCheckImg, wxBITMAP_TYPE_PNG);
@@ -782,17 +784,4 @@ void VirtualBoardListCtrl::SearchAndSortItems(const wxString& keyword) {
 
      SetItemCount(m_vBoardList.size());
      this->Show();
-}
-
-
-
-
-void VirtualBoardListCtrl::MotionEnterWindow(wxMouseEvent& event) {
-     event.Skip();
-}
-void VirtualBoardListCtrl::MotionLeaveWindow(wxMouseEvent& event) {
-     event.Skip();
-}
-void VirtualBoardListCtrl::SetFocus(wxFocusEvent& event) {
-     event.Skip();
 }

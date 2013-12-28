@@ -44,6 +44,7 @@ X_TABLE_ITEM(ID_ThumbnailNoteBook)		/* 画像ビューア用ID						*/ \
 X_TABLE_ITEM(ID_BoardTreectrl)			/* 板一覧ツリー用ID						*/ \
 X_TABLE_ITEM(ID_ShingetsuBoardTreectrl)		/* 新月公開ノード一覧ツリー用ID					*/ \
 X_TABLE_ITEM(ID_BoardTreeNoteBook)		/* 板一覧ツリーを載せるノートブックに使うID			*/ \
+X_TABLE_ITEM(ID_ThreadContentWindow)            /* スレビュー画面用ID                                           */ \
 X_TABLE_ITEM(ID_OneBoardTabClose)		/* スレッド一覧タブをひとつ閉じる				*/ \
 X_TABLE_ITEM(ID_ExcepSelTabClose)		/* 現在選択されていないスレッド一覧タブを閉じる			*/ \
 X_TABLE_ITEM(ID_AllBoardTabClose)		/* すべてのスレッド一覧タブを閉じる				*/ \

@@ -107,6 +107,8 @@ public:
      void SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii);
      // スレッド一覧をクリックすると、それをスレ表示画面に反映するメソッド
      void SetThreadContentToNoteBook(const wxString&, const wxString&, const wxString&);
+     // ウィンドウ内にカーソルが入った場合のイベント通知
+     void OnEnterWindow(wxMouseEvent& event);
 
      // HashMapの本体
      NameURLHash retainHash;
@@ -171,8 +173,34 @@ private:
      };
 
 
+     /**
+      * ユーザーがカーソルを合わせているウィンドウが変わったあとに実行される処理
+      * (※Windowsの場合はフォーカスの合わせ作業も行う)
+      */
      void ChangeUserLastAttached(wxCommandEvent& event) {
 	  this->userLastAttachedNotebook = event.GetString();
+
+#ifdef __WXMSW__
+	  if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) {
+	       wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
+	       VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
+	       if (vbListCtrl) {
+		    vbListCtrl->SetFocus();
+	       }
+	  } else if (this->userLastAttachedNotebook == THREAD_NOTEBOOK) {
+               // スレッド内容ウィンドウの処理
+	       ThreadContentBar* contentBar = 
+		    dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(threadNoteBook->GetSelection()));
+	  
+	       if ( wxPanel* searchBarPanel 
+		    = dynamic_cast<wxPanel*>(wxWindow::FindWindowById(ID_ThreadContentSearchBar, contentBar))) {
+		    // スレッド内容バーの子ウィンドウを取り出して命令する
+		    searchBarPanel->GetNextSibling()->SetFocus();
+	       }
+	  } else if (this->userLastAttachedNotebook == BOARD_TREE_NOTEBOOK) {
+	       m_tree_ctrl->SetFocus();
+	  }
+#endif
      };
 
      void ChangeUserLastAttachedEvent(wxString& message) {
@@ -287,7 +315,6 @@ private:
      void OnCellHover(wxHtmlCellEvent& event);
      void OnClickURLWindowButton(wxCommandEvent& event);
      void OnSetFocus(wxFocusEvent& event);
-     void OnEnterWindow(wxMouseEvent& event);
 
      // 各種GUI上の設定
      void SetJaneCloneManuBar();

@@ -2308,6 +2308,10 @@ void JaneClone::Initialize2chBoardList() {
      // ツリー用ウィジェットのインスタンスを用意する
      m_tree_ctrl = new wxTreeCtrl(m_boardTreePanel, ID_BoardTreectrl, wxDefaultPosition, wxDefaultSize, 
 				  wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+     m_tree_ctrl->Connect(ID_BoardTreectrl,
+			  wxEVT_ENTER_WINDOW,
+			  wxMouseEventHandler(JaneClone::OnEnterWindow),
+			  NULL, this);
      vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
 
      // プロパティファイルにフォント設定/背景色があれば使用する
@@ -4415,26 +4419,26 @@ void JaneClone::CtrlF(wxKeyEvent& event) {
  */
 void JaneClone::OnEnterWindow(wxMouseEvent& event) {
 
+
      wxString widgetName = wxEmptyString;
 
-     if ( event.GetId() == ID_BoardNoteBook ) {
+     if ( event.GetId() == ID_BoardNoteBook || event.GetId() == ID_BoardListCtrl ) {
 	  // スレッド一覧ウィンドウ
 	  widgetName = BOARD_NOTEBOOK;
 	  ChangeUserLastAttachedEvent(widgetName);
-	  boardNoteBook->SetFocus();
-	  
-     } else if (event.GetId() == ID_ThreadNoteBook) {
+
+     } else if ( event.GetId() == ID_ThreadNoteBook || event.GetId() == ID_ThreadContentWindow ) {
 	  // スレ内容ウィンドウ
 	  widgetName = THREAD_NOTEBOOK;
 	  ChangeUserLastAttachedEvent(widgetName);
-	  threadNoteBook->SetFocus();
 
-     } else if (event.GetId() == ID_BoardTreeNoteBook) {
+     } else if ( event.GetId() == ID_BoardTreeNoteBook || event.GetId() == ID_BoardTreectrl ) {
 	  // 板一覧リストウィンドウ
 	  widgetName = BOARD_TREE_NOTEBOOK;
 	  ChangeUserLastAttachedEvent(widgetName);
-	  boardTreeNoteBook->SetFocus();
      }
+
+     event.Skip();
 }
 /**
  * 外部板登録用のダイアログを呼び出す

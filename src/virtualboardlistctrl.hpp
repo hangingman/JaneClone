@@ -410,10 +410,6 @@ private:
 	  return wxListCtrl::GetItemData(item);
      };
 
-     void MotionEnterWindow(wxMouseEvent& event);
-     void MotionLeaveWindow(wxMouseEvent& event);
-     void SetFocus(wxFocusEvent& event);
-
      // 新着チェック
      bool f_check;
      // 番号
@@ -448,7 +444,6 @@ private:
      // 検索に当てはまった項目の数
      long searchItemNum;
 
-     DECLARE_EVENT_TABLE()
      DECLARE_DYNAMIC_CLASS(VirtualBoardListCtrl)
 };
 

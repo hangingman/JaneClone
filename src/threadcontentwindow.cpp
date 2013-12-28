@@ -48,7 +48,15 @@ END_EVENT_TABLE()
  * 通常のコンストラクタ
  */
 ThreadContentWindow::ThreadContentWindow(wxWindow* parent, const wxString& threadContentPath):
-wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO) {
+wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO) {
+
+#ifdef __WXMSW__
+     // ウィンドウ内に入った際のイベント通知
+     this->Connect(ID_ThreadContentWindow,
+		   wxEVT_ENTER_WINDOW,
+		   wxMouseEventHandler(JaneClone::OnEnterWindow),
+		   NULL, this);
+#endif
 
      // 指定されたパスからHTMLファイルを読み出す
      wxString htmlSource = GetConvertedDatFile(threadContentPath);
