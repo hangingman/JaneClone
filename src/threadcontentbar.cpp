@@ -284,14 +284,14 @@ void ThreadContentBar::do_layout()
     threadContentsBarSizer->Add(threadContentsBarPanel, 0, wxEXPAND, 0);
 
     // 検索バー部分
-    horizonalSizer2->Add(normalSearchButton, 0, 0, 0);
 #ifndef __WXMAC__
+    horizonalSizer2->Add(normalSearchButton, 0, 0, 0);
     horizonalSizer2->Add(searchWordCombo, 0, 0, 0);
-#endif
     horizonalSizer2->Add(backwardButton, 0, 0, 0);
     horizonalSizer2->Add(forwardButton, 0, 0, 0);
     horizonalSizer2->Add(panel_2, 1, wxEXPAND, 0);
     horizonalSizer2->Add(hideSearchBarButton, 0, wxALIGN_RIGHT, 0);
+#endif
     searchBarPanel->SetSizer(horizonalSizer2);
     threadContentsBarSizer->Add(searchBarPanel, 0, wxEXPAND, 0);
 

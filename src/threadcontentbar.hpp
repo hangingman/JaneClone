@@ -69,6 +69,9 @@ public:
 #ifdef __WXMAC__
      // 画像リソースの更新を行う
      void UpdateResources() {
+
+	  wxSizer* horizonalSizer2 = searchBarPanel->GetSizer();
+
 	  // リソースの更新
 	  wxBitmap* normalSearch = new wxBitmap();
 	  if (normalSearch->LoadFile(normalSearchImg, wxBITMAP_TYPE_PNG))
@@ -79,14 +82,24 @@ public:
 	  wxBitmap* forward = new wxBitmap();
 	  if (forward->LoadFile(forwardImg, wxBITMAP_TYPE_PNG))
 	       forwardButton->SetBitmap(*forward);
+
+	  searchWordCombo_choices = NULL;
+	  searchWordCombo = new wxComboBox(searchBarPanel, wxID_ANY, wxT(""), wxDefaultPosition,
+					   wxDefaultSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
+
 	  wxBitmap* hideSearch = new wxBitmap();
 	  if (hideSearch->LoadFile(hideSearchBarImg, wxBITMAP_TYPE_PNG))
 	       hideSearchBarButton->SetBitmap(*hideSearch);
+
+	  horizonalSizer2->Add(normalSearchButton, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
+	  horizonalSizer2->Add(searchWordCombo, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
+	  horizonalSizer2->Add(backwardButton, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
+	  horizonalSizer2->Add(forwardButton, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
+	  horizonalSizer2->Add(panel_2, 1, wxEXPAND, 0);
+	  horizonalSizer2->Add(hideSearchBarButton, 0, wxALIGN_RIGHT|wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
+
 	  // サイズを調整する
-	  normalSearchButton->SetSize(normalSearchButton->GetBestSize());
-	  backwardButton->SetSize(backwardButton->GetBestSize());
-	  forwardButton->SetSize(forwardButton->GetBestSize());
-	  hideSearchBarButton->SetSize(hideSearchBarButton->GetBestSize());
+	  this->Fit();
      };
 #endif
 

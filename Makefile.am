@@ -278,6 +278,9 @@ remove_distdir :
 	rm -rf janeclone_*
 	rm -rf $(BUNDLE)
 
+# OSX向けのバイナリ(テスト用)
+osx-make-bin : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) wxmac-dist-shared-lib
+
 # OSX向けのバイナリ作成
 osx-make-hook : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) check-dylibbundler wxmac-dist-shared-lib package-osx-intel64-dmg
 
