@@ -1,3 +1,297 @@
+commit b7dc571
+Author: Hiroyuki-Nagata@MinGW <newserver002@gmail.com>
+Date:   2013-12-28
+
+    Windows向けビルドにてウィンドウのフォーカス切り替えを改良した
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/threadcontentwindow.cpp
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit c922358
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-28
+
+    スマートポインタの使用を増やした
+
+src/janeclone.cpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit 5be9eaa
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-28
+
+    検索ボックスの表示/非表示の描画を修正
+
+src/janeclone.cpp
+
+commit cea0ab6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-28
+
+    MacOSXでの描画の挙動を修正
+
+Makefile.am
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+
+commit d07ff38
+Author: Hiroyuki-Nagata@MinGW <newserver002@gmail.com>
+Date:   2013-12-27
+
+    MSWとMacでスレッド再読み込みの際、正しく描画がされないバグを修正
+
+src/janeclone.cpp
+
+commit 8123079
+Author: Hiroyuki-Nagata@MinGW <newserver002@gmail.com>
+Date:   2013-12-26
+
+    MinGW向けにパッケージ作成スクリプトを修正
+
+Makefile.am
+
+commit 09c745a
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2013-12-26
+
+    .gitignoreを更新
+
+.gitignore
+
+commit 51c65ba
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-26
+
+    MinGWビルドでのクラッシュの原因となる関数を削除
+
+src/responsewindow.cpp
+src/threadcontentwindow.hpp
+
+commit 86e4146
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-25
+
+    設定画面にDoeタブを追加
+
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit 9f27c60
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-21
+
+    curlppのauto_ptrをunique_ptrに書きかえ
+
+configure
+configure.ac
+curlpp/include/curlpp/Easy.hpp
+curlpp/include/curlpp/internal/CurlHandle.hpp
+curlpp/include/utilspp/clone_ptr.hpp
+curlpp/include/utilspp/functor/Binder.hpp
+curlpp/include/utilspp/functor/Functor.hpp
+curlpp/src/curlpp/Easy.cpp
+curlpp/src/curlpp/internal/CurlHandle.cpp
+
+commit ae5fdb9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-20
+
+    MinGWでのビルド及び簡略化のためcurlはシステム側にインストールされているとして構成から排除
+
+.gitmodules
+Makefile.am
+bootstrap
+configure
+configure.ac
+curl
+curlpp/src/curlpp/Makefile.am
+curlpp/src/curlpp/internal/Makefile.am
+curlpp/src/utilspp/Makefile.am
+src/Makefile.am
+
+commit d5c7d9f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-20
+
+    MinGWでのビルド及び簡略化のためSpiderMonkeyは構成から排除
+    移転先=> https://github.com/Hiroyuki-Nagata/js-1.5-rc6a.git
+
+Makefile.am
+configure
+configure.ac
+js-1.5-rc6a/AUTHORS
+js-1.5-rc6a/COPYING
+js-1.5-rc6a/ChangeLog
+js-1.5-rc6a/INSTALL
+js-1.5-rc6a/Makefile.am
+js-1.5-rc6a/NEWS
+js-1.5-rc6a/README
+js-1.5-rc6a/TODO
+js-1.5-rc6a/configure
+js-1.5-rc6a/configure.ac
+js-1.5-rc6a/src/Makefile.am
+js-1.5-rc6a/src/js.c
+js-1.5-rc6a/src/js.msg
+js-1.5-rc6a/src/jsapi.c
+js-1.5-rc6a/src/jsapi.h
+js-1.5-rc6a/src/jsarena.c
+js-1.5-rc6a/src/jsarena.h
+js-1.5-rc6a/src/jsarray.c
+js-1.5-rc6a/src/jsarray.h
+js-1.5-rc6a/src/jsatom.c
+js-1.5-rc6a/src/jsatom.h
+js-1.5-rc6a/src/jsautocfg.h
+js-1.5-rc6a/src/jsautotoolscfg.h
+js-1.5-rc6a/src/jsautotoolscfg.h.in
+js-1.5-rc6a/src/jsbit.h
+js-1.5-rc6a/src/jsbool.c
+js-1.5-rc6a/src/jsbool.h
+js-1.5-rc6a/src/jsclist.h
+js-1.5-rc6a/src/jscntxt.c
+js-1.5-rc6a/src/jscntxt.h
+js-1.5-rc6a/src/jscompat.h
+js-1.5-rc6a/src/jsconfig.h
+js-1.5-rc6a/src/jscpucfg
+js-1.5-rc6a/src/jscpucfg.c
+js-1.5-rc6a/src/jscpucfg.h
+js-1.5-rc6a/src/jsdate.c
+js-1.5-rc6a/src/jsdate.h
+js-1.5-rc6a/src/jsdbgapi.c
+js-1.5-rc6a/src/jsdbgapi.h
+js-1.5-rc6a/src/jsdhash.c
+js-1.5-rc6a/src/jsdhash.h
+js-1.5-rc6a/src/jsdtoa.c
+js-1.5-rc6a/src/jsdtoa.h
+js-1.5-rc6a/src/jsemit.c
+js-1.5-rc6a/src/jsemit.h
+js-1.5-rc6a/src/jsexn.c
+js-1.5-rc6a/src/jsexn.h
+js-1.5-rc6a/src/jsfile.c
+js-1.5-rc6a/src/jsfile.h
+js-1.5-rc6a/src/jsfun.c
+js-1.5-rc6a/src/jsfun.h
+js-1.5-rc6a/src/jsgc.c
+js-1.5-rc6a/src/jsgc.h
+js-1.5-rc6a/src/jshash.c
+js-1.5-rc6a/src/jshash.h
+js-1.5-rc6a/src/jsinterp.c
+js-1.5-rc6a/src/jsinterp.h
+js-1.5-rc6a/src/jslibmath.h
+js-1.5-rc6a/src/jslock.c
+js-1.5-rc6a/src/jslock.h
+js-1.5-rc6a/src/jslog2.c
+js-1.5-rc6a/src/jslong.c
+js-1.5-rc6a/src/jslong.h
+js-1.5-rc6a/src/jsmath.c
+js-1.5-rc6a/src/jsmath.h
+js-1.5-rc6a/src/jsnum.c
+js-1.5-rc6a/src/jsnum.h
+js-1.5-rc6a/src/jsobj.c
+js-1.5-rc6a/src/jsobj.h
+js-1.5-rc6a/src/jsopcode.c
+js-1.5-rc6a/src/jsopcode.h
+js-1.5-rc6a/src/jsopcode.tbl
+js-1.5-rc6a/src/jsosdep.h
+js-1.5-rc6a/src/jsotypes.h
+js-1.5-rc6a/src/jsparse.c
+js-1.5-rc6a/src/jsparse.h
+js-1.5-rc6a/src/jsprf.c
+js-1.5-rc6a/src/jsprf.h
+js-1.5-rc6a/src/jsprvtd.h
+js-1.5-rc6a/src/jspubtd.h
+js-1.5-rc6a/src/jsregexp.c
+js-1.5-rc6a/src/jsregexp.h
+js-1.5-rc6a/src/jsscan.c
+js-1.5-rc6a/src/jsscan.h
+js-1.5-rc6a/src/jsscope.c
+js-1.5-rc6a/src/jsscope.h
+js-1.5-rc6a/src/jsscript.c
+js-1.5-rc6a/src/jsscript.h
+js-1.5-rc6a/src/jsshell.msg
+js-1.5-rc6a/src/jsstddef.h
+js-1.5-rc6a/src/jsstr.c
+js-1.5-rc6a/src/jsstr.h
+js-1.5-rc6a/src/jstypes.h
+js-1.5-rc6a/src/jsutil.c
+js-1.5-rc6a/src/jsutil.h
+js-1.5-rc6a/src/jsxdrapi.c
+js-1.5-rc6a/src/jsxdrapi.h
+js-1.5-rc6a/src/prmjtime.c
+js-1.5-rc6a/src/prmjtime.h
+js-1.5-rc6a/src/resource.h
+js-1.5-rc6a/src/stamp-h1
+src/Makefile.am
+
+commit 8fbf0bf
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-18
+
+    書き込み設定用画面を追加
+
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit 9dba921
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-18
+
+    設定画面に操作パネルを追加
+
+src/datatype.hpp
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit b8cf55c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-14
+
+    MinGW向けビルドの修正
+
+src/sqliteaccessor.cpp
+
+commit 9be7a65
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-14
+
+    Doxyfileを追加
+
+.gitmodules
+Doxyfile
+Makefile.am
+
+commit f876f84
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-14
+
+    新規板追加ダイアログにて、対象がしたらば掲示板ならば板名とカテゴリを自動取得する機能を追加
+
+src/janecloneutil.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit dbcfae9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-13
+
+    ChangeLog/NEWS/READMEの更新
+
+ChangeLog
+NEWS
+README
+
 commit 21c79fa
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-12-13

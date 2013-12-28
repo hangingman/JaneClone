@@ -7,7 +7,7 @@ DIST_SUBDIRS = $(SUBDIRS)
 # janeclone.wrapper向けルール
 bin_SCRIPTS = janeclone
 CLEANFILES  = $(bin_SCRIPTS)
-EXTRA_DIST  = misc/janeclone.wrapper misc/janeclone.menu test
+EXTRA_DIST  = misc/janeclone.wrapper misc/janeclone.menu misc/janeclone.desktop test
 
 # 書き換えスクリプト
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
@@ -231,7 +231,9 @@ package-rpm: package-clean
 	cd $(top_builddir)/extras/package/SPECS && rpmbuild --macros=$(RPM_MACRO) -ba $(SPECFILE)
 	@echo 'RPM package create end...'
 
+#
 # Debian系ディストリビューション向けのインストーラ作成
+#
 package-deb: remove_distdir dist
 # 作業用ディレクトリ作成
 	(tar xvf $(distdir).tar.gz && cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
@@ -240,7 +242,7 @@ package-deb: remove_distdir dist
 	echo "Section: net" >> $(distdir)/debian/control
 	echo "Priority: extra" >> $(distdir)/debian/control
 	echo "Maintainer: hiroyuki nagata <$(PACKAGE_BUGREPORT)>" >> $(distdir)/debian/control
-	echo "Build-Depends: debhelper (>= 8.0.0), autotools-dev, libatk1.0-0 (>= 1.29.3), libc6 (>= 2.7), libcairo2 (>= 1.2.4), libdbus-1-3 (>= 1.1.1), libfontconfig1 (>= 2.8.0), libfreetype6 (>= 2.2.1), libgcc1 (>= 1:4.1.1), libglib2.0-0 (>= 2.12.0), libgtk2.0-0 (>= 2.8.0), libpango1.0-0 (>= 1.14.0), libstdc++6 (>= 4.1.1),libwxbase2.8-0 (>= 2.8.10.1), libwxgtk2.8-0 (>= 2.8.10.1), libxml2-dev (>= 2.8.0), fonts-mona" >> $(distdir)/debian/control
+	echo "Build-Depends: debhelper (>= 8.0.0), autotools-dev, libatk1.0-0 (>= 1.29.3), libc6 (>= 2.7), libcairo2 (>= 1.2.4), libdbus-1-3 (>= 1.1.1), libfontconfig1 (>= 2.8.0), libfreetype6 (>= 2.2.1), libgcc1 (>= 1:4.1.1), libglib2.0-0 (>= 2.12.0), libgtk2.0-0 (>= 2.8.0), libpango1.0-0 (>= 1.14.0), libstdc++6 (>= 4.1.1),libwxbase2.8-0 (>= 2.8.10.1), libwxgtk2.8-0 (>= 2.8.10.1), libxml2-dev (>= 2.8.0), fonts-mona, libcurl4-openssl-dev" >> $(distdir)/debian/control
 	echo "Standards-Version: $(VERSION)" >> $(distdir)/debian/control
 	echo "Homepage: https://github.com/Hiroyuki-Nagata/JaneClone" >> $(distdir)/debian/control
 	echo "" >> $(distdir)/debian/control
