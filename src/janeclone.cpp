@@ -4370,9 +4370,11 @@ void JaneClone::CtrlF(wxKeyEvent& event) {
 	       if (toolBar->IsShown()) {
 		    toolBar->GetNextSibling()->SetFocus();
 		    toolBar->Hide();
+		    boardNoteBook->Fit();
 		    m_mgr.Update();
 	       } else {
 		    toolBar->Show();
+		    boardNoteBook->Fit();
 		    m_mgr.Update();
 	       }	  
 	  }
@@ -4387,9 +4389,11 @@ void JaneClone::CtrlF(wxKeyEvent& event) {
 	       if (searchBarPanel->IsShown()) {
 		    searchBarPanel->GetNextSibling()->SetFocus();
 		    searchBarPanel->Hide();
+		    threadNoteBook->Fit();
 		    m_mgr.Update();
 	       } else {
 		    searchBarPanel->Show();
+		    threadNoteBook->Fit();
 		    m_mgr.Update();
 	       }	       
 	  }
@@ -4403,9 +4407,11 @@ void JaneClone::CtrlF(wxKeyEvent& event) {
 	       if (toolBar->IsShown()) {
 		    toolBar->GetNextSibling()->SetFocus();
 		    toolBar->Hide();
+		    boardTreeNoteBook->Fit();
 		    m_mgr.Update();
 	       } else {
 		    toolBar->Show();
+		    boardTreeNoteBook->Fit();
 		    m_mgr.Update();
 	       }	  
 	  }
