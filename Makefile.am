@@ -49,15 +49,6 @@ dist-hook: ChangeLog
 ChangeLog: configure.ac
 	git log --stat --name-only --date=short --abbrev-commit > ChangeLog
 
-# 依存関係にあるDLL
-DEPDLLS = $(shell find $(top_builddir) -type f -name '*.dll')
-WXDLLS  = $(shell find `@WX_CONFIG_PATH@ --prefix`/lib -type f -name 'wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll')
-STDCDLL	= $(shell find `@WX_CONFIG_PATH@ --prefix` -type f -name 'libstdc++*.dll')
-RESTDLL = $(MINGWBIN)/libjpeg-*.dll $(MINGWBIN)/libpng*.dll $(MINGWBIN)/libtiff-*.dll $(MINGWBIN)/libxml2*.dll $(MINGWBIN)/zlib*.dll
-LIBGCC  = $(shell find `@WX_CONFIG_PATH@ --prefix` -type f -name 'libgcc*.dll')
-JANEEXE = $(top_builddir)/src/.libs/$(PACKAGE_NAME)
-EXT	= .exe
-
 # NSISの設定ファイル
 MAKENSIS    = makensis
 NSIS_NSI_IN = $(top_builddir)/misc/janeclone.nsi.in
@@ -94,12 +85,24 @@ package-win32-msi: prepare-package check-nsis
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
 # find dlls and copy to package directory
-	cp -p $(DEPDLLS) $(top_builddir)/extras/package
-	cp -p $(WXDLLS) $(top_builddir)/extras/package
-	cp -p $(STDCDLL) $(top_builddir)/extras/package
-	cp -p $(RESTDLL) $(top_builddir)/extras/package
-	cp -p $(LIBGCC) $(top_builddir)/extras/package
-	cp -p $(JANEEXE)$(EXT) $(top_builddir)/extras/package
+	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
+	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
+	done
+	for f in `find $(top_builddir)/src/.libs -name $(PACKAGE_NAME).exe`; do                             \
+	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
+	done
+	for f in `find $(bindir) $(libdir) -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do          \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find $(bindir) $(libdir) -name libstdc++*.dll -or -name libgcc*.dll`; do                  \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name curl*.dll`; do  \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll`; do                    \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
 # add line to NSIS script
 	cp -p $(NSIS_NSI_IN) $(NSIS_NSI)
 	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(NSIS_NSI)
@@ -110,19 +113,25 @@ package-win32-msi: prepare-package check-nsis
 
 # Windows(x86)向けのzip作成
 package-win32-zip: prepare-package
+	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
+	cp -p $(top_builddir)/README $(top_builddir)/extras/package
+	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
 	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
 	for f in `find $(top_builddir)/src/.libs -name $(PACKAGE_NAME).exe`; do                             \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
-	for f in `find /mingw/bin /mingw/lib -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do        \
+	for f in `find $(bindir) $(libdir) -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do          \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find /mingw/bin /mingw/lib -name libstdc++*.dll -or -name libgcc*.dll`; do                \
+	for f in `find $(bindir) $(libdir) -name libstdc++*.dll -or -name libgcc*.dll`; do                  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find /mingw/bin /mingw/lib -name libxml2*.dll -or -name zlib*.dll`; do                    \
+	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name curl*.dll`; do  \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll`; do                    \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
 	( cd $(top_builddir)/extras && zip -r $(PACKAGE)-win32-$(VERSION).zip package/ && mv $(PACKAGE)-win32-$(VERSION).zip ../ )
@@ -135,12 +144,24 @@ package-win64-msi: prepare-package check-nsis
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
 # find dlls and copy to package directory
-	cp -p $(DEPDLLS) $(top_builddir)/extras/package
-	cp -p $(WXDLLS) $(top_builddir)/extras/package
-	cp -p $(STDCDLL) $(top_builddir)/extras/package
-	cp -p $(RESTDLL) $(top_builddir)/extras/package
-	cp -p $(LIBGCC) $(top_builddir)/extras/package
-	cp -p $(JANEEXE)$(EXT) $(top_builddir)/extras/package
+	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
+	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
+	done
+	for f in `find $(top_builddir)/src/.libs -name $(PACKAGE_NAME).exe`; do                             \
+	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
+	done
+	for f in `find $(bindir) $(libdir) -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do          \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find $(bindir) $(libdir) -name libstdc++*.dll -or -name libgcc*.dll`; do                  \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name curl*.dll`; do  \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll`; do                    \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
 # add line to NSIS script
 	cp -p $(NSIS_NSI_IN) $(NSIS_NSI)
 	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(NSIS_NSI)
@@ -160,13 +181,16 @@ package-win64-zip: prepare-package
 	for f in `find $(top_builddir)/src/.libs -name $(PACKAGE_NAME).exe`; do                             \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
-	for f in `find /mingw/bin /mingw/lib -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do        \
+	for f in `find $(bindir) $(libdir) -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do          \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find /mingw/bin /mingw/lib -name libstdc++*.dll -or -name libgcc*.dll`; do                \
+	for f in `find $(bindir) $(libdir) -name libstdc++*.dll -or -name libgcc*.dll`; do                  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find /mingw/bin /mingw/lib -name libxml2*.dll -or -name zlib*.dll`; do                    \
+	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name curl*.dll`; do  \
+	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
+	done
+	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll`; do                    \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
 	( cd $(top_builddir)/extras && zip -r $(PACKAGE)-win64-$(VERSION).zip package/ && mv $(PACKAGE)-win64-$(VERSION).zip ../ )

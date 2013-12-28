@@ -194,19 +194,21 @@ AC_DEFUN([MY_CURL],[
  check="7.10.0"
  dnl check_hex must be UPPERCASE if any hex letters are present
  check_hex="070A00"
+ dnl for cross compiling, variable curl-config 
+ AC_PATH_PROGS(CURLCONFIG, curl-config)
  
  AC_MSG_CHECKING([for curl >= $check])
  
- if eval curl-config --version 2>/dev/null >/dev/null; then
-   ver=`curl-config --version | sed -e "s/libcurl //g"`
-   hex_ver=`curl-config --vernum | tr 'a-f' 'A-F'`
+ if eval $CURLCONFIG --version 2>/dev/null >/dev/null; then
+   ver=`$CURLCONFIG --version | sed -e "s/libcurl //g"`
+   hex_ver=`$CURLCONFIG --vernum | tr 'a-f' 'A-F'`
    ok=`echo "ibase=16; if($hex_ver>=$check_hex) $hex_ver else 0" | bc`
  
    if test x$ok != x0; then
      my_cv_curl_vers="$ver"
      AC_MSG_RESULT([$my_cv_curl_vers])
-     CURL_LIBS=`curl-config --libs`
-     CURL_CFLAGS=`curl-config --cflags`
+     CURL_LIBS=`$CURLCONFIG --libs`
+     CURL_CFLAGS=`$CURLCONFIG --cflags`
      CURLPP_CXXFLAGS="$CURLPP_CXXFLAGS $CURL_CFLAGS"
      LIBS="$LIBS $CURL_LIBS"
    else

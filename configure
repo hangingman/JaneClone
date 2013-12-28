@@ -637,6 +637,7 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+CURLCONFIG
 DYNAMIC_EXTENSION_FLAGS
 THREADSAFE_FLAGS
 READLINE_LIBS
@@ -17551,21 +17552,66 @@ else
  my_cv_curl_vers=NONE
   check="7.10.0"
   check_hex="070A00"
+  for ac_prog in curl-config
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_CURLCONFIG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $CURLCONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_CURLCONFIG="$CURLCONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_CURLCONFIG="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+CURLCONFIG=$ac_cv_path_CURLCONFIG
+if test -n "$CURLCONFIG"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $CURLCONFIG" >&5
+$as_echo "$CURLCONFIG" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$CURLCONFIG" && break
+done
+
 
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for curl >= $check" >&5
 $as_echo_n "checking for curl >= $check... " >&6; }
 
- if eval curl-config --version 2>/dev/null >/dev/null; then
-   ver=`curl-config --version | sed -e "s/libcurl //g"`
-   hex_ver=`curl-config --vernum | tr 'a-f' 'A-F'`
+ if eval $CURLCONFIG --version 2>/dev/null >/dev/null; then
+   ver=`$CURLCONFIG --version | sed -e "s/libcurl //g"`
+   hex_ver=`$CURLCONFIG --vernum | tr 'a-f' 'A-F'`
    ok=`echo "ibase=16; if($hex_ver>=$check_hex) $hex_ver else 0" | bc`
 
    if test x$ok != x0; then
      my_cv_curl_vers="$ver"
      { $as_echo "$as_me:${as_lineno-$LINENO}: result: $my_cv_curl_vers" >&5
 $as_echo "$my_cv_curl_vers" >&6; }
-     CURL_LIBS=`curl-config --libs`
-     CURL_CFLAGS=`curl-config --cflags`
+     CURL_LIBS=`$CURLCONFIG --libs`
+     CURL_CFLAGS=`$CURLCONFIG --cflags`
      CURLPP_CXXFLAGS="$CURLPP_CXXFLAGS $CURL_CFLAGS"
      LIBS="$LIBS $CURL_LIBS"
    else
