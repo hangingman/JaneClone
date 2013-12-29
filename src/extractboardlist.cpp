@@ -87,6 +87,7 @@ void ExtractBoardList::FindBoardInfo(xmlNode*& element) {
 		    if (sizeof(node->children->content) > 0) {
 			 // wx-2.8ではキャストの方法がこれしかない
 			 wxString category((const char*) node->children->content,wxConvUTF8);
+			 if (category == excludeCategory1 || category == excludeCategory2) continue;
 			 lsCategory = category;
 		    }
 	       }

@@ -2003,6 +2003,10 @@ void TabControlSettingPanel::do_layout()
     // end wxGlade
 }
 
+/**
+ * 外部板登録ダイアログ
+ * もしDBに更新あれば返り値は1, 無ければ0
+ */
 NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& title, 
 				     const wxPoint& pos, const wxSize& size, long style):
      wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP)
@@ -2124,11 +2128,7 @@ void NewBoardAddDialog::OnClickOK(wxCommandEvent& event)
      else
      {
 	  // 入力項目をデータベースに格納する
-	  
-
-	  // 板一覧リスト更新のイベントを実行
-
-
+	  SQLiteAccessor::SetOutSideBoardInfo(url, boardName, category);
      }
 
      Close(true);

@@ -34,10 +34,20 @@ SQLiteAccessor::SQLiteAccessor() {
 	  wxSQLite3Database db;
 	  db.Open(dbFile);
 	  db.Begin();
+
 	  // 2chのすべての板一覧情報
-	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO(BOARDNAME_KANJI TEXT, BOARD_URL TEXT, CATEGORY TEXT)"));
+	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO "
+			          "(BOARDNAME_KANJI TEXT, "
+			           "BOARD_URL       TEXT, "
+			           "CATEGORY        TEXT, "
+			           "IS_OUTSIDE      INTEGER" /** true:1, false:0 */
+			       ")"));
+
+#ifdef USE_SHINGETSU
 	  // ユーザーが登録している新月のノード情報
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO_SHINGETSU(TIMEINFO TIMESTAMP, BOARD_URL TEXT)"));
+#endif /** USE_SHINGETSU */
+
 	  // ユーザーが前回見ていたタブについての情報
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_BOARDLIST(BOARDNAME_KANJI TEXT)"));
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_THREADLIST(THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
@@ -81,7 +91,8 @@ void SQLiteAccessor::SetBoardInfoCommit(wxArrayString* boardInfoArray) {
 	  wxSQLite3Statement stmt1 = db.PrepareStatement(sqlDel);
 	  stmt1.ExecuteUpdate();	  
 
-	  const wxString sqlIn = wxT("INSERT INTO BOARD_INFO (BOARDNAME_KANJI, BOARD_URL, CATEGORY) VALUES (?, ?, ?)");
+	  // 板一覧更新では外部板情報はコミットされない
+	  const wxString sqlIn = wxT("INSERT INTO BOARD_INFO (BOARDNAME_KANJI, BOARD_URL, CATEGORY, IS_OUTSIDE) VALUES (?, ?, ?, '0')");
 	  wxSQLite3Statement stmt2 = db.PrepareStatement (sqlIn);
 
 	  for (unsigned int i = 0; i < boardInfoArray->GetCount(); i += 3) {
@@ -1074,4 +1085,33 @@ bool SQLiteAccessor::GetImageFileName(const wxString& fileName, ImageFileInfo& i
      } else {
           return false;
      }
+}
+/**
+ * 外部板の情報をテーブルに登録する
+ * @param const wxString& 外部板のURL
+ * @param const wxString& 外部板の板名
+ * @param const wxString& 外部板のカテゴリ
+ */
+bool SQLiteAccessor::SetOutSideBoardInfo(const wxString& url,const wxString& boardName,const wxString& category)
+{
+     wxSQLite3Database db;
+     INITIALIZE_DBONLY_JC_WXSQLITE3(db)
+
+     // SQL文を用意する
+     const wxString sqlIn = wxT("INSERT INTO BOARD_INFO "
+				"(BOARDNAME_KANJI, "
+				  "BOARD_URL, "
+				  "CATEGORY, "
+				  "IS_OUTSIDE"
+				") VALUES (?, ?, ?, '1')");
+      
+     // SQL文を実行する
+     wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+     stmt.Bind(1, boardName);
+     stmt.Bind(2, url);
+     stmt.Bind(3, category);
+     stmt.ExecuteUpdate();
+
+     CLOSE_CONN_JC_WXSQLITE3(db)
+     return true;
 }

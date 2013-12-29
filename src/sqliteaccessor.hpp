@@ -47,6 +47,13 @@ static const wxString SQLITE_FILE_PATH = wxT("/janeclone.db");
      db.Open(dbFile);                       \
      db.Begin();			    \
 
+#define INITIALIZE_DBONLY_JC_WXSQLITE3(db)  \
+     try {                                  \
+     wxString dbFile = GetDBFilePath();     \
+     wxSQLite3Database::InitializeSQLite(); \
+     db.Open(dbFile);                       \
+     db.Begin();                            \
+
 #define CLOSE_CONN_JC_WXSQLITE3(db) \
      db.Commit(); \
      db.Close();  \
@@ -183,6 +190,13 @@ public:
       * @return bool                   取得可否 true:取得成功 false:取得失敗
       */
      static bool GetImageFileName(const wxString& fileName, ImageFileInfo& imageFileInfo);
+     /**
+      * 外部板の情報をテーブルに登録する
+      * @param const wxString& 外部板のURL
+      * @param const wxString& 外部板の板名
+      * @param const wxString& 外部板のカテゴリ
+      */
+     static bool SetOutSideBoardInfo(const wxString& url,const wxString& boardName,const wxString& category);
 
 private:
 

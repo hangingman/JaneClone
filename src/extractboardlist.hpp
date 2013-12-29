@@ -41,7 +41,9 @@ private:
      htmlDocPtr m_doc;
      // 板情報を含む配列
      wxArrayString* boardInfoArray;
-     
+     // 除外するカテゴリ
+     const wxString excludeCategory1 = wxT("特別企画");
+     const wxString excludeCategory2 = wxT("他のサイト");
 };
 
 #endif // EXTRACTBOARDLIST_HPP

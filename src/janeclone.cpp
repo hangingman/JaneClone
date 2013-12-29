@@ -159,6 +159,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_TEXT(ID_Logging, JaneClone::Logging)
    EVT_TEXT(ID_ChangeUserLastAttached, JaneClone::ChangeUserLastAttached)
    EVT_TEXT(ID_ReloadThreadByName, JaneClone::ReloadThreadByName)
+   EVT_TEXT(ID_ResetBoardListTree, JaneClone::SetBoardList)
 
 #ifdef __WXMAC__
    // UIの更新通知
@@ -2466,9 +2467,18 @@ void JaneClone::InitializeShingetsuNodeList() {
 #endif /** USE_SHINGETSU */
 
 /**
- * Sqliteから板一覧情報を抽出してレイアウトに反映するメソッド
+ * 板一覧リストのツリーのウィジェットをDBからリロードするイベント
  */
-void JaneClone::SetBoardList(const bool thisIsFirst) {
+void JaneClone::SetBoardList(wxCommandEvent& event)
+{
+     this->SetBoardList(true);
+}
+/**
+ * SQLiteから板一覧情報を抽出してレイアウトに反映するメソッド
+ * @param bool updateHash true:内部の板一覧情報ハッシュを更新する, false:更新しない
+ */
+void JaneClone::SetBoardList(const bool updateHash)
+{
 
      // ArrayStringの形で板一覧情報を取得する
      wxArrayString boardInfoArray = SQLiteAccessor::GetBoardInfo();
@@ -2484,6 +2494,10 @@ void JaneClone::SetBoardList(const bool thisIsFirst) {
      int hashID = 0;
      // 一度中身を削除する
      m_tree_ctrl->CollapseAndReset(m_tree_ctrl->GetRootItem());
+     // 板一覧情報ハッシュは初期化する
+     if ( updateHash ) {
+	  retainHash.clear();
+     }
 
      // 板一覧情報をツリーに渡す
      for (unsigned int i = 0; i < boardInfoArray.GetCount(); i += 3) {
@@ -2519,8 +2533,10 @@ void JaneClone::SetBoardList(const bool thisIsFirst) {
 	       }
 	  }
 	  // Hashに板情報を入れる
-	  if (!boardName.IsEmpty() && thisIsFirst)
-	       retainHash[(const wxString) boardName] = (const URLvsBoardName&) urlVsName;
+	  if (!boardName.IsEmpty() && updateHash) {
+	       // 板情報ハッシュを更新する
+	       retainHash[boardName] = urlVsName;
+	  }
 	  // Hashのキー値をインクリメントしておく
 	  hashID++;
      }
@@ -4447,4 +4463,7 @@ void JaneClone::CallNewBoardAddDialog(wxCommandEvent& event)
 {
      NewBoardAddDialog newBoardAddDlg(this, ID_NewBoardAddDialog, wxT("外部板登録"));
      newBoardAddDlg.ShowModal();
+
+     // 板一覧リスト更新のイベントを実行
+     SetBoardList(true);
 }

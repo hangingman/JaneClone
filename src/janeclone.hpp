@@ -333,7 +333,9 @@ private:
      // 2ch板一覧ツリーコントロール
      wxTreeCtrl* m_tree_ctrl;
      // 取得した板一覧ファイルからデータを抽出したのちwxTreeCtrlのインスタンスを返す
-     void SetBoardList(const bool thisIsFirst = true);
+     void SetBoardList(const bool updateHash = true);
+     // 上記の処理のイベント版
+     void SetBoardList(wxCommandEvent& event);
      // 板一覧ツリーの初期化
      void InitializeBoardList();
      // すべてのウィジェットが載るAuiマネージャー
