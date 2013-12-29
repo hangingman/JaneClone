@@ -174,16 +174,6 @@ fi
 #   curlpp build flag
 #
 
-dnl Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS( \
-curl/curl.h \
-ostream 
-)
-if test $ac_cv_header_curl_curl_h = no; then
-   AC_MSG_ERROR([*** curl/curl.h. You need a working libcurl installation.])
-fi
-
 dnl -------
 dnl set my_cv_curl_vers to the version of libcurl or NONE
 dnl if libcurl is not found or is too old
@@ -209,7 +199,6 @@ AC_DEFUN([MY_CURL],[
      AC_MSG_RESULT([$my_cv_curl_vers])
      CURL_LIBS=`$CURLCONFIG --libs`
      CURL_CFLAGS=`$CURLCONFIG --cflags`
-     CURLPP_CXXFLAGS="$CURLPP_CXXFLAGS $CURL_CFLAGS"
      LIBS="$LIBS $CURL_LIBS"
    else
      AC_MSG_RESULT(FAILED)
@@ -223,6 +212,8 @@ AC_DEFUN([MY_CURL],[
 ])
 
 MY_CURL
+
+AC_SUBST(CURL_CFLAGS)
 
 AC_MSG_CHECKING([if we need BUILDING_CURLPP])
 case $host in

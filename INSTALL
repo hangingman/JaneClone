@@ -305,6 +305,10 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   # make CXX=clang++
   # make install
 
+  # libcurlをビルドする
+  # cd /usr/ports/ftp/curl
+  # make && make install && make clean
+
   wxWidgetsのライブラリのインストール
   (wx-2.8はバグがあるので最新版をインストールする)
   # git clone https://github.com/wxWidgets/wxWidgets.git
@@ -323,20 +327,16 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   # make
   # make install
 
-  wx-configのリンク張りなおし
-  # ln -s /usr/local/bin/wxgtk2u-2.8-config /usr/local/bin/wx-config
   ちゃんんとバージョンが出たら成功
   # wx-config --version
-  2.8.12
+  3.0.0
 
  G-2. パッケージング
 
   $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
   $ cd /path/to/JaneClone
-  $ git submodule init
-  $ git submodule update
   $ ./bootstrap
-  $ ./configure CC='clang' CXX='clang++ -stdlib=libc++'  
+  $ ./configure CC='clang' CXX='clang++ -std=c++11 -stdlib=libc++'  
   $ make
 
 コンパイラとそのオプション

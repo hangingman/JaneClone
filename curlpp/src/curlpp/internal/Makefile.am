@@ -1,6 +1,6 @@
 noinst_LTLIBRARIES = libinternal.la
 
-INCLUDES = -I$(top_builddir)/curl/include -I$(top_builddir)/include/curlpp -I$(top_builddir)/include/curlpp/internal -I$(top_builddir)/curlpp/include
+INCLUDES = @CURL_CFLAGS@ -I$(top_builddir)/include/curlpp -I$(top_builddir)/include/curlpp/internal -I$(top_builddir)/curlpp/include
 
 sources = \
 	CurlHandle.cpp \
