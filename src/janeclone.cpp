@@ -3332,7 +3332,7 @@ void JaneClone::OnMenuOpen(wxMenuEvent& event) {
 	       while ( current_menuitem_node = menu->GetMenuItems().GetLast() ) {
 		    
 #if wxCHECK_VERSION(2, 9, 0)
-		    current_menuitem = current_menuitem_node.GetData();
+		    current_menuitem = current_menuitem_node->GetData();
 #else
 		    current_menuitem = current_menuitem_node->GetData();
 #endif
@@ -3391,7 +3391,7 @@ void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
 	  // そもそも要素があるかどうかチェック
 	  while ( current_menuitem_node = closeB->GetMenuItems().GetLast() ) {
 #if wxCHECK_VERSION(2, 9, 0)
-	       current_menuitem = current_menuitem_node.GetData();
+	       current_menuitem = current_menuitem_node->GetData();
 #else
 	       current_menuitem = current_menuitem_node->GetData();
 #endif
@@ -3479,7 +3479,7 @@ void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
 	  // そもそも要素があるかどうかチェック
 	  while ( current_menuitem_node = closeT->GetMenuItems().GetLast() ) {
 #if wxCHECK_VERSION(2, 9, 0)
-	       current_menuitem = current_menuitem_node.GetData();
+	       current_menuitem = current_menuitem_node->GetData();
 #else
 	       current_menuitem = current_menuitem_node->GetData();
 #endif

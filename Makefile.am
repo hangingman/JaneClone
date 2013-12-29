@@ -97,10 +97,10 @@ package-win32-msi: prepare-package check-nsis
 	for f in `find $(bindir) $(libdir) -name libstdc++*.dll -or -name libgcc*.dll`; do                  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name curl*.dll`; do  \
+	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name libcurl*.dll`; do  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll`; do                    \
+	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll -or -name libtiff*.dll`; do  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
 # add line to NSIS script
@@ -128,7 +128,7 @@ package-win32-zip: prepare-package
 	for f in `find $(bindir) $(libdir) -name libstdc++*.dll -or -name libgcc*.dll`; do                  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name curl*.dll`; do  \
+	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name libcurl*.dll -or -name libtiff*.dll`; do  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
 	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll`; do                    \
@@ -156,10 +156,10 @@ package-win64-msi: prepare-package check-nsis
 	for f in `find $(bindir) $(libdir) -name libstdc++*.dll -or -name libgcc*.dll`; do                  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name curl*.dll`; do  \
+	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name libcurl*.dll`; do  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll`; do                    \
+	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll -or -name libtiff*.dll`; do \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
 # add line to NSIS script
@@ -187,10 +187,10 @@ package-win64-zip: prepare-package
 	for f in `find $(bindir) $(libdir) -name libstdc++*.dll -or -name libgcc*.dll`; do                  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name curl*.dll`; do  \
+	for f in `find $(bindir) $(libdir) -name libxml2*.dll -or -name zlib*.dll -or -name libcurl*.dll`; do  \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
-	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll`; do                    \
+	for f in `find $(bindir) $(libdir) -name libjpeg*.dll -or -name libpng*.dll -or -name libtiff*.dll`; do \
 	   cp -p $${f} $(top_builddir)/extras/package;         	                                            \
 	done
 	( cd $(top_builddir)/extras && zip -r $(PACKAGE)-win64-$(VERSION).zip package/ && mv $(PACKAGE)-win64-$(VERSION).zip ../ )
