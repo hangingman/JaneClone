@@ -5,7 +5,7 @@ AC_PREREQ([2.67])
 AC_INIT([JaneClone], [1.1.3], [newserver002@gmail.com])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wno-portability])
-AC_CONFIG_SRCDIR([libwxnkf/flagset.h])
+AC_CONFIG_SRCDIR([libwxnkf/src/flagset.h])
 AC_CONFIG_HEADERS([config.h:curlpp/include/curlpp/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_SYS_LARGEFILE
@@ -255,19 +255,14 @@ AX_COMPILER_VENDOR
 case "${ax_cv_c_compiler_vendor}" in
 
    gnu)
-	if test "$PLATFORM_STRING" = "Win32"; then
-   	   AX_CHECK_COMPILE_FLAG([-std=gnu++0x], [CXXFLAGS="$CXXFLAGS -std=gnu++0x"])
-	else
-	   AX_CHECK_COMPILE_FLAG([-std=c++11], [CXXFLAGS="$CXXFLAGS -std=c++11"])
-	fi
+      	AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 	;;
+
    clang)
 	if test "$PLATFORM_STRING" = "Apple"; then
-	   AX_CHECK_COMPILE_FLAG([-std=c++11 -stdlib=libc++],[CXXFLAGS="$CXXFLAGS -std=c++11 -stdlib=libc++"])
-	else
-	   AX_CHECK_COMPILE_FLAG([-std=c++11],[CXXFLAGS="$CXXFLAGS -std=c++11"])
+	   CXXFLAGS="$CXXFLAGS -stdlib=libc++"
 	fi
-	
+	   AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
         ;;	
    *)
 	AC_MSG_ERROR("ERROR: JaneClone cannot compile with gnu gcc or clang.")
@@ -305,7 +300,6 @@ AC_CONFIG_SUBDIRS(libwxnkf)
 
 # Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile
-                 libwxnkf/Makefile
 		 libwxuuid/Makefile
 		 sqlite3/Makefile
 		 wxsqlite3/Makefile
@@ -323,3 +317,10 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
 		 test/Makefile])
 AC_OUTPUT
+
+# Trace all options
+AC_MSG_RESULT([CC:	  $CC])
+AC_MSG_RESULT([CXX:	  $CXX])
+AC_MSG_RESULT([CPPFLAGS:  $CPPFLAGS])
+AC_MSG_RESULT([CXXFLAGS:  $CXXFLAGS])
+AC_MSG_RESULT([LIBS:	  $LIBS])

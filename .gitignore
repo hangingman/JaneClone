@@ -20,3 +20,17 @@ extras/*
 *.so.*
 *~
 *.exe
+compile
+config.guess
+config.h
+config.log
+config.status
+config.sub
+depcomp
+install-sh
+libtool
+ltmain.sh
+missing
+stamp-h1
+test-driver
+aclocal.m4
