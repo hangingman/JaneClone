@@ -1,3 +1,6 @@
 [submodule "docs"]
 	path = docs
 	url = git@github.com:Hiroyuki-Nagata/JaneClone.git
+[submodule "libwxnkf"]
+	path = libwxnkf
+	url = https://github.com/Hiroyuki-Nagata/libwxnkf.git
