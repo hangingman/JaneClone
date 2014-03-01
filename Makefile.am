@@ -375,6 +375,7 @@ WXLIBPOSTFIX = *wx*@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@.@WX_VERSION_MICRO@.dyli
 WXLIBDIR     = `@WX_CONFIG_PATH@ --prefix`/lib
 BINDIR	     = $(BUNDLE)/Contents/MacOS
 LIBDEFDIR    = /usr/local/lib
+JANEEXE      = $(top_builddir)/src/.libs/$(PACKAGE_NAME)
 MACJANEEXE   = $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME)
 DYLIBBUNDLER = dylibbundler
 
