@@ -88,8 +88,7 @@
 #include "settingwindow.hpp"
 
 /**
- * JaneClone本体はGUI構築用のwxFrameと
- * マウスモーション管理用のwxMouseEventsManagerを継承する
+ * JaneCloneのGUI本体部分を構成するクラス
  */
 class JaneClone : public wxFrame {
 

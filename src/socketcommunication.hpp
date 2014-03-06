@@ -41,6 +41,7 @@
 #include <wx/fileconf.h>
 #include <wx/sstream.h>
 #include <wx/sckstrm.h>
+#include <wx/uri.h>
 
 #include <curlpp/cURLpp.hpp>
 #include <curlpp/Easy.hpp>
@@ -74,7 +75,7 @@ public:
       * @param  板一覧headerファイル保存先
       * @return 実行コード
       */
-     int DownloadBoardList(const wxString outputPath, const wxString headerPath);
+     int DownloadBoardList(const wxString& outputPath, const wxString& headerPath);
      /**
       * スレッド一覧をダウンロードしてくるメソッド
       * @param 板名
@@ -82,8 +83,7 @@ public:
       * @param サーバー名
       * @return ダウンロードしたdatファイル保存先
       */
-     wxString DownloadThreadList(const wxString boardName,
-				 const wxString boardURL, const wxString boardNameAscii);
+     wxString DownloadThreadList(wxString& boardName, wxString& boardURL, wxString& boardNameAscii);
      /**
       * スレッドのデータをダウンロードしてくるメソッド
       * @param 板名
@@ -92,8 +92,8 @@ public:
       * @param 固有番号
       * @return ダウンロードしたdatファイル保存先
       */
-     wxString DownloadThread(const wxString boardName, const wxString boardURL,
-			     const wxString boardNameAscii, const wxString origNumber);
+     wxString DownloadThread(const wxString& boardName, const wxString& boardURL,
+			     const wxString& boardNameAscii, const wxString& origNumber);
 
 #ifdef USE_SHINGETSU
      /**
@@ -146,6 +146,15 @@ public:
       * したらば掲示板の情報を取得する
       */
      bool GetShitarabaBoardInfo(const wxString& path, wxString& boardName, wxString& category);
+     /**
+      * 入力された情報が他の掲示板のものであれば変換する
+      *
+      * @param  boardNameAscii アルファベットの板名
+      * @param  ホスト名
+      * @param  URL全体
+      * @return URLが他掲示板のものである:true, 2chのURLである:false
+      */
+     bool SetOtherBoardInfomation(wxString& boardNameAscii, wxString& hostName, wxString& boardURL);
 
 #ifdef USE_SHINGETSU
      /**
@@ -189,13 +198,13 @@ private:
      /**
       * 新規に板一覧情報を取得しに行く
       */
-     int DownloadBoardListNew(const wxString outputPath,
-			      const wxString headerPath);
+     int DownloadBoardListNew(const wxString& outputPath,
+			      const wxString& headerPath);
      /**
       * 前回との差分を取得しに行く
       */
-     int DownloadBoardListMod(const wxString outputPath,
-			      const wxString headerPath);
+     int DownloadBoardListMod(const wxString& outputPath,
+			      const wxString& headerPath);
      /**
       * 新規にスレッド一覧をダウンロードしてくるメソッド
       * @param gzipのダウンロード先パス
@@ -203,9 +212,9 @@ private:
       * @param 板名（ascii）
       * @return 実行コード
       */
-     int DownloadThreadListNew(const wxString gzipPath,
-			       const wxString headerPath, const wxString boardNameAscii,
-			       const wxString hostName, const wxString boardURL);
+     int DownloadThreadListNew(const wxString& gzipPath,
+			       const wxString& headerPath, const wxString& boardNameAscii,
+			       const wxString& hostName, const wxString& boardURL);
      /**
       * 前回との差分のスレッド一覧をダウンロードしてくるメソッド
       * @param gzipのダウンロード先パス
@@ -213,9 +222,9 @@ private:
       * @param 板名（ascii）
       * @return 実行コード
       */
-     int DownloadThreadListMod(const wxString gzipPath,
-			       const wxString headerPath, const wxString boardNameAscii,
-			       const wxString hostName, const wxString boardURL);
+     int DownloadThreadListMod(const wxString& gzipPath,
+			       const wxString& headerPath, const wxString& boardNameAscii,
+			       const wxString& hostName, const wxString& boardURL);
 
      /**
       * 新規にスレッドのデータをダウンロードしてくるメソッド
@@ -226,9 +235,9 @@ private:
       * @param サーバーのホスト名
       * @return 実行コード
       */
-     void DownloadThreadNew(const wxString gzipPath, const wxString headerPath,
-			    const wxString boardNameAscii, const wxString origNumber,
-			    const wxString hostName);
+     void DownloadThreadNew(const wxString& gzipPath, const wxString& headerPath,
+			    const wxString& boardNameAscii, const wxString& origNumber,
+			    const wxString& hostName);
 
      /**
       * 前回との差分のスレッドのデータをダウンロードしてくるメソッド
@@ -239,9 +248,9 @@ private:
       * @param サーバーのホスト名
       * @return 実行コード
       */
-     int DownloadThreadMod(const wxString gzipPath, const wxString headerPath,
-			   const wxString boardNameAscii, const wxString origNumber,
-			   const wxString hostName);
+     int DownloadThreadMod(const wxString& gzipPath, const wxString& headerPath,
+			   const wxString& boardNameAscii, const wxString& origNumber,
+			   const wxString& hostName);
 
      /**
       * 過去のスレッドのデータをダウンロードしてくるメソッド
@@ -252,18 +261,18 @@ private:
       * @param サーバーのホスト名
       * @return 実行コード
       */
-     int DownloadThreadPast(const wxString gzipPath, const wxString headerPath,
-			    const wxString boardNameAscii, const wxString origNumber,
-			    const wxString hostName, const wxString ext = wxT(".dat.gz"));     
+     int DownloadThreadPast(const wxString& gzipPath, const wxString& headerPath,
+			    const wxString& boardNameAscii, const wxString& origNumber,
+			    const wxString& hostName, const wxString& ext = wxT(".dat.gz"));     
 
      /**
       * 通信ログに残っているHTTPレスポンスコードを取得する
       */
-     wxString GetHTTPResponseCode(const wxString headerPath, const wxString reqCode);
+     wxString GetHTTPResponseCode(const wxString& headerPath, const wxString& reqCode);
      /**
       * 一時ファイルを消す
       */
-     void RemoveTmpFile(const wxString removeFile);
+     void RemoveTmpFile(const wxString& removeFile);
      /**
       * HTTPヘッダを書きだす
       */
@@ -305,6 +314,14 @@ private:
       * BE２ちゃんねるにログインしてプロパティファイルに情報を書き出す
       */
      void LoginBe2ch();
+     /**
+      * 出力ファイル名設定
+      */
+     static wxString GetOutputFileName(bool isShitaraba, wxString& boardNameAscii);
+     /**
+      * 出力ファイルパス設定
+      */
+     static wxString GetOutputFilePath(bool isShitaraba, wxString& boardNameAscii);
 };
 
 #endif /* SOCKETCOMMUNICATION_HPP_ */
