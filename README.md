@@ -1,20 +1,20 @@
-========== ========== ==========  
-  JaneClone  ver.1.1.3  
-========== ========== ==========  
-
-  Work with  
-   Windows XP, Vista, 7  
-   Linux    (GTK2 or 3)  
-   Mac OSX  (Lion~)  
-   BSD      (GTK2 or 3)  
   
----------- ----------
-**About
-  Cross Platform 2ch Browser
+###JaneClone  ver.1.1.3  
 
-**Build
-  $ ./bootstrap
-  $ ./configure
-  $ make
+Work with  
+* Windows XP, Vista, 7  
+* Linux    (GTK2 or 3)  
+* Mac OS X (Lion~)  
+* BSD      (GTK2 or 3)  
+  
+###About
+  Cross Platform 2ch Browser  
+  
+###Build  
+```
+  $ ./bootstrap  
+  $ ./configure  
+  $ make  
+```  
 
-  See INSTALL file for detail.
+  See INSTALL file for detail.  
