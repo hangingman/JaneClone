@@ -941,8 +941,17 @@ void JaneClone::DoLayout() {
      // 画面の分割を縦横どちらにするか
      // separateX = 日, separateY = 而
      JaneCloneUtil::GetJaneCloneProperties(wxT("SeparateXY"), &separateIsX);
-     separateIsX ? m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY))
-	         : m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
+     separateIsX ? m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, 
+						  wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY))
+	         : m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, 
+						  wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
+
+     // 画面のペイン数を何個にするか
+     paneIsThree = true; // デフォルト値=3
+     JaneCloneUtil::GetJaneCloneProperties(wxT("PaneIsThree"), &paneIsThree);
+     // GUI右側に表示するウィジェットは何か
+     rightIsThreadList = true; // デフォルト値=スレッド一覧
+     JaneCloneUtil::GetJaneCloneProperties(wxT("RightIsThreadList"), &rightIsThreadList);
 
      // それぞれのペインの情報を設定する
      SetJaneCloneAuiPaneInfo();
@@ -1069,11 +1078,14 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      if (enableBoardListTree) m_mgr.AddPane(boardTreeNoteBook, boardTree);
      m_mgr.AddPane(m_logCtrl, logWindow);
 
-     // 縦分割か横分割か
-     if (separateIsX) {
+     // 縦分割か横分割か(最初は３ペインでセット)
+     if (separateIsX) 
+     {
 	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
 	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
-     } else {
+     } 
+     else 
+     {
 	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
 	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
      }
@@ -1084,15 +1096,37 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
      m_mgr.AddPane(m_logCtrl, logWindow);
      if (enableBoardListTree) m_mgr.AddPane(boardTreeNoteBook, boardTree);
 
-     // 縦分割か横分割か
-     if (separateIsX) {
+     // 縦分割か横分割か(最初は３ペインでセット)
+     if (separateIsX) 
+     {
 	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
 	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
-     } else {
+     } 
+     else 
+     {
 	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
 	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
      }
 #endif
+
+     // ペイン数の設定
+     if (!paneIsThree)
+     {
+	  // ペイン数は２である
+	  if (rightIsThreadList)
+	  {
+	       // 板一覧は落とす
+	       m_mgr.DetachPane(boardNoteBook);
+	       boardNoteBook->Hide();
+	  }
+	  else
+	  {
+	       // スレ欄は落とす
+	       m_mgr.DetachPane(threadNoteBook);
+	       threadNoteBook->Hide();
+	  }
+     }
+
      // 各ウィンドウで識別用のラベルを設定する
      this->SetLabel(JANECLONE_WINDOW);
      m_search_ctrl->SetLabel(SEARCH_BAR);
@@ -2673,14 +2707,10 @@ void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
      // 画面の分割を縦横どちらにするか
      JaneCloneUtil::SetJaneCloneProperties(wxT("SeparateXY"), separateIsX);
-
-     // 各ウィジェットのフォント情報
-     /**
-     for ( wxWindowList::const_iterator i = this->GetChildren().begin(); i != GetChildren().end(); ++i ) {
-	  if ( wxDynamicCast(*i, wxWindow) ) {
-	       WriteFontInfo((*i));
-	  }
-     }*/
+     // 画面のペイン数を何個にするか
+     JaneCloneUtil::SetJaneCloneProperties(wxT("PaneIsThree"), paneIsThree);
+     // GUI右側に表示するウィジェットは何か
+     JaneCloneUtil::SetJaneCloneProperties(wxT("RightIsThreadList"), rightIsThreadList);
 
      SetStatusText(wxT("終了前処理が終わりました！"));
 
@@ -2887,15 +2917,19 @@ void JaneClone::OnLeftClickAtListCtrlShingetsu(wxListEvent& event) {
 /**
  * スレッド一覧リストでリストのヘッダーにクリックした場合の処理
  */
-void JaneClone::OnLeftClickAtListCtrlCol(wxListEvent& event) {
-     
+void JaneClone::OnLeftClickAtListCtrlCol(wxListEvent& event) 
+{     
      // 現在アクティブになっているタブの板名を取得する
      wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
 
      // リストコントロールを引き出してくる
-     VirtualBoardListCtrl* vbListCtrl = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
-     if (vbListCtrl == NULL) {
-	  wxMessageBox(wxT("内部エラー, スレッドソート処理に失敗しました."), wxT("スレッド一覧リスト"), wxICON_ERROR);
+     VirtualBoardListCtrl* vbListCtrl 
+	  = dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName));
+     if (vbListCtrl == NULL) 
+     {
+	  wxMessageBox(wxT("内部エラー, スレッドソート処理に失敗しました."), 
+		       wxT("スレッド一覧リスト"), 
+		       wxICON_ERROR);
 	  return;
      }
 
@@ -3435,8 +3469,8 @@ void JaneClone::UserLastClosedBoardMenuUp(wxUpdateUIEvent& event) {
 /**
  * ユーザーが最後に閉じた板を開く
  */
-void JaneClone::OnUserLastClosedBoardClick(wxCommandEvent& event) {
-
+void JaneClone::OnUserLastClosedBoardClick(wxCommandEvent& event) 
+{
      // メニューアイテムの項目番号を取得する
      wxString boardName = closeB->GetLabelText(event.GetId());
      // 板名に対応したURLを取ってくる
@@ -3468,8 +3502,10 @@ void JaneClone::OnUserLastClosedBoardClick(wxCommandEvent& event) {
      size_t selectedPage = 0;
 
      // ユーザーが開いているタブの板名を調べる
-     for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) {
-	  if (boardName.Cmp(boardNoteBook->GetPageText(i)) == 0) {
+     for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) 
+     {
+	  if (boardName.Cmp(boardNoteBook->GetPageText(i)) == 0) 
+	  {
 	       itIsNewBoardName = false;
 	       selectedPage = i;
 	       // もうスレッド一覧を開いていれば開く
@@ -3483,8 +3519,8 @@ void JaneClone::OnUserLastClosedBoardClick(wxCommandEvent& event) {
 /**
  * ユーザーが最近閉じたスレタブの情報をSQLiteから取得して設定する
  */
-void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) {
-
+void JaneClone::UserLastClosedThreadMenuUp(wxUpdateUIEvent& event) 
+{
      // メニューアイテムを順次消していく
 #if wxCHECK_VERSION(2, 9, 0)
      wxMenuItemList::compatibility_iterator current_menuitem_node;
@@ -4263,11 +4299,56 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event)
  */
 void JaneClone::SwitchTwoThreePane(wxCommandEvent& event)
 {
-
-     boardNoteBook->Hide();
+     // ペイン数の設定
+     if (paneIsThree)
+     {
+	  // ペイン数は３である
+	  if (rightIsThreadList)
+	  {
+	       // 右側下部・スレッド一覧タブとスレ表示画面が載ったウィンドウ
+	       wxAuiPaneInfo threadTabThreadContentInfo;
+	       threadTabThreadContentInfo.Name(wxT("threadTabThreadContentInfo"));
+	       threadTabThreadContentInfo.Right();
+	       threadTabThreadContentInfo.Center();
+	       threadTabThreadContentInfo.CloseButton(false);
+	       threadTabThreadContentInfo.BestSize(400, 400);
+	       m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo);
+	       threadNoteBook->Show();
+	  }
+	  else
+	  {
+	       // 右側上部・板一覧のノートブックとスレッド一覧リストが載ったウィンドウ
+	       wxAuiPaneInfo boardListThreadListInfo;
+	       boardListThreadListInfo.Name(wxT("boardListThreadListInfo"));
+	       boardListThreadListInfo.Right();
+	       boardListThreadListInfo.Center();
+	       boardListThreadListInfo.CloseButton(false);
+	       boardListThreadListInfo.BestSize(400, 400);
+	       m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo);
+	       boardNoteBook->Show();
+	  }
+     }
+     else
+     {
+	  // ペイン数は２である
+	  if (rightIsThreadList)
+	  {
+	       // スレ欄は落とす
+	       m_mgr.DetachPane(threadNoteBook);
+	       threadNoteBook->Hide();
+	  }
+	  else
+	  {
+	       // 板一覧は落とす
+	       m_mgr.DetachPane(boardNoteBook);
+	       boardNoteBook->Hide();
+	  }
+     }
 
      // 全体の再描画
      m_mgr.Update();
+     // bool値の更新
+     paneIsThree = (!paneIsThree);
 }
 
 /**

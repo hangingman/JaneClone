@@ -368,7 +368,13 @@ private:
      wxTextCtrl* m_logCtrl;
      // アイコン付きのツールバー
      wxAuiToolBar* m_floatToolBar;
+     // 縦横分割
      bool separateIsX;
+     // ペインの数(true:3, false:2)
+     bool paneIsThree;
+     // GUI右側に表示するウィジェット(true:スレッド一覧, false:スレ欄)
+     bool rightIsThreadList;
+
      // ツリーコントロールの表示・非表示切り替え
      void ShowBoardListTree(wxCommandEvent& event);
      // 縦⇔横分割切り替え
