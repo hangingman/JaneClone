@@ -533,8 +533,10 @@ private:
 #endif /** USE_SHINGETSU */
 
 public:
-     // ショートカットキーのイベント
+     // ショートカットキー(Ctrl+F)のイベント
      void CtrlF(wxKeyEvent& event);
+     // ショートカットキー(Enter)のイベント
+     void Enter(wxKeyEvent& event);
 
      DECLARE_EVENT_TABLE()
 };

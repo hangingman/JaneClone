@@ -125,15 +125,34 @@ int wxMain::OnExit() {
  */
 int wxMain::FilterEvent(wxEvent& event) {
 
-    if (event.GetEventType() == wxEVT_KEY_DOWN) {
+    if (event.GetEventType() == wxEVT_KEY_DOWN) 
+    {
 	  wxKeyEvent e = dynamic_cast<wxKeyEvent&>(event);
 
-	  if(e.GetModifiers() == wxMOD_CONTROL) {
-
+	  if(e.GetModifiers() == wxMOD_CONTROL) 
+	  {
+	       // Ctrlキー同時押し
 	       bool ret = -1;
-	       switch(e.GetKeyCode()) {
+	       switch(e.GetKeyCode()) 
+	       {
 	       case 'F':
 		    wxJaneClone->CtrlF(e);
+		    return true;
+		    break;
+	       default:
+		    break;
+	       }
+
+	       return -1;
+	  } 
+	  else
+	  {
+	       // 普通のキー
+	       bool ret = -1;
+	       switch(e.GetKeyCode()) 
+	       {
+	       case WXK_RETURN:
+		    wxJaneClone->Enter(e);
 		    return true;
 		    break;
 	       default:

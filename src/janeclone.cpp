@@ -4368,61 +4368,78 @@ void JaneClone::SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, c
 }
 
 #endif /** USE_SHINGETSU */
+
 /**
  * ショートカットキー(Ctrl+F)のイベント
  */
-void JaneClone::CtrlF(wxKeyEvent& event) {
-
-     if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) {
+void JaneClone::CtrlF(wxKeyEvent& event) 
+{
+     if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) 
+     {
 	  // スレッド一覧ウィンドウの処理
 	  wxWindow* target = boardNoteBook->GetPage(boardNoteBook->GetSelection());
 
 	  if ( wxAuiToolBar* toolBar 
-	       = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowById(ID_ThreadSearchBar, target))) {
+	       = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowById(ID_ThreadSearchBar, target))) 
+	  {
 
-	       if (toolBar->IsShown()) {
+	       if (toolBar->IsShown()) 
+	       {
 		    toolBar->GetNextSibling()->SetFocus();
 		    toolBar->Hide();
 		    boardNoteBook->Fit();
 		    m_mgr.Update();
-	       } else {
+	       } 
+	       else 
+	       {
 		    toolBar->Show();
 		    boardNoteBook->Fit();
 		    m_mgr.Update();
 	       }	  
 	  }
-     } else if (this->userLastAttachedNotebook == THREAD_NOTEBOOK) {
+     } 
+     else if (this->userLastAttachedNotebook == THREAD_NOTEBOOK) 
+     {
 	  // スレッド内容ウィンドウの処理
 	  ThreadContentBar* contentBar = 
 	       dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(threadNoteBook->GetSelection()));
 	  
 	  if ( wxPanel* searchBarPanel 
-	       = dynamic_cast<wxPanel*>(wxWindow::FindWindowById(ID_ThreadContentSearchBar, contentBar))) {
+	       = dynamic_cast<wxPanel*>(wxWindow::FindWindowById(ID_ThreadContentSearchBar, contentBar))) 
+	  {
 	       // スレッド内容バーの子ウィンドウを取り出して命令する
-	       if (searchBarPanel->IsShown()) {
+	       if (searchBarPanel->IsShown()) 
+	       {
 		    searchBarPanel->GetNextSibling()->SetFocus();
 		    searchBarPanel->Hide();
 		    threadNoteBook->Fit();
 		    m_mgr.Update();
-	       } else {
+	       } 
+	       else 
+	       {
 		    searchBarPanel->Show();
 		    threadNoteBook->Fit();
 		    m_mgr.Update();
 	       }	       
 	  }
-     } else if (this->userLastAttachedNotebook == BOARD_TREE_NOTEBOOK) {
-	  // スレッド一覧ウィンドウの処理
+     } 
+     else if (this->userLastAttachedNotebook == BOARD_TREE_NOTEBOOK) 
+     {
+	  // 板一覧ウィンドウの処理
 	  wxWindow* target = boardTreeNoteBook->GetPage(boardTreeNoteBook->GetSelection());
 
 	  if ( wxAuiToolBar* toolBar 
-	       = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowById(ID_BoardSearchBar, target))) {
-
-	       if (toolBar->IsShown()) {
+	       = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowById(ID_BoardSearchBar, target))) 
+	  {
+	       if (toolBar->IsShown()) 
+	       {
 		    toolBar->GetNextSibling()->SetFocus();
 		    toolBar->Hide();
 		    boardTreeNoteBook->Fit();
 		    m_mgr.Update();
-	       } else {
+	       } 
+	       else 
+	       {
 		    toolBar->Show();
 		    boardTreeNoteBook->Fit();
 		    m_mgr.Update();
@@ -4430,6 +4447,63 @@ void JaneClone::CtrlF(wxKeyEvent& event) {
 	  }
      }
 }
+
+/**
+ * ショートカットキー(Enter)のイベント
+ */
+void JaneClone::Enter(wxKeyEvent& event) 
+{
+     if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) 
+     {
+	  // スレッド一覧ウィンドウの処理
+	  wxWindow* target = boardNoteBook->GetPage(boardNoteBook->GetSelection());
+
+	  if ( wxAuiToolBar* toolBar 
+	       = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowById(ID_ThreadSearchBar, target))) 
+	  {
+	       if (toolBar->IsShown()) 
+	       {
+		    // 検索実行
+		    wxCommandEvent e(wxCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, ID_ThreadSearchBoxDoSearch));
+		    ThreadSearchBoxDoSearch(e);
+	       } 
+	  }
+     } 
+     else if (this->userLastAttachedNotebook == THREAD_NOTEBOOK) 
+     {
+	  // スレッド内容ウィンドウの処理
+	  ThreadContentBar* contentBar = 
+	       dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(threadNoteBook->GetSelection()));
+	  
+	  if ( wxPanel* searchBarPanel 
+	       = dynamic_cast<wxPanel*>(wxWindow::FindWindowById(ID_ThreadContentSearchBar, contentBar))) 
+	  {
+	       // スレッド内容バーの子ウィンドウを取り出して命令する
+	       if (searchBarPanel->IsShown()) 
+	       {
+		    // 検索実行
+		    // TODO: スレッド内容の検索イベント実装
+	       } 
+	  }
+     } 
+     else if (this->userLastAttachedNotebook == BOARD_TREE_NOTEBOOK) 
+     {
+	  // 板一覧ウィンドウの処理
+	  wxWindow* target = boardTreeNoteBook->GetPage(boardTreeNoteBook->GetSelection());
+
+	  if ( wxAuiToolBar* toolBar 
+	       = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowById(ID_BoardSearchBar, target))) 
+	  {
+	       if (toolBar->IsShown()) 
+	       {
+		    // 検索実行
+		    wxCommandEvent e(wxCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, ID_BoardSearchBoxDoSearch));
+		    BoardSearchBoxDoSearch(e);
+	       } 
+	  }
+     }
+}
+
 /**
  * マウスのカーソルが特定のウィンドウに入った場合の処理
  */
