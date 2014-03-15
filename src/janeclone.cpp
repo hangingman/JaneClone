@@ -3678,7 +3678,7 @@ wxPanel* JaneClone::CreateAuiToolBar(wxWindow* parent, const wxString& boardName
      vbox->Add(vbListCtrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 10);
 
      // カラムの幅を最大化
-     wxFont font = GetCurrentFont();
+     const wxFont font = GetCurrentFont();
      int pointSize = font.GetPointSize();
      // 2chのスレタイの文字数制限は全角24文字
      vbListCtrl->SetColumnWidth(VirtualBoardListCtrl::Columns::COL_CHK      , 20);

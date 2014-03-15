@@ -100,9 +100,16 @@ public:
      static void DecommpressFile(wxString& inputPath, wxString& outputPath);
      /**
       * ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
-      * 引数１は読み込み元のPATH、引数２は出力先ファイルのPATH いずれもファイル名までを記述する
+      * @param wxString& inputPath  読み込み元のパス
+      * @param wxString& outputPath 出力先ファイルのパス
       */
      static void ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath);
+     /**
+      * ダウンロードしたファイルの文字コードをEUC-JPからUTF-8に変換する処理
+      * @param wxString& inputPath  読み込み元のパス
+      * @param wxString& outputPath 出力先ファイルのパス
+      */
+     static void ConvertEUCJPToUTF8(wxString& inputPath, wxString& outputPath);
      /**
       * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
       */

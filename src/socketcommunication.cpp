@@ -291,7 +291,15 @@ wxString SocketCommunication::DownloadThreadList(wxString& boardName, wxString& 
      gzipPath.Replace(wxT(".dat"), wxT(".gzip"));
      // 一時保存用のパスを設定する
      wxString tmpPath = outputFilePath;
-     tmpPath.Replace(wxT(".dat"), wxT(".sjis"));
+     if (isShitaraba)
+     {
+	  tmpPath.Replace(wxT(".dat"), wxT(".eucjp"));
+     }
+     else
+     {
+	  tmpPath.Replace(wxT(".dat"), wxT(".sjis"));
+     }
+     
      // ヘッダーのパスを設定する
      wxString headerPath = outputFilePath;
      headerPath.Replace(wxT(".dat"), wxT(".header"));
@@ -315,8 +323,20 @@ wxString SocketCommunication::DownloadThreadList(wxString& boardName, wxString& 
      if (wxFile::Exists(gzipPath)) 
      {
 	  JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
-	  JaneCloneUtil::ConvertSJISToUTF8(tmpPath, outputFilePath);
      }
+
+     if (wxFile::Exists(tmpPath))
+     {
+	  if (isShitaraba)
+	  {
+	       JaneCloneUtil::ConvertEUCJPToUTF8(tmpPath, outputFilePath);
+	  }
+	  else
+	  {
+	       JaneCloneUtil::ConvertSJISToUTF8(tmpPath, outputFilePath);
+	  }
+     }
+
      // 更新が終わったらgzipファイルを消しておく
      RemoveTmpFile(gzipPath);
 

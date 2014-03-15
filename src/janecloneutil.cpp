@@ -45,15 +45,26 @@ void JaneCloneUtil::DecommpressFile(wxString & inputPath,
 
 /**
  * ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
- * 引数１は読み込み元のPATH、引数２は出力先ファイルのPATH いずれもファイル名までを記述する
+ * @param wxString& inputPath  読み込み元のパス
+ * @param wxString& outputPath 出力先ファイルのパス
  */
-void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath,
-				      wxString & outputPath) {
-
-     // LibNKFを呼び出してCP932からUTF-8への変換を行う
-     wxNKF* nkf = new wxNKF();
+void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath, wxString & outputPath) 
+{
+     // libwxnkfを呼び出してCP932からUTF-8への変換を行う
+     std::unique_ptr<wxNKF> nkf(new wxNKF());
      nkf->Convert(inputPath, outputPath, wxT("--ic=CP932 --oc=UTF-8"));
-     delete nkf;
+}
+
+/**
+ * ダウンロードしたファイルの文字コードをEUC-JPからUTF-8に変換する処理
+ * @param wxString& inputPath  読み込み元のパス
+ * @param wxString& outputPath 出力先ファイルのパス
+ */
+void JaneCloneUtil::ConvertEUCJPToUTF8(wxString& inputPath, wxString& outputPath)
+{
+     // libwxnkfを呼び出してEUC-JPからUTF-8への変換を行う
+     std::unique_ptr<wxNKF> nkf(new wxNKF());
+     nkf->Convert(inputPath, outputPath, wxT("--ic=EUC-JP --oc=UTF-8"));
 }
 
 /**
