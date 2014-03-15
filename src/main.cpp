@@ -152,8 +152,8 @@ int wxMain::FilterEvent(wxEvent& event) {
 	       switch(e.GetKeyCode()) 
 	       {
 	       case WXK_RETURN:
-		    wxJaneClone->Enter(e);
-		    return true;
+		    ret = wxJaneClone->Enter(e);
+		    return ret;
 		    break;
 	       default:
 		    break;

@@ -94,6 +94,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    // ツールバーからの命令
    EVT_MENU(ID_ShowBoardListTree, JaneClone::ShowBoardListTree)
    EVT_MENU(ID_SwitchSeparateXY, JaneClone::SwitchSeparateXY)
+   EVT_MENU(ID_SwitchTwoThreePane, JaneClone::SwitchTwoThreePane)
    EVT_MENU(ID_CallSettingWindow, JaneClone::CallSettingWindow)
 
    // 検索バー系の命令
@@ -4127,12 +4128,13 @@ void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
 /**
  * 縦⇔横分割切り替え
  */
-void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
-
+void JaneClone::SwitchSeparateXY(wxCommandEvent& event) 
+{
      wxAuiPaneInfo boardListThreadListInfo    = m_mgr.GetPane(boardNoteBook);
      wxAuiPaneInfo threadTabThreadContentInfo = m_mgr.GetPane(threadNoteBook);
 
-     if (separateIsX) {
+     if (separateIsX) 
+     {
 	  // 現在横分割状態なので縦分割に変更
 	  separateIsX = false;
 	  // ペインの状態を変更する
@@ -4142,7 +4144,9 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
 	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo, wxAUI_INSERT_DOCK);
 	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo, wxAUI_INSERT_DOCK);
 
-     } else {
+     } 
+     else 
+     {
 	  // 現在縦分割状態なので横分割に変更
 	  separateIsX = true;
 	  wxString message = wxT("現在縦分割状態なので横分割に変更\n");
@@ -4172,9 +4176,11 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
 
 	  // 左側・板一覧のツリーコントロールを設定する
 	  wxAuiPaneInfo boardTree;
-	  if (enableBoardListTree) {
+	  if (enableBoardListTree) 
+	  {
 	       // 板一覧ツリー
-	       if (!boardTreeNoteBook) {
+	       if (!boardTreeNoteBook) 
+	       {
 		    // ノートブックのサイズ調整
 		    wxSize client_size = GetClientSize();
 		    // 板一覧ツリーを載せるノートブック
@@ -4239,12 +4245,31 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event) {
      }
 
      // 画像の切り替え
-     separateIsX ? m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY))
-	  : m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
+     if (separateIsX)
+     {
+	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY));
+     }
+     else
+     {
+	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
+     }
+     
+     // 全体の再描画
+     m_mgr.Update();
+}
+
+/**
+ * ２⇔３ペイン切り替え
+ */
+void JaneClone::SwitchTwoThreePane(wxCommandEvent& event)
+{
+
+     boardNoteBook->Hide();
 
      // 全体の再描画
      m_mgr.Update();
 }
+
 /**
  * ビューア設定画面を呼び出す
  */
@@ -4450,8 +4475,10 @@ void JaneClone::CtrlF(wxKeyEvent& event)
 
 /**
  * ショートカットキー(Enter)のイベント
+ * @param  wxKeyEvent& event
+ * @return 検索実行した:true, 検索実行しなかった:false
  */
-void JaneClone::Enter(wxKeyEvent& event) 
+bool JaneClone::Enter(wxKeyEvent& event) 
 {
      if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) 
      {
@@ -4466,6 +4493,7 @@ void JaneClone::Enter(wxKeyEvent& event)
 		    // 検索実行
 		    wxCommandEvent e(wxCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, ID_ThreadSearchBoxDoSearch));
 		    ThreadSearchBoxDoSearch(e);
+		    return true;
 	       } 
 	  }
      } 
@@ -4499,9 +4527,12 @@ void JaneClone::Enter(wxKeyEvent& event)
 		    // 検索実行
 		    wxCommandEvent e(wxCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, ID_BoardSearchBoxDoSearch));
 		    BoardSearchBoxDoSearch(e);
+		    return true;
 	       } 
 	  }
      }
+
+     return false;
 }
 
 /**

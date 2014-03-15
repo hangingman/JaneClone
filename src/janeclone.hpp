@@ -373,6 +373,8 @@ private:
      void ShowBoardListTree(wxCommandEvent& event);
      // 縦⇔横分割切り替え
      void SwitchSeparateXY(wxCommandEvent& event);
+     // ２⇔３ペイン切り替え
+     void SwitchTwoThreePane(wxCommandEvent& event);
      // ビューア設定画面を呼び出す
      void CallSettingWindow(wxCommandEvent& event);
      // 2ch板一覧ツリーコントロールでクリックした時のイベント
@@ -536,7 +538,7 @@ public:
      // ショートカットキー(Ctrl+F)のイベント
      void CtrlF(wxKeyEvent& event);
      // ショートカットキー(Enter)のイベント
-     void Enter(wxKeyEvent& event);
+     bool Enter(wxKeyEvent& event);
 
      DECLARE_EVENT_TABLE()
 };
