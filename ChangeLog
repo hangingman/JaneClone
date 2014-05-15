@@ -1,3 +1,178 @@
+commit 02725bf
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-03-16
+
+    ２ペインと３ペインの表示切替を実装
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 39bd0a9
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2014-03-15
+
+    Update README.md
+
+README.md
+
+commit 92e317c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-03-15
+
+    READMEファイルの体裁を変える
+
+README
+README.md
+src/janeclone.cpp
+src/janeclone.hpp
+src/main.cpp
+
+commit a837d1c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-03-15
+
+    フォーカスがある状態でEnterキー押下すると板一覧/スレ一覧検索を実施できるようにした
+
+bootstrap
+src/janeclone.cpp
+src/janeclone.hpp
+src/main.cpp
+
+commit 6d4cca4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-03-15
+
+    したらば掲示板対応：CSVファイル取得
+
+src/janeclone.cpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/socketcommunication.cpp
+
+commit e77e968
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-03-07
+
+    したらば掲示板対応：スレ一覧更新
+
+src/janeclone.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit c9ce431
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-03-01
+
+    Macにおいてもしたらば掲示板の板名取得機能が使えるように修正
+
+Makefile.am
+src/Makefile.am
+
+commit 26ec36b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-03-01
+
+    AutotoolsのC++11対応
+
+.gitignore
+aclocal.m4
+configure.ac
+curlpp/include/curlpp/config.h
+m4/ax_cxx_compile_stdcxx_11.m4
+
+commit 633d05d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-03-01
+
+    Autotoolsの自動生成ファイルをリポジトリから削除
+
+.gitmodules
+curlpp/depcomp
+curlpp/include/curlpp/config.h~
+curlpp/install-sh
+curlpp/ltmain.sh
+curlpp/missing
+libwxnkf
+src/Makefile.am
+
+commit 0bf651a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-03-01
+
+    Autotoolsの自動生成ファイルをリポジトリから削除、libwxnkfの移動
+
+config.guess
+config.h.in
+config.sub
+configure.ac
+depcomp
+install-sh
+libwxnkf/Makefile.am
+libwxnkf/flagset.cpp
+libwxnkf/flagset.h
+libwxnkf/utf16util.cpp
+libwxnkf/utf16util.h
+libwxnkf/utf8table.cpp
+libwxnkf/utf8table.h
+libwxnkf/util.cpp
+libwxnkf/util.h
+libwxnkf/wx/wxnkf.h
+libwxnkf/wxnkf.cpp
+libwxnkf/wxnkfbaseconfig.h
+libwxnkf/wxnkfencoding.cpp
+libwxnkf/wxnkfencoding.h
+ltmain.sh
+missing
+
+commit 897ca73
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-30
+
+    外部板追加機能を追加
+
+ChangeLog
+configure
+src/enums.hpp
+src/extractboardlist.cpp
+src/extractboardlist.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/otherpanels.cpp
+src/rc/COPYING
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+
+commit a64e67e
+Author: hiroyuki-nagata-bsd <newserver002@gmail.com>
+Date:   2013-12-29
+
+    FreeBSD向けビルドのためconfigureを修正
+
+INSTALL
+configure.ac
+curlpp/src/curlpp/Makefile.am
+curlpp/src/curlpp/internal/Makefile.am
+curlpp/src/utilspp/Makefile.am
+
+commit ffef216
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-29
+
+    MinGW向けのビルドスクリプトを修正
+
+Makefile.am
+src/janeclone.cpp
+
+commit 7f6d53f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2013-12-29
+
+    ビルドスクリプトを改良
+
+Makefile.am
+configure
+configure.ac
+
 commit e70afb0
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2013-12-29

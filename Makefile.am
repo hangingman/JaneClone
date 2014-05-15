@@ -33,14 +33,16 @@ if USE_LINUX
 	fi
 endif
 
-# インストール時のファイルコピー
+# インストール時のファイルコピー(パッケージビルド時は行わない)
 install-data-local:
-	cp -r $(top_builddir)/src/rc $(janecloneexecdir)
-	@if test "x`uname -s`" = "xFreeBSD"; then                   \
-	   $(do_subst_menu) $(top_builddir)/misc/janeclone.desktop > /usr/local/share/applications/janeclone.desktop; \
-	else                                                                                          \
-	   $(do_subst_menu) $(top_builddir)/misc/janeclone.desktop > /usr/share/applications/janeclone.desktop;       \
-	fi;
+	@if test ! -d debian; then										      \
+	   cp -r $(top_builddir)/src/rc $(datarootdir)/@PACKAGE@;						      \
+	   if test "x`uname -s`" = "xFreeBSD"; then                   						      \
+	      $(do_subst_menu) $(top_builddir)/misc/janeclone.desktop > /usr/local/share/applications/janeclone.desktop; \
+	   else                                                                                          		 \
+	      $(do_subst_menu) $(top_builddir)/misc/janeclone.desktop > /usr/share/applications/janeclone.desktop;       \
+	   fi;														 \
+	fi
 
 # ChangeLogと連動させる
 dist-hook: ChangeLog
