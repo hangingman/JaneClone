@@ -50,9 +50,13 @@ void JaneCloneUtil::DecommpressFile(wxString & inputPath,
  */
 void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath, wxString & outputPath) 
 {
-     // libwxnkfを呼び出してCP932からUTF-8への変換を行う
-     std::unique_ptr<wxNKF> nkf(new wxNKF());
-     nkf->Convert(inputPath, outputPath, wxT("--ic=CP932 --oc=UTF-8"));
+     std::ifstream ifs(inputPath.mb_str());
+     std::ofstream ofs(outputPath.mb_str());
+     ifs >> std::noskipws; // 改行をスキップしない
+
+     std::istream_iterator<char> ifsiter(ifs), eof;
+     std::string buffer(ifsiter, eof);
+     ofs << babel::sjis_to_utf8(buffer);
 }
 
 /**
@@ -62,9 +66,13 @@ void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath, wxString & outputPat
  */
 void JaneCloneUtil::ConvertEUCJPToUTF8(wxString& inputPath, wxString& outputPath)
 {
-     // libwxnkfを呼び出してEUC-JPからUTF-8への変換を行う
-     std::unique_ptr<wxNKF> nkf(new wxNKF());
-     nkf->Convert(inputPath, outputPath, wxT("--ic=EUC-JP --oc=UTF-8"));
+     std::ifstream ifs(inputPath.mb_str());
+     std::ofstream ofs(outputPath.mb_str());
+     ifs >> std::noskipws; // 改行をスキップしない
+
+     std::istream_iterator<char> ifsiter(ifs), eof;
+     std::string buffer(ifsiter, eof);
+     ofs << babel::euc_to_utf8(buffer);
 }
 
 /**

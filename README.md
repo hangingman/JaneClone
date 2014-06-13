@@ -1,5 +1,5 @@
   
-###JaneClone  ver.1.1.3  
+###JaneClone  ver.1.1.4  
 
 Work with  
 * Windows XP, Vista, 7  

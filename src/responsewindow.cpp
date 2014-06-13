@@ -361,11 +361,10 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
 
      // 書き込み内容を構造体に設定する
      PostContent* post = new PostContent;
-     // NKFの準備
-     const wxString option = wxT("--ic=UTF-8 --oc=CP932");
-     wxNKF* nkf = new wxNKF();
-     const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
-     const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
+     // babel
+     const std::string stdName = babel::utf8_to_sjis(std::string(nameCombo->GetValue().mb_str()));
+     const std::string stdMail = babel::utf8_to_sjis(std::string(mailCombo->GetValue().mb_str()));
+
      // 改行コードを含んでいる場合は分けてエンコード
      if (kakikoTextCtrl->GetValue().Contains(wxT("\n"))) {
 
@@ -378,7 +377,7 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
 		    urlEnced    += "%0D%0A";
 		    continue;
 	       }
-	       stdKakikomi  = nkf->WxToMultiByte(tmp, option);
+	       stdKakikomi  = babel::utf8_to_sjis(std::string(tmp.mb_str()));
 	       urlEnced    += JaneCloneUtil::UrlEncode(stdKakikomi);
 	       urlEnced    += "%0D%0A";
 	  }
@@ -386,10 +385,9 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
 	  post->kakikomi = wxString(urlEnced.c_str(), wxConvUTF8);
 
      } else {
-	  const std::string stdKakikomi = nkf->WxToMultiByte(kakikoTextCtrl->GetValue(), option);
+	  const std::string stdKakikomi = babel::utf8_to_sjis(std::string(kakikoTextCtrl->GetValue().mb_str()));
 	  post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
      }
-     delete nkf;
 
      // 投稿用の構造体にURLエンコードされた文字列を格納
      post->name = wxString(JaneCloneUtil::UrlEncode(stdName).c_str(), wxConvUTF8);
@@ -441,11 +439,9 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
 
      // 投稿内容作成
      m_postContent = new PostContent;
-     // NKFの準備
-     const wxString option = wxT("--ic=UTF-8 --oc=CP932");
-     wxNKF* nkf = new wxNKF();
-     const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
-     const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
+     // babel
+     const std::string stdName = babel::utf8_to_sjis(std::string(nameCombo->GetValue().mb_str()));
+     const std::string stdMail = babel::utf8_to_sjis(std::string(mailCombo->GetValue().mb_str()));
      // 改行コードを含んでいる場合は分けてエンコード
      if (kakikoTextCtrl->GetValue().Contains(wxT("\n"))) {
 
@@ -458,7 +454,7 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
 		    urlEnced    += "%0D%0A";
 		    continue;
 	       }
-	       stdKakikomi  = nkf->WxToMultiByte(tmp, option);
+	       stdKakikomi  = babel::utf8_to_sjis(std::string(tmp.mb_str()));
 	       urlEnced    += JaneCloneUtil::UrlEncode(stdKakikomi);
 	       urlEnced    += "%0D%0A";
 	  }
@@ -466,10 +462,9 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
 	  m_postContent->kakikomi = wxString(urlEnced.c_str(), wxConvUTF8);
 
      } else {
-	  const std::string stdKakikomi = nkf->WxToMultiByte(kakikoTextCtrl->GetValue(), option);
+	  const std::string stdKakikomi = babel::utf8_to_sjis(std::string(kakikoTextCtrl->GetValue().mb_str()));
 	  m_postContent->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
      }
-     delete nkf;
 
      // 投稿用の構造体にURLエンコードされた文字列を格納
      m_postContent->name = wxString(JaneCloneUtil::UrlEncode(stdName).c_str(), wxConvUTF8);
@@ -522,11 +517,9 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
 
      // 書き込み内容を構造体に設定する
      PostContent* post = new PostContent;
-     // NKFの準備
-     const wxString option = wxT("--ic=UTF-8 --oc=CP932");
-     wxNKF* nkf = new wxNKF();
-     const std::string stdName = nkf->WxToMultiByte(nameCombo->GetValue(), option);
-     const std::string stdMail = nkf->WxToMultiByte(mailCombo->GetValue(), option);
+     // babel
+     const std::string stdName = babel::utf8_to_sjis(std::string(nameCombo->GetValue().mb_str()));
+     const std::string stdMail = babel::utf8_to_sjis(std::string(mailCombo->GetValue().mb_str()));
      // 改行コードを含んでいる場合は分けてエンコード
      if (kakikoTextCtrl->GetValue().Contains(wxT("\n"))) {
 
@@ -539,7 +532,7 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
 		    urlEnced    += "%0D%0A";
 		    continue;
 	       }
-	       stdKakikomi  = nkf->WxToMultiByte(tmp, option);
+	       stdKakikomi  = babel::utf8_to_sjis(std::string(tmp.mb_str()));
 	       urlEnced    += JaneCloneUtil::UrlEncode(stdKakikomi);
 	       urlEnced    += "%0D%0A";
 	  }
@@ -547,11 +540,9 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
 	  post->kakikomi = wxString(urlEnced.c_str(), wxConvUTF8);
 
      } else {
-
-	  const std::string stdKakikomi = nkf->WxToMultiByte(kakikoTextCtrl->GetValue(), option);
+	  const std::string stdKakikomi = babel::utf8_to_sjis(std::string(kakikoTextCtrl->GetValue().mb_str()));
 	  post->kakikomi = wxString(JaneCloneUtil::UrlEncode(stdKakikomi).c_str(), wxConvUTF8);
      }
-     delete nkf;
 
      // 投稿用の構造体にURLエンコードされた文字列を格納
      post->name = wxString(JaneCloneUtil::UrlEncode(stdName).c_str(), wxConvUTF8);

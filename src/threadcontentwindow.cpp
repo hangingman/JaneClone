@@ -356,11 +356,9 @@ void ThreadContentWindow::SearchSelectWordByAmazon(wxCommandEvent& event) {
 
      // AmazonはShift_JISによるURLエンコードしか受け付けないようだ
      wxString url = wxT("http://www.amazon.co.jp/gp/search/?__mk_ja_JP=%83J%83%5E%83J%83i&field-keywords=");
-     wxNKF* nkf = new wxNKF();
-     const std::string buffer = nkf->WxToMultiByte(m_selectedText, wxT("--ic=UTF-8 --oc=CP932"));
+     const std::string buffer = babel::utf8_to_sjis(std::string(m_selectedText.mb_str()));
      const wxString urlEncode(JaneCloneUtil::UrlEncode(buffer).c_str(), wxConvUTF8);
      url += urlEncode;
-     delete nkf;
 	
      // 文字列をutf-8からShift_JISに変換しておく必要があるようだ
      wxLaunchDefaultBrowser(url);

@@ -774,6 +774,8 @@ void JaneClone::SetProperties() {
 	  std::unique_ptr<SQLiteAccessor> sqliteAccessor(new SQLiteAccessor());
 	  // Curlの初期化を行う
 	  cURLpp::initialize();
+	  // babelの初期化を行う
+	  babel::init_babel();
 
 	  // ソケット通信を行う
 	  std::unique_ptr<SocketCommunication> sock(new SocketCommunication());

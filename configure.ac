@@ -2,10 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.67])
-AC_INIT([JaneClone], [1.1.3], [newserver002@gmail.com])
+AC_INIT([JaneClone], [1.1.4], [newserver002@gmail.com])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wno-portability])
-AC_CONFIG_SRCDIR([libwxnkf/src/flagset.h])
+AC_CONFIG_SRCDIR([src/enums.hpp])
 AC_CONFIG_HEADERS([config.h:curlpp/include/curlpp/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_SYS_LARGEFILE
@@ -287,16 +287,8 @@ AC_TYPE_SIZE_T
 AC_FUNC_MALLOC
 AC_FUNC_MMAP
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([memset munmap nl_langinfo strcasecmp strchr strcspn strpbrk strrchr strspn strstr fdatasync usleep fullfsync localtime_r gmtime_r])
+AC_CHECK_FUNCS([memset munmap fdatasync usleep fullfsync localtime_r gmtime_r])
 AC_FUNC_STRERROR_R
-
-# Checks for subdirectory
-if test ! -d libwxnkf; then
-   AC_MSG_RESULT([libwxnkf is not found. exec git submodule...])
-   git submodule init;
-   git submodule update;
-fi
-AC_CONFIG_SUBDIRS(libwxnkf)
 
 # Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile

@@ -1282,11 +1282,9 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      }
 
      // Shift_JIS から UTF-8への変換処理
-     std::unique_ptr<wxNKF> nkf(new wxNKF());
      wxString tmpPath = headerPath;
      tmpPath.Replace(wxT(".header"), wxT(".tmp"));
-     nkf->Convert(headerPath, tmpPath, wxT("--ic=CP932 --oc=UTF-8"));
-
+     JaneCloneUtil::ConvertSJISToUTF8(headerPath, tmpPath);
      // ファイルのリネーム
      wxRenameFile(tmpPath, headerPath);
      // COOKIEのデータをコンフィグファイルに書き出す
@@ -1453,10 +1451,9 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      }
 
      // Shift_JIS から UTF-8への変換処理
-     std::unique_ptr<wxNKF> nkf(new wxNKF());
      wxString tmpPath = headerPath;
      tmpPath.Replace(wxT(".header"), wxT(".tmp"));
-     nkf->Convert(headerPath, tmpPath, wxT("--ic=CP932 --oc=UTF-8"));
+     JaneCloneUtil::ConvertSJISToUTF8(headerPath, tmpPath);
 
      // ファイルのリネーム
      wxRenameFile(tmpPath, headerPath);
@@ -1626,10 +1623,9 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      }
 
      // Shift_JIS から UTF-8への変換処理
-     std::unique_ptr<wxNKF> nkf(new wxNKF());
      wxString tmpPath = headerPath;
      tmpPath.Replace(wxT(".header"), wxT(".tmp"));
-     nkf->Convert(headerPath, tmpPath, wxT("--ic=CP932 --oc=UTF-8"));
+     JaneCloneUtil::ConvertSJISToUTF8(headerPath, tmpPath);
 
      // ファイルのリネーム
      wxRenameFile(tmpPath, headerPath);
@@ -2268,9 +2264,7 @@ bool SocketCommunication::GetShitarabaBoardInfo(const wxString& path, wxString& 
       */
      wxString outputPath = dataFilePath;
      outputPath.Replace(wxT(".txt"), wxT(".out"));
-
-     std::unique_ptr<wxNKF> nkf(new wxNKF());
-     nkf->Convert(dataFilePath, outputPath, wxT("--ic=EUC-JP --oc=UTF-8"));
+     JaneCloneUtil::ConvertEUCJPToUTF8(dataFilePath, outputPath);
      
      wxTextFile shitarabaDataFile;
      shitarabaDataFile.Open(outputPath, wxConvUTF8);

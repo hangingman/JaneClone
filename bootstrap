@@ -1,11 +1,4 @@
 #!/bin/sh
 
-# submodule
-if test ! -d libwxnkf; then
-   echo "libwxnkf is not found. exec git submodule..."
-   git submodule init;
-   git submodule update;
-fi
-
 # exec autoreconf
 autoreconf -vi -I `pwd`/m4

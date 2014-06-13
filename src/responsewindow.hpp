@@ -22,6 +22,7 @@
 #ifndef RESPONSEWINDOW_HPP_
 #define RESPONSEWINDOW_HPP_
 
+#include <babel.h>
 #include <wx/wx.h>
 #include <wx/notebook.h>
 #include <wx/html/htmlwin.h>
@@ -33,7 +34,6 @@
 #include "socketcommunication.hpp"
 #include "datatype.hpp"
 #include "janecloneutil.hpp"
-#include "wx/wxnkf.h"
 
 /**
  * レス書き込み用の子ウィンドウ

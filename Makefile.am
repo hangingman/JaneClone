@@ -1,5 +1,5 @@
 # 依存関係にあるソース群
-SUBDIRS = libwxnkf libwxuuid sqlite3 wxsqlite3 curlpp src test
+SUBDIRS = libwxuuid sqlite3 wxsqlite3 curlpp src test
 
 # パッケージ作成用サブディレクトリも設定する
 DIST_SUBDIRS = $(SUBDIRS)

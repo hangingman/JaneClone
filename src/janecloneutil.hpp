@@ -38,7 +38,7 @@
 #include <wx/fs_mem.h>
 #include <wx/treectrl.h>
 #include <wx/fileconf.h>
-#include "wx/wxnkf.h"
+#include <babel.h>
 #include "wxUUID.h"
 #include "datatype.hpp"
 #include "enums.hpp"
@@ -110,6 +110,7 @@ public:
       * @param wxString& outputPath 出力先ファイルのパス
       */
      static void ConvertEUCJPToUTF8(wxString& inputPath, wxString& outputPath);
+	
      /**
       * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
       */
@@ -221,11 +222,13 @@ public:
      /**
       * プロパティファイルの指定されたKEYを指定されたVALUEで書き換える
       */
-     template <class T> static void SetJaneCloneProperties(const wxString& key, const T& value);
+     template <class T> 
+     static void SetJaneCloneProperties(const wxString& key, const T& value);
      /**
       * プロパティファイルの指定されたKEYを読み取る
       */
-     template <class T> static void GetJaneCloneProperties(const wxString& key, T* value);
+     template <class T> 
+     static void GetJaneCloneProperties(const wxString& key, T* value);
      /**
       * プロパティファイルの指定されたKEYがあるかどうか確認する
       */
