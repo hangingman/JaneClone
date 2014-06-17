@@ -971,7 +971,7 @@ void SQLiteAccessor::SetImageFileName(std::vector<ImageFileInfo>& imageFileInfo)
 
 	  stmt.BindTimestamp(1, now);
 
-#if !defined(__clang__) && !( defined(__MINGW32__) || defined(__MINGW64__) )
+#if !defined(__clang__) && ( __GNUC__ > 4 && __GNUC_MINOR__ < 8 )
 	  stmt.Bind(2, *it->fileName);
 	  stmt.Bind(3, *it->uuidFileName);
 #else

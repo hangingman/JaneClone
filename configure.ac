@@ -159,7 +159,7 @@ AC_SUBST(DYNAMIC_EXTENSION_FLAGS)
 #-----------------------------------------------------------------------
 
 # Checks for zlib
-AC_CHECK_LIB(z,gzopen,has_zlib=1,has_zlib=0)
+AC_CHECK_LIB(z,gzclose,LIBS="-lz $LIBS" has_zlib=1,has_zlib=0)
 if test $has_zlib = 0; then
   AC_MSG_ERROR("ERROR: cannot find zlib.")
 fi

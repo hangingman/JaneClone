@@ -1,3 +1,53 @@
+commit b4e9346
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-06-14
+
+    文字コード変換ライブラリをbabelに変更
+
+.gitmodules
+Makefile.am
+README.md
+babel/apple.csv
+babel/babel.cpp
+babel/babel.h
+babel/c932-uni.dat
+babel/cp932.csv
+babel/euc-scr.dat
+babel/euc-sjis.dat
+babel/euc-uni.csv
+babel/euc2-uni.dat
+babel/euc3-uni.dat
+babel/scoremap.csv
+babel/sjis-euc.csv
+babel/sjis-euc.dat
+babel/sjis-scr.dat
+babel/uni-c932.dat
+babel/uni-euc.dat
+babel/uni-scr.dat
+babel/uni-utc.dat
+babel/utc-uni.dat
+babel/utc.csv
+bootstrap
+configure.ac
+libwxnkf
+src/Makefile.am
+src/janeclone.cpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/socketcommunication.cpp
+src/threadcontentwindow.cpp
+
+commit f7ff236
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-05-16
+
+    パッケージビルドが通らなくなっていたので修正
+
+ChangeLog
+Makefile.am
+
 commit 02725bf
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2014-03-16
