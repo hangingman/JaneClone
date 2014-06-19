@@ -41,6 +41,8 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    enumstring.hpp              \
 		    ../babel/babel.cpp		\
 		    ../babel/babel.h		\
+		    $(wildcard ../babel/*.dat)  \
+		    $(wildcard ../babel/*.csv)  \
 		    $(wildcard rc/*)
 
 # common build rule
