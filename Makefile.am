@@ -279,7 +279,13 @@ package-deb: remove_distdir dist
 	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control
 	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules
 	rm -f $(distdir)/debian/menu.ex
-	(cd $(distdir) && debuild -uc -us)
+	@if gpg --version >/dev/null 2>&1; then                             \
+	   echo "sign by GPG key...";                                       \
+	   (cd $(distdir) && debuild);                                      \
+	else                                                                \
+	   echo "not use GPG key...if you want to sign, make by terminal."; \
+	   (cd $(distdir) && debuild -uc -us);                              \
+	fi
 
 remove_distdir :
 # パッケージを削除
