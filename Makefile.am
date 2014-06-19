@@ -260,38 +260,25 @@ package-rpm: package-clean
 #
 # Debian系ディストリビューション向けのインストーラ作成
 #
+if USE_LINUX
+   # debian version
+   DEBIAN_VERSION=`cat /etc/debian_version`
+endif
+
+# target for debian
 package-deb: remove_distdir dist
-# 作業用ディレクトリ作成
 	(tar xvf $(distdir).tar.gz && cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
-# controlファイルに詳細を追記
-	echo "Source: janeclone" > $(distdir)/debian/control
-	echo "Section: net" >> $(distdir)/debian/control
-	echo "Priority: extra" >> $(distdir)/debian/control
-	echo "Maintainer: hiroyuki nagata <$(PACKAGE_BUGREPORT)>" >> $(distdir)/debian/control
-	echo "Build-Depends: debhelper (>= 8.0.0), autotools-dev, libatk1.0-0 (>= 1.29.3), libc6 (>= 2.7), libcairo2 (>= 1.2.4), libdbus-1-3 (>= 1.1.1), libfontconfig1 (>= 2.8.0), libfreetype6 (>= 2.2.1), libgcc1 (>= 1:4.1.1), libglib2.0-0 (>= 2.12.0), libgtk2.0-0 (>= 2.8.0), libpango1.0-0 (>= 1.14.0), libstdc++6 (>= 4.1.1),libwxbase2.8-0 (>= 2.8.10.1), libwxgtk2.8-0 (>= 2.8.10.1), libxml2-dev (>= 2.8.0), fonts-mona, libcurl4-openssl-dev" >> $(distdir)/debian/control
-	echo "Standards-Version: $(VERSION)" >> $(distdir)/debian/control
-	echo "Homepage: https://github.com/Hiroyuki-Nagata/JaneClone" >> $(distdir)/debian/control
-	echo "" >> $(distdir)/debian/control
-	echo "Package: janeclone" >> $(distdir)/debian/control
-	echo "Architecture: any"  >> $(distdir)/debian/control
-	echo "Depends: ${shlibs:Depends}, ${misc:Depends}" >> $(distdir)/debian/control
-	echo "Description: Cross Platform 2ch browser" >> $(distdir)/debian/control
-	echo " JaneClone is a plain browser dedicated to read 2ch thread. Using a library called wxWidgets." >> $(distdir)/debian/control
-	echo " It will work on Windows, Linux, Mac. It will keep the platform-specific user interface." >> $(distdir)/debian/control
-# rulesファイルに設定を追加
-	echo "#!/usr/bin/make -f" > $(distdir)/debian/rules
-	echo "" >> $(distdir)/debian/rules
-	echo "include /usr/share/cdbs/1/rules/debhelper.mk" >> $(distdir)/debian/rules
-	echo "include /usr/share/cdbs/1/class/autotools.mk" >> $(distdir)/debian/rules
-	echo "" >> $(distdir)/debian/rules
-	echo "" >> $(distdir)/debian/rules
-	echo "" >> $(distdir)/debian/rules
-	echo "" >> $(distdir)/debian/rules
-	echo "" >> $(distdir)/debian/rules
-	echo "" >> $(distdir)/debian/rules
-# 必要なファイルをリネームする
+	@if test "$(DEBIAN_VERSION)" = "*wheezy*"; then                        \
+	   echo "use Debian wheezy control file...";                           \
+	   cp $(top_builddir)/debian/control.wheezy $(distdir)/debian/control; \
+	else                                                                   \
+	   echo "use Debian jessie control file...";                           \
+	   cp $(top_builddir)/debian/control.jessie $(distdir)/debian/control; \
+	fi
+	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(distdir)/debian/control
+	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control
+	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules
 	rm -f $(distdir)/debian/menu.ex
-# パッケージを作る
 	(cd $(distdir) && debuild -uc -us)
 
 remove_distdir :
