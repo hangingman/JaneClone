@@ -2358,7 +2358,8 @@ wxString SocketCommunication::GetOutputFilePath(bool isShitaraba, wxString& boar
 {
 
 #ifdef __WXMSW__
-     const wxString boardPath = boardNameAscii.Replace(wxT("/"), wxT("\\"));
+     boardNameAscii.Replace(wxT("/"), wxT("\\"));
+     const wxString boardPath = boardNameAscii;
 #else
      const wxString boardPath = boardNameAscii;
 #endif

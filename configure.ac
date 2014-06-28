@@ -25,7 +25,7 @@ case "$host" in
                 AC_DEFINE(PLATFORM_WIN32, 1, [Platform is Win32])
                 PLATFORM_STRING="Win32"
 		AC_SUBST(PLATFORM_STRING)
-		need_no_undefined=no
+		need_no_undefined=yes
                 ;;
         *-*-linux*)
                 AC_DEFINE(PLATFORM_LINUX, 1, [Platform is Linux])
@@ -52,6 +52,10 @@ esac
 
 # Checks for no undefined
 AM_CONDITIONAL(NO_UNDEFINED, test x$need_no_undefined = xyes)
+if test x$need_no_undefined = xyes; then
+   AC_MSG_RESULT([define -no-undefined ...])
+fi
+
 AM_CONDITIONAL(USE_MAC_OSX, false)
 AM_CONDITIONAL(USE_LINUX, false)
 
