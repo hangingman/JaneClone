@@ -168,6 +168,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_UPDATE_UI(ID_ThreadContentBarUpdate, JaneClone::UpdateJaneCloneUI)
    EVT_UPDATE_UI(ID_SettingPanelUpdate, JaneClone::UpdateJaneCloneUI)
    EVT_UPDATE_UI(ID_NetworkPanelUpdate, JaneClone::UpdateJaneCloneUI)
+   EVT_UPDATE_UI(ID_CommonAuiToolBarUpdate, JaneClone::UpdateJaneCloneUI)
 #endif
 
 END_EVENT_TABLE()
@@ -2341,7 +2342,21 @@ void JaneClone::Initialize2chBoardList() {
      // Sizer
      wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
      // 検索用ツールバーを設定する
+#ifndef __WXMAC__ /** Windows & Linux */
      CreateCommonAuiToolBar(m_boardTreePanel, vbox, ID_BoardSearchBar);
+#else
+     /** Mac OS X */ 
+     wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_CommonAuiToolBarUpdate);
+     wxString ui = wxT("CommonAuiToolBarUpdate");
+     event->SetString(ui.c_str());
+     event->SetEventObject(this);
+     
+   #if wxCHECK_VERSION(2, 9, 0)
+     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+   #else
+     this->GetEventHandler()->AddPendingEvent(*event);
+   #endif
+#endif
 
      // ツリー用ウィジェットのインスタンスを用意する
      m_tree_ctrl = new wxTreeCtrl(m_boardTreePanel, ID_BoardTreectrl, wxDefaultPosition, wxDefaultSize, 

@@ -238,6 +238,11 @@ private:
 	       if ( ColorFontSettingPanel* colour = dynamic_cast<ColorFontSettingPanel*>(obj) ) {
 		    colour->UpdateResources();
 	       }
+	  } else if ( ui == wxT("CommonAuiToolBarUpdate") ) {
+
+	    // Sizer
+	    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	    this->CreateCommonAuiToolBar(m_boardTreePanel, vbox, ID_BoardSearchBar);
 	  }
      };
 #endif
