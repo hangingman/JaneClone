@@ -1,3 +1,22 @@
+commit 8ab3d9a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-20
+
+    Update various files
+      - update ChangeLog, .gitignore
+      - fix Makefile.am for new automake syntax
+      - fix debian control file for legitimate debian package
+
+.gitignore
+ChangeLog
+Makefile.am
+curlpp/src/curlpp/Makefile.am
+curlpp/src/curlpp/internal/Makefile.am
+curlpp/src/utilspp/Makefile.am
+debian/control.jessie
+debian/control.wheezy
+src/janeclone.cpp
+
 commit 5126962
 Author: Hiroyuki Nagata <newserver002@gmail.com>
 Date:   2014-06-29

@@ -3,6 +3,7 @@
 
 AC_PREREQ([2.67])
 AC_INIT([JaneClone], [1.1.4], [newserver002@gmail.com])
+AC_SUBST(UPSTREAM_URL, [https://github.com/Hiroyuki-Nagata/JaneClone])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wno-portability])
 AC_CONFIG_SRCDIR([src/enums.hpp])

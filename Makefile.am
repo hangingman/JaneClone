@@ -66,6 +66,11 @@ SPECFILE_PATH	= $(top_builddir)/extras/package/SPECS/$(SPECFILE)
 # <パッケージ名>-<バージョン番号>.<リリース番号>.<アーキテクチャ>.rpm
 RPMNAME		= $(PACKAGE_NAME)-$(VERSION).`uname -m`.rpm
 
+# Debian用COPYRIGHTの場所
+COPYRIGHT=$(top_builddir)/debian/copyright
+PACKAGER="Hiroyuki Nagata"
+AUTHOR="Hiroyuki Nagata"
+
 # OSX application bundle用の設定
 ICONFILE		= janeclone.icns
 ICONPATH		= $(top_builddir)/src/rc/$(ICONFILE)
@@ -266,8 +271,27 @@ package-deb-local: package-deb
 	echo "not use GPG key...if you want to sign, make by terminal.";
 	(cd $(distdir) && debuild -uc -us); 
 
+# update license info
+package-deb-license:
+	echo "This package was debianized by $(PACKAGER) <$(PACKAGE_BUGREPORT)> on" > $(COPYRIGHT)
+	echo `date -R`                                                             >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "It was downloaded from $(UPSTREAM_URL)"                              >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "Upstream Author: $(AUTHOR) <$(PACKAGE_BUGREPORT)>"                   >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "Copyright:  © 2011-" `date +"%Y"` "$(AUTHOR)"                        >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "License:                                         "                   >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	cat $(top_builddir)/COPYING |                                              >> $(COPYRIGHT)
+	echo ""
+	echo "-----------------------------------------------------------------------------" >> $(COPYRIGHT)
+	echo ""
+#sh $(top_builddir)/misc/license.sh >> $(COPYRIGHT)
+
 # target for debian
-package-deb: remove_distdir dist
+package-deb: package-deb-license remove_distdir dist
 	(tar xvf $(distdir).tar.gz && cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
 	@if test "$(DEBIAN_VERSION)" = "*wheezy*"; then                        \
 	   echo "use Debian wheezy control file...";                           \
@@ -276,10 +300,10 @@ package-deb: remove_distdir dist
 	   echo "use Debian jessie control file...";                           \
 	   cp $(top_builddir)/debian/control.jessie $(distdir)/debian/control; \
 	fi
-	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(distdir)/debian/control
-	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control
-	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules
-	rm -f $(distdir)/debian/*.ex
+	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(distdir)/debian/control             #  upstream version 
+	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control #  bugreport address
+	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules                           #  rule file
+	rm -f $(distdir)/debian/*.ex                                                        #  delete extension files
 
 remove_distdir :
 # パッケージを削除
