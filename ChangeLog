@@ -1,3 +1,79 @@
+commit 5126962
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-06-29
+
+    Modify MinGW packaging script.
+
+Makefile.am
+
+commit 21b7c5f
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-06-29
+
+    add script for cross compile by MinGW
+
+cross-i686-w64-mingw32.sh
+cross-x86_64-w64-mingw32.sh
+
+commit 8578da5
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-06-29
+
+    fix automake warning
+
+src/Makefile.am
+
+commit 7c19ebe
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-06-28
+
+    fix configure.ac for MinGW cross compile
+
+configure.ac
+src/socketcommunication.cpp
+
+commit 9748c2a
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-06-19
+
+    Add script for GPG key sign
+
+Makefile.am
+
+commit cc5654b
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-06-19
+
+    Deal with building JaneClone with Debian jessie.
+    Delete configure file (because it is generated file)
+
+configure
+debian/control.jessie
+src/Makefile.am
+
+commit 831d65b
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-06-19
+
+    Add debian package control file.
+
+Makefile.am
+debian/control.jessie
+debian/control.wheezy
+debian/rules
+
+commit 5b012d6
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-06-18
+
+    GCC-4.8対応
+    configure.acを一部修正
+
+ChangeLog
+configure
+configure.ac
+src/sqliteaccessor.cpp
+
 commit b4e9346
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2014-06-14

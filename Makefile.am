@@ -251,6 +251,21 @@ if USE_LINUX
    DEBIAN_VERSION=`cat /etc/debian_version`
 endif
 
+# target for debian with GPG key
+package-deb-with-gpg: package-deb
+	@if gpg --version >/dev/null 2>&1; then                             \
+	   echo "sign by GPG key...";                                       \
+	   (cd $(distdir) && debuild);                                      \
+	else                                                                \
+	   echo "not use GPG key...if you want to sign, make by terminal."; \
+	   (cd $(distdir) && debuild -uc -us);                              \
+	fi
+
+# target for debian without GPG key
+package-deb-local: package-deb
+	echo "not use GPG key...if you want to sign, make by terminal.";
+	(cd $(distdir) && debuild -uc -us); 
+
 # target for debian
 package-deb: remove_distdir dist
 	(tar xvf $(distdir).tar.gz && cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
@@ -264,14 +279,7 @@ package-deb: remove_distdir dist
 	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(distdir)/debian/control
 	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control
 	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules
-	rm -f $(distdir)/debian/menu.ex
-	@if gpg --version >/dev/null 2>&1; then                             \
-	   echo "sign by GPG key...";                                       \
-	   (cd $(distdir) && debuild);                                      \
-	else                                                                \
-	   echo "not use GPG key...if you want to sign, make by terminal."; \
-	   (cd $(distdir) && debuild -uc -us);                              \
-	fi
+	rm -f $(distdir)/debian/*.ex
 
 remove_distdir :
 # パッケージを削除

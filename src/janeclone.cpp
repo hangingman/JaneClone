@@ -3816,8 +3816,12 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 
 	  searchBox->SetLabel(label);
 	  // 検索ボックスを設定する
-	  wxComboBox* searchWordCombo = new wxComboBox(searchBox, ID_ThreadSearchBarCombo, wxEmptyString, wxDefaultPosition, 
-						       wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
+	  wxComboBox* searchWordCombo = new wxComboBox(searchBox, 
+						       ID_ThreadSearchBarCombo, 
+						       wxEmptyString, 
+						       wxDefaultPosition, 
+						       wxDefaultSize, 
+						       0, NULL, wxCB_DROPDOWN);
 	  searchWordCombo->SetLabel(boardName + wxT("_combo"));
 	  searchWordCombo->SetValue(wxEmptyString);
 	  SupplySearchWords(searchWordCombo, ID_ThreadSearchBarCombo);
@@ -3825,7 +3829,10 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 	  // スレッド検索ボックスのID
 	  searchBox->AddControl(searchWordCombo, boardName + wxT("_combo"));
 	  // 閉じるボタンを設定する
-	  searchBox->AddTool(ID_SearchBarHide, wxT("closeThreadSearch"), wxBitmap(closeImg, wxBITMAP_TYPE_ANY), wxT("検索ボックスを隠す"));
+	  searchBox->AddTool(ID_SearchBarHide, 
+			     wxT("closeThreadSearch"), 
+			     wxBitmap(closeImg, wxBITMAP_TYPE_ANY), 
+			     wxT("検索ボックスを隠す"));
 
      } else if (id == ID_BoardSearchBar) {
 	  // ラベルを設定する
@@ -3846,7 +3853,11 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 	  // 板名検索ボックスのID
 	  searchBox->AddControl(searchWordCombo, wxT("board_tree_combo"));
 	  // 閉じるボタンを設定する
-	  searchBox->AddTool(ID_SearchBarHide, wxT("closeThreadSearch"), wxBitmap(closeImg, wxBITMAP_TYPE_ANY), wxT("検索ボックスを隠す"));
+	  searchBox->AddTool(ID_SearchBarHide, 
+			     wxT("closeThreadSearch"), 
+			     wxBitmap(closeImg, wxBITMAP_TYPE_ANY), 
+			     wxT("検索ボックスを隠す"));
+
      } else if (id == ID_ShingetsuBoardSearchBar) {
 	  // ラベルを設定する
 	  searchBox->SetLabel(SHINGETU_NODE_SEARCH);
@@ -3865,7 +3876,10 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 	  // 板名検索ボックスのID
 	  searchBox->AddControl(searchWordCombo, wxT("shingetsu_tree_combo"));
 	  // 閉じるボタンを設定する
-	  searchBox->AddTool(ID_SearchBarHide, wxT("closeThreadSearch"), wxBitmap(closeImg, wxBITMAP_TYPE_ANY), wxT("検索ボックスを隠す"));
+	  searchBox->AddTool(ID_SearchBarHide, 
+			     wxT("closeThreadSearch"), 
+			     wxBitmap(closeImg, wxBITMAP_TYPE_ANY), 
+			     wxT("検索ボックスを隠す"));
      }
 
      searchBox->Realize();

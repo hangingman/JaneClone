@@ -3,7 +3,7 @@ SUBDIRS = internal
 janeclonedir 		= $(pkglibdir)
 janeclone_LTLIBRARIES	= libcurlpp.la
 
-INCLUDES = @CURL_CFLAGS@ -I$(top_builddir)/include/curlpp -I$(top_builddir)/curlpp/include
+AM_CPPFLAGS = @CURL_CFLAGS@ -I$(top_builddir)/include/curlpp -I$(top_builddir)/curlpp/include
 
 sources = \
 	cURLpp.cpp  \

@@ -4,7 +4,8 @@ Makefile
 */Makefile.in
 Makefile.in
 JaneClone.app*
-JaneClone.app/*
+janeclone-*
+janeclone_*
 autom4te*
 autom4te*/*
 extras/*
