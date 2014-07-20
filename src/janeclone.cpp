@@ -1038,6 +1038,14 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
 	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
 
+	  // お気に入り用ページ
+	  m_favoriteTreePanel = new wxPanel(boardTreeNoteBook);
+	  boardTreeNoteBook->AddPage(m_favoriteTreePanel, wxT("お気に入り"), false);
+
+	  // 閲覧中
+	  m_nowReadingTreePanel = new wxPanel(boardTreeNoteBook);
+	  boardTreeNoteBook->AddPage(m_nowReadingTreePanel, wxT("閲覧中"), false);
+
 #ifdef USE_SHINGETSU
 	  // 新月の公開ノード用ページ
 	  m_shingetsuTreePanel = new wxPanel(boardTreeNoteBook);
@@ -4172,6 +4180,14 @@ void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
 	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
 	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
 
+	  // お気に入り用ページ
+	  m_favoriteTreePanel = new wxPanel(boardTreeNoteBook);
+	  boardTreeNoteBook->AddPage(m_favoriteTreePanel, wxT("お気に入り"), false);
+
+	  // 閲覧中
+	  m_nowReadingTreePanel = new wxPanel(boardTreeNoteBook);
+	  boardTreeNoteBook->AddPage(m_nowReadingTreePanel, wxT("閲覧中"), false);
+
 #ifdef USE_SHINGETSU
 	  // 新月の公開ノード用ページ FIXME
 	  m_shingetsuTreePanel = new wxPanel(boardTreeNoteBook);
@@ -4265,6 +4281,10 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event)
 		    // 2ch板一覧用ページ
 		    m_boardTreePanel = new wxPanel(boardTreeNoteBook);
 		    boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
+
+		    // お気に入り用ページ
+		    m_favoriteTreePanel = new wxPanel(boardTreeNoteBook);
+		    boardTreeNoteBook->AddPage(m_favoriteTreePanel, wxT("お気に入り"), false);
 
 #ifdef USE_SHINGETSU
 		    // 新月の公開ノード用ページ FIXME

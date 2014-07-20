@@ -332,6 +332,8 @@ private:
 
      // ツリーコントロールを載せるノートブック
      wxAuiNotebook* boardTreeNoteBook;
+
+     /** 2ch板一覧 */
      // 2ch板一覧ツリーコントロールが乗るパネル
      wxPanel* m_boardTreePanel;
      // 2ch板一覧ツリーコントロール
@@ -340,8 +342,21 @@ private:
      void SetBoardList(const bool updateHash = true);
      // 上記の処理のイベント版
      void SetBoardList(wxCommandEvent& event);
+
+     /** 2chお気に入り */
+     wxPanel* m_favoriteTreePanel;
+     // 2chお気に入りツリーコントロール
+     wxTreeCtrl* m_fav_tree_ctrl;
+
+     /** 閲覧中 */
+     wxPanel* m_nowReadingTreePanel;
+     // 閲覧中ツリーコントロール
+     wxTreeCtrl* m_now_reading_tree_ctrl;
+
+
      // 板一覧ツリーの初期化
      void InitializeBoardList();
+
      // すべてのウィジェットが載るAuiマネージャー
      wxAuiManager m_mgr;
      // ステータスバー表示用文字列
