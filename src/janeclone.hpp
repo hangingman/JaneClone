@@ -86,6 +86,7 @@
 #include "responsewindow.hpp"
 #include "janecloneimageviewer.hpp"
 #include "settingwindow.hpp"
+#include "janecloneuiutil.hpp"
 
 /**
  * JaneCloneのGUI本体部分を構成するクラス
@@ -356,6 +357,10 @@ private:
 
      // 板一覧ツリーの初期化
      void InitializeBoardList();
+     // お気に入り一覧ツリーの初期化
+     void InitializeFavsList();
+     // 閲覧中の一覧ツリーの初期化
+     void InitializeNowReadingList();
 
      // すべてのウィジェットが載るAuiマネージャー
      wxAuiManager m_mgr;

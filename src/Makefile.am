@@ -39,6 +39,8 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    drawpane.hpp                \
 		    enums.hpp			\
 		    enumstring.hpp              \
+		    janecloneuiutil.cpp         \
+		    janecloneuiutil.hpp         \
 		    ../babel/babel.cpp		\
 		    ../babel/babel.h		\
 		    $(wildcard ../babel/*.dat)  \

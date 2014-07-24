@@ -2329,6 +2329,12 @@ void JaneClone::InitializeBoardList() {
      // 2ch板一覧ツリーの初期化
      this->Initialize2chBoardList();
 
+     // お気に入り一覧ツリーの初期化
+     this->InitializeFavsList();
+     
+     // 閲覧中の一覧ツリーの初期化
+     this->InitializeNowReadingList();
+
 #ifdef USE_SHINGETSU
      // 新月公開ノードの初期化
      this->InitializeShingetsuNodeList();
@@ -2369,52 +2375,14 @@ void JaneClone::Initialize2chBoardList() {
      // ツリー用ウィジェットのインスタンスを用意する
      m_tree_ctrl = new wxTreeCtrl(m_boardTreePanel, ID_BoardTreectrl, wxDefaultPosition, wxDefaultSize, 
 				  wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+
+     // ツリー部分へのカーソル合わせが起きた場合のイベント通知
      m_tree_ctrl->Connect(ID_BoardTreectrl,
 			  wxEVT_ENTER_WINDOW,
 			  wxMouseEventHandler(JaneClone::OnEnterWindow),
 			  NULL, this);
      vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
-
-     // プロパティファイルにフォント設定/背景色があれば使用する
-     wxString widgetsName = wxT("ID_TreeFontButton");
-     wxString widgetsInfo = wxEmptyString;
-     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-     if (widgetsInfo != wxEmptyString) {
-	  wxFont font;
-	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
-	  if(ret) m_tree_ctrl->SetFont(font);
-     }
-     widgetsName = wxT("ID_BoardListBGColorButton");
-     widgetsInfo.Clear();
-     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-     if (widgetsInfo != wxEmptyString) 
-     {
-	  wxColour bgColor;
-	  bool ret = bgColor.Set(widgetsInfo);
-	  if(ret) m_tree_ctrl->SetBackgroundColour(bgColor);
-     }
-
-     wxTreeItemData treeData;
-     wxTreeItemId m_rootId;
-
-     // イメージリストにアイコンを登録する
-#ifndef __WXMAC__
-     wxImageList* treeImage = new wxImageList(16, 16);
-     wxBitmap idx1(wxT("rc/folder.png"), wxBITMAP_TYPE_PNG);
-     treeImage->Add(idx1);
-     wxBitmap idx2(wxT("rc/text-html.png"), wxBITMAP_TYPE_PNG);
-     treeImage->Add(idx2);
-#else // Macの場合画像ファイル読み込みの場所が異なる
-     wxImageList* treeImage = new wxImageList(16, 16);
-     wxBitmap idx1(wxT("JaneClone.app/Contents/MacOS/rc/folder.png"), wxBITMAP_TYPE_PNG);
-     treeImage->Add(idx1);
-     wxBitmap idx2(wxT("JaneClone.app/Contents/MacOS/rc/text-html.png") , wxBITMAP_TYPE_PNG);
-     treeImage->Add(idx2);
-#endif
-     m_tree_ctrl->AssignImageList(treeImage);
-     m_tree_ctrl->SetLabel(BOARD_TREE);
-     wxTreeItemId rootTemp = m_tree_ctrl->AddRoot(wxT("2ch板一覧"));
-     m_tree_ctrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
+     JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_tree_ctrl, wxID_ANY);
 
      // カテゴリ名を保持するためのID
      wxTreeItemId category;
@@ -2468,6 +2436,83 @@ void JaneClone::Initialize2chBoardList() {
      // パネルにSizerを設定する
      m_boardTreePanel->SetSizer(vbox);
      m_boardTreePanel->Update();
+}
+
+/**
+ * お気に入り一覧ツリーの初期化
+ */
+void JaneClone::InitializeFavsList() {
+
+     // Sizer
+     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+     // 検索用ツールバーを設定する
+#ifndef __WXMAC__ /** Windows & Linux */
+     CreateCommonAuiToolBar(m_favoriteTreePanel, vbox, ID_FavsSearchBar);
+#else
+     /** Mac OS X */ 
+     wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_CommonAuiToolBarUpdate);
+     wxString ui = wxT("CommonAuiToolBarUpdate");
+     event->SetString(ui.c_str());
+     event->SetEventObject(this);
+     
+   #if wxCHECK_VERSION(2, 9, 0)
+     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+   #else
+     this->GetEventHandler()->AddPendingEvent(*event);
+   #endif
+#endif
+
+     // ツリー用ウィジェットのインスタンスを用意する
+     m_fav_tree_ctrl = new wxTreeCtrl(m_favoriteTreePanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 
+				      wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+
+     JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_fav_tree_ctrl, wxID_ANY);
+
+     // TODO: 共通処理を作成
+
+     // パネルにSizerを設定する
+     m_fav_tree_ctrl->SetSizer(vbox);
+     m_fav_tree_ctrl->Update();
+}
+     
+/**
+ * 閲覧中の一覧ツリーの初期化
+ */
+void JaneClone::InitializeNowReadingList() {
+
+     // Sizer
+     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+     // 検索用ツールバーを設定する
+#ifndef __WXMAC__ /** Windows & Linux */
+     CreateCommonAuiToolBar(m_nowReadingTreePanel, vbox, ID_NowReadingSearchBar);
+#else
+     /** Mac OS X */ 
+     wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_CommonAuiToolBarUpdate);
+     wxString ui = wxT("CommonAuiToolBarUpdate");
+     event->SetString(ui.c_str());
+     event->SetEventObject(this);
+     
+   #if wxCHECK_VERSION(2, 9, 0)
+     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+   #else
+     this->GetEventHandler()->AddPendingEvent(*event);
+   #endif
+#endif
+
+     // ツリー用ウィジェットのインスタンスを用意する
+     m_now_reading_tree_ctrl = new wxTreeCtrl(m_nowReadingTreePanel, 
+					      wxID_ANY, 
+					      wxDefaultPosition, 
+					      wxDefaultSize, 
+					      wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+
+     JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_now_reading_tree_ctrl, wxID_ANY);
+
+     // TODO: 共通処理を作成
+
+     // パネルにSizerを設定する
+     m_now_reading_tree_ctrl->SetSizer(vbox);
+     m_now_reading_tree_ctrl->Update();
 }
 
 #ifdef USE_SHINGETSU
@@ -3765,13 +3810,26 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 						wxDefaultPosition, 
 						wxDefaultSize, 
 						wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
-     searchBox->SetToolBitmapSize(wxSize(32,32));
-
-     if (id == ID_ThreadSearchBar) {
-	  searchBox->AddTool(ID_ThreadSearchBoxDoSearch, SEARCH_BOX, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), wxT("検索"));
-     } else if (id == ID_BoardSearchBar) {
-	  searchBox->AddTool(ID_BoardSearchBoxDoSearch, SEARCH_BOX, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), wxT("検索"));
+     int targetId = 0;
+     
+     switch (id) {
+     case ID_ThreadSearchBar:
+	  targetId = ID_ThreadSearchBoxDoSearch;
+	  break;
+     case ID_BoardSearchBar:
+	  targetId = ID_BoardSearchBoxDoSearch;
+	  break;
+     case ID_FavsSearchBar:
+	  targetId = ID_FavsSearchBoxDoSeach;
+	  break;
+     case ID_NowReadingSearchBar:
+	  targetId = ID_NowReadingBoxDoSeach;
+	  break;
      }
+
+     // 検索ボックスのID設定
+     searchBox->SetToolBitmapSize(wxSize(32,32));
+     searchBox->AddTool(targetId, SEARCH_BOX, wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), wxT("検索"));
 
      // メニューの設定
      wxAuiToolBarItemArray prepend_items1;
@@ -3831,79 +3889,94 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 			wxT("正規表現を使います"), 
 			wxITEM_CHECK);
 
-     if (id == ID_ThreadSearchBar) {
-	  // ラベルを設定する 
-	  wxString label = THREADLIST_SEARCH;
-	  label += wxT("_"); 
+     /**
+      * 1. ラベルの設定
+      * 2. 検索ボックスの設定
+      *
+      */
+
+     int TARGET_COMBO = 0;
+     wxArrayString choices;
+     wxString label = wxEmptyString;
+
+     switch (id) {
+
+     case ID_ThreadSearchBar:
+	  label = THREADLIST_SEARCH;
+	  label += wxT("_");
 	  label += boardName;
-
 	  searchBox->SetLabel(label);
-	  // 検索ボックスを設定する
-	  wxComboBox* searchWordCombo = new wxComboBox(searchBox, 
-						       ID_ThreadSearchBarCombo, 
-						       wxEmptyString, 
-						       wxDefaultPosition, 
-						       wxDefaultSize, 
-						       0, NULL, wxCB_DROPDOWN);
-	  searchWordCombo->SetLabel(boardName + wxT("_combo"));
-	  searchWordCombo->SetValue(wxEmptyString);
-	  SupplySearchWords(searchWordCombo, ID_ThreadSearchBarCombo);
-
-	  // スレッド検索ボックスのID
-	  searchBox->AddControl(searchWordCombo, boardName + wxT("_combo"));
-	  // 閉じるボタンを設定する
-	  searchBox->AddTool(ID_SearchBarHide, 
-			     wxT("closeThreadSearch"), 
-			     wxBitmap(closeImg, wxBITMAP_TYPE_ANY), 
-			     wxT("検索ボックスを隠す"));
-
-     } else if (id == ID_BoardSearchBar) {
-	  // ラベルを設定する
+	  TARGET_COMBO = ID_ThreadSearchBarCombo;	  
+	  break;
+     case ID_BoardSearchBar:
 	  searchBox->SetLabel(BOARD_TREE_SEARCH);
-	  // 検索ボックスを設定する
-	  const wxArrayString choices = SQLiteAccessor::GetUserSearchedKeyword(ID_BoardSearchBarCombo);
-	  wxComboBox* searchWordCombo = new wxComboBox(searchBox,
-						       ID_BoardSearchBarCombo,
-						       wxEmptyString, 
-						       wxDefaultPosition, 
-						       wxDefaultSize,  
-						       choices, 
-						       wxCB_DROPDOWN);
-
-	  SupplySearchWords(searchWordCombo, ID_BoardSearchBarCombo);
-	  searchWordCombo->SetValue(wxEmptyString);
-
-	  // 板名検索ボックスのID
-	  searchBox->AddControl(searchWordCombo, wxT("board_tree_combo"));
-	  // 閉じるボタンを設定する
-	  searchBox->AddTool(ID_SearchBarHide, 
-			     wxT("closeThreadSearch"), 
-			     wxBitmap(closeImg, wxBITMAP_TYPE_ANY), 
-			     wxT("検索ボックスを隠す"));
-
-     } else if (id == ID_ShingetsuBoardSearchBar) {
-	  // ラベルを設定する
+	  TARGET_COMBO = ID_BoardSearchBarCombo;
+	  break;
+     case ID_FavsSearchBar:
+	  searchBox->SetLabel(FAVS_TREE_SEARCH);
+	  TARGET_COMBO = ID_FavsSearchBarCombo;
+	  break;
+     case ID_NowReadingSearchBar:
+	  searchBox->SetLabel(NOW_READ_TREE_SEARCH);
+	  TARGET_COMBO = ID_NowReadingSearchBarCombo;
+	  break;
+	  
+#ifdef USE_SHINGETSU /** USE_SHINGETSU */
+     case ID_ShingetsuBoardSearchBar:
 	  searchBox->SetLabel(SHINGETU_NODE_SEARCH);
-	  // 検索ボックスを設定する
-	  const wxArrayString choices = SQLiteAccessor::GetUserSearchedKeyword(ID_BoardSearchBarCombo);
-	  wxComboBox* searchWordCombo = new wxComboBox(searchBox,
-						       ID_BoardSearchBarCombo,
-						       wxEmptyString, 
-						       wxDefaultPosition, 
-						       wxDefaultSize,  
-						       choices, 
-						       wxCB_DROPDOWN);
-	  // !FIXME!
-	  //SupplySearchWords(searchWordCombo, ID_BoardSearchBarCombo);
-
-	  // 板名検索ボックスのID
-	  searchBox->AddControl(searchWordCombo, wxT("shingetsu_tree_combo"));
-	  // 閉じるボタンを設定する
-	  searchBox->AddTool(ID_SearchBarHide, 
-			     wxT("closeThreadSearch"), 
-			     wxBitmap(closeImg, wxBITMAP_TYPE_ANY), 
-			     wxT("検索ボックスを隠す"));
+	  TARGET_COMBO = NULL; // FIXME
+	  break;
+#endif /** USE_SHINGETSU */
      }
+
+     // 検索ボックスを設定する
+     wxComboBox* searchWordCombo = new wxComboBox(searchBox,
+						  TARGET_COMBO,
+						  wxEmptyString, 
+						  wxDefaultPosition, 
+						  wxDefaultSize,  
+						  choices, 
+						  wxCB_DROPDOWN);
+
+     /**
+      * wxComboBoxのインスタンス化後のラベルの設定
+      */
+
+     // 前回検索語の補填
+     SupplySearchWords(searchWordCombo, id);
+     // 検索ボックスは空にする
+     searchWordCombo->SetValue(wxEmptyString);
+
+     switch (id) {
+
+     case ID_ThreadSearchBar:
+	  searchWordCombo->SetLabel(boardName + wxT("_combo"));
+	  searchBox->AddControl(searchWordCombo, boardName + wxT("_combo"));
+	  
+	  break;
+     case ID_BoardSearchBar:
+	  searchBox->AddControl(searchWordCombo, wxT("board_tree_combo"));
+	  
+	  break;
+     case ID_FavsSearchBar:
+	  searchBox->AddControl(searchWordCombo, wxT("favs_search_combo"));
+	  break;
+     case ID_NowReadingSearchBar:
+	  searchBox->AddControl(searchWordCombo, wxT("now_reading_combo"));
+	  break;
+	  
+#ifdef USE_SHINGETSU /** USE_SHINGETSU */
+     case ID_ShingetsuBoardSearchBar:
+	  searchBox->AddControl(searchWordCombo, wxT("shingetsu_tree_combo"));
+	  break;
+#endif /** USE_SHINGETSU */
+     }
+
+     // 閉じるボタンを設定する
+     searchBox->AddTool(ID_SearchBarHide, 
+			wxEmptyString, 
+			wxBitmap(closeImg, wxBITMAP_TYPE_ANY), 
+			wxT("検索ボックスを隠す"));
 
      searchBox->Realize();
      vbox->Add(searchBox, 0, wxLEFT | wxTOP | wxEXPAND, 10);

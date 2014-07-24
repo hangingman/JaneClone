@@ -105,6 +105,8 @@
 #define SHINGETU_NODE_PANEL    wxT("m_shingetsu_tree_panel")
 #define BOARD_TREE_SEARCH      wxT("board_tree_search")
 #define THREADLIST_SEARCH      wxT("thread_list_search")
+#define FAVS_TREE_SEARCH       wxT("favs_tree_search") 	
+#define NOW_READ_TREE_SEARCH   wxT("now_read_tree_seach")
 #define SHINGETU_NODE_SEARCH   wxT("m_shingetsu_tree_search")
 #define LOG_WINDOW             wxT("m_logCtrl")
 #define BOARD_NOTEBOOK         wxT("boardNoteBook")
