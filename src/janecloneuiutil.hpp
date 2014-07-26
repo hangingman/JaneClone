@@ -57,6 +57,16 @@ public:
      template <class T>
      void static QueueEventHelper(const wxWindowID type, const wxWindowID id, const T& message);
      /**
+      * wxWidgetsのイベント通知関数のラッパー
+      *
+      * @param const wxWindowID type 
+      * @param const wxWindowID id
+      * @param const T   m          Message for event destination
+      * @param wxObject* o          wxObject for event destination
+      */
+     template <class T>
+     void static QueueEventHelper(const wxWindowID type, const wxWindowID id, const T& m, wxObject* o);
+     /**
       * JaneCloneのログ処理のラッパー
       *
       * @param const T message

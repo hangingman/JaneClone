@@ -119,7 +119,7 @@ void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID i
 #if wxCHECK_VERSION(2, 9, 0)
      wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
 #else
-     this->GetEventHandler()->AddPendingEvent(*cmEvent);
+     this->GetEventHandler()->AddPendingEvent(*e);
 #endif    
 };
 
@@ -139,12 +139,38 @@ void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID i
 #if wxCHECK_VERSION(2, 9, 0)
      wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
 #else
-     this->GetEventHandler()->AddPendingEvent(*cmEvent);
+     this->GetEventHandler()->AddPendingEvent(*e);
 #endif    
 };
 
 // テンプレート関数の実体化
 template void JaneCloneUiUtil::QueueEventHelper<wxString>(const wxWindowID type, const wxWindowID id, const wxString& m);
+
+/**
+ * wxWidgetsのイベント通知関数のラッパー
+ *
+ * @param const wxWindowID type 
+ * @param const wxWindowID id
+ * @param const T&  m
+ * @param wxObject* o
+ */
+template <class T>
+void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID id, const T& m, wxObject* o)
+{
+     wxCommandEvent* e = new wxCommandEvent(type, id);
+     e->SetString(m.c_str());
+     e->SetEventObject(o);
+
+#if wxCHECK_VERSION(2, 9, 0)
+     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
+#else
+     this->GetEventHandler()->AddPendingEvent(*e);
+#endif    
+};
+
+// テンプレート関数の実体化
+template void JaneCloneUiUtil::QueueEventHelper<wxString>(const wxWindowID type, const wxWindowID id, const wxString& m, wxObject* o);
+
 
 /**
  * JaneCloneのログ処理のラッパー

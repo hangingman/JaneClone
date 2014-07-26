@@ -225,11 +225,22 @@ private:
 	       if ( ColorFontSettingPanel* colour = dynamic_cast<ColorFontSettingPanel*>(obj) ) {
 		    colour->UpdateResources();
 	       }
-	  } else if ( ui == wxT("CommonAuiToolBarUpdate") ) {
+	  }
 
-	    // Sizer
-	    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-	    this->CreateCommonAuiToolBar(m_boardTreePanel, vbox, ID_BoardSearchBar);
+	  if ( ui == wxT("CommonAuiToolBarUpdate") ) {
+
+	    switch (event.GetId()) {
+	    case ID_BoardTreectrl:
+	      {
+		// Sizer
+		wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+		this->CreateCommonAuiToolBar(m_boardTreePanel, vbox, ID_BoardSearchBar);
+		vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
+		m_boardTreePanel->SetSizer(vbox);
+		m_boardTreePanel->Fit();
+	      }
+	      break;
+	    }
 	  }
      };
 #endif
