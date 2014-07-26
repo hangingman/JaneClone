@@ -129,7 +129,7 @@ public:
       * 投稿内容をソケット通信クラスに設定する
       * @param PostContent構造体
       */
-     void SetPostContent(PostContent* postContent);
+     void SetPostContent(std::unique_ptr<PostContent>& postContent);
      /**
       * 指定されたURLからデータをダウンロードする
       */
@@ -297,7 +297,7 @@ private:
      // wxFileConfigクラスのインスタンス(書き込みの際のみ確保される)
      wxFileConfig* config;
      // 投稿内容を保存するクラス(書き込みの際のみ確保される)
-     PostContent* postContent;
+     std::unique_ptr<PostContent> postContent;
 
      /**
       * ダウンロードした画像ファイル情報をDBに格納する

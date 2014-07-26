@@ -316,7 +316,7 @@ void ResponseWindow::do_layout() {
 void ResponseWindow::OnPostResponse(wxCommandEvent &event) {
 
      // ソケット通信用のクラスのインスタンスを用意する
-     SocketCommunication* socketCommunication = new SocketCommunication();
+     std::unique_ptr<SocketCommunication> socketCommunication(new SocketCommunication());
      // クッキーの状態チェック
      int cookieStatus = CheckCookie();
 
@@ -326,21 +326,18 @@ void ResponseWindow::OnPostResponse(wxCommandEvent &event) {
 	  SendLogging(message);
 	  
 	  PostFirstResponse(socketCommunication);
-	  delete socketCommunication;
      } else if (cookieStatus == HAS_COOKIE_HIDDEN) {
 	  // 最初のレスの後クッキーのみもらった状態
 	  wxString message = wxT("2chの規約に許諾後の書き込みを実行\n");
 	  SendLogging(message);
 
 	  PostConfirm(socketCommunication);
-	  delete socketCommunication;
      } else if (cookieStatus == HAS_PREN) {
 	  // PRENをもらった状態；通常の書き込み
 	  wxString message = wxT("通常書き込みを実行\n");
 	  SendLogging(message);
 
 	  PostResponse(socketCommunication);
-	  delete socketCommunication;
      }
 
      // 書き込み後にスレッドを更新する
@@ -349,10 +346,10 @@ void ResponseWindow::OnPostResponse(wxCommandEvent &event) {
 /**
  * クッキーがない状態
  */
-void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
+void ResponseWindow::PostFirstResponse(std::unique_ptr<SocketCommunication>& sock) {
 
      // 書き込み内容を構造体に設定する
-     PostContent* post = new PostContent;
+     std::unique_ptr<PostContent> post(new PostContent);
      // babel
      const std::string stdName = babel::utf8_to_sjis(std::string(nameCombo->GetValue().mb_str()));
      const std::string stdMail = babel::utf8_to_sjis(std::string(mailCombo->GetValue().mb_str()));
@@ -389,16 +386,13 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
      wxString result = sock->PostFirstToThread(m_boardInfo, m_threadInfo, NO_COOKIE);
 
      // m_postContentにデータを設定する
-     m_postContent = post;
+     m_postContent = std::move(post);
 
      if (result.StartsWith(wxT("<html>"))) {
 	  // 返り値が<html>タグから始まっていれば書込は失敗
 	  // wxHtmlWindowに結果を表示する	  
 	  resNoteBook->ChangeSelection(PREVIEW_PAGE);
 	  previewWindow->SetPage(result);
-	  // メモリの解放
-	  delete post;
-	  delete sock;
 	  return;
      }
      
@@ -410,8 +404,6 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
 	  // wxHtmlWindowに結果を表示する
 	  resNoteBook->ChangeSelection(PREVIEW_PAGE);
 	  previewWindow->SetPage(FAIL_TO_POST);
-	  delete post;
-	  delete sock;
 	  return;
      }
      // 取得サイズ分だけwxStringを確保する
@@ -426,11 +418,11 @@ void ResponseWindow::PostFirstResponse(SocketCommunication* sock) {
 /**
  * 最初のレスの後クッキーのみもらった状態
  */
-void ResponseWindow::PostConfirm(SocketCommunication* sock) {
+void ResponseWindow::PostConfirm(std::unique_ptr<SocketCommunication>& sock) {
 
 
      // 投稿内容作成
-     m_postContent = new PostContent;
+     std::unique_ptr<PostContent> m_postContent(new PostContent);
      // babel
      const std::string stdName = babel::utf8_to_sjis(std::string(nameCombo->GetValue().mb_str()));
      const std::string stdMail = babel::utf8_to_sjis(std::string(mailCombo->GetValue().mb_str()));
@@ -490,8 +482,6 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
 	  // wxHtmlWindowに結果を表示する
 	  resNoteBook->ChangeSelection(PREVIEW_PAGE);
 	  previewWindow->SetPage(FAIL_TO_POST);
-	  //delete post;
-	  delete sock;
 	  return;
      }
      // 取得サイズ分だけwxStringを確保する
@@ -505,10 +495,10 @@ void ResponseWindow::PostConfirm(SocketCommunication* sock) {
 /**
  * PRENをもらった状態；通常の書き込み
  */
-void ResponseWindow::PostResponse(SocketCommunication* sock) {
+void ResponseWindow::PostResponse(std::unique_ptr<SocketCommunication>& sock) {
 
      // 書き込み内容を構造体に設定する
-     PostContent* post = new PostContent;
+     std::unique_ptr<PostContent> post(new PostContent);
      // babel
      const std::string stdName = babel::utf8_to_sjis(std::string(nameCombo->GetValue().mb_str()));
      const std::string stdMail = babel::utf8_to_sjis(std::string(mailCombo->GetValue().mb_str()));
@@ -542,15 +532,12 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
 
      sock->SetPostContent(post);
      wxString result = sock->PostResponseToThread(m_boardInfo, m_threadInfo, HAS_PREN);
-     delete post;
 
      if (result.StartsWith(wxT("<html>"))) {
 	  // 返り値が<html>タグから始まっていれば書込は失敗
 	  // wxHtmlWindowに結果を表示する
 	  resNoteBook->ChangeSelection(PREVIEW_PAGE);
 	  previewWindow->SetPage(result);
-	  // メモリの解放
-	  delete sock;
 	  return;
      }
      
@@ -562,7 +549,6 @@ void ResponseWindow::PostResponse(SocketCommunication* sock) {
 	  // wxHtmlWindowに結果を表示する
 	  resNoteBook->ChangeSelection(PREVIEW_PAGE);
 	  previewWindow->SetPage(FAIL_TO_POST);
-	  delete sock;
 	  return;
      }
      // 取得サイズ分だけwxStringを確保する

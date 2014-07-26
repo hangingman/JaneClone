@@ -1759,9 +1759,9 @@ void SocketCommunication::AssembleCookie(wxString& cookie, const wxString& hidde
  * 投稿内容をソケット通信クラスに設定する
  * @param PostContent構造体
  */
-void SocketCommunication::SetPostContent(PostContent* postContent) 
+void SocketCommunication::SetPostContent(std::unique_ptr<PostContent>& postContent) 
 {
-     this->postContent = postContent;
+     this->postContent = std::move(postContent);
 }
 /**
  * COOKIEのデータ書き出しを行う

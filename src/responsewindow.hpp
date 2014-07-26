@@ -105,11 +105,11 @@ private:
      // クッキーの状態チェック
      int CheckCookie();
      // 初回の書き込みを実施する
-     void PostFirstResponse(SocketCommunication* sock);
+     void PostFirstResponse(std::unique_ptr<SocketCommunication>& sock);
      // 確認後の書き込みを実施する
-     void PostConfirm(SocketCommunication* sock);
+     void PostConfirm(std::unique_ptr<SocketCommunication>& sock);
      // 通常の書き込みを実施する
-     void PostResponse(SocketCommunication* sock);
+     void PostResponse(std::unique_ptr<SocketCommunication>& sock);
      // 2chのサーバから受け取ったHTMLファイルを読み取りwxStringに格納する
      void ReadResponseHtml(const wxString& resultHtmlPath, wxString& htmlSource);
      // レス書き込み用ウィンドウのタブが切り替わった時の処理
@@ -130,7 +130,7 @@ private:
      /**
       * 投稿内容を保持するオブジェクトのインスタンス
       */
-     PostContent* m_postContent;
+     std::unique_ptr<PostContent> m_postContent;
 
 
      /** 定数化されたページ数 */
