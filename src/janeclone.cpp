@@ -2462,8 +2462,6 @@ void JaneClone::InitializeFavsList() {
      // ツリーコントロールの共通設定を実行
      JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_fav_tree_ctrl, ID_FavsTreectrl);
 
-     //vbox->Add(m_favoriteTreePanel);
-
      // パネルにSizerを設定する
      m_favoriteTreePanel->SetSizer(vbox);
      m_favoriteTreePanel->Update();
@@ -2498,8 +2496,6 @@ void JaneClone::InitializeNowReadingList() {
 
      // ツリーコントロールの共通設定を実行
      JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_now_reading_tree_ctrl, ID_NowReadingTreectrl);
-
-     //vbox->Add(m_nowReadingTreePanel);
 
      // パネルにSizerを設定する
      m_nowReadingTreePanel->SetSizer(vbox);
@@ -3965,8 +3961,6 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 
      // 前回検索語の補填
      SupplySearchWords(searchWordCombo, id);
-     // 検索ボックスは空にする
-     searchWordCombo->SetValue(wxEmptyString);
 
      switch (id) {
 
@@ -3992,6 +3986,9 @@ void JaneClone::CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindo
 	  break;
 #endif /** USE_SHINGETSU */
      }
+
+     // 検索ボックスは空にする
+     searchWordCombo->SetValue(wxEmptyString);
 
      // 閉じるボタンを設定する
      searchBox->AddTool(ID_SearchBarHide, 
