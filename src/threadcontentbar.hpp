@@ -132,16 +132,10 @@ private:
 #ifdef __WXMAC__
      // メインのスレッドにログとイベントを送る
      void SendUIUpdateEvent() {
-	  wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_ThreadContentBarUpdate);
-	  wxString ui = wxT("ThreadContentBar");
-	  event->SetString(ui.c_str());
-	  event->SetEventObject(this);
-
-   #if wxCHECK_VERSION(2, 9, 0)
-	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
-   #else
-	  this->GetEventHandler()->AddPendingEvent(*event);
-   #endif
+	  JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI, 
+					    ID_ThreadContentBarUpdate,
+					    wxString("ThreadContentBar"),
+					    this);
      };
 #endif
 

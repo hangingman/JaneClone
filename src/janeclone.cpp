@@ -164,12 +164,13 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_TEXT(ID_ResetBoardListTree, JaneClone::SetBoardList)
 
 #ifdef __WXMAC__
-   // UIの更新通知
-   // OSXはGUIの更新をマルチスレッドで行えない 
+   // UIの更新通 OS X(Cocoa)はGUIの更新をワーカースレッドから行えない 
    EVT_UPDATE_UI(ID_ThreadContentBarUpdate, JaneClone::UpdateJaneCloneUI)
    EVT_UPDATE_UI(ID_SettingPanelUpdate, JaneClone::UpdateJaneCloneUI)
    EVT_UPDATE_UI(ID_NetworkPanelUpdate, JaneClone::UpdateJaneCloneUI)
    EVT_UPDATE_UI(ID_BoardTreectrl, JaneClone::UpdateJaneCloneUI)
+   EVT_UPDATE_UI(ID_FavsTreectrl, JaneClone::UpdateJaneCloneUI)
+   EVT_UPDATE_UI(ID_NowReadingTreectrl, JaneClone::UpdateJaneCloneUI)
 #endif
 
 END_EVENT_TABLE()
@@ -2441,30 +2442,27 @@ void JaneClone::InitializeFavsList() {
 
      // Sizer
      wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-     // 検索用ツールバーを設定する
-#ifndef __WXMAC__ /** Windows & Linux */
-     CreateCommonAuiToolBar(m_favoriteTreePanel, vbox, ID_FavsSearchBar);
-#else
-     /** Mac OS X */ 
-     wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_CommonAuiToolBarUpdate);
-     wxString ui = wxT("CommonAuiToolBarUpdate");
-     event->SetString(ui.c_str());
-     event->SetEventObject(this);
-     
-   #if wxCHECK_VERSION(2, 9, 0)
-     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
-   #else
-     this->GetEventHandler()->AddPendingEvent(*event);
-   #endif
-#endif
 
      // ツリー用ウィジェットのインスタンスを用意する
      m_fav_tree_ctrl = new wxTreeCtrl(m_favoriteTreePanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 
 				      wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+     vbox->Add(m_fav_tree_ctrl, 1, wxEXPAND, 10);
+
+     // 検索用ツールバーを設定する
+#ifndef __WXMAC__ /** Windows & Linux */
+     CreateCommonAuiToolBar(m_favoriteTreePanel, vbox, ID_FavsSearchBar);
+#else
+     /** Mac OS X */
+     JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI, 
+				       ID_FavsTreectrl, 
+				       wxString("CommonAuiToolBarUpdate"), 
+				       this);
+#endif
+
+     // ツリーコントロールの共通設定を実行
      JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_fav_tree_ctrl, ID_FavsTreectrl);
 
-     vbox->Add(m_favoriteTreePanel);
-     vbox->Add(m_fav_tree_ctrl, 1, wxEXPAND, 10);
+     //vbox->Add(m_favoriteTreePanel);
 
      // パネルにSizerを設定する
      m_favoriteTreePanel->SetSizer(vbox);
@@ -2478,22 +2476,6 @@ void JaneClone::InitializeNowReadingList() {
 
      // Sizer
      wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-     // 検索用ツールバーを設定する
-#ifndef __WXMAC__ /** Windows & Linux */
-     CreateCommonAuiToolBar(m_nowReadingTreePanel, vbox, ID_NowReadingSearchBar);
-#else
-     /** Mac OS X */ 
-     wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_CommonAuiToolBarUpdate);
-     wxString ui = wxT("CommonAuiToolBarUpdate");
-     event->SetString(ui.c_str());
-     event->SetEventObject(this);
-     
-   #if wxCHECK_VERSION(2, 9, 0)
-     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
-   #else
-     this->GetEventHandler()->AddPendingEvent(*event);
-   #endif
-#endif
 
      // ツリー用ウィジェットのインスタンスを用意する
      m_now_reading_tree_ctrl = new wxTreeCtrl(m_nowReadingTreePanel, 
@@ -2502,10 +2484,22 @@ void JaneClone::InitializeNowReadingList() {
 					      wxDefaultSize, 
 					      wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
 
+     // 検索用ツールバーを設定する
+#ifndef __WXMAC__ /** Windows & Linux */
+     CreateCommonAuiToolBar(m_nowReadingTreePanel, vbox, ID_NowReadingSearchBar);
+     vbox->Add(m_now_reading_tree_ctrl, 1, wxEXPAND, 10);
+#else
+     /** Mac OS X */
+     JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI, 
+				       ID_NowReadingTreectrl, 
+				       wxString("CommonAuiToolBarUpdate"), 
+				       this);
+#endif
+
+     // ツリーコントロールの共通設定を実行
      JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_now_reading_tree_ctrl, ID_NowReadingTreectrl);
 
-     vbox->Add(m_nowReadingTreePanel);
-     vbox->Add(m_now_reading_tree_ctrl, 1, wxEXPAND, 10);
+     //vbox->Add(m_nowReadingTreePanel);
 
      // パネルにSizerを設定する
      m_nowReadingTreePanel->SetSizer(vbox);

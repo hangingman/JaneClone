@@ -229,18 +229,42 @@ private:
 
 	  if ( ui == wxT("CommonAuiToolBarUpdate") ) {
 
-	    switch (event.GetId()) {
-	    case ID_BoardTreectrl:
-	      {
-		// Sizer
-		wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-		this->CreateCommonAuiToolBar(m_boardTreePanel, vbox, ID_BoardSearchBar);
-		vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
-		m_boardTreePanel->SetSizer(vbox);
-		m_boardTreePanel->Fit();
-	      }
-	      break;
-	    }
+	       switch (event.GetId()) {
+
+	       case ID_BoardTreectrl: // 板一覧ツリー
+	       {
+		    // Sizer
+		    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+		    this->CreateCommonAuiToolBar(m_boardTreePanel, vbox, ID_BoardSearchBar);
+		    vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
+		    m_boardTreePanel->SetSizer(vbox);
+		    m_boardTreePanel->Fit();
+	       }
+	       break;
+
+	       case ID_FavsTreectrl: // お気に入りツリー
+	       {
+		    // Sizer
+		    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+		    this->CreateCommonAuiToolBar(m_favoriteTreePanel, vbox, ID_FavsSearchBar);
+		    vbox->Add(m_fav_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
+		    m_favoriteTreePanel->SetSizer(vbox);
+		    m_favoriteTreePanel->Fit();
+	       } 
+	       break;
+
+	       case ID_NowReadingTreectrl: // 閲覧中ツリー
+	       {
+		    // Sizer
+		    wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+		    this->CreateCommonAuiToolBar(m_nowReadingTreePanel, vbox, ID_NowReadingSearchBar);
+		    vbox->Add(m_now_reading_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
+		    m_nowReadingTreePanel->SetSizer(vbox);
+		    m_nowReadingTreePanel->Fit();
+	       } 
+	       break;
+	       
+	       }
 	  }
      };
 #endif
