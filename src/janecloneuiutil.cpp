@@ -22,13 +22,14 @@
 #include "janecloneuiutil.hpp"
 
 
-void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWindowID id) {
-
+void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWindowID id) 
+{
      // プロパティファイルにフォント設定/背景色があれば使用する
      wxString widgetsName = wxT("ID_TreeFontButton");
      wxString widgetsInfo = wxEmptyString;
      JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-     if (widgetsInfo != wxEmptyString) {
+     if (widgetsInfo != wxEmptyString) 
+     {
 	  wxFont font;
 	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
 	  if(ret) treeCtrl->SetFont(font);
@@ -61,8 +62,33 @@ void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWin
      treeImage->Add(idx2);
 #endif
      treeCtrl->AssignImageList(treeImage);
-     treeCtrl->SetLabel(BOARD_TREE);
-     wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("2ch板一覧"));
-     treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
 
+     switch (id) 
+     {
+
+     case ID_BoardTreectrl:
+     {	  
+	  treeCtrl->SetLabel(BOARD_TREE);
+	  wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("2ch板一覧"));
+	  treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
+     }
+     break;
+
+     case ID_FavsTreectrl:
+     {
+	  treeCtrl->SetLabel(FAVS_TREE);
+	  wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("お気に入り一覧"));
+	  treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
+     }
+     break;
+	  
+     case ID_NowReadingTreectrl:
+     {
+	  treeCtrl->SetLabel(NOW_READ_TREE);
+	  wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("閲覧中一覧"));
+	  treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
+     }
+     
+     break;
+     }
 }

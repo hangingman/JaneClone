@@ -2382,7 +2382,7 @@ void JaneClone::Initialize2chBoardList() {
 			  wxMouseEventHandler(JaneClone::OnEnterWindow),
 			  NULL, this);
      vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
-     JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_tree_ctrl, wxID_ANY);
+     JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_tree_ctrl, ID_BoardTreectrl);
 
      // カテゴリ名を保持するためのID
      wxTreeItemId category;
@@ -2465,14 +2465,14 @@ void JaneClone::InitializeFavsList() {
      // ツリー用ウィジェットのインスタンスを用意する
      m_fav_tree_ctrl = new wxTreeCtrl(m_favoriteTreePanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 
 				      wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+     JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_fav_tree_ctrl, ID_FavsTreectrl);
 
-     JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_fav_tree_ctrl, wxID_ANY);
-
-     // TODO: 共通処理を作成
+     vbox->Add(m_favoriteTreePanel);
+     vbox->Add(m_fav_tree_ctrl, 1, wxEXPAND, 10);
 
      // パネルにSizerを設定する
-     m_fav_tree_ctrl->SetSizer(vbox);
-     m_fav_tree_ctrl->Update();
+     m_favoriteTreePanel->SetSizer(vbox);
+     m_favoriteTreePanel->Update();
 }
      
 /**
@@ -2506,13 +2506,13 @@ void JaneClone::InitializeNowReadingList() {
 					      wxDefaultSize, 
 					      wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
 
-     JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_now_reading_tree_ctrl, wxID_ANY);
-
-     // TODO: 共通処理を作成
+     JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_now_reading_tree_ctrl, ID_NowReadingTreectrl);
+     vbox->Add(m_nowReadingTreePanel);
+     vbox->Add(m_now_reading_tree_ctrl, 1, wxEXPAND, 10);
 
      // パネルにSizerを設定する
-     m_now_reading_tree_ctrl->SetSizer(vbox);
-     m_now_reading_tree_ctrl->Update();
+     m_nowReadingTreePanel->SetSizer(vbox);
+     m_nowReadingTreePanel->Update();
 }
 
 #ifdef USE_SHINGETSU

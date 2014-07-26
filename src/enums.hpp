@@ -43,6 +43,8 @@ X_TABLE_ITEM(ID_BoardNoteBook)			/* 板一覧用ノートブックに使うID			
 X_TABLE_ITEM(ID_ThumbnailNoteBook)		/* 画像ビューア用ID						*/ \
 X_TABLE_ITEM(ID_BoardTreectrl)			/* 板一覧ツリー用ID						*/ \
 X_TABLE_ITEM(ID_ShingetsuBoardTreectrl)		/* 新月公開ノード一覧ツリー用ID					*/ \
+X_TABLE_ITEM(ID_FavsTreectrl)                   /* お気に入りツリー用ID                                         */ \
+X_TABLE_ITEM(ID_NowReadingTreectrl)             /* 閲覧中ツリー用ID                                             */ \
 X_TABLE_ITEM(ID_BoardTreeNoteBook)		/* 板一覧ツリーを載せるノートブックに使うID			*/ \
 X_TABLE_ITEM(ID_ThreadContentWindow)            /* スレビュー画面用ID                                           */ \
 X_TABLE_ITEM(ID_OneBoardTabClose)		/* スレッド一覧タブをひとつ閉じる				*/ \
@@ -87,7 +89,7 @@ X_TABLE_ITEM(ID_UserLastClosedThreadMenuUp)	/* ユーザーが最後に閉じた
 X_TABLE_ITEM(ID_UserLastClosedBoardMenuUp)	/* ユーザーが最後に閉じた板の情報を項目に			*/ \
 X_TABLE_ITEM(ID_UserLookingTabsMenuUp)		/* ユーザーが現在見ているスレタブ・板タブ			*/ \
 X_TABLE_ITEM(ID_JaneCloneMgrUpdate)		/* Auiマネージャーの更新を行う	         		        */ \
-X_TABLE_ITEM(ID_CommonAuiToolBarUpdate)         /* Auiツールバーの更新を行う 				*/ \
+X_TABLE_ITEM(ID_CommonAuiToolBarUpdate)         /* Auiツールバーの更新を行う 				        */ \
 X_TABLE_ITEM(ID_UserLookingTabsControl)		/* ユーザーが現在フォーカスしているウィン			*/ \
 X_TABLE_ITEM(ID_MoveNextTab)                    /* 表示しているタブを移動する(次)				*/ \
 X_TABLE_ITEM(ID_MovePrevTab)			/* 表示しているタブを移動する(前)				*/ \
