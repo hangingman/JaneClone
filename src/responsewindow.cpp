@@ -344,15 +344,7 @@ void ResponseWindow::OnPostResponse(wxCommandEvent &event) {
      }
 
      // 書き込み後にスレッドを更新する
-     wxCommandEvent* cmEvent = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_ReloadThreadByName);
-     cmEvent->SetString(threadTitle.c_str());
-
-#if wxCHECK_VERSION(2, 9, 0)
-     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(cmEvent->Clone());
-#else
-     wxTheApp->GetTopWindow()->GetEventHandler()->AddPendingEvent(*cmEvent);
-#endif
-
+     JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_ReloadThreadByName, threadTitle);
 }
 /**
  * クッキーがない状態

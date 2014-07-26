@@ -114,6 +114,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_UPDATE_UI(ID_UserLastClosedBoardMenuUp, JaneClone::UserLastClosedBoardMenuUp)
    EVT_UPDATE_UI(ID_UserLookingTabsMenuUp, JaneClone::UserLookingTabsMenuUp)
    EVT_UPDATE_UI(ID_JaneCloneMgrUpdate, JaneClone::JaneCloneMgrUpdate)
+   EVT_UPDATE_UI(ID_NowReadingTreectrlUpdate, JaneClone::NowReadingTreectrlUpdate)
     
    // 2ch板一覧ツリーコントロールのイベント
    EVT_TREE_SEL_CHANGED(ID_BoardTreectrl, JaneClone::OnGetBoardInfo)
@@ -256,6 +257,9 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
      SetPreviousUserLookedTab();
      boardNoteBook->Update();
      threadNoteBook->Update();
+
+     // 閲覧中ツリーの情報を更新する
+     JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI, ID_NowReadingTreectrlUpdate);
 
      // フォーカスイベントをバインドする
      boardNoteBook->Connect(wxID_ANY,
@@ -2375,12 +2379,6 @@ void JaneClone::Initialize2chBoardList() {
      // ツリー用ウィジェットのインスタンスを用意する
      m_tree_ctrl = new wxTreeCtrl(m_boardTreePanel, ID_BoardTreectrl, wxDefaultPosition, wxDefaultSize, 
 				  wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
-
-     // ツリー部分へのカーソル合わせが起きた場合のイベント通知
-     m_tree_ctrl->Connect(ID_BoardTreectrl,
-			  wxEVT_ENTER_WINDOW,
-			  wxMouseEventHandler(JaneClone::OnEnterWindow),
-			  NULL, this);
      vbox->Add(m_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
      JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_tree_ctrl, ID_BoardTreectrl);
 
@@ -2507,6 +2505,7 @@ void JaneClone::InitializeNowReadingList() {
 					      wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
 
      JaneCloneUiUtil::SetTreeCtrlCommonSetting(m_now_reading_tree_ctrl, ID_NowReadingTreectrl);
+
      vbox->Add(m_nowReadingTreePanel);
      vbox->Add(m_now_reading_tree_ctrl, 1, wxEXPAND, 10);
 
@@ -3750,6 +3749,36 @@ void JaneClone::UserLookingTabsMenuUp(wxUpdateUIEvent& event) {
 void JaneClone::JaneCloneMgrUpdate(wxUpdateUIEvent& event) {
      m_mgr.Update();
 }
+
+/**
+ * 閲覧中ツリーのデータ更新を行う
+ */
+void JaneClone::NowReadingTreectrlUpdate(wxUpdateUIEvent& event) {
+
+     // 閲覧中データを集める
+     ThreadInfoHash::iterator it;
+     for (it = tiHash.begin(); it != tiHash.end(); ++it) {
+	  wxString key = it->first;
+	  ThreadInfo value = it->second;
+
+	  wxString title          = value.title;
+	  wxString origNumber     = value.origNumber;
+	  wxString boardNameAscii = value.boardNameAscii;
+
+	  // Hashから板名を探す
+	  NameURLHash::iterator itr;
+	  for (itr = retainHash.begin(); itr != retainHash.end(); ++itr) {
+	       wxString k = itr->first;
+	       const URLvsBoardName v = itr->second;
+
+	       if (v.boardNameAscii == boardNameAscii) {
+		    m_now_reading_tree_ctrl->AppendItem(m_now_reading_tree_ctrl->GetRootItem(), v.boardName);
+		    break;
+	       }
+	  }
+     }
+}
+
 /**
  * ユーザーが現在フォーカスしているウィンドウの操作を行う
  */

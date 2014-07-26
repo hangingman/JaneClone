@@ -26,6 +26,7 @@
 #include <wx/aui/aui.h>
 #include "enums.hpp"
 #include "threadcontentwindow.hpp"
+#include "janecloneuiutil.hpp"
 
 #ifndef THREADCONTENTBAR_HPP_
 #define THREADCONTENTBAR_HPP_
@@ -125,14 +126,7 @@ private:
       * メインのスレッドにログとイベントを送る
       */
      void SendLogging(wxString& message) {
-	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
-	  event->SetString(message.c_str());
-
-#if wxCHECK_VERSION(2, 9, 0)
-	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
-#else
-	  this->GetEventHandler()->AddPendingEvent(*event);
-#endif
+	  JaneCloneUiUtil::SendLoggingHelper(message);
      };
 
 #ifdef __WXMAC__

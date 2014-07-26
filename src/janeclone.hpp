@@ -162,14 +162,7 @@ private:
      };
      // メインのスレッドにログとイベントを送る
      void SendLogging(wxString& message) {
-	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
-	  event->SetString(message.c_str());
-
-#if wxCHECK_VERSION(2, 9, 0)
-	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
-#else
-	  this->GetEventHandler()->AddPendingEvent(*event);
-#endif
+	  JaneCloneUiUtil::SendLoggingHelper(message);
      };
 
 
@@ -204,14 +197,7 @@ private:
      };
 
      void ChangeUserLastAttachedEvent(wxString& message) {
-	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_ChangeUserLastAttached);
-	  event->SetString(message.c_str());
-
-#if wxCHECK_VERSION(2, 9, 0)
-	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
-#else
-	  this->GetEventHandler()->AddPendingEvent(*event);
-#endif
+	  JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_ChangeUserLastAttached, message);
      };
 
 #ifdef __WXMAC__
@@ -268,6 +254,8 @@ private:
      void UserLookingTabsControl(wxUpdateUIEvent& event);
      // Auiマネージャーの更新を行う
      void JaneCloneMgrUpdate(wxUpdateUIEvent& event);
+     // 閲覧中ツリーのデータ更新を行う
+     void NowReadingTreectrlUpdate(wxUpdateUIEvent& event);
 
      // スレッド一覧タブ処理
      void OneBoardTabClose(wxCommandEvent& event);
@@ -442,11 +430,10 @@ private:
      /**
       * その他のオブジェクトとメソッド
       */
+
      // スレッド一覧の情報を保持するwxHashMap　ユーザが板名をクリックするたびに作られる
-     // ThreadListクラスについてはDataType.h参照
+     // ThreadListクラスについてはdatatype.hpp参照
      WX_DECLARE_HASH_MAP( int, ThreadList*, wxIntegerHash, wxIntegerEqual, ThreadListHash );
-     // ThreadListHashの本体
-     ThreadListHash m_threadListHash;
 
      // wxFileConfigクラスのインスタンス
      wxFileConfig* config;

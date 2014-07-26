@@ -31,6 +31,7 @@
 #include "enums.hpp"
 #include "datatype.hpp"
 #include "janecloneutil.hpp"
+#include "janecloneuiutil.hpp"
 #include "janecloneimageviewer.hpp"
 #include "socketcommunication.hpp"
 
@@ -83,14 +84,7 @@ private:
       * メインのスレッドにログとイベントを送る
       */
      void SendLogging(wxString& message) {
-	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
-	  event->SetString(message.c_str());
-
-#if wxCHECK_VERSION(2, 9, 0)
-	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
-#else
-	  this->GetEventHandler()->AddPendingEvent(*event);
-#endif
+	  JaneCloneUiUtil::SendLoggingHelper(message);
      };
 
      // HtmlWindowで選択しているテキストをクリップボードにコピーする

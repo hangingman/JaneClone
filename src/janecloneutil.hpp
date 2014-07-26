@@ -42,6 +42,7 @@
 #include "wxUUID.h"
 #include "datatype.hpp"
 #include "enums.hpp"
+#include "janecloneuiutil.hpp"
 
 /**
  * JaneCloneのファイル操作用クラス
@@ -75,14 +76,7 @@ private:
 
      // メインのスレッドにログとイベントを送る
      void SendLogging(wxString& message) {
-	  wxCommandEvent* event = new wxCommandEvent(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging);
-	  event->SetString(message.c_str());
-
-#if wxCHECK_VERSION(2, 9, 0)
-	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
-#else
-	  wxTheApp->GetTopWindow()->GetEventHandler()->AddPendingEvent(*event);
-#endif
+	  JaneCloneUiUtil::SendLoggingHelper(message);
      };
 };
 

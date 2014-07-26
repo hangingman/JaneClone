@@ -97,7 +97,7 @@ bool wxMain::OnInit() {
     wxInitAllImageHandlers();
     wxImage::AddHandler( new wxPNGHandler );
     wxFileSystem::AddHandler(new wxMemoryFSHandler);
-    wxJaneClone = new JaneClone(NULL, wxID_ANY, wxEmptyString);
+    wxJaneClone = new JaneClone(NULL, ID_WxJaneClone, wxEmptyString);
     wxJaneClone->pid = 0;
     SetTopWindow(wxJaneClone);
     wxJaneClone->Show();

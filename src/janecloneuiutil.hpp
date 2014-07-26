@@ -26,7 +26,6 @@
 #include <wx/imaglist.h>
 #include "datatype.hpp"
 #include "enums.hpp"
-#include "janecloneutil.hpp"
 
 /**
  * JaneCloneのUI操作用クラス
@@ -41,6 +40,29 @@ public:
       * @param const wxWindowID id  設定対象のGUIの部位を表すID
       */
      void static SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWindowID id);
+     /**
+      * wxWidgetsのイベント通知関数のラッパー
+      *
+      * @param const wxWindowID type 
+      * @param const wxWindowID id 
+      */
+     void static QueueEventHelper(const wxWindowID type, const wxWindowID id);
+     /**
+      * wxWidgetsのイベント通知関数のラッパー
+      *
+      * @param const wxWindowID type 
+      * @param const wxWindowID id
+      * @param const T message
+      */
+     template <class T>
+     void static QueueEventHelper(const wxWindowID type, const wxWindowID id, const T& message);
+     /**
+      * JaneCloneのログ処理のラッパー
+      *
+      * @param const T message
+      */
+     template <class T>
+     void static SendLoggingHelper(const T& message);
 };
 
 #endif /* JANECLONEUIUTIL_HPP_ */

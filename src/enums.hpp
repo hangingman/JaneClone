@@ -38,6 +38,7 @@ X_TABLE_ITEM(ID_WindowMinimize)			/* ウィンドウを最小化する					*/ \
 X_TABLE_ITEM(ID_GetBoardList)			/* 板一覧情報取得						*/ \
 X_TABLE_ITEM(ID_CheckLogDirectory)		/* 保存されているログをスレッド一覧に表示する			*/ \
 X_TABLE_ITEM(ID_GetVersionInfo)			/* バージョン情報						*/ \
+X_TABLE_ITEM(ID_WxJaneClone)                    /* メインのウィンドウID                                         */ \
 X_TABLE_ITEM(ID_ThreadNoteBook)			/* スレッド一覧ノートブックに使うID				*/ \
 X_TABLE_ITEM(ID_BoardNoteBook)			/* 板一覧用ノートブックに使うID					*/ \
 X_TABLE_ITEM(ID_ThumbnailNoteBook)		/* 画像ビューア用ID						*/ \
@@ -90,6 +91,8 @@ X_TABLE_ITEM(ID_UserLastClosedBoardMenuUp)	/* ユーザーが最後に閉じた�
 X_TABLE_ITEM(ID_UserLookingTabsMenuUp)		/* ユーザーが現在見ているスレタブ・板タブ			*/ \
 X_TABLE_ITEM(ID_JaneCloneMgrUpdate)		/* Auiマネージャーの更新を行う	         		        */ \
 X_TABLE_ITEM(ID_CommonAuiToolBarUpdate)         /* Auiツールバーの更新を行う 				        */ \
+X_TABLE_ITEM(ID_FavsTreectrlUpdate)             /* お気に入りツリーの更新を行う					*/ \
+X_TABLE_ITEM(ID_NowReadingTreectrlUpdate)	/* 閲覧中ツリーの更新を行う					*/ \
 X_TABLE_ITEM(ID_UserLookingTabsControl)		/* ユーザーが現在フォーカスしているウィン			*/ \
 X_TABLE_ITEM(ID_MoveNextTab)                    /* 表示しているタブを移動する(次)				*/ \
 X_TABLE_ITEM(ID_MovePrevTab)			/* 表示しているタブを移動する(前)				*/ \
