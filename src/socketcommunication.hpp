@@ -50,6 +50,7 @@
 
 #include "enums.hpp"
 #include "janecloneutil.hpp"
+#include "janecloneuiutil.hpp"
 #include "sqliteaccessor.hpp"
 
 class SocketCommunication {

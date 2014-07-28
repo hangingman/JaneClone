@@ -180,8 +180,20 @@ template void JaneCloneUiUtil::QueueEventHelper<wxString>(const wxWindowID type,
 template <class T>
 void JaneCloneUiUtil::SendLoggingHelper(const T& message)
 {
-     JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging, message);
+     wxString log = wxEmptyString;
+
+     if (typeid(message) == typeid(wxString&))
+     {
+	  log = message;
+     } 
+     else if (typeid(message) == typeid(wchar_t&))
+     {
+	  log = wxString(message);
+     }
+
+     JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging, log);
 };
 
 // テンプレート関数の実体化
 template void JaneCloneUiUtil::SendLoggingHelper<wxString>(const wxString& m);
+template void JaneCloneUiUtil::SendLoggingHelper<wchar_t>(const wchar_t& m);
