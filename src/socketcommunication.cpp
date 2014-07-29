@@ -594,24 +594,26 @@ wxString SocketCommunication::DownloadThread(const wxString& boardName,
      if ((!wxFileExists(outputFilePath)) || (!wxFileExists(headerPath))) 
      {
 	  // 解凍された板一覧情報が存在しないor前回の通信ログが残っていないならば通常通りソケット通信を行う
-	  DownloadThreadNew((const wxString) gzipPath,
-			    (const wxString) headerPath, (const wxString) boardNameAscii,
-			    (const wxString) origNumber, (const wxString) hostName);
+	  DownloadThreadNew( gzipPath, headerPath, boardNameAscii, origNumber, hostName);
      } 
      else 
      {
 	  // そうでなければ前回の通信の差分を取得しに行く
-	  DownloadThreadMod((const wxString) gzipPath,
-			    (const wxString) headerPath, (const wxString) boardNameAscii,
-			    (const wxString) origNumber, (const wxString) hostName);
+	  DownloadThreadMod( gzipPath, headerPath, boardNameAscii, origNumber, hostName);
      }
 
-     // gzip拡張子のファイルがあれば、ファイルの解凍・UTF化を行う
      if (wxFile::Exists(gzipPath)) 
      {
+	  // gzip拡張子のファイルがあれば、ファイルの解凍を行う
 	  JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
+     }
+
+     if (wxFile::Exists(tmpPath)) 
+     {
+	  // 対象のファイルがあれば、UTF-8化を行う
 	  JaneCloneUtil::ConvertSJISToUTF8(tmpPath, outputFilePath);
      }
+
      // 更新が終わったらgzipファイルを消しておく
      // SJISファイルは残す（ファイルサイズを知っておくため）
      RemoveTmpFile(gzipPath);
@@ -869,7 +871,9 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
 	       wxString message = wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 
-	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);	       
+	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
+
+	       // 
 	  } 
 	  else if (rc == 302) 
 	  {
@@ -878,6 +882,7 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
 
+	       // 
 	  } 
 	  else if (rc == 404) 
 	  {
@@ -919,14 +924,15 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
 					    const wxString& boardNameAscii, const wxString& origNumber,
 					    const wxString& hostName, const wxString& ext) {
 
-// dat落ちしたスレッドは、一定期間を経て過去ログ倉庫に収められます。（過去ログ化）
-// 過去ログ倉庫の格納場所は次の通りです。
-// ・スレッド番号が10桁の場合
-// http://[サーバー]/[板名]/kako/[スレッド番号（上4桁）]/[スレッド番号（上5桁）]/[スレッド番号].dat.gz
-// ・スレッド番号が9桁の場合
-// http://[サーバー]/[板名]/kako/[スレッド番号（上3桁）]/[スレッド番号].dat.gz
-// ・[スレッド番号].dat.gzが無い場合、[スレッド番号].datで要求すると取得できる場合があります。
-
+/**
+ * dat落ちしたスレッドは、一定期間を経て過去ログ倉庫に収められます。（過去ログ化）
+ * 過去ログ倉庫の格納場所は次の通りです。
+ * ・スレッド番号が10桁の場合
+ * http://[サーバー]/[板名]/kako/[スレッド番号（上4桁）]/[スレッド番号（上5桁）]/[スレッド番号].dat.gz
+ * ・スレッド番号が9桁の場合
+ * http://[サーバー]/[板名]/kako/[スレッド番号（上3桁）]/[スレッド番号].dat.gz
+ * ・[スレッド番号].dat.gzが無い場合、[スレッド番号].datで要求すると取得できる場合があります。
+ */
      wxString server = hostName;
      wxString path;
      
@@ -988,7 +994,10 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
 				curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
 
-	  std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
+	  // 何も見つからなかった時に備えてgzipPathは仮の値に
+	  const wxString pastTempPath = gzipPath + wxT("temp");
+	  
+	  std::ofstream ofs(pastTempPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
 	  curlpp::options::WriteStream ws(&ofs);
 	  myRequest.setOpt(ws);
 
@@ -1011,6 +1020,9 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
 	       // 通常スレッド取得
 	       wxString message = wxT("新規取得 (ヽ´ん`)\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
+
+	       // ファイルのリネーム
+	       wxRenameFile(pastTempPath, gzipPath);
 	  } 
 	  else if (rc == 203) 
 	  {
@@ -1037,6 +1049,9 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
 	       std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
 	       ofsHeader << respBuf << std::endl;
 	  }
+
+	  // 一時ファイル削除
+	  RemoveTmpFile(pastTempPath);
 
 	  return 0;
 
