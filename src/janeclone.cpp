@@ -181,9 +181,10 @@ JaneCloneImageViewer* JaneClone::imageViewer = NULL;
 wxString JaneClone::userLastAttachedNotebook = wxEmptyString;
 
 // インスタンスを渡す処理
-JaneCloneImageViewer* JaneClone::GetJaneCloneImageViewer () {
-
-     if (imageViewer != NULL) {
+JaneCloneImageViewer* JaneClone::GetJaneCloneImageViewer () 
+{
+     if (imageViewer != NULL) 
+     {
 	  return imageViewer;
      }
      // !! ここ以下のコードは多分動かない !!
@@ -197,16 +198,20 @@ JaneCloneImageViewer* JaneClone::GetJaneCloneImageViewer () {
 /**
  * 現在JaneCloneが保持しているスレッド情報を取得する
  */
-void JaneClone::GetThreadInfoHash(ThreadInfoHash& threadInfoHash) {
-     if (!this->tiHash.empty()) {
+void JaneClone::GetThreadInfoHash(ThreadInfoHash& threadInfoHash) 
+{
+     if (!this->tiHash.empty()) 
+     {
 	  threadInfoHash = ThreadInfoHash(this->tiHash); // copy
      }
 }
 /**
  * 現在JaneCloneが保持しているスレッド情報を設定する
  */
-void JaneClone::SetThreadInfoHash(ThreadInfoHash& threadInfoHash) {
-     if (!threadInfoHash.empty()) {
+void JaneClone::SetThreadInfoHash(ThreadInfoHash& threadInfoHash) 
+{
+     if (!threadInfoHash.empty()) 
+     {
 	  this->tiHash.clear();          // delete
 	  this->tiHash = threadInfoHash; // copy
      }
@@ -279,7 +284,8 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
  * SetJaneCloneManuBar
  * メニューバーの設定を行う
  */
-void JaneClone::SetJaneCloneManuBar() {
+void JaneClone::SetJaneCloneManuBar() 
+{
      /*
       * メニューバーの設置
       */
@@ -605,12 +611,16 @@ void JaneClone::SetJaneCloneManuBar() {
      std::vector<std::tuple<wxString, wxString, wxString>> favoriteList;
      SQLiteAccessor::GetUserFavoriteThreadList(favoriteList);
 
-     if ( favoriteList.size() == 0 ) {
+     if ( favoriteList.size() == 0 ) 
+     {
           menu6->Append(wxID_ANY, wxT("お気に入りのスレッドがないよ"));
-     } else {
-	  for (unsigned int i = 0; i < favoriteList.size(); i++ ) {
-
-	       if ( std::get<1>(favoriteList.at(i)) != wxT("0")) {
+     } 
+     else 
+     {
+	  for (unsigned int i = 0; i < favoriteList.size(); i++ ) 
+	  {
+	       if ( std::get<1>(favoriteList.at(i)) != wxT("0")) 
+	       {
 		    // スレッドの場合
 		    // ex) http://engawa.2ch.net/test/read.cgi/linux/1044149677/
 		    wxString helperUrl = wxT("http://hostname/test/read.cgi/") 
@@ -619,7 +629,9 @@ void JaneClone::SetJaneCloneManuBar() {
 			 + std::get<1>(favoriteList.at(i));
 
 		    menu6->Append(ID_UserFavoriteThreadClick + i, std::get<0>(favoriteList.at(i)), helperUrl);
-	       } else {
+	       } 
+	       else 
+	       {
 		    // 板の場合
 		    // ex) http://engawa.2ch.net/linux/
 		    wxString helperUrl = wxT("http://hostname/")
@@ -756,7 +768,8 @@ void JaneClone::SetJaneCloneManuBar() {
  * SetProperties
  * 前回からのデータ引継ぎ等の処理を行う。
  */
-void JaneClone::SetProperties() {
+void JaneClone::SetProperties() 
+{
      // wxGladeによる自動生成
      SetTitle(_("JaneClone"));
      SetSize(wxSize(960, 640));
@@ -769,8 +782,8 @@ void JaneClone::SetProperties() {
      wxDir jcDir(jc);
 
      // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-     if (!workDir.HasSubDirs(JANECLONE_DIR)) {
-	  
+     if (!workDir.HasSubDirs(JANECLONE_DIR)) 
+     {	  
 	  ::wxMkdir(jc);
 	  wxDir jcDir(jc);
  
@@ -789,11 +802,15 @@ void JaneClone::SetProperties() {
 	  
 
 	  // 実行コード別のダイアログを出す
-	  if (rc != 0) {
+	  if (rc != 0) 
+	  {
 	       wxMessageBox(wxT("板一覧情報取得に失敗しました。ネットワークの接続状況を確認してください。"));
-	  } else {
+	  } 
+	  else 
+	  {
 	       // もし板一覧情報テーブルが空でなければテーブルを削除しておく
-	       if (SQLiteAccessor::TableHasData(wxT("BOARD_INFO"))) {
+	       if (SQLiteAccessor::TableHasData(wxT("BOARD_INFO"))) 
+	       {
 		    SQLiteAccessor::DropTable(wxT("BOARD_INFO"));
 	       }
 	       // 板一覧情報を展開し、SQLiteに設定する
@@ -802,9 +819,10 @@ void JaneClone::SetProperties() {
 
 	       *m_logCtrl << wxT("(ヽ´ん`) 板一覧更新完了\n");
 	  }
-
 	  
-     } else {
+     } 
+     else 
+     {
 	  // sqliteの初期化を行う
 	  std::unique_ptr<SQLiteAccessor> sqliteAccessor(new SQLiteAccessor());
      }
@@ -817,7 +835,8 @@ void JaneClone::SetProperties() {
      jcNeedDir.Add(wxT("shingetsu"));
      jcNeedDir.Add(wxT("prop"));
      jcNeedDir.Add(wxT("cache"));
-     for (int i = 0; i < jcNeedDir.GetCount(); i++ ) {
+     for (int i = 0; i < jcNeedDir.GetCount(); i++ ) 
+     {
 	  JaneCloneUtil::CreateSpecifyDirectory(chkDir, jcNeedDir[i]);
      }
 
@@ -845,8 +864,8 @@ void JaneClone::SetProperties() {
 /**
  * JaneCloneを初回起動した場合に実行するメソッド
  */
-void JaneClone::InitializeJaneClone(wxString& jc, wxDir& jcDir) {
-
+void JaneClone::InitializeJaneClone(wxString& jc, wxDir& jcDir) 
+{
      ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
      ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
      ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("cache"));
@@ -856,7 +875,8 @@ void JaneClone::InitializeJaneClone(wxString& jc, wxDir& jcDir) {
  * ユーザーが触る前のアプリのレイアウトを設定する
  * 前回の起動時にレイアウトに変更があった場合はそれを反映する
  */
-void JaneClone::DoLayout() {
+void JaneClone::DoLayout() 
+{
      // アプリ上部、URL入力欄のレイアウトを設定する
      wxBoxSizer* url_sizer = new wxBoxSizer(wxHORIZONTAL);
      url_sizer->Add(m_url_input, 1, wxEXPAND, 0);
@@ -973,7 +993,8 @@ void JaneClone::DoLayout() {
      wxString widgetsName = wxT("ID_LogWindowFontButton");
      wxString widgetsInfo = wxEmptyString;
      JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-     if (widgetsInfo != wxEmptyString) {
+     if (widgetsInfo != wxEmptyString) 
+     {
 	  wxFont font;
 	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
 	  if(ret) m_logCtrl->SetFont(font);
@@ -998,8 +1019,8 @@ void JaneClone::DoLayout() {
  * SetJaneCloneAuiPaneInfo
  * AuiManagerのPaneInfoを設定する
  */
-void JaneClone::SetJaneCloneAuiPaneInfo() {
-     
+void JaneClone::SetJaneCloneAuiPaneInfo() 
+{     
      // 板一覧ツリーを表示するかどうか
      const bool enableBoardListTree = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
 
@@ -1024,7 +1045,8 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 
      // 左側・板一覧のツリーコントロールを設定する
      wxAuiPaneInfo boardTree;
-     if (enableBoardListTree) {
+     if (enableBoardListTree) 
+     {
           // ノートブックのサイズ調整
 	  wxSize client_size = GetClientSize();
 	  // 板一覧ツリーを載せるノートブック
@@ -1170,7 +1192,8 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
 	  + wxFileSeparator  \
 	  + APP_CONFIG_FILE;
 
-     if ( wxFile::Exists(prop) ) {
+     if ( wxFile::Exists(prop) ) 
+     {
 	  *m_logCtrl << wxT("前回使用したフォント情報の読み出し…\n");
 	  m_search_ctrl->SetFont(ReadFontInfo(SEARCH_BAR));
 	  m_url_input_panel->SetFont(ReadFontInfo(URL_BAR));
@@ -1184,12 +1207,12 @@ void JaneClone::SetJaneCloneAuiPaneInfo() {
  * SetPreviousUserLookedTab
  * ユーザーが前回までに見ていた板一覧タブとスレッド一覧タブをセットする
  */
-void JaneClone::SetPreviousUserLookedTab() {
-
+void JaneClone::SetPreviousUserLookedTab() 
+{
      wxArrayString userLookedBoardList = SQLiteAccessor::GetUserLookedBoardList();
 
-     for (unsigned int i = 0; i < userLookedBoardList.GetCount(); i++) {
-
+     for (unsigned int i = 0; i < userLookedBoardList.GetCount(); i++) 
+     {
 	  // 板名
 	  wxString boardName = userLookedBoardList[i];
 
@@ -1197,7 +1220,8 @@ void JaneClone::SetPreviousUserLookedTab() {
 	  URLvsBoardName hash = retainHash[boardName];
 	  wxString boardNameAscii = hash.boardNameAscii;
 
-	  if (!boardNameAscii.IsEmpty()) {
+	  if (!boardNameAscii.IsEmpty()) 
+	  {
 	       /** 2chのdatファイルが入っていた場合の処理 */
 	       wxString outputPath = ::wxGetHomeDir() 
 		    + wxFileSeparator 
@@ -1220,8 +1244,9 @@ void JaneClone::SetPreviousUserLookedTab() {
 	       SetThreadListItemNew(boardName, outputPath, i, stub);
 
 #ifdef USE_SHINGETSU
-	  } else {
-
+	  } 
+	  else 
+	  {
 	       // ホスト名
 	       const wxString nodeHostname = boardName;
 	       // ファイルパス
@@ -1235,8 +1260,8 @@ void JaneClone::SetPreviousUserLookedTab() {
 
      wxArrayString userLookedThreadList = SQLiteAccessor::GetUserLookedThreadList();
 
-     for (unsigned int i = 0; i < userLookedThreadList.GetCount(); i+= 3) {
-
+     for (unsigned int i = 0; i < userLookedThreadList.GetCount(); i+= 3) 
+     {
 	  wxString title = userLookedThreadList[i];
 	  wxString origNumber = userLookedThreadList[i+1];
 	  wxString boardNameAscii = userLookedThreadList[i+2];
@@ -1245,7 +1270,8 @@ void JaneClone::SetPreviousUserLookedTab() {
 	  wxString threadContentPath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber, KIND_THREAD_DAT);
 
 	  // ファイルの有無確認
-	  if (!wxFile::Exists(threadContentPath)) {
+	  if (!wxFile::Exists(threadContentPath)) 
+	  {
 	       // 無ければ警告を出して次へ
 	       wxMessageBox(wxT("前回読み込んでいたdatファイルの読み出しに失敗しました\n\
                                  datファイルを削除しているか、datファイルの保存先を変更していませんか？"), wxT("読み込んでいるスレッド"), wxICON_ERROR);
@@ -1264,7 +1290,8 @@ void JaneClone::SetPreviousUserLookedTab() {
 /**
  * デストラクタ
  */
-JaneClone::~JaneClone() {
+JaneClone::~JaneClone() 
+{
      // Auiマネージャーを削除する
      m_mgr.UnInit();
      // Curlの終了処理を行う
@@ -1273,8 +1300,8 @@ JaneClone::~JaneClone() {
 /**
  * JaneCloneを終了させる
  */
-void JaneClone::OnQuit(wxCommandEvent&) {
-
+void JaneClone::OnQuit(wxCommandEvent&) 
+{
      // Auiマネージャーを削除する
      m_mgr.UnInit();
      Close(true);
@@ -1282,8 +1309,8 @@ void JaneClone::OnQuit(wxCommandEvent&) {
 /**
  * JaneCloneを再起動する
  */
-void JaneClone::OnRestart(wxCommandEvent& event) {
-
+void JaneClone::OnRestart(wxCommandEvent& event) 
+{
 #ifdef __WXMSW__
      this->pid = wxGetProcessId();
      Close(true);
@@ -1297,20 +1324,21 @@ void JaneClone::OnRestart(wxCommandEvent& event) {
 /**
  * JaneCloneのウィンドウを最小化する
  */
-void JaneClone::WindowMinimize(wxCommandEvent& event) {
-
+void JaneClone::WindowMinimize(wxCommandEvent& event) 
+{
      
 }
 /**
  * 板一覧のツリーがクリックされたときに起きるイベント
  */
-void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
-
+void JaneClone::OnGetBoardInfo(wxTreeEvent& event) 
+{
      // 選択されたTreeItemIdのインスタンス
      wxTreeItemId pushedTree = event.GetItem();
 
      // もし選択されたツリーが板名だったら(※TreeItemに子要素が無かったら)
-     if (!m_tree_ctrl->ItemHasChildren(pushedTree)) {
+     if (!m_tree_ctrl->ItemHasChildren(pushedTree)) 
+     {
 	  // 板名をwxStringで取得する
 	  wxString boardName(m_tree_ctrl->GetItemText(pushedTree));
 
@@ -1337,13 +1365,14 @@ void JaneClone::OnGetBoardInfo(wxTreeEvent& event) {
 /**
  * 新月公開ノードツリーコントロールでクリックした時のイベント
  */
-void JaneClone::OnGetShingetsuNodeInfo(wxTreeEvent& event) {
-
+void JaneClone::OnGetShingetsuNodeInfo(wxTreeEvent& event) 
+{
      // 選択されたTreeItemIdのインスタンス
      wxTreeItemId pushedTree = event.GetItem();
 
      // もし選択されたツリーが板名だったら(※TreeItemに子要素が無かったら)
-     if (!m_tree_ctrl->ItemHasChildren(pushedTree)) {
+     if (!m_tree_ctrl->ItemHasChildren(pushedTree)) 
+     {
 	  // 板名をwxStringで取得する
 	  const wxString nodeHostname(m_tree_ctrl->GetItemText(pushedTree));
 
@@ -1358,8 +1387,8 @@ void JaneClone::OnGetShingetsuNodeInfo(wxTreeEvent& event) {
  * 新月公開ノードツリー上で右クリックした時のイベント
  * 動的に公開ノードのURLを登録する
  */
-void JaneClone::OnRightClickShingetsuNodeTree(wxTreeEvent& event) {
-
+void JaneClone::OnRightClickShingetsuNodeTree(wxTreeEvent& event) 
+{
      wxTextEntryDialog* askDialog = new wxTextEntryDialog(this,
 							  wxT("新月公開ノードURLの追加を行います.URLを入力してください."),
 							  wxT("新月公開ノードURLの追加"));
@@ -1371,7 +1400,8 @@ void JaneClone::OnRightClickShingetsuNodeTree(wxTreeEvent& event) {
      askDialog->SetIcon(wxICON(janeclone));
 #endif
      
-     if ( askDialog->ShowModal() == wxID_OK ) {
+     if ( askDialog->ShowModal() == wxID_OK ) 
+     {
 	  const wxString nodeURL = askDialog->GetValue();
 
 	  // URIから各パラメーターを抜き取る
@@ -1383,19 +1413,24 @@ void JaneClone::OnRightClickShingetsuNodeTree(wxTreeEvent& event) {
 	  const wxString path = uri->path;                    // /path/to/content
 	  delete uri;
 
-	  if (!urlIsSane) {
+	  if (!urlIsSane) 
+	  {
 	       wxMessageBox(wxT("エラー, 不正なURLです.入力したURLが正しいか確認してください."), 
 			    wxT("新月公開ノードの登録"), wxICON_ERROR);
 	       askDialog->Destroy();
 	       return;
 	  }
 
-	  if (!nodeURL.IsEmpty()) {
-	       if (!port.IsEmpty()) {
+	  if (!nodeURL.IsEmpty()) 
+	  {
+	       if (!port.IsEmpty()) 
+	       {
 		    const wxString url = protocol + wxT("://") + hostname + port + wxT("/");
 		    SQLiteAccessor::SetShingetsuNode(url);
 		    m_shingetsu_tree_ctrl->AppendItem(m_shingetsu_tree_ctrl->GetRootItem(), url, 1, 1);
-	       } else {
+	       } 
+	       else 
+	       {
 		    const wxString url = protocol + wxT("://") + hostname + wxT("/");
 		    SQLiteAccessor::SetShingetsuNode(url);
 		    m_shingetsu_tree_ctrl->AppendItem(m_shingetsu_tree_ctrl->GetRootItem(), url, 1, 1);	       
@@ -1410,8 +1445,8 @@ void JaneClone::OnRightClickShingetsuNodeTree(wxTreeEvent& event) {
 /**
  * 板一覧のツリーをクリックして、それをノートブックに反映するメソッド
  */
-void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii) {
-
+void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, wxString& boardNameAscii) 
+{
      // 以前ダウンロードしていたスレッドの情報をmap化する
      std::map<wxString, ThreadList> oldThreadMap;
      URLvsBoardName boardInfo;
@@ -1432,20 +1467,25 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, 
      size_t selectedPage = 0;
 
      // ユーザーが開いているタブの板名を調べる
-     for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) {
-	  if (boardName.Cmp(boardNoteBook->GetPageText(i)) == 0) {
+     for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) 
+     {
+	  if (boardName.Cmp(boardNoteBook->GetPageText(i)) == 0) 
+	  {
 	       itIsNewBoardName = false;
 	       selectedPage = i;
 	       break;
 	  }
      }
 
-     if (itIsNewBoardName) {
+     if (itIsNewBoardName) 
+     {
 	  // もし新規のダウンロードだった場合、選択されるべきページを指定
 	  selectedPage = boardNoteBook->GetPageCount();
 	  SetThreadListItemNew((const wxString) boardName, (const wxString) outputPath, 
 			       (const size_t) selectedPage, oldThreadMap);
-     } else {
+     } 
+     else 
+     {
 	  // 更新処理の場合、選択されるべきページはi
 	  SetThreadListItemUpdate((const wxString) boardName, (const wxString) outputPath, 
 				  (const size_t) selectedPage, oldThreadMap);
@@ -1460,8 +1500,8 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, 
 void JaneClone::SetThreadListItemNew(const wxString boardName, 
 				     const wxString outputPath, 
 				     const size_t selectedPage, 
-				     const std::map<wxString,ThreadList>& oldThreadMap) {
-
+				     const std::map<wxString,ThreadList>& oldThreadMap) 
+{
      // wxAuiToolBarを宣言する
      wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath, oldThreadMap);
      // スレッドリストを表示させる
@@ -1473,8 +1513,8 @@ void JaneClone::SetThreadListItemNew(const wxString boardName,
 void JaneClone::SetThreadListItemUpdate(const wxString boardName, 
 					const wxString outputPath, 
 					const size_t selectedPage, 
-					const std::map<wxString,ThreadList>& oldThreadMap) {
-
+					const std::map<wxString,ThreadList>& oldThreadMap) 
+{
      // wxAuiToolBarを宣言する
      wxPanel* panel = CreateAuiToolBar(boardNoteBook, boardName, outputPath, oldThreadMap);     
      boardNoteBook->DeletePage(selectedPage);
@@ -1485,8 +1525,8 @@ void JaneClone::SetThreadListItemUpdate(const wxString boardName,
 /**
  * アイコンの更新を実施する
  */
-void JaneClone::UpdateThreadTabIcons() {
-
+void JaneClone::UpdateThreadTabIcons() 
+{
      // 現在アクティブになっているタブの板名を取得する
      wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
      URLvsBoardName hash = retainHash[boardName];
@@ -1497,7 +1537,8 @@ void JaneClone::UpdateThreadTabIcons() {
 
      // リストコントロールを引き出してくる
      if ( VirtualBoardListCtrl* vbListCtrl = 
-	  dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName)) ) {
+	  dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardName)) ) 
+     {
 
 	  // vectorをコピーしてソートしておく
 	  vbListCtrl->CopyVectorItems(vBoardList);
@@ -1507,13 +1548,16 @@ void JaneClone::UpdateThreadTabIcons() {
 			 return wxAtoi(lItem.getOid()) > wxAtoi(rItem.getOid());
 		    });
 
-     } else {
+     } 
+     else 
+     {
 	  wxMessageBox(wxT("内部エラー, アイコンの更新処理に失敗しました."), wxT("スレタブ"), wxICON_ERROR);
 	  return;
      }
 
      ThreadInfoHash::iterator it;
-     for (it = tiHash.begin(); it != tiHash.end(); ++it) {
+     for (it = tiHash.begin(); it != tiHash.end(); ++it) 
+     {
 	  wxString key = it->first;
 	  ThreadInfo value = it->second;
 	  wxString origNumber     = value.origNumber;
@@ -1533,24 +1577,30 @@ void JaneClone::UpdateThreadTabIcons() {
 	  /**
 	   * まずスレタブを全部見る
 	   */
-	  for (size_t i = 0; i < threadNoteBook->GetPageCount(); i++) {
-	       if (key.Cmp(threadNoteBook->GetPageText(i)) == 0) {
-
-		    if ( itV != vBoardList.end() ) {
+	  for (size_t i = 0; i < threadNoteBook->GetPageCount(); i++) 
+	  {
+	       if (key.Cmp(threadNoteBook->GetPageText(i)) == 0) 
+	       {
+		    if ( itV != vBoardList.end() ) 
+		    {
 			 // スレッド一覧情報内にスレッドがあった => 更新確認
 			 int newResNumber = wxAtoi(itV->getResponse());
 			 if (ThreadContentBar* oldThreadBar = 
-			     dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(i))) {
+			     dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(i))) 
+			 {
 			      // スレッド情報をもってくる
 			      int oldResNumber = oldThreadBar->GetThreadContentThreadResponseNum();
 
 			      // もし取得数のほうが多かったら更新 "+" !
-			      if ( newResNumber > oldResNumber ) {
+			      if ( newResNumber > oldResNumber ) 
+			      {
 				   threadNoteBook->SetPageBitmap(i, wxBitmap(threadTabAddImg, wxBITMAP_TYPE_ANY));
 			      }
 			 }
 
-		    } else {
+		    } 
+		    else 
+		    {
 			 // スレッド一覧情報を内にスレッドがない => dat落ち
 			 threadNoteBook->SetPageBitmap(i, wxBitmap(threadTabDrpImg, wxBITMAP_TYPE_ANY));
 			 break;
@@ -1573,10 +1623,12 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
      
 
      // 実行コード別のダイアログを出す
-     if (rc != 0) {
+     if (rc != 0) 
+     {
 	  wxMessageBox(wxT("板一覧情報取得に失敗しました。ネットワークの接続状況を確認してください。"));
-     } else {
-
+     } 
+     else 
+     {
 	  // 板一覧情報を展開し、SQLiteに設定する
 	  SQLiteAccessor::DeleteTableData(wxT("BOARD_INFO"));
 	  wxString boardListPath = BOARD_LIST_PATH;
@@ -1592,25 +1644,29 @@ void JaneClone::OnGetBoardList(wxCommandEvent&) {
 /**
  * HtmlWindow上でマウスホバーが起きた場合の処理
  */
-void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
-
+void JaneClone::OnCellHover(wxHtmlCellEvent& event) 
+{
      wxHtmlCell* cell = event.GetCell();
      wxHtmlLinkInfo* linkInfo = cell->GetLink(cell->GetPosX(), cell->GetPosY());
-
-     if (linkInfo && linkInfo->GetHref() != wxEmptyString) {
+     
+     if (linkInfo && linkInfo->GetHref() != wxEmptyString) 
+     {
 
 	  wxString rest;
 
-	  if ( linkInfo->GetTarget() == _T("_blank") ) {
+	  if ( linkInfo->GetTarget() == _T("_blank") ) 
+	  {
 	       // レスアンカーを察知した場合の処理
 	       // <a>タグ内サンプル　<a href="../test/read.cgi/poverty/1345636335/20" target="_blank">
 	       wxString href = linkInfo->GetHref();
 	       wxStringTokenizer tkz(href, wxT("//"));
 	       wxString boardNameAscii, origNumber, resNumber;
 
-	       while (tkz.HasMoreTokens()) {
+	       while (tkz.HasMoreTokens()) 
+	       {
 		    wxString tmp = tkz.GetNextToken();
-		    if (tmp == _T("read.cgi")) {
+		    if (tmp == _T("read.cgi")) 
+		    {
 			 boardNameAscii = tkz.GetNextToken();
 			 origNumber = tkz.GetNextToken();
 			 resNumber = tkz.GetNextToken();
@@ -1618,19 +1674,25 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event) {
 		    }
 	       }
 
-	       if (origNumber == wxEmptyString || resNumber == wxEmptyString || boardNameAscii == wxEmptyString) {
+	       if (origNumber == wxEmptyString || resNumber == wxEmptyString || boardNameAscii == wxEmptyString) 
+	       {
 		    return;
 	       }
 	       // アンカーの出現位置
 	       wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
+	       JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("Anchor X:%d, Y:%d\n"), anchorPoint.x, anchorPoint.y));
 	       // 取得した情報を元に新しいポップアップウィンドウを出現させる
 	       SetPopUpWindow(event, boardNameAscii, origNumber, resNumber, anchorPoint);
 
-	  } else if ( linkInfo->GetHref().StartsWith(wxT("#_"), &rest) ) {
+	  } 
+	  else if ( linkInfo->GetHref().StartsWith(wxT("#_"), &rest) ) 
+	  {
 	       // ID:xxxxxxxxx の形式であればポップアップさせる
-	       if (regexID.IsValid() && regexID.Matches(wxT("ID:") + rest)) {
+	       if (regexID.IsValid() && regexID.Matches(wxT("ID:") + rest)) 
+	       {
 		    // アンカーの出現位置
 		    wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
+		    JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("Anchor X:%d, Y:%d\n"), anchorPoint.x, anchorPoint.y));
 
 		    const wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
 		    wxString boardNameAscii = tiHash[title].boardNameAscii;
@@ -1690,14 +1752,19 @@ void JaneClone::ExcepSelTabClose(wxCommandEvent & event) {
      size_t select = boardNoteBook->GetSelection();
      bool delete_f = false;
 
-     for (unsigned int i=0;i<pages;i++) {
-
-	  if (i != select && !delete_f) {
+     for (unsigned int i=0;i<pages;i++) 
+     {
+	  if (i != select && !delete_f) 
+	  {
 	       boardNoteBook->DeletePage(0);
-	  } else if (i == select && !delete_f) {
+	  } 
+	  else if (i == select && !delete_f) 
+	  {
 	       boardNoteBook->DeletePage(1);
 	       delete_f = true;
-	  } else if (i != select && delete_f) {
+	  } 
+	  else if (i != select && delete_f) 
+	  {
 	       boardNoteBook->DeletePage(1);
 	  }
      }
@@ -1708,7 +1775,8 @@ void JaneClone::ExcepSelTabClose(wxCommandEvent & event) {
 void JaneClone::AllBoardTabClose(wxCommandEvent& event) {
 
      int pages = boardNoteBook->GetPageCount();
-     for (int i=0;i<pages;i++) {
+     for (int i=0;i<pages;i++) 
+     {
 	  boardNoteBook->DeletePage(0);
      }
 }
@@ -1720,7 +1788,8 @@ void JaneClone::AllLeftBoardTabClose(wxCommandEvent& event) {
      // タブの数を数える
      size_t select = boardNoteBook->GetSelection();
 
-     for (unsigned int i=0;i<select;i++) {
+     for (unsigned int i=0;i<select;i++) 
+     {
 	  boardNoteBook->DeletePage(0);
      }
 }
@@ -1732,8 +1801,10 @@ void JaneClone::AllRightBoardTabClose(wxCommandEvent& event) {
      // タブの数を数える
      size_t pages = boardNoteBook->GetPageCount();
      size_t select = boardNoteBook->GetSelection();
-     for (unsigned int i=0;i<pages;i++) {
-	  if (i>select) {
+     for (unsigned int i=0;i<pages;i++) 
+     {
+	  if (i>select) 
+	  {
 	       boardNoteBook->DeletePage(select+1);
 	  }
      }
@@ -1762,7 +1833,8 @@ void JaneClone::ReloadOneBoard(wxCommandEvent& event) {
  */
 void JaneClone::ReloadAllBoard(wxCommandEvent& event) {
 
-     for ( size_t page = 0; page < boardNoteBook->GetPageCount(); page++ ) {
+     for ( size_t page = 0; page < boardNoteBook->GetPageCount(); page++ ) 
+     {
 	  wxString boardName = boardNoteBook->GetPageText(page);
 	  URLvsBoardName hash = retainHash[boardName];
 	  SetBoardNameToNoteBook(boardName, hash.boardURL, hash.boardNameAscii);
@@ -1773,11 +1845,11 @@ void JaneClone::ReloadAllBoard(wxCommandEvent& event) {
  */
 void JaneClone::CopyBURLToClipBoard(wxCommandEvent& event) {
 
-     wxString boardName = boardNoteBook->GetPageText(
-	  boardNoteBook->GetSelection());
+     wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
      URLvsBoardName hash = retainHash[boardName];
 
-     if (wxTheClipboard->Open()) {
+     if (wxTheClipboard->Open()) 
+     {
 	  wxTheClipboard->Clear();
 	  wxTheClipboard->SetData(new wxTextDataObject(hash.boardURL));
 	  wxTheClipboard->Close();
@@ -1788,10 +1860,10 @@ void JaneClone::CopyBURLToClipBoard(wxCommandEvent& event) {
  */
 void JaneClone::CopyBTitleToClipBoard(wxCommandEvent& event) {
 
-     wxString boardName = boardNoteBook->GetPageText(
-	  boardNoteBook->GetSelection());
+     wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
 
-     if (wxTheClipboard->Open()) {
+     if (wxTheClipboard->Open()) 
+     {
 	  wxTheClipboard->Clear();
 	  wxTheClipboard->SetData(new wxTextDataObject(boardName));
 	  wxTheClipboard->Close();
@@ -1802,11 +1874,11 @@ void JaneClone::CopyBTitleToClipBoard(wxCommandEvent& event) {
  */
 void JaneClone::CopyBBothDataToClipBoard(wxCommandEvent& event) {
 
-     wxString boardName = boardNoteBook->GetPageText(
-	  boardNoteBook->GetSelection());
+     wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
      URLvsBoardName hash = retainHash[boardName];
 
-     if (wxTheClipboard->Open()) {
+     if (wxTheClipboard->Open()) 
+     {
 	  wxTheClipboard->Clear();
 	  wxTheClipboard->SetData(new wxTextDataObject(boardName + wxT("\n") + hash.boardURL));
 	  wxTheClipboard->Close();
@@ -1819,17 +1891,18 @@ void JaneClone::DeleteBSelectedDatFile(wxCommandEvent& event) {
 
      // datファイル名の組み立て
      wxString title, boardNameAscii, origNumber, boardURL;
-
      wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
 
      // ハッシュから英字の板名を探す
      NameURLHash::iterator it;
      URLvsBoardName boardInfoHash;
-     for (it = retainHash.begin(); it != retainHash.end(); ++it) {
+     for (it = retainHash.begin(); it != retainHash.end(); ++it) 
+     {
 	  wxString key = it->first;
 	  boardInfoHash = it->second;
 
-	  if (boardInfoHash.boardName == boardName) {
+	  if (boardInfoHash.boardName == boardName) 
+	  {
 	       boardNameAscii = boardInfoHash.boardNameAscii;
 	       break;
 	  }
@@ -1838,7 +1911,8 @@ void JaneClone::DeleteBSelectedDatFile(wxCommandEvent& event) {
      // ファイルパスの組み立てとファイルの有無確認
      wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber, KIND_BOARD__DAT);
 
-     if (!wxFile::Exists(filePath)) {
+     if (!wxFile::Exists(filePath)) 
+     {
 	  // 無ければエラーメッセージ表示
 	  wxMessageBox(wxT("削除するためのdatファイルが見つかりませんでした"));
 	  return;
@@ -1848,7 +1922,8 @@ void JaneClone::DeleteBSelectedDatFile(wxCommandEvent& event) {
      wxMessageDialog* dlg = new wxMessageDialog(this, message, wxT("ログファイル削除"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
      const int result = dlg->ShowModal();
 
-     if (result == wxID_YES) {
+     if (result == wxID_YES) 
+     {
 	  wxRemoveFile(filePath);
      }
 }
@@ -1861,7 +1936,8 @@ void JaneClone::DeleteBAllDatFile(wxCommandEvent& event) {
      wxMessageDialog* dlg = new wxMessageDialog(this, message, wxT("ログファイル削除"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
      const int result = dlg->ShowModal();
 
-     if (result == wxID_YES) {
+     if (result == wxID_YES) 
+     {
 	  // datファイルがあるディレクトリを探す
 	  wxString empty = wxEmptyString;
 	  wxString dirname = JaneCloneUtil::AssembleFilePath(empty, empty, KIND_BOARD__DAT);
@@ -1870,32 +1946,36 @@ void JaneClone::DeleteBAllDatFile(wxCommandEvent& event) {
 	  wxArrayString  files;
 	  size_t count = JaneCloneUtil::GetFileNamesRecursive(targetDir, files);
 	  // ファイル削除
-	  for ( size_t i = 0; i < count; i++ ) {
+	  for ( size_t i = 0; i < count; i++ ) 
+	  {
 	       wxString log = files[i] + wxT("__!\n");
 	       SendLogging(log);
 	  }
 	  
+	  // TODO
 	  //wxRemoveFile(filePath);
      }
 }
 /**
  * お気に入り以外のすべてのスレッド一覧情報を削除する
  */
-void JaneClone::DeleteBAllDatFileWithoutFav(wxCommandEvent& event) {
+void JaneClone::DeleteBAllDatFileWithoutFav(wxCommandEvent& event) 
+{
 
 }
 /**
  * スレッドのURLをクリップボードにコピーする
  */
-void JaneClone::CopyTURLToClipBoard(wxCommandEvent& event) {
-
+void JaneClone::CopyTURLToClipBoard(wxCommandEvent& event) 
+{
      const wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
      const wxString boardNameAscii = tiHash[title].boardNameAscii;
      const wxString origNumber = tiHash[title].origNumber;
 
      wxString threadURL = GetThreadURL(title, boardNameAscii, origNumber);
 
-     if (wxTheClipboard->Open()) {
+     if (wxTheClipboard->Open()) 
+     {
 	  wxTheClipboard->Clear();
 	  wxTheClipboard->SetData(new wxTextDataObject(threadURL));
 	  wxTheClipboard->Close();
@@ -1908,7 +1988,8 @@ void JaneClone::CopyTTitleToClipBoard(wxCommandEvent& event) {
 
      wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
 
-     if (wxTheClipboard->Open()) {
+     if (wxTheClipboard->Open()) 
+     {
 	  wxTheClipboard->Clear();
 	  wxTheClipboard->SetData(new wxTextDataObject(title));
 	  wxTheClipboard->Close();
@@ -1917,22 +1998,23 @@ void JaneClone::CopyTTitleToClipBoard(wxCommandEvent& event) {
 /**
  * スレッドのURLとタイトルをクリップボードにコピーする
  */
-void JaneClone::CopyTBothDataToClipBoard(wxCommandEvent& event) {
-
+void JaneClone::CopyTBothDataToClipBoard(wxCommandEvent& event) 
+{
      wxString title, boardNameAscii, origNumber, boardURL;
 
-     title = threadNoteBook->GetPageText(
-	  threadNoteBook->GetSelection());
+     title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
      boardNameAscii = tiHash[title].boardNameAscii;
      origNumber = tiHash[title].origNumber;
 
      // 仕方がないので総当りでハッシュからURLを探す
      NameURLHash::iterator it;
-     for (it = retainHash.begin(); it != retainHash.end(); ++it) {
+     for (it = retainHash.begin(); it != retainHash.end(); ++it) 
+     {
 	  wxString key = it->first;
 	  URLvsBoardName value = it->second;
 
-	  if (value.boardNameAscii == boardNameAscii) {
+	  if (value.boardNameAscii == boardNameAscii) 
+	  {
 	       boardURL = value.boardURL;
 	       break;
 	  }
@@ -1942,7 +2024,8 @@ void JaneClone::CopyTBothDataToClipBoard(wxCommandEvent& event) {
 
      // ホスト名の後の板名を除く
      int begin = threadURL.Find(boardNameAscii);
-     if (begin == wxNOT_FOUND) {
+     if (begin == wxNOT_FOUND) 
+     {
 	  return;
      }
      threadURL = threadURL.Mid(0, begin);
@@ -1952,7 +2035,8 @@ void JaneClone::CopyTBothDataToClipBoard(wxCommandEvent& event) {
      threadURL += origNumber;
      threadURL += wxT("/");
 
-     if (wxTheClipboard->Open()) {
+     if (wxTheClipboard->Open()) 
+     {
 	  wxTheClipboard->SetData(new wxTextDataObject(title + wxT("\n") + threadURL));
 	  wxTheClipboard->Close();
      }
@@ -1960,8 +2044,8 @@ void JaneClone::CopyTBothDataToClipBoard(wxCommandEvent& event) {
 /**
  * 保存されているログをスレッド一覧に表示する
  */
-void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
-
+void JaneClone::CheckLogDirectory(wxCommandEvent& event) 
+{
      // ファイルパスの組み立て
      wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
      wxString filePath = jcDir.GetName() + wxFileSeparator + wxT("dat");     
@@ -1969,7 +2053,9 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
      // datファイルパスを開く
      wxDir datDir(filePath);
      if ( !datDir.IsOpened() )
+     {
 	  return;
+     }
 
      wxString dirName = datDir.GetName();
      wxArrayString allFileList;
@@ -1979,9 +2065,11 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
      // datファイルのみの配列に置き換える
      wxArrayString datList;
 
-     for (unsigned int i=0;i < allFileList.GetCount();i++) {
+     for (unsigned int i=0;i < allFileList.GetCount();i++) 
+     {
 	  wxFileName* filename = new wxFileName(allFileList[i], wxPATH_NATIVE);
-	  if(filename->GetName().IsNumber() && allFileList[i].Contains(wxT(".dat"))) {
+	  if(filename->GetName().IsNumber() && allFileList[i].Contains(wxT(".dat"))) 
+	  {
 	       // ファイル名が数字10桁で拡張子が「.dat」のものを取得する
 	       datList.Add(allFileList[i]);
 	  }
@@ -2001,8 +2089,10 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
      wxString boardName = wxT("ログ一覧");
 
      // ユーザーが開いているタブの板名を調べる
-     for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) {
-	  if (boardName.Cmp(boardNoteBook->GetPageText(i)) == 0) {
+     for (unsigned int i = 0; i < boardNoteBook->GetPageCount(); i++) 
+     {
+	  if (boardName.Cmp(boardNoteBook->GetPageText(i)) == 0) 
+	  {
 	       itIsNewBoardName = false;
 	       selectedPage = i;
 	       break;
@@ -2012,7 +2102,8 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
      // 仮想リストのインスタンス（スコープの外で宣言したい）
      VirtualBoardListCtrl* vbListCtrl;
 
-     if (itIsNewBoardName) {
+     if (itIsNewBoardName) 
+     {
 	  /*
 	   * 新規にログ一覧を作成する場合
 	   */
@@ -2022,7 +2113,9 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
 	  // スレッドリストを表示させる
 	  boardNoteBook->AddPage(vbListCtrl, boardName, false);
 
-     } else {
+     } 
+     else 
+     {
 	  /*
 	   * 既にログ一覧がタブにある場合
 	   */
@@ -2053,29 +2146,34 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event) {
 /**
  * スレタブをひとつ閉じる
  */
-void JaneClone::OneThreadTabClose(wxCommandEvent& event) {
-
+void JaneClone::OneThreadTabClose(wxCommandEvent& event) 
+{
      // アクティブなタブを選択して閉じる
      threadNoteBook->DeletePage(threadNoteBook->GetSelection());
 }
 /**
  * 現在選択されていないスレタブを閉じる
  */
-void JaneClone::ExcepSelThreadTabClose(wxCommandEvent& event) {
-
+void JaneClone::ExcepSelThreadTabClose(wxCommandEvent& event) 
+{
      // タブの数を数える
      size_t pages = threadNoteBook->GetPageCount();
      size_t select = threadNoteBook->GetSelection();
      bool delete_f = false;
 
-     for (unsigned int i=0;i<pages;i++) {
-
-	  if (i != select && !delete_f) {
+     for (unsigned int i=0;i<pages;i++) 
+     {
+	  if (i != select && !delete_f) 
+	  {
 	       threadNoteBook->DeletePage(0);
-	  } else if (i == select && !delete_f) {
+	  } 
+	  else if (i == select && !delete_f) 
+	  {
 	       threadNoteBook->DeletePage(1);
 	       delete_f = true;
-	  } else if (i != select && delete_f) {
+	  } 
+	  else if (i != select && delete_f) 
+	  {
 	       threadNoteBook->DeletePage(1);
 	  }
      }
@@ -2083,35 +2181,39 @@ void JaneClone::ExcepSelThreadTabClose(wxCommandEvent& event) {
 /**
  * すべてのスレタブを閉じる
  */
-void JaneClone::AllThreadTabClose(wxCommandEvent& event) {
-
+void JaneClone::AllThreadTabClose(wxCommandEvent& event) 
+{
      int pages = threadNoteBook->GetPageCount();
-     for (int i=0;i<pages;i++) {
+     for (int i=0;i<pages;i++) 
+     {
 	  threadNoteBook->DeletePage(0);
      }
 }
 /**
  * これより左のスレタブをを閉じる
  */
-void JaneClone::AllLeftThreadTabClose(wxCommandEvent& event) {
-
+void JaneClone::AllLeftThreadTabClose(wxCommandEvent& event) 
+{
      // タブの数を数える
      size_t select = threadNoteBook->GetSelection();
 
-     for (unsigned int i=0;i<select;i++) {
+     for (unsigned int i=0;i<select;i++) 
+     {
 	  threadNoteBook->DeletePage(0);
      }
 }
 /**
  * これより右のスレタブを閉じる
  */
-void JaneClone::AllRightThreadTabClose(wxCommandEvent& event) {
-
+void JaneClone::AllRightThreadTabClose(wxCommandEvent& event) 
+{
      // タブの数を数える
      size_t pages = threadNoteBook->GetPageCount();
      size_t select = threadNoteBook->GetSelection();
-     for (unsigned int i=0;i<pages;i++) {
-	  if (i>select) {
+     for (unsigned int i=0;i<pages;i++) 
+     {
+	  if (i>select) 
+	  {
 	       threadNoteBook->DeletePage(select+1);
 	  }
      }
@@ -2119,11 +2221,12 @@ void JaneClone::AllRightThreadTabClose(wxCommandEvent& event) {
 /**
  * スレッドをブラウザで開く
  */
-void JaneClone::OnOpenThreadByBrowser(wxCommandEvent& event) {
-
+void JaneClone::OnOpenThreadByBrowser(wxCommandEvent& event) 
+{
      CopyTURLToClipBoard(event);
 
-     if (wxTheClipboard->Open()) {
+     if (wxTheClipboard->Open()) 
+     {
 	  wxTextDataObject data;
 	  wxTheClipboard->GetData(data);
 	  wxString url = data.GetText();
@@ -2134,8 +2237,8 @@ void JaneClone::OnOpenThreadByBrowser(wxCommandEvent& event) {
 /**
  * datファイルに名前を付けて保存
  */
-void JaneClone::SaveDatFile(wxCommandEvent& event) {
-
+void JaneClone::SaveDatFile(wxCommandEvent& event) 
+{
      wxString caption = wxT("datファイルに名前を付けて保存");
      wxString defaultDir = wxEmptyString; // OSのデフォルトに合わせる
      wxString wildCard = wxT("dat files (*.dat) |*.dat");
@@ -2150,7 +2253,8 @@ void JaneClone::SaveDatFile(wxCommandEvent& event) {
      // ファイルパスの組み立てとファイルの有無確認
      wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber, KIND_THREAD_DAT);
 
-     if (!wxFile::Exists(filePath)) {
+     if (!wxFile::Exists(filePath)) 
+     {
 	  // 無ければエラーメッセージ表示
 	  wxMessageBox(wxT("保存するためのdatファイルが見つかりませんでした"));
 	  return;
@@ -2159,9 +2263,11 @@ void JaneClone::SaveDatFile(wxCommandEvent& event) {
      wxFileDialog dialog(this, caption, defaultDir, wxEmptyString, wildCard, wxFD_SAVE);
      dialog.SetPath(filePath);
 
-     if (dialog.ShowModal() == wxID_OK) {
+     if (dialog.ShowModal() == wxID_OK) 
+     {
 	  bool ret = wxCopyFile(filePath, dialog.GetPath(), true);
-	  if (!ret) {
+	  if (!ret) 
+	  {
 	       wxMessageBox(wxT("datファイルの保存に失敗しました"));
 	  }
      }
@@ -2169,8 +2275,8 @@ void JaneClone::SaveDatFile(wxCommandEvent& event) {
 /**
  * datをクリップボードにコピー
  */
-void JaneClone::SaveDatFileToClipBoard(wxCommandEvent& event) {
-
+void JaneClone::SaveDatFileToClipBoard(wxCommandEvent& event) 
+{
      // datファイル名の組み立て
      wxString title, boardNameAscii, origNumber, boardURL;
 
@@ -2181,13 +2287,15 @@ void JaneClone::SaveDatFileToClipBoard(wxCommandEvent& event) {
      // ファイルパスの組み立てとファイルの有無確認
      wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber, KIND_THREAD_DAT);
 
-     if (!wxFile::Exists(filePath)) {
+     if (!wxFile::Exists(filePath)) 
+     {
 	  // 無ければエラーメッセージ表示
 	  wxMessageBox(wxT("保存するためのdatファイルが見つかりませんでした"));
 	  return;
      }
 
-     if (wxTheClipboard->Open()) {
+     if (wxTheClipboard->Open()) 
+     {
 	  wxFileDataObject* file = new wxFileDataObject();
 	  file->AddFile(filePath);
 
@@ -2199,8 +2307,8 @@ void JaneClone::SaveDatFileToClipBoard(wxCommandEvent& event) {
 /**
  * このログを削除
  */
-void JaneClone::DeleteDatFile(wxCommandEvent& event) {
-
+void JaneClone::DeleteDatFile(wxCommandEvent& event) 
+{
      // datファイル名の組み立て
      wxString title, boardNameAscii, origNumber, boardURL;
 
@@ -2211,7 +2319,8 @@ void JaneClone::DeleteDatFile(wxCommandEvent& event) {
      // ファイルパスの組み立てとファイルの有無確認
      wxString filePath = JaneCloneUtil::AssembleFilePath(boardNameAscii, origNumber, KIND_THREAD_DAT);
 
-     if (!wxFile::Exists(filePath)) {
+     if (!wxFile::Exists(filePath)) 
+     {
 	  // 無ければエラーメッセージ表示
 	  wxMessageBox(wxT("削除するためのdatファイルが見つかりませんでした"));
 	  return;
@@ -2221,15 +2330,16 @@ void JaneClone::DeleteDatFile(wxCommandEvent& event) {
      wxMessageDialog* dlg = new wxMessageDialog(this, message, wxT("ログファイル削除"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION);
      const int result = dlg->ShowModal();
 
-     if (result == wxID_YES) {
+     if (result == wxID_YES) 
+     {
 	  wxRemoveFile(filePath);
      }
 }
 /**
  * スレッドの再読み込み
  */
-void JaneClone::ReloadThisThread(wxCommandEvent& event) {
-
+void JaneClone::ReloadThisThread(wxCommandEvent& event) 
+{
      // 選択されたスレタブの情報を集める
      wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
      ReloadThread(title);
@@ -2237,16 +2347,16 @@ void JaneClone::ReloadThisThread(wxCommandEvent& event) {
 /**
  * 指定された名前のスレッドを更新する
  */
-void JaneClone::ReloadThreadByName(wxCommandEvent& event) {
-     
+void JaneClone::ReloadThreadByName(wxCommandEvent& event) 
+{     
      wxString title = event.GetString();
      ReloadThread(title);
 }
 /**
  * 指定されたタイトルのスレッドを更新する
  */
-void JaneClone::ReloadThread(wxString& title) {
-
+void JaneClone::ReloadThread(wxString& title) 
+{
      size_t page = threadNoteBook->GetSelection();
      wxString boardName,boardURL, origNumber, boardNameAscii;
      ThreadInfo info = tiHash[title];
@@ -2255,11 +2365,13 @@ void JaneClone::ReloadThread(wxString& title) {
 
      // 仕方がないので総当りでハッシュからURLを探す
      NameURLHash::iterator it;
-     for (it = retainHash.begin(); it != retainHash.end(); ++it) {
+     for (it = retainHash.begin(); it != retainHash.end(); ++it) 
+     {
 	  wxString key = it->first;
 	  URLvsBoardName value = it->second;
 
-	  if (value.boardNameAscii == boardNameAscii) {
+	  if (value.boardNameAscii == boardNameAscii) 
+	  {
 	       boardName = value.boardName;
 	       boardURL = value.boardURL;
 	       break;
@@ -2276,7 +2388,8 @@ void JaneClone::ReloadThread(wxString& title) {
      // 既存のページから情報を取得して削除する
      ThreadContentBar* oldThreadBar = dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(page));
 
-     if (oldThreadBar) {
+     if (oldThreadBar) 
+     {
 	  wxPoint p;
 	  oldThreadBar->GetThreadContentWindowScrollPos(&p);
 	  oldThreadBar->ReloadThreadContentWindow(threadContentPath);
@@ -2297,8 +2410,8 @@ void JaneClone::ReloadThread(wxString& title) {
 /**
  *  書き込み用のウィンドウを呼び出す
  */
-void JaneClone::CallResponseWindow(wxCommandEvent& event) {
-
+void JaneClone::CallResponseWindow(wxCommandEvent& event) 
+{
      // 必要な構造体を宣言する
      ThreadInfo threadInfoHash;
      URLvsBoardName boardInfoHash;
@@ -2310,7 +2423,8 @@ void JaneClone::CallResponseWindow(wxCommandEvent& event) {
 
      // ハッシュからURLを探す
      NameURLHash::iterator it;
-     for (it = retainHash.begin(); it != retainHash.end(); ++it) {
+     for (it = retainHash.begin(); it != retainHash.end(); ++it) 
+     {
 	  wxString key = it->first;
 	  boardInfoHash = it->second;
 
@@ -2329,8 +2443,8 @@ void JaneClone::CallResponseWindow(wxCommandEvent& event) {
 /**
  * 板一覧更ツリーの初期化
  */
-void JaneClone::InitializeBoardList() {
-     
+void JaneClone::InitializeBoardList() 
+{     
      // 2ch板一覧ツリーの初期化
      this->Initialize2chBoardList();
 
@@ -3193,8 +3307,11 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
 
      // 取得したレスをポップアップさせる
      AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook, anchorPoint, wxSize(640, 300), htmlDOM);
+     JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("anchor point: %d, %d\n"), anchorPoint.x, anchorPoint.y));
+
      // マウスカーソルの位置に調整する
      wxPoint p = ClientToScreen(wxGetMousePosition());
+     JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("mouse point: %d, %d\n"), p.x, p.y));
      popup->Position(anchorPoint, wxSize(p.x + 50, p.y - 150));
      popup->Popup();
 }
