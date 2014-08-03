@@ -290,10 +290,46 @@ void JaneClone::SetJaneCloneManuBar()
       * メニューバーの設置
       */
      wxMenuBar *menuBar = new wxMenuBar;
+
+     /**
+      * 必要なメニューのインスタンスは先に確保する
+      */
+     wxMenu* menu1  = new wxMenu;
+     wxMenu* menu2  = new wxMenu;
+     wxMenu* menu3  = new wxMenu;
+     wxMenu* menu4  = new wxMenu;
+     wxMenu* menu5  = new wxMenu;
+     wxMenu* menu6  = new wxMenu;
+     wxMenu* menu7  = new wxMenu;
+     wxMenu* menu8  = new wxMenu;
+     wxMenu* menu9  = new wxMenu;
+     wxMenu* menu10 = new wxMenu;
+
+     /** メニューバーにメニューをセットしてタイトルを付けておく */
+     menuBar->Append(menu1, wxT("ファイル"));
+     menu1->SetTitle(wxT("ファイル"));
+     menuBar->Append(menu2, wxT("表示"));
+     menu2->SetTitle(wxT("表示"));
+     menuBar->Append(menu3, wxT("板覧"));
+     menu3->SetTitle(wxT("板覧"));
+     menuBar->Append(menu4, wxT("スレ覧"));
+     menu4->SetTitle(wxT("スレ覧"));
+     menuBar->Append(menu5, wxT("スレッド"));
+     menu5->SetTitle(wxT("スレッド"));
+     menuBar->Append(menu6, wxT("お気に入り"));
+     menu6->SetTitle(wxT("お気に入り"));
+     menuBar->Append(menu7, wxT("検索"));
+     menu7->SetTitle(wxT("検索"));
+     menuBar->Append(menu8, wxT("ウィンドウ"));
+     menu8->SetTitle(wxT("ウィンドウ"));
+     menuBar->Append(menu9, wxT("ツール"));
+     menu9->SetTitle(wxT("ツール"));
+     menuBar->Append(menu10, wxT("ヘルプ"));
+     menu10->SetTitle(wxT("ヘルプ"));
+
      /**
       * ファイル部分
       */
-     wxMenu *menu1 = new wxMenu;
      menu1->AppendSeparator();
      this->closeT = new wxMenu;
      // 動的に項目を補充する
@@ -313,7 +349,6 @@ void JaneClone::SetJaneCloneManuBar()
      /**
       * 表示部分
       */
-     wxMenu *menu2 = new wxMenu;
      wxMenu *toolBar   = new wxMenu;
      toolBar->Append(wxID_ANY, wxT("メニュー"));
      toolBar->Append(wxID_ANY, wxT("メインツールバー"));
@@ -384,7 +419,6 @@ void JaneClone::SetJaneCloneManuBar()
      /**
       * 板覧部分
       */
-     wxMenu *menu3 = new wxMenu;
      menu3->Append(ID_GetBoardList, wxT("板一覧の更新"));
      menu3->AppendSeparator();
      menu3->Append(wxID_ANY, wxT("お気に入りを板として開く"));
@@ -405,7 +439,6 @@ void JaneClone::SetJaneCloneManuBar()
      /**
       * スレ覧部分
       */
-     wxMenu *menu4 = new wxMenu;
      wxMenu *closeB = new wxMenu;
      closeB->Append(ID_OneBoardTabClose, wxT("現在の板を閉じる"));
      closeB->AppendSeparator();
@@ -496,7 +529,6 @@ void JaneClone::SetJaneCloneManuBar()
      /**
       * スレッド部分
       */
-     wxMenu *menu5 = new wxMenu;
      wxMenu *closeTh = new wxMenu;
      closeTh->Append(ID_OneThreadTabClose, wxT("選択中のタブを閉じる"));
      closeTh->Append(wxID_ANY, wxT("未読として閉じる"));
@@ -604,7 +636,6 @@ void JaneClone::SetJaneCloneManuBar()
      /**
       * お気に入り部分
       */
-     wxMenu *menu6 = new wxMenu;
      menu6->Append(wxID_ANY, wxT("このフォルダを開く"));
      menu6->AppendSeparator();
 
@@ -646,7 +677,6 @@ void JaneClone::SetJaneCloneManuBar()
      /**
       * 検索部分
       */
-     wxMenu *menu7 = new wxMenu;
      menu7->Append(wxID_ANY, wxT("検索"));
      menu7->Append(wxID_ANY, wxT("↓検索"));
      menu7->Append(wxID_ANY, wxT("↑検索"));
@@ -667,7 +697,6 @@ void JaneClone::SetJaneCloneManuBar()
      /**
       * ウィンドウ部分
       */
-     wxMenu* menu8 = new wxMenu;
      menu8->Append(ID_UserLookingTabsControl, wxT("閉じる"));
      menu8->AppendSeparator();
      menu8->Append(ID_MoveNextTab, wxT("次のタブ"));
@@ -689,7 +718,6 @@ void JaneClone::SetJaneCloneManuBar()
      /**
       * ツール部分
       */
-     wxMenu *menu9 = new wxMenu;
      menu9->Append(wxID_ANY, wxT("更新チェック"));
      menu9->AppendSeparator();
      wxMenu *image = new wxMenu;
@@ -720,7 +748,6 @@ void JaneClone::SetJaneCloneManuBar()
      /**
       * ヘルプ部分
       */
-     wxMenu *menu10 = new wxMenu;
      menu10->Append(wxID_ANY, wxT("ヘルプ"));
      menu10->AppendSeparator();
      menu10->Append(ID_OnOpenJaneCloneOfficial, wxT("JaneClone公式サイトをブラウザで開く"));
@@ -731,28 +758,6 @@ void JaneClone::SetJaneCloneManuBar()
      menu10->AppendSeparator();
      menu10->Append(wxID_ANY, wxT("バグレポート"));
      menu10->Append(ID_GetVersionInfo, wxT("バージョン情報を開く"));
-
-     /** メニューバーにメニューをセットしてタイトルを付けておく */
-     menuBar->Append(menu1, wxT("ファイル"));
-     menu1->SetTitle(wxT("ファイル"));
-     menuBar->Append(menu2, wxT("表示"));
-     menu2->SetTitle(wxT("表示"));
-     menuBar->Append(menu3, wxT("板覧"));
-     menu3->SetTitle(wxT("板覧"));
-     menuBar->Append(menu4, wxT("スレ覧"));
-     menu4->SetTitle(wxT("スレ覧"));
-     menuBar->Append(menu5, wxT("スレッド"));
-     menu5->SetTitle(wxT("スレッド"));
-     menuBar->Append(menu6, wxT("お気に入り"));
-     menu6->SetTitle(wxT("お気に入り"));
-     menuBar->Append(menu7, wxT("検索"));
-     menu7->SetTitle(wxT("検索"));
-     menuBar->Append(menu8, wxT("ウィンドウ"));
-     menu8->SetTitle(wxT("ウィンドウ"));
-     menuBar->Append(menu9, wxT("ツール"));
-     menu9->SetTitle(wxT("ツール"));
-     menuBar->Append(menu10, wxT("ヘルプ"));
-     menu10->SetTitle(wxT("ヘルプ"));
 
      // Linuxではファイルごとクリップボードにコピーすることができない
 #ifndef __WXMSW__
