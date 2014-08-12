@@ -1,4 +1,5 @@
 ACLOCAL_AMFLAGS		= -I m4
+AUTOMAKE_OPTIONS	= serial-tests subdir-objects
 
 janeclonedir 		= $(pkglibdir)
 janeclone_LTLIBRARIES	= libwxuuid.la
@@ -14,4 +15,14 @@ noinst_HEADERS = \
 
 if USE_WINDRES
 libwxuuid_la_LDFLAGS 	+= -loleaut32 -lole32
-endif 
+endif
+
+### Unit Test ###
+check_PROGRAMS		= wxuuid-test1
+TEST_LOGS		= wxuuid-test1.log
+wxuuid_test1_SOURCES	= test/wxuuid-test1.cpp
+wxuuid_test1_LDFLAGS	= -L$(top_builddir)/libwxuuid -lwxuuid
+wxuuid_test1_CXXFLAGS	= -Dprotected=public
+
+check-local:
+	@for f in $(TEST_LOGS); do printf "\n=== $$f ===\n\n"; cat $$f; done

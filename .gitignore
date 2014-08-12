@@ -1,5 +1,6 @@
 *.o
 *.lo
+*.log
 Makefile
 */Makefile.in
 Makefile.in
