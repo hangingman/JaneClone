@@ -28,6 +28,9 @@
 #include <iterator>
 #include <stdexcept>
 #include <memory>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <wx/wx.h>
 #include <wx/textfile.h>
 #include <wx/file.h>
@@ -39,7 +42,6 @@
 #include <wx/treectrl.h>
 #include <wx/fileconf.h>
 #include <babel.h>
-#include "wxUUID.h"
 #include "datatype.hpp"
 #include "enums.hpp"
 #include "janecloneuiutil.hpp"
