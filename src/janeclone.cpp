@@ -1712,8 +1712,8 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event)
 /**
  * スレッド一覧ノートブックで、タブが消される前の処理
  */
-void JaneClone::OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event) {
-
+void JaneClone::OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event) 
+{
      // 消されようとしているタブのタイトルを取得
      wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
      // 固有番号を取得
@@ -1726,12 +1726,14 @@ void JaneClone::OnAboutCloseThreadNoteBook(wxAuiNotebookEvent& event) {
      SQLiteAccessor::SetThreadInfo(&t);
      // ハッシュからタイトルのキーを持つデータを削除
      tiHash.erase(title);
+     // 閲覧中ツリーの情報を更新する
+     JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI, ID_NowReadingTreectrlUpdate);
 }
 /**
  * 板一覧ノートブックで、タブが消される前の処理
  */
-void JaneClone::OnAboutCloseBoardNoteBook(wxAuiNotebookEvent& event) {
-
+void JaneClone::OnAboutCloseBoardNoteBook(wxAuiNotebookEvent& event) 
+{
      // 消されようとしているタブのタイトルを取得
      wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
      URLvsBoardName hash = retainHash[boardName];
@@ -1742,16 +1744,16 @@ void JaneClone::OnAboutCloseBoardNoteBook(wxAuiNotebookEvent& event) {
 /**
  * アクティブな板タブをひとつ閉じる
  */
-void JaneClone::OneBoardTabClose(wxCommandEvent & event) {
-
+void JaneClone::OneBoardTabClose(wxCommandEvent & event) 
+{
      // アクティブなタブを選択して閉じる
      boardNoteBook->DeletePage(boardNoteBook->GetSelection());
 }
 /**
  * 現在選択されていないスレッド一覧タブを閉じる
  */
-void JaneClone::ExcepSelTabClose(wxCommandEvent & event) {
-
+void JaneClone::ExcepSelTabClose(wxCommandEvent & event) 
+{
      // タブの数を数える
      size_t pages = boardNoteBook->GetPageCount();
      size_t select = boardNoteBook->GetSelection();
@@ -1777,8 +1779,8 @@ void JaneClone::ExcepSelTabClose(wxCommandEvent & event) {
 /**
  * すべてのスレッド一覧タブを閉じる
  */
-void JaneClone::AllBoardTabClose(wxCommandEvent& event) {
-
+void JaneClone::AllBoardTabClose(wxCommandEvent& event) 
+{
      int pages = boardNoteBook->GetPageCount();
      for (int i=0;i<pages;i++) 
      {
@@ -2154,6 +2156,10 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event)
 void JaneClone::OneThreadTabClose(wxCommandEvent& event) 
 {
      // アクティブなタブを選択して閉じる
+     wxAuiNotebookEvent e(wxEVT_AUINOTEBOOK_PAGE_CLOSE);
+     e.SetSelection(threadNoteBook->GetSelection());
+     e.SetId(ID_ThreadNoteBook);
+     OnAboutCloseThreadNoteBook(e);
      threadNoteBook->DeletePage(threadNoteBook->GetSelection());
 }
 /**
@@ -2162,23 +2168,30 @@ void JaneClone::OneThreadTabClose(wxCommandEvent& event)
 void JaneClone::ExcepSelThreadTabClose(wxCommandEvent& event) 
 {
      // タブの数を数える
-     size_t pages = threadNoteBook->GetPageCount();
-     size_t select = threadNoteBook->GetSelection();
+     const size_t pages = threadNoteBook->GetPageCount();
+     const size_t select = threadNoteBook->GetSelection();
      bool delete_f = false;
 
-     for (unsigned int i=0;i<pages;i++) 
+     for (unsigned int i = 0; i < pages; i++) 
      {
+	  wxAuiNotebookEvent e(wxEVT_AUINOTEBOOK_PAGE_CLOSE);
+	  e.SetSelection(i);
+	  e.SetId(ID_ThreadNoteBook);
+
 	  if (i != select && !delete_f) 
 	  {
+	       OnAboutCloseThreadNoteBook(e);
 	       threadNoteBook->DeletePage(0);
 	  } 
 	  else if (i == select && !delete_f) 
 	  {
+	       OnAboutCloseThreadNoteBook(e);
 	       threadNoteBook->DeletePage(1);
 	       delete_f = true;
 	  } 
 	  else if (i != select && delete_f) 
 	  {
+	       OnAboutCloseThreadNoteBook(e);
 	       threadNoteBook->DeletePage(1);
 	  }
      }
@@ -2188,9 +2201,14 @@ void JaneClone::ExcepSelThreadTabClose(wxCommandEvent& event)
  */
 void JaneClone::AllThreadTabClose(wxCommandEvent& event) 
 {
-     int pages = threadNoteBook->GetPageCount();
-     for (int i=0;i<pages;i++) 
+     const int pages = threadNoteBook->GetPageCount();
+
+     for (int i = 0; i < pages; i++) 
      {
+	  wxAuiNotebookEvent e(wxEVT_AUINOTEBOOK_PAGE_CLOSE);
+	  e.SetSelection(i);
+	  e.SetId(ID_ThreadNoteBook);
+	  OnAboutCloseThreadNoteBook(e);
 	  threadNoteBook->DeletePage(0);
      }
 }
@@ -2200,10 +2218,14 @@ void JaneClone::AllThreadTabClose(wxCommandEvent& event)
 void JaneClone::AllLeftThreadTabClose(wxCommandEvent& event) 
 {
      // タブの数を数える
-     size_t select = threadNoteBook->GetSelection();
+     const size_t select = threadNoteBook->GetSelection();
 
-     for (unsigned int i=0;i<select;i++) 
+     for (unsigned int i = 0; i < select; i++) 
      {
+	  // wxAuiNotebookEvent e(wxEVT_AUINOTEBOOK_PAGE_CLOSE);
+	  // e.SetSelection(select - 2);
+	  // e.SetId(ID_ThreadNoteBook);
+	  // OnAboutCloseThreadNoteBook(e);
 	  threadNoteBook->DeletePage(0);
      }
 }
@@ -2213,12 +2235,17 @@ void JaneClone::AllLeftThreadTabClose(wxCommandEvent& event)
 void JaneClone::AllRightThreadTabClose(wxCommandEvent& event) 
 {
      // タブの数を数える
-     size_t pages = threadNoteBook->GetPageCount();
-     size_t select = threadNoteBook->GetSelection();
-     for (unsigned int i=0;i<pages;i++) 
+     const size_t pages  = threadNoteBook->GetPageCount();
+     const size_t select = threadNoteBook->GetSelection();
+
+     for (unsigned int i = 0; i < pages; i++) 
      {
-	  if (i>select) 
+	  if ( i > select ) 
 	  {
+	       // wxAuiNotebookEvent e(wxEVT_AUINOTEBOOK_PAGE_CLOSE);
+	       // e.SetSelection(select + 2);
+	       // e.SetId(ID_ThreadNoteBook);
+	       // OnAboutCloseThreadNoteBook(e);
 	       threadNoteBook->DeletePage(select+1);
 	  }
      }
@@ -3126,6 +3153,8 @@ void JaneClone::SetThreadContentToNoteBook(const wxString& threadContentPath,
      // スレッドの内容はThreadContentBarの中で設定する
      threadBar->SetThreadContentWindow(threadContentPath, origNumber);
      threadNoteBook->AddPage(threadBar, title, true, wxBitmap(threadTabNewImg, wxBITMAP_TYPE_ANY));
+     // 閲覧中ツリーの情報を更新する
+     JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI, ID_NowReadingTreectrlUpdate);
 }
 /**
  * 板一覧ノートブックで右クリックされた時の処理
@@ -3864,6 +3893,12 @@ void JaneClone::JaneCloneMgrUpdate(wxUpdateUIEvent& event) {
  * 閲覧中ツリーのデータ更新を行う
  */
 void JaneClone::NowReadingTreectrlUpdate(wxUpdateUIEvent& event) {
+
+     if (m_now_reading_tree_ctrl) {
+	  // リセット
+	  m_now_reading_tree_ctrl
+	       ->CollapseAndReset(m_now_reading_tree_ctrl->GetRootItem());
+     }
 
      // 閲覧中データを集める
      ThreadInfoHash::iterator it;
