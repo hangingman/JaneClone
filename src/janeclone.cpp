@@ -3867,6 +3867,10 @@ void JaneClone::NowReadingTreectrlUpdate(wxUpdateUIEvent& event) {
 
      // 閲覧中データを集める
      ThreadInfoHash::iterator it;
+     wxTreeItemId category;
+     // ツリーに追加したカテゴリ名
+     std::vector<wxString> added;
+
      for (it = tiHash.begin(); it != tiHash.end(); ++it) {
 	  wxString key = it->first;
 	  ThreadInfo value = it->second;
@@ -3881,12 +3885,37 @@ void JaneClone::NowReadingTreectrlUpdate(wxUpdateUIEvent& event) {
 	       wxString k = itr->first;
 	       const URLvsBoardName v = itr->second;
 
+	       // カテゴリ名検索用
+	       std::vector<wxString>::iterator memory = added.begin();
+	       memory = std::find_if(added.begin(), 
+				     added.end(), 
+				     [&v] (const wxString& item) -> bool {
+					  return item == v.boardName;
+				     });
+
 	       if (v.boardNameAscii == boardNameAscii) {
-		    m_now_reading_tree_ctrl->AppendItem(m_now_reading_tree_ctrl->GetRootItem(), v.boardName);
-		    break;
+
+		    if (memory == added.end()) {
+			 // カテゴリ名を覚えておく
+			 added.push_back(v.boardName);
+
+			 // カテゴリ名を登録する
+			 category = m_now_reading_tree_ctrl
+			      ->AppendItem(m_now_reading_tree_ctrl->GetRootItem(), v.boardName);
+			 m_now_reading_tree_ctrl->SetItemImage(category, 0, wxTreeItemIcon_Normal);
+		    }
+		    
+		    // 閲覧中のスレッドタイトルを登録する
+		    wxTreeItemId tmp = m_tree_ctrl->AppendItem(category, key);
+		    m_now_reading_tree_ctrl->SetItemImage(tmp, 1, wxTreeItemIcon_Normal);
+
+		    continue;
 	       }
 	  }
      }
+
+     // 展開
+     m_now_reading_tree_ctrl->Expand(m_now_reading_tree_ctrl->GetRootItem());
 }
 
 /**
