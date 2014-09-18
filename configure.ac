@@ -297,6 +297,7 @@ AC_FUNC_STRERROR_R
 
 # Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile
+		 crossguid/Makefile
 		 sqlite3/Makefile
 		 wxsqlite3/Makefile
                  curlpp/Makefile

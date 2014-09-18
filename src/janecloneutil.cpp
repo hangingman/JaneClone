@@ -918,10 +918,13 @@ bool JaneCloneUtil::SubstringURI(const wxString& uri, PartOfURI* partOfUri) {
  */     
 wxString JaneCloneUtil::GenerateUUIDString() {
 
-     boost::uuids::uuid uuid = boost::uuids::random_generator()();
-     std::string s = boost::uuids::to_string(uuid);
+     GuidGenerator generator;
+
+     auto guid = generator.newGuid();
+     std::stringstream stream;
+     stream << guid;
      
-     return wxString(s.c_str());
+     return wxString(stream.str().c_str());
 }
 /**
  * スレッドの勢い値を計算する
