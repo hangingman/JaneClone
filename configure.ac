@@ -220,7 +220,7 @@ MY_CURL
 
 AC_SUBST(CURL_CFLAGS)
 
-AC_MSG_CHECKING([if we need BUILDING_CURLPP])
+AC_MSG_CHECKING([Checking platform specific dependencies...])
 case $host in
   *-*-mingw*)
     AC_DEFINE(BUILDING_CURLPP, 1, [when building cURLpp itself])
@@ -234,6 +234,20 @@ case $host in
       AC_MSG_RESULT(no)
     fi
     ;;
+
+  *-*-linux*)
+    AC_CHECK_LIB(uuid,uuid_generate,LIBS="-luuid $LIBS" has_uuid=1,has_uuid=0)
+    if test $has_uuid = 0; then
+      AC_MSG_ERROR("ERROR: cannot find uuid.")
+    fi
+    ;;
+  *-*-*bsd*)
+    AC_CHECK_LIB(uuid,uuid_generate,LIBS="-luuid $LIBS" has_uuid=1,has_uuid=0)
+    if test $has_uuid = 0; then
+      AC_MSG_ERROR("ERROR: cannot find uuid.")
+    fi
+    ;;
+
   *)
     AC_MSG_RESULT(no)
     ;;
