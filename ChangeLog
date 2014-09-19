@@ -1,3 +1,386 @@
+commit 49b614d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-09-20
+
+    MinGW gcc will compile crossguid.
+
+crossguid/Makefile.am
+
+commit 0c7cbfc
+Author: hiroyuki nagata <hiroyuki@vyatta-maiden.hm.moe>
+Date:   2014-09-19
+
+    Add dependency for libuuid
+
+configure.ac
+
+commit ef27e85
+Author: 永田 裕之 <newserver002@gmail.com>
+Date:   2014-09-18
+
+    Delete boost-uuid -> add cross guid.
+
+Makefile.am
+configure.ac
+crossguid/.gitattributes
+crossguid/.gitignore
+crossguid/LICENSE
+crossguid/Makefile.am
+crossguid/README.md
+crossguid/VisualStudio/CrossGuid.opensdf
+crossguid/VisualStudio/CrossGuid.sln
+crossguid/VisualStudio/CrossGuid.vcxproj
+crossguid/VisualStudio/CrossGuid.vcxproj.filters
+crossguid/android.sh
+crossguid/android/AndroidManifest.xml
+crossguid/android/ant.properties
+crossguid/android/build.xml
+crossguid/android/jni/Android.mk
+crossguid/android/jni/Application.mk
+crossguid/android/jni/jnitest.cpp
+crossguid/android/proguard-project.txt
+crossguid/android/project.properties
+crossguid/android/res/drawable-hdpi/ic_launcher.png
+crossguid/android/res/drawable-ldpi/ic_launcher.png
+crossguid/android/res/drawable-mdpi/ic_launcher.png
+crossguid/android/res/drawable-xhdpi/ic_launcher.png
+crossguid/android/res/layout/main.xml
+crossguid/android/res/values/strings.xml
+crossguid/android/src/ca/graemehill/crossguid/testapp/MainActivity.java
+crossguid/clean.sh
+crossguid/guid.cpp
+crossguid/guid.h
+crossguid/linux.sh
+crossguid/mac.sh
+crossguid/test.cpp
+crossguid/test.h
+crossguid/testmain.cpp
+src/Makefile.am
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+uuid-boost/.gitattributes
+uuid-boost/include/boost/uuid/name_generator.hpp
+uuid-boost/include/boost/uuid/nil_generator.hpp
+uuid-boost/include/boost/uuid/random_generator.hpp
+uuid-boost/include/boost/uuid/seed_rng.hpp
+uuid-boost/include/boost/uuid/sha1.hpp
+uuid-boost/include/boost/uuid/string_generator.hpp
+uuid-boost/include/boost/uuid/uuid.hpp
+uuid-boost/include/boost/uuid/uuid_generators.hpp
+uuid-boost/include/boost/uuid/uuid_io.hpp
+uuid-boost/include/boost/uuid/uuid_serialize.hpp
+uuid-boost/index.html
+uuid-boost/test/Jamfile.v2
+uuid-boost/test/compile_name_generator.cpp
+uuid-boost/test/compile_nil_generator.cpp
+uuid-boost/test/compile_random_generator.cpp
+uuid-boost/test/compile_seed_rng.cpp
+uuid-boost/test/compile_string_generator.cpp
+uuid-boost/test/compile_uuid.cpp
+uuid-boost/test/compile_uuid_generators.cpp
+uuid-boost/test/compile_uuid_io.cpp
+uuid-boost/test/compile_uuid_serialize.cpp
+uuid-boost/test/test_generators.cpp
+uuid-boost/test/test_include1.cpp
+uuid-boost/test/test_include2.cpp
+uuid-boost/test/test_io.cpp
+uuid-boost/test/test_name_generator.cpp
+uuid-boost/test/test_nil_generator.cpp
+uuid-boost/test/test_random_generator.cpp
+uuid-boost/test/test_serialization.cpp
+uuid-boost/test/test_sha1.cpp
+uuid-boost/test/test_string_generator.cpp
+uuid-boost/test/test_tagging.cpp
+uuid-boost/test/test_uuid.cpp
+uuid-boost/test/test_uuid_class.cpp
+uuid-boost/test/test_uuid_in_map.cpp
+uuid-boost/test/test_wserialization.cpp
+uuid-boost/uuid.html
+
+commit ae2c1e3
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-09-12
+
+    Deal with notifing thread tab close event.
+
+src/janeclone.cpp
+
+commit 771c5ce
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-09-11
+
+    Add function to sync tree tab and now reading thread.
+
+src/janeclone.cpp
+
+commit 0d8e17c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-09-10
+
+    fixed #30 ; I use uuid-boost, delete wxuuid.
+
+Makefile.am
+configure.ac
+libwxuuid/Makefile.am
+libwxuuid/global.h
+libwxuuid/md5.h
+libwxuuid/md5c.c
+libwxuuid/test/wxuuid-test1.cpp
+libwxuuid/wxGUID.cpp
+libwxuuid/wxGUID.h
+libwxuuid/wxMD5.cpp
+libwxuuid/wxMD5.h
+libwxuuid/wxUUID.cpp
+libwxuuid/wxUUID.h
+src/Makefile.am
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+uuid-boost/.gitattributes
+uuid-boost/include/boost/uuid/name_generator.hpp
+uuid-boost/include/boost/uuid/nil_generator.hpp
+uuid-boost/include/boost/uuid/random_generator.hpp
+uuid-boost/include/boost/uuid/seed_rng.hpp
+uuid-boost/include/boost/uuid/sha1.hpp
+uuid-boost/include/boost/uuid/string_generator.hpp
+uuid-boost/include/boost/uuid/uuid.hpp
+uuid-boost/include/boost/uuid/uuid_generators.hpp
+uuid-boost/include/boost/uuid/uuid_io.hpp
+uuid-boost/include/boost/uuid/uuid_serialize.hpp
+uuid-boost/index.html
+uuid-boost/test/Jamfile.v2
+uuid-boost/test/compile_name_generator.cpp
+uuid-boost/test/compile_nil_generator.cpp
+uuid-boost/test/compile_random_generator.cpp
+uuid-boost/test/compile_seed_rng.cpp
+uuid-boost/test/compile_string_generator.cpp
+uuid-boost/test/compile_uuid.cpp
+uuid-boost/test/compile_uuid_generators.cpp
+uuid-boost/test/compile_uuid_io.cpp
+uuid-boost/test/compile_uuid_serialize.cpp
+uuid-boost/test/test_generators.cpp
+uuid-boost/test/test_include1.cpp
+uuid-boost/test/test_include2.cpp
+uuid-boost/test/test_io.cpp
+uuid-boost/test/test_name_generator.cpp
+uuid-boost/test/test_nil_generator.cpp
+uuid-boost/test/test_random_generator.cpp
+uuid-boost/test/test_serialization.cpp
+uuid-boost/test/test_sha1.cpp
+uuid-boost/test/test_string_generator.cpp
+uuid-boost/test/test_tagging.cpp
+uuid-boost/test/test_uuid.cpp
+uuid-boost/test/test_uuid_class.cpp
+uuid-boost/test/test_uuid_in_map.cpp
+uuid-boost/test/test_wserialization.cpp
+uuid-boost/uuid.html
+
+commit a48fc93
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-08-12
+
+    Add unit test.
+
+.gitignore
+libwxuuid/Makefile.am
+libwxuuid/test/wxuuid-test1.cpp
+
+commit ca56afa
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-08-03
+
+    fixed #31 ; Modify the way to get instance of wxMenu.
+
+src/janeclone.cpp
+
+commit 45b5cab
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-30
+
+    Fix coding style
+
+src/janeclone.cpp
+
+commit c469dda
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-30
+
+    Modify copyright year.
+
+src/enums.hpp
+src/imagepanel.hpp
+src/janecloneimageviewer.hpp
+
+commit 58adfc6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-30
+
+    Modify copyright year.
+
+src/anchoredresponsepopup.cpp
+src/anchoredresponsepopup.hpp
+src/datatype.hpp
+src/drawpane.cpp
+src/drawpane.hpp
+src/extractboardlist.cpp
+src/extractboardlist.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneuiutil.cpp
+src/janecloneuiutil.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/main.cpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/settingwindow.cpp
+src/settingwindow.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit ed3135e
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-30
+
+    fixed #26 ; prevent to overwrite dat file when HTTP 302 received.
+
+Makefile.am
+src/socketcommunication.cpp
+
+commit dcb33d0
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-29
+
+    fixed #25 ; remove useless std::endl.
+
+src/janecloneuiutil.cpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit e25ca37
+Author: 永田 裕之 <newserver002@gmail.com>
+Date:   2014-07-27
+
+    Change get instance method ( new/delete -> unique_ptr<T> )
+
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit b2490a8
+Author: 永田 裕之 <newserver002@gmail.com>
+Date:   2014-07-27
+
+    Some fix for search box initial value.
+
+src/janeclone.cpp
+
+commit 40862c8
+Author: 永田 裕之 <newserver002@gmail.com>
+Date:   2014-07-27
+
+    Implement multiplatform tabbed tree(boardlist/fav/now reading)
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/threadcontentbar.hpp
+
+commit 789666b
+Author: 永田 裕之 <newserver002@gmail.com>
+Date:   2014-07-27
+
+    Fix favtree and now reading tree behavior on OS X
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneuiutil.cpp
+src/janecloneuiutil.hpp
+x86_64-apple-darwin.sh
+
+commit ec40c68
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-26
+
+    Add some helper function JaneCloneUiUtil::QueueEventHelper, SendLoggingHelper
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneuiutil.cpp
+src/janecloneuiutil.hpp
+src/janecloneutil.hpp
+src/main.cpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/socketcommunication.hpp
+src/threadcontentbar.hpp
+src/threadcontentwindow.hpp
+
+commit 9f05260
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-26
+
+    Fix Favarite page and Now reading page
+
+src/datatype.hpp
+src/enums.hpp
+src/janeclone.cpp
+src/janecloneuiutil.cpp
+
+commit 29b1222
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-24
+
+    Add janecloneuiutil class.
+    Add search bar for Favarite page and Now reading page.
+
+src/Makefile.am
+src/datatype.hpp
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneuiutil.cpp
+src/janecloneuiutil.hpp
+
+commit a2c6038
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-20
+
+    Add favarite page and now reading page.
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 33a3b69
+Author: 永田 裕之 <hiroyuki@nagata-no-MacBook-Pro.local>
+Date:   2014-07-20
+
+    fix OS X crash bug when JaneClone start
+
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit c3330ef
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-07-20
+
+    fix copyright generator
+
+ChangeLog
+Makefile.am
+configure.ac
+
 commit 8ab3d9a
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2014-07-20

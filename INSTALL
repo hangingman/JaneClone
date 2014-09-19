@@ -3,9 +3,9 @@ JaneClone のインストール方法
 JaneClone Installation Instructions
 ***********************************
 
-Copyright (C) 2013 Hiroyuki Nagata
+Copyright (C) 2014 Hiroyuki Nagata
 
-   Copying and distribution of this file, with or without modification,
+ Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
 notice and this notice are preserved.  This file is offered as-is,
 without warranty of any kind.
@@ -338,10 +338,3 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ ./bootstrap
   $ ./configure CC='clang' CXX='clang++ -std=c++11 -stdlib=libc++'  
   $ make
-
-コンパイラとそのオプション
-==========================
-
-  以下のコンパイルオプションはconfigure実行時に自動で有効にされる
-  ・-fno-stack-protector … スタックオーバーフロー対策
-  ・-std=c++0x           … C++11を将来的に使っていきたい
