@@ -25,7 +25,13 @@
 #include <wx/image.h>
 #include <wx/aui/aui.h>
 #include "enums.hpp"
-#include "threadcontentwindow.hpp"
+
+#if wxCHECK_VERSION(2, 9, 3)
+   #include "threadcontentwebview.hpp"
+#else
+   #include "threadcontentwindow.hpp"
+#endif
+
 #include "janecloneuiutil.hpp"
 
 #ifndef THREADCONTENTBAR_HPP_

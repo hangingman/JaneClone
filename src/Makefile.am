@@ -8,7 +8,6 @@ JaneClonedir	  = $(pkglibdir)
 JaneClone_SOURCES = extractboardlist.hpp        \
 		    main.cpp                    \
 		    socketcommunication.cpp     \
-		    threadcontentwindow.hpp     \
 		    anchoredresponsepopup.cpp   \
 		    janeclone.cpp               \
 		    sqliteaccessor.cpp          \
@@ -26,7 +25,6 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    extractboardlist.cpp        \
 		    janecloneutil.hpp           \
 		    responsewindow.hpp          \
-		    threadcontentwindow.cpp	\
 		    janecloneimageviewer.cpp	\
 		    janecloneimageviewer.hpp    \
 		    imagepanel.cpp		\
@@ -46,6 +44,20 @@ JaneClone_SOURCES = extractboardlist.hpp        \
 		    $(wildcard ../babel/*.dat)  \
 		    $(wildcard ../babel/*.csv)  \
 		    $(wildcard rc/*)
+
+if USE_WX_WEBVIEW
+# wxWebView support
+JaneClone_SOURCES += threadcontentwebview.cpp   \
+		     threadcontentwebview.hpp
+
+JC_FLAG_STRING	   = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net,webview`
+else
+# Use wxHtmlWindow
+JaneClone_SOURCES += threadcontentwindow.cpp    \
+		     threadcontentwindow.hpp
+
+JC_FLAG_STRING	   = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net`
+endif
 
 # common build rule
 JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@          \
@@ -69,20 +81,20 @@ JaneClone_LDADD    = JaneClone_rc.o                                           \
 		    $(top_builddir)/curlpp/src/utilspp/libutilspp.la 	      \
 		    $(top_builddir)/curlpp/src/curlpp/internal/libinternal.la
 
-JaneClone_LDFLAGS  = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net` @XML2LIBS@ JaneClone_rc.o
+JaneClone_LDFLAGS  = $(JC_FLAG_STRING) @XML2LIBS@ JaneClone_rc.o
 
 JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 	@WX_RESCOMP@ -i $^ -O coff -o $@
 
 else
 # Platform is not Windows
-JaneClone_LDFLAGS  = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net` \
-		    @XML2LIBS@												     \
-		    -L$(top_builddir)/crossguid                  -lcrossguid						     \
-		    -L$(top_builddir)/wxsqlite3                  -lwxsqlite3 						     \
-		    -L$(top_builddir)/sqlite3                    -lsqlite3 						     \
-		    -L$(top_builddir)/curlpp/src/curlpp          -lcurlpp 						     \
-		    -L$(top_builddir)/curlpp/src/utilspp         -lutilspp 						     \
+JaneClone_LDFLAGS  = $(JC_FLAG_STRING)                                          \
+		    @XML2LIBS@							\
+		    -L$(top_builddir)/crossguid			 -lcrossguid	\
+		    -L$(top_builddir)/wxsqlite3			 -lwxsqlite3	\
+		    -L$(top_builddir)/sqlite3			 -lsqlite3	\
+		    -L$(top_builddir)/curlpp/src/curlpp		 -lcurlpp	\
+		    -L$(top_builddir)/curlpp/src/utilspp	 -lutilspp	\
 		    -L$(top_builddir)/curlpp/src/curlpp/internal -linternal
 endif
 

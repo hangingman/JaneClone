@@ -35,11 +35,6 @@
 #include "janecloneimageviewer.hpp"
 #include "socketcommunication.hpp"
 
-// 読み込みに失敗した場合に表示するページ
-static const wxString FAIL_TO_READ_PAGE =
-     wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
-			charset=UTF-8\"><title></title></head><body><span>ファイルの読み込みに失敗しました・リロードしてみてください</span></body></html>");
-
 class ThreadContentWindow : public wxHtmlWindow {
 
 public:

@@ -57,8 +57,10 @@ if test x$need_no_undefined = xyes; then
    AC_MSG_RESULT([define -no-undefined ...])
 fi
 
+# Set boolean value for Makefile.am
 AM_CONDITIONAL(USE_MAC_OSX, false)
 AM_CONDITIONAL(USE_LINUX, false)
+AM_CONDITIONAL(USE_WX_WEBVIEW, false)
 
 # Check for windres
 if test "$PLATFORM_STRING" = "Win32"; then
@@ -99,6 +101,15 @@ fi
 #-----------------------------------------------------------------------
 # Checks for wxWidgets.
 #
+WX_CONFIG_CHECK([2.9.3], [has_webview=1], [has_webview=0], [webview])
+AC_MSG_CHECKING([for whether to support wxwebview])
+if test $has_webview = 1; then
+   AM_CONDITIONAL(USE_WX_WEBVIEW, true)
+   AC_MSG_RESULT(yes)
+else
+   AC_MSG_RESULT(no)
+fi
+
 AM_OPTIONS_WXCONFIG
 reqwx=2.8.0
 AM_PATH_WXCONFIG($reqwx, wxWin=1)

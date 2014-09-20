@@ -80,7 +80,13 @@
 #include "virtualboardlistctrl.hpp"
 #include "sqliteaccessor.hpp"
 #include "janecloneutil.hpp"
-#include "threadcontentwindow.hpp"
+
+#if wxCHECK_VERSION(2, 9, 3)
+   #include "threadcontentwebview.hpp"
+#else
+   #include "threadcontentwindow.hpp"
+#endif
+
 #include "threadcontentbar.hpp"
 #include "anchoredresponsepopup.hpp"
 #include "responsewindow.hpp"
