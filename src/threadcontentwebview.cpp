@@ -67,67 +67,10 @@ wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, w
      // 指定されたパスからHTMLファイルを読み出す
      wxString htmlSource = GetConvertedDatFile(threadContentPath);
 
-
      // メモリに読み込んだHTMLを表示する
      m_browser->SetPage(htmlSource, wxEmptyString);
-     // 外部から参照可能なHTML
-     //this->m_htmlSource = htmlSource;
      // スクロールのフラグ
      fNeedScroll = false;
-
-
-/**
-     // 設定ファイルの準備をする
-     // ユーザーのホームディレクトリを取得
-     wxDir workDir(::wxGetHomeDir());
-     wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
-
-     // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-     if (!workDir.HasSubDirs(JANECLONE_DIR)) {
-	  ::wxMkdir(jcDir.GetName());
-     }
-     if (!jcDir.HasSubDirs(wxT("prop"))) {
-	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
-     }
-
-     // スキンを使わないならデフォルトフォントを設定する
-     SkinInfo* skinInfo = new SkinInfo;
-     bool       useSkin = CheckSkinFiles(skinInfo);
-     delete skinInfo;
-     
-     if (!useSkin) {
-
-	  // フォントのポイント数
-	  const int p = 12;
-	  static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };
-
-#ifdef __WXMSW__
-	  wxString fontName = wxT("ＭＳ Ｐゴシック");
-	  this->SetFonts(fontName, wxEmptyString, f_size);
-#elif  __WXGTK__
-	  wxFont f;
-	  if (f.SetFaceName(wxT("Mona"))) {
-	       this->SetFonts(wxT("Mona"), wxEmptyString, f_size);
-	  } else if (f.SetFaceName(wxT("Mona-VLGothic"))) {
-	       this->SetFonts(wxT("Mona-VLGothic"), wxEmptyString, f_size);
-	  } else if (f.SetFaceName(wxT("Mona-sazanami"))) {
-	       this->SetFonts(wxT("Mona-sazanami"), wxEmptyString, f_size);
-	  }
-
-#elif  __WXMAC__
-	  wxString fontName = wxT("Mona");
-	  this->SetFonts(fontName, wxEmptyString, f_size);
-#endif
-     }
-
-     // メモリに読み込んだHTMLを表示する
-     this->SetPage(htmlSource);
-     // 外部から参照可能なHTML
-     this->m_htmlSource = htmlSource;
-     // スクロールのフラグ
-     fNeedScroll = false;
-
-*/
 }
 /**
  * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
@@ -144,6 +87,30 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
      // スキンがあれば使う
      SkinInfo* skinInfo = new SkinInfo;
      bool       useSkin = CheckSkinFiles(skinInfo);
+     wxString fontName  = wxEmptyString;
+
+     if (!useSkin) {
+
+	  // フォントのポイント数
+	  const int p = 12;
+	  static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };
+
+#ifdef __WXMSW__
+	  fontName = wxT("ＭＳ Ｐゴシック");
+#elif  __WXGTK__
+	  wxFont f;
+	  if (f.SetFaceName(wxT("Mona"))) {
+	       fontName = wxT("Mona");
+	  } else if (f.SetFaceName(wxT("Mona-VLGothic"))) {
+	       fontName = wxT("Mona-VLGothic")
+	  } else if (f.SetFaceName(wxT("Mona-sazanami"))) {
+	       fontName = wxT("Mona-sazanami");
+	  }
+
+#elif  __WXMAC__
+	  fontName = wxT("Mona");
+#endif
+     }
 
      // 取得サイズ分だけwxStringを確保する
      wxString htmlSource;
@@ -152,7 +119,11 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
      if (useSkin && skinInfo->header != wxEmptyString) {
 	  htmlSource += skinInfo->header;
      } else {
-	  htmlSource += HTML_HEADER;
+	  htmlSource += CUSTOM_HTML_HEADER;
+	  htmlSource += wxT(" bgcolor=#efefef text=black link=blue alink=red vlink=#660099");
+	  htmlSource += wxT(" style=\" font-family: ");
+	  htmlSource += fontName;
+          htmlSource += wxT("\">");
      }     
 
      // テキストファイルの読み込み

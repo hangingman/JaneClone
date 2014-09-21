@@ -323,6 +323,10 @@ WX_DECLARE_HASH_MAP( wxString,		// type of the keys
 static const wxString HTML_HEADER =
 		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body bgcolor=#efefef text=black link=blue alink=red vlink=#660099>");
 
+// ヘッダ部分にあたるHTML
+static const wxString CUSTOM_HTML_HEADER =
+		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body");
+
 // ポップアップウィンドウのヘッダ部分にあたるHTML
 static const wxString HTML_HEADER_POPUP =
 		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body bgcolor=#eedcb3 text=black link=blue alink=red vlink=#660099>");
