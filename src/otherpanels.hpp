@@ -47,14 +47,49 @@
 // begin wxGlade: ::extracode
 // end wxGlade
 
+// Utility class definition
+typedef std::tuple<wxString, wxTextCtrl*> TextCtrlTuple;
+typedef std::vector<TextCtrlTuple>        TextCtrlTupleList;
+
+//
+// Get Properties Utility Macros
+//
+#define JC_GET_WIDGETS_PROPERTIES                                                         \
+     for( TextCtrlTupleList::iterator i = tupleList.begin(); i != tupleList.end(); ++i )  \
+     {											  \
+	  wxString widgetsName = std::get<0>(*i);					  \
+	  wxString widgetsInfo = wxEmptyString;						  \
+	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);		  \
+											  \
+	  if (widgetsInfo != wxEmptyString)						  \
+	  {										  \
+	       std::get<1>(*i)->SetValue(widgetsInfo);					  \
+	  }										  \
+     }											  \
+
+//
+// Set Properties Utility Macros
+//
+#define JC_SET_WIDGETS_PROPERTIES                                                         \
+     for( TextCtrlTupleList::iterator i = tupleList.begin(); i != tupleList.end(); ++i )  \
+     {											  \
+	  wxString widgetsName = std::get<0>(*i);					  \
+	  wxString widgetsInfo = std::get<1>(*i)->GetValue();				  \
+	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);		  \
+     }											  \
+
 /**
  * 各種ネットワーク設定用画面
  */
 class NetworkSettingPanel: public wxPanel {
+
 public:
      // begin wxGlade: NetworkSettingPanel::ids
      // end wxGlade
-     NetworkSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+     NetworkSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, 
+			 const wxSize& size=wxDefaultSize, long style=0);
+
+     void save_properties();
 
 #ifdef __WXMAC__
      // リソースの更新を行う

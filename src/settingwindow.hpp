@@ -70,6 +70,7 @@ private:
 
      void OnQuit(wxCommandEvent& event);
      void OnChangeSettingPanel(wxTreeEvent& event);
+     void SaveConfig(const wxString& title);
 
 #ifdef __WXMAC__
      // メインのスレッドにイベントを送る

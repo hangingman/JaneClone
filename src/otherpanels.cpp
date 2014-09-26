@@ -112,9 +112,9 @@ NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, c
      basicAuthUserNameTC = new wxTextCtrl(panel_8, wxID_ANY, wxEmptyString);
      label_13 = new wxStaticText(panel_9, wxID_ANY, wxT("Password:"));
      basicAuthPasswordTC = new wxTextCtrl(panel_9, wxID_ANY, wxEmptyString);
-     label_4 = new wxStaticText(panel_2, wxID_ANY, wxT("受信タイムアウト（ミリ秒）"));
+     label_4 = new wxStaticText(panel_2, wxID_ANY, wxT("受信タイムアウト（秒）"));
      receiveTimeoutTC = new wxTextCtrl(panel_2, wxID_ANY, wxT("30000"));
-     label_5 = new wxStaticText(panel_3, wxID_ANY, wxT("接続タイムアウト（ミリ秒）"));
+     label_5 = new wxStaticText(panel_3, wxID_ANY, wxT("接続タイムアウト（秒）"));
      connectTimeoutTC = new wxTextCtrl(panel_3, wxID_ANY, wxT("10000"));
      label_3 = new wxStaticText(panel_4, wxID_ANY, wxT("ボード一覧取得URL"));
      boardListURLTC = new wxTextCtrl(panel_4, wxID_ANY, wxT("http://menu.2ch.net/bbsmenu.html"));
@@ -135,34 +135,37 @@ NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, c
 }
 
 
-void NetworkSettingPanel::set_properties() {
-     // begin wxGlade: NetworkSettingPanel::set_properties
-     // end wxGlade
-
-     // プロパティファイルから設定されている項目を読みだして設定する
-     typedef std::vector<std::tuple<wxString, wxTextCtrl*> > TextCtrlTuple;
-
-     TextCtrlTuple tupleList;
-     tupleList.push_back( 
-	  std::tuple<wxString, wxTextCtrl*>
-	  (wxT("ID_Receive_Timeout_Sec"),receiveTimeoutTC));
-     tupleList.push_back( 
-	  std::tuple<wxString, wxTextCtrl*>
-	  (wxT("ID_Connection_Timeout_Sec"),connectTimeoutTC));
-
-     for( TextCtrlTuple::iterator i = tupleList.begin(); i != tupleList.end(); ++i )
-     {
-	  wxString widgetsName = std::get<0>(*i);
-	  wxString widgetsInfo = wxEmptyString;
-	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-
-	  if (widgetsInfo != wxEmptyString) 
-	  {
-	       std::get<1>(*i)->SetValue(widgetsInfo);
-	  }
-     }
+void NetworkSettingPanel::set_properties() 
+{
+     TextCtrlTupleList tupleList;
+     tupleList.push_back(TextCtrlTuple(wxT("ID_Receive_Timeout_Sec"),           receiveTimeoutTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_Connection_Timeout_Sec"),        connectTimeoutTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBasicAuthUserName"), basicAuthUserNameTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBasicAuthPassword"), basicAuthPasswordTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxyReceiveAddr"),  recProxyAddrTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxyReceivePort"),  recProxyPortTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySendAddr"),     sedProxyAddrTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySendPort"),     sedProxyPortTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthAddr"),  authSSLAddrTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
+     JC_GET_WIDGETS_PROPERTIES
 }
 
+void NetworkSettingPanel::save_properties()
+{
+     TextCtrlTupleList tupleList;
+     tupleList.push_back(TextCtrlTuple(wxT("ID_Receive_Timeout_Sec"),           receiveTimeoutTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_Connection_Timeout_Sec"),        connectTimeoutTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBasicAuthUserName"), basicAuthUserNameTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBasicAuthPassword"), basicAuthPasswordTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxyReceiveAddr"),  recProxyAddrTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxyReceivePort"),  recProxyPortTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySendAddr"),     sedProxyAddrTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySendPort"),     sedProxyPortTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthAddr"),  authSSLAddrTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
+     JC_SET_WIDGETS_PROPERTIES
+}
 
 void NetworkSettingPanel::do_layout() {
 
@@ -928,46 +931,24 @@ void UserSettingPanel::set_properties()
                </body></html>");
      window_2->SetPage(text2);
 
-     // プロパティファイルから設定されている項目を読みだして設定する
-     std::pair <wxString, wxTextCtrl*> *pArray = new std::pair<wxString, wxTextCtrl*>[4];
-     pArray[0]  = std::make_pair(wxT("ID_MaruUserID"),            maruUserID);
-     pArray[1]  = std::make_pair(wxT("ID_MaruUserPassword"),      maruUserPassword);  
-     pArray[2]	= std::make_pair(wxT("ID_BEMailAddress"),	  beMailAddress);	 
-     pArray[3]	= std::make_pair(wxT("ID_BEPassword"),	          bePassword);	 
-
-     for (int i = 0; i < 4; i++ )
-     {
-	  wxString widgetsName = pArray[i].first;
-	  wxString widgetsInfo = wxEmptyString;
-	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-
-	  if (widgetsInfo != wxEmptyString) 
-	  {
-	       pArray[i].second->SetValue(widgetsInfo);
-	  }
-     }
-
-     delete[] pArray;
+     // プロパティファイルから設定項目を取得する
+     TextCtrlTupleList tupleList;
+     tupleList.push_back(TextCtrlTuple(wxT("ID_MaruUserID"),       maruUserID));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_MaruUserPassword"), maruUserPassword));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_BEMailAddress"),    beMailAddress));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_BEPassword"),       bePassword));
+     JC_GET_WIDGETS_PROPERTIES
 }
 
 void UserSettingPanel::save_properties()
 {
      // GUIに入力されている項目を読みだして設定する
-     std::pair <wxString, wxTextCtrl*> *pArray = new std::pair<wxString, wxTextCtrl*>[4];
-     pArray[0]  = std::make_pair(wxT("ID_MaruUserID"),            maruUserID);
-     pArray[1]  = std::make_pair(wxT("ID_MaruUserPassword"),      maruUserPassword);  
-     pArray[2]	= std::make_pair(wxT("ID_BEMailAddress"),	  beMailAddress);	 
-     pArray[3]	= std::make_pair(wxT("ID_BEPassword"),	          bePassword);	 
-
-     for (int i = 0; i < 4; i++ )
-     {
-	  wxString widgetsName = pArray[i].first;
-	  wxString widgetsInfo = pArray[i].second->GetValue();
-
-	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
-     }
-
-     delete[] pArray;     
+     TextCtrlTupleList tupleList;
+     tupleList.push_back(TextCtrlTuple(wxT("ID_MaruUserID"),       maruUserID));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_MaruUserPassword"), maruUserPassword));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_BEMailAddress"),    beMailAddress));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_BEPassword"),       bePassword));
+     JC_SET_WIDGETS_PROPERTIES
 }
 
 void UserSettingPanel::do_layout()

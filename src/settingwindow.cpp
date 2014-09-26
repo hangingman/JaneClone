@@ -130,22 +130,40 @@ void SettingDialog::DoLayout() {
      // end wxGlade
 }
 /**
+ * 設定パネルの入力値 保存
+ */
+void SettingDialog::SaveConfig(const wxString& title)
+{
+     if ( title == (wxT("User")) ) 
+     {
+	  if ( UserSettingPanel* user = 
+	       dynamic_cast<UserSettingPanel*>
+	       (wxWindow::FindWindowById(ID_UserSettingPanel, settingPanel))) 
+	  {
+	       // ユーザー設定パネル
+	       user->save_properties();
+	  }
+     }
+     else if (title == wxT("通信"))	  
+     {
+	  if ( NetworkSettingPanel* network = 
+	       dynamic_cast<NetworkSettingPanel*>
+	       (wxWindow::FindWindowById(ID_NetworkPanel, settingPanel))) 
+	  {
+	       // 設定パネル
+	       network->save_properties();
+	  }
+     }
+}
+/**
  * 設定画面のクローズ
  */
-void SettingDialog::OnQuit(wxCommandEvent& event) {
-
+void SettingDialog::OnQuit(wxCommandEvent& event) 
+{
      if (settingPanel) {
 	  // 設定の保存
-	  wxString title = this->GetTitle();
-	  
-	  if ( title.Contains(wxT("User")) ) {
-	       if ( UserSettingPanel* user = 
-		    dynamic_cast<UserSettingPanel*>
-		    (wxWindow::FindWindowById(ID_UserSettingPanel, settingPanel))) {
-		    // ユーザー設定パネル
-		    user->save_properties();
-	       }
-	  }	  
+	  const wxString title = this->GetTitle();
+	  SaveConfig(title);
      }
      
      this->EndModal(0);
@@ -168,14 +186,7 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  const wxString     oldItemStr(settingTreeCtrl->GetItemText(oldPushedTree));
 
 	  if (oldItemStr != wxEmptyString) {
-	       if (oldItemStr == wxT("User")) {
-		    if ( UserSettingPanel* user = 
-			 dynamic_cast<UserSettingPanel*>
-			 (wxWindow::FindWindowById(ID_UserSettingPanel, settingPanel))) {
-			 // ユーザー設定パネル
-			 user->save_properties();
-		    }
-	       }
+	       SaveConfig(oldItemStr);
 	  }
 	  
 	  // settingPanelのインスタンスが存在するならばDestroy
