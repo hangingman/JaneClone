@@ -66,10 +66,6 @@ public:
 	  this->bodyBuf.clear();
      };
      /**
-      * デストラクタ
-      */
-     ~SocketCommunication();
-     /**
       * 板一覧ファイルをダウンロードしてくるメソッド
       * もし前回通信した際のログが残っていれば更新の確認のみ行う
       * @param  板一覧datファイル保存先

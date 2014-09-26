@@ -297,16 +297,18 @@ X_TABLE_ITEM(ID_DelThreadFavorite)		  /* お気に入りを削除(スレッド) 
 X_TABLE_ITEM(ID_AddBoardFavorite)		  /* お気に入りに追加(板)	 		*/ \
 X_TABLE_ITEM(ID_DelBoardFavorite)		  /* お気に入りを削除(板)	 		*/ \
 X_TABLE_ITEM(ID_AddAllThreadFavorite)             /* すべてのタブをお気に入りに追加	   	*/ \
-X_TABLE_ITEM(ID_ResponseWindowSageChk)            /* レス用ウィンドウのsageチェック	   	*/ \
+X_TABLE_ITEM(ID_ResponseWindowSageChk)            /* レス用ウィンドウのsageチェック	*/ \
 X_TABLE_ITEM(ID_ResponseWindowBeChk)              /* レス用ウィンドウのBEチェック	   	*/ \
-X_TABLE_ITEM(ID_ChangeUserLastAttached)           /* ユーザーが最後に触ったウィジェットを記録	*/ \
-X_TABLE_ITEM(ID_ReloadThreadByName)               /* スレッド名を元にスレッドを更新する      	*/ \
+X_TABLE_ITEM(ID_ChangeUserLastAttached)           /* ユーザーが最後に触ったウィジェットを記録      */ \
+X_TABLE_ITEM(ID_ReloadThreadByName)               /* スレッド名を元にスレッドを更新する           */ \
 X_TABLE_ITEM(ID_NewBoardAddDialog)                /* 外部板登録ダイアログ                       */ \
-X_TABLE_ITEM(ID_CallNewBoardAddDialog)            /* 外部板登録用ダイアログを呼び出す           */ \
+X_TABLE_ITEM(ID_CallNewBoardAddDialog)            /* 外部板登録用ダイアログを呼び出す             */ \
 X_TABLE_ITEM(ID_OperationPanel)                   /* 各種操作設定用画面                         */ \
 X_TABLE_ITEM(ID_KakikomiPanel)                    /* 書き込み設定用画面                         */ \
 X_TABLE_ITEM(ID_DoePanel)                         /* スレ表示欄の設定画面                       */ \
-X_TABLE_ITEM(ID_ResetBoardListTree)               /* 板一覧ツリーのウィジェットの初期化イベント */ \
+X_TABLE_ITEM(ID_ResetBoardListTree)               /* 板一覧ツリーのウィジェットの初期化イベント    */ \
+X_TABLE_ITEM(ID_Receive_Timeout_Sec)              /* 受信タイムアウト秒			     */ \
+X_TABLE_ITEM(ID_Connection_Timeout_Sec)		  /* 接続タイムアウト秒	                     */ \
 X_TABLE_ITEM(ID_JaneCloneEnumsEnd)
 
 // 列挙型の実体をマクロで生成する

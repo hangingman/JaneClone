@@ -262,6 +262,12 @@ public:
       */
      static size_t GetFileNamesRecursive(const wxDir& targetDir, wxArrayString& result);
 
+
+     template<typename T, std::size_t N>
+     static std::size_t NumOf(const T (&array)[N]){
+	  return N;
+     }
+
 private:
 
      // ディスクからの読取サイズ

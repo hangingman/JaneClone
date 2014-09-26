@@ -83,38 +83,12 @@ private:
 	  JaneCloneUiUtil::SendLoggingHelper(message);
      };
 
-     // HtmlWindowで選択しているテキストをクリップボードにコピーする
-     void CopyFromHtmlWindow(wxCommandEvent& event);
-     // HtmlWindowで選択しているURLをクリップボードにコピーする
-     void CopyURLFromHtmlWindow(wxCommandEvent& event);
-     // HtmlWindowでテキストを全て選択する
-     void SelectAllTextHtmlWindow(wxCommandEvent& event);
-     // 選択したテキストでヤフー検索
-     void SearchSelectWordByYahoo(wxCommandEvent& event);
-     // 選択したテキストでGoogle検索
-     void SearchSelectWordByGoogle(wxCommandEvent& event);
-     // 選択したテキストでAmazon検索
-     void SearchSelectWordByAmazon(wxCommandEvent& event);
-     // 選択したテキストでスレタイ検索
-     void SearchThreadBySelectWord(wxCommandEvent& event);
-     // HTMLのデバッグ用イベント
-     void HtmlSourceDebug(wxCommandEvent& event);
      // linkを左クリックした時に起こるイベント
      void OnLeftClickHtmlWindow(wxHtmlLinkEvent& event);
-     // レス番号を左クリックした時に起こるイベント
-     void OnLeftClickResponseNumber(wxHtmlLinkEvent& event, const wxString& href, const long res);
      // リンクが2chのものかどうか判定
      void OnClickOrdinaryLink(const wxString& link);
-     // レス番号を指定して書き込みウィンドウを開く
-     void CallResponseWindowWithAnchor(wxCommandEvent& event);
-     // レス番号を指定して書き込みウィンドウを開く
-     void CallResponseWindowWithQuote(wxCommandEvent& event);
      // 画像ビューアの状態を確認し、設定する
      void SetJaneCloneImageViewer(const wxString& href, const wxString& ext);
-     // レスの内容をクリップボードにコピーする
-     void CopyTContentsToClipBoard(wxCommandEvent& event);
-     // 指定されたレスの内容をすべてクリップボードにコピーする
-     void CopyTAllToClipBoard(wxCommandEvent& event);
      // リサイズ時のイベント
      void OnSize(wxSizeEvent& event);
      // スキン用のファイルが有るかどうか確認する

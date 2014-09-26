@@ -138,6 +138,29 @@ NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, c
 void NetworkSettingPanel::set_properties() {
      // begin wxGlade: NetworkSettingPanel::set_properties
      // end wxGlade
+
+     // プロパティファイルから設定されている項目を読みだして設定する
+     typedef std::vector<std::tuple<wxString, wxTextCtrl*> > TextCtrlTuple;
+
+     TextCtrlTuple tupleList;
+     tupleList.push_back( 
+	  std::tuple<wxString, wxTextCtrl*>
+	  (wxT("ID_Receive_Timeout_Sec"),receiveTimeoutTC));
+     tupleList.push_back( 
+	  std::tuple<wxString, wxTextCtrl*>
+	  (wxT("ID_Connection_Timeout_Sec"),connectTimeoutTC));
+
+     for( TextCtrlTuple::iterator i = tupleList.begin(); i != tupleList.end(); ++i )
+     {
+	  wxString widgetsName = std::get<0>(*i);
+	  wxString widgetsInfo = wxEmptyString;
+	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+
+	  if (widgetsInfo != wxEmptyString) 
+	  {
+	       std::get<1>(*i)->SetValue(widgetsInfo);
+	  }
+     }
 }
 
 

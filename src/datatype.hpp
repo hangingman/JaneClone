@@ -325,7 +325,7 @@ static const wxString HTML_HEADER =
 
 // ヘッダ部分にあたるHTML
 static const wxString CUSTOM_HTML_HEADER =
-		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body");
+		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>");
 
 // ポップアップウィンドウのヘッダ部分にあたるHTML
 static const wxString HTML_HEADER_POPUP =

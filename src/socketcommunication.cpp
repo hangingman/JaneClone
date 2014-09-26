@@ -21,10 +21,8 @@
 
 #include "socketcommunication.hpp"
 
-/**
- * デストラクタ
- */
-SocketCommunication::~SocketCommunication() {}
+static const int JC_CURL_TIMEOUT = 30;
+
 /**
  * 板一覧ファイルをダウンロードしてくるメソッド 引数は板一覧ファイル保存先、板一覧ファイルヘッダ保存先
  */
@@ -98,7 +96,7 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
 	  curlpp::Easy myRequest;
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -172,7 +170,7 @@ int SocketCommunication::DownloadBoardListMod(const wxString& outputPath,
 	  curlpp::Easy myRequest;
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -399,7 +397,7 @@ int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
 	  curlpp::Easy myRequest;
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -497,7 +495,7 @@ int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath,
 	  curlpp::Easy myRequest;
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -675,7 +673,7 @@ void SocketCommunication::DownloadThreadNew(const wxString& gzipPath,
 	  curlpp::Easy myRequest;
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -814,7 +812,7 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
 	  curlpp::Easy myRequest;
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -988,7 +986,7 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
 	  curlpp::Easy myRequest;
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -1267,7 +1265,7 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
 	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
 	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
 	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
 	  // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -1436,7 +1434,7 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
 	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
 	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
 	  // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -1608,7 +1606,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
 	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
 	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
 	  // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -2199,7 +2197,7 @@ void SocketCommunication::LoginBe2ch()
 	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
 	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
 	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
 	  // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -2251,7 +2249,7 @@ bool SocketCommunication::GetShitarabaBoardInfo(const wxString& path, wxString& 
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
 	  myRequest.setOpt(new curlpp::options::Url(url));
-	  myRequest.setOpt(new curlpp::options::Timeout(5));
+	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
 
 	  std::ofstream ofs(dataFilePath.mb_str() , std::ios::out | std::ios::trunc );

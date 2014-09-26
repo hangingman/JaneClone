@@ -1,4 +1,5 @@
 AUTOMAKE_OPTIONS 	= foreign subdir-objects
+
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
 janecloneexec_PROGRAMS 	= JaneClone
 janecloneexecrcdir	= $(datarootdir)/@PACKAGE@/rc

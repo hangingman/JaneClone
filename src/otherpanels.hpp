@@ -25,6 +25,7 @@
 #define OTHERPANELS_HPP
 
 #include <utility>
+#include <tuple>
 #include <wx/wx.h>
 #include <wx/image.h>
 #include <wx/spinctrl.h>
