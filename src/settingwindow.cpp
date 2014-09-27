@@ -134,7 +134,7 @@ void SettingDialog::DoLayout() {
  */
 void SettingDialog::SaveConfig(const wxString& title)
 {
-     if ( title == (wxT("User")) ) 
+     if ( title.Contains(wxT("User"))) 
      {
 	  if ( UserSettingPanel* user = 
 	       dynamic_cast<UserSettingPanel*>
@@ -144,7 +144,7 @@ void SettingDialog::SaveConfig(const wxString& title)
 	       user->save_properties();
 	  }
      }
-     else if (title == wxT("通信"))	  
+     else if (title.Contains(wxT("通信")))	  
      {
 	  if ( NetworkSettingPanel* network = 
 	       dynamic_cast<NetworkSettingPanel*>

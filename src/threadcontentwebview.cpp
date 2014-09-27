@@ -53,7 +53,6 @@ wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, w
 
      // メモリに読み込んだHTMLを表示する
      m_browser->SetPage(htmlSource, wxEmptyString);
-     wxMessageBox(onload_js);
      m_browser->RunScript(onload_js);
      
      // スクロールのフラグ
@@ -106,6 +105,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 
 	  // embeded javascript
 	  htmlSource += onload_js;
+	  htmlSource += hover_js;
 	  
 	  htmlSource += wxT("<body bgcolor=#efefef text=black link=blue alink=red vlink=#660099");
 	  htmlSource += wxT(" style=\" font-family: ");
