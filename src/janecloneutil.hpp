@@ -261,13 +261,17 @@ public:
       * @result 取得したファイルとディレクトリの数
       */
      static size_t GetFileNamesRecursive(const wxDir& targetDir, wxArrayString& result);
-
-
-     template<typename T, std::size_t N>
-     static std::size_t NumOf(const T (&array)[N]){
-	  return N;
-     }
-
+     /**
+      * wxStringからbool型の変換
+      *
+      * @param  bool型文字列
+      * @result true or false
+      */
+     static bool ParseBool( const wxString& s ) 
+	  {
+	       return s.at(0) == '1';
+	  };
+     
 private:
 
      // ディスクからの読取サイズ

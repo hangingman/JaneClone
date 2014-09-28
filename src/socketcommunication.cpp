@@ -21,8 +21,44 @@
 
 #include "socketcommunication.hpp"
 
-static const int JC_CURL_TIMEOUT = 30;
+const wxString SocketCommunication::properties[] = {
+     wxT("ID_NetworkPanelUseProxy")		,/* プロキシを使用するかどうか				*/ 
+     wxT("ID_NetworkPanelUseProxyCache")	,/* プロキシでキャッシュを使用するかどうか			*/	  
+     wxT("ID_NetworkPanelBasicAuthUserName")	,/* ベーシック認証のユーザー名				*/ 
+     wxT("ID_NetworkPanelBasicAuthPassword")	,/* ベーシック認証のパスワード				*/ 
+     wxT("ID_NetworkPanelProxyReceiveAddr")	,/* Proxy受信用アドレス					*/ 
+     wxT("ID_NetworkPanelProxyReceivePort")	,/* Proxy受信用ポート					*/	   
+     wxT("ID_NetworkPanelProxySendAddr")	,/* Proxy送信用アドレス					*/	  
+     wxT("ID_NetworkPanelProxySendPort")	,/* Proxy送信用ポート					*/		  
+     wxT("ID_NetworkPanelProxySSLAuthAddr")	,/* Proxy SSL認証用アドレス				*/	   
+     wxT("ID_NetworkPanelProxySSLAuthPort")	,/* Proxy SSL認証用ポート				*/	   
+     wxT("ID_NetworkPanelBoardListURL")		,/* ボード一覧取得URL					*/		  
+     wxT("ID_NetworkPanelReceiveBufferSize")	,/* 受信バッファサイズ					*/ 
+     wxT("ID_NetworkPanelMaxConn")		,/* 最大接続数						*/ 
+     wxT("ID_Receive_Timeout_Sec")	        ,/* 受信タイムアウト秒			                */
+     wxT("ID_Connection_Timeout_Sec")		 /* 接続タイムアウト秒			                */
+};
 
+/**
+ * コンストラクタ
+ * プロパティファイルの設定値を取得する
+ */
+SocketCommunication::SocketCommunication()
+{
+     this->respBuf.clear();
+     this->bodyBuf.clear();
+     propMap.clear();
+
+     for ( auto key : properties )
+     {
+	  wxString val;
+	  JaneCloneUtil::GetJaneCloneProperties(key, &val);
+	  if ( val != wxEmptyString ) 
+	  {
+	       propMap[key] = val;
+	  }
+     }
+}
 /**
  * 板一覧ファイルをダウンロードしてくるメソッド 引数は板一覧ファイル保存先、板一覧ファイルヘッダ保存先
  */
@@ -94,9 +130,9 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
 	  // 保存先を決める
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, RECV);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -168,9 +204,9 @@ int SocketCommunication::DownloadBoardListMod(const wxString& outputPath,
 	  // 保存先を決める
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, RECV);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -395,9 +431,9 @@ int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
 	  // 保存先を決める
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, RECV);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -493,9 +529,9 @@ int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath,
 	  // 保存先を決める
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, RECV);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -671,9 +707,9 @@ void SocketCommunication::DownloadThreadNew(const wxString& gzipPath,
 	  // 保存先を決める
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, RECV);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -810,9 +846,9 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
 	  // 保存先を決める
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, RECV);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -984,9 +1020,9 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
 	  // 保存先を決める
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, RECV);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
           // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -1260,12 +1296,12 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
 	  // 保存先を決める
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, SEND);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
 	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
 	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
 	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
 	  // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -1429,12 +1465,12 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
 	  // 保存先を決める
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, SEND);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
 	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
 	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
 	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
 	  // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -1601,12 +1637,12 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 	  // 保存先を決める
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, SEND);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
 	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
 	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
 	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
 	  // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -1998,6 +2034,7 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
 
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, RECV);
 	  myRequest.setOpt(new cURLpp::Options::Url(requestQuery));
 	  myRequest.setOpt(new cURLpp::Options::Port(portInteger));
 	  std::ofstream ofs(outputFilename.c_str() , std::ios::out | std::ios::trunc );
@@ -2075,6 +2112,7 @@ wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostna
 
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, RECV);
 	  myRequest.setOpt(new cURLpp::Options::Url(requestQuery));
 	  myRequest.setOpt(new cURLpp::Options::Port(portInteger));
 	  std::ofstream ofs(outputFilename.c_str() , std::ios::out | std::ios::trunc );
@@ -2192,12 +2230,12 @@ void SocketCommunication::LoginBe2ch()
 
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, SEND);
 	  myRequest.setOpt(new curlpp::options::Url(url));
 	  myRequest.setOpt(new curlpp::options::HttpHeader(headers));
 	  const std::string postField = std::string(kakikomiInfo.mb_str()); 
 	  myRequest.setOpt(new curlpp::options::PostFields(postField)); 
 	  myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
 	  // ヘッダー用ファンクタを設定する
 	  myRequest.setOpt(new curlpp::options::HeaderFunction(
@@ -2248,8 +2286,8 @@ bool SocketCommunication::GetShitarabaBoardInfo(const wxString& path, wxString& 
 
 	  curlpp::Cleanup myCleanup;
 	  curlpp::Easy myRequest;
+	  LoadConfiguration(myRequest, RECV);
 	  myRequest.setOpt(new curlpp::options::Url(url));
-	  myRequest.setOpt(new curlpp::options::Timeout(JC_CURL_TIMEOUT));
 	  myRequest.setOpt(new curlpp::options::Verbose(true));
 
 	  std::ofstream ofs(dataFilePath.mb_str() , std::ios::out | std::ios::trunc );
@@ -2392,4 +2430,123 @@ wxString SocketCommunication::GetOutputFilePath(bool isShitaraba, wxString& boar
      }
 
      return outputFilePath;
+}
+/**
+ * コンフィグ情報をCurl++のオブジェクトに設定する
+ */
+void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io)
+{
+     /**
+      * Timeout Setting
+      */
+     if ( propMap.find(wxT("ID_Connection_Timeout_Sec")) != propMap.end() )
+     {
+	  const wxString connectTimeout = propMap[wxT("ID_Connection_Timeout_Sec")];
+	  long sec = 0;
+	  if ( connectTimeout.IsNumber() && connectTimeout.ToLong(&sec, 10) )
+	  {
+	       request.setOpt(new curlpp::options::Timeout(sec));
+	  }
+     }
+
+     if ( propMap.find(wxT("ID_Receive_Timeout_Sec")) != propMap.end() )
+     {
+	  const wxString receiveTimeout = propMap[wxT("ID_Receive_Timeout_Sec")];
+	  long sec = 0;
+	  if ( receiveTimeout.IsNumber() && receiveTimeout.ToLong(&sec, 10) )
+	  {
+	       request.setOpt(new curlpp::options::ConnectTimeout(sec));
+	  }
+     }
+
+     /**
+      * BASIC Auth
+      */
+     if ( propMap.find(wxT("ID_NetworkPanelBasicAuthUserName")) != propMap.end() &&
+	  propMap.find(wxT("ID_NetworkPanelBasicAuthPassword")) != propMap.end())
+     {
+	  const wxString username = propMap[wxT("ID_NetworkPanelBasicAuthUserName")];
+	  const wxString password = propMap[wxT("ID_NetworkPanelBasicAuthPassword")]; // TODO: パスワードのHASH化
+	  if ( username.IsWord() && password.IsWord() )
+	  {
+	       const wxString concat = username + wxT(":") + password;
+	       request.setOpt(new curlpp::options::UserPwd(std::string(concat.mb_str())));
+	  }
+	  else
+	  {
+	       const wxString message = wxT("無効なBASIC認証設定が無視されました");
+	       JaneCloneUiUtil::SendLoggingHelper(message);
+	  }	  
+     }
+
+     /**
+      * PROXY
+      */
+     if (propMap.find(wxT("ID_NetworkPanelUseProxy")) != propMap.end() )
+     {
+	  bool useProxy = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxy")]);
+
+	  if (useProxy)
+	  {
+	       // ProxyCache
+	       if ( propMap.find(wxT("ID_NetworkPanelUseProxyCache")) != propMap.end())
+	       {
+		    bool useProxyCache = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxyCache")]);
+		    // TODO: (・_・)
+		    //request.setOpt(new curlpp::options::UserPwd(std::string(concat.mb_str())));
+	       }
+
+	       // PROXYを使用する設定
+	       if (io == SEND)
+	       {
+		    // 送信
+		    // wxT("ID_NetworkPanelProxySendAddr")	,/* Proxy送信用アドレス					*/	  
+		    // wxT("ID_NetworkPanelProxySendPort")	,/* Proxy送信用ポート					*/		  
+		    if ( propMap.find(wxT("ID_NetworkPanelProxySendAddr")) != propMap.end() &&
+			 propMap.find(wxT("ID_NetworkPanelProxySendPort")) != propMap.end())
+		    {
+			 const wxString proxy = propMap[wxT("ID_NetworkPanelProxySendAddr")];
+			 const wxString port  = propMap[wxT("ID_NetworkPanelProxySendPort")];
+			 long p = 0;
+
+			 if ( proxy.IsWord() && port.IsNumber() && port.ToLong(&p, 10))
+			 {
+			      request.setOpt(new curlpp::options::Proxy(std::string(proxy.mb_str())));
+			      request.setOpt(new curlpp::options::ProxyPort(p));		      
+			 }
+			 else
+			 {
+			      const wxString message = wxT("無効なProxy設定が無視されました");
+			      JaneCloneUiUtil::SendLoggingHelper(message);
+			 }     
+		    }
+	       }
+	       else
+	       {
+		    // 受信
+		    // wxT("ID_NetworkPanelProxyReceiveAddr")	,/* Proxy受信用アドレス					*/ 
+		    // wxT("ID_NetworkPanelProxyReceivePort")	,/* Proxy受信用ポート					*/	   
+		    if ( propMap.find(wxT("ID_NetworkPanelProxyReceiveAddr")) != propMap.end() &&
+			 propMap.find(wxT("ID_NetworkPanelProxyReceivePort")) != propMap.end())
+		    {
+			 const wxString proxy = propMap[wxT("ID_NetworkPanelProxyReceiveAddr")];
+			 const wxString port  = propMap[wxT("ID_NetworkPanelProxyReceivePort")];
+			 long p = 0;
+
+			 if ( proxy.IsWord() && port.IsNumber() && port.ToLong(&p, 10) )
+			 {
+			      request.setOpt(new curlpp::options::Proxy(std::string(proxy.mb_str())));
+			      request.setOpt(new curlpp::options::ProxyPort(p));			      
+			 }
+			 else
+			 {
+			      const wxString message = wxT("無効なProxy設定が無視されました");
+			      JaneCloneUiUtil::SendLoggingHelper(message);
+			 }
+		    }
+	       }
+	       // wxT("ID_NetworkPanelProxySSLAuthAddr")	,/* Proxy SSL認証用アドレス				*/	   
+	       // wxT("ID_NetworkPanelProxySSLAuthPort")	,/* Proxy SSL認証用ポート				*/
+	  }
+     }
 }

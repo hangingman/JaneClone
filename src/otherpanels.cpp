@@ -148,6 +148,9 @@ void NetworkSettingPanel::set_properties()
      tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySendPort"),     sedProxyPortTC));
      tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthAddr"),  authSSLAddrTC));
      tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),	boardListURLTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelReceiveBufferSize"), receiveBufferSizeTC));
+     // maxConnSC
      JC_GET_WIDGETS_PROPERTIES
 }
 
@@ -164,6 +167,9 @@ void NetworkSettingPanel::save_properties()
      tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySendPort"),     sedProxyPortTC));
      tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthAddr"),  authSSLAddrTC));
      tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),	boardListURLTC));
+     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelReceiveBufferSize"), receiveBufferSizeTC));
+     // maxConnSC
      JC_SET_WIDGETS_PROPERTIES
 }
 

@@ -173,26 +173,26 @@ X_TABLE_ITEM(ID_ZoomIn)                         /* 画像を拡大する        
 X_TABLE_ITEM(ID_ZoomOut)                        /* 画像を縮小する                                                */ \
 X_TABLE_ITEM(ID_ResetImageOriginalSize)         /* 画像のサイズを元に戻す                                        */ \
 X_TABLE_ITEM(ID_HideThumbnailTab)		/* 画像ビューアを隠す						 */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_CHK) 		/* 新着チェック */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_NUM)		/* 番号	        */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_TITLE)		/* タイトル     */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_RESP)		/* レス	        */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_CACHEDRES)	/* 取得	        */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_NEWRESP)		/* 新着	        */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_INCRESP)		/* 増レス       */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_MOMENTUM)	/* 勢い	        */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_LASTUP)		/* 最終取得     */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_SINCE)		/* SINCE        */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_OID)		/* 固有番号     */ \
-X_TABLE_ITEM(ID_OnClickMenuCOL_BOARDNAME)	/* 板	        */ \
-X_TABLE_ITEM(ID_OnCancelSetting)		/* 設定画面をキャンセル	      */ \
-X_TABLE_ITEM(ID_OnOkSetting)			/* 設定画面をOkで終了	      */ \
-X_TABLE_ITEM(ID_SettingPanelTree)		/* 設定画面の描画を切り替える */ \
-X_TABLE_ITEM(ID_SettingPanelUpdate)		/* 設定画面の更新をメインスレッドに伝える	     */ \
-X_TABLE_ITEM(ID_NetworkPanelUpdate)		/* ネットワーク設定画面の更新をメインスレッドに伝える*/ \
-X_TABLE_ITEM(ID_NetworkPanel)			/* ネットワーク設定用画面		  */ \
-X_TABLE_ITEM(ID_NetworkPanelUseProxy)		/* プロキシを使用するかどうか		  */ \
-X_TABLE_ITEM(ID_NetworkPanelUseProxyCache)	/* プロキシでキャッシュを使用するかどうか */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_CHK) 		/* 新着チェック                                           */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_NUM)		/* 番号	                                                */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_TITLE)		/* タイトル                                              */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_RESP)		/* レス	                                                */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_CACHEDRES)	/* 取得	                                                */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_NEWRESP)		/* 新着	                                                */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_INCRESP)		/* 増レス                                                */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_MOMENTUM)	/* 勢い	                                                */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_LASTUP)		/* 最終取得                                              */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_SINCE)		/* SINCE                                                */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_OID)		/* 固有番号                                              */ \
+X_TABLE_ITEM(ID_OnClickMenuCOL_BOARDNAME)	/* 板	                                                */ \
+X_TABLE_ITEM(ID_OnCancelSetting)		/* 設定画面をキャンセル	                                */ \
+X_TABLE_ITEM(ID_OnOkSetting)			/* 設定画面をOkで終了	                                */ \
+X_TABLE_ITEM(ID_SettingPanelTree)		/* 設定画面の描画を切り替える                               */ \
+X_TABLE_ITEM(ID_SettingPanelUpdate)		/* 設定画面の更新をメインスレッドに伝える	                */ \
+X_TABLE_ITEM(ID_NetworkPanelUpdate)		/* ネットワーク設定画面の更新をメインスレッドに伝える          */ \
+X_TABLE_ITEM(ID_NetworkPanel)			/* ネットワーク設定用画面		                        */ \
+X_TABLE_ITEM(ID_NetworkPanelUseProxy)		/* プロキシを使用するかどうか		                */ \
+X_TABLE_ITEM(ID_NetworkPanelUseProxyCache)	/* プロキシでキャッシュを使用するかどうか                    */ \
 X_TABLE_ITEM(ID_NetworkPanelBasicAuthUserName)	/* ベーシック認証のユーザー名		                */ \
 X_TABLE_ITEM(ID_NetworkPanelBasicAuthPassword)	/* ベーシック認証のパスワード		                */ \
 X_TABLE_ITEM(ID_NetworkPanelProxyReceiveAddr)	/* Proxy受信用アドレス			                */ \
@@ -201,6 +201,9 @@ X_TABLE_ITEM(ID_NetworkPanelProxySendAddr)	/* Proxy送信用アドレス			     
 X_TABLE_ITEM(ID_NetworkPanelProxySendPort)	/* Proxy送信用ポート			                */ \
 X_TABLE_ITEM(ID_NetworkPanelProxySSLAuthAddr)	/* Proxy SSL認証用アドレス		                */ \
 X_TABLE_ITEM(ID_NetworkPanelProxySSLAuthPort)	/* Proxy SSL認証用ポート		                        */ \
+X_TABLE_ITEM(ID_NetworkPanelBoardListURL)       /* ボード一覧取得URL                                      */ \
+X_TABLE_ITEM(ID_NetworkPanelReceiveBufferSize)  /* 受信バッファサイズ                                      */ \
+X_TABLE_ITEM(ID_NetworkPanelMaxConn)            /* 最大接続数                                            */  \
 X_TABLE_ITEM(ID_PathSettingPanel) 		/* 各種パス設定用画面					*/ \
 X_TABLE_ITEM(ID_BrowserCheck)			/* 使用するブラウザを指定するかどうか			*/ \
 X_TABLE_ITEM(ID_BrowserPathTC)			/* ブラウザのパスをもつテキストコントロール		        */ \

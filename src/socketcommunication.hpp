@@ -61,10 +61,7 @@ public:
      /**
       * コンストラクタ
       */
-     SocketCommunication(){
-	  this->respBuf.clear();
-	  this->bodyBuf.clear();
-     };
+     SocketCommunication();
      /**
       * 板一覧ファイルをダウンロードしてくるメソッド
       * もし前回通信した際のログが残っていれば更新の確認のみ行う
@@ -185,6 +182,13 @@ private:
       * HTTPの本文の情報
       */
      std::string bodyBuf;
+     /**
+      * コンフィグ情報
+      */
+     std::map<wxString, wxString> propMap;
+     static const wxString properties[];
+     const bool SEND = true;
+     const bool RECV = false;
      /**
       * 新規に板一覧情報を取得しに行く
       */
@@ -312,6 +316,10 @@ private:
       * 出力ファイルパス設定
       */
      static wxString GetOutputFilePath(bool isShitaraba, wxString& boardNameAscii);
+     /**
+      * コンフィグ情報をCurl++のオブジェクトに設定する
+      */
+     void LoadConfiguration(curlpp::Easy& request, const bool io);
 };
 
 #endif /* SOCKETCOMMUNICATION_HPP_ */
