@@ -21,19 +21,13 @@
 
 #include "threadcontentwebview.hpp"
 #include "janeclone.hpp"
-#include "script/onload_js.hpp"
-
-IMPLEMENT_DYNAMIC_CLASS(ThreadContentWindow, wxWebView)
-
-BEGIN_EVENT_TABLE(ThreadContentWindow, wxWebView)
-END_EVENT_TABLE()
 
 /**
  * 通常のコンストラクタ
  */
 ThreadContentWindow::ThreadContentWindow(wxWindow* parent, const wxString& threadContentPath):
-wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO) {
-
+wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO) 
+{
      // ブラウザの準備
      wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
      m_browser = wxWebView::New(this, wxID_ANY);
@@ -53,7 +47,6 @@ wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, w
 
      // メモリに読み込んだHTMLを表示する
      m_browser->SetPage(htmlSource, wxEmptyString);
-     m_browser->RunScript(onload_js);
      
      // スクロールのフラグ
      fNeedScroll = false;
@@ -84,7 +77,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 	  if (f.SetFaceName(wxT("Mona"))) {
 	       fontName = wxT("Mona");
 	  } else if (f.SetFaceName(wxT("Mona-VLGothic"))) {
-	       fontName = wxT("Mona-VLGothic")
+	       fontName = wxT("Mona-VLGothic");
 	  } else if (f.SetFaceName(wxT("Mona-sazanami"))) {
 	       fontName = wxT("Mona-sazanami");
 	  }
@@ -103,9 +96,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
      } else {
 	  htmlSource += CUSTOM_HTML_HEADER;
 
-	  // embeded javascript
-	  htmlSource += onload_js;
-	  htmlSource += hover_js;
+	  // embeded javascript here
 	  
 	  htmlSource += wxT("<body bgcolor=#efefef text=black link=blue alink=red vlink=#660099");
 	  htmlSource += wxT(" style=\" font-family: ");

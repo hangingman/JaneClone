@@ -44,11 +44,6 @@ public:
       */
      ThreadContentWindow(wxWindow* parent, const wxString& threadContentPath);
      /**
-      * Hash用のコンストラクタ
-      */
-     ThreadContentWindow() {}
-     ThreadContentWindow(const ThreadContentWindow&) {}
-     /**
       * オペレーターに対する参照返し
       */
      ThreadContentWindow& operator=(const ThreadContentWindow&) {return *this;}
@@ -96,9 +91,6 @@ private:
      // 指定されたファイル中のテキストをメモリに展開する
      wxString ReadPlainTextFile(const wxString& filePath);
 
-     DECLARE_EVENT_TABLE()
-     DECLARE_DYNAMIC_CLASS(ThreadContentWindow)
-
 private:
      // 内部でもつリンク情報
      wxHtmlLinkInfo* m_linkInfo;
@@ -116,9 +108,6 @@ private:
      long m_response;
      // スクロールさせる必要があるかどうか
      bool fNeedScroll;
-
-protected:
-
 };
 
 #endif /* THREADCONTENTWEBVIEW_HPP_ */
