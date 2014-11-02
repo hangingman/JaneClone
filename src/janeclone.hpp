@@ -39,6 +39,14 @@
 #include <wx/file.h>
 #include <wx/aui/aui.h>
 #include <wx/aui/auibook.h>
+
+#if wxCHECK_VERSION(3, 0, 0)
+   /** do nothing */
+#else
+   /** wxWidgets 3.0 provide shorter synonyms for wxEVT_XXX constants. */
+   #define wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE        wxEVT_AUINOTEBOOK_PAGE_CLOSE
+#endif
+
 #include <wx/dialog.h>
 #include <wx/event.h>
 #include <wx/wfstream.h>
