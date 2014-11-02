@@ -4,22 +4,16 @@ os:
   - linux
 
 before_install:
-  # g++4.8.1
   - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
-  # clang 3.4
   - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
   - sudo apt-get update -qq
 
 install:
   - sudo apt-get install -qq gnulib
   - sudo apt-get install libwxgtk2.8-dev libxml2-dev uuid-dev
-  # g++4.8.1
-  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
-
-  # clang 3.4
-  - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.4; fi
-  - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.4"; fi
+  # g++4.7 ( Ubuntu provide wx-2.8, which would be build by gcc 4.7 , cannot build by 4.8 ? ) 
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.7; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.7"; fi
 
 before_script:
   - autoreconf -i -I/usr/share/gnulib/m4 -I `pwd`/m4
