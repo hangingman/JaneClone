@@ -2156,7 +2156,11 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event)
 void JaneClone::OneThreadTabClose(wxCommandEvent& event) 
 {
      // アクティブなタブを選択して閉じる
+#if wxCHECK_VERSION(3, 0, 0)
      wxAuiNotebookEvent e(wxEVT_AUINOTEBOOK_PAGE_CLOSE);
+#else
+     wxAuiNotebookEvent e(wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE);
+#endif
      e.SetSelection(threadNoteBook->GetSelection());
      e.SetId(ID_ThreadNoteBook);
      OnAboutCloseThreadNoteBook(e);
@@ -2174,7 +2178,11 @@ void JaneClone::ExcepSelThreadTabClose(wxCommandEvent& event)
 
      for (unsigned int i = 0; i < pages; i++) 
      {
+#if wxCHECK_VERSION(3, 0, 0)
 	  wxAuiNotebookEvent e(wxEVT_AUINOTEBOOK_PAGE_CLOSE);
+#else
+	  wxAuiNotebookEvent e(wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE);
+#endif
 	  e.SetSelection(i);
 	  e.SetId(ID_ThreadNoteBook);
 
@@ -2205,7 +2213,11 @@ void JaneClone::AllThreadTabClose(wxCommandEvent& event)
 
      for (int i = 0; i < pages; i++) 
      {
+#if wxCHECK_VERSION(3, 0, 0)
 	  wxAuiNotebookEvent e(wxEVT_AUINOTEBOOK_PAGE_CLOSE);
+#else
+	  wxAuiNotebookEvent e(wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE);
+#endif
 	  e.SetSelection(i);
 	  e.SetId(ID_ThreadNoteBook);
 	  OnAboutCloseThreadNoteBook(e);

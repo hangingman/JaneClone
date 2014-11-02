@@ -873,6 +873,7 @@ wxString JaneCloneUtil::ConvCharacterReference(wxString& inputString) {
      buffer.Replace(_T("&amp;"), _T("&"), true);
      buffer.Replace(_T("&quot;"), _T("\""), true);
      buffer.Replace(_T("&apos;"), _T("'"), true);
+     buffer.Replace(_T("&copy;"), _T("©"), true);
      return buffer;
 }
 /**
