@@ -119,7 +119,7 @@ void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID i
 #if wxCHECK_VERSION(2, 9, 0)
      wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
 #else
-     this->GetEventHandler()->AddPendingEvent(*e);
+     wxWindow::FindWindowById(ID_WxJaneClone)->GetEventHandler()->AddPendingEvent(*e);
 #endif    
 };
 
@@ -139,7 +139,7 @@ void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID i
 #if wxCHECK_VERSION(2, 9, 0)
      wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
 #else
-     this->GetEventHandler()->AddPendingEvent(*e);
+     wxWindow::FindWindowById(ID_WxJaneClone)->AddPendingEvent(*e);
 #endif    
 };
 
@@ -164,7 +164,7 @@ void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID i
 #if wxCHECK_VERSION(2, 9, 0)
      wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
 #else
-     this->GetEventHandler()->AddPendingEvent(*e);
+     wxWindow::FindWindowById(ID_WxJaneClone)->AddPendingEvent(*e);
 #endif    
 };
 
