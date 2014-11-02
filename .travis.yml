@@ -1,5 +1,9 @@
 language: cpp
 
+compiler:
+  - g++
+  - clang++
+
 os:
   - linux
 
@@ -19,7 +23,7 @@ before_script:
   - autoreconf -i -I/usr/share/gnulib/m4 -I `pwd`/m4
 
 script:
-  - ./configure && make
+  - ./configure && make -j4
 
 branches:
   only:
@@ -27,4 +31,5 @@ branches:
 
 notifications:
   email:
-    - newserver002@gmail.com
+    on_success: change
+    on_failure: always
