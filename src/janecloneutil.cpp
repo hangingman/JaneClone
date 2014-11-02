@@ -925,7 +925,11 @@ wxString JaneCloneUtil::GenerateUUIDString() {
      std::stringstream stream;
      stream << guid;
      
+#if wxCHECK_VERSION(2, 9, 0)
      return wxString(stream.str().c_str());
+#else /** Old version wxWidgets not allow copy constructor from <const char*> */
+     return wxString(stream.str().c_str(), wxConvUTF8);
+#endif
 }
 /**
  * スレッドの勢い値を計算する
