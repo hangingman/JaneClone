@@ -264,16 +264,16 @@ endif
 package-deb-with-gpg: package-deb
 	@if gpg --version >/dev/null 2>&1; then                             \
 	   echo "sign by GPG key...";                                       \
-	   (cd $(distdir) && debuild);                                      \
+	   (cd $(distdir) && debuild -e CXX -e CC);                         \
 	else                                                                \
 	   echo "not use GPG key...if you want to sign, make by terminal."; \
-	   (cd $(distdir) && debuild -uc -us);                              \
+	   (cd $(distdir) && debuild -uc -us -e CXX -e CC);                 \
 	fi
 
 # target for debian without GPG key
 package-deb-local: package-deb
 	echo "not use GPG key...if you want to sign, make by terminal.";
-	(cd $(distdir) && debuild -uc -us); 
+	(cd $(distdir) && debuild -uc -us -e CXX -e CC); 
 
 # update license info
 package-deb-license:
