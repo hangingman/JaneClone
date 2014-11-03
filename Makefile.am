@@ -302,8 +302,8 @@ package-deb: package-deb-license local-distdir-remove dist
 	   echo "use Debian wheezy control file...";                           \
 	   cp $(top_builddir)/debian/control.wheezy $(distdir)/debian/control; \
 	elif test "$(TRAVIS_CI)" = "true"; then                                \
-	   echo "This is Travis CI, use Debian wheezy control file...";        \
-	   cp $(top_builddir)/debian/control.wheezy $(distdir)/debian/control; \
+	   echo "This is Travis CI, use Debian ubuntu control file...";        \
+	   cp $(top_builddir)/debian/control.ubuntu $(distdir)/debian/control; \
 	else                                                                   \
 	   echo "use Debian jessie control file...";                           \
 	   cp $(top_builddir)/debian/control.jessie $(distdir)/debian/control; \

@@ -1,0 +1,15 @@
+Source: janeclone
+Section: net
+Priority: extra
+Maintainer: hiroyuki nagata <%%%PACKAGE_BUGREPORT%%%>
+Build-Depends: debhelper, autotools-dev, libwxbase2.8-0, libwxgtk2.8-0, libxml2-dev, libcurl4-openssl-dev, uuid-dev
+Standards-Version: %%%VERSION%%%
+Homepage: https://github.com/Hiroyuki-Nagata/JaneClone
+
+Package: janeclone
+Architecture: any
+Version: 0:%%%VERSION%%%-1
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Cross Platform 2ch browser
+ JaneClone is a plain browser dedicated to read 2ch thread. Using a library called wxWidgets.
+ It will work on Windows, Linux, Mac. It will keep the platform-specific user interface.
