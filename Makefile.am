@@ -296,9 +296,13 @@ package-deb-license:
 
 # target for debian
 package-deb: package-deb-license local-distdir-remove dist
-	(tar xvf $(distdir).tar.gz && cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
+	(tar xvf $(distdir).tar.gz && cd $(distdir) && yes | dh_make -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
+	@echo "This env is Travis ? -> $(TRAVIS_CI)"
 	@if test "$(DEBIAN_VERSION)" = "*wheezy*"; then                        \
 	   echo "use Debian wheezy control file...";                           \
+	   cp $(top_builddir)/debian/control.wheezy $(distdir)/debian/control; \
+	elif test "$(TRAVIS_CI)" = "true"; then                                \
+	   echo "This is Travis CI, use Debian wheezy control file...";        \
 	   cp $(top_builddir)/debian/control.wheezy $(distdir)/debian/control; \
 	else                                                                   \
 	   echo "use Debian jessie control file...";                           \

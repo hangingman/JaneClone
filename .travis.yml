@@ -1,5 +1,8 @@
 language: cpp
 
+env:
+- TRAVIS_CI=true
+
 compiler:
   - g++
   - clang++
@@ -15,11 +18,11 @@ before_install:
 
 install:
   # For m4
-  - sudo apt-get install -qq gnulib
+  - sudo apt-get install -qq gnulib dh-make
   # For package dependency
   - sudo apt-get install libwxgtk2.8-dev libxml2-dev uuid-dev
   # For package build
-  - sudo apt-get install debhelper autotools-dev dh-make automake gnupg lintian fakeroot pbuilder
+  - sudo apt-get install debhelper autotools-dev automake gnupg lintian fakeroot pbuilder
   # g++4.7 ( Ubuntu provide wx-2.8, which would be build by gcc 4.7 , cannot build by 4.8 ? ) 
   - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.7; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.7"; fi
