@@ -262,18 +262,18 @@ endif
 
 # target for debian with GPG key
 package-deb-with-gpg: package-deb
-	@if gpg --version >/dev/null 2>&1; then                             \
-	   echo "sign by GPG key...";                                       \
-	   (cd $(distdir) && debuild -e CXX -e CC);                         \
-	else                                                                \
-	   echo "not use GPG key...if you want to sign, make by terminal."; \
-	   (cd $(distdir) && debuild -uc -us -e CXX -e CC);                 \
+	@if gpg --version >/dev/null 2>&1; then                                      \
+	   echo "sign by GPG key...";                                                \
+	   (cd $(distdir) && debuild --preserve-env --preserve-envvar PATH);         \
+	else                                                                         \
+	   echo "not use GPG key...if you want to sign, make by terminal.";          \
+	   (cd $(distdir) && debuild --preserve-env --preserve-envvar PATH -uc -us); \
 	fi
 
 # target for debian without GPG key
 package-deb-local: package-deb
 	echo "not use GPG key...if you want to sign, make by terminal.";
-	(cd $(distdir) && debuild -uc -us -e CXX -e CC); 
+	(cd $(distdir) && debuild --preserve-env --preserve-envvar PATH -uc -us); 
 
 # update license info
 package-deb-license:
