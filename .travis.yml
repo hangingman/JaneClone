@@ -1,7 +1,12 @@
 language: cpp
 
+compiler:
+  - g++
+  - clang++
+
 os:
   - linux
+  - osx
 
 before_install:
   - if [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
@@ -31,4 +36,5 @@ branches:
 
 notifications:
   email:
-    - newserver002@gmail.com
+    on_success: change
+    on_failure: always
