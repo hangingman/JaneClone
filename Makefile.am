@@ -7,7 +7,12 @@ DIST_SUBDIRS = $(SUBDIRS)
 # janeclone.wrapper向けルール
 bin_SCRIPTS = janeclone
 CLEANFILES  = $(bin_SCRIPTS)
-EXTRA_DIST  = misc/janeclone.wrapper misc/janeclone.menu misc/janeclone.desktop test
+EXTRA_DIST  = misc/janeclone.wrapper  \
+	      misc/janeclone.menu     \
+	      misc/janeclone.desktop  \
+	      test                    \
+	      $(wildcard babel/*.dat) \
+	      $(wildcard bebel/*.csv)
 
 # 書き換えスクリプト
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
@@ -290,7 +295,7 @@ package-deb-license:
 #sh $(top_builddir)/misc/license.sh >> $(COPYRIGHT)
 
 # target for debian
-package-deb: package-deb-license remove_distdir dist
+package-deb: package-deb-license local-distdir-remove dist
 	(tar xvf $(distdir).tar.gz && cd $(distdir) && dh_make -y -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
 	@if test "$(DEBIAN_VERSION)" = "*wheezy*"; then                        \
 	   echo "use Debian wheezy control file...";                           \
@@ -304,23 +309,15 @@ package-deb: package-deb-license remove_distdir dist
 	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules                           #  rule file
 	rm -f $(distdir)/debian/*.ex                                                        #  delete extension files
 
-remove_distdir :
-# パッケージを削除
-	if test -d "$(distdir)"; then \
-	find "$(distdir)" -type d ! -perm -200 -exec chmod u+w {} ';' \
-	&& rm -rf "$(distdir)" \
-	|| { sleep 5 && rm -rf "$(distdir)"; }; \
-	else :; fi
-	rm -rf $(distdir).tar.gz
-	rm -rf $(distdir).zip
-	rm -rf janeclone_*
-	rm -rf $(BUNDLE)
+# local dist remove
+local-distdir-remove:
+	$(am__post_remove_distdir)
 
 # OSX向けのバイナリ(テスト用)
-osx-make-bin : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) wxmac-dist-shared-lib
+osx-make-bin : local-distdir-remove $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) wxmac-dist-shared-lib
 
 # OSX向けのバイナリ作成
-osx-make-hook : remove_distdir $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) check-dylibbundler wxmac-dist-shared-lib package-osx-intel64-dmg
+osx-make-hook : local-distdir-remove $(BUNDLE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME) $(MACICON) $(MACPKGINFO) $(MACINFOPLIST) check-dylibbundler wxmac-dist-shared-lib package-osx-intel64-dmg
 
 # Bundleその他の生成方法を書く
 #  This builds the bundle's directory structure.
@@ -470,7 +467,7 @@ check-dylibbundler:
 
 
 # 独自設定のクリーン用ターゲット
-clean-local: package-clean remove_distdir
+clean-local: package-clean local-distdir-remove
 # パッケージディレクトリを削除するだけ
 package-clean:
 # rm packagedir and crate packagedir

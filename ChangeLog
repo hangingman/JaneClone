@@ -1,3 +1,173 @@
+commit 09ffd11
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Fix coding miss ( use of 'this' keyword in static function )
+
+src/janecloneuiutil.cpp
+
+commit 43c1a8b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Deal with old version wxWidgets conversion std::string to wxString
+
+src/janecloneutil.cpp
+
+commit 89b9c49
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Deal with copyright, fix macro error
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+
+commit 003b992
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-02
+
+    Fix macro error.
+
+src/janeclone.hpp
+
+commit deb0154
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-02
+
+    Update Travis setting ( g++ version 4.8 -> 4.7 )
+
+.travis.yml
+
+commit 5e29507
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-02
+
+    Update Travis setting
+
+.travis.yml
+
+commit 58418c2
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-02
+
+    Update Travis setting
+
+.travis.yml
+
+commit 2370427
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-10-01
+
+    Delete unused macros, fix GTK build.
+
+src/threadcontentwebview.cpp
+src/threadcontentwebview.hpp
+
+commit d69c4f5
+Author: 永田 裕之 <newserver002@gmail.com>
+Date:   2014-09-28
+
+    Add http proxy configuration loading function.
+
+configure.ac
+src/enums.hpp
+src/janecloneutil.hpp
+src/otherpanels.cpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit 813a8b1
+Author: 永田 裕之 <newserver002@gmail.com>
+Date:   2014-09-27
+
+    Fix coding miss.
+
+src/settingwindow.cpp
+src/threadcontentwebview.cpp
+
+commit cdf28fd
+Author: 永田 裕之 <newserver002@gmail.com>
+Date:   2014-09-27
+
+    Add some function in NetworkSettingPanel
+
+src/enums.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+src/settingwindow.hpp
+
+commit b9d1a38
+Author: 永田 裕之 <newserver002@gmail.com>
+Date:   2014-09-26
+
+    fixed #29 ; Suppress invalid encoding warning.
+
+configure.ac
+src/Makefile.am
+src/datatype.hpp
+src/enums.hpp
+src/janecloneutil.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/threadcontentwebview.cpp
+src/threadcontentwebview.hpp
+
+commit d35bf94
+Author: 永田 裕之 <newserver002@gmail.com>
+Date:   2014-09-22
+
+    Make html viewer font can see AA.
+
+src/datatype.hpp
+src/threadcontentwebview.cpp
+
+commit 7a09f52
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-09-21
+
+    Add missing sources.
+
+src/threadcontentwebview.cpp
+src/threadcontentwebview.hpp
+
+commit d26bfae
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-09-21
+
+    Start to use wxWebView ! Smooth browsing now !
+
+configure.ac
+debian/control.jessie
+src/Makefile.am
+src/datatype.hpp
+src/janeclone.hpp
+src/threadcontentbar.hpp
+src/threadcontentwindow.hpp
+
+commit a059a27
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-09-20
+
+    Update control files.
+
+debian/control.jessie
+debian/control.wheezy
+
+commit ad90872
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-09-20
+
+    Release JaneClone-1.1.4
+
+ChangeLog
+INSTALL
+NEWS
+
 commit 49b614d
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2014-09-20

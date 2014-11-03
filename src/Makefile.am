@@ -4,47 +4,44 @@ janecloneexecdir 	= $(datarootdir)/@PACKAGE@
 janecloneexec_PROGRAMS 	= JaneClone
 janecloneexecrcdir	= $(datarootdir)/@PACKAGE@/rc
 janecloneexecrc_DATA	= $(wildcard rc/*)
-
-JaneClonedir	  = $(pkglibdir)
-JaneClone_SOURCES = extractboardlist.hpp        \
-		    main.cpp                    \
-		    socketcommunication.cpp     \
-		    anchoredresponsepopup.cpp   \
-		    janeclone.cpp               \
-		    sqliteaccessor.cpp          \
-		    socketcommunication.hpp     \
-		    virtualboardlistctrl.cpp    \
-		    anchoredresponsepopup.hpp   \
-		    janeclone.hpp               \
-		    sqliteaccessor.hpp          \
-		    threadcontentbar.cpp        \
-		    virtualboardlistctrl.hpp    \
-		    datatype.hpp                \
-		    janecloneutil.cpp           \
-		    responsewindow.cpp          \
-		    threadcontentbar.hpp        \
-		    extractboardlist.cpp        \
-		    janecloneutil.hpp           \
-		    responsewindow.hpp          \
-		    janecloneimageviewer.cpp	\
-		    janecloneimageviewer.hpp    \
-		    imagepanel.cpp		\
-		    imagepanel.hpp		\
-		    settingwindow.cpp		\
-		    settingwindow.hpp		\
-		    otherpanels.cpp		\
-		    otherpanels.hpp		\
-		    drawpane.cpp                \
-		    drawpane.hpp                \
-		    enums.hpp			\
-		    enumstring.hpp              \
-		    janecloneuiutil.cpp         \
-		    janecloneuiutil.hpp         \
-		    ../babel/babel.cpp		\
-		    ../babel/babel.h		\
-		    $(wildcard ../babel/*.dat)  \
-		    $(wildcard ../babel/*.csv)  \
-		    $(wildcard rc/*)
+JaneClonedir	  	= $(pkglibdir)
+JaneClone_SOURCES 	= extractboardlist.hpp        \
+		          main.cpp                    \
+		          socketcommunication.cpp     \
+		          anchoredresponsepopup.cpp   \
+		          janeclone.cpp               \
+		          sqliteaccessor.cpp          \
+		          socketcommunication.hpp     \
+		          virtualboardlistctrl.cpp    \
+		          anchoredresponsepopup.hpp   \
+		          janeclone.hpp               \
+		          sqliteaccessor.hpp          \
+		          threadcontentbar.cpp        \
+		          virtualboardlistctrl.hpp    \
+		          datatype.hpp                \
+		          janecloneutil.cpp           \
+		          responsewindow.cpp          \
+		          threadcontentbar.hpp        \
+		          extractboardlist.cpp        \
+		          janecloneutil.hpp           \
+		          responsewindow.hpp          \
+		          janecloneimageviewer.cpp    \
+		          janecloneimageviewer.hpp    \
+		          imagepanel.cpp	      \
+			  imagepanel.hpp	      \
+			  settingwindow.cpp	      \
+			  settingwindow.hpp	      \
+			  otherpanels.cpp	      \
+			  otherpanels.hpp	      \
+		          drawpane.cpp                \
+		          drawpane.hpp                \
+		          enums.hpp		      \
+		          enumstring.hpp              \
+		          janecloneuiutil.cpp         \
+		          janecloneuiutil.hpp         \
+			  ../babel/babel.cpp          \
+			  ../babel/babel.h            \
+		          $(wildcard rc/*)
 
 if USE_WX_WEBVIEW
 # wxWebView support
