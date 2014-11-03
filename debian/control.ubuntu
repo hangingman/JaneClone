@@ -3,7 +3,7 @@ Section: net
 Priority: extra
 Maintainer: hiroyuki nagata <%%%PACKAGE_BUGREPORT%%%>
 Build-Depends: debhelper, autotools-dev, libwxbase2.8-0, libwxgtk2.8-0, libxml2-dev, libcurl4-openssl-dev, uuid-dev
-Standards-Version: %%%VERSION%%%
+Standards-Version: %%%STANDARDS-VERSION%%%
 Homepage: https://github.com/Hiroyuki-Nagata/JaneClone
 
 Package: janeclone

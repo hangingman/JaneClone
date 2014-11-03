@@ -308,10 +308,11 @@ package-deb: package-deb-license local-distdir-remove dist
 	   echo "use Debian jessie control file...";                           \
 	   cp $(top_builddir)/debian/control.jessie $(distdir)/debian/control; \
 	fi
-	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(distdir)/debian/control             #  upstream version 
-	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control #  bugreport address
-	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules                           #  rule file
-	rm -f $(distdir)/debian/*.ex                                                        #  delete extension files
+	sed -i 's/%%%STANDARDS-VERSION%%%/@DEB_STANDARDS_VERSION@/g' $(distdir)/debian/control #  debian policy version
+	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(distdir)/debian/control                #  upstream version 
+	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control    #  bugreport address
+	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules                              #  rule file
+	rm -f $(distdir)/debian/*.ex                                                           #  delete extension files
 
 # local dist remove
 local-distdir-remove:
