@@ -272,8 +272,9 @@ package-deb-with-gpg: package-deb
 
 # target for debian without GPG key
 package-deb-local: package-deb
-	echo "not use GPG key...if you want to sign, make by terminal.";
-	(cd $(distdir) && debuild --preserve-env --preserve-envvar PATH -uc -us); 
+	@echo "not use GPG key...if you want to sign, make by terminal."
+	(cd $(distdir) && debuild --preserve-env --preserve-envvar PATH -uc -us)
+	$(SED) -i "/dependency_libs/ s/'.*'/''/" `find . -name '*.la'`
 
 # update license info
 package-deb-license:
