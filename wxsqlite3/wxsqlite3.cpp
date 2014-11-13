@@ -3640,14 +3640,13 @@ void wxSQLite3Database::SetCollation(const wxString& collationName, wxSQLite3Col
   CheckDatabase();
   wxCharBuffer strCollationName = collationName.ToUTF8();
   const char* localCollationName = strCollationName;
-  int rc;
   if (collation)
   {
-    rc = sqlite3_create_collation(m_db->m_db, localCollationName, SQLITE_UTF8, collation, (int(*)(void*,int,const void*,int,const void*)) wxSQLite3Database::ExecComparisonWithCollation);
+    sqlite3_create_collation(m_db->m_db, localCollationName, SQLITE_UTF8, collation, (int(*)(void*,int,const void*,int,const void*)) wxSQLite3Database::ExecComparisonWithCollation);
   }
   else
   {
-    rc = sqlite3_create_collation(m_db->m_db, localCollationName, SQLITE_UTF8, NULL, (int(*)(void*,int,const void*,int,const void*)) NULL);
+    sqlite3_create_collation(m_db->m_db, localCollationName, SQLITE_UTF8, NULL, (int(*)(void*,int,const void*,int,const void*)) NULL);
   }
 }
 

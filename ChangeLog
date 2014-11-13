@@ -1,3 +1,116 @@
+commit 12bb32b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-04
+
+    Add osx build process in Travis CI setting
+    Fix lintian error "E: janeclone: non-empty-dependency_libs-in-la-file"
+
+.travis.yml
+Makefile.am
+
+commit 40a4d49
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Fix lintian error "E: janeclone source: invalid-standards-version 1.1.4"
+
+Makefile.am
+configure.ac
+debian/control.jessie
+debian/control.ubuntu
+debian/control.wheezy
+
+commit 9fefe7d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Use testing debuild option "--preserve-env --preserve-envvar PATH"
+
+Makefile.am
+
+commit 0439416
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Fix debuild command for environment variable
+
+Makefile.am
+
+commit c3e58ed
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Add dependency "cdbs"
+
+.travis.yml
+
+commit 10a9448
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Add control file for Travis ubuntu.
+
+Makefile.am
+debian/control.ubuntu
+
+commit cd487d5
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Deal with old dh-make by "yes" command. Use Travis env command.
+
+.travis.yml
+Makefile.am
+
+commit 1004ece
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Fix Makefile.am for building pacakge requiring package
+
+.travis.yml
+
+commit c6d43f5
+Merge: a189df2 6f13ae6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Merge branch 'master' of github.com:Hiroyuki-Nagata/JaneClone
+    
+    I forget below commit pull...
+    
+    Conflicts:
+    	.travis.yml
+
+commit a189df2
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Update Makefile.am ( package build ) , and update Travis CI setting
+
+.travis.yml
+ChangeLog
+Makefile.am
+src/Makefile.am
+
+commit 6f13ae6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Update Travis CI setting
+
+.travis.yml
+
+commit f3e048f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-03
+
+    Update Travis CI setting
+
+.travis.yml
+cross-i686-w64-mingw32.sh
+x86_64-apple-darwin.sh
+
 commit 09ffd11
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2014-11-03
