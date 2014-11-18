@@ -100,25 +100,70 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 	  wxTextFile jsFile;
 	  jsFile.Open(jsPath, wxConvUTF8);
 	  wxString embededJS;
+	  wxString embededCSS;
 
 	  // ファイルがオープンされているならば
-	  if (jsFile.IsOpened()) {
-		  for (embededJS += jsFile.GetFirstLine(); !jsFile.Eof(); embededJS += jsFile.GetNextLine()) {
+	  if (jsFile.IsOpened()) 
+	  {
+		  // jQueryの読み込み
+		  wxFileName curdir( wxGetCwd(), "" );
+
+#ifndef __WXMAC__
+		  const wxString jQueryPath = wxT("file:///") +
+			  curdir.GetPath() +
+			  wxT("/script/");
+
+#else
+		  const wxString jQueryPath = wxT("file:///") +
+			  curdir.GetPath() +
+			  wxT("/JaneClone.app/Contents/MacOS/script/");
+#endif
+
+		  // <script src="jquery.js"
+		  embededJS += wxT("<script src=\"");
+		  embededJS += jQueryPath;
+		  embededJS += wxT("jquery-2.1.1.min.js\" type=\"text/javascript\"></script>");
+
+		  // <script src="contextMenu.js"
+		  embededJS += wxT("<script src=\"");
+		  embededJS += jQueryPath;
+		  embededJS += wxT("contextMenu.min.js\" type=\"text/javascript\"></script>");
+
+		  for (embededJS += jsFile.GetFirstLine(); !jsFile.Eof(); embededJS += jsFile.GetNextLine()) 
+		  {
 			  embededJS += wxT("\n");
 		  }
+
+		  // Add all javascript
+		  htmlSource += embededJS;
+
+		  // Add CSS
+		  // <link rel="stylesheet" type="text/css" href="http://アップロード先/jquery.contextMenu.css" />
+		  embededCSS += wxT("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+		  embededCSS += jQueryPath;
+		  embededCSS += wxT("contextMenu.css\" />");
 	  }
 	  jsFile.Close();
 
-	  htmlSource += embededJS;
 	  htmlSource += wxT("</head>");
 
 	  htmlSource += wxT("<body bgcolor=#efefef text=black link=blue alink=red vlink=#660099");
 	  htmlSource += wxT(" style=\" font-family: ");
 	  htmlSource += fontName;
           htmlSource += wxT("\">");
+
+	  // popup
 	  htmlSource += wxT("<SPAN id=\"ID\" STYLE=\"visibility: hidden; position: absolute;\"></SPAN>");
 
-	  SendLogging(htmlSource);
+	  // contextMenu
+	  /**
+	  htmlSource += wxT("<ul id=\"OnRightClickHtmlWindow\" class=\"contextMenu\">"
+			    "<li><a href=\"#ID_CopyFromHtmlWindow\"   >コピー</a></li>" 
+			    "<li><a href=\"#ID_CopyURLFromHtmlWindow\">リンクをコピー</a></li>" 
+			    "<li><a href=\"#ID_CopyURLFromHtmlWindow\">全て選択</a></li>" 
+			    "</ul>");
+	  */
+    	  SendLogging(htmlSource);
      }     
 
      // テキストファイルの読み込み

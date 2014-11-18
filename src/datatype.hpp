@@ -129,6 +129,7 @@ static const wxString janecloneVersion   = wxT(PACKAGE_VERSION);
 static const wxString licencePath        = wxT("rc/gpl-2.0.txt");
 
 // Javascriptのデフォルトのパス
+static const wxString jsDir              = wxT("script/");
 static const wxString jsPath             = wxT("script/embedded.js");
 
 // 各ボタンに貼り付けられる画像
@@ -172,6 +173,7 @@ static const wxString threadTabDrpImg    = wxT("rc/document-close-4.png");
 static const wxString licencePath        = wxT("JaneClone.app/Contents/MacOS/rc/gpl-2.0.txt");
 
 // Javascriptのデフォルトのパス
+static const wxString jsDir              = wxT("JaneClone.app/Contents/MacOS/script/");
 static const wxString jsPath             = wxT("JaneClone.app/Contents/MacOS/script/embedded.js");
 
 // 各ボタンに貼り付けられる画像
