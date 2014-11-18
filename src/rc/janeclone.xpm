@@ -1,5 +1,5 @@
 /* XPM */
-static char * janeclone_xpm[] = {
+static const char * janeclone_xpm[] = {
 "32 32 422 2",
 "  	c None",
 ". 	c #4F4B4C",

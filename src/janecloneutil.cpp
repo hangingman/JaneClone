@@ -748,7 +748,7 @@ wxString JaneCloneUtil::AddID(wxString& responseText) {
 	       result += tmp.SubString(0, start - 1);
 	       result += wxT("<a href=\"#_");
 	       result += id;
-	       result += wxT("\"/>ID</a>:");
+	       result += wxT("\" onmouseover=\"popUp();\" onmouseout=\"hidePop();\" />ID</a>:");
 	       result += id;
 	       result += wxString::Format(wxT(" [%d/yyy%syyy] "), hashmap[id], id.c_str());
 	       
@@ -763,8 +763,8 @@ wxString JaneCloneUtil::AddID(wxString& responseText) {
 	       result.Replace(wxString::Format(wxT("yyy%syyy"), it->first.c_str()), wxString::Format(wxT("%d"), it->second), true);
 	       // 総レス数が5を超えていれば赤くする
 	       if (it->second >= 5) {
-		    result.Replace(wxString::Format(wxT("<a href=\"#_%s\"/>ID</a>"), it->first.c_str()),
-				   wxString::Format(wxT("<a href=\"#_%s\"/><font color=\"#ff0000\">ID</font></a>"), it->first.c_str()),
+		    result.Replace(wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp();\" onmouseout=\"hidePop();\" />ID</a>"), it->first.c_str()),
+				   wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp();\" onmouseout=\"hidePop();\" /><font color=\"#ff0000\">ID</font></a>"), it->first.c_str()),
 				   true);
 	       }
 	  }

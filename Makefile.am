@@ -79,6 +79,7 @@ AUTHOR="Hiroyuki Nagata"
 ICONFILE		= janeclone.icns
 ICONPATH		= $(top_builddir)/src/rc/$(ICONFILE)
 RCPATH			= $(top_builddir)/src/rc
+SCRIPTPATH		= $(top_builddir)/src/script
 PROGVER			= $(VERSION)
 BUNDLE			= $(top_builddir)/$(PACKAGE_NAME).app
 MACICON			= $(BUNDLE)/Contents/$(ICONFILE)
@@ -97,6 +98,7 @@ package-win32-msi: prepare-package check-nsis
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
+	cp -rp $(top_builddir)/src/script $(top_builddir)/extras/package
 # find dlls and copy to package directory
 	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
@@ -125,6 +127,7 @@ package-win32-zip: prepare-package
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
+	cp -rp $(top_builddir)/src/script $(top_builddir)/extras/package
 	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
@@ -148,6 +151,7 @@ package-win64-msi: prepare-package check-nsis
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
+	cp -rp $(top_builddir)/src/script $(top_builddir)/extras/package
 # find dlls and copy to package directory
 	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
@@ -176,6 +180,7 @@ package-win64-zip: prepare-package
 	cp -p $(top_builddir)/INSTALL $(top_builddir)/extras/package
 	cp -p $(top_builddir)/README $(top_builddir)/extras/package
 	cp -rp $(top_builddir)/src/rc $(top_builddir)/extras/package
+	cp -rp $(top_builddir)/src/script $(top_builddir)/extras/package
 	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
@@ -317,6 +322,7 @@ package-deb: package-deb-license local-distdir-remove dist
 
 # local dist remove
 local-distdir-remove:
+	rm -rf $(BUNDLE)
 	$(am__post_remove_distdir)
 
 # OSX向けのバイナリ(テスト用)
@@ -338,6 +344,7 @@ $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME):
 	@echo "==== Copying executable ===="
 	cp -f $(JANEEXE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME)
 	cp -rf $(RCPATH) $(BUNDLE)/Contents/MacOS
+	cp -rf $(SCRIPTPATH) $(BUNDLE)/Contents/MacOS
 
 #  This copies the icon file into the bundle.
 $(MACICON):

@@ -96,12 +96,29 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
      } else {
 	  htmlSource += CUSTOM_HTML_HEADER;
 
-	  // embeded javascript here
-	  
+	  // 埋め込みのJavascriptをロードする
+	  wxTextFile jsFile;
+	  jsFile.Open(jsPath, wxConvUTF8);
+	  wxString embededJS;
+
+	  // ファイルがオープンされているならば
+	  if (jsFile.IsOpened()) {
+		  for (embededJS += jsFile.GetFirstLine(); !jsFile.Eof(); embededJS += jsFile.GetNextLine()) {
+			  embededJS += wxT("\n");
+		  }
+	  }
+	  jsFile.Close();
+
+	  htmlSource += embededJS;
+	  htmlSource += wxT("</head>");
+
 	  htmlSource += wxT("<body bgcolor=#efefef text=black link=blue alink=red vlink=#660099");
 	  htmlSource += wxT(" style=\" font-family: ");
 	  htmlSource += fontName;
           htmlSource += wxT("\">");
+	  htmlSource += wxT("<SPAN id=\"ID\" STYLE=\"visibility: hidden; position: absolute;\"></SPAN>");
+
+	  SendLogging(htmlSource);
      }     
 
      // テキストファイルの読み込み

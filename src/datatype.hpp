@@ -128,6 +128,9 @@ static const wxString janecloneVersion   = wxT(PACKAGE_VERSION);
 // ライセンスのデフォルトのパス
 static const wxString licencePath        = wxT("rc/gpl-2.0.txt");
 
+// Javascriptのデフォルトのパス
+static const wxString jsPath             = wxT("script/embedded.js");
+
 // 各ボタンに貼り付けられる画像
 static const wxString autoReloadImg      = wxT("rc/appointment-new.png");
 static const wxString redResExtractImg   = wxT("rc/system-search.png");
@@ -167,6 +170,9 @@ static const wxString threadTabDrpImg    = wxT("rc/document-close-4.png");
 
 // ライセンスのデフォルトのパス
 static const wxString licencePath        = wxT("JaneClone.app/Contents/MacOS/rc/gpl-2.0.txt");
+
+// Javascriptのデフォルトのパス
+static const wxString jsPath             = wxT("JaneClone.app/Contents/MacOS/script/embedded.js");
 
 // 各ボタンに貼り付けられる画像
 static const wxString autoReloadImg      = wxT("JaneClone.app/Contents/MacOS/rc/appointment-new.png");
@@ -325,7 +331,7 @@ static const wxString HTML_HEADER =
 
 // ヘッダ部分にあたるHTML
 static const wxString CUSTOM_HTML_HEADER =
-		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>");
+     wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 
 // ポップアップウィンドウのヘッダ部分にあたるHTML
 static const wxString HTML_HEADER_POPUP =
