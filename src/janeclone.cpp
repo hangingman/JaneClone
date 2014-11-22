@@ -3413,8 +3413,8 @@ wxFont JaneClone::GetCurrentFont() {
 /**
  * フォント情報をコンフィグファイルから読み出す
  */
-wxFont JaneClone::ReadFontInfo(const wxString& widgetName) {
-
+wxFont JaneClone::ReadFontInfo(const wxString& widgetName) 
+{
      wxString nativeFontInfo = wxEmptyString;
      JaneCloneUtil::GetJaneCloneProperties(widgetName, &nativeFontInfo);
      wxFont f;
@@ -3430,7 +3430,9 @@ wxFont JaneClone::ReadFontInfo(const wxString& widgetName) {
 	  {
 	       return wxFont(10, wxDEFAULT, wxNORMAL, wxNORMAL, 0, wxT(""));
 	  }
-     }     
+     }
+
+     return nullptr;
 }
 /**
  * スレタブ上に存在するスレッドのURLを返す

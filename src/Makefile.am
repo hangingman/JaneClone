@@ -2,8 +2,13 @@ AUTOMAKE_OPTIONS 	= foreign subdir-objects
 
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
 janecloneexec_PROGRAMS 	= JaneClone
+
 janecloneexecrcdir	= $(datarootdir)/@PACKAGE@/rc
-janecloneexecrc_DATA	= $(wildcard rc/*) $(wildcard script/*)
+janecloneexecrc_DATA	= $(wildcard rc/*)
+
+janecloneexecscriptdir	= $(datarootdir)/@PACKAGE@/script
+janecloneexecscript_DATA= $(wildcard script/*)
+
 JaneClonedir	  	= $(pkglibdir)
 JaneClone_SOURCES 	= extractboardlist.hpp        \
 		          main.cpp                    \
@@ -41,6 +46,8 @@ JaneClone_SOURCES 	= extractboardlist.hpp        \
 		          janecloneuiutil.hpp         \
 			  ../babel/babel.cpp          \
 			  ../babel/babel.h            \
+			  ../json11/json11.cpp	      \
+			  ../json11/json11.hpp	      \
 		          $(wildcard rc/*)            \
 			  $(wildcard script/*)
 
