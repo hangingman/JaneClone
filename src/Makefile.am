@@ -3,6 +3,10 @@ AUTOMAKE_OPTIONS 	= foreign subdir-objects
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
 janecloneexec_PROGRAMS 	= JaneClone
 
+EXTRA_DIST		= rc script
+EXTRA_SCRIPTS		= $(wildcard script/*)
+EXTRA_DATA		= $(wildcard rc/*)
+
 janecloneexecrcdir	= $(datarootdir)/@PACKAGE@/rc
 janecloneexecrc_DATA	= $(wildcard rc/*)
 
@@ -47,9 +51,7 @@ JaneClone_SOURCES 	= extractboardlist.hpp        \
 			  ../babel/babel.cpp          \
 			  ../babel/babel.h            \
 			  ../json11/json11.cpp	      \
-			  ../json11/json11.hpp	      \
-		          $(wildcard rc/*)            \
-			  $(wildcard script/*)
+			  ../json11/json11.hpp
 
 if USE_WX_WEBVIEW
 # wxWebView support

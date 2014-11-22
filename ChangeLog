@@ -1,3 +1,66 @@
+commit afa9c30
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-23
+
+    Add json11 for 2ch.net new API.
+
+json11/.deps/.dirstamp
+json11/.dirstamp
+json11/LICENSE.txt
+json11/README.md
+json11/json11.cpp
+json11/json11.hpp
+json11/test.cpp
+src/Makefile.am
+src/janeclone.cpp
+
+commit a291372
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-19
+
+    Update wxWebView source code for executing javascript
+
+src/datatype.hpp
+src/janecloneutil.cpp
+src/script/MIT-LICENSE.txt
+src/script/README.md
+src/script/bower.json
+src/script/contextMenu.css
+src/script/contextMenu.js
+src/script/contextMenu.js.jquery.json
+src/script/contextMenu.min.js
+src/script/embedded.js
+src/script/jquery-2.1.1.min.js
+src/script/pop.js
+src/threadcontentwebview.cpp
+
+commit ec71223
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-18
+
+    Add dynamic javascript file loading system
+
+Makefile.am
+src/Makefile.am
+src/datatype.hpp
+src/janecloneutil.cpp
+src/rc/janeclone.xpm
+src/script/embedded.js
+src/script/pop.js
+src/threadcontentwebview.cpp
+
+commit 4a87f42
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-13
+
+    Fix "E: janeclone: menu-icon-too-big usr/share/janeclone/rc/janeclone.xpm: 128x128 > 32x32"
+
+ChangeLog
+configure.ac
+debian/rules
+src/rc/janeclone.xpm
+wxsqlite3/wxsqlite3.cpp
+
 commit 12bb32b
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2014-11-04
