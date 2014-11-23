@@ -1,7 +1,10 @@
 language: cpp
 
 env:
-- TRAVIS_CI=true
+  global:
+    - TRAVIS_CI=true
+    - secure: "W7++isBzG0Lsq3ktAIVA4FZ5O2Hn1JptWNBjDlDrxdUxM/g5HP0R8qxC58HRVEjWI9vCU7YgcsmxPhuSNdgFYhn84p4dcwU5N8PlTfz4HfpbARUu5PYlO8l8Qeag/PutDTTai2bJAhRruNvgP1NEz9Oq/KG6aHHNcVxZjP2iSo8="
+    - BINTRAY_TOKEN=${BINTRAY_TOKEN}
 
 compiler:
   - g++
@@ -43,3 +46,6 @@ notifications:
   email:
     on_success: change
     on_failure: always
+
+after_success:
+  - ./misc/upload_bintray.sh
