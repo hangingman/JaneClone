@@ -3432,7 +3432,7 @@ wxFont JaneClone::ReadFontInfo(const wxString& widgetName)
 	  }
      }
 
-     return nullptr;
+     return f;
 }
 /**
  * スレタブ上に存在するスレッドのURLを返す

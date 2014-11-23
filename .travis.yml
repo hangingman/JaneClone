@@ -33,7 +33,7 @@ before_script:
 
 script:
   - echo $TRAVIS_OS_NAME
-  - ./configure && make package-deb-local
+  - ./configure && make -j2 package-deb-local
 
 branches:
   only:

@@ -22,6 +22,8 @@ extras/*
 *.so.*
 *~
 *.exe
+*.deps
+*.dirstamp
 compile
 config.guess
 config.h
