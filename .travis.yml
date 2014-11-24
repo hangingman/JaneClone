@@ -48,4 +48,4 @@ notifications:
     on_failure: always
 
 after_success:
-  - ./misc/upload_bintray.sh
+  - cd misc && ./upload_bintray.sh
