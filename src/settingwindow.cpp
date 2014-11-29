@@ -222,6 +222,11 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new DoePanel(settingPanel));
 	  settingPanel->SetSizer(vbox);
+     } else if (itemStr == wxT("その他１")) { // TODO: 
+	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  vbox->Add(new OtherSettingPanelOne(settingPanel));
+	  JaneCloneUiUtil::SendLoggingHelper(wxString("OK!"));
+	  settingPanel->SetSizer(vbox);
      } else if (itemStr == wxT("User")) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new UserSettingPanel(settingPanel));

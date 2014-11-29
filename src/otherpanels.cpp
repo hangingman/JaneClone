@@ -371,16 +371,20 @@ BehaviorPanel::BehaviorPanel(wxWindow* parent, const wxPoint& pos, const wxSize&
     wxPanel(parent, ID_BehaviorPanel, pos, size, wxTAB_TRAVERSAL)
 {
     // begin wxGlade: BehaviorPanel::BehaviorPanel
+/**
     panel_5 = new wxPanel(this, wxID_ANY);
     panel_4 = new wxPanel(this, wxID_ANY);
     panel_7 = new wxPanel(panel_4, wxID_ANY);
+*/
     panel_3 = new wxPanel(this, wxID_ANY);
     panel_6 = new wxPanel(panel_3, wxID_ANY);
     panel_2 = new wxPanel(this, wxID_ANY);
     sizer_3_staticbox = new wxStaticBox(panel_3, -1, wxT("スレ一覧"));
+/**
     sizer_5_staticbox = new wxStaticBox(panel_4, -1, wxT("スレ"));
     sizer_7_staticbox = new wxStaticBox(panel_5, -1, wxT("お気に入り"));
     sizer_2_staticbox = new wxStaticBox(panel_2, -1, wxT("板一覧"));
+*/
     openBNewTabCheck = new wxCheckBox(panel_2, ID_OpenBNewTabCheck, wxT("新しいタブで板を開く"));
     onlyOneCategoryCheck = new wxCheckBox(panel_2, ID_OnlyOneCategoryCheck, wxT("カテゴリを一つしか開かない"));
     openTNewTabCheck = new wxCheckBox(panel_6, ID_OpenTNewTabCheck, wxT("新しいタブでスレを開く"));
@@ -394,6 +398,7 @@ BehaviorPanel::BehaviorPanel(wxWindow* parent, const wxPoint& pos, const wxSize&
         wxT("見ていたところにジャンプする"),
         wxT("新着にジャンプする")
     };
+/**
     threadJumpSettingRadio = new wxRadioBox(panel_4, ID_ThreadJumpSetting, wxEmptyString, wxDefaultPosition, wxDefaultSize, 2, threadJumpSettingRadio_choices, 0, wxRA_SPECIFY_ROWS);
     redrawNewThreadCheck = new wxCheckBox(panel_4, ID_RedrawNewThreadCheck, wxT("新着チェック時に既得レスを描き直す"));
     label_1 = new wxStaticText(panel_7, wxID_ANY, wxT("既得スレの表示レス数"));
@@ -407,7 +412,7 @@ BehaviorPanel::BehaviorPanel(wxWindow* parent, const wxPoint& pos, const wxSize&
     showResponseCombo = new wxComboBox(panel_7, ID_ShowResponseCombo, wxT(""), wxDefaultPosition, wxDefaultSize, 5, showResponseCombo_choices, wxCB_DROPDOWN|wxCB_READONLY);
     favoriteNewTabCheck = new wxCheckBox(panel_5, ID_FavoriteNewTabCheck, wxT("新しいタブで開く"));
     favoriteOnlyOneFolderCheck = new wxCheckBox(panel_5, ID_FavoriteOnlyOneFolder, wxT("フォルダを一つしか開かない"));
-
+*/
     set_properties();
     do_layout();
     // end wxGlade
@@ -864,6 +869,60 @@ void DoePanel::do_layout()
      sizer_8->Add(button_1, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxFIXED_MINSIZE, 5);
      panel_8->SetSizer(sizer_8);
      sizer_1->Add(panel_8, 0, wxEXPAND, 0);
+     SetSizer(sizer_1);
+     sizer_1->Fit(this);
+     // end wxGlade
+}
+
+/**
+ * その他の設定画面１
+ */
+const wxString OtherSettingPanelOne::checkboxlabels[] = {
+     wxT("最新バージョンが公開されたら通知する"),
+     wxT("起動時に板一覧を更新する"),
+     wxT("メニューに板一覧を展開する"),
+     wxT("メニューにお気に入りを展開する"),
+     wxT("お気に入りメニューで「このフォルダを開く」を使用する"),
+     wxT("お気に入りの重複を許可する"),
+     wxT("「お気に入りに追加」をフォルダの末尾で行う"),
+     wxT("終了時に開いていたスレ・板を次回起動時に開く"),
+     wxT("既読にする"),
+     wxT("最小化時はタスクトレイに格納する")
+};
+
+OtherSettingPanelOne::OtherSettingPanelOne(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
+     wxPanel(parent, ID_OtherSettingPanelOne, pos, size, wxTAB_TRAVERSAL)
+{
+     panel_3 = new wxPanel(this, wxID_ANY);
+     panel_4 = new wxPanel(this, wxID_ANY);
+     panel_5 = new wxPanel(this, wxID_ANY);
+
+     checkbox_2 = new wxCheckBox(panel_4, wxID_ANY, wxT("キャレットを表示する"));
+     checkbox_3 = new wxCheckBox(panel_5, wxID_ANY, wxT("スクロールに同期する"));
+
+     set_properties();
+     do_layout();
+}
+
+void OtherSettingPanelOne::set_properties()
+{
+}
+
+void OtherSettingPanelOne::do_layout()
+{
+     // begin wxGlade: DoePanel::do_layout
+     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_5 = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_4 = new wxBoxSizer(wxVERTICAL);
+
+     sizer_1->Add(panel_3, 0, wxALL|wxEXPAND, 5);
+     sizer_4->Add(checkbox_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_4->SetSizer(sizer_4);
+     sizer_1->Add(panel_4, 0, wxEXPAND, 0);
+     sizer_5->Add(checkbox_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     panel_5->SetSizer(sizer_5);
+     sizer_1->Add(panel_5, 0, wxEXPAND, 0);
+
      SetSizer(sizer_1);
      sizer_1->Fit(this);
      // end wxGlade

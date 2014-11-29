@@ -32,7 +32,7 @@ void JaneCloneUtil::DecommpressFile(wxString & inputPath,
      const gzFile infile = gzopen(inputPath.mb_str(), "rb");
      FILE *outfile = fopen(outputPath.mb_str(), "wb");
 
-     char buffer[S_SIZE];
+     char buffer[2048];
      int num_read = 0;
      while ((num_read = gzread(infile, buffer, sizeof(buffer))) > 0) {
 	  fwrite(buffer, 1, num_read, outfile);

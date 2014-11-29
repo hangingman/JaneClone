@@ -33,6 +33,7 @@
 #include <wx/colordlg.h>
 #include <wx/fontdlg.h>
 #include <wx/html/htmlwin.h>
+#include <wx/dynarray.h>
 
 #if wxCHECK_VERSION(2, 9, 1)
    #include <wx/generic/stattextg.h>
@@ -472,6 +473,28 @@ protected:
 
 // begin wxGlade: ::extracode
 // end wxGlade
+
+/**
+ * その他の設定画面１
+ */
+class OtherSettingPanelOne: public wxPanel {
+
+public:
+     OtherSettingPanelOne(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+     const static wxString checkboxlabels[];
+
+private:
+     void set_properties();
+     void do_layout();
+
+protected:
+     wxCheckBox* checkbox_1;
+     wxCheckBox* checkbox_2;
+     wxCheckBox* checkbox_3;
+     wxPanel* panel_3;
+     wxPanel* panel_4;
+     wxPanel* panel_5;
+};
 
 /**
  * ユーザー設定設定用画面

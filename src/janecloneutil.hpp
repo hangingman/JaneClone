@@ -271,11 +271,12 @@ public:
 	  {
 	       return s.at(0) == '1';
 	  };
-     
-private:
 
-     // ディスクからの読取サイズ
-#define S_SIZE (2048)
+     template<typename TYPE, std::size_t SIZE>
+     static std::size_t ArrayLength(const TYPE (&)[SIZE])
+	  {   
+	       return SIZE;
+	  };
 
 };
 
