@@ -881,44 +881,36 @@ const wxString OtherSettingPanelOne::checkboxlabels[] = {
      wxT("「お気に入りに追加」をフォルダの末尾で行う"),
      wxT("終了時に開いていたスレ・板を次回起動時に開く"),
      wxT("既読にする"),
-     wxT("最小化時はタスクトレイに格納する")
+     wxT("最小化時はタスクトレイに格納する"), // ここまでで10個
+     wxT("「一つ前のレスを貼り付け」のショートカットキー（Shift+BackSpace）を無効にする"),
+     wxT("最後までスクロールしたスレを既読にする"),
+     wxT("再描画する"),
+     wxT("すべて開く系動作時に更新チェックを同時に行う"),
+     wxT("「すべてのタブの新着チェック」で未読のあるタブの文字色を変更しない"),
+     wxT("トレースにベンチマークを表示する")  // 16個
 };
 
 OtherSettingPanelOne::OtherSettingPanelOne(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
      wxPanel(parent, ID_OtherSettingPanelOne, pos, size, wxTAB_TRAVERSAL)
 {
-
-     basePanel = new wxPanel(this, wxID_ANY);
-
      for ( size_t i = 0; i < JaneCloneUtil::ArrayLength(checkboxlabels); i++ )
      {
 	  panels[i]      = new wxPanel(this, wxID_ANY);
 	  checkboxes[i]  = new wxCheckBox(panels[i] , wxID_ANY, checkboxlabels[i]);
      }
      
-/**
-     panel_1   = new wxPanel(this, wxID_ANY);
-     panel_2   = new wxPanel(this, wxID_ANY);
-     panel_3   = new wxPanel(this, wxID_ANY);
-     panel_4   = new wxPanel(this, wxID_ANY);
-     panel_5   = new wxPanel(this, wxID_ANY);
-     panel_6   = new wxPanel(this, wxID_ANY);
-     panel_7   = new wxPanel(this, wxID_ANY);
-     panel_8   = new wxPanel(this, wxID_ANY);
-     panel_9   = new wxPanel(this, wxID_ANY);
-     panel_10  = new wxPanel(this, wxID_ANY);
+     restPanels[0] = new wxPanel(this, wxID_ANY);
+     retainBoardST = new wxStaticText(restPanels[0], wxID_ANY, wxT("解放しないで保持する板情報の数"));
+     retainBoardSC = new wxSpinCtrl(restPanels[0], wxID_ANY);
 
-     checkbox_1  = new wxCheckBox(panel_1 , wxID_ANY, checkboxlabels[0]);  
-     checkbox_2  = new wxCheckBox(panel_2 , wxID_ANY, checkboxlabels[1]);   
-     checkbox_3  = new wxCheckBox(panel_3 , wxID_ANY, checkboxlabels[2]);   
-     checkbox_4  = new wxCheckBox(panel_4 , wxID_ANY, checkboxlabels[3]);   
-     checkbox_5  = new wxCheckBox(panel_5 , wxID_ANY, checkboxlabels[4]);   
-     checkbox_6  = new wxCheckBox(panel_6 , wxID_ANY, checkboxlabels[5]);   
-     checkbox_7  = new wxCheckBox(panel_7 , wxID_ANY, checkboxlabels[6]);   
-     checkbox_8  = new wxCheckBox(panel_8 , wxID_ANY, checkboxlabels[7]);   
-     checkbox_9  = new wxCheckBox(panel_9 , wxID_ANY, checkboxlabels[8]);   
-     checkbox_10 = new wxCheckBox(panel_10, wxID_ANY, checkboxlabels[9]);   
-*/
+     restPanels[1] = new wxPanel(this, wxID_ANY);
+     glanceSC      = new wxStaticText(restPanels[1], wxID_ANY, wxT("「ちょっと見る」の範囲"));
+     glanceTC      = new wxTextCtrl(restPanels[1], wxID_ANY, wxT(""));
+
+     restPanels[2] = new wxPanel(this, wxID_ANY);
+     autoSaveST = new wxStaticText(restPanels[2], wxID_ANY, wxT("秒ごとに開いている板・スレを保存する"));
+     autoSaveSC = new wxSpinCtrl(restPanels[2], wxID_ANY);
+
      set_properties();
      do_layout();
 }
@@ -931,68 +923,46 @@ void OtherSettingPanelOne::do_layout()
 {
 
      wxBoxSizer* sizer_0  = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizers[JaneCloneUtil::ArrayLength(checkboxlabels)] = {};
 
-     for ( size_t i = 0; i < 10; i++ )
+     // チェックボックス
+     const size_t checkboxsize = JaneCloneUtil::ArrayLength(checkboxlabels);
+     wxBoxSizer* sizers[checkboxsize] = {};
+
+     for ( size_t i = 0; i < checkboxsize; i++ )
      {
 	  sizers[i] = new wxBoxSizer(wxVERTICAL);
 	  sizer_0->Add(panels[i], 0, wxALL|wxEXPAND, 0);
-	  sizers[i]->Add(checkboxes[i], 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+	  sizers[i]->Add(checkboxes[i], 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
 	  panels[i]->SetSizer(sizers[i]);
      }
 
-     SetSizer(sizer_0);
-     sizer_0->Fit(this);
+     /**
+      * 残りのwidgets
+      */
 
-/**
-     wxBoxSizer* sizer_0  = new wxBoxSizer(wxVERTICAL);
-			   
-     wxBoxSizer* sizer_1  = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_2  = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_3  = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_4  = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_5  = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_6  = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_7  = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_8  = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_9  = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_10 = new wxBoxSizer(wxVERTICAL);
+     // 解放しないで保持する板情報の数
+     wxBoxSizer* box1 = new wxBoxSizer(wxHORIZONTAL);
+     sizer_0->Add(restPanels[0], 0, wxALL|wxEXPAND, 0);
+     box1->Add(retainBoardST, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+     box1->Add(retainBoardSC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+     restPanels[0]->SetSizer(box1);
 
-     sizer_0->Add(panel_1 , 0, wxALL|wxEXPAND, 0);
-     sizer_0->Add(panel_2 , 0, wxALL|wxEXPAND, 0);
-     sizer_0->Add(panel_3 , 0, wxALL|wxEXPAND, 0);
-     sizer_0->Add(panel_4 , 0, wxALL|wxEXPAND, 0);
-     sizer_0->Add(panel_5 , 0, wxALL|wxEXPAND, 0);
-     sizer_0->Add(panel_6 , 0, wxALL|wxEXPAND, 0);
-     sizer_0->Add(panel_7 , 0, wxALL|wxEXPAND, 0);
-     sizer_0->Add(panel_8 , 0, wxALL|wxEXPAND, 0);
-     sizer_0->Add(panel_9 , 0, wxALL|wxEXPAND, 0);
-     sizer_0->Add(panel_10, 0, wxALL|wxEXPAND, 0);
+     // 「ちょっと見る」の範囲
+     wxBoxSizer* box2 = new wxBoxSizer(wxHORIZONTAL);
+     sizer_0->Add(restPanels[1], 0, wxALL|wxEXPAND, 0);
+     box2->Add(glanceSC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+     box2->Add(glanceTC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+     restPanels[1]->SetSizer(box2);
 
-     sizer_1->Add(checkbox_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     sizer_2->Add(checkbox_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     sizer_3->Add(checkbox_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     sizer_4->Add(checkbox_4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     sizer_5->Add(checkbox_5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     sizer_6->Add(checkbox_6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     sizer_7->Add(checkbox_7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     sizer_8->Add(checkbox_8, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     sizer_9->Add(checkbox_9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     sizer_10->Add(checkbox_10, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-
-     panel_1->SetSizer(sizer_1);
-     panel_2->SetSizer(sizer_2); 
-     panel_3->SetSizer(sizer_3); 
-     panel_4->SetSizer(sizer_4); 
-     panel_5->SetSizer(sizer_5); 
-     panel_6->SetSizer(sizer_6); 
-     panel_7->SetSizer(sizer_7); 
-     panel_8->SetSizer(sizer_8); 
-     panel_9->SetSizer(sizer_9); 
+     // 秒ごとに開いている板・スレを保存する
+     wxBoxSizer* box3 = new wxBoxSizer(wxHORIZONTAL);
+     sizer_0->Add(restPanels[2], 0, wxALL|wxEXPAND, 0);
+     box3->Add(autoSaveSC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+     box3->Add(autoSaveST, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+     restPanels[2]->SetSizer(box3);
 
      SetSizer(sizer_0);
      sizer_0->Fit(this);
-*/
 }
 
 /**

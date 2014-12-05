@@ -488,34 +488,21 @@ private:
      void do_layout();
 
 protected:
-     wxPanel* basePanel;
-     wxCheckBox* checkboxes[10];
-     wxPanel* panels[10];
-     
-/**
-     wxCheckBox* checkbox_1;
-     wxCheckBox* checkbox_2;
-     wxCheckBox* checkbox_3;
-     wxCheckBox* checkbox_4;  
-     wxCheckBox* checkbox_5;  
-     wxCheckBox* checkbox_6;  
-     wxCheckBox* checkbox_7;  
-     wxCheckBox* checkbox_8;  
-     wxCheckBox* checkbox_9;  
-     wxCheckBox* checkbox_10;
+     // チェックボックス
+     wxCheckBox* checkboxes[16];
+     wxPanel* panels[16];
 
-     wxPanel* basePanel;
-     wxPanel* panel_1; 
-     wxPanel* panel_2; 
-     wxPanel* panel_3; 
-     wxPanel* panel_4; 
-     wxPanel* panel_5; 
-     wxPanel* panel_6; 
-     wxPanel* panel_7; 
-     wxPanel* panel_8; 
-     wxPanel* panel_9; 
-     wxPanel* panel_10;
-*/
+     // 残りのwidgets
+     wxSpinCtrl* retainBoardSC;
+     wxStaticText* retainBoardST;
+
+     wxTextCtrl* glanceTC;
+     wxStaticText* glanceSC;
+
+     wxSpinCtrl* autoSaveSC;
+     wxStaticText* autoSaveST;
+
+     wxPanel* restPanels[3];
 };
 
 /**
