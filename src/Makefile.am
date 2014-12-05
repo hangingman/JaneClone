@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS 	= foreign subdir-objects
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
 janecloneexec_PROGRAMS 	= JaneClone
 
-EXTRA_DIST		= rc script
+EXTRA_DIST		= rc script xrc
 EXTRA_SCRIPTS		= $(wildcard script/*)
 EXTRA_DATA		= $(wildcard rc/*)
 
@@ -58,13 +58,13 @@ if USE_WX_WEBVIEW
 JaneClone_SOURCES += threadcontentwebview.cpp   \
 		     threadcontentwebview.hpp
 
-JC_FLAG_STRING	   = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net,webview`
+JC_FLAG_STRING	   = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net,xrc,webview`
 else
 # Use wxHtmlWindow
 JaneClone_SOURCES += threadcontentwindow.cpp    \
 		     threadcontentwindow.hpp
 
-JC_FLAG_STRING	   = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net`
+JC_FLAG_STRING	   = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net,xrc`
 endif
 
 # common build rule

@@ -26,10 +26,9 @@
 
 #include <wx/wx.h>
 #include <wx/image.h>
-// begin wxGlade: ::dependencies
 #include <wx/splitter.h>
 #include <wx/treectrl.h>
-// end wxGlade
+#include <wx/xrc/xmlres.h>
 #include "enums.hpp"
 #include "otherpanels.hpp"
 

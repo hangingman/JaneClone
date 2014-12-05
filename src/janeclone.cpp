@@ -786,6 +786,32 @@ void JaneClone::SetProperties()
      wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
      wxDir jcDir(jc);
 
+     /**
+      * JaneCloneの各種初期化処理
+      */
+
+     // sqliteの初期化を行う
+     std::unique_ptr<SQLiteAccessor> sqliteAccessor(new SQLiteAccessor());
+     // Curlの初期化を行う
+     cURLpp::initialize();
+     // babelの初期化を行う
+     babel::init_babel();
+     // XRCの初期化を行う
+     wxXmlResource::Get()->InitAllHandlers();
+#ifndef __WXMAC__
+     bool bRet = wxXmlResource::Get()->Load("rc/hint.xrc");
+#else
+     bool bRet = wxXmlResource::Get()->Load(MAC_OSX_CURDIR_PREFIX "rc/*.xrc");
+#endif
+     if( !bRet )
+     {
+	  wxMessageBox(wxT("XRCファイルの読み込みに失敗しました。"));
+     }
+     else
+     {
+	  wxMessageBox(wxT("XRCファイルの読み込みに成功しました。"));
+     }
+
      // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
      if (!workDir.HasSubDirs(JANECLONE_DIR)) 
      {	  
@@ -794,13 +820,6 @@ void JaneClone::SetProperties()
  
 	  // 存在しない場合は初期化処理を実施する
 	  InitializeJaneClone(jc, jcDir);
-	  // sqliteの初期化を行う
-	  std::unique_ptr<SQLiteAccessor> sqliteAccessor(new SQLiteAccessor());
-	  // Curlの初期化を行う
-	  cURLpp::initialize();
-	  // babelの初期化を行う
-	  babel::init_babel();
-
 	  // ソケット通信を行う
 	  std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
 	  int rc = sock->DownloadBoardList(BOARD_LIST_PATH, BOARD_LIST_HEADER_PATH);
@@ -826,11 +845,6 @@ void JaneClone::SetProperties()
 	  }
 	  
      } 
-     else 
-     {
-	  // sqliteの初期化を行う
-	  std::unique_ptr<SQLiteAccessor> sqliteAccessor(new SQLiteAccessor());
-     }
 
      // 初回起動以外の際、確認のためディレクトリをチェックする
      wxDir chkDir(jc);

@@ -238,6 +238,10 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 	  vbox->Add(new TabColorSettingPanel(settingPanel));
 	  settingPanel->SetSizer(vbox);
+     } else if (itemStr == wxT("ヒント")) {
+	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	  vbox->Add(wxXmlResource::Get()->LoadPanel(settingPanel, wxT("hint_panel")));
+	  settingPanel->SetSizer(vbox);
      }
 
      settingPanel->GetSizer()->Fit(settingPanel);
