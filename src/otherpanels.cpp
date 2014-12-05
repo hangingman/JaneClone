@@ -371,20 +371,16 @@ BehaviorPanel::BehaviorPanel(wxWindow* parent, const wxPoint& pos, const wxSize&
     wxPanel(parent, ID_BehaviorPanel, pos, size, wxTAB_TRAVERSAL)
 {
     // begin wxGlade: BehaviorPanel::BehaviorPanel
-/**
     panel_5 = new wxPanel(this, wxID_ANY);
     panel_4 = new wxPanel(this, wxID_ANY);
     panel_7 = new wxPanel(panel_4, wxID_ANY);
-*/
     panel_3 = new wxPanel(this, wxID_ANY);
     panel_6 = new wxPanel(panel_3, wxID_ANY);
     panel_2 = new wxPanel(this, wxID_ANY);
     sizer_3_staticbox = new wxStaticBox(panel_3, -1, wxT("スレ一覧"));
-/**
     sizer_5_staticbox = new wxStaticBox(panel_4, -1, wxT("スレ"));
     sizer_7_staticbox = new wxStaticBox(panel_5, -1, wxT("お気に入り"));
     sizer_2_staticbox = new wxStaticBox(panel_2, -1, wxT("板一覧"));
-*/
     openBNewTabCheck = new wxCheckBox(panel_2, ID_OpenBNewTabCheck, wxT("新しいタブで板を開く"));
     onlyOneCategoryCheck = new wxCheckBox(panel_2, ID_OnlyOneCategoryCheck, wxT("カテゴリを一つしか開かない"));
     openTNewTabCheck = new wxCheckBox(panel_6, ID_OpenTNewTabCheck, wxT("新しいタブでスレを開く"));
@@ -398,7 +394,6 @@ BehaviorPanel::BehaviorPanel(wxWindow* parent, const wxPoint& pos, const wxSize&
         wxT("見ていたところにジャンプする"),
         wxT("新着にジャンプする")
     };
-/**
     threadJumpSettingRadio = new wxRadioBox(panel_4, ID_ThreadJumpSetting, wxEmptyString, wxDefaultPosition, wxDefaultSize, 2, threadJumpSettingRadio_choices, 0, wxRA_SPECIFY_ROWS);
     redrawNewThreadCheck = new wxCheckBox(panel_4, ID_RedrawNewThreadCheck, wxT("新着チェック時に既得レスを描き直す"));
     label_1 = new wxStaticText(panel_7, wxID_ANY, wxT("既得スレの表示レス数"));
@@ -412,7 +407,6 @@ BehaviorPanel::BehaviorPanel(wxWindow* parent, const wxPoint& pos, const wxSize&
     showResponseCombo = new wxComboBox(panel_7, ID_ShowResponseCombo, wxT(""), wxDefaultPosition, wxDefaultSize, 5, showResponseCombo_choices, wxCB_DROPDOWN|wxCB_READONLY);
     favoriteNewTabCheck = new wxCheckBox(panel_5, ID_FavoriteNewTabCheck, wxT("新しいタブで開く"));
     favoriteOnlyOneFolderCheck = new wxCheckBox(panel_5, ID_FavoriteOnlyOneFolder, wxT("フォルダを一つしか開かない"));
-*/
     set_properties();
     do_layout();
     // end wxGlade
@@ -893,13 +887,38 @@ const wxString OtherSettingPanelOne::checkboxlabels[] = {
 OtherSettingPanelOne::OtherSettingPanelOne(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
      wxPanel(parent, ID_OtherSettingPanelOne, pos, size, wxTAB_TRAVERSAL)
 {
-     panel_3 = new wxPanel(this, wxID_ANY);
-     panel_4 = new wxPanel(this, wxID_ANY);
-     panel_5 = new wxPanel(this, wxID_ANY);
 
-     checkbox_2 = new wxCheckBox(panel_4, wxID_ANY, wxT("キャレットを表示する"));
-     checkbox_3 = new wxCheckBox(panel_5, wxID_ANY, wxT("スクロールに同期する"));
+     basePanel = new wxPanel(this, wxID_ANY);
 
+     for ( size_t i = 0; i < JaneCloneUtil::ArrayLength(checkboxlabels); i++ )
+     {
+	  panels[i]      = new wxPanel(this, wxID_ANY);
+	  checkboxes[i]  = new wxCheckBox(panels[i] , wxID_ANY, checkboxlabels[i]);
+     }
+     
+/**
+     panel_1   = new wxPanel(this, wxID_ANY);
+     panel_2   = new wxPanel(this, wxID_ANY);
+     panel_3   = new wxPanel(this, wxID_ANY);
+     panel_4   = new wxPanel(this, wxID_ANY);
+     panel_5   = new wxPanel(this, wxID_ANY);
+     panel_6   = new wxPanel(this, wxID_ANY);
+     panel_7   = new wxPanel(this, wxID_ANY);
+     panel_8   = new wxPanel(this, wxID_ANY);
+     panel_9   = new wxPanel(this, wxID_ANY);
+     panel_10  = new wxPanel(this, wxID_ANY);
+
+     checkbox_1  = new wxCheckBox(panel_1 , wxID_ANY, checkboxlabels[0]);  
+     checkbox_2  = new wxCheckBox(panel_2 , wxID_ANY, checkboxlabels[1]);   
+     checkbox_3  = new wxCheckBox(panel_3 , wxID_ANY, checkboxlabels[2]);   
+     checkbox_4  = new wxCheckBox(panel_4 , wxID_ANY, checkboxlabels[3]);   
+     checkbox_5  = new wxCheckBox(panel_5 , wxID_ANY, checkboxlabels[4]);   
+     checkbox_6  = new wxCheckBox(panel_6 , wxID_ANY, checkboxlabels[5]);   
+     checkbox_7  = new wxCheckBox(panel_7 , wxID_ANY, checkboxlabels[6]);   
+     checkbox_8  = new wxCheckBox(panel_8 , wxID_ANY, checkboxlabels[7]);   
+     checkbox_9  = new wxCheckBox(panel_9 , wxID_ANY, checkboxlabels[8]);   
+     checkbox_10 = new wxCheckBox(panel_10, wxID_ANY, checkboxlabels[9]);   
+*/
      set_properties();
      do_layout();
 }
@@ -910,22 +929,70 @@ void OtherSettingPanelOne::set_properties()
 
 void OtherSettingPanelOne::do_layout()
 {
-     // begin wxGlade: DoePanel::do_layout
-     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_5 = new wxBoxSizer(wxVERTICAL);
-     wxBoxSizer* sizer_4 = new wxBoxSizer(wxVERTICAL);
 
-     sizer_1->Add(panel_3, 0, wxALL|wxEXPAND, 5);
-     sizer_4->Add(checkbox_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     panel_4->SetSizer(sizer_4);
-     sizer_1->Add(panel_4, 0, wxEXPAND, 0);
-     sizer_5->Add(checkbox_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-     panel_5->SetSizer(sizer_5);
-     sizer_1->Add(panel_5, 0, wxEXPAND, 0);
+     wxBoxSizer* sizer_0  = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizers[JaneCloneUtil::ArrayLength(checkboxlabels)] = {};
 
-     SetSizer(sizer_1);
-     sizer_1->Fit(this);
-     // end wxGlade
+     for ( size_t i = 0; i < 10; i++ )
+     {
+	  sizers[i] = new wxBoxSizer(wxVERTICAL);
+	  sizer_0->Add(panels[i], 0, wxALL|wxEXPAND, 0);
+	  sizers[i]->Add(checkboxes[i], 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+	  panels[i]->SetSizer(sizers[i]);
+     }
+
+     SetSizer(sizer_0);
+     sizer_0->Fit(this);
+
+/**
+     wxBoxSizer* sizer_0  = new wxBoxSizer(wxVERTICAL);
+			   
+     wxBoxSizer* sizer_1  = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_2  = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_3  = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_4  = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_5  = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_6  = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_7  = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_8  = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_9  = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* sizer_10 = new wxBoxSizer(wxVERTICAL);
+
+     sizer_0->Add(panel_1 , 0, wxALL|wxEXPAND, 0);
+     sizer_0->Add(panel_2 , 0, wxALL|wxEXPAND, 0);
+     sizer_0->Add(panel_3 , 0, wxALL|wxEXPAND, 0);
+     sizer_0->Add(panel_4 , 0, wxALL|wxEXPAND, 0);
+     sizer_0->Add(panel_5 , 0, wxALL|wxEXPAND, 0);
+     sizer_0->Add(panel_6 , 0, wxALL|wxEXPAND, 0);
+     sizer_0->Add(panel_7 , 0, wxALL|wxEXPAND, 0);
+     sizer_0->Add(panel_8 , 0, wxALL|wxEXPAND, 0);
+     sizer_0->Add(panel_9 , 0, wxALL|wxEXPAND, 0);
+     sizer_0->Add(panel_10, 0, wxALL|wxEXPAND, 0);
+
+     sizer_1->Add(checkbox_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_2->Add(checkbox_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_3->Add(checkbox_3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_4->Add(checkbox_4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_5->Add(checkbox_5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_6->Add(checkbox_6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_7->Add(checkbox_7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_8->Add(checkbox_8, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_9->Add(checkbox_9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_10->Add(checkbox_10, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+
+     panel_1->SetSizer(sizer_1);
+     panel_2->SetSizer(sizer_2); 
+     panel_3->SetSizer(sizer_3); 
+     panel_4->SetSizer(sizer_4); 
+     panel_5->SetSizer(sizer_5); 
+     panel_6->SetSizer(sizer_6); 
+     panel_7->SetSizer(sizer_7); 
+     panel_8->SetSizer(sizer_8); 
+     panel_9->SetSizer(sizer_9); 
+
+     SetSizer(sizer_0);
+     sizer_0->Fit(this);
+*/
 }
 
 /**
