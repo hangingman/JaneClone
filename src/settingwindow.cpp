@@ -240,7 +240,7 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  settingPanel->SetSizer(vbox);
      } else if (itemStr == wxT("ヒント")) {
 	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-	  vbox->Add(wxXmlResource::Get()->LoadPanel(settingPanel, wxT("hint_panel")));
+	  vbox->Add(wxXmlResource::Get()->LoadPanel(settingPanel, wxString("hint_panel")));
 	  settingPanel->SetSizer(vbox);
      }
 
