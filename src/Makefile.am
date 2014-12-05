@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS 	= foreign subdir-objects
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
 janecloneexec_PROGRAMS 	= JaneClone
 
-EXTRA_DIST		= rc script xrc
+EXTRA_DIST		= rc script
 EXTRA_SCRIPTS		= $(wildcard script/*)
 EXTRA_DATA		= $(wildcard rc/*)
 
