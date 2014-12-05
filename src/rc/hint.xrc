@@ -20,31 +20,31 @@
                                     <object class="sizeritem">
                                         <flag>wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxCheckBox" name="checkbox_1">
-                                            <label>checkbox_1</label>
+                                            <label>ヒント表示（スレ内）を有効にする</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
                                         <flag>wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxStaticText" name="label_1">
-                                            <label>label_1</label>
+                                            <label>自動多段</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
                                         <flag>wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxStaticText" name="label_2">
-                                            <label>label_2</label>
+                                            <label>待ち時間</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
                                         <flag>wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxCheckBox" name="checkbox_2">
-                                            <label>checkbox_2</label>
+                                            <label>他スレのリンクもポップアップする</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
                                         <flag>wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxCheckBox" name="checkbox_3">
-                                            <label>checkbox_3</label>
+                                            <label>スレビュー</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -55,13 +55,13 @@
                                     <object class="sizeritem">
                                         <flag>wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxCheckBox" name="checkbox_4">
-                                            <label>checkbox_4</label>
+                                            <label>多段ポップアップ</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
                                         <flag>wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxCheckBox" name="checkbox_5">
-                                            <label>checkbox_5</label>
+                                            <label>ヒント</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -80,13 +80,13 @@
                                     <object class="sizeritem">
                                         <flag>wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxStaticText" name="label_3">
-                                            <label>label_3</label>
+                                            <label>サイズ制限</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
                                         <flag>wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxStaticText" name="label_4">
-                                            <label>label_4</label>
+                                            <label>幅</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -97,7 +97,7 @@
                                     <object class="sizeritem">
                                         <flag>wxALIGN_CENTER_VERTICAL</flag>
                                         <object class="wxStaticText" name="label_5">
-                                            <label>label_5</label>
+                                            <label>高さ</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -116,14 +116,14 @@
                 <object class="wxPanel" name="panel_3">
                     <object class="wxStaticBoxSizer">
                         <orient>wxHORIZONTAL</orient>
-                        <label>BE</label>
+                        <label>BEマウスオーバー設定</label>
                         <object class="sizeritem">
                             <flag>wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
                             <object class="wxRadioBox" name="radio_box_1">
                                 <content>
-                                    <item>choice 1</item>
-                                    <item>a</item>
-                                    <item>b</item>
+                                    <item>BEポップアップ</item>
+                                    <item>プロフィール取得</item>
+                                    <item>何もしない</item>
                                 </content>
                                 <style>wxRA_SPECIFY_COLS</style>
                                 <selection>0</selection>
@@ -134,7 +134,7 @@
                         <object class="sizeritem">
                             <flag>wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
                             <object class="wxCheckBox" name="checkbox_6">
-                                <label>checkbox_6</label>
+                                <label>常に取得する</label>
                             </object>
                         </object>
                     </object>
@@ -145,10 +145,10 @@
                 <object class="wxPanel" name="panel_4">
                     <object class="wxStaticBoxSizer">
                         <orient>wxVERTICAL</orient>
-                        <label>HTML</label>
+                        <label>HTMLポップアップ</label>
                         <object class="sizeritem">
                             <object class="wxCheckBox" name="checkbox_7">
-                                <label>checkbox_7</label>
+                                <label>HTMLポップアップを使用する</label>
                             </object>
                         </object>
                         <object class="sizeritem">
@@ -160,7 +160,7 @@
                                         <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                         <border>5</border>
                                         <object class="wxStaticText" name="label_6">
-                                            <label>label_6</label>
+                                            <label>最大表示幅(pixel)</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -173,7 +173,7 @@
                                         <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                         <border>5</border>
                                         <object class="wxStaticText" name="label_8">
-                                            <label>label_8</label>
+                                            <label>最大バイト数(GETの時だけ)</label>
                                         </object>
                                     </object>
                                 </object>
@@ -188,7 +188,7 @@
                                         <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
                                         <border>5</border>
                                         <object class="wxStaticText" name="label_7">
-                                            <label>label_7</label>
+                                            <label>最大表示高(pixel)</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -215,13 +215,13 @@
                                         <flag>wxEXPAND</flag>
                                         <object class="wxRadioBox" name="radio_box_2">
                                             <content>
-                                                <item>choice 1</item>
-                                                <item>b</item>
+                                                <item>HEAD</item>
+                                                <item>GET</item>
                                             </content>
                                             <style>wxRA_SPECIFY_COLS</style>
                                             <selection>0</selection>
                                             <dimension>2</dimension>
-                                            <label>radio_box_2</label>
+                                            <label>取得方法</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">
@@ -233,7 +233,7 @@
                                                     <flag>wxALL</flag>
                                                     <border>5</border>
                                                     <object class="wxStaticText" name="label_9">
-                                                        <label>label_9</label>
+                                                        <label>最大待ち時間(ミリ秒)</label>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
@@ -257,7 +257,7 @@
                                         <flag>wxALL</flag>
                                         <border>5</border>
                                         <object class="wxStaticText" name="label_10">
-                                            <label>label_10</label>
+                                            <label>GETから除外する拡張子(","区切り)</label>
                                         </object>
                                     </object>
                                     <object class="sizeritem">

@@ -799,17 +799,13 @@ void JaneClone::SetProperties()
      // XRCの初期化を行う
      wxXmlResource::Get()->InitAllHandlers();
 #ifndef __WXMAC__
-     bool bRet = wxXmlResource::Get()->Load("rc/hint.xrc");
+     bool bRet = wxXmlResource::Get()->Load("rc/*.xrc");
 #else
      bool bRet = wxXmlResource::Get()->Load(MAC_OSX_CURDIR_PREFIX "rc/*.xrc");
 #endif
      if( !bRet )
      {
 	  wxMessageBox(wxT("XRCファイルの読み込みに失敗しました。"));
-     }
-     else
-     {
-	  wxMessageBox(wxT("XRCファイルの読み込みに成功しました。"));
      }
 
      // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認

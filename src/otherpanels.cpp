@@ -925,7 +925,7 @@ void OtherSettingPanelOne::do_layout()
      wxBoxSizer* sizer_0  = new wxBoxSizer(wxVERTICAL);
 
      // チェックボックス
-     const size_t checkboxsize = JaneCloneUtil::ArrayLength(checkboxlabels);
+     const size_t checkboxsize = 16;
      wxBoxSizer* sizers[checkboxsize] = {};
 
      for ( size_t i = 0; i < checkboxsize; i++ )
