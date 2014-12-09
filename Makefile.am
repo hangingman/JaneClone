@@ -367,6 +367,8 @@ $(MACINFOPLIST):
 	@echo "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">" >> $(MACINFOPLIST)
 	@echo "<plist version=\"1.0\">" >> $(MACINFOPLIST)
 	@echo "<dict>" >> $(MACINFOPLIST)
+	@echo "   <key>NSPrincipalClass</key>" >> $(MACINFOPLIST)
+	@echo "   <string>NSApplication</string>" >> $(MACINFOPLIST)
 	@echo "   <key>CFBundleDevelopmentRegion</key>" >> $(MACINFOPLIST)
 	@echo "   <string>Japanese</string>" >> $(MACINFOPLIST)
 	@echo "   <key>CFBundleExecutable</key>" >> $(MACINFOPLIST)
