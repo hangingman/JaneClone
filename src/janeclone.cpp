@@ -798,11 +798,14 @@ void JaneClone::SetProperties()
      babel::init_babel();
      // XRCの初期化を行う
      wxXmlResource::Get()->InitAllHandlers();
+
 #ifndef __WXMAC__
-     bool bRet = wxXmlResource::Get()->Load("rc/*.xrc");
+     bool bRet = wxXmlResource::Get()->Load(wxT("rc/*.xrc"));
 #else
-     bool bRet = wxXmlResource::Get()->Load(MAC_OSX_CURDIR_PREFIX "rc/*.xrc");
+     const wxString JC_XRC_PATH = MAC_OSX_CURDIR_PREFIX + wxT("rc/*.xrc");
+     bool bRet = wxXmlResource::Get()->Load(JC_XRC_PATH);
 #endif
+
      if( !bRet )
      {
 	  wxMessageBox(wxT("XRCファイルの読み込みに失敗しました。"));
