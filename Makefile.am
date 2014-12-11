@@ -88,7 +88,7 @@ MACINFOPLIST		= $(BUNDLE)/Contents/Info.plist
 # OSX Info.plist用の設定
 COMPANY			= ????
 BUNDLEPACKAGE		= APPL
-BUNDLESIGNATURE		= ???
+BUNDLESIGNATURE		= ????
 
 #
 # Windows(x86)向けのインストーラ作成(クロスコンパイラ向け)
@@ -355,7 +355,7 @@ $(MACICON):
 $(MACPKGINFO):
 	@echo "==== Creating PkgInfo ===="
 	touch $(MACPKGINFO)
-	@echo -n "$(BUNDLEPACKAGE)$(BUNDLESIGNATURE)" > $(MACPKGINFO)
+	@/bin/echo -n "$(BUNDLEPACKAGE)$(BUNDLESIGNATURE)" > $(MACPKGINFO)
 
 #  This creates the Contents/Info.plist file.
 $(MACINFOPLIST):
