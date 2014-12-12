@@ -1,8 +1,15 @@
 language: cpp
 os:
-  - osx
   - linux
-
+  - osx
+compiler:
+  #- gcc
+  - clang
+matrix:
+  exclude:
+    - os: osx
+      compiler: gcc # Don't do a gcc build on OSX
+cache: apt
 env:
   global:
     - TRAVIS_CI=true
@@ -16,10 +23,8 @@ before_install:
 
 install:
   - echo $TRAVIS_OS_NAME
-  # LINUX
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq gnulib dh-make; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install libwxgtk2.8-dev libxml2-dev uuid-dev debhelper autotools-dev automake gnupg lintian fakeroot pbuilder cdbs; fi
-  # OSX
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install gsed automake autoconf libtool wxmac; fi
 
 before_script:
@@ -28,7 +33,8 @@ before_script:
 
 script:
   - echo $TRAVIS_OS_NAME
-  - ./configure && make -j2 package-deb-local
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then ./configure && make -j2 package-deb-local; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./configure && make -j2 osx-make-bin; fi
 
 branches:
   only:
