@@ -3,10 +3,6 @@ AUTOMAKE_OPTIONS 	= foreign subdir-objects
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
 janecloneexec_PROGRAMS 	= JaneClone
 
-EXTRA_DIST		= rc script
-EXTRA_SCRIPTS		= $(wildcard script/*)
-EXTRA_DATA		= $(wildcard rc/*)
-
 janecloneexecrcdir	= $(datarootdir)/@PACKAGE@/rc
 janecloneexecrc_DATA	= $(wildcard rc/*)
 
@@ -59,6 +55,12 @@ JaneClone_SOURCES += threadcontentwebview.cpp   \
 		     threadcontentwebview.hpp
 
 JC_FLAG_STRING	   = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net,xrc,webview`
+
+# javascript
+EXTRA_DIST		= rc script
+EXTRA_SCRIPTS		= $(wildcard script/*)
+EXTRA_DATA		= $(wildcard rc/*)
+
 else
 # Use wxHtmlWindow
 JaneClone_SOURCES += threadcontentwindow.cpp    \

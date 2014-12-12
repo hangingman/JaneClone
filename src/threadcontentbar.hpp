@@ -26,7 +26,7 @@
 #include <wx/aui/aui.h>
 #include "enums.hpp"
 
-#if wxCHECK_VERSION(2, 9, 3)
+#ifdef USE_WX_WEBVIEW
    #include "threadcontentwebview.hpp"
 #else
    #include "threadcontentwindow.hpp"

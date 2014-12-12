@@ -24,6 +24,7 @@ extras/*
 *.exe
 *.deps
 *.dirstamp
+lt*.m4
 compile
 config.guess
 config.h

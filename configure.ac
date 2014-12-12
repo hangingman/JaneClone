@@ -104,16 +104,25 @@ if test "x$XML2CONFIG" = "x"; then
 fi
 
 #-----------------------------------------------------------------------
-# Checks for wxWidgets.
+# Checks for wxWebView feature
 #
-WX_CONFIG_CHECK([2.9.3], [has_webview=1], [has_webview=0], [webview])
-AC_MSG_CHECKING([for whether to support wxwebview])
-if test $has_webview = 1; then
-   AM_CONDITIONAL(USE_WX_WEBVIEW, true)
-   AC_MSG_RESULT(yes)
-else
-   AC_MSG_RESULT(no)
-fi
+AC_ARG_ENABLE([webview],
+    AS_HELP_STRING([--enable-webview], [Enable feature to connect with each platform browser]))
+
+AS_IF([test "x$enable_webview" = "xyes"], [
+   # Check wxWidgets version
+   WX_CONFIG_CHECK([2.9.3], [has_webview=1], [has_webview=0], [webview])
+   AC_MSG_CHECKING([for whether to support wxwebview])
+   if test $has_webview = 1; then
+      AM_CONDITIONAL(USE_WX_WEBVIEW, true)
+      AC_DEFINE(USE_WX_WEBVIEW, 1, [when building wxwebview code])
+      AC_MSG_RESULT(yes)
+   else
+      AC_MSG_RESULT(no)
+   fi
+])
+
+
 
 AM_OPTIONS_WXCONFIG
 reqwx=2.8.0
