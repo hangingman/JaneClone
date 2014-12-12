@@ -149,6 +149,7 @@ X_TABLE_ITEM(ID_TCBBackward)			/* */ \
 X_TABLE_ITEM(ID_ThreadContentBarUpdate)		/* */ \
 X_TABLE_ITEM(ID_CopyFromHtmlWindow)		/* HtmlWindowで選択しているテキストをクリップボードにコピーする  */ \
 X_TABLE_ITEM(ID_CopyURLFromHtmlWindow)		/* HtmlWindowで選択しているURLをクリップボードにコピーする	 */ \
+X_TABLE_ITEM(ID_ShowRawHtmlFromHtmlWindow)      /* HtmlWindowでスレッドのHTMLソースを表示する                        */ \
 X_TABLE_ITEM(ID_SelectAllTextHtmlWindow)	/* HtmlWindowでテキストを全て選択する				 */ \
 X_TABLE_ITEM(ID_SearchSelectWordByYahoo)	/* 選択したテキストでヤフー検索					 */ \
 X_TABLE_ITEM(ID_SearchSelectWordByGoogle)	/* 選択したテキストでGoogle検索					 */ \

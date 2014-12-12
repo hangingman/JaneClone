@@ -35,7 +35,17 @@
 #include "janecloneimageviewer.hpp"
 #include "socketcommunication.hpp"
 
-class ThreadContentWindow : public wxHtmlWindow {
+
+
+class HtmlSourceDialog : public wxDialog 
+{
+public:
+     HtmlSourceDialog(const wxString& html);
+
+};
+
+class ThreadContentWindow : public wxHtmlWindow 
+{
 
 public:
      /**
@@ -86,6 +96,8 @@ private:
      void CopyFromHtmlWindow(wxCommandEvent& event);
      // HtmlWindowで選択しているURLをクリップボードにコピーする
      void CopyURLFromHtmlWindow(wxCommandEvent& event);
+     // HTMLソースを表示する
+     void ShowRawHtmlFromHtmlWindow(wxCommandEvent& event);
      // HtmlWindowでテキストを全て選択する
      void SelectAllTextHtmlWindow(wxCommandEvent& event);
      // 選択したテキストでヤフー検索
