@@ -1,4 +1,7 @@
 language: cpp
+os:
+  - osx
+  - linux
 
 env:
   global:
@@ -6,18 +9,9 @@ env:
     - secure: "W7++isBzG0Lsq3ktAIVA4FZ5O2Hn1JptWNBjDlDrxdUxM/g5HP0R8qxC58HRVEjWI9vCU7YgcsmxPhuSNdgFYhn84p4dcwU5N8PlTfz4HfpbARUu5PYlO8l8Qeag/PutDTTai2bJAhRruNvgP1NEz9Oq/KG6aHHNcVxZjP2iSo8="
     - BINTRAY_TOKEN=${BINTRAY_TOKEN}
 
-os:
-  - osx
-  - linux
-
-compiler:
-  - g++
-  - clang++
-
 before_install:
   - echo $TRAVIS_OS_NAME
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "g++" ]; then sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export CXX=clang++ && CC=clang && sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update -qq; fi
 
 install:
@@ -25,8 +19,6 @@ install:
   # LINUX
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq gnulib dh-make; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install libwxgtk2.8-dev libxml2-dev uuid-dev debhelper autotools-dev automake gnupg lintian fakeroot pbuilder cdbs; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.7; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ] && [ "$CXX" = "g++" ]; then export CXX="g++-4.7" && export CC="gcc-4.7"; fi
   # OSX
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install gsed automake autoconf libtool wxmac; fi
 

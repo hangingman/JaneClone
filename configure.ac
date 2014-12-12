@@ -69,7 +69,7 @@ AM_CONDITIONAL(USE_WX_WEBVIEW, false)
 
 # Check for windres
 if test "$PLATFORM_STRING" = "Win32"; then
-   AC_CHECK_TARGET_TOOL([WINDRES], [windres], [no])
+   AC_CHECK_TOOL([WINDRES], [windres], [no])
    if test "x$WINDRES" = "xno"; then
       AC_MSG_ERROR([Cannot find windres])
    fi
