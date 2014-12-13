@@ -1770,8 +1770,6 @@ void JaneClone::OnAboutCloseBoardNoteBook(wxAuiNotebookEvent& event)
      wxString boardName = boardNoteBook->GetPageText(boardNoteBook->GetSelection());
      URLvsBoardName hash = retainHash[boardName];
      SQLiteAccessor::SetClosedBoardInfo(&hash);
-     // ハッシュからタイトルのキーをもつデータを削除
-     retainHash.erase(boardName);
 }
 /**
  * アクティブな板タブをひとつ閉じる
