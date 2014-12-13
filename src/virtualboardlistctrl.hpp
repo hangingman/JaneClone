@@ -365,12 +365,6 @@ public:
      long GetItemCount() {
 	  return m_vBoardList.size();
      }
-     /**
-      * リスト内部のカラムの数を返す
-      */
-     long GetColumnCount() {
-	  return COL_ENUMS_END;
-     }
      
      // 内部にあるリスト
      VirtualBoardList m_vBoardList;

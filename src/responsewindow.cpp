@@ -221,7 +221,7 @@ void ResponseWindow::set_properties(const wxString& title) {
      // end wxGlade
 
      wxString widgetsName = wxEmptyString;
-     bool     widgetsInfo = NULL;
+     bool     widgetsInfo = false;
 
      // sageチェック
      const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(ID_ResponseWindowSageChk) );
@@ -743,7 +743,7 @@ void ResponseWindow::SetPreviewWindow(wxNotebookEvent& event) {
 void ResponseWindow::OnChangeSageChk(wxCommandEvent& event) {
 
      wxString widgetsName = wxEmptyString;
-     bool     widgetsInfo = NULL;
+     bool     widgetsInfo = false;
 
      const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(event.GetId()) );
      widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
@@ -768,7 +768,7 @@ void ResponseWindow::OnChangeSageChk(wxCommandEvent& event) {
 void ResponseWindow::OnChangeBeChk(wxCommandEvent& event) {
 
      wxString widgetsName = wxEmptyString;
-     bool     widgetsInfo = NULL;
+     bool     widgetsInfo = false;
 
      const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(event.GetId()) );
      widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
