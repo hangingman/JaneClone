@@ -122,14 +122,8 @@ public:
      
      // 再起動処理のためのPID
      unsigned long pid;
-
-private:
-
      // ユーザーが最後に触ったノートブックのオブジェクトを記憶する
      static wxString userLastAttachedNotebook;
-
-     // begin wxGlade: JaneClone::methods
-
      // メニュー上のイベント
      void OnQuit(wxCommandEvent& event);
      void OnAbout(wxCommandEvent& event);

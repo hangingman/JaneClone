@@ -35,6 +35,7 @@
 // event table
 BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    // メニューバー・ポップアップメニューにあるコマンド入力で起動するメソッドのイベントテーブル
+   EVT_MENU(wxID_EXIT, JaneClone::OnQuit)
    EVT_MENU(ID_Quit, JaneClone::OnQuit)
    EVT_MENU(ID_Restart, JaneClone::OnRestart)
    EVT_MENU(ID_WindowMinimize, JaneClone::WindowMinimize)
@@ -1324,11 +1325,10 @@ JaneClone::~JaneClone()
 /**
  * JaneCloneを終了させる
  */
-void JaneClone::OnQuit(wxCommandEvent&) 
+void JaneClone::OnQuit(wxCommandEvent& e) 
 {
-     // Auiマネージャーを削除する
-     m_mgr.UnInit();
-     Close(true);
+     JaneCloneUiUtil::QueueEventHelper(wxEVT_CLOSE_WINDOW, wxID_ANY);
+     e.Skip(false);
 }
 /**
  * JaneCloneを再起動する
@@ -2878,7 +2878,7 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
 void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
      // 終了処理中と表示する
-     SetStatusText(wxT("終了前処理を実行中..."));
+     JaneCloneUiUtil::SendLoggingHelper(wxString("終了前処理を実行中..."));
 
      /**
       * 開いていた板の名前をsqliteに登録する
