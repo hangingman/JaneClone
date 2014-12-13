@@ -19,6 +19,9 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
+#ifndef DRAWPANE_HPP_
+#define DRAWPANE_HPP_
+
 #include <wx/wx.h>
 #include <wx/sizer.h>
 #include <wx/brush.h>
@@ -84,3 +87,5 @@ private:
     
      DECLARE_EVENT_TABLE()
 };
+
+#endif /* DRAWPANE_HPP_ */

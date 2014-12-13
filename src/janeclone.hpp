@@ -80,13 +80,6 @@
 #include "virtualboardlistctrl.hpp"
 #include "sqliteaccessor.hpp"
 #include "janecloneutil.hpp"
-
-#ifdef USE_WX_WEBVIEW
-   #include "threadcontentwebview.hpp"
-#else
-   #include "threadcontentwindow.hpp"
-#endif
-
 #include "threadcontentbar.hpp"
 #include "anchoredresponsepopup.hpp"
 #include "responsewindow.hpp"

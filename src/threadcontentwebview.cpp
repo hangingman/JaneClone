@@ -25,7 +25,7 @@
 /**
  * 通常のコンストラクタ
  */
-ThreadContentWindow::ThreadContentWindow(wxWindow* parent, const wxString& threadContentPath):
+ThreadContentWebView::ThreadContentWebView(wxWindow* parent, const wxString& threadContentPath):
 wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO) 
 {
      // ブラウザの準備
@@ -54,7 +54,7 @@ wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, w
 /**
  * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
  */
-const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadContentPath) {
+const wxString ThreadContentWebView::GetConvertedDatFile(const wxString& threadContentPath) {
 
      // wxStringにバッファするサイズを計測する
      size_t fileSize = JaneCloneUtil::GetFileSize(threadContentPath);
@@ -212,7 +212,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 /**
  * 現在開いているHTMLのスクロール位置を取得する
  */
-void ThreadContentWindow::GetHtmlWindowScrollPos(wxPoint* p) {
+void ThreadContentWebView::GetHtmlWindowScrollPos(wxPoint* p) {
      // 現在位置の取得
      int x, y;
      GetViewStart(&x, &y);
@@ -222,13 +222,13 @@ void ThreadContentWindow::GetHtmlWindowScrollPos(wxPoint* p) {
 /**
  * 外のクラスから強制的にスクロールさせる
  */
-void ThreadContentWindow::ForceScroll(const wxPoint* p) {
+void ThreadContentWebView::ForceScroll(const wxPoint* p) {
      Scroll(p->x, p->y);
 }
 /**
  * リサイズ時のイベント
  */
-void ThreadContentWindow::OnSize(wxSizeEvent& event) {
+void ThreadContentWebView::OnSize(wxSizeEvent& event) {
 
      // 現在位置の取得
      int x, y; 
@@ -240,7 +240,7 @@ void ThreadContentWindow::OnSize(wxSizeEvent& event) {
 /**
  * 左クリック時に起こるイベント
  */
-void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
+void ThreadContentWebView::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
      
      const wxHtmlLinkInfo linkInfo = event.GetLinkInfo();
      const wxString href = linkInfo.GetHref();
@@ -269,7 +269,7 @@ void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
 /**
  * リンクが2chのものかどうか判定
  */
-void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link) {
+void ThreadContentWebView::OnClickOrdinaryLink(const wxString& link) {
 
      // デフォルトのブラウザを使用するかどうか
      bool useDefaultBrowser = true;
@@ -417,7 +417,7 @@ void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link) {
 /*
  * 画像ビューアの状態を確認し、設定する
  */
-void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wxString& ext) {
+void ThreadContentWebView::SetJaneCloneImageViewer(const wxString& href, const wxString& ext) {
 
      // 画像をダウンロードする
      SocketCommunication* sock = new SocketCommunication();
@@ -501,7 +501,7 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
 /**
  * スキン用のファイルが有るかどうか確認する
  */
-bool ThreadContentWindow::CheckSkinFiles(SkinInfo* skin) {
+bool ThreadContentWebView::CheckSkinFiles(SkinInfo* skin) {
 
      // スキン用のパスが設定されていなければ即リターン
      const wxString key = wxT("DEFAULT_SKINFILE_PATH");
@@ -562,7 +562,7 @@ bool ThreadContentWindow::CheckSkinFiles(SkinInfo* skin) {
 /**
  * 指定されたファイル中のテキストをメモリに展開する
  */
-wxString ThreadContentWindow::ReadPlainTextFile(const wxString& filePath) {
+wxString ThreadContentWebView::ReadPlainTextFile(const wxString& filePath) {
 
      wxTextFile textFile;
      wxString   htmlDOM;

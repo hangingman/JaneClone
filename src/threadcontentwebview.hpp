@@ -36,17 +36,17 @@
 #include "janecloneimageviewer.hpp"
 #include "socketcommunication.hpp"
 
-class ThreadContentWindow : public wxHtmlWindow {
+class ThreadContentWebView : public wxHtmlWindow {
 
 public:
      /**
       * 通常のコンストラクタ
       */
-     ThreadContentWindow(wxWindow* parent, const wxString& threadContentPath);
+     ThreadContentWebView(wxWindow* parent, const wxString& threadContentPath);
      /**
       * オペレーターに対する参照返し
       */
-     ThreadContentWindow& operator=(const ThreadContentWindow&) {return *this;}
+     ThreadContentWebView& operator=(const ThreadContentWebView&) {return *this;}
      /**
       * ウィンドウ上で右クリックした場合の処理
       */

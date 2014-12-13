@@ -26,6 +26,12 @@
    #include"../rc/janeclone.xpm"
 #endif
 
+#ifdef USE_WX_WEBVIEW
+   #include "threadcontentwebview.hpp"
+#else
+   #include "threadcontentwindow.hpp"
+#endif
+
 // event table
 BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    // メニューバー・ポップアップメニューにあるコマンド入力で起動するメソッドのイベントテーブル
