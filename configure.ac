@@ -215,7 +215,8 @@ else
   WX_SQLITE3=`ls $WX_LIB_PREFIX/libwxsqlite3*.so`
   WX_SQLITE3=`basename $WX_SQLITE3 | sed -e 's/lib//g' -e 's/.so//g'`
   if test "$WX_SQLITE3x" = "x"; then
-     AC_MSG_ERROR("ERROR: wxsqlite3 is not found")
+     AC_MSG_WARN("*** WARN: wxsqlite3 is not found ***")
+     WX_SQLITE3="wxsqlite3-2.8";
   fi
   # Try to link
   LIBS="$LIBS -L$WX_LIB_PREFIX -l$WX_SQLITE3"
