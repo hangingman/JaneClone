@@ -197,3 +197,16 @@ void JaneCloneUiUtil::SendLoggingHelper(const T& message)
 // テンプレート関数の実体化
 template void JaneCloneUiUtil::SendLoggingHelper<wxString>(const wxString& m);
 template void JaneCloneUiUtil::SendLoggingHelper<wchar_t>(const wchar_t& m);
+
+template <class T, std::size_t K>
+void JaneCloneUiUtil::SendLoggingHelper(const T(&message)[K])
+{
+     wxString log = wxEmptyString;
+
+     if (typeid(message) == typeid(wchar_t&))
+     {
+	  log = wxString(&message[0]);
+     }
+
+     JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging, log);
+};

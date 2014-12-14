@@ -73,6 +73,9 @@ public:
       */
      template <class T>
      void static SendLoggingHelper(const T& message);
+
+     template <class T,std::size_t K>
+     void static SendLoggingHelper(const T (&message)[K]);
 };
 
 #endif /* JANECLONEUIUTIL_HPP_ */
