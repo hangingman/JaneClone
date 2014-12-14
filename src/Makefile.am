@@ -51,6 +51,9 @@ JaneClone_SOURCES 	= extractboardlist.hpp        \
 			  ../json11/json11.cpp	      \
 			  ../json11/json11.hpp
 
+#################################################################################
+# WX_WEBVIEW
+#################################################################################
 if USE_WX_WEBVIEW
 # wxWebView support
 JaneClone_SOURCES += threadcontentwebview.cpp   \
@@ -69,13 +72,44 @@ JaneClone_SOURCES += threadcontentwindow.cpp    \
 
 JC_FLAG_STRING	   = `@WX_CONFIG_PATH@ --version=@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@ --libs aui,qa,adv,base,core,html,net,xrc`
 endif
+#################################################################################
+
+
+
+
+
+#################################################################################
+# BUILD_SQLITE3
+#################################################################################
+#SQLITE3_CXXFLAGS=""
+#SQLITE3_LDADD=""
+#SQLITE3_LDFLAGS=""
+
+if BUILD_SQLITE3
+
+# CXXFLAGS
+SQLITE3_CXXSTR    = -I$(top_builddir)/wxsqlite3      \
+	            -I$(top_builddir)/sqlite3
+
+# LDADD
+SQLITE3_LDADDSTR  = $(top_builddir)/wxsqlite3/libwxsqlite3.la \
+		    $(top_builddir)/sqlite3/libsqlite3.la
+
+
+# LDFLAGS
+SQLITE3_LDFLAGSTR = -L$(top_builddir)/wxsqlite3 -lwxsqlite3   \
+		    -L$(top_builddir)/sqlite3   -lsqlite3
+
+
+endif
+#################################################################################
+
 
 # common build rule
 JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@          \
+		     $(SQLITE3_CXXSTR)                \
 		     -I$(top_builddir)/crossguid      \
 		     -I$(top_builddir)/babel          \
-		     -I$(top_builddir)/wxsqlite3      \
-		     -I$(top_builddir)/sqlite3        \
 		     -I$(top_builddir)/src/rc         \
 		     -I$(top_builddir)/curlpp/include
 
@@ -85,9 +119,8 @@ ACLOCAL_AMFLAGS    = -I m4
 if USE_WINDRES
 # Platform is Windows
 JaneClone_LDADD    = JaneClone_rc.o                                           \
+		    $(SQLITE3_LDADDSTR)                                       \
 		    $(top_builddir)/crossguid/libcrossguid.la		      \
-		    $(top_builddir)/wxsqlite3/libwxsqlite3.la 		      \
-		    $(top_builddir)/sqlite3/libsqlite3.la 		      \
 		    $(top_builddir)/curlpp/src/curlpp/libcurlpp.la 	      \
 		    $(top_builddir)/curlpp/src/utilspp/libutilspp.la 	      \
 		    $(top_builddir)/curlpp/src/curlpp/internal/libinternal.la
@@ -100,13 +133,10 @@ JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 else
 # Platform is not Windows
 JaneClone_LDFLAGS  = $(JC_FLAG_STRING)                                          \
-		    @XML2LIBS@							\
-		    -L$(top_builddir)/crossguid			 -lcrossguid	\
-		    -L$(top_builddir)/wxsqlite3			 -lwxsqlite3	\
-		    -L$(top_builddir)/sqlite3			 -lsqlite3	\
-		    -L$(top_builddir)/curlpp/src/curlpp		 -lcurlpp	\
-		    -L$(top_builddir)/curlpp/src/utilspp	 -lutilspp	\
-		    -L$(top_builddir)/curlpp/src/curlpp/internal -linternal
+		     @XML2LIBS@							\
+		     $(SQLITE3_LDFLAGSTR)                                       \
+		     -L$(top_builddir)/crossguid		-lcrossguid	\
+		     -L$(top_builddir)/curlpp/src/curlpp	-lcurlpp	\
+		     -L$(top_builddir)/curlpp/src/utilspp	-lutilspp	\
+		     -L$(top_builddir)/curlpp/src/curlpp/internal -linternal
 endif
-
-# target for debug
