@@ -132,7 +132,7 @@ void ExtractBoardList::SetBoardInfo(const wxString category, const wxString name
 
 static int writeToWxString(void* context, const char* buffer, int len) {
      wxString* t = static_cast<wxString*>(context);
-     *t += wxString(buffer, len);
+     *t += wxString(buffer, wxConvUTF8, len);
      return len;
 }
 
@@ -164,7 +164,7 @@ xmlOutputBufferPtr xmlOutputBufferCreateIO (xmlOutputWriteCallback iowrite,
 							   (xmlOutputCloseCallback)closeWxString,
 							   &val, 0);
 	  
-	  htmlDocContentDumpOutput(buf, 
+	  htmlDocContentDumpOutput(buf,
 				   docPtr, 
 				   "utf-8");
 
