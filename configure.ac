@@ -212,9 +212,13 @@ else
   AC_LANG_PUSH(C++)
   # Get wxsqlite3 version
   WX_LIB_PREFIX=`wx-config --libs | awk {'print $1'} | sed -e 's/-L//g'`
-  WX_SQLITE3=`ls $WX_LIB_PREFIX/libwxsqlite3*.so`
-  WX_SQLITE3=`basename $WX_SQLITE3 | sed -e 's/lib//g' -e 's/.so//g'`
-  if test "$WX_SQLITE3x" = "x"; then
+  WX_SQLITE3=`ls $WX_LIB_PREFIX/libwxsqlite3*.so || true`
+  
+  if test "x$WX_SQLITE3" != "x"; then
+  	WX_SQLITE3=`basename $WX_SQLITE3 | sed -e 's/lib//g' -e 's/.so//g'`;
+  fi
+  
+  if test "x$WX_SQLITE3" = "x"; then
      AC_MSG_WARN("*** WARN: wxsqlite3 is not found ***")
      WX_SQLITE3="wxsqlite3-2.8";
   fi
