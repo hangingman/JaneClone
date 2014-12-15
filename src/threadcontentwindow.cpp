@@ -333,7 +333,7 @@ void ThreadContentWindow::CopyURLFromHtmlWindow(wxCommandEvent& event)
 void ThreadContentWindow::ShowRawHtmlFromHtmlWindow(wxCommandEvent& event)
 {
      const wxString html = this->m_htmlSource;
-     HtmlSourceDialog* htmldlg = new HtmlSourceDialog(html);
+     HtmlSourceDialog* htmldlg = new HtmlSourceDialog(ExtractBoardList::HtmlFormat(html));
      htmldlg->Show(true);
 }
 

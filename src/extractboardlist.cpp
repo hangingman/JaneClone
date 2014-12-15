@@ -129,3 +129,45 @@ void ExtractBoardList::SetBoardInfo(const wxString category, const wxString name
 	  boardInfoArray->Add(category);
      }
 }
+
+static int writeToWxString(void* context, const char* buffer, int len) {
+     wxString* t = static_cast<wxString*>(context);
+     *t += wxString(buffer, len);
+     return len;
+}
+
+static void closeWxString(void* context) {
+     wxString* t = static_cast<wxString*>(context);
+     *t += wxString::FromAscii("\n");
+}
+
+/**
+ * HTML整形
+ */
+const wxString ExtractBoardList::HtmlFormat(const wxString& html)
+{
+/**
+### XML入出力のためのバッファを作成する ###
+
+xmlOutputBufferPtr xmlOutputBufferCreateIO (xmlOutputWriteCallback iowrite, 
+					    xmlOutputCloseCallback ioclose, 
+					    void * ioctx, 
+					    xmlCharEncodingHandlerPtr encoder)
+*/
+
+     htmlDocPtr docPtr = htmlReadMemory(html.mb_str(), html.Len(), "", "utf-8", HTML_PARSE_RECOVER);
+     if (docPtr)
+     {
+	  // libxml2の***Ptrは何かの構造体のポインタ
+	  wxString val;
+	  xmlOutputBufferPtr buf = xmlOutputBufferCreateIO((xmlOutputWriteCallback)writeToWxString,
+							   (xmlOutputCloseCallback)closeWxString,
+							   &val, 0);
+	  
+	  htmlDocContentDumpOutput(buf, 
+				   docPtr, 
+				   "utf-8");
+
+	  return val;
+     }
+}

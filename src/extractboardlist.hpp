@@ -23,6 +23,7 @@
 #define EXTRACTBOARDLIST_HPP_
 
 #include <libxml/HTMLparser.h>
+#include <libxml/HTMLtree.h>
 #include <wx/wx.h>
 #include "sqliteaccessor.hpp"
 
@@ -31,6 +32,8 @@ class ExtractBoardList {
 public:
      // コンストラクタ
      ExtractBoardList(const char* file);
+     // HTML整形
+     static const wxString HtmlFormat(const wxString& html);
 
 private:
      // 内部の処理関数
