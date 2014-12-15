@@ -2878,7 +2878,8 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
 void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
      // 終了処理中と表示する
-     JaneCloneUiUtil::SendLoggingHelper(wxString("終了前処理を実行中..."));
+     const wxString message = wxT("終了前処理を実行中..."); 
+     JaneCloneUiUtil::SendLoggingHelper(message);
 
      /**
       * 開いていた板の名前をsqliteに登録する
