@@ -1,14 +1,10 @@
 language: cpp
 os:
   - linux
-  - osx
+  - osx # why travis ignore osx ???
 compiler:
   #- gcc
   - clang
-matrix:
-  exclude:
-    - os: osx
-      compiler: gcc # Don't do a gcc build on OSX
 cache: apt
 env:
   global:

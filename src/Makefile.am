@@ -99,14 +99,15 @@ JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 
 else
 # Platform is not Windows
-JaneClone_LDFLAGS  = $(JC_FLAG_STRING)                                          \
-		    @XML2LIBS@							\
-		    -L$(top_builddir)/crossguid			 -lcrossguid	\
-		    -L$(top_builddir)/wxsqlite3			 -lwxsqlite3	\
-		    -L$(top_builddir)/sqlite3			 -lsqlite3	\
-		    -L$(top_builddir)/curlpp/src/curlpp		 -lcurlpp	\
-		    -L$(top_builddir)/curlpp/src/utilspp	 -lutilspp	\
-		    -L$(top_builddir)/curlpp/src/curlpp/internal -linternal
+JaneClone_LDFLAGS  = $(JC_FLAG_STRING)
+JaneClone_LDADD    = @XML2LIBS@							\
+		     $(top_builddir)/crossguid/libcrossguid.la		        \
+		     $(top_builddir)/wxsqlite3/libwxsqlite3.la 		        \
+		     $(top_builddir)/sqlite3/libsqlite3.la 		        \
+		     $(top_builddir)/curlpp/src/curlpp/libcurlpp.la 	        \
+		     $(top_builddir)/curlpp/src/utilspp/libutilspp.la 	        \
+		     $(top_builddir)/curlpp/src/curlpp/internal/libinternal.la
+
 endif
 
 # target for debug
