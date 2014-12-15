@@ -66,7 +66,6 @@ fi
 AM_CONDITIONAL(USE_MAC_OSX, false)
 AM_CONDITIONAL(USE_LINUX, false)
 AM_CONDITIONAL(USE_WX_WEBVIEW, false)
-AM_CONDITIONAL(BUILD_SQLITE3, false)
 
 # Check for windres
 if test "$PLATFORM_STRING" = "Win32"; then
@@ -139,105 +138,58 @@ if test "$wxWin" != 1; then
 		wxWidgets version is $reqwx or above.
 		])
 fi
-# Add wxWidgets Flags
-CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
-CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
-CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
-LIBS="$LIBS $WX_LIBS"
 
-#-----------------------------------------------------------------------
-# SQLite3 and wxSQLite3 build check
-#
-if test "$PLATFORM_STRING" = "Win32" -o "$PLATFORM_STRING" = "Apple"; then
-  # SQLite3 and wxSQLite3 will be build
-  AC_MSG_RESULT([Now building SQLite3 & wxSQLite3...])
-  AM_CONDITIONAL(BUILD_SQLITE3, true)
 #-----------------------------------------------------------------------
 #   --enable-readline
 #
-  AC_ARG_ENABLE(readline, [AS_HELP_STRING(
-    [--enable-readline], 
-    [use readline in shell tool (yes, no) [default=yes]])], 
-    [], [enable_readline=yes])
-  if test x"$enable_readline" != xno ; then
-    sLIBS=$LIBS
-    LIBS=""
-    AC_SEARCH_LIBS(tgetent, curses ncurses ncursesw, [], [])
-    AC_SEARCH_LIBS(readline, readline, [], [enable_readline=no])
-    AC_CHECK_FUNCS(readline, [], [])
-    READLINE_LIBS=$LIBS
-    LIBS=$sLIBS
-  fi
-  AC_SUBST(READLINE_LIBS)
+AC_ARG_ENABLE(readline, [AS_HELP_STRING(
+  [--enable-readline], 
+  [use readline in shell tool (yes, no) [default=yes]])], 
+  [], [enable_readline=yes])
+if test x"$enable_readline" != xno ; then
+  sLIBS=$LIBS
+  LIBS=""
+  AC_SEARCH_LIBS(tgetent, curses ncurses ncursesw, [], [])
+  AC_SEARCH_LIBS(readline, readline, [], [enable_readline=no])
+  AC_CHECK_FUNCS(readline, [], [])
+  READLINE_LIBS=$LIBS
+  LIBS=$sLIBS
+fi
+AC_SUBST(READLINE_LIBS)
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
 #   --enable-threadsafe
 #
-  AC_ARG_ENABLE(threadsafe, [AS_HELP_STRING(
-    [--enable-threadsafe], [build a thread-safe library [default=yes]])], 
-    [], [enable_threadsafe=yes])
-  THREADSAFE_FLAGS=-DSQLITE_THREADSAFE=0
-  if test x"$enable_threadsafe" != "xno"; then
-    THREADSAFE_FLAGS="-D_REENTRANT=1 -DSQLITE_THREADSAFE=1"
-    AC_SEARCH_LIBS(pthread_create, pthread)
-  fi
-  AC_SUBST(THREADSAFE_FLAGS)
+AC_ARG_ENABLE(threadsafe, [AS_HELP_STRING(
+  [--enable-threadsafe], [build a thread-safe library [default=yes]])], 
+  [], [enable_threadsafe=yes])
+THREADSAFE_FLAGS=-DSQLITE_THREADSAFE=0
+if test x"$enable_threadsafe" != "xno"; then
+  THREADSAFE_FLAGS="-D_REENTRANT=1 -DSQLITE_THREADSAFE=1"
+  AC_SEARCH_LIBS(pthread_create, pthread)
+fi
+AC_SUBST(THREADSAFE_FLAGS)
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
 #   --enable-dynamic-extensions
 #
-  AC_ARG_ENABLE(dynamic-extensions, [AS_HELP_STRING(
-    [--enable-dynamic-extensions], [support loadable extensions [default=yes]])], 
-    [], [enable_dynamic_extensions=yes])
-  if test x"$enable_dynamic_extensions" != "xno"; then
-    AC_SEARCH_LIBS(dlopen, dl)
-  else
-    DYNAMIC_EXTENSION_FLAGS=-DSQLITE_OMIT_LOAD_EXTENSION=1
-  fi
-  AC_MSG_CHECKING([for whether to support dynamic extensions])
-  AC_MSG_RESULT($enable_dynamic_extensions)
-  AC_SUBST(DYNAMIC_EXTENSION_FLAGS)
-#-----------------------------------------------------------------------
+AC_ARG_ENABLE(dynamic-extensions, [AS_HELP_STRING(
+  [--enable-dynamic-extensions], [support loadable extensions [default=yes]])], 
+  [], [enable_dynamic_extensions=yes])
+if test x"$enable_dynamic_extensions" != "xno"; then
+  AC_SEARCH_LIBS(dlopen, dl)
 else
-  AC_MSG_CHECKING([Now checking SQLite3])
-  # Checks for sqlite3
-  AC_CHECK_LIB(sqlite3,sqlite3_libversion_number,LIBS="$LIBS -lsqlite3" has_sqlite3=1,has_sqlite3=0)
-  if test $has_sqlite3 = 0; then
-    AC_MSG_ERROR("ERROR: cannot find sqlite3.")
-  fi
-  # Checks for wxsqlite3
-  AC_MSG_CHECKING([Now checking wxSQLite3])
-  AC_LANG_PUSH(C++)
-  # Get wxsqlite3 version
-  WX_LIB_PREFIX=`wx-config --libs | awk {'print $1'} | sed -e 's/-L//g'`
-  WX_SQLITE3=`ls $WX_LIB_PREFIX/libwxsqlite3*.so || true`
-  
-  if test "x$WX_SQLITE3" != "x"; then
-  	WX_SQLITE3=`basename $WX_SQLITE3 | sed -e 's/lib//g' -e 's/.so//g'`;
-  fi
-  
-  if test "x$WX_SQLITE3" = "x"; then
-     AC_MSG_WARN("*** WARN: wxsqlite3 is not found ***")
-     WX_SQLITE3="wxsqlite3-2.8";
-  fi
-  # Try to link
-  LIBS="$LIBS -L$WX_LIB_PREFIX -l$WX_SQLITE3"
-  AC_TRY_LINK([#include <wx/wxsqlite3.h>], 
-	      [wxSQLite3Database db;],
-	      has_wxsqlite3=1,
-	      has_wxsqlite3=0) 
-  if test $has_wxsqlite3 = 0; then
-    AC_MSG_ERROR("ERROR: cannot find wxsqlite3.")
-  fi
-  AC_LANG_POP(C++)
+  DYNAMIC_EXTENSION_FLAGS=-DSQLITE_OMIT_LOAD_EXTENSION=1
 fi
-# -- END -- SQLite3 and wxSQLite3 build check
-
+AC_MSG_CHECKING([for whether to support dynamic extensions])
+AC_MSG_RESULT($enable_dynamic_extensions)
+AC_SUBST(DYNAMIC_EXTENSION_FLAGS)
+#-----------------------------------------------------------------------
 
 # Checks for zlib
-AC_CHECK_LIB(z,gzclose,LIBS="$LIBS -lz" has_zlib=1,has_zlib=0)
+AC_CHECK_LIB(z,gzclose,LIBS="-lz $LIBS" has_zlib=1,has_zlib=0)
 if test $has_zlib = 0; then
   AC_MSG_ERROR("ERROR: cannot find zlib.")
 fi
@@ -309,13 +261,13 @@ case $host in
     ;;
 
   *-*-linux*)
-    AC_CHECK_LIB(uuid,uuid_generate,LIBS="$LIBS -luuid" has_uuid=1,has_uuid=0)
+    AC_CHECK_LIB(uuid,uuid_generate,LIBS="-luuid $LIBS" has_uuid=1,has_uuid=0)
     if test $has_uuid = 0; then
       AC_MSG_ERROR("ERROR: cannot find uuid.")
     fi
     ;;
   *-*-*bsd*)
-    AC_CHECK_LIB(uuid,uuid_generate,LIBS="$LIBS -luuid" has_uuid=1,has_uuid=0)
+    AC_CHECK_LIB(uuid,uuid_generate,LIBS="-luuid $LIBS" has_uuid=1,has_uuid=0)
     if test $has_uuid = 0; then
       AC_MSG_ERROR("ERROR: cannot find uuid.")
     fi
@@ -351,16 +303,23 @@ case "${ax_cv_c_compiler_vendor}" in
    gnu)
       	AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
 	;;
+
    clang)
 	if test "$PLATFORM_STRING" = "Apple"; then
 	   CXXFLAGS="$CXXFLAGS -stdlib=libc++"
 	fi
-	AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
+	   AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
         ;;	
    *)
-	AC_MSG_ERROR("ERROR: JaneClone cannot compile without using GCC or Clang.")
+	AC_MSG_ERROR("ERROR: JaneClone cannot compile with gnu gcc or clang.")
 	;;
 esac
+
+# Add Flags
+CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
+CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
+CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
+LIBS="$LIBS $WX_LIBS"
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h langinfo.h locale.h stdlib.h string.h strings.h unistd.h])
@@ -380,6 +339,8 @@ AC_FUNC_STRERROR_R
 # Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile
 		 crossguid/Makefile
+		 sqlite3/Makefile
+		 wxsqlite3/Makefile
                  curlpp/Makefile
                  curlpp/src/Makefile
                  curlpp/src/curlpp/Makefile
@@ -393,13 +354,6 @@ AC_CONFIG_FILES([Makefile
                  curlpp/include/utilspp/singleton/Makefile
                  src/Makefile
 		 test/Makefile])
-
-# SQLite3 and wxSQLite3 build check
-if test "$PLATFORM_STRING" = "Win32" -o "$PLATFORM_STRING" = "Apple"; then
-  AC_CONFIG_FILES([sqlite3/Makefile
-		   wxsqlite3/Makefile])
-fi
-
 AC_OUTPUT
 
 # Trace all options
