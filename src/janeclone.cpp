@@ -2551,7 +2551,7 @@ void JaneClone::Initialize2chBoardList() {
      /** Mac OS X */
      JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI, 
 				       ID_BoardTreectrl, 
-				       wxString("CommonAuiToolBarUpdate"), 
+				       wxT("CommonAuiToolBarUpdate"), 
 				       this);
 #endif
 
@@ -2632,7 +2632,7 @@ void JaneClone::InitializeFavsList() {
      /** Mac OS X */
      JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI, 
 				       ID_FavsTreectrl, 
-				       wxString("CommonAuiToolBarUpdate"), 
+				       wxT("CommonAuiToolBarUpdate"), 
 				       this);
 #endif
 
@@ -2667,7 +2667,7 @@ void JaneClone::InitializeNowReadingList() {
      /** Mac OS X */
      JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI, 
 				       ID_NowReadingTreectrl, 
-				       wxString("CommonAuiToolBarUpdate"), 
+				       wxT("CommonAuiToolBarUpdate"), 
 				       this);
 #endif
 
@@ -2878,8 +2878,7 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
 void JaneClone::OnCloseWindow(wxCloseEvent& event) {
 
      // 終了処理中と表示する
-     const wxString message = wxT("終了前処理を実行中..."); 
-     JaneCloneUiUtil::SendLoggingHelper(message);
+     JaneCloneUiUtil::SendLoggingHelper(wxT("終了前処理を実行中..."));
 
      /**
       * 開いていた板の名前をsqliteに登録する

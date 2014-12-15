@@ -106,60 +106,26 @@ void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWin
      }
 };
 
-/**
- * wxWidgetsのイベント通知関数のラッパー
- *
- * @param const wxWindowID type 
- * @param const wxWindowID id 
- */
-void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID id)
-{
-     wxCommandEvent* e = new wxCommandEvent(type, id);
-
-#if wxCHECK_VERSION(2, 9, 0)
-     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
-#else
-     wxWindow::FindWindowById(ID_WxJaneClone)->GetEventHandler()->AddPendingEvent(*e);
-#endif    
-};
 
 /**
  * wxWidgetsのイベント通知関数のラッパー
  *
  * @param const wxWindowID type 
  * @param const wxWindowID id
- * @param const T& message
- */
-template <class T>
-void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID id, const T& message)
-{
-     wxCommandEvent* e = new wxCommandEvent(type, id);
-     e->SetString(message.c_str());
-
-#if wxCHECK_VERSION(2, 9, 0)
-     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
-#else
-     wxWindow::FindWindowById(ID_WxJaneClone)->AddPendingEvent(*e);
-#endif    
-};
-
-// テンプレート関数の実体化
-template void JaneCloneUiUtil::QueueEventHelper<wxString>(const wxWindowID type, const wxWindowID id, const wxString& m);
-
-/**
- * wxWidgetsのイベント通知関数のラッパー
- *
- * @param const wxWindowID type 
- * @param const wxWindowID id
- * @param const T&  m
+ * @param const wxString&  m
  * @param wxObject* o
  */
-template <class T>
-void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID id, const T& m, wxObject* o)
+void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID id, const wxString& m, wxObject* o)
 {
      wxCommandEvent* e = new wxCommandEvent(type, id);
-     e->SetString(m.c_str());
-     e->SetEventObject(o);
+
+     if (!m.IsEmpty()) {
+	  e->SetString(m.c_str());
+     }
+     
+     if (o) {
+	  e->SetEventObject(o);
+     }
 
 #if wxCHECK_VERSION(2, 9, 0)
      wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
@@ -167,46 +133,14 @@ void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID i
      wxWindow::FindWindowById(ID_WxJaneClone)->AddPendingEvent(*e);
 #endif    
 };
-
-// テンプレート関数の実体化
-template void JaneCloneUiUtil::QueueEventHelper<wxString>(const wxWindowID type, const wxWindowID id, const wxString& m, wxObject* o);
 
 
 /**
  * JaneCloneのログ処理のラッパー
  *
- * @param const T message
+ * @param const wxString& message
  */
-template <class T>
-void JaneCloneUiUtil::SendLoggingHelper(const T& message)
+void JaneCloneUiUtil::SendLoggingHelper(const wxString& message)
 {
-     wxString log = wxEmptyString;
-
-     if (typeid(message) == typeid(wxString&))
-     {
-	  log = message;
-     } 
-     else if (typeid(message) == typeid(wchar_t&))
-     {
-	  log = wxString(message);
-     }
-
-     JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging, log);
-};
-
-// テンプレート関数の実体化
-template void JaneCloneUiUtil::SendLoggingHelper<wxString>(const wxString& m);
-template void JaneCloneUiUtil::SendLoggingHelper<wchar_t>(const wchar_t& m);
-
-template <class T, std::size_t K>
-void JaneCloneUiUtil::SendLoggingHelper(const T(&message)[K])
-{
-     wxString log = wxEmptyString;
-
-     if (typeid(message) == typeid(wchar_t&))
-     {
-	  log = wxString(&message[0]);
-     }
-
-     JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging, log);
+     JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging, message);
 };

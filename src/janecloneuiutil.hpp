@@ -44,38 +44,17 @@ public:
       * wxWidgetsのイベント通知関数のラッパー
       *
       * @param const wxWindowID type 
-      * @param const wxWindowID id 
-      */
-     void static QueueEventHelper(const wxWindowID type, const wxWindowID id);
-     /**
-      * wxWidgetsのイベント通知関数のラッパー
-      *
-      * @param const wxWindowID type 
       * @param const wxWindowID id
-      * @param const T message
-      */
-     template <class T>
-     void static QueueEventHelper(const wxWindowID type, const wxWindowID id, const T& message);
-     /**
-      * wxWidgetsのイベント通知関数のラッパー
-      *
-      * @param const wxWindowID type 
-      * @param const wxWindowID id
-      * @param const T   m          Message for event destination
+      * @param const wxString&   m          Message for event destination
       * @param wxObject* o          wxObject for event destination
       */
-     template <class T>
-     void static QueueEventHelper(const wxWindowID type, const wxWindowID id, const T& m, wxObject* o);
+     void static QueueEventHelper(const wxWindowID type, const wxWindowID id, const wxString& m = wxEmptyString, wxObject* o = NULL);
      /**
       * JaneCloneのログ処理のラッパー
       *
-      * @param const T message
+      * @param const wxString& message
       */
-     template <class T>
-     void static SendLoggingHelper(const T& message);
-
-     template <class T,std::size_t K>
-     void static SendLoggingHelper(const T (&message)[K]);
+     void static SendLoggingHelper(const wxString& message);
 };
 
 #endif /* JANECLONEUIUTIL_HPP_ */
