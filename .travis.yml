@@ -1,11 +1,21 @@
-language: cpp
 os:
   - linux
-  - osx # why travis ignore osx ???
+  - osx
+
+language: cpp
+
 compiler:
-  #- gcc
+  - gcc
   - clang
-cache: apt
+
+matrix:
+  exclude:
+    - os: osx
+      compiler: gcc
+
+cache:
+    apt: true
+
 env:
   global:
     - TRAVIS_CI=true
