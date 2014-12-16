@@ -226,7 +226,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
 			 // レス内部のURLに<a>タグをつける
 			 res = ReplaceURLText(res);
 			 // レスの最後に改行
-			 res.Append(wxT("<br>"));
+			 res.Append(wxT(BR));
 		    }
 	       } else if (regexThreadFst.IsValid() && curnumber == 1) {
 		    // >>1 の場合の処理
@@ -244,7 +244,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
 			 // レス内部のURLに<a>タグをつける
 			 res = ReplaceURLText(res);
 			 // レスの最後に改行
-			 res.Append(wxT("<br>"));
+			 res.Append(wxT(BR));
 		    }
 	       }
 
@@ -320,7 +320,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
 		    // レス内部のURLに<a>タグをつける
 		    res = ReplaceURLText(res);
 		    // レスの最後に改行
-		    res.Append(wxT("<br>"));
+		    res.Append(wxT(BR));
 	       }
 	  } else if (regexThreadFst.IsValid() && start == 1) {
 	       // >>1 の場合の処理
@@ -338,7 +338,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
 		    // レス内部のURLに<a>タグをつける
 		    res = ReplaceURLText(res);
 		    // レスの最後に改行
-		    res.Append(wxT("<br>"));
+		    res.Append(wxT(BR));
 	       }
 	  }
 
@@ -439,7 +439,7 @@ wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii,
 	  if (regexThread.Matches(str)) {
 	       res.Append(regexThread.GetMatch(str, 4));
 	       // レスの最後に改行
-	       res.Replace(wxT("<br>"), useTriangularBrackets ? wxT("\n>") : wxT("\n"), true);
+	       res.Replace(wxT(BR), useTriangularBrackets ? wxT("\n>") : wxT("\n"), true);
 	       res.Append(wxT("\n"));
 	  }
      } else if (regexThreadFst.IsValid() && resNumInt == 1) {
@@ -447,7 +447,7 @@ wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii,
 	  if (regexThreadFst.Matches(str)) {
 	       res.Append(regexThreadFst.GetMatch(str, 4));
 	       // レスの最後に改行
-	       res.Replace(wxT("<br>"), useTriangularBrackets ? wxT("\n>") : wxT("\n"), true);
+	       res.Replace(wxT(BR), useTriangularBrackets ? wxT("\n>") : wxT("\n"), true);
 	       res.Append(wxT("\n"));
 	  }
      }
@@ -524,7 +524,7 @@ wxString JaneCloneUtil::FindResponseById(const wxString& boardNameAscii, const w
 	       // レス内部のURLに<a>タグをつける
 	       res = ReplaceURLText(res);
 	       // レスの最後に改行
-	       res.Append(wxT("<br>"));
+	       res.Append(wxT(BR));
 
 	       if (mail != wxEmptyString) {
 		    // もしメ欄になにか入っているならば
@@ -564,7 +564,7 @@ wxString JaneCloneUtil::FindResponseById(const wxString& boardNameAscii, const w
 	       // レス内部のURLに<a>タグをつける
 	       res = ReplaceURLText(res);
 	       // レスの最後に改行
-	       res.Append(wxT("<br>"));
+	       res.Append(wxT(BR));
 
 	       if (mail != wxEmptyString) {
 		    // もしメ欄になにか入っているならば
@@ -670,7 +670,7 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 	  }
 
 	  // HTMLに改行を加える
-	  responseText.Append(wxT("<br>"));
+	  responseText.Append(wxT(BR));
 
 	  for (tmp = text; regexImage.Matches(tmp);
 	       tmp = tmp.SubString(start + len, tmp.Len())) {
@@ -687,7 +687,7 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 	       responseText.Append(wxT("<p><img src=\"memory:") + filename + wxT("\" width=16 height=16 /></p>"));
 	  }
 	  // HTMLに改行を加える
-	  responseText.Append(wxT("<br>"));
+	  responseText.Append(wxT(BR));
      }
 }
 /**
@@ -720,7 +720,7 @@ wxString JaneCloneUtil::AddAnchorTag(wxString& responseText) {
 /**
  * プレインテキスト内に2chのIDがあれば<a>タグをつける
  */
-wxString JaneCloneUtil::AddID(wxString& responseText) {
+wxString JaneCloneUtil::AddID(const wxString& responseText) {
 
      // 必要な変数を宣言
      wxString text = responseText;
@@ -805,6 +805,131 @@ wxString JaneCloneUtil::AddID(wxString& responseText) {
 
      return result;     
 }
+
+/**
+ * >>xx のようなアンカーを受けているレスを赤くする
+ */
+wxString JaneCloneUtil::AddColorAnchoredID(const wxString& html)
+{
+
+     const std::string temporary = std::string(html.mb_str());
+     const htmlDocPtr docPtr = htmlReadMemory(temporary.c_str(), temporary.size(), "", "utf-8", 
+					      HTML_PARSE_RECOVER|HTML_PARSE_NOERROR|HTML_PARSE_NOWARNING);
+
+     WX_DECLARE_STRING_HASH_MAP( int, ExtractIdHash );
+     ExtractIdHash hashmap;
+
+     if (docPtr)
+     {
+	  const htmlNodePtr root = xmlDocGetRootElement(docPtr);
+	  const htmlNodePtr body = root->children->next;
+	  for (htmlNodePtr node = body->children; node != NULL; node = node->next)
+	  {
+	       if (node->type == XML_ELEMENT_NODE && 
+		   xmlStrcasecmp(node->name, (const xmlChar*) "dd") == 0)
+	       {
+		    const htmlNodePtr dd = node->children;
+
+		    if (node->type == XML_ELEMENT_NODE &&
+			xmlStrcasecmp(dd->name, (const xmlChar*) "table") == 0)
+		    {
+			 for (htmlNodePtr ptr = dd->children; ptr != NULL; ptr = ptr->next) 
+			 {
+			      if (ptr->type == XML_ELEMENT_NODE && 
+				  xmlStrcasecmp(ptr->name, (const xmlChar*) "a") == 0)
+			      {
+				   xmlAttr* attribute = ptr->properties;
+				   while(attribute && attribute->name && attribute->children)
+				   {
+					xmlChar* value = xmlNodeListGetString(ptr->doc, attribute->children, 1);
+					//do something with value
+					if (xmlStrcasecmp(value, (const xmlChar*) "_blank") == 0)
+					{
+					     // >>xxx (= ptr->children->content) データは実体参照ではない ">>12"
+					     const wxString anchor = wxString::FromUTF8(reinterpret_cast<const char*>(ptr->children->content));
+					     const wxString number = anchor.SubString(2, anchor.Len() - 1);
+
+					     if (hashmap.find( number ) == hashmap.end()) {
+						  // 初めてのNUMBERなので新しく追加する
+						  hashmap[number] = 1;
+					     } else {
+						  // レス数を増やす
+						  hashmap[number] = hashmap[number] + 1; // hashmap[number]++ と書くとclangでは最適化されて思うように動かない
+					     }
+					}
+					
+					xmlFree(value); 
+					attribute = attribute->next;
+				   }
+			      }
+			 }
+		    }
+	       }
+	  }
+
+	  xmlFreeDoc(docPtr);
+	  xmlCleanupParser();
+
+	  // 赤レスを集計し終わったら赤くして返す
+	  // sample -> <a href="#2">2</a>
+	  wxString text = html;
+	  wxString tmp, result;
+	  size_t start, len;
+
+	  if (regexURL.IsValid() && regexIndex.Matches(html)) {
+
+	       for (tmp = text; regexIndex.Matches(tmp); tmp = tmp.SubString(start + len, tmp.Len())) {
+
+		    const wxString index = regexIndex.GetMatch(tmp, 1);
+		    wxString color = wxEmptyString;
+		    
+		    switch (hashmap[index])
+		    {
+		    case 0:
+		    case 1:
+		    case 2:
+			 color = wxT("#0000ff");
+			 break;
+
+		    case 3:
+		    case 4:
+			 color = wxT("#ff00ff");
+			 break;
+			 
+		    case 5:
+			 color = wxT("#ff0000");
+			 break;
+		    default:
+			 color = wxT("#ff0000");
+			 break;
+		    }
+
+		    regexIndex.GetMatch(&start, &len, 0);
+		    result += tmp.SubString(0, start - 1);
+		    result += wxT("<a href=\"#");
+		    result += index;
+		    result += wxT("\"><font color=\"");
+		    result += color;
+		    result += wxT("\">");
+		    result += index;
+		    result += wxT("</font></a>");
+	       }
+
+	       result += tmp;
+
+	       return result;
+	  }
+
+	  // 失敗したらそのまま返す
+	  return html;
+     }
+
+     xmlFreeDoc(docPtr);
+     xmlCleanupParser();
+
+     return html;
+}
+
 /**
  * 指定された文字列でdatファイルへのファイルパスを組み立てる
  */
@@ -1221,7 +1346,7 @@ wxString JaneCloneUtil::ProcessFirstResponse(wxString& threadRecord) {
 	       // レス内部のURLに<a>タグをつける
 	       res = JaneCloneUtil::ReplaceURLText(res);
 	       // レスの最後に改行
-	       res.Append(wxT("<br>"));
+	       res.Append(wxT(BR));
 	  }
      }
 
@@ -1278,7 +1403,7 @@ wxString JaneCloneUtil::ProcessRestResponse(wxString& threadRecord, int number) 
 	       // レス内部のURLに<a>タグをつける
 	       res = JaneCloneUtil::ReplaceURLText(res);
 	       // レスの最後に改行
-	       res.Append(wxT("<br>"));
+	       res.Append(wxT(BR));
 	  }
      }
 

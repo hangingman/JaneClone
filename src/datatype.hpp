@@ -52,6 +52,8 @@
 #define COOKIE_CONFIG_FILE wxT("janeclone.env")
 /** Mac OSX のアプリケーションバンドル構造 */
 #define MAC_OSX_CURDIR_PREFIX wxGetCwd() + wxT("/JaneClone.app/Contents/MacOS/")
+/** HTML中のタグ */
+#define BR "<br/>"
 
 // ファイルの区切り文字
 #ifdef __WXMSW__
@@ -373,5 +375,8 @@ static const wxRegEx regexResAnchor(_T(">>([[:digit:]]{1,4})"), wxRE_ADVANCED + 
 
 // 2chのIDマッチング用正規表現
 static const wxRegEx regexID(_T("ID:(([-/\\.a-zA-Z0-9_#~:.?+=&%!@]){8,9})"), wxRE_ADVANCED + wxRE_ICASE);
+
+// 2chのレス番号マッチング用正規表現
+static const wxRegEx regexIndex(_T("<a href=\"#([[:digit:]]{1,4})\">([[:digit:]]{1,4})</a>"), wxRE_ADVANCED + wxRE_ICASE);
 
 #endif /* DATATYPE_HPP_ */

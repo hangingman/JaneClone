@@ -177,6 +177,8 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 
      // ID:xxxxxxxxxx を置換する
      htmlSource = JaneCloneUtil::AddID(htmlSource);
+     // >>xx のようなアンカーを受けているレスを赤くする
+     htmlSource = JaneCloneUtil::AddColorAnchoredID(htmlSource);
 
      return htmlSource;
 }

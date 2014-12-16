@@ -22,12 +22,14 @@
 #ifndef JANECLONEUTIL_HPP_
 #define JANECLONEUTIL_HPP_
 
-#include <zlib.h>
 #include <iostream>
 #include <fstream>
 #include <iterator>
 #include <stdexcept>
 #include <memory>
+#include <zlib.h>
+#include <libxml/HTMLparser.h>
+#include <libxml/HTMLtree.h>
 #include <wx/wx.h>
 #include <wx/textfile.h>
 #include <wx/file.h>
@@ -162,7 +164,11 @@ public:
      /**
       * プレインテキスト内に2chのIDがあれば<a>タグをつける
       */
-     static wxString AddID(wxString& responseText);
+     static wxString AddID(const wxString& responseText);
+     /**
+      * >>xx のようなアンカーを受けているレスを赤くする
+      */
+     static wxString AddColorAnchoredID(const wxString& html);
      /**
       * 指定された文字列でdatファイルへのファイルパスを組み立てる
       * @param 英字の板名
