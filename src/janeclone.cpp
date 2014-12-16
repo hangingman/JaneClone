@@ -1726,6 +1726,19 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event)
 		    SetPopUpWindowForID(event, boardNameAscii, origNumber, rest, anchorPoint);		    
 	       }
 	  }
+	  else if ( linkInfo->GetHref().StartsWith(wxT("#"), &rest) )
+	  {
+	       // アンカーの出現位置
+	       wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
+	       JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("Anchor X:%d, Y:%d\n"), anchorPoint.x, anchorPoint.y));
+
+	       const wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
+	       wxString boardNameAscii = tiHash[title].boardNameAscii;
+	       wxString origNumber = tiHash[title].origNumber;
+
+	       // 取得した情報を元に新しいポップアップウィンドウを出現させる
+	       SetPopUpWindowByIndex(event, boardNameAscii, origNumber, rest, anchorPoint);	       
+	  }
      }
 }
 /**
@@ -3379,6 +3392,8 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
      JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("mouse point: %d, %d\n"), p.x, p.y));
      popup->Position(anchorPoint, wxSize(p.x + 50, p.y - 150));
      popup->Popup();
+
+     event.Skip();
 }
 /**
  * 取得した情報を元に新しいポップアップウィンドウを出現させる
@@ -3400,7 +3415,33 @@ void JaneClone::SetPopUpWindowForID(wxHtmlCellEvent& event, wxString& boardNameA
      wxPoint p = ClientToScreen(wxGetMousePosition());
      popup->Position(p, popup->GetSize());
      popup->Popup();
+
+     event.Skip();
 }
+/**
+ * 被レス状態を元に新しいポップアップウィンドウを出現させる
+ */
+void JaneClone::SetPopUpWindowByIndex(wxHtmlCellEvent& event, wxString& boardNameAscii,
+				    wxString& origNumber, wxString& extractIndex, wxPoint& anchorPoint) {
+
+     // ポップアップさせるHTMLソース
+     wxString htmlDOM = JaneCloneUtil::FindResponseByIndex(boardNameAscii, origNumber, extractIndex);
+
+     if (wxEmptyString == htmlDOM) {
+	  // 空文字で帰ってきたらリターン
+	  return;
+     }
+
+     // 取得したレスをポップアップさせる
+     AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook, anchorPoint, wxSize(640, 300), htmlDOM);
+     // マウスカーソルの位置に調整する
+     wxPoint p = ClientToScreen(wxGetMousePosition());
+     popup->Position(p, popup->GetSize());
+     popup->Popup();
+
+     event.Skip();
+}
+
 /**
  * 現在使用しているフォントの情報を取得する
  */

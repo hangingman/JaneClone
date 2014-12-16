@@ -471,6 +471,9 @@ private:
      // 取得した情報を元に新しいポップアップウィンドウを出現させる
      void SetPopUpWindowForID(wxHtmlCellEvent& event, wxString& boardNameAscii,
 			 wxString& origNumber, wxString& extractId, wxPoint& anchorPoint);
+     // 被レス状態を元に新しいポップアップウィンドウを出現させる
+     void SetPopUpWindowByIndex(wxHtmlCellEvent& event, wxString& boardNameAscii,
+			 wxString& origNumber, wxString& extractIndex, wxPoint& anchorPoint);
      
      /**
       *  フォント読み出し系の処理

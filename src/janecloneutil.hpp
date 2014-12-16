@@ -150,6 +150,15 @@ public:
      static wxString FindResponseById(const wxString& boardNameAscii, const wxString& origNumber, 
 				      const wxString& extractId);
      /**
+      * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
+      * @param  const wxString& boardNameAscii         板名の英語名  
+      * @param  const wxString& origNumber             UNIXタイムベースのオリジナルな番号
+      * @param  const wxString& extractIndex           抽出対象のレス番号
+      * @return wxString        取得したレスの内容
+      */
+     static wxString FindResponseByIndex(const wxString& boardNameAscii, const wxString& origNumber, 
+					 const wxString& extractIndex);
+     /**
       * レス内にURLがあれば<a>タグを付ける
       */
      static wxString ReplaceURLText(const wxString& responseText);
