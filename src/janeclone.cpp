@@ -186,6 +186,7 @@ END_EVENT_TABLE()
 JaneCloneImageViewer* JaneClone::imageViewer = NULL;
 // ユーザーが最後に触ったノートブック情報を初期化
 wxString JaneClone::userLastAttachedNotebook = wxEmptyString;
+bool JaneClone::restartAppFlag = false;
 
 // インスタンスを渡す処理
 JaneCloneImageViewer* JaneClone::GetJaneCloneImageViewer () 
@@ -1327,6 +1328,7 @@ JaneClone::~JaneClone()
  */
 void JaneClone::OnQuit(wxCommandEvent& e) 
 {
+     restartAppFlag = false;
      JaneCloneUiUtil::QueueEventHelper(wxEVT_CLOSE_WINDOW, wxID_ANY);
      e.Skip(false);
 }
@@ -1336,7 +1338,7 @@ void JaneClone::OnQuit(wxCommandEvent& e)
 void JaneClone::OnRestart(wxCommandEvent& event) 
 {
 #ifdef __WXMSW__
-     this->pid = wxGetProcessId();
+     restartAppFlag = true;
      Close(true);
 #else
      // ここはどうしたものやら
