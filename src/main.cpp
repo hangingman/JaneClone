@@ -98,7 +98,6 @@ bool wxMain::OnInit() {
     wxImage::AddHandler( new wxPNGHandler );
     wxFileSystem::AddHandler(new wxMemoryFSHandler);
     wxJaneClone = new JaneClone(NULL, ID_WxJaneClone, wxEmptyString);
-    wxJaneClone->pid = 0;
     SetTopWindow(wxJaneClone);
     wxJaneClone->Show();
     return true;
@@ -108,10 +107,10 @@ bool wxMain::OnInit() {
  */
 int wxMain::OnExit() {
 
-     unsigned long pid = wxJaneClone->pid;
+     unsigned long pid = wxGetProcessId();
 
-     if (pid != 0) {
-	  // 0でなければ再起動処理を行う & このプロセスは殺す
+     if (JaneClone::restartAppFlag) {
+	  // 再起動処理を行う & このプロセスは殺す
 	  wxString execute = wxGetCwd() + wxFileSeparator + wxT("JaneClone") + wxExt;
 	  ::wxExecute(execute + wxString::Format(_(" -p %lu"), pid), wxEXEC_ASYNC, NULL);
      }

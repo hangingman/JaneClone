@@ -120,8 +120,8 @@ public:
      static JaneCloneImageViewer* imageViewer;
      static JaneCloneImageViewer* GetJaneCloneImageViewer();
      
-     // 再起動処理のためのPID
-     unsigned long pid;
+     // 再起動処理のためのフラグ
+     static bool restartAppFlag;
      // ユーザーが最後に触ったノートブックのオブジェクトを記憶する
      static wxString userLastAttachedNotebook;
      // メニュー上のイベント
