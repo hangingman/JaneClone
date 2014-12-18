@@ -76,6 +76,10 @@ public:
      int GetThreadContentThreadResponseNum() {
 	  return tcw->GetCurrentThreadResponseNum();
      };
+     // 開いているスレタブの保持するHTMLを取得する
+     const wxString GetThreadRawHTML() {
+	  return tcw->GetThreadRawHTML();
+     };
 
 #ifdef __WXMAC__
      // 画像リソースの更新を行う

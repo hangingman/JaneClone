@@ -596,156 +596,102 @@ wxString JaneCloneUtil::FindResponseById(const wxString& boardNameAscii, const w
      return lumpOfHTML;
 
 }
+
+int JaneCloneUtil::WriteToWxString(void* context, const char* buffer, int len) {
+     wxString* t = static_cast<wxString*>(context);
+     *t += wxString(buffer, wxConvUTF8, len);
+     return len;
+}
+
+void JaneCloneUtil::CloseWxString(void* context) {
+     wxString* t = static_cast<wxString*>(context);
+     *t += wxString::FromAscii("\n");
+}
+
 /**
- * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
- * @param  const wxString& boardNameAscii	  板名の英語名	
- * @param  const wxString& origNumber		  UNIXタイムベースのオリジナルな番号
- * @param  const wxString& extractId		  抽出対象のID
- * @return wxString	   取得したレスの内容
+ * HTMLノード内(<dd>~~~</dd>)に引数の要素があるか調べる
+ * @param  const htmlNodePtr ptr	スレッドのHTML
+ * @param  const wxString& target	     抽出対象のレス番号
+ * @return true: あり, false: なし
  */
-wxString JaneCloneUtil::FindResponseByIndex(const wxString& boardNameAscii, const wxString& origNumber, 
-					    const wxString& extractIndex) {
-
-     // ファイルパスの組み立てとファイルの有無確認
-     const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
-     wxString filePath = dir.GetName();
-
-     filePath += wxFileSeparator;
-     filePath += wxT("dat");
-     filePath += wxFileSeparator;
-     filePath += boardNameAscii;
-     filePath += wxFileSeparator;
-     filePath += origNumber;
-     filePath += wxT(".dat");
-
-     if (!wxFile::Exists(filePath)) {
-	  // 無ければ空文字リターン
-	  return wxEmptyString;
-     }
-
-     // HTMLのDOM形式にする
-     wxString lumpOfHTML = HTML_HEADER_POPUP;
-     wxString default_nanashi, mail, day_and_ID;
-
-     /**
-      * IDを抽出してポップアップさせる
-      */
-     wxTextFile datFile;
-     datFile.Open(filePath, wxConvUTF8);
-
-     // ターゲットのレス番号の正規表現
-     const wxString target = wxT("&gt;&gt;") + extractIndex;
-     JaneCloneUiUtil::SendLoggingHelper(target);
-     static const wxRegEx regexIndexPlain(target, wxRE_ADVANCED + wxRE_ICASE);
-
-     for (int i = 0; i < datFile.GetLineCount(); i++) {
-
-	  int curnumber = i + 1;
-	  wxString str  = datFile[i];
-	  if (regexIndexPlain.IsValid() && regexIndexPlain.Matches(str)) 
+bool JaneCloneUtil::DDNodeHasTarget(const htmlNodePtr dd, const wxString& target)
+{
+     for (htmlNodePtr ptr = dd->children; ptr != NULL; ptr = ptr->next) 
+     {
+	  if (ptr->type == XML_ELEMENT_NODE && 
+	      xmlStrcasecmp(ptr->name, (const xmlChar*) "a") == 0)
 	  {
-	       JaneCloneUiUtil::SendLoggingHelper(str);
-
-	       if (regexThread.IsValid() && curnumber > 1 && regexThread.Matches(str) ) 
+	       xmlAttr* attribute = ptr->properties;
+	       while(attribute && attribute->name && attribute->children)
 	       {
-		    // >>1 以外の処理
-		    // マッチさせたそれぞれの要素を取得する
-		    default_nanashi = regexThread.GetMatch(str, 1);
-		    mail = regexThread.GetMatch(str, 2);
-		    day_and_ID = regexThread.GetMatch(str, 3);
-
-		    lumpOfHTML += wxT("<dt>");
-		    lumpOfHTML += wxString::Format(wxT("%d"), curnumber);
-
-		    // レスの最初に<table>タグを入れる
-		    wxString res;
-		    res.Append(wxT("<table border=0 id=\"") + wxString::Format(wxT("%d"), curnumber) + wxT("\">"));
-		    res.Append(regexThread.GetMatch(str, 4));
-		    res.Append(wxT("</table>"));
-
-		    // レス内部のURLに<a>タグをつける
-		    res = ReplaceURLText(res);
-		    // レスの最後に改行
-		    res.Append(wxT(BR));
-
-		    if (mail != wxEmptyString) 
+		    xmlChar* value = xmlNodeListGetString(ptr->doc, attribute->children, 1);
+		    //do something with value
+		    if (xmlStrcasecmp(value, (const xmlChar*) "_blank") == 0)
 		    {
-			 // もしメ欄になにか入っているならば
-			 lumpOfHTML += wxT(" 名前：<a href=\"mailto:");
-			 lumpOfHTML += mail;
-			 lumpOfHTML += wxT("\"><b>");
-			 lumpOfHTML += default_nanashi;
-			 lumpOfHTML += wxT("</b></a>");
-			 lumpOfHTML += day_and_ID;
-			 lumpOfHTML += wxT("<dd>");
-			 lumpOfHTML += res;
-		    } 
-		    else 
-		    {
-			 // 空の場合
-			 lumpOfHTML += wxT(" 名前：<font color=green><b>");
-			 lumpOfHTML += default_nanashi;
-			 lumpOfHTML += wxT("</b></font>");
-			 lumpOfHTML += day_and_ID;
-			 lumpOfHTML += wxT("<dd>");
-			 lumpOfHTML += res;
+			 // >>xxx (= ptr->children->content) データは実体参照ではない ">>12"
+			 const wxString anchor = wxString::FromUTF8(reinterpret_cast<const char*>(ptr->children->content));
+			 const wxString number = anchor.SubString(2, anchor.Len() - 1);
+
+			 if (number.IsSameAs(target))
+			 {
+			      return true;
+			 }
 		    }
-	       } 
-	       else if (regexThreadFst.IsValid() && curnumber == 1 && regexThreadFst.Matches(str) ) 
-	       {
-		    // >>1 の場合の処理
-		    // マッチさせたそれぞれの要素を取得する
-		    default_nanashi = regexThreadFst.GetMatch(str, 1);
-		    mail = regexThreadFst.GetMatch(str, 2);
-		    day_and_ID = regexThreadFst.GetMatch(str, 3);
-
-		    lumpOfHTML += wxT("<dt>");
-		    lumpOfHTML += wxString::Format(wxT("%d"), curnumber);
-
-		    // レスの最初に<table>タグを入れる
-		    wxString res;
-		    res.Append(wxT("<table border=0 id=\"") + wxString::Format(wxT("%d"), curnumber) + wxT("\">"));
-		    res.Append(regexThreadFst.GetMatch(str, 4));
-		    res.Append(wxT("</table>"));
-
-		    // レス内部のURLに<a>タグをつける
-		    res = ReplaceURLText(res);
-		    // レスの最後に改行
-		    res.Append(wxT(BR));
-
-		    if (mail != wxEmptyString) 
-		    {
-			 // もしメ欄になにか入っているならば
-			 lumpOfHTML += wxT(" 名前：<a href=\"mailto:");
-			 lumpOfHTML += mail;
-			 lumpOfHTML += wxT("\"><b>");
-			 lumpOfHTML += default_nanashi;
-			 lumpOfHTML += wxT("</b></a>");
-			 lumpOfHTML += day_and_ID;
-			 lumpOfHTML += wxT("<dd>");
-			 lumpOfHTML += res;
-		    } 
-		    else 
-		    {
-			 // 空の場合
-			 lumpOfHTML += wxT(" 名前：<font color=green><b>");
-			 lumpOfHTML += default_nanashi;
-			 lumpOfHTML += wxT("</b></font>");
-			 lumpOfHTML += day_and_ID;
-			 lumpOfHTML += wxT("<dd>");
-			 lumpOfHTML += res;
-		    }
+					
+		    xmlFree(value); 
+		    attribute = attribute->next;
 	       }
 	  }
      }
 
-     datFile.Close();
-     
+     return false;
+}
+
+/**
+ * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
+ * @param  const wxString& rawHtml                スレッドのHTML
+ * @param  const wxString& extractId		  抽出対象のID
+ * @return wxString	   取得したレスの内容
+ */
+wxString JaneCloneUtil::FindResponseByIndex(const wxString& rawHtml, const wxString& extractIndex) {
+
+     const std::string temporary = std::string(rawHtml.mb_str());
+     const htmlDocPtr docPtr = htmlReadMemory(temporary.c_str(), temporary.size(), "", "utf-8", 
+					      HTML_PARSE_RECOVER|HTML_PARSE_NOERROR|HTML_PARSE_NOWARNING);
+
+     // HTMLのDOM形式にする
+     wxString lumpOfHTML = HTML_HEADER_POPUP;
+
+     if (docPtr)
+     {
+	  const htmlNodePtr root = xmlDocGetRootElement(docPtr);
+	  const htmlNodePtr body = root->children->next;
+	  for (htmlNodePtr node = body->children; node != NULL; node = node->next)
+	  {
+	       if (node->type == XML_ELEMENT_NODE && 
+		   xmlStrcasecmp(node->name, (const xmlChar*) "dd") == 0)
+	       {
+		    const htmlNodePtr dd = node->children;
+		    if (DDNodeHasTarget(dd, extractIndex))
+		    {
+			 xmlBufferPtr buffer = xmlBufferCreate();
+			 xmlNodeDump(buffer, docPtr, node->prev, 0, 1);
+			 xmlNodeDump(buffer, docPtr, node, 0, 1);
+			 lumpOfHTML += wxString::FromUTF8(reinterpret_cast<const char*>(buffer->content));
+
+			 continue;
+		    }
+	       }
+	  }
+
+	  xmlFreeDoc(docPtr);
+	  xmlCleanupParser();
+     }
+
      // HTMLソースを加える
      lumpOfHTML += HTML_FOOTER;
 
      return lumpOfHTML;
-
 }
 /**
  * レス内にURLがあれば<a>タグを付ける

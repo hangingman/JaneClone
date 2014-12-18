@@ -74,6 +74,10 @@ public:
       */
      void ForceScroll(const wxPoint* p);
      /**
+      * HTMLソースを取得する
+      */
+     const wxString GetThreadRawHTML() { return m_htmlSource;};
+     /**
       * このクラスが保持するスレッドのレス数を返す
       */
      int GetCurrentThreadResponseNum() {

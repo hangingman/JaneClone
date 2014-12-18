@@ -151,13 +151,20 @@ public:
 				      const wxString& extractId);
      /**
       * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
-      * @param  const wxString& boardNameAscii         板名の英語名  
-      * @param  const wxString& origNumber             UNIXタイムベースのオリジナルな番号
-      * @param  const wxString& extractIndex           抽出対象のレス番号
-      * @return wxString        取得したレスの内容
+      * @param  const wxString& rawHtml              スレッドのHTML
+      * @param  const wxString& extractId	     抽出対象のID
+      * @return wxString 取得したレスの内容
       */
-     static wxString FindResponseByIndex(const wxString& boardNameAscii, const wxString& origNumber, 
-					 const wxString& extractIndex);
+     static wxString FindResponseByIndex(const wxString& rawHtml, const wxString& extractIndex);
+     /**
+      * HTMLノード内(<dd>~~~</dd>)に引数の要素があるか調べる
+      * @param  const htmlNodePtr ptr        スレッドのHTML
+      * @param  const wxString& target	     抽出対象のレス番号
+      * @return true: あり, false: なし
+      */
+     static bool DDNodeHasTarget(const htmlNodePtr ptr, const wxString& target);
+     static int WriteToWxString(void* context, const char* buffer, int len);
+     static void CloseWxString(void* context);
      /**
       * レス内にURLがあれば<a>タグを付ける
       */

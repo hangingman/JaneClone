@@ -1677,7 +1677,7 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event)
      
      if (linkInfo && linkInfo->GetHref() != wxEmptyString) 
      {
-
+	  JaneCloneUiUtil::SendLoggingHelper(linkInfo->GetHref());
 	  wxString rest;
 
 	  if ( linkInfo->GetTarget() == _T("_blank") ) 
@@ -1739,7 +1739,7 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event)
 	       wxString origNumber = tiHash[title].origNumber;
 
 	       // 取得した情報を元に新しいポップアップウィンドウを出現させる
-	       SetPopUpWindowByIndex(event, boardNameAscii, origNumber, rest, anchorPoint);	       
+	       SetPopUpWindowByIndex(event, rest, anchorPoint);	       
 	  }
      }
 }
@@ -3421,11 +3421,14 @@ void JaneClone::SetPopUpWindowForID(wxHtmlCellEvent& event, wxString& boardNameA
 /**
  * 被レス状態を元に新しいポップアップウィンドウを出現させる
  */
-void JaneClone::SetPopUpWindowByIndex(wxHtmlCellEvent& event, wxString& boardNameAscii,
-				    wxString& origNumber, wxString& extractIndex, wxPoint& anchorPoint) {
+void JaneClone::SetPopUpWindowByIndex(wxHtmlCellEvent& event, wxString& extractIndex, wxPoint& anchorPoint) {
+
+     // スレッド内容ウィンドウの処理
+     ThreadContentBar* contentBar = 
+	  dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(threadNoteBook->GetSelection()));
 
      // ポップアップさせるHTMLソース
-     wxString htmlDOM = JaneCloneUtil::FindResponseByIndex(boardNameAscii, origNumber, extractIndex);
+     wxString htmlDOM = JaneCloneUtil::FindResponseByIndex(contentBar->GetThreadRawHTML(), extractIndex);
 
      if (wxEmptyString == htmlDOM) {
 	  // 空文字で帰ってきたらリターン
