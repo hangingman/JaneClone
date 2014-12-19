@@ -1,3 +1,491 @@
+commit 8f4c17c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-18
+
+    Implement #28. Closed #28
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/threadcontentbar.hpp
+src/threadcontentwindow.hpp
+
+commit 3d3784a
+Merge: ae01253 21167ad
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2014-12-17
+
+    Merge pull request #43 from vabock/rolling-bugfix-1
+    
+    定期的バグフィックスその1
+
+commit 21167ad
+Author: Vabock <vabock@gmail.com>
+Date:   2014-12-17
+
+    Fix JaneClone::pid heap-use-after-free
+    Fixes #42
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/main.cpp
+
+commit ca3ee63
+Author: Vabock <vabock@gmail.com>
+Date:   2014-12-13
+
+    Fix clean up -Wall warnings
+    Fixes #38
+
+src/responsewindow.cpp
+src/virtualboardlistctrl.hpp
+
+commit 99c0285
+Author: Vabock <vabock@gmail.com>
+Date:   2014-12-13
+
+    Remove unnecessary board info deletion
+    Fixes #37
+
+src/janeclone.cpp
+
+commit ae01253
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-17
+
+    Implement red response popup ( beta )
+
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+
+commit ae41ab1
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-16
+
+    Implement red response extract
+
+src/datatype.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/threadcontentwindow.cpp
+
+commit d8891a4
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-16
+
+    Update Travis setting for osx build
+
+.travis.yml
+
+commit 36fb131
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Fix automake syntax src/Makefile.am
+
+.travis.yml
+src/Makefile.am
+
+commit f5f8254
+Merge: b3cfc73 74e125f
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Merge pull request #41 from vabock/refactor-uiutil
+    
+    Refactor JaneCloneUiUtil(wxString manipulation)
+
+commit 74e125f
+Author: Vabock <vabock@gmail.com>
+Date:   2014-12-15
+
+    Refactor JaneCloneUiUtil(wxString manipulation)
+
+src/janeclone.cpp
+src/janecloneuiutil.cpp
+src/janecloneuiutil.hpp
+
+commit b3cfc73
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Fix wx-2.8 wxString error...
+
+src/extractboardlist.cpp
+
+commit 1e70403
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Add function to format HTML source at ThreadContentWindow
+
+src/extractboardlist.cpp
+src/extractboardlist.hpp
+src/threadcontentwindow.cpp
+
+commit 07cdee3
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Test for debian/control files
+
+debian/control.jessie
+debian/control.ubuntu
+debian/control.wheezy
+
+commit 2ca30e6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Remove addtional library from .travis.yml
+
+.travis.yml
+
+commit 9329114
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Fix Travis error
+
+src/janeclone.cpp
+
+commit bec3c57
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Revert "Deal with Travis build error"
+    
+    This reverts commit 90ef407ebcdea830332caa6cdb5e5f458b4d4db1.
+    
+    Conflicts:
+    	configure.ac
+
+Makefile.am
+configure.ac
+debian/control.jessie
+debian/control.ubuntu
+debian/control.wheezy
+src/Makefile.am
+
+commit 0cc8224
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Update configure.ac
+
+configure.ac
+
+commit 59ecd7d
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Update configure.ac
+
+configure.ac
+
+commit 6714530
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Update .travis.yml
+
+.travis.yml
+
+commit 7a41028
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-15
+
+    Update Travis setting
+
+.travis.yml
+
+commit d96b308
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-14
+
+    Update Travis setting
+
+.travis.yml
+
+commit 85721b0
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-14
+
+    Update Travis setting
+
+.travis.yml
+
+commit 90ef407
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-14
+
+    Deal with Travis build error
+    ( ... On Linux/BSD build, JaneClone will use sqlite3 & wxsqlite3 provided by package)
+
+Makefile.am
+configure.ac
+debian/control.jessie
+debian/control.ubuntu
+debian/control.wheezy
+src/Makefile.am
+
+commit 5ec1e2d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-14
+
+    Deal with wx-2.8 and wx-3.0 wxT macro difference
+
+src/janecloneuiutil.cpp
+src/janecloneuiutil.hpp
+
+commit 9d796c0
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-14
+
+    Fix #36 , support OS X Command and Q event
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 3946e60
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-14
+
+    Fix --enable-webview build.
+    (...But I wonder why GTK build link is wx-3.0 and wx-2.8 ???
+    I don't intend to link JaneClone with wx-2.8.
+    libtool or wxWidgets bug ??? )
+
+src/drawpane.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+src/threadcontentwebview.cpp
+src/threadcontentwebview.hpp
+
+commit 7e4ea0a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-13
+
+    Add HTML source view function
+
+src/Makefile.am
+src/enums.hpp
+src/janecloneutil.cpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+
+commit d57ad72
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-12
+
+    Change default thread viewer wxWebView -> wxHtmlWindow
+    Because wxWebView is difficult to customize.
+
+.gitignore
+README.md
+configure.ac
+m4/libtool.m4
+m4/ltoptions.m4
+m4/ltsugar.m4
+m4/ltversion.m4
+m4/lt~obsolete.m4
+src/Makefile.am
+src/janeclone.hpp
+src/threadcontentbar.hpp
+
+commit fc54c16
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-12-12
+
+    Add osx build
+
+.travis.yml
+
+commit 8d27d32
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-12-12
+
+    Fix configure.ac for crosscompile
+
+.travis.yml
+configure.ac
+
+commit 212d589
+Merge: 838e5bc c4d44ec
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2014-12-11
+
+    Merge pull request #35 from vabock/pkginfo-fix
+    
+    壊れたPkgInfoが作成される
+
+commit c4d44ec
+Author: Vabock <vabock@gmail.com>
+Date:   2014-12-11
+
+    Fix broken PkgInfo
+
+Makefile.am
+
+commit 838e5bc
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-09
+
+    Try to Fix #34
+
+src/janeclone.cpp
+src/settingwindow.cpp
+
+commit 6d8cc77
+Merge: a1d3005 4657889
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2014-12-09
+
+    Merge pull request #33 from vabock/retina
+    
+    Retinaディスプレイ対応
+
+commit 4657889
+Author: Vabock <vabock@gmail.com>
+Date:   2014-12-09
+
+    Retina support
+
+Makefile.am
+
+commit a1d3005
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-06
+
+    Fix wx-2.8 and wx-3.0 's wxString diff.
+
+src/settingwindow.cpp
+
+commit dda9028
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-06
+
+    Fix Makefile.am miss
+
+src/Makefile.am
+
+commit fdc021c
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-06
+
+    Fix hint.xrc stub description to official. Fix build error.
+
+src/janeclone.cpp
+src/otherpanels.cpp
+src/rc/hint.xrc
+
+commit 12d0417
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-05
+
+    Use XRC file, and fix JaneClone initialize process.
+
+src/Makefile.am
+src/janeclone.cpp
+src/rc/hint.xrc
+src/settingwindow.cpp
+src/settingwindow.hpp
+
+commit dbabda2
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-05
+
+    Fix build error and implement OtherSettingPanelOne
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit eaebd7a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-05
+
+    Update otherpanels.cpp for OtherSettingPanelOne
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 821b955
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-30
+
+    Update otherpanels.cpp for OtherSettingPanelOne
+
+.travis.yml
+debian/control.ubuntu
+debian/control.wheezy
+src/enums.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/settingwindow.cpp
+
+commit f9c0da9
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-25
+
+    Fix Makefile shell
+
+Makefile.am
+
+commit 24c43d1
+Author: hiroyuki nagata <hiroyuki@vyatta-maiden.hm.moe>
+Date:   2014-11-25
+
+    Update upload_bintray.sh
+
+Makefile.am
+misc/upload_bintray.sh
+
+commit e68ef23
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-24
+
+    Update travis.yml
+
+.travis.yml
+
+commit 9e0631a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-24
+
+    Add script for uploading deb file to bintray
+
+.travis.yml
+misc/upload_bintray.sh
+
+commit 15ad9ac
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-23
+
+    Fix compile error and make command
+
+.gitignore
+.travis.yml
+json11/.deps/.dirstamp
+json11/.dirstamp
+src/janeclone.cpp
+
+commit 9caf6af
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-11-23
+
+    Fix make distdir target script
+
+ChangeLog
+src/Makefile.am
+
 commit afa9c30
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2014-11-23
