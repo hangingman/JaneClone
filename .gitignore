@@ -39,3 +39,6 @@ missing
 stamp-h1
 test-driver
 aclocal.m4
+**/CMakeFiles/*
+*.cmake
+CMakeCache.txt
