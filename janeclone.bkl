@@ -9,6 +9,8 @@ toolsets = vs2013;
 library crossguid {
 
   includedirs = crossguid;
+  
+  defines = GUID_WINDOWS;
 
   sources {
     crossguid/guid.cpp 
@@ -18,6 +20,8 @@ library crossguid {
 library sqlite3 {
 
   includedirs = sqlite3;
+
+  defines = SQLITE_ENABLE_FTS3 SQLITE_ENABLE_RTREE;
 
   sources {
     sqlite3/sqlite3.c
@@ -29,6 +33,8 @@ library wxsqlite3 {
   deps = sqlite3;
 
   includedirs = wxsqlite3;
+  
+  defines = WXMAKINGDLL_WXSQLITE3 "wxUSE_DYNAMIC_SQLITE3_LOAD=0" "WXSQLITE3_HAVE_METADATA=0" "WXSQLITE3_HAVE_CODEC=0" "WXSQLITE3_HAVE_LOAD_EXTENSION=0";
 
   sources {
     wxsqlite3/wxsqlite3.cpp
