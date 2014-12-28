@@ -422,8 +422,10 @@ public:
      void SwitchSeparateXY(wxCommandEvent& event);
      // ２⇔３ペイン切り替え
      void SwitchTwoThreePane(wxCommandEvent& event);
-     // ビューア設定画面を呼び出す
+     // 設定画面を呼び出す
      void CallSettingWindow(wxCommandEvent& event);
+     // 設定画面を呼び出す
+     void CallViewerSettingWindow(wxCommandEvent& event);
      // 2ch板一覧ツリーコントロールでクリックした時のイベント
      void OnGetBoardInfo(wxTreeEvent& event);
 

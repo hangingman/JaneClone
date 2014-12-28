@@ -103,6 +103,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_SwitchSeparateXY, JaneClone::SwitchSeparateXY)
    EVT_MENU(ID_SwitchTwoThreePane, JaneClone::SwitchTwoThreePane)
    EVT_MENU(ID_CallSettingWindow, JaneClone::CallSettingWindow)
+   EVT_MENU(ID_CallViewerSettingWindow, JaneClone::CallViewerSettingWindow)
 
    // 検索バー系の命令
    EVT_MENU(ID_ThreadSearchBoxDoSearch, JaneClone::ThreadSearchBoxDoSearch)
@@ -751,7 +752,7 @@ void JaneClone::SetJaneCloneManuBar()
      menu9->AppendSeparator();
      menu9->AppendCheckItem(wxID_ANY, wxT("サウンド"));
      menu9->AppendSeparator();
-     menu9->Append(wxID_ANY, wxT("ビューア設定"));
+     menu9->Append(ID_CallViewerSettingWindow, wxT("ビューア設定"));
      menu9->Append(ID_CallSettingWindow, wxT("設定"));
      /**
       * ヘルプ部分
@@ -4757,11 +4758,20 @@ void JaneClone::SwitchTwoThreePane(wxCommandEvent& event)
 }
 
 /**
- * ビューア設定画面を呼び出す
+ * 設定画面を呼び出す
  */
 void JaneClone::CallSettingWindow(wxCommandEvent& event) {
 
      SettingDialog dialog(this, wxID_ANY, wxT("設定 - "));
+     dialog.ShowModal();
+}
+
+/**
+ * 設定画面を呼び出す
+ */
+void JaneClone::CallViewerSettingWindow(wxCommandEvent& event) {
+
+     ViewerSettingDialog dialog(this, wxID_ANY, wxEmptyString);
      dialog.ShowModal();
 }
 

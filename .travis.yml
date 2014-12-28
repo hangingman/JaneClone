@@ -31,7 +31,7 @@ install:
   - echo $TRAVIS_OS_NAME
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq gnulib dh-make; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install libwxgtk2.8-dev libxml2-dev uuid-dev debhelper autotools-dev automake gnupg lintian fakeroot pbuilder cdbs; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install gnu-sed automake autoconf libtool wxmac; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update && brew install gnu-sed automake autoconf libtool wxmac; fi
 
 before_script:
   - echo $TRAVIS_OS_NAME
@@ -52,4 +52,4 @@ notifications:
     on_failure: always
 
 after_success:
-  - cd misc && ./upload_bintray.sh
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cd misc && ./upload_bintray.sh; fi
