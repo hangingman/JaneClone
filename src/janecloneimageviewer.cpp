@@ -58,9 +58,9 @@ JaneCloneImageViewer::JaneCloneImageViewer() {
  * Default constructor
  */
 JaneCloneImageViewer::JaneCloneImageViewer(wxWindow* parent, int id, const wxString& title, 
-					   const wxPoint& pos, const wxSize& size, long style):
-//     wxDialog(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE) {
-     wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE) {
+					   const wxPoint& pos, const wxSize& size, long style)
+:wxFrame(parent, id, title, pos, size, wxDEFAULT_FRAME_STYLE)
+{
 
      // アイコンの設定を行う
 #ifdef __WXMSW__
@@ -123,7 +123,7 @@ JaneCloneImageViewer& JaneCloneImageViewer::operator=(const JaneCloneImageViewer
 /**
  *  画像ファイルの情報を設定する
  */
-void JaneCloneImageViewer::SetImageFile(DownloadImageResult* result) {
+void JaneCloneImageViewer::SetImageFile(std::unique_ptr<DownloadImageResult>& result) {
 
      thumbnailNoteBook->Freeze();
 
@@ -267,7 +267,7 @@ void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
      tabs->Append(ID_ResetImageOriginalSize, wxT("元のサイズに戻す"));
      tabs->AppendSeparator();
      tabs->Append(wxID_ANY, wxT("ウィンドウに合わせて表示"));
-     tabs->Append(wxID_ANY, wxT("ビューア設定"));
+     tabs->Append(ID_CallViewerSettingWindow, wxT("ビューア設定"));
      tabs->AppendSeparator();
      tabs->Append(ID_SelectRightThumbnailTab, wxT("次のタブ"));
      tabs->Append(ID_SelectLeftThumbnailTab, wxT("前のタブ"));

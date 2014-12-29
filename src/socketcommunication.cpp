@@ -1855,7 +1855,7 @@ void SocketCommunication::WriteCookieData(const wxString& dataFilePath)
 /**
  * 指定されたURLからデータをダウンロードする
  */
-void SocketCommunication::DownloadImageFile(const wxString& href, DownloadImageResult* result) 
+void SocketCommunication::DownloadImageFile(const wxString& href, std::unique_ptr<DownloadImageResult>& result) 
 {
      // http or ftp
      if (href.StartsWith(wxT("http")) || href.StartsWith(wxT("ttp"))) 
@@ -1880,7 +1880,7 @@ void SocketCommunication::DownloadImageFile(const wxString& href, DownloadImageR
 /**
  * HTTPでのダウンロード
  */
-void SocketCommunication::DownloadImageFileByHttp(const wxString& href, DownloadImageResult* result) 
+void SocketCommunication::DownloadImageFileByHttp(const wxString& href, std::unique_ptr<DownloadImageResult>& result) 
 {
      // 画像の保存先をコンフィグファイルから取得する
      // デフォルトは $HOME/.jc/cache
@@ -1962,7 +1962,7 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, Download
 /**
  * FTPでのダウンロード
  */
-void SocketCommunication::DownloadImageFileByFtp(const wxString& href, DownloadImageResult* result) 
+void SocketCommunication::DownloadImageFileByFtp(const wxString& href, std::unique_ptr<DownloadImageResult>& result) 
 {
      // 画像の保存先をコンフィグファイルから取得する
      // デフォルトは $HOME/.jc/cache
@@ -2142,7 +2142,7 @@ wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostna
 /**
  * ダウンロードした画像ファイル情報をDBに格納する
  */
-void SocketCommunication::SaveImageFileInfoDB(const wxString& href, DownloadImageResult* result)
+void SocketCommunication::SaveImageFileInfoDB(const wxString& href, std::unique_ptr<DownloadImageResult>& result)
 {
      if ( ! href || ! result) 
      {

@@ -791,12 +791,11 @@ void ThreadContentWindow::CallResponseWindowWithQuote(wxCommandEvent& event)
 void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wxString& ext) {
 
      // 画像をダウンロードする
-     SocketCommunication* sock = new SocketCommunication();
-     DownloadImageResult* result = new DownloadImageResult;
+     std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
+     std::unique_ptr<DownloadImageResult> result(new DownloadImageResult());
      result->ext = ext;
      result->imageURL = href;
      sock->DownloadImageFile(href, result);
-     delete sock;
 
      // 画像ビューアに表示させる
      JaneCloneImageViewer* imageViewer = JaneClone::GetJaneCloneImageViewer();
@@ -862,7 +861,6 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
 		       wxT("画像ビューア"),
 		       wxICON_ERROR);
 	  result->result = false;
-	  delete result;
 	  return;
      }
      // wxImage to wxBitmap
@@ -874,7 +872,6 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
 		       wxT("画像ビューア"),
 		       wxICON_ERROR);
 	  result->result = false;
-	  delete result;
 	  return;
      }
      // 画像を登録する
@@ -886,8 +883,6 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      GetViewStart(&x, &y);
      this->AppendToPage(wxEmptyString);
      Scroll(x, y);
-
-     delete result;
 }
 /*
  * HTMLのデバッグ用イベント

@@ -420,12 +420,11 @@ void ThreadContentWebView::OnClickOrdinaryLink(const wxString& link) {
 void ThreadContentWebView::SetJaneCloneImageViewer(const wxString& href, const wxString& ext) {
 
      // 画像をダウンロードする
-     SocketCommunication* sock = new SocketCommunication();
-     DownloadImageResult* result = new DownloadImageResult;
+     std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
+     std::unique_ptr<DownloadImageResult> sock(new DownloadImageResult());
      result->ext = ext;
      result->imageURL = href;
      sock->DownloadImageFile(href, result);
-     delete sock;
 
      // 画像ビューアに表示させる
      JaneCloneImageViewer* imageViewer = JaneClone::GetJaneCloneImageViewer();
@@ -472,7 +471,6 @@ void ThreadContentWebView::SetJaneCloneImageViewer(const wxString& href, const w
 		       wxT("画像ビューア"),
 		       wxICON_ERROR);
 	  result->result = false;
-	  delete result;
 	  return;
      }
      // wxImage to wxBitmap
@@ -483,7 +481,6 @@ void ThreadContentWebView::SetJaneCloneImageViewer(const wxString& href, const w
 		       wxT("画像ビューア"),
 		       wxICON_ERROR);
 	  result->result = false;
-	  delete result;
 	  return;
      }
      // 画像を登録する
@@ -495,8 +492,6 @@ void ThreadContentWebView::SetJaneCloneImageViewer(const wxString& href, const w
      GetViewStart(&x, &y);
      this->AppendToPage(wxEmptyString);
      Scroll(x, y);
-
-     delete result;
 }
 /**
  * スキン用のファイルが有るかどうか確認する

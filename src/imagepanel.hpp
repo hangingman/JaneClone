@@ -35,7 +35,7 @@ class wxImagePanel : public wxPanel {
 
 public:
      /// Default constructor
-     wxImagePanel(wxWindow* parent, DownloadImageResult* result, const wxBitmapType type);
+     wxImagePanel(wxWindow* parent, std::unique_ptr<DownloadImageResult>& result, const wxBitmapType type);
      /// Copy constructor
      wxImagePanel(const wxImagePanel& rhs);
      /// Assignment operator

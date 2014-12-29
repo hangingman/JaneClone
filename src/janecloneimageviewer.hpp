@@ -48,7 +48,7 @@ public:
 			  wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
      
      // 画像ファイルの情報を設定する
-     void SetImageFile(DownloadImageResult* result);
+     void SetImageFile(std::unique_ptr<DownloadImageResult>& result);
      // ウィンドウ上で右クリックした場合の処理
      void OnRightClickImageViewer(wxMouseEvent& event);
 

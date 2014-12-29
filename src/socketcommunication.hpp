@@ -127,15 +127,15 @@ public:
      /**
       * 指定されたURLからデータをダウンロードする
       */
-     void DownloadImageFile(const wxString& href, DownloadImageResult* result);
+     void DownloadImageFile(const wxString& href, std::unique_ptr<DownloadImageResult>& result);
      /**
       * HTTPでのダウンロード
       */
-     void DownloadImageFileByHttp(const wxString& href, DownloadImageResult* result);
+     void DownloadImageFileByHttp(const wxString& href, std::unique_ptr<DownloadImageResult>& result);
      /**
       * FTPでのダウンロード
       */
-     void DownloadImageFileByFtp(const wxString& href, DownloadImageResult* result);
+     void DownloadImageFileByFtp(const wxString& href, std::unique_ptr<DownloadImageResult>& result);
      /**
       * したらば掲示板の情報を取得する
       */
@@ -303,7 +303,7 @@ private:
      /**
       * ダウンロードした画像ファイル情報をDBに格納する
       */
-     void SaveImageFileInfoDB(const wxString& href, DownloadImageResult* result);
+     void SaveImageFileInfoDB(const wxString& href, std::unique_ptr<DownloadImageResult>& result);
      /**
       * BE２ちゃんねるにログインしてプロパティファイルに情報を書き出す
       */

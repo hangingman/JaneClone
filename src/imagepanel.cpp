@@ -46,7 +46,7 @@ END_EVENT_TABLE()
 /**
  * Default constructor
  */
-wxImagePanel::wxImagePanel(wxWindow* parent, DownloadImageResult* result, const wxBitmapType type) : wxPanel(parent, ID_ImagePanel) {
+wxImagePanel::wxImagePanel(wxWindow* parent, std::unique_ptr<DownloadImageResult>& result, const wxBitmapType type) : wxPanel(parent, ID_ImagePanel) {
      // load the file... ideally add a check to see if loading was successful
      image.LoadFile(result->imagePath, type);
 
