@@ -35,7 +35,6 @@ END_EVENT_TABLE()
 SettingDialog::SettingDialog(wxWindow* parent, int id, const wxString& title)
 :wxDialog(parent, id, title) 
 {
-     // begin wxGlade: SettingDialog::SettingDialog
      bottomPanel = new wxPanel(this, wxID_ANY);
      splitterWindow = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
      // 左側のツリー部分
@@ -51,7 +50,6 @@ SettingDialog::SettingDialog(wxWindow* parent, int id, const wxString& title)
 
      SetProperties();
      DoLayout();
-     // end wxGlade
 
      // 初回は通信パネルを開く
 #ifndef __WXMAC__
@@ -68,7 +66,6 @@ SettingDialog::SettingDialog(wxWindow* parent, int id, const wxString& title)
  * ウィンドウのプロパティを設定
  */
 void SettingDialog::SetProperties() {
-     // begin wxGlade: SettingDialog::set_properties
      SetSize(wxSize(1160, 640));
 
      // ツリーコントロールの表示内容を設定する
@@ -99,13 +96,11 @@ void SettingDialog::SetProperties() {
      settingTreeCtrl->AppendItem(item, wxT("色・フォント"));
      settingTreeCtrl->AppendItem(item, wxT("タブ色"));
      settingTreeCtrl->ExpandAll();
-     // end wxGlade
 }
 /**
  * レイアウトの設定
  */
 void SettingDialog::DoLayout() {
-     // begin wxGlade: SettingDialog::do_layout
      wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
      wxBoxSizer* bottomSizer = new wxBoxSizer(wxHORIZONTAL);
      wxBoxSizer* treeVbox = new wxBoxSizer(wxVERTICAL);
@@ -120,7 +115,6 @@ void SettingDialog::DoLayout() {
      vbox->Add(bottomPanel, 0, wxTOP|wxEXPAND, 0);
      SetSizer(vbox);
      Layout();
-     // end wxGlade
 }
 /**
  * 設定パネルの入力値 保存
@@ -255,10 +249,13 @@ END_EVENT_TABLE()
 ViewerSettingDialog::ViewerSettingDialog(wxWindow* parent, int id, const wxString& title)
 :wxDialog(parent, id, title) 
 {
-     // begin wxGlade: SettingDialog::SettingDialog
      bottomPanel = new wxPanel(this, wxID_ANY);
      settingNoteBook = new wxNotebook(this, ID_ViewerSettingNote);
-     settingPanel = new wxPanel(settingNoteBook, wxID_ANY);
+     spacePanel = new wxPanel(bottomPanel, wxID_ANY);
+
+     settingNoteBook->AddPage(
+	  wxXmlResource::Get()->LoadPanel(settingNoteBook, wxT("viewer_operate_panel"))
+	  ,wxT("操作"), false);
 
      // OK,キャンセルボタン
      okButton = new wxButton(bottomPanel, ID_OnOkSetting, wxT("OK"));
@@ -279,6 +276,16 @@ void ViewerSettingDialog::SetProperties()
 
 void ViewerSettingDialog::DoLayout()
 {
+     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+     wxBoxSizer* bottomSizer = new wxBoxSizer(wxHORIZONTAL);
+     vbox->Add(settingNoteBook, 1, wxEXPAND, 0);
+     bottomSizer->Add(spacePanel, 1, wxEXPAND, 0);
+     bottomSizer->Add(okButton, 0, 0, 5);
+     bottomSizer->Add(cancelButton, 0, 0, 5);
+     bottomPanel->SetSizer(bottomSizer);
+     vbox->Add(bottomPanel, 0, wxTOP|wxEXPAND, 0);
+     SetSizer(vbox);
+     Layout();
 }
 
 void ViewerSettingDialog::OnQuit(wxCommandEvent& event)

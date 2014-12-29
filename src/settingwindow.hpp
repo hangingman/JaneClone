@@ -112,9 +112,9 @@ protected:
      wxPanel* bottomPanel;
      wxNotebook* settingNoteBook;
      wxPanel* settingPanel;
+     wxPanel* spacePanel;
      wxButton* okButton;
      wxButton* cancelButton;
-
      DECLARE_EVENT_TABLE()
 };
 
