@@ -40,7 +40,7 @@ before_script:
 script:
   - echo $TRAVIS_OS_NAME
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then ./configure && make -j2 package-deb-local; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./configure && make -j2 osx-make-bin; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./configure && make -j2 && make osx-make-bin; fi
 
 branches:
   only:

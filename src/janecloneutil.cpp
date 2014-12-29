@@ -927,7 +927,8 @@ wxString JaneCloneUtil::AddColorAnchoredID(const wxString& html)
 	       {
 		    const htmlNodePtr dd = node->children;
 
-		    if (node->type == XML_ELEMENT_NODE &&
+		    if (node != NULL && dd != NULL     &&
+			node->type == XML_ELEMENT_NODE &&
 			xmlStrcasecmp(dd->name, (const xmlChar*) "table") == 0)
 		    {
 			 for (htmlNodePtr ptr = dd->children; ptr != NULL; ptr = ptr->next) 
