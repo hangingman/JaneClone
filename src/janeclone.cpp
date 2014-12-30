@@ -2836,10 +2836,11 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
 
      wxAboutDialogInfo info;
      info.SetName(wxT("JaneClone - ２ちゃんねるビューア"));
-     info.AddDeveloper(wxT("Hiroyuki Nagata newserver002@gmail.com"));
-     info.AddDeveloper(wxT("K.Watanabe      kwtnb@outlook.com"));
+     info.AddDeveloper(wxT("Hiroyuki Nagata\tnewserver002@gmail.com"));
+     info.AddDeveloper(wxT("K.Watanabe\tkwtnb@outlook.com"));
+     info.AddDeveloper(wxT("Vabock\tvabock@gmail.com"));
      info.SetVersion(janecloneVersion);
-     info.SetCopyright(wxT("Copyright(C) 2013 Nagata Hiroyuki, All Rights Reserved. "));
+     info.SetCopyright(wxT("Copyright(C) 2015 Nagata Hiroyuki, All Rights Reserved. "));
      info.SetWebSite(wxT("http://nantonaku-shiawase.hatenablog.com/"));
 
      // 説明を追加
