@@ -146,15 +146,6 @@ static void closeWxString(void* context) {
  */
 const wxString ExtractBoardList::HtmlFormat(const wxString& html)
 {
-/**
-### XML入出力のためのバッファを作成する ###
-
-xmlOutputBufferPtr xmlOutputBufferCreateIO (xmlOutputWriteCallback iowrite, 
-					    xmlOutputCloseCallback ioclose, 
-					    void * ioctx, 
-					    xmlCharEncodingHandlerPtr encoder)
-*/
-
      htmlDocPtr docPtr = htmlReadMemory(html.mb_str(), html.Len(), "", "utf-8", HTML_PARSE_RECOVER);
      if (docPtr)
      {
@@ -170,4 +161,6 @@ xmlOutputBufferPtr xmlOutputBufferCreateIO (xmlOutputWriteCallback iowrite,
 
 	  return val;
      }
+
+     return wxEmptyString;
 }

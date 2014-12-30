@@ -421,7 +421,7 @@ void ThreadContentWebView::SetJaneCloneImageViewer(const wxString& href, const w
 
      // 画像をダウンロードする
      std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
-     std::unique_ptr<DownloadImageResult> sock(new DownloadImageResult());
+     std::unique_ptr<DownloadImageResult> result(new DownloadImageResult());
      result->ext = ext;
      result->imageURL = href;
      sock->DownloadImageFile(href, result);

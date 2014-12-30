@@ -163,7 +163,8 @@ X_TABLE_ITEM(ID_ImagePanel)		        /* 画像パネル                         
 X_TABLE_ITEM(ID_OneThumbnailTabClose)		/* 画像タブをひとつ閉じる	                                 */ \
 X_TABLE_ITEM(ID_AllThumbnailTabClose)		/* すべての画像タブを閉じる					 */ \
 X_TABLE_ITEM(ID_SaveAsImages)		        /* 名前をつけて保存					         */ \
-X_TABLE_ITEM(ID_AllLeftThumbnailTabClose)	/* これより左の画像タブをを閉じる				 */ \
+X_TABLE_ITEM(ID_SaveAsImagesAll)		/* すべて保存					         	 */ \
+X_TABLE_ITEM(ID_AllLeftThumbnailTabClose)	/* これより左の画像タブをを閉じる				 	 */ \
 X_TABLE_ITEM(ID_AllRightThumbnailTabClose)	/* これより右の画像タブを閉じる					 */ \
 X_TABLE_ITEM(ID_SelectLeftThumbnailTab)		/* 左の画像タブに移動						 */ \
 X_TABLE_ITEM(ID_SelectRightThumbnailTab)	/* 右の画像タブに移動						 */ \
