@@ -21,6 +21,8 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
+#include <array>
+#include <algorithm>
 #include "janecloneimageviewer.hpp"
 
 #ifndef __WXMSW__
@@ -29,7 +31,7 @@
 
 BEGIN_EVENT_TABLE(JaneCloneImageViewer, wxFrame)
    EVT_CLOSE(JaneCloneImageViewer::OnClose)
-   EVT_RIGHT_DOWN(JaneCloneImageViewer::OnRightClickImageViewer)
+   EVT_CONTEXT_MENU(JaneCloneImageViewer::OnRightClickImageViewer)
    EVT_MOUSEWHEEL(JaneCloneImageViewer::OnMouseWheel)
 
    EVT_MENU(ID_OneThumbnailTabClose,JaneCloneImageViewer::OneThumbnailTabClose)
@@ -259,7 +261,7 @@ void JaneCloneImageViewer::OnMouseWheel(wxMouseEvent& event)
 /**
  * 画像ビューアで右クリックした場合の処理
  */
-void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
+void JaneCloneImageViewer::OnRightClickImageViewer(wxContextMenuEvent& event) {
 
      wxMenu* tabs = new wxMenu();
      tabs->Append(ID_OneThumbnailTabClose, wxT("このタブを閉じる"));
@@ -300,6 +302,23 @@ void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
      tabs->AppendSeparator();
      tabs->Append(ID_HideThumbnailTab, wxT("ビューアを隠す"));
 
+     // タブが存在しない場合にタブ関連のメニューを無効化する
+     bool flag = thumbnailNoteBook->GetPageCount() > 0;
+
+     // タブ関連では*無い*IDのリスト
+     std::array<int, 2> nonTabOrientedId = {
+	  ID_CallViewerSettingWindow,
+	  ID_HideThumbnailTab,
+     };
+
+     for (wxMenuItem *item : tabs->GetMenuItems()) {
+	  if (std::find(nonTabOrientedId.begin(), nonTabOrientedId.end(),
+			item->GetId()) == nonTabOrientedId.end())
+	  {
+	       item->Enable(flag);
+	  }
+     }
+     
      // ポップアップメニューを表示させる
      PopupMenu(tabs);
 }
