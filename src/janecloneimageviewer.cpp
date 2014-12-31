@@ -218,6 +218,8 @@ void JaneCloneImageViewer::OnClose(wxCloseEvent& event)
  */
 void JaneCloneImageViewer::OnMouseWheel(wxMouseEvent& event) 
 {     
+     if (event.m_wheelRotation == 0) return;
+     
      if (event.m_controlDown) 
      {
 	  // コントロールキーが押されている => 画像の拡大縮小
