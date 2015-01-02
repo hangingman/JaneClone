@@ -34,6 +34,7 @@
 #include "enums.hpp"
 #include "datatype.hpp"
 #include "imagepanel.hpp"
+#include "janecloneuiutil.hpp"
 
 /**
  * 画像のサムネイルと本体の表示を行うウィンドウ
@@ -89,6 +90,8 @@ private:
      void SelectRightThumbnailTab(wxCommandEvent& event);
      // 画像をブラウザで開く
      void OnOpenImageByBrowser(wxCommandEvent& event);
+     // 参照元スレッドを開く
+     void OpenThreadGotImage(wxCommandEvent& event);
      // 画像ビューアを隠す
      void HideThumbnailTab(wxCommandEvent& event);
      // 名前をつけて保存

@@ -169,6 +169,7 @@ X_TABLE_ITEM(ID_AllRightThumbnailTabClose)	/* これより右の画像タブを�
 X_TABLE_ITEM(ID_SelectLeftThumbnailTab)		/* 左の画像タブに移動						 */ \
 X_TABLE_ITEM(ID_SelectRightThumbnailTab)	/* 右の画像タブに移動						 */ \
 X_TABLE_ITEM(ID_OnOpenImageByBrowser)		/* 画像をブラウザで開く						 */ \
+X_TABLE_ITEM(ID_OpenThreadGotImage)		/* 画像取得元のスレッドを開く					 */ \
 X_TABLE_ITEM(ID_CopyImageURLToClipBoard)	/* 画像URLをクリップボードにコピーする				 */ \
 X_TABLE_ITEM(ID_Rotate90AntiClockwise)          /* 画像を90度左回転させる                                        */ \
 X_TABLE_ITEM(ID_Rotate90Clockwise)              /* 画像を90度右回転させる                                        */ \

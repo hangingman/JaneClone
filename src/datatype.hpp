@@ -216,20 +216,20 @@ static const wxString threadTabDrpImg    = wxT("JaneClone.app/Contents/MacOS/rc/
 #endif
 
 /**
- * クラス
+ * 構造体
  */
 
 // 2chの板名とURLを対応させるクラス
-class URLvsBoardName {
-public:
+typedef struct
+{
      wxString boardName;
      wxString boardURL;
      wxString boardNameAscii;
-};
+} URLvsBoardName;
 
 // スレッド一覧用のクラス
-class ThreadList {
-public:
+typedef struct 
+{
      // キー値(ホスト名にこの番号をつけることでスレッドのURLになる)
      wxString oid;
      // 番号(単に取得したdatファイルの順序から)
@@ -252,41 +252,41 @@ public:
      wxString since;
      // 板
      wxString boardName;
-};
+} ThreadList;
 
 // 2chの板名(ascii)と固有番号を対応させて保存するクラス
-class ThreadInfo {
-public:
+typedef struct 
+{
      // スレッドタイトル
      wxString title;
      // スレッド固有番号
      wxString origNumber;
      // 板名(英数)
      wxString boardNameAscii;
-};
-
-/**
- * 構造体
- */
+} ThreadInfo;
 
 // 書き込みを行う際の投稿内容
-typedef struct {
+typedef struct 
+{
      wxString name;
      wxString mail;
      wxString kakikomi;
 } PostContent;
 
 // 画像をダウンロードした後の結果
-typedef struct {
+typedef struct 
+{
      wxString imagePath; // 画像ファイルのパス
      wxString imageURL;  // 画像ファイルのURL
      wxString ext;       // 画像ファイルの拡張子
      wxString fileName;  // 画像ファイル名      ex) xxx.jpg
      bool     result;    // 取得の成否
+     ThreadInfo* threadInfo;// 取得元スレッド情報
 } DownloadImageResult;
 
 // URIを分解した時の各要素
-typedef struct {
+typedef struct 
+{
      wxString protocol;
      wxString hostname;
      wxString port;
@@ -294,7 +294,8 @@ typedef struct {
 } PartOfURI;
 
 // スキン使用時の各種情報
-typedef struct {
+typedef struct 
+{
      wxString footer; // Footer.html
      wxString header; // Header.html
      wxString newres; // NewRes.html
@@ -304,7 +305,8 @@ typedef struct {
 } SkinInfo;
 
 // ダウンロードした画像情報
-typedef struct {
+typedef struct 
+{
      wxString fileName;     // URLを含んだファイル名    ex) http://hogehoge/donwload0x0x.jpg
      wxString uuidFileName; // UUIDを配られたファイル名 ex) XXXXXXXXXXXXXXXX.jpg
 } ImageFileInfo;

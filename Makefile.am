@@ -430,6 +430,7 @@ wxmac-dist-shared-lib:
 	@echo "=====================================================================";
 	@echo "End of JaneClone's dependency libraries copying...                   ";
 	@echo "=====================================================================";
+	@chmod +w $(BINDIR)/lib/*.dylib;
 	@for file in `ls $(BINDIR)/lib/*.dylib` ; do \
 	   otool -L $$file | egrep -v /\(usr/lib\|System\) | awk {'print $$1'} | while read line; \
 	   do                 \

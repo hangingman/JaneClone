@@ -41,6 +41,7 @@ BEGIN_EVENT_TABLE(JaneCloneImageViewer, wxFrame)
    EVT_MENU(ID_SelectLeftThumbnailTab,JaneCloneImageViewer::SelectLeftThumbnailTab)
    EVT_MENU(ID_SelectRightThumbnailTab,JaneCloneImageViewer::SelectRightThumbnailTab)
    EVT_MENU(ID_OnOpenImageByBrowser,JaneCloneImageViewer::OnOpenImageByBrowser)
+   EVT_MENU(ID_OpenThreadGotImage,JaneCloneImageViewer::OpenThreadGotImage)
    EVT_MENU(ID_CopyImageURLToClipBoard, JaneCloneImageViewer::CopyImageURL)
    EVT_MENU(ID_HideThumbnailTab,JaneCloneImageViewer::HideThumbnailTab)
    EVT_MENU(ID_SaveAsImages,JaneCloneImageViewer::SaveAsImages)
@@ -283,7 +284,7 @@ void JaneCloneImageViewer::OnRightClickImageViewer(wxContextMenuEvent& event) {
      tabs->Append(ID_OnOpenImageByBrowser, wxT("ブラウザで開く"));
      tabs->Append(wxID_ANY, wxT("外部ビューアで開く"));
      tabs->Append(wxID_ANY, wxT("Windowsの関連付けで開く"));
-     tabs->Append(wxID_ANY, wxT("参照元スレッドを開く"));
+     tabs->Append(ID_OpenThreadGotImage, wxT("参照元スレッドを開く"));
      tabs->Append(ID_CopyImageURLToClipBoard, wxT("URLをコピー"));
      tabs->AppendSeparator();
      tabs->Append(ID_Rotate90AntiClockwise, wxT("左回転"));
@@ -406,6 +407,24 @@ void JaneCloneImageViewer::OnOpenImageByBrowser(wxCommandEvent& event)
 	  }
 
 	  wxLaunchDefaultBrowser(url);
+     }     
+}
+/**
+ * 参照元スレッドを開く
+ */
+void JaneCloneImageViewer::OpenThreadGotImage(wxCommandEvent& event) 
+{
+     wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
+
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(target)) 
+     {
+/**	  const wxString title = image->GetDownloadImageResult().threadInfo->title;
+	  if ( title != wxEmptyString )
+	  {
+	       // 対象スレッドを更新する
+	       JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_ReloadThreadByName, title);
+	       this->Hide();
+	  }*/
      }     
 }
 /**

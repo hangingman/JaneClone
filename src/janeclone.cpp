@@ -2434,7 +2434,7 @@ void JaneClone::ReloadThreadByName(wxCommandEvent& event)
  */
 void JaneClone::ReloadThread(wxString& title) 
 {
-     size_t page = threadNoteBook->GetSelection();
+     const size_t page = threadNoteBook->GetSelection();
      wxString boardName,boardURL, origNumber, boardNameAscii;
      ThreadInfo info = tiHash[title];
      origNumber = info.origNumber;

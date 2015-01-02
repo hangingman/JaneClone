@@ -46,6 +46,11 @@ public:
      void Render(wxDC& dc);
      wxString GetFilePath();
      wxString GetImageURL();
+     const DownloadImageResult& GetDownloadImageResult()
+	  {
+	       return imageInfo;
+	  };
+     
      void Rotate90(bool clockwise);
      void Resize(bool toBig);
      void Reset();
