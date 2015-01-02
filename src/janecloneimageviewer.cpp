@@ -21,6 +21,8 @@
  *	Hiroyuki Nagata <newserver002@gmail.com>
  */
 
+#include <array>
+#include <algorithm>
 #include "janecloneimageviewer.hpp"
 
 #ifndef __WXMSW__
@@ -29,7 +31,7 @@
 
 BEGIN_EVENT_TABLE(JaneCloneImageViewer, wxFrame)
    EVT_CLOSE(JaneCloneImageViewer::OnClose)
-   EVT_RIGHT_DOWN(JaneCloneImageViewer::OnRightClickImageViewer)
+   EVT_CONTEXT_MENU(JaneCloneImageViewer::OnRightClickImageViewer)
    EVT_MOUSEWHEEL(JaneCloneImageViewer::OnMouseWheel)
 
    EVT_MENU(ID_OneThumbnailTabClose,JaneCloneImageViewer::OneThumbnailTabClose)
@@ -218,6 +220,8 @@ void JaneCloneImageViewer::OnClose(wxCloseEvent& event)
  */
 void JaneCloneImageViewer::OnMouseWheel(wxMouseEvent& event) 
 {     
+     if (event.m_wheelRotation == 0) return;
+     
      if (event.m_controlDown) 
      {
 	  // コントロールキーが押されている => 画像の拡大縮小
@@ -257,7 +261,7 @@ void JaneCloneImageViewer::OnMouseWheel(wxMouseEvent& event)
 /**
  * 画像ビューアで右クリックした場合の処理
  */
-void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
+void JaneCloneImageViewer::OnRightClickImageViewer(wxContextMenuEvent& event) {
 
      wxMenu* tabs = new wxMenu();
      tabs->Append(ID_OneThumbnailTabClose, wxT("このタブを閉じる"));
@@ -298,6 +302,23 @@ void JaneCloneImageViewer::OnRightClickImageViewer(wxMouseEvent& event) {
      tabs->AppendSeparator();
      tabs->Append(ID_HideThumbnailTab, wxT("ビューアを隠す"));
 
+     // タブが存在しない場合にタブ関連のメニューを無効化する
+     bool flag = thumbnailNoteBook->GetPageCount() > 0;
+
+     // タブ関連では*無い*IDのリスト
+     std::array<int, 2> nonTabOrientedId = {
+	  ID_CallViewerSettingWindow,
+	  ID_HideThumbnailTab,
+     };
+
+     for (wxMenuItem *item : tabs->GetMenuItems()) {
+	  if (std::find(nonTabOrientedId.begin(), nonTabOrientedId.end(),
+			item->GetId()) == nonTabOrientedId.end())
+	  {
+	       item->Enable(flag);
+	  }
+     }
+     
      // ポップアップメニューを表示させる
      PopupMenu(tabs);
 }
@@ -374,7 +395,7 @@ void JaneCloneImageViewer::OnOpenImageByBrowser(wxCommandEvent& event)
 {
      wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
 
-     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) 
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(target)) 
      {
 	  wxString url  = image->GetImageURL();
 	  wxString rest = wxEmptyString;
@@ -401,7 +422,7 @@ void JaneCloneImageViewer::SaveAsImages(wxCommandEvent& event)
 {
      wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
 
-     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) 
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(target)) 
      {	       
 	  const wxString caption = wxT("画像ファイルに名前を付けて保存");
 	  wxString defaultDir = wxEmptyString; // OSのデフォルトに合わせる
@@ -447,7 +468,7 @@ void JaneCloneImageViewer::SaveAsImagesAll(wxCommandEvent& event)
 	  for (int i=0;i<pages;i++) 
 	  {
 	       wxWindow* target = thumbnailNoteBook->GetPage(i);
-	       if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target)))
+	       if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(target))
 	       {
 		    const wxString filePath = image->GetFilePath();
 		    if (wxFile::Exists(filePath))
@@ -470,7 +491,7 @@ void JaneCloneImageViewer::CopyImageURL(wxCommandEvent& event) {
 
      wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
 
-     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) 
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(target)) 
      {
 	  const wxString url  = image->GetImageURL();
 
@@ -489,7 +510,7 @@ void JaneCloneImageViewer::Rotate90AntiClockwise(wxCommandEvent& event)
 {
      wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
 
-     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) 
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(target)) 
      {
 	  image->Rotate90(false);
      }
@@ -501,7 +522,7 @@ void JaneCloneImageViewer::Rotate90Clockwise(wxCommandEvent& event)
 {
      wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
 
-     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) 
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(target)) 
      {
 	  image->Rotate90(true);
      }
@@ -518,7 +539,7 @@ void JaneCloneImageViewer::ZoomIn()
 {
      wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
 
-     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) 
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(target)) 
      {
 	  image->Resize(true);
      }
@@ -536,7 +557,7 @@ void JaneCloneImageViewer::ZoomOut()
 {
      wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
 
-     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) 
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(target)) 
      {
 	  image->Resize(false);
      }
@@ -548,7 +569,7 @@ void JaneCloneImageViewer::ResetImageOriginalSize(wxCommandEvent& event)
 {
      wxWindow* target = thumbnailNoteBook->GetPage(thumbnailNoteBook->GetSelection());
 
-     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(wxWindow::FindWindowById(ID_ImagePanel, target))) 
+     if ( wxImagePanel* image = dynamic_cast<wxImagePanel*>(target)) 
      {
 	  image->Reset();
      }

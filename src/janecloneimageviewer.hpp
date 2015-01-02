@@ -51,7 +51,7 @@ public:
      // 画像ファイルの情報を設定する
      void SetImageFile(std::unique_ptr<DownloadImageResult>& result);
      // ウィンドウ上で右クリックした場合の処理
-     void OnRightClickImageViewer(wxMouseEvent& event);
+     void OnRightClickImageViewer(wxContextMenuEvent& event);
 
 private:
      /// Default constructor

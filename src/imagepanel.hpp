@@ -44,7 +44,6 @@ public:
      void PaintEvent(wxPaintEvent & evt);
      void PaintNow();
      void Render(wxDC& dc);
-     void RightClick(wxMouseEvent& event);
      wxString GetFilePath();
      wxString GetImageURL();
      void Rotate90(bool clockwise);
