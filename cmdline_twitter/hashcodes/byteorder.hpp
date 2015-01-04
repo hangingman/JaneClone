@@ -26,9 +26,11 @@
 //
 
 #include "typedef.hpp"
+#include "portable_endian.hpp"
 
+/**
 #if defined(__linux__) || defined(__CYGWIN__) || defined(__MSYS__)
-//#define _BSD_SOURCE
+#define _BSD_SOURCE
 #include <endian.h>
 
 #elif defined(__MINGW32__)
@@ -39,7 +41,7 @@
 #define htobe64(x) __builtin_bswap64 (x)
 
 #endif
-
+*/
 
 inline uint32_t left_rotate32(uint32_t x, size_t n)
 {

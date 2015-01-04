@@ -24,24 +24,25 @@ libctw_la_CXXFLAGS	= @CURL_CFLAGS@ \
 libctw_la_LDFLAGS	= -no-undefined -version-info 0:0:0
 
 # for package build
-noinst_HEADERS =                   \
-	oauth/base64.hpp           \
-	oauth/oauth.hpp		   \
-	main.hpp		   \
-	keys/apikeys.hpp	   \
-	ui/simple_terminal.hpp	   \
-	ui/simple_ui.hpp	   \
-	hashcodes/byteorder.hpp	   \
-	hashcodes/crypto_hash.hpp  \
-	hashcodes/sha1.hpp	   \
-	hashcodes/hmac.hpp	   \
-	hashcodes/md5.hpp	   \
-	include/picojson.h	   \
-	include/typedef.hpp	   \
-	include/minisetting.hpp	   \
-	twitter/twitter_client.hpp \
-	twitter/twitter_json.hpp   \
-	http/httpcurl.hpp	   \
+noinst_HEADERS =                      \
+	oauth/base64.hpp              \
+	oauth/oauth.hpp		      \
+	main.hpp		      \
+	keys/apikeys.hpp	      \
+	ui/simple_terminal.hpp	      \
+	ui/simple_ui.hpp	      \
+	hashcodes/portable_endian.hpp \
+	hashcodes/byteorder.hpp	      \
+	hashcodes/crypto_hash.hpp     \
+	hashcodes/sha1.hpp	      \
+	hashcodes/hmac.hpp	      \
+	hashcodes/md5.hpp	      \
+	include/picojson.h	      \
+	include/typedef.hpp	      \
+	include/minisetting.hpp	      \
+	twitter/twitter_client.hpp    \
+	twitter/twitter_json.hpp      \
+	http/httpcurl.hpp	      \
 	http/httpclient.hpp
 
 $(KEYS):
