@@ -1,5 +1,0 @@
-?package(janeclone): needs="X11"                    \
-  section="Applications/Network/Web Browsing"       \
-  title="JaneClone"                                 \
-  command="/usr/local/bin/janeclone"                \
-  icon="/usr/local/share/janeclone/rc/janeclone.xpm"
