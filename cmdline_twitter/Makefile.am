@@ -10,17 +10,39 @@ SRCS	  		= main.cpp
 KEYS	  		= keys/apikeys.hpp
 
 ### Lib Target
-lib_LTLIBRARIES		= libctw.la
+janeclonedir		= $(pkglibdir)
+janeclone_LTLIBRARIES	= libctw.la
 libctw_la_SOURCES	= $(HASH_SRCS) $(HTTP_SRCS) $(AUTH_SRCS) $(TWCR_SRCS) $(UI_SRCS)
 libctw_la_CXXFLAGS	= @CURL_CFLAGS@ \
-			  -I./hashcodes \
-			  -I./http      \
-			  -I./oauth     \
-			  -I./twitter   \
-			  -I./ui	\
-			  -I./include
+			  -I$(top_builddir)/cmdline_twitter/hashcodes \
+			  -I$(top_builddir)/cmdline_twitter/http      \
+			  -I$(top_builddir)/cmdline_twitter/oauth     \
+			  -I$(top_builddir)/cmdline_twitter/twitter   \
+			  -I$(top_builddir)/cmdline_twitter/ui	\
+			  -I$(top_builddir)/cmdline_twitter/include
 # libtool versioning -> http://ftp.gnu.org/pub/old-gnu/Manuals/libtool-1.4.2/html_chapter/libtool_6.html
 libctw_la_LDFLAGS	= -no-undefined -version-info 0:0:0
+
+# for package build
+noinst_HEADERS =                   \
+	oauth/base64.hpp           \
+	oauth/oauth.hpp		   \
+	main.hpp		   \
+	keys/apikeys.hpp	   \
+	ui/simple_terminal.hpp	   \
+	ui/simple_ui.hpp	   \
+	hashcodes/byteorder.hpp	   \
+	hashcodes/crypto_hash.hpp  \
+	hashcodes/sha1.hpp	   \
+	hashcodes/hmac.hpp	   \
+	hashcodes/md5.hpp	   \
+	include/picojson.h	   \
+	include/typedef.hpp	   \
+	include/minisetting.hpp	   \
+	twitter/twitter_client.hpp \
+	twitter/twitter_json.hpp   \
+	http/httpcurl.hpp	   \
+	http/httpclient.hpp
 
 $(KEYS):
 	-@ ./write_apikeys.sh
