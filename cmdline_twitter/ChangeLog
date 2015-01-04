@@ -1,0 +1,568 @@
+commit 6aa4ea8
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-04
+
+    Delete config.h.in
+
+config.h.in
+
+commit 19c2138
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-04
+
+    Delete configure
+    
+    Delete auto generated file
+
+configure
+
+commit c713c51
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-04
+
+    Delete ctw
+    
+    Delete binary file
+
+ctw
+
+commit bf7d12a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-04
+
+    cmdline_twitterをautotoolsでビルドしてみる
+
+.gitignore
+AUTHORS
+COPYING
+INSTALL
+Makefile
+Makefile.am
+NEWS
+README
+bootstrap
+config.h.in
+configure
+configure.ac
+ctw
+keys/apikeys.hpp
+main.cpp
+
+commit 77942b2
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-08-13
+
+    検索が使えてなかったのを修正
+
+twitter/twitter_client.cpp
+twitter/twitter_client.hpp
+ui/simple_ui.cpp
+
+commit 3e36427
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-08-12
+
+    1ライン簡易表示に対応(設定ファイル変更が必要)
+    表示に関する設定の追加
+
+main.cpp
+ui/simple_ui.cpp
+
+commit 2c3ca3b
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-08-12
+
+    色設定に対応
+
+Makefile
+main.cpp
+ui/simple_terminal.cpp
+ui/simple_terminal.hpp
+ui/simple_ui.cpp
+ui/simple_ui.hpp
+
+commit bd73fa4
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-08-06
+
+    設定ファイル系処理を追加。表示件数などが制御できるようになった
+
+include/minisetting.hpp
+main.cpp
+main.hpp
+ui/simple_ui.cpp
+ui/simple_ui.hpp
+
+commit 1aa5e6c
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-08-06
+
+    pragma once導入
+
+hashcodes/byteorder.hpp
+hashcodes/crypto_hash.hpp
+hashcodes/hmac.hpp
+hashcodes/md5.hpp
+hashcodes/sha1.hpp
+http/httpclient.hpp
+http/httpcurl.hpp
+include/typedef.hpp
+oauth/base64.hpp
+oauth/oauth.hpp
+twitter/twitter_client.hpp
+
+commit e8d0f23
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-08-06
+
+    json オブジェクトへのアクセスをやりやすくした
+
+twitter/twitter_client.hpp
+twitter/twitter_json.hpp
+ui/simple_ui.cpp
+
+commit febc259
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-08-06
+
+    構造の大幅変更
+
+Makefile
+main.cpp
+main.hpp
+twitter/twitter_client.hpp
+ui/simple_ui.cpp
+ui/simple_ui.hpp
+
+commit 9caf8ed
+Author: Alex Mikhalev <alexmikhalevalex@gmail.com>
+Date:   2014-07-30
+
+    Fixed spelling on is<>()
+
+include/picojson.h
+
+commit 6ec14d1
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-31
+
+    わけあってビルド構造を変更
+
+Makefile
+base64.cpp
+base64.hpp
+include/picojson.h
+oauth.cpp
+oauth.hpp
+oauth/base64.cpp
+oauth/base64.hpp
+oauth/oauth.cpp
+oauth/oauth.hpp
+picojson.h
+twitter/twitter_client.cpp
+twitter/twitter_client.hpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit bebeef9
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-31
+
+    UserStream表示時のイベントをわかりやすく
+
+main.cpp
+
+commit 3a93b01
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-31
+
+    リツィート表示をわかりやすく
+
+main.cpp
+
+commit 4f22cc0
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-31
+
+    update README
+
+README.md
+
+commit c9a4f64
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-31
+
+    DirectMessageに対応
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit 1e0ccb6
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-30
+
+    Makefile整理
+
+Makefile
+base64.hpp
+hashcodes/byteorder.hpp
+hashcodes/crypto_hash.hpp
+http/httpclient.hpp
+main.cpp
+oauth.hpp
+twitter_client.hpp
+
+commit 154d896
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-30
+
+    Make関連の構造を変更
+
+.gitignore
+Makefile
+hashcodes/Makefile
+http/Makefile
+
+commit 60b4291
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-30
+
+    -v指定時の動作を若干変更(人間に読みやすく)
+
+twitter_client.cpp
+
+commit 021b700
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-29
+
+    Update README
+
+README.md
+
+commit 39906bc
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-29
+
+    環境変数にCONSUMER_KEYとCOMSUMER_SECRETが定義されていなかったらMakeを中止するようにした
+
+Makefile
+
+commit 99c5d73
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-29
+
+    ユーザストリーミングAPIに対応
+
+http/httpclient.cpp
+http/httpclient.hpp
+http/httpcurl.cpp
+http/httpcurl.hpp
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit eb757d8
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-28
+
+    一部全角文字潰れの対策法をREADMEに書いた
+
+README.md
+
+commit e42607f
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-28
+
+    サイレントモードの追加
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit ccfd7bd
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-28
+
+    ようやっと発言のリプライに対応
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit a001dda
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-28
+
+    RTされたツイートを表示するときに完全な文章を表示するようにした
+
+main.cpp
+
+commit 240cc49
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-25
+
+    MSYS時のdefine(msys2_shell.batで動かした場合)が__MINGW32__ではなく__MSYS__だったので対応した
+
+Makefile
+hashcodes/byteorder.hpp
+main.cpp
+
+commit ad1f07e
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-25
+
+    MSYSで結局iconvは要らなかったので除外
+
+Makefile
+README.md
+main.cpp
+
+commit f8ea83e
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-25
+
+    fix README
+
+README.md
+
+commit f33bff9
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-25
+
+    Update README
+
+README.md
+
+commit 52864d0
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-25
+
+    MSYS2でも動くようにした
+
+Makefile
+hashcodes/byteorder.hpp
+main.cpp
+
+commit e3e9838
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-23
+
+    ARのコマンド指定ミス修正
+
+hashcodes/Makefile
+http/Makefile
+
+commit 7af478e
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-23
+
+    Boostの除外
+
+README.md
+http/httpclient.cpp
+main.cpp
+oauth.cpp
+twitter_client.cpp
+
+commit 1a96701
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-23
+
+    個別tweetの表示に対応
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit 7429030
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-23
+
+    README変更
+
+README.md
+
+commit 7ce05b6
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-23
+
+    エラー処理を追加
+    APIを自由に投げられるコマンドの追加
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit fd7eebc
+Author: localuser <local@localdomain.local>
+Date:   2014-07-21
+
+    リストしたTLの表示に対応
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit aeed96b
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-18
+
+    使用していない変数の除去
+
+twitter_client.cpp
+
+commit 90b4781
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-18
+
+    オプション説明を少し変更
+
+main.cpp
+
+commit 9169040
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-18
+
+    お気に入り追加対応
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit 6a47cfd
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-18
+
+    Retweetに対応
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit f77c509
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-18
+
+    発言の削除に対応
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit 67d0034
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-18
+
+    自分へのリプライの表示に対応
+    バージョンを0.0.2へ
+    オプションの扱い一部変更
+    タイムラインに&lt;と表示されるのを対応
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit f390796
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-18
+
+    なんとなくvesion表記追加
+    getMemtionsの実装
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit 7940a0e
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-17
+
+    Makefileを最適化ありにしてStripかけるようにした
+    ReadUserTLの仕様変更
+
+Makefile
+README.md
+hashcodes/Makefile
+http/Makefile
+main.cpp
+
+commit aaa741d
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-17
+
+    README追記
+
+README.md
+
+commit 9204368
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-17
+
+    ユーザ発言取得コマンドの追加
+
+main.cpp
+twitter_client.cpp
+twitter_client.hpp
+
+commit a900d5d
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-16
+
+    readme追記
+
+README.md
+
+commit 97a9ed3
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-16
+
+    Update README.md
+
+README.md
+
+commit ea77a04
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-16
+
+    ファイル追加など
+
+.gitignore
+Makefile
+README.md
+base64.cpp
+base64.hpp
+hashcodes/Makefile
+hashcodes/byteorder.hpp
+hashcodes/crypto_hash.cpp
+hashcodes/crypto_hash.hpp
+hashcodes/hashtest_cpp.cpp
+hashcodes/hmac.hpp
+hashcodes/md5.cpp
+hashcodes/md5.hpp
+hashcodes/sha1.cpp
+hashcodes/sha1.hpp
+http/Makefile
+http/httpclient.cpp
+http/httpclient.hpp
+http/httpcurl.cpp
+http/httpcurl.hpp
+include/typedef.hpp
+keys/.gitdummy
+main.cpp
+oauth.cpp
+oauth.hpp
+picojson.h
+sample_setkey.sh
+twitter_client.cpp
+twitter_client.hpp
+write_apikeys.sh
+
+commit 81a72be
+Author: chromabox <chromarockjp@gmail.com>
+Date:   2014-07-16
+
+    Initial commit
+
+LICENSE
+README.md

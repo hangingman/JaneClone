@@ -1,5 +1,5 @@
 # 依存関係にあるソース群
-SUBDIRS = crossguid sqlite3 wxsqlite3 curlpp src test
+SUBDIRS = crossguid sqlite3 wxsqlite3 curlpp cmdline_twitter src test
 
 # パッケージ作成用サブディレクトリも設定する
 DIST_SUBDIRS = $(SUBDIRS)

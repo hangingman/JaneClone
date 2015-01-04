@@ -1,3 +1,242 @@
+commit addca92
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-03
+
+    Change some classes to struct in datatype.hpp
+    Add some function.
+
+Makefile.am
+src/datatype.hpp
+src/enums.hpp
+src/imagepanel.hpp
+src/janeclone.cpp
+src/janecloneimageviewer.cpp
+src/janecloneimageviewer.hpp
+
+commit 37ee2a1
+Merge: 7c2c73f 086f43b
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-02
+
+    Merge pull request #47 from vabock/imageviewer-fix
+    
+    Imageviewer fix by vabock
+
+commit 086f43b
+Author: Vabock <vabock@gmail.com>
+Date:   2015-01-01
+
+    Remove wxWindow::FindWindowById
+
+src/janecloneimageviewer.cpp
+
+commit 562b1a9
+Author: Vabock <vabock@gmail.com>
+Date:   2014-12-31
+
+    Refactor JaneCloneImageViewer's ContextMenu
+
+src/imagepanel.cpp
+src/imagepanel.hpp
+src/janecloneimageviewer.cpp
+src/janecloneimageviewer.hpp
+
+commit 6272343
+Author: Vabock <vabock@gmail.com>
+Date:   2014-12-31
+
+    Trackpad support
+    Fixes #46
+
+src/janecloneimageviewer.cpp
+
+commit 7c2c73f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-30
+
+    Implement save all image files in ImageViewer
+
+src/enums.hpp
+src/extractboardlist.cpp
+src/janecloneimageviewer.cpp
+src/janecloneimageviewer.hpp
+src/threadcontentwebview.cpp
+
+commit 980229e
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-30
+
+    Add developer name
+
+src/janeclone.cpp
+
+commit edd5aab
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-30
+
+    Fix travis setting
+
+.travis.yml
+
+commit 49e1c7a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-29
+
+    Fix old fassion coding style
+    ...new/delete -> unique_ptr
+
+src/imagepanel.cpp
+src/imagepanel.hpp
+src/janecloneimageviewer.cpp
+src/janecloneimageviewer.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/threadcontentwebview.cpp
+src/threadcontentwindow.cpp
+
+commit 60ea5f7
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-29
+
+    Fix segmentation fault bug when pug color ID.
+    Fix travis setting
+
+.travis.yml
+src/janecloneutil.cpp
+
+commit b384d50
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-29
+
+    Add viewer_operate.xrc
+
+.travis.yml
+src/rc/hint.xrc
+src/rc/viewer_operate.xrc
+src/settingwindow.cpp
+src/settingwindow.hpp
+
+commit 211c3d8
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-28
+
+    Prepare ViewerSettingWindow
+
+.travis.yml
+src/enums.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/settingwindow.cpp
+src/settingwindow.hpp
+
+commit bcf2316
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-28
+
+    Update configure.ac
+
+configure.ac
+
+commit d3e8ba1
+Author: Hiroyuki Nagata <hiroyuki-nagata@panzer_girl.com>
+Date:   2014-12-24
+
+    Update some config [skip ci]
+
+.travis.yml
+janeclone.bkl
+
+commit 5cff5ba
+Author: Hiroyuki Nagata <hiroyuki-nagata@panzer_girl.com>
+Date:   2014-12-24
+
+    Add NuGet packages.config
+
+packages.config
+
+commit fc3cf37
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-12-24
+
+    Add bakefile for vs2013 [skip ci]
+
+CMakeLists.txt
+crossguid/CMakeLists.txt
+curlpp/CMakeLists.txt
+curlpp/include/CMakeLists.txt
+curlpp/include/curlpp/CMakeLists.txt
+curlpp/include/curlpp/internal/CMakeLists.txt
+curlpp/include/utilspp/CMakeLists.txt
+curlpp/include/utilspp/functor/CMakeLists.txt
+curlpp/include/utilspp/singleton/CMakeLists.txt
+curlpp/src/CMakeLists.txt
+curlpp/src/curlpp/CMakeLists.txt
+curlpp/src/curlpp/internal/CMakeLists.txt
+curlpp/src/utilspp/CMakeLists.txt
+janeclone.bkl
+sqlite3/CMakeLists.txt
+src/CMakeLists.txt
+test/CMakeLists.txt
+wxsqlite3/CMakeLists.txt
+
+commit 38e502e
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-20
+
+    Fix CMakeLists.txt skeltons [skip ci]
+
+.gitignore
+CMakeLists.txt
+curlpp/include/curlpp/CMakeLists.txt
+
+commit 6e9a4a4
+Merge: 582d119 6fe9409
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-20
+
+    I forget commit from other machine, sorry [skip ci]
+    
+    Merge branch 'master' of github.com:Hiroyuki-Nagata/JaneClone
+    
+    # Please enter a commit message to explain why this merge is necessary,
+    # especially if it merges an updated upstream into a topic branch.
+    #
+    # Lines starting with '#' will be ignored, and an empty message aborts
+    # the commit.
+
+commit 582d119
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2014-12-20
+
+    Add CMakeLists.txt generated am2cmake [skip ci]
+
+CMakeLists.txt
+crossguid/CMakeLists.txt
+curlpp/CMakeLists.txt
+curlpp/include/CMakeLists.txt
+curlpp/include/curlpp/CMakeLists.txt
+curlpp/include/curlpp/internal/CMakeLists.txt
+curlpp/include/utilspp/CMakeLists.txt
+curlpp/include/utilspp/functor/CMakeLists.txt
+curlpp/include/utilspp/singleton/CMakeLists.txt
+curlpp/src/CMakeLists.txt
+curlpp/src/curlpp/CMakeLists.txt
+curlpp/src/curlpp/internal/CMakeLists.txt
+curlpp/src/utilspp/CMakeLists.txt
+sqlite3/CMakeLists.txt
+src/CMakeLists.txt
+test/CMakeLists.txt
+wxsqlite3/CMakeLists.txt
+
+commit 6fe9409
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2014-12-19
+
+    Update ChangeLog INSTALL [skip ci]
+
+ChangeLog
+INSTALL
+
 commit 8f4c17c
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2014-12-18

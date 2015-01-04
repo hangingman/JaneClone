@@ -353,6 +353,7 @@ AC_CONFIG_FILES([Makefile
                  curlpp/include/utilspp/Makefile
                  curlpp/include/utilspp/functor/Makefile
                  curlpp/include/utilspp/singleton/Makefile
+		 cmdline_twitter/Makefile
                  src/Makefile
 		 test/Makefile])
 AC_OUTPUT
