@@ -292,7 +292,7 @@ AS_IF([test "x$enable_bar" = "xyes"], [
 #-----------------------------------------------------------------------
 
 # Check compile flag
-AX_CHECK_COMPILE_FLAG([-fno-stack-protector], [CXXFLAGS="$CXXFLAGS -fno-stack-protector"])
+AX_CHECK_COMPILE_FLAG([-fstack-protector], [CXXFLAGS="$CXXFLAGS -fstack-protector"])
 AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"])
 AX_CHECK_COMPILE_FLAG([-Wno-invalid-source-encoding],[CXXFLAGS="$CXXFLAGS -Wno-invalid-source-encoding"])
 AX_CHECK_COMPILE_FLAG([-Wno-parentheses],[CXXFLAGS="$CXXFLAGS -Wno-parentheses"])

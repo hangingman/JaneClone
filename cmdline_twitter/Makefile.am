@@ -12,14 +12,14 @@ KEYS	  		= keys/apikeys.hpp
 ### Lib Target
 janeclonedir		= $(pkglibdir)
 janeclone_LTLIBRARIES	= libctw.la
-libctw_la_SOURCES	= $(HASH_SRCS) $(HTTP_SRCS) $(AUTH_SRCS) $(TWCR_SRCS) $(UI_SRCS)
+libctw_la_SOURCES	= $(HASH_SRCS) $(HTTP_SRCS) $(AUTH_SRCS) $(TWCR_SRCS)
 libctw_la_CXXFLAGS	= @CURL_CFLAGS@ \
 			  -I$(top_builddir)/cmdline_twitter/hashcodes \
 			  -I$(top_builddir)/cmdline_twitter/http      \
 			  -I$(top_builddir)/cmdline_twitter/oauth     \
 			  -I$(top_builddir)/cmdline_twitter/twitter   \
-			  -I$(top_builddir)/cmdline_twitter/ui	\
 			  -I$(top_builddir)/cmdline_twitter/include
+
 # libtool versioning -> http://ftp.gnu.org/pub/old-gnu/Manuals/libtool-1.4.2/html_chapter/libtool_6.html
 libctw_la_LDFLAGS	= -no-undefined -version-info 0:0:0
 
@@ -29,8 +29,6 @@ noinst_HEADERS =                      \
 	oauth/oauth.hpp		      \
 	main.hpp		      \
 	keys/apikeys.hpp	      \
-	ui/simple_terminal.hpp	      \
-	ui/simple_ui.hpp	      \
 	hashcodes/portable_endian.hpp \
 	hashcodes/byteorder.hpp	      \
 	hashcodes/crypto_hash.hpp     \
