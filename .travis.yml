@@ -52,4 +52,4 @@ notifications:
     on_failure: always
 
 after_success:
-  - if [ "$TRAVIS_OS_NAME" == "linux" -a "$CXX" == "clang++" ]; then cd misc && ./upload_bintray.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" -o "$CXX" == "clang++" ]; then cd misc && ./upload_bintray.sh; fi
