@@ -400,6 +400,7 @@ void JaneClone::SetJaneCloneManuBar()
      searchBar->AppendCheckItem(wxID_ANY, wxT("板ツリー検索バー"));
      menu2->AppendSubMenu(searchBar, wxT("検索バー"));
      menu2->Append(wxID_ANY, wxT("ビューア"));
+     menu2->AppendCheckItem(wxID_ANY, wxT("Twitter"));
      menu2->AppendSeparator();
      menu2->Append(ID_JaneCloneMgrUpdate, wxT("更新"));
      menu2->AppendSeparator();
@@ -996,10 +997,16 @@ void JaneClone::DoLayout()
      // 画面の分割を縦横どちらにするか
      // separateX = 日, separateY = 而
      JaneCloneUtil::GetJaneCloneProperties(wxT("SeparateXY"), &separateIsX);
-     separateIsX ? m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, 
-						  wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY))
-	         : m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, 
-						  wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
+     if (separateIsX)
+     {
+	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, 
+					 wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY));
+     }
+     else
+     {
+	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, 
+					 wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
+     }
 
      // 画面のペイン数を何個にするか
      paneIsThree = true; // デフォルト値=3
@@ -1135,8 +1142,6 @@ void JaneClone::SetJaneCloneAuiPaneInfo()
      threadTabThreadContentInfo.CloseButton(false);
      threadTabThreadContentInfo.BestSize(400, 400);
 
-     // Addの順番と反映がLinuxとWindowsで逆なので、順番をifdefで設定する
-#ifdef __WXMSW__
      m_mgr.AddPane(m_search_ctrl, search);
      m_mgr.AddPane(m_floatToolBar, toolBar);
      m_mgr.AddPane(m_url_input_panel, url);
@@ -1154,25 +1159,6 @@ void JaneClone::SetJaneCloneAuiPaneInfo()
 	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
 	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
      }
-#else
-     m_mgr.AddPane(m_url_input_panel, url);
-     m_mgr.AddPane(m_floatToolBar, toolBar);
-     m_mgr.AddPane(m_search_ctrl, search);
-     m_mgr.AddPane(m_logCtrl, logWindow);
-     if (enableBoardListTree) m_mgr.AddPane(boardTreeNoteBook, boardTree);
-
-     // 縦分割か横分割か(最初は３ペインでセット)
-     if (separateIsX) 
-     {
-	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
-	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
-     } 
-     else 
-     {
-	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
-	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
-     }
-#endif
 
      // ペイン数の設定
      if (!paneIsThree)
