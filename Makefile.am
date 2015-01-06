@@ -279,7 +279,6 @@ package-deb-with-gpg: package-deb
 package-deb-local: package-deb
 	@echo "not use GPG key...if you want to sign, make by terminal."
 	(cd $(distdir) && debuild --preserve-env --preserve-envvar PATH -uc -us)
-	$(SED) -i "/dependency_libs/ s/'.*'/''/" `find . -name '*.la'`
 
 # update license info
 package-deb-license:
@@ -319,6 +318,11 @@ package-deb: package-deb-license local-distdir-remove dist
 	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control    #  bugreport address
 	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules                              #  rule file
 	rm -f $(distdir)/debian/*.ex                                                           #  delete extension files
+	@echo "-----------------------------------------------------------------------------"
+	cat $(distdir)/debian/control
+	@echo "-----------------------------------------------------------------------------"
+	cat $(distdir)/debian/rules
+	@echo "-----------------------------------------------------------------------------"
 
 # local dist remove
 local-distdir-remove:

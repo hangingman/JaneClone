@@ -1,7 +1,6 @@
-SUBDIRS = internal
+SUBDIRS 		= internal
 
-janeclonedir 		= $(pkglibdir)
-janeclone_LTLIBRARIES	= libcurlpp.la
+noinst_LTLIBRARIES	= libcurlpp.la
 
 AM_CPPFLAGS = @CURL_CFLAGS@ -I$(top_builddir)/include/curlpp -I$(top_builddir)/curlpp/include
 

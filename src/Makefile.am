@@ -11,7 +11,6 @@ janecloneexecrc_DATA	= $(wildcard rc/*)
 janecloneexecscriptdir	= $(datarootdir)/@PACKAGE@/script
 janecloneexecscript_DATA= $(wildcard script/*)
 
-JaneClonedir	  	= $(pkglibdir)
 JaneClone_SOURCES 	= extractboardlist.hpp        \
 		          main.cpp                    \
 		          socketcommunication.cpp     \

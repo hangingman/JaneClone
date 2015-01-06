@@ -10,8 +10,7 @@ SRCS	  		= main.cpp
 KEYS	  		= keys/apikeys.hpp
 
 ### Lib Target
-janeclonedir		= $(pkglibdir)
-janeclone_LTLIBRARIES	= libctw.la
+lib_LTLIBRARIES		= libctw.la
 libctw_la_SOURCES	= $(HASH_SRCS) $(HTTP_SRCS) $(AUTH_SRCS) $(TWCR_SRCS)
 libctw_la_CXXFLAGS	= @CURL_CFLAGS@ \
 			  -I$(top_builddir)/cmdline_twitter/hashcodes \

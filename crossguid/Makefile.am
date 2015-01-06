@@ -16,8 +16,7 @@ endif
 
 ACLOCAL_AMFLAGS = -I m4
 
-janeclonedir 		= $(pkglibdir)
-janeclone_LTLIBRARIES	= libcrossguid.la
+lib_LTLIBRARIES		= libcrossguid.la
 libcrossguid_la_SOURCES = guid.cpp guid.h
 libcrossguid_la_LDFLAGS += -no-undefined -version-info 1:0:0
 

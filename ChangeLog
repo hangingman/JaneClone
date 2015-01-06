@@ -1,3 +1,149 @@
+commit a3c36e5
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-06
+
+    Update .travis.yml
+
+.travis.yml
+
+commit 5a42f61
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-06
+
+    Update control.ubuntu
+
+debian/control.ubuntu
+
+commit 4987f63
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-06
+
+    Update rules
+    
+    Add 1/rules/clean-la.mk.in: Remove dependency_libs lines from .la
+
+debian/rules
+
+commit 3ed27bc
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-06
+
+    Update for osx binary upload
+
+.travis.yml
+misc/upload_bintray.sh
+packages.config
+
+commit 104807d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-05
+
+    Fix change pane function
+
+src/janeclone.cpp
+
+commit 891a604
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-05
+
+    Fix travis setting
+    Fix byteorder.hpp for MinGW
+    Fix compile option
+
+.travis.yml
+cmdline_twitter/Makefile.am
+cmdline_twitter/hashcodes/byteorder.hpp
+configure.ac
+
+commit 9a36dba
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-04
+
+    Add portable_endian.h ( public domain ) for osx build
+
+cmdline_twitter/Makefile.am
+cmdline_twitter/hashcodes/byteorder.hpp
+cmdline_twitter/hashcodes/portable_endian.hpp
+
+commit 3d3a41b
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-04
+
+    Update janeclone.menu [skip ci]
+
+misc/janeclone.menu
+
+commit f9c1541
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-04
+
+    Delete debian/menu [skip ci]
+
+debian/menu
+
+commit 9a72135
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-04
+
+    Fix package build error
+    Fix W: janeclone: menu-item-creates-new-section Applications/Network/BBS Reader usr/share/menu/janeclone:5
+
+cmdline_twitter/Makefile.am
+debian/control.jessie
+debian/menu
+
+commit 2e18ad0
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-04
+
+    Add subdirectory cmdline_twitter
+
+ChangeLog
+Makefile.am
+cmdline_twitter/AUTHORS
+cmdline_twitter/COPYING
+cmdline_twitter/ChangeLog
+cmdline_twitter/INSTALL
+cmdline_twitter/LICENSE
+cmdline_twitter/Makefile.am
+cmdline_twitter/NEWS
+cmdline_twitter/README
+cmdline_twitter/README.md
+cmdline_twitter/hashcodes/byteorder.hpp
+cmdline_twitter/hashcodes/crypto_hash.cpp
+cmdline_twitter/hashcodes/crypto_hash.hpp
+cmdline_twitter/hashcodes/hashtest_cpp.cpp
+cmdline_twitter/hashcodes/hmac.hpp
+cmdline_twitter/hashcodes/md5.cpp
+cmdline_twitter/hashcodes/md5.hpp
+cmdline_twitter/hashcodes/sha1.cpp
+cmdline_twitter/hashcodes/sha1.hpp
+cmdline_twitter/http/httpclient.cpp
+cmdline_twitter/http/httpclient.hpp
+cmdline_twitter/http/httpcurl.cpp
+cmdline_twitter/http/httpcurl.hpp
+cmdline_twitter/include/minisetting.hpp
+cmdline_twitter/include/picojson.h
+cmdline_twitter/include/typedef.hpp
+cmdline_twitter/keys/apikeys.hpp
+cmdline_twitter/main.cpp
+cmdline_twitter/main.hpp
+cmdline_twitter/oauth/base64.cpp
+cmdline_twitter/oauth/base64.hpp
+cmdline_twitter/oauth/oauth.cpp
+cmdline_twitter/oauth/oauth.hpp
+cmdline_twitter/sample_setkey.sh
+cmdline_twitter/twitter/twitter_client.cpp
+cmdline_twitter/twitter/twitter_client.hpp
+cmdline_twitter/twitter/twitter_json.hpp
+cmdline_twitter/ui/simple_terminal.cpp
+cmdline_twitter/ui/simple_terminal.hpp
+cmdline_twitter/ui/simple_ui.cpp
+cmdline_twitter/ui/simple_ui.hpp
+cmdline_twitter/write_apikeys.sh
+configure.ac
+janeclone.bkl
+
 commit addca92
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2015-01-03
