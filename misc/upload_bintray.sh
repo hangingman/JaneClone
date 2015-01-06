@@ -14,10 +14,6 @@
 # --header "Authorization: GoogleLogin auth=ABCDEFG" 
 #          "http://picasaweb.google.com/data/feed/api/user/brad.gushue/albumid/5113621341847124417" | tidy -xml -indent -quiet
 
-# Load version from configure.ac
-VERSION=`cat ../configure.ac | grep AC_INIT | awk '{print $2}' | sed -e 's/\[\|\]\|,//g'`
-echo "JaneClone version is ${VERSION}"
-
 CURL="curl -v --user hiroyuki-nagata:${BINTRAY_TOKEN}"
 METHOD="-X PUT --data-binary @- "
 API="https://api.bintray.com"
@@ -27,6 +23,10 @@ function upload_deb()
     #
     # Here upload executing !
     #
+
+    # Load version from configure.ac
+    VERSION=`cat ../configure.ac | grep AC_INIT | awk '{print $2}' | sed -e 's/\[\|\]\|,//g'`
+    echo "JaneClone version is ${VERSION}"
 
     # Package
     DEB_FILENAME="janeclone_${VERSION}_amd64.deb"
@@ -66,6 +66,10 @@ function upload_dmg()
     #
     # Here upload executing !
     #
+
+    # Load version from configure.ac
+    VERSION=`cat ../configure.ac | grep AC_INIT | awk '{print $2}' | gsed -e 's/\[\|\]\|,//g'`
+    echo "JaneClone version is ${VERSION}"
 
     # Package
     DMG_FILENAME="janeclone-osx64-${VERSION}.dmg"
