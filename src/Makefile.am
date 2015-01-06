@@ -73,23 +73,15 @@ endif
 JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@          \
 		     -I$(top_builddir)/crossguid      \
 		     -I$(top_builddir)/babel          \
-		     -I$(top_builddir)/wxsqlite3      \
-		     -I$(top_builddir)/sqlite3        \
-		     -I$(top_builddir)/src/rc         \
-		     -I$(top_builddir)/curlpp/include
+		     -I$(top_builddir)/src/rc
 
 ACLOCAL_AMFLAGS    = -I m4
 
 # For Icon build and library dependency
 if USE_WINDRES
 # Platform is Windows
-JaneClone_LDADD    = JaneClone_rc.o                                           \
-		    $(top_builddir)/crossguid/libcrossguid.la		      \
-		    $(top_builddir)/wxsqlite3/libwxsqlite3.la 		      \
-		    $(top_builddir)/sqlite3/libsqlite3.la 		      \
-		    $(top_builddir)/curlpp/src/curlpp/libcurlpp.la 	      \
-		    $(top_builddir)/curlpp/src/utilspp/libutilspp.la 	      \
-		    $(top_builddir)/curlpp/src/curlpp/internal/libinternal.la
+JaneClone_LDADD    = JaneClone_rc.o                             \
+		    $(top_builddir)/crossguid/libcrossguid.la
 
 JaneClone_LDFLAGS  = $(JC_FLAG_STRING) @XML2LIBS@ JaneClone_rc.o
 
@@ -99,14 +91,25 @@ JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 else
 # Platform is not Windows
 JaneClone_LDFLAGS  = $(JC_FLAG_STRING)
-JaneClone_LDADD    = @XML2LIBS@							\
-		     $(top_builddir)/crossguid/libcrossguid.la		        \
-		     $(top_builddir)/wxsqlite3/libwxsqlite3.la 		        \
-		     $(top_builddir)/sqlite3/libsqlite3.la 		        \
-		     $(top_builddir)/curlpp/src/curlpp/libcurlpp.la 	        \
-		     $(top_builddir)/curlpp/src/utilspp/libutilspp.la 	        \
-		     $(top_builddir)/curlpp/src/curlpp/internal/libinternal.la
+JaneClone_LDADD    = @XML2LIBS@					\
+		     $(top_builddir)/crossguid/libcrossguid.la
 
 endif
 
-# target for debug
+# Build or not
+if BUILDING_SQLITE3
+  JaneClone_CXXFLAGS += -I$(top_builddir)/sqlite3
+  JaneClone_LDADD    += $(top_builddir)/sqlite3/libsqlite3.la
+endif
+
+if BUILDING_WXSQLITE3
+  JaneClone_CXXFLAGS += -I$(top_builddir)/wxsqlite3
+  JaneClone_LDADD    += $(top_builddir)/wxsqlite3/libwxsqlite3.la
+endif
+
+if BUILDING_CURLPP
+  JaneClone_CXXFLAGS += -I$(top_builddir)/curlpp/include
+  JaneClone_LDADD    += $(top_builddir)/curlpp/src/curlpp/libcurlpp.la 	          \
+		        $(top_builddir)/curlpp/src/utilspp/libutilspp.la 	  \
+		        $(top_builddir)/curlpp/src/curlpp/internal/libinternal.la
+endif
