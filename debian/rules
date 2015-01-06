@@ -3,6 +3,4 @@
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/class/gnome.mk
-
-common-build-arch::
-	sed -i "/dependency_libs/ s/'.*'/''/" `find $(CURDIR) -name '*.la'`
+include /usr/share/gnome-pkg-tools/1/rules/clean-la.mk
