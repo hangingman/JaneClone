@@ -30,7 +30,7 @@ before_install:
 install:
   - echo $TRAVIS_OS_NAME
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq gnulib dh-make; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install libwxgtk2.8-dev libxml2-dev uuid-dev debhelper autotools-dev automake gnupg lintian fakeroot pbuilder cdbs; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install libwxgtk2.8-dev libxml2-dev uuid-dev debhelper autotools-dev automake gnupg lintian fakeroot pbuilder cdbs gnome-pkg-tools; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update && brew install gnu-sed wxmac; fi
 
 before_script:
