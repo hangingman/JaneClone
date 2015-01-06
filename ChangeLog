@@ -1,3 +1,23 @@
+commit 454dd11
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-06
+
+    Fix file hierarchy for legitimate debian package
+
+.travis.yml
+ChangeLog
+Makefile.am
+cmdline_twitter/Makefile.am
+crossguid/Makefile.am
+curlpp/src/curlpp/Makefile.am
+curlpp/src/utilspp/Makefile.am
+debian/control.jessie
+debian/control.ubuntu
+debian/control.wheezy
+sqlite3/Makefile.am
+src/Makefile.am
+wxsqlite3/Makefile.am
+
 commit a3c36e5
 Author: Hiroyuki-Nagata <newserver002@gmail.com>
 Date:   2015-01-06
