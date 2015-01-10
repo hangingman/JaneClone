@@ -40,7 +40,6 @@
 #include <wx/fs_mem.h>
 #include <wx/treectrl.h>
 #include <wx/fileconf.h>
-#include <guid.h>
 #include <babel.h>
 #include "datatype.hpp"
 #include "enums.hpp"

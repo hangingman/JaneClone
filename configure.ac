@@ -324,7 +324,6 @@ AC_FUNC_STRERROR_R
 
 # Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile
-		 crossguid/Makefile
 		 cmdline_twitter/Makefile
                  src/Makefile
 		 test/Makefile])

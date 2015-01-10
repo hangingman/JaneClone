@@ -71,7 +71,6 @@ endif
 
 # common build rule
 JaneClone_CXXFLAGS = @CXXFLAGS@ @XML2CFLAGS@ @CRYPTO_CFLAGS@ \
-		     -I$(top_builddir)/crossguid      \
 		     -I$(top_builddir)/babel          \
 		     -I$(top_builddir)/src/rc
 
@@ -80,8 +79,7 @@ ACLOCAL_AMFLAGS    = -I m4
 # For Icon build and library dependency
 if USE_WINDRES
 # Platform is Windows
-JaneClone_LDADD    = JaneClone_rc.o                             \
-		    $(top_builddir)/crossguid/libcrossguid.la
+JaneClone_LDADD    = JaneClone_rc.o
 
 JaneClone_LDFLAGS  = $(JC_FLAG_STRING) @XML2LIBS@ @CRYPTO_LIBS@ JaneClone_rc.o
 
@@ -91,8 +89,7 @@ JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 else
 # Platform is not Windows
 JaneClone_LDFLAGS  = $(JC_FLAG_STRING)
-JaneClone_LDADD    = @XML2LIBS@ @CRYPTO_LIBS@			\
-		     $(top_builddir)/crossguid/libcrossguid.la
+JaneClone_LDADD    = @XML2LIBS@ @CRYPTO_LIBS@
 
 endif
 
