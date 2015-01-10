@@ -20,6 +20,13 @@
  */
 
 #include "janecloneutil.hpp"
+#if defined(__APPLE__)
+#define COMMON_DIGEST_FOR_OPENSSL
+#include <CommonCrypto/CommonDigest.h>
+#define MD5 CC_MD5
+#else
+#include <openssl/md5.h>
+#endif
 
 /**
  * gzipファイルを解凍する処理
@@ -1168,21 +1175,21 @@ bool JaneCloneUtil::SubstringURI(const wxString& uri, PartOfURI* partOfUri) {
      return false;
 }
 /**
- * UUIDを生成する
+ * MD5を生成する
  */     
-wxString JaneCloneUtil::GenerateUUIDString() {
+wxString JaneCloneUtil::GenerateMD5String(const wxString& uri) {
 
-     GuidGenerator generator;
+     wxString result;
+     unsigned char digest[MD5_DIGEST_LENGTH];
+     const wxCharBuffer &cb = uri.utf8_str();
 
-     auto guid = generator.newGuid();
-     std::stringstream stream;
-     stream << guid;
-     
-#if wxCHECK_VERSION(2, 9, 0)
-     return wxString(stream.str().c_str());
-#else /** Old version wxWidgets not allow copy constructor from <const char*> */
-     return wxString(stream.str().c_str(), wxConvUTF8);
-#endif
+     ::MD5((const unsigned char*)cb.data(), ::strlen(cb.data()), digest);
+
+     for (int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+	  result << wxString::Format(wxT("%02x"), (int)digest[i]);
+     }
+
+     return result;
 }
 /**
  * スレッドの勢い値を計算する

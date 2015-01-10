@@ -23,6 +23,7 @@ AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_MAKE_SET
 AC_PROG_MKDIR_P
+PKG_PROG_PKG_CONFIG
 AC_LIBTOOL_WIN32_DLL
 LT_INIT
 
@@ -266,6 +267,18 @@ AC_ARG_ENABLE([shingetsu],
 
 AS_IF([test "x$enable_bar" = "xyes"], [
     AC_DEFINE(USE_SHINGETSU, 1, [when building shingetsu support code])
+])
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
+#   libcrypto for md5 hash
+#
+AS_IF([test x"$PLATFORM_STRING" != x"Apple"], [
+    PKG_CHECK_MODULES([CRYPTO], [libcrypto],, [
+        AC_CHECK_LIB([crypto], [MD5], [CRYPTO_LIBS="-lcrypto"], [
+            AC_MSG_ERROR("ERROR: cannot find libcrypto.")
+        ])
+    ])
 ])
 #-----------------------------------------------------------------------
 
