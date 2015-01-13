@@ -19,9 +19,6 @@ libctw_a_CXXFLAGS	= @CURL_CFLAGS@ \
 			  -I$(top_builddir)/cmdline_twitter/twitter   \
 			  -I$(top_builddir)/cmdline_twitter/include
 
-# libtool versioning -> http://ftp.gnu.org/pub/old-gnu/Manuals/libtool-1.4.2/html_chapter/libtool_6.html
-libctw_a_LDFLAGS	= -no-undefined -version-info 0:0:0
-
 # for package build
 noinst_HEADERS =                      \
 	oauth/base64.hpp              \
