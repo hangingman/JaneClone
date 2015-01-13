@@ -47,11 +47,6 @@ case "$host" in
 		AC_SUBST(PLATFORM_STRING)
 		AM_CONDITIONAL(USE_LINUX, true)
 		need_no_undefined=no
-		# Checks for uuid
-		AC_CHECK_LIB(uuid,uuid_generate,LIBS="-luuid $LIBS" has_uuid=1,has_uuid=0)
-		if test $has_uuid = 0; then
-		  AC_MSG_ERROR("ERROR: cannot find uuid.")
-		fi
                 ;;
         *-*-darwin*)
                 PLATFORM_STRING="Apple"
@@ -63,11 +58,6 @@ case "$host" in
                 PLATFORM_STRING="BSD"
 		AC_SUBST(PLATFORM_STRING)
 		need_no_undefined=no
-		# Checks for uuid
-		AC_CHECK_LIB(uuid,uuid_generate,LIBS="-luuid $LIBS" has_uuid=1,has_uuid=0)
-		if test $has_uuid = 0; then
-		  AC_MSG_ERROR("ERROR: cannot find uuid.")
-		fi
                 ;;
         *)
                 AC_MSG_WARN([*** Please add $host to configure.ac checks!])

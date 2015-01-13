@@ -79,9 +79,8 @@ ACLOCAL_AMFLAGS    = -I m4
 # For Icon build and library dependency
 if USE_WINDRES
 # Platform is Windows
-JaneClone_LDADD    = JaneClone_rc.o
-
-JaneClone_LDFLAGS  = $(JC_FLAG_STRING) @XML2LIBS@ @CRYPTO_LIBS@ JaneClone_rc.o
+JaneClone_LDFLAGS  = $(JC_FLAG_STRING) JaneClone_rc.o
+JaneClone_LDADD    = @XML2LIBS@ @CRYPTO_LIBS@ $(top_builddir)/cmdline_twitter/libctw.a
 
 JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 	@WX_RESCOMP@ -i $^ -O coff -o $@
@@ -89,7 +88,7 @@ JaneClone_rc.o : $(top_builddir)/src/rc/icon.rc
 else
 # Platform is not Windows
 JaneClone_LDFLAGS  = $(JC_FLAG_STRING)
-JaneClone_LDADD    = @XML2LIBS@ @CRYPTO_LIBS@
+JaneClone_LDADD    = @XML2LIBS@ @CRYPTO_LIBS@ $(top_builddir)/cmdline_twitter/libctw.a
 
 endif
 

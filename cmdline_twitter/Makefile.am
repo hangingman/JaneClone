@@ -10,9 +10,9 @@ SRCS	  		= main.cpp
 KEYS	  		= keys/apikeys.hpp
 
 ### Lib Target
-lib_LTLIBRARIES		= libctw.la
-libctw_la_SOURCES	= $(HASH_SRCS) $(HTTP_SRCS) $(AUTH_SRCS) $(TWCR_SRCS)
-libctw_la_CXXFLAGS	= @CURL_CFLAGS@ \
+noinst_LIBRARIES 	= libctw.a
+libctw_a_SOURCES	= $(HASH_SRCS) $(HTTP_SRCS) $(AUTH_SRCS) $(TWCR_SRCS)
+libctw_a_CXXFLAGS	= @CURL_CFLAGS@ \
 			  -I$(top_builddir)/cmdline_twitter/hashcodes \
 			  -I$(top_builddir)/cmdline_twitter/http      \
 			  -I$(top_builddir)/cmdline_twitter/oauth     \
@@ -20,7 +20,7 @@ libctw_la_CXXFLAGS	= @CURL_CFLAGS@ \
 			  -I$(top_builddir)/cmdline_twitter/include
 
 # libtool versioning -> http://ftp.gnu.org/pub/old-gnu/Manuals/libtool-1.4.2/html_chapter/libtool_6.html
-libctw_la_LDFLAGS	= -no-undefined -version-info 0:0:0
+libctw_a_LDFLAGS	= -no-undefined -version-info 0:0:0
 
 # for package build
 noinst_HEADERS =                      \
