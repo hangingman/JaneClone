@@ -1,5 +1,5 @@
 # 依存関係にあるソース群
-SUBDIRS = crossguid 
+SUBDIRS = 
 
 if BUILDING_SQLITE3
    SUBDIRS += sqlite3

@@ -23,6 +23,7 @@ AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_MAKE_SET
 AC_PROG_MKDIR_P
+PKG_PROG_PKG_CONFIG
 AC_LIBTOOL_WIN32_DLL
 LT_INIT
 
@@ -269,6 +270,18 @@ AS_IF([test "x$enable_bar" = "xyes"], [
 ])
 #-----------------------------------------------------------------------
 
+#-----------------------------------------------------------------------
+#   libcrypto for md5 hash
+#
+AS_IF([test x"$PLATFORM_STRING" != x"Apple"], [
+    PKG_CHECK_MODULES([CRYPTO], [libcrypto],, [
+        AC_CHECK_LIB([crypto], [MD5], [CRYPTO_LIBS="-lcrypto"], [
+            AC_MSG_ERROR("ERROR: cannot find libcrypto.")
+        ])
+    ])
+])
+#-----------------------------------------------------------------------
+
 # Check compile flag
 AX_CHECK_COMPILE_FLAG([-fstack-protector], [CXXFLAGS="$CXXFLAGS -fstack-protector"])
 AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"])
@@ -311,7 +324,6 @@ AC_FUNC_STRERROR_R
 
 # Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile
-		 crossguid/Makefile
 		 cmdline_twitter/Makefile
                  src/Makefile
 		 test/Makefile])
