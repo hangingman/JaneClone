@@ -337,6 +337,10 @@ package-deb: package-deb-license local-distdir-remove dist
 	rm -f $(distdir)/debian/*.EX                                                           #  delete example files
 	rm -f $(distdir)/src/rc/COPYING							       #  license files are all 
 	rm -f $(distdir)/src/rc/gpl-2.0.txt						       #  in the "copyright"
+	ls $(distdir)/
+	sed -i 's/<possible notes regarding this package - if none, delete this file>//g' $(distdir)/debian/README.Debian
+	sed -i '4r README' $(distdir)/debian/README.Debian
+	sed -i 's/\r//'    $(distdir)/debian/README.Debian
 	@echo "-----------------------------------------------------------------------------"
 	cat $(distdir)/debian/control
 	@echo "-----------------------------------------------------------------------------"
