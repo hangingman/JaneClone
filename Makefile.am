@@ -67,7 +67,9 @@ dist-hook: ChangeLog
 
 # configure.acが更新された時動く
 ChangeLog: configure.ac
-	git log --stat --name-only --date=short --abbrev-commit > ChangeLog
+	@echo "Non-maintainer upload" > ChangeLog
+	@echo "" >> ChangeLog
+	git log --stat --name-only --date=short --abbrev-commit >> ChangeLog
 
 # NSISの設定ファイル
 MAKENSIS    = makensis
@@ -328,7 +330,7 @@ package-deb: package-deb-license local-distdir-remove dist
 	   cp $(top_builddir)/debian/control.jessie $(distdir)/debian/control; \
 	fi
 	sed -i 's/%%%STANDARDS-VERSION%%%/@DEB_STANDARDS_VERSION@/g' $(distdir)/debian/control #  debian policy version
-	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(distdir)/debian/control                #  upstream version 
+	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)+nmuX/g' $(distdir)/debian/control           #  upstream version 
 	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control    #  bugreport address
 	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules                              #  rule file
 	rm -f $(distdir)/debian/*.ex                                                           #  delete extension files

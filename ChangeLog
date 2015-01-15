@@ -1,3 +1,131 @@
+Non-maintainer upload
+commit 3f2cf98
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-14
+
+    Update control.ubuntu
+
+debian/control.ubuntu
+
+commit 1507e15
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-14
+
+    Fix MinGW build [skip ci]
+
+cmdline_twitter/Makefile.am
+wxsqlite3/Makefile.am
+
+commit ab8e83b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-14
+
+    Remove uuid checking process from configure.ac
+    Change cmdline_twitter link way Dynamic -> Static
+
+.travis.yml
+cmdline_twitter/Makefile.am
+configure.ac
+src/Makefile.am
+
+commit d275710
+Merge: ab9d9a2 06f57b2
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-14
+
+    Merge pull request #52 from vabock/md5
+    
+    vabock's MD5 modification !
+
+commit 06f57b2
+Author: Vabock <vabock@gmail.com>
+Date:   2015-01-10
+
+    Remove crossguid
+
+Makefile.am
+configure.ac
+crossguid/.gitattributes
+crossguid/.gitignore
+crossguid/LICENSE
+crossguid/Makefile.am
+crossguid/README.md
+crossguid/VisualStudio/CrossGuid.opensdf
+crossguid/VisualStudio/CrossGuid.sln
+crossguid/VisualStudio/CrossGuid.vcxproj
+crossguid/VisualStudio/CrossGuid.vcxproj.filters
+crossguid/android.sh
+crossguid/android/AndroidManifest.xml
+crossguid/android/ant.properties
+crossguid/android/build.xml
+crossguid/android/jni/Android.mk
+crossguid/android/jni/Application.mk
+crossguid/android/jni/jnitest.cpp
+crossguid/android/proguard-project.txt
+crossguid/android/project.properties
+crossguid/android/res/drawable-hdpi/ic_launcher.png
+crossguid/android/res/drawable-ldpi/ic_launcher.png
+crossguid/android/res/drawable-mdpi/ic_launcher.png
+crossguid/android/res/drawable-xhdpi/ic_launcher.png
+crossguid/android/res/layout/main.xml
+crossguid/android/res/values/strings.xml
+crossguid/android/src/ca/graemehill/crossguid/testapp/MainActivity.java
+crossguid/clean.sh
+crossguid/guid.cpp
+crossguid/guid.h
+crossguid/linux.sh
+crossguid/mac.sh
+crossguid/test.cpp
+crossguid/test.h
+crossguid/testmain.cpp
+src/Makefile.am
+src/janecloneutil.hpp
+
+commit c59438a
+Author: Vabock <vabock@gmail.com>
+Date:   2015-01-10
+
+    Replace crossguid to libcrypto(OpenSSL)'s MD5
+
+.travis.yml
+configure.ac
+src/Makefile.am
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/socketcommunication.cpp
+
+commit ab9d9a2
+Merge: 454dd11 d06c8bc
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-06
+
+    Merge pull request #48 from Hiroyuki-Nagata/legitimate-deb
+    
+    Fix configure script for flexible build
+
+commit d06c8bc
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-06
+
+    Fix dependency
+
+debian/control.ubuntu
+misc/upload_bintray.sh
+sqlite3/Makefile.am
+wxsqlite3/Makefile.am
+
+commit 1b6c09b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-06
+
+    Fix configure script for flexible build
+
+.travis.yml
+ChangeLog
+Makefile.am
+configure.ac
+src/Makefile.am
+
 commit 454dd11
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2015-01-06
