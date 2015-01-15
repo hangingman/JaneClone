@@ -8,7 +8,7 @@ AC_INIT([JaneClone], [1.1.4], [newserver002@gmail.com])
 AC_SUBST(UPSTREAM_URL, [https://github.com/Hiroyuki-Nagata/JaneClone])
 # Refering Debian Policy Version 
 # -> http://www.debian.or.jp/community/devel/debian-policy-ja/policy.ja.html/
-AC_SUBST(DEB_STANDARDS_VERSION, [3.9.6])
+AC_SUBST(DEB_STANDARDS_VERSION, [3.9.3])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wno-portability])
 AM_SILENT_RULES([yes])

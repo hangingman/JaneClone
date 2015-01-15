@@ -333,7 +333,10 @@ package-deb: package-deb-license local-distdir-remove dist
 	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)+nmuX/g' $(distdir)/debian/control           #  upstream version 
 	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control    #  bugreport address
 	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules                              #  rule file
-	rm -f $(distdir)/debian/*.ex                                                           #  delete extension files
+	rm -f $(distdir)/debian/*.ex                                                           #  delete example files
+	rm -f $(distdir)/debian/*.EX                                                           #  delete example files
+	rm -f $(distdir)/src/rc/COPYING							       #  license files are all 
+	rm -f $(distdir)/src/rc/gpl-2.0.txt						       #  in the "copyright"
 	@echo "-----------------------------------------------------------------------------"
 	cat $(distdir)/debian/control
 	@echo "-----------------------------------------------------------------------------"

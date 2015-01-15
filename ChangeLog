@@ -1,4 +1,16 @@
 Non-maintainer upload
+
+commit 6cc36df
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-15
+
+    Fix below lintian error
+    W:janeclone source: changelog-should-mention-nmu
+    W:janeclone source: source-nmu-has-incorrect-version-number 1.1.4
+
+ChangeLog
+Makefile.am
+
 commit 3f2cf98
 Author: Hiroyuki-Nagata <newserver002@gmail.com>
 Date:   2015-01-14
