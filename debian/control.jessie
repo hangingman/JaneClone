@@ -11,5 +11,6 @@ Version: 0:%%%VERSION%%%-1
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Cross Platform 2ch browser
- JaneClone is a plain browser dedicated to read 2ch thread. Using a library called wxWidgets.
- It will work on Windows, Linux, Mac. It will keep the platform-specific user interface.
+ JaneClone is a plain browser dedicated to read 2ch thread. 
+ Using a library called wxWidgets. It will work on Windows, 
+ Linux, Mac. It will keep the platform-specific user interface.
