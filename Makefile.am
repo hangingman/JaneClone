@@ -87,7 +87,7 @@ SPECFILE_PATH	= $(top_builddir)/extras/package/SPECS/$(SPECFILE)
 RPMNAME		= $(PACKAGE_NAME)-$(VERSION).`uname -m`.rpm
 
 # Debian用COPYRIGHTの場所
-COPYRIGHT=$(top_builddir)/debian/copyright
+COPYRIGHT=$(distdir)/debian/copyright
 PACKAGER="Hiroyuki Nagata"
 AUTHOR="Hiroyuki Nagata"
 
@@ -298,22 +298,6 @@ package-deb-local: package-deb
 
 # update license info
 package-deb-license:
-	echo "This package was debianized by $(PACKAGER) <$(PACKAGE_BUGREPORT)> on" > $(COPYRIGHT)
-	echo `date -R`                                                             >> $(COPYRIGHT)
-	echo ""                                                                    >> $(COPYRIGHT)
-	echo "It was downloaded from $(UPSTREAM_URL)"                              >> $(COPYRIGHT)
-	echo ""                                                                    >> $(COPYRIGHT)
-	echo "Upstream Author: $(AUTHOR) <$(PACKAGE_BUGREPORT)>"                   >> $(COPYRIGHT)
-	echo ""                                                                    >> $(COPYRIGHT)
-	echo "Copyright:  © 2011-" `date +"%Y"` "$(AUTHOR)"                        >> $(COPYRIGHT)
-	echo ""                                                                    >> $(COPYRIGHT)
-	echo "License:                                         "                   >> $(COPYRIGHT)
-	echo ""                                                                    >> $(COPYRIGHT)
-	cat $(top_builddir)/COPYING |                                              >> $(COPYRIGHT)
-	echo ""
-	echo "-----------------------------------------------------------------------------" >> $(COPYRIGHT)
-	echo ""
-#sh $(top_builddir)/misc/license.sh >> $(COPYRIGHT)
 
 # target for debian
 package-deb: package-deb-license local-distdir-remove dist
@@ -342,9 +326,26 @@ package-deb: package-deb-license local-distdir-remove dist
 	sed -i '4r README' $(distdir)/debian/README.Debian
 	sed -i 's/\r//'    $(distdir)/debian/README.Debian
 	@echo "-----------------------------------------------------------------------------"
-	cat $(distdir)/debian/control
+	echo "This package was debianized by $(PACKAGER) <$(PACKAGE_BUGREPORT)> on" > $(COPYRIGHT)
+	echo `date -R`                                                             >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "It was downloaded from $(UPSTREAM_URL)"                              >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "Upstream Author: $(AUTHOR) <$(PACKAGE_BUGREPORT)>"                   >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "Copyright:  © 2011-" `date +"%Y"` "$(AUTHOR)"                        >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "License:                                         "                   >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	cat $(top_builddir)/COPYING |                                              >> $(COPYRIGHT)
+	echo ""
+	echo "-----------------------------------------------------------------------------" >> $(COPYRIGHT)
 	@echo "-----------------------------------------------------------------------------"
-	cat $(distdir)/debian/rules
+	@cat $(distdir)/debian/copyright
+	@echo "-----------------------------------------------------------------------------"
+	@cat $(distdir)/debian/control
+	@echo "-----------------------------------------------------------------------------"
+	@cat $(distdir)/debian/rules
 	@echo "-----------------------------------------------------------------------------"
 
 # local dist remove
