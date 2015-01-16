@@ -4,7 +4,7 @@ EXTRA_DATA		= $(wildcard rc/*)
 
 bin_PROGRAMS 		= janeclone
 
-janecloneexecrcdir	= /usr/share/pixmaps/@PACKAGE@/rc
+janecloneexecrcdir	= /usr/share/pixmaps/@PACKAGE@
 janecloneexecrc_DATA	= $(wildcard rc/*)
 
 janecloneexecscriptdir	= $(datarootdir)/@PACKAGE@/script

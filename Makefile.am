@@ -31,11 +31,11 @@ EXTRA_DIST  = misc/janeclone.wrapper  \
 
 # 書き換えスクリプト
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
-janecloneexecrcdir	= /usr/share/pixmaps/@PACKAGE@/rc
+janecloneexecrcdir	= $(prefix)/share/pixmaps/@PACKAGE@
 
 do_subst_wrapper =  sed -e 's,%%%appdir%%%,$(datarootdir)/@PACKAGE@,g' \
 			-e 's,%%%pkglibdir%%%,$(pkglibdir),g'
-do_subst_menu 	 =  sed -e 's,%%%bindir%%%,/usr/bin,g' \
+do_subst_menu 	 =  sed -e 's,%%%bindir%%%,$(bindir)/,g' \
 			-e 's,%%%janecloneexecrcdir%%%,$(janecloneexecrcdir),g'
 
 # Doxygen

@@ -16,6 +16,10 @@ AC_CONFIG_SRCDIR([src/enums.hpp])
 AC_CONFIG_HEADERS([config.h:curlpp/include/curlpp/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_SYS_LARGEFILE
+AS_IF([test "$prefix" = "NONE"], 
+      [AC_DEFINE_UNQUOTED([PREFIX_DIR], ["/usr/local"], [--prefix dir macro])],
+      [AC_DEFINE_UNQUOTED([PREFIX_DIR], ["$prefix"],    [--prefix dir macro])]
+)
 
 # Checks for programs.
 AC_PROG_AWK
@@ -153,7 +157,7 @@ if test $has_pthread = 0; then
 fi
 # Checks for libsqlite3 ( if not exist, build it )
 AC_CHECK_LIB(sqlite3,sqlite3_libversion_number,has_sqlite3=1,has_sqlite3=0)
-if test $has_sqlite3 = 0 -o $PLATFORM_STRING="Apple"; then
+if test $has_sqlite3 = 0 -o $PLATFORM_STRING = "Apple"; then
   AC_MSG_NOTICE([we will build sqlite3...])
   AM_CONDITIONAL(BUILDING_SQLITE3, true)
 fi
@@ -167,7 +171,7 @@ AC_TRY_LINK([#include <wx/wxsqlite3.h>],
 	    has_wxsqlite3=1,
 	    has_wxsqlite3=0)
 AC_LANG_POP(C++)
-if test $has_wxsqlite3 = 0 -o $PLATFORM_STRING="Apple"; then
+if test $has_wxsqlite3 = 0 -o $PLATFORM_STRING = "Apple"; then
   AC_MSG_RESULT([no])
   AC_MSG_NOTICE([we will build wxsqlite3...])
   AM_CONDITIONAL(BUILDING_WXSQLITE3, true)

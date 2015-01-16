@@ -128,7 +128,7 @@ static const wxString janecloneVersion   = wxT(PACKAGE_VERSION);
 // リソースファイルのパス
 #if defined (__WXMSW__) || defined(__WXGTK__)
    #ifdef DEBIAN_PACKAGE_BUILD
-      #define RESOURCE_PATH "/usr/share/pixmaps/janeclone/rc/"
+      #define RESOURCE_PATH PREFIX_DIR "/share/pixmaps/janeclone/"
    #else
       #define RESOURCE_PATH "rc/"
    #endif

@@ -1,5 +1,96 @@
 Non-maintainer upload
 
+commit fe78b8a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-16
+
+    If platform is osx, sqlite3 & wxsqlite3 is builtin
+
+configure.ac
+
+commit a15cd0d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-16
+
+    Add plain man page
+
+Makefile.am
+debian/control.jessie
+debian/control.ubuntu
+debian/control.wheezy
+
+commit 54ddb0a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-16
+
+    Fix below lintian error
+    E:janeclone: arch-dependent-file-in-usr-share usr/share/janeclone/JaneClone
+
+Makefile.am
+src/Makefile.am
+src/janeclone.cpp
+
+commit 48120d6
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-16
+
+    Move resource files "/usr/share/janeclone/rc" to "/usr/share/pixmaps/janeclone/rc",
+    and fix source code to commonalize process of loading images.
+
+Makefile.am
+debian/rules
+src/Makefile.am
+src/datatype.hpp
+src/janeclone.cpp
+src/janecloneuiutil.cpp
+src/janecloneutil.cpp
+src/threadcontentwindow.cpp
+
+commit 6f7da41
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-15
+
+    Fix below lintian error
+    E:janeclone: helper-templates-in-copyright
+    W:janeclone: copyright-has-url-from-dh_make-boilerplate
+    E:janeclone: copyright-contains-dh_make-todo-boilerplate
+
+Makefile.am
+
+commit 6cb6792
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-15
+
+    Fix below lintian error
+    W:janeclone: readme-debian-contains-debmake-template
+
+Makefile.am
+
+commit 4d50a44
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-15
+
+    Fix below lintian error
+    W:janeclone: extended-description-line-too-long
+    W:janeclone: extended-description-line-too-long
+
+debian/control.jessie
+debian/control.ubuntu
+debian/control.wheezy
+
+commit fc44236
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-15
+
+    Fix below lintian error
+    W: janeclone source: dh-make-template-in-source debian/janeclone.doc-base.EX
+    W: janeclone: extra-license-file usr/share/janeclone/rc/COPYING
+    W: janeclone: extra-license-file usr/share/janeclone/rc/gpl-2.0.txt
+
+ChangeLog
+Makefile.am
+configure.ac
+
 commit 6cc36df
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2015-01-15
