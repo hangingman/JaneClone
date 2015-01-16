@@ -740,24 +740,11 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 	  size_t start, len;
 
 	  // デフォルト画像の読み込み
-#ifndef __WXMAC__
-	  wxString imagePath = wxGetCwd() + 
-	                       wxFileSeparator + 
-	                       wxT("rc") + 
-	                       wxFileSeparator + 
-	                       wxT("image-x-generic.png");
-#else
-	  wxString imagePath = wxGetCwd() +
-	                       wxFileSeparator +
-                 	       wxT("JaneClone.app/Contents/MacOS/rc") +
-	                       wxFileSeparator + 
-	                       wxT("image-x-generic.png");
-#endif
 	  wxImage image;
 	  wxBitmap bitmap;
 
           // load wxImage
-	  if (!image.LoadFile(imagePath)) {
+	  if (!image.LoadFile(defaultIconImg)) {
 	       wxMessageBox(wxT("画像ファイルの読み出しに失敗しました"),
 			    wxT("wxMemoryFSHandler"),
 			    wxICON_ERROR);

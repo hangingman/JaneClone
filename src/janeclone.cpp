@@ -249,12 +249,7 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
      // URL入力欄
      m_url_input_panel = new wxPanel(this, wxID_ANY);
      m_url_input = new wxTextCtrl(m_url_input_panel, wxID_ANY, m_url_text, wxDefaultPosition, wxDefaultSize);
-
-#ifndef __WXMAC__
-     m_url_input_button = new wxBitmapButton(m_url_input_panel, ID_URLWindowButton, wxBitmap(wxT("rc/go-next.png"), wxBITMAP_TYPE_ANY));
-#else // Macの場合画像ファイル読み込みの場所が異なる
-     m_url_input_button = new wxBitmapButton(m_url_input_panel, ID_URLWindowButton, wxBitmap(wxT("JaneClone.app/Contents/MacOS/rc/go-next.png"), wxBITMAP_TYPE_ANY));
-#endif
+     m_url_input_button = new wxBitmapButton(m_url_input_panel, ID_URLWindowButton, wxBitmap(goNextImg, wxBITMAP_TYPE_ANY));
 
      // ログ出力ウィンドウ
      m_logCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
@@ -2704,19 +2699,11 @@ void JaneClone::InitializeShingetsuNodeList() {
      wxTreeItemId m_rootId;
 
      // イメージリストにアイコンを登録する
-#ifndef __WXMAC__
      wxImageList* treeImage = new wxImageList(16, 16);
-     wxBitmap idx1(wxT("rc/folder.png"), wxBITMAP_TYPE_PNG);
+     wxBitmap idx1(folderImg, wxBITMAP_TYPE_PNG);
      treeImage->Add(idx1);
-     wxBitmap idx2(wxT("rc/text-html.png"), wxBITMAP_TYPE_PNG);
+     wxBitmap idx2(textHtmlImg), wxBITMAP_TYPE_PNG);
      treeImage->Add(idx2);
-#else
-     wxImageList* treeImage = new wxImageList(16, 16);
-     wxBitmap idx1(wxT("JaneClone.app/Contents/MacOS/rc/folder.png"), wxBITMAP_TYPE_PNG);
-     treeImage->Add(idx1);
-     wxBitmap idx2(wxT("JaneClone.app/Contents/MacOS/rc/text-html.png"), wxBITMAP_TYPE_PNG);
-     treeImage->Add(idx2);
-#endif
      m_shingetsu_tree_ctrl->AssignImageList(treeImage);
      m_shingetsu_tree_ctrl->SetLabel(SHINGETU_NODE_TREE);
      wxTreeItemId rootTemp = m_shingetsu_tree_ctrl->AddRoot(wxT("新月公開ノード一覧"));

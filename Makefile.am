@@ -30,7 +30,7 @@ EXTRA_DIST  = misc/janeclone.wrapper  \
 
 # 書き換えスクリプト
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
-janecloneexecrcdir	= $(datarootdir)/@PACKAGE@/rc
+janecloneexecrcdir	= /usr/share/pixmaps/@PACKAGE@/rc
 
 do_subst_wrapper =  sed -e 's,%%%appdir%%%,$(datarootdir)/@PACKAGE@,g' \
 			-e 's,%%%pkglibdir%%%,$(pkglibdir),g'
