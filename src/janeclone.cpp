@@ -803,13 +803,7 @@ void JaneClone::SetProperties()
      babel::init_babel();
      // XRCの初期化を行う
      wxXmlResource::Get()->InitAllHandlers();
-
-#ifndef __WXMAC__
-     bool bRet = wxXmlResource::Get()->Load(wxT("rc/*.xrc"));
-#else
-     const wxString JC_XRC_PATH = MAC_OSX_CURDIR_PREFIX + wxT("rc/*.xrc");
-     bool bRet = wxXmlResource::Get()->Load(JC_XRC_PATH);
-#endif
+     bool bRet = wxXmlResource::Get()->Load(wxT(RESOURCE_PATH "*.xrc"));
 
      if( !bRet )
      {
