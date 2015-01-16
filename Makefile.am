@@ -26,7 +26,8 @@ EXTRA_DIST  = misc/janeclone.wrapper  \
 	      misc/janeclone.desktop  \
 	      test                    \
 	      $(wildcard babel/*.dat) \
-	      $(wildcard bebel/*.csv)
+	      $(wildcard bebel/*.csv) \
+	      man/janeclone.man
 
 # 書き換えスクリプト
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
@@ -34,12 +35,15 @@ janecloneexecrcdir	= /usr/share/pixmaps/@PACKAGE@/rc
 
 do_subst_wrapper =  sed -e 's,%%%appdir%%%,$(datarootdir)/@PACKAGE@,g' \
 			-e 's,%%%pkglibdir%%%,$(pkglibdir),g'
-do_subst_menu 	 =  sed -e 's,%%%bindir%%%,$(bindir),g' \
+do_subst_menu 	 =  sed -e 's,%%%bindir%%%,/usr/bin,g' \
 			-e 's,%%%janecloneexecrcdir%%%,$(janecloneexecrcdir),g'
 
 # Doxygen
 docs: src/*.cpp src/*.hpp Doxyfile
 	doxygen && cd docs/ && git add . && git commit -m 'updated docs' && git push origin gh-pages
+
+# manページ
+man1_MANS = man/janeclone.man
 
 # janecloneスクリプトを作成する
 janeclone:
@@ -314,6 +318,11 @@ package-deb: package-deb-license local-distdir-remove dist
 	sed -i 's/%%%STANDARDS-VERSION%%%/@DEB_STANDARDS_VERSION@/g' $(distdir)/debian/control #  debian policy version
 	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)+nmuX/g' $(distdir)/debian/control           #  upstream version 
 	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control    #  bugreport address
+	sed -i 's/%%%VERSION%%%/$(VERSION)/g' $(distdir)/man/janeclone.man             	       #  upstream version
+	sed -i "s/%%%DATE%%%/`date +\"%B %d, %Y\"`/g" $(distdir)/man/janeclone.man
+	@echo "-----------------------------------------------------------------------------"
+	@cat $(distdir)/man/janeclone.man
+	@echo "-----------------------------------------------------------------------------"
 	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules                              #  rule file
 	rm -f $(distdir)/debian/*.ex                                                           #  delete example files
 	rm -f $(distdir)/debian/*.EX                                                           #  delete example files
