@@ -153,7 +153,7 @@ if test $has_pthread = 0; then
 fi
 # Checks for libsqlite3 ( if not exist, build it )
 AC_CHECK_LIB(sqlite3,sqlite3_libversion_number,has_sqlite3=1,has_sqlite3=0)
-if test $has_sqlite3 = 0; then
+if test $has_sqlite3 = 0 -o $PLATFORM_STRING="Apple"; then
   AC_MSG_NOTICE([we will build sqlite3...])
   AM_CONDITIONAL(BUILDING_SQLITE3, true)
 fi
@@ -167,7 +167,7 @@ AC_TRY_LINK([#include <wx/wxsqlite3.h>],
 	    has_wxsqlite3=1,
 	    has_wxsqlite3=0)
 AC_LANG_POP(C++)
-if test $has_wxsqlite3 = 0; then
+if test $has_wxsqlite3 = 0 -o $PLATFORM_STRING="Apple"; then
   AC_MSG_RESULT([no])
   AC_MSG_NOTICE([we will build wxsqlite3...])
   AM_CONDITIONAL(BUILDING_WXSQLITE3, true)
