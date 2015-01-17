@@ -40,6 +40,13 @@ function Get-ProxyWebClient {
 	return $webclient
 }
 
+# ディレクトリがあれば削除
+function Remove-Dir-IfExist($dir) {
+	if (Test-Path $dir) {
+		Remove-Item $dir /r
+	}
+}
+
 # ------------------------------------------------------------------------------------------------------------ #
 #  バッチ処理の開始                                                                                            #
 # ------------------------------------------------------------------------------------------------------------ #
@@ -87,10 +94,6 @@ If (Test-Path $wxDirPath) {
 		Expand-ZIPFile -File "$wxZipPath" -Destination "$parentPath"
 	}
 }
-
-# build wxWidgets
-Write-Host "Waiting..."
-[Console]::ReadKey() | Out-Null
 
 #
 # bakefileを起動させる
