@@ -26,6 +26,7 @@ cd %~dp0wxWidgets-WX_3_0_2\build\msw
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\vcvarsx86_amd64.bat"
 
 @echo "wxWidgetsをビルドします。ちょっと時間がかかります。"
+
 @rem 64 bit release build
 @rem ------------------
 nmake -f makefile.vc BUILD=release SHARED=1 COMPILER_VERSION=120 OFFICIAL_BUILD=1 TARGET_CPU=AMD64 >> 2013x64_Release.txt
