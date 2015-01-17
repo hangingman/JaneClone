@@ -5,8 +5,8 @@ environment:
   global:
     MSYS_ROOT: C:/MinGW/msys/1.0
 
-matrix:
-  - COMPILER: "VC2013"
+  matrix:
+    - COMPILER: "VC2013"
 
 #   - COMPILER: "MINGW32"
 
