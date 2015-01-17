@@ -3,19 +3,9 @@
 // ...edit it with emacs c++mode
 //
 
-archs    = x86 x86_64;
-toolsets = vs2013;
-
-library crossguid {
-
-  includedirs = ../crossguid;
-  
-  defines = GUID_WINDOWS;
-
-  sources {
-    ../crossguid/guid.cpp 
-  }
-}
+archs            = x86 x86_64;
+toolsets         = vs2013;
+local_wx_include = ./wxWidgets-WX_3_0_2/include ./wxWidgets-WX_3_0_2/include/msvc;
 
 library sqlite3 {
 
@@ -32,38 +22,21 @@ library wxsqlite3 {
 
   deps = sqlite3;
 
-  includedirs = ../wxsqlite3;
+  includedirs = ../sqlite3 ../wxsqlite3 $local_wx_include;
+  
+  if ( $archs == x86 )
+    libdirs = ./wxWidgets-WX_3_0_2/lib/vc120_dll;
+  
+  if ( $archs == x86_64 )
+    libdirs = ./wxWidgets-WX_3_0_2/lib/vc120_x64_dll;
   
   defines = WXMAKINGDLL_WXSQLITE3 "wxUSE_DYNAMIC_SQLITE3_LOAD=0" "WXSQLITE3_HAVE_METADATA=0" "WXSQLITE3_HAVE_CODEC=0" "WXSQLITE3_HAVE_LOAD_EXTENSION=0";
+  defines += "wxMSVC_VERSION_AUTO=1" "WXUSINGDLL=1";
 
   sources {
     ../wxsqlite3/wxsqlite3.cpp
   }
 }
-
-library curlpp {
-
-  includedirs    = ../curlpp/include/curlpp ../curlpp/include;
-  curlpp_srcdir  = "../curlpp/src";
-
-  sources {
-    $(curlpp_srcdir)/curlpp/cURLpp.cpp
-    $(curlpp_srcdir)/curlpp/Easy.cpp
-    $(curlpp_srcdir)/curlpp/Exception.cpp
-    $(curlpp_srcdir)/curlpp/Form.cpp
-    $(curlpp_srcdir)/curlpp/Info.cpp
-    $(curlpp_srcdir)/curlpp/internal/CurlHandle.cpp
-    $(curlpp_srcdir)/curlpp/internal/OptionList.cpp
-    $(curlpp_srcdir)/curlpp/internal/OptionSetter.cpp
-    $(curlpp_srcdir)/curlpp/internal/SList.cpp
-    $(curlpp_srcdir)/curlpp/Multi.cpp
-    $(curlpp_srcdir)/curlpp/OptionBase.cpp
-    $(curlpp_srcdir)/curlpp/Options.cpp
-    $(curlpp_srcdir)/utilspp/LifetimeLibrary.cpp
-    $(curlpp_srcdir)/utilspp/PrivateMembers.cpp
-  }
-}
-
 
 // library ctw {
 
@@ -89,10 +62,18 @@ library curlpp {
 
 program janeclone {
 
-  includedirs = ../crossguid ../sqlite3 ../wxsqlite3;
-  includedirs+= ../curlpp/include/curlpp ../curlpp/include;
+  includedirs = ../sqlite3 ../wxsqlite3;
+  includedirs+= $local_wx_include;
 
-  deps = crossguid sqlite3 wxsqlite3 curlpp;
+  deps = sqlite3 wxsqlite3; //curlpp;
+  
+  if ( $archs == x86 )
+    libdirs = ./wxWidgets-WX_3_0_2/lib/vc120_dll;
+  
+  if ( $archs == x86_64 )
+    libdirs = ./wxWidgets-WX_3_0_2/lib/vc120_x64_dll;
+
+  defines = "wxMSVC_VERSION_AUTO=1" "WXUSINGDLL=1";
 
   sources {
     ../src/anchoredresponsepopup.cpp
