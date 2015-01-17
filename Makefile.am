@@ -469,7 +469,8 @@ wxmac-dist-shared-lib:
 	   otool -L $$file | egrep -v /\(usr/lib\|System\) | awk {'print $$1'} | while read line; \
 	   do                 \
 	      if [[ $$line != *: ]]; then \
-	         echo "Patching " $$line " to @executable_path/lib/" `basename $$line` ;              \
+		 echo "--> For " $$file; \
+	         echo "Patching " $$line " to @executable_path/lib/" `basename $$line | sed -r 's/(^lib.*-)([0-9]\.[0-9]\.[0-9]).*/\1\2\.dylib/g'` ; \
 	         install_name_tool -change $${line} @executable_path/lib/`basename $$line` $${file};  \
 	      fi                          \
 	   done                           \
