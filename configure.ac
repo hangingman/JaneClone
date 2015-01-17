@@ -8,7 +8,7 @@ AC_INIT([JaneClone], [1.1.4], [newserver002@gmail.com])
 AC_SUBST(UPSTREAM_URL, [https://github.com/Hiroyuki-Nagata/JaneClone])
 # Refering Debian Policy Version 
 # -> http://www.debian.or.jp/community/devel/debian-policy-ja/policy.ja.html/
-AC_SUBST(DEB_STANDARDS_VERSION, [3.9.6])
+AC_SUBST(DEB_STANDARDS_VERSION, [3.9.3])
 AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE([-Wno-portability])
 AM_SILENT_RULES([yes])
@@ -16,6 +16,10 @@ AC_CONFIG_SRCDIR([src/enums.hpp])
 AC_CONFIG_HEADERS([config.h:curlpp/include/curlpp/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_SYS_LARGEFILE
+AS_IF([test "$prefix" = "NONE"], 
+      [AC_DEFINE_UNQUOTED([PREFIX_DIR], ["/usr/local"], [--prefix dir macro])],
+      [AC_DEFINE_UNQUOTED([PREFIX_DIR], ["$prefix"],    [--prefix dir macro])]
+)
 
 # Checks for programs.
 AC_PROG_AWK
@@ -23,6 +27,7 @@ AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_MAKE_SET
 AC_PROG_MKDIR_P
+PKG_PROG_PKG_CONFIG
 AC_LIBTOOL_WIN32_DLL
 LT_INIT
 
@@ -46,11 +51,6 @@ case "$host" in
 		AC_SUBST(PLATFORM_STRING)
 		AM_CONDITIONAL(USE_LINUX, true)
 		need_no_undefined=no
-		# Checks for uuid
-		AC_CHECK_LIB(uuid,uuid_generate,LIBS="-luuid $LIBS" has_uuid=1,has_uuid=0)
-		if test $has_uuid = 0; then
-		  AC_MSG_ERROR("ERROR: cannot find uuid.")
-		fi
                 ;;
         *-*-darwin*)
                 PLATFORM_STRING="Apple"
@@ -62,11 +62,6 @@ case "$host" in
                 PLATFORM_STRING="BSD"
 		AC_SUBST(PLATFORM_STRING)
 		need_no_undefined=no
-		# Checks for uuid
-		AC_CHECK_LIB(uuid,uuid_generate,LIBS="-luuid $LIBS" has_uuid=1,has_uuid=0)
-		if test $has_uuid = 0; then
-		  AC_MSG_ERROR("ERROR: cannot find uuid.")
-		fi
                 ;;
         *)
                 AC_MSG_WARN([*** Please add $host to configure.ac checks!])
@@ -162,7 +157,7 @@ if test $has_pthread = 0; then
 fi
 # Checks for libsqlite3 ( if not exist, build it )
 AC_CHECK_LIB(sqlite3,sqlite3_libversion_number,has_sqlite3=1,has_sqlite3=0)
-if test $has_sqlite3 = 0; then
+if test $has_sqlite3 = 0 -o $PLATFORM_STRING = "Apple"; then
   AC_MSG_NOTICE([we will build sqlite3...])
   AM_CONDITIONAL(BUILDING_SQLITE3, true)
 fi
@@ -176,7 +171,7 @@ AC_TRY_LINK([#include <wx/wxsqlite3.h>],
 	    has_wxsqlite3=1,
 	    has_wxsqlite3=0)
 AC_LANG_POP(C++)
-if test $has_wxsqlite3 = 0; then
+if test $has_wxsqlite3 = 0 -o $PLATFORM_STRING = "Apple"; then
   AC_MSG_RESULT([no])
   AC_MSG_NOTICE([we will build wxsqlite3...])
   AM_CONDITIONAL(BUILDING_WXSQLITE3, true)
@@ -269,6 +264,18 @@ AS_IF([test "x$enable_bar" = "xyes"], [
 ])
 #-----------------------------------------------------------------------
 
+#-----------------------------------------------------------------------
+#   libcrypto for md5 hash
+#
+AS_IF([test x"$PLATFORM_STRING" != x"Apple"], [
+    PKG_CHECK_MODULES([CRYPTO], [libcrypto],, [
+        AC_CHECK_LIB([crypto], [MD5], [CRYPTO_LIBS="-lcrypto"], [
+            AC_MSG_ERROR("ERROR: cannot find libcrypto.")
+        ])
+    ])
+])
+#-----------------------------------------------------------------------
+
 # Check compile flag
 AX_CHECK_COMPILE_FLAG([-fstack-protector], [CXXFLAGS="$CXXFLAGS -fstack-protector"])
 AX_CHECK_COMPILE_FLAG([-fomit-frame-pointer], [CXXFLAGS="$CXXFLAGS -fomit-frame-pointer"])
@@ -311,7 +318,6 @@ AC_FUNC_STRERROR_R
 
 # Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile
-		 crossguid/Makefile
 		 cmdline_twitter/Makefile
                  src/Makefile
 		 test/Makefile])

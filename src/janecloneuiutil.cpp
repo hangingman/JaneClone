@@ -55,19 +55,11 @@ void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWin
      wxTreeItemId m_rootId;
 
      // イメージリストにアイコンを登録する
-#ifndef __WXMAC__
      wxImageList* treeImage = new wxImageList(16, 16);
-     wxBitmap idx1(wxT("rc/folder.png"), wxBITMAP_TYPE_PNG);
+     wxBitmap idx1(folderImg, wxBITMAP_TYPE_PNG);
      treeImage->Add(idx1);
-     wxBitmap idx2(wxT("rc/text-html.png"), wxBITMAP_TYPE_PNG);
+     wxBitmap idx2(textHtmlImg, wxBITMAP_TYPE_PNG);
      treeImage->Add(idx2);
-#else // Macの場合画像ファイル読み込みの場所が異なる
-     wxImageList* treeImage = new wxImageList(16, 16);
-     wxBitmap idx1(wxT("JaneClone.app/Contents/MacOS/rc/folder.png"), wxBITMAP_TYPE_PNG);
-     treeImage->Add(idx1);
-     wxBitmap idx2(wxT("JaneClone.app/Contents/MacOS/rc/text-html.png") , wxBITMAP_TYPE_PNG);
-     treeImage->Add(idx2);
-#endif
      treeCtrl->AssignImageList(treeImage);
 
      // ツリー部分へのカーソル合わせが起きた場合のイベント通知

@@ -1,5 +1,5 @@
 # 依存関係にあるソース群
-SUBDIRS = crossguid 
+SUBDIRS = 
 
 if BUILDING_SQLITE3
    SUBDIRS += sqlite3
@@ -26,25 +26,27 @@ EXTRA_DIST  = misc/janeclone.wrapper  \
 	      misc/janeclone.desktop  \
 	      test                    \
 	      $(wildcard babel/*.dat) \
-	      $(wildcard bebel/*.csv)
+	      $(wildcard bebel/*.csv) \
+	      man/janeclone.man
 
 # 書き換えスクリプト
 janecloneexecdir 	= $(datarootdir)/@PACKAGE@
-janecloneexecrcdir	= $(datarootdir)/@PACKAGE@/rc
+janecloneexecrcdir	= $(prefix)/share/pixmaps/@PACKAGE@
 
 do_subst_wrapper =  sed -e 's,%%%appdir%%%,$(datarootdir)/@PACKAGE@,g' \
 			-e 's,%%%pkglibdir%%%,$(pkglibdir),g'
-do_subst_menu 	 =  sed -e 's,%%%bindir%%%,$(bindir),g' \
+do_subst_menu 	 =  sed -e 's,%%%bindir%%%,$(bindir)/,g' \
 			-e 's,%%%janecloneexecrcdir%%%,$(janecloneexecrcdir),g'
 
 # Doxygen
 docs: src/*.cpp src/*.hpp Doxyfile
 	doxygen && cd docs/ && git add . && git commit -m 'updated docs' && git push origin gh-pages
 
+# manページ
+man1_MANS = man/janeclone.man
+
 # janecloneスクリプトを作成する
 janeclone:
-	$(do_subst_wrapper) misc/janeclone.wrapper > janeclone
-	chmod +x janeclone
 if USE_LINUX
 	if [ -d debian ]; then \
 		$(do_subst_menu) misc/janeclone.menu > debian/menu; \
@@ -67,7 +69,9 @@ dist-hook: ChangeLog
 
 # configure.acが更新された時動く
 ChangeLog: configure.ac
-	git log --stat --name-only --date=short --abbrev-commit > ChangeLog
+	@echo "Non-maintainer upload" > ChangeLog
+	@echo "" >> ChangeLog
+	git log --stat --name-only --date=short --abbrev-commit >> ChangeLog
 
 # NSISの設定ファイル
 MAKENSIS    = makensis
@@ -85,7 +89,7 @@ SPECFILE_PATH	= $(top_builddir)/extras/package/SPECS/$(SPECFILE)
 RPMNAME		= $(PACKAGE_NAME)-$(VERSION).`uname -m`.rpm
 
 # Debian用COPYRIGHTの場所
-COPYRIGHT=$(top_builddir)/debian/copyright
+COPYRIGHT=$(distdir)/debian/copyright
 PACKAGER="Hiroyuki Nagata"
 AUTHOR="Hiroyuki Nagata"
 
@@ -296,22 +300,6 @@ package-deb-local: package-deb
 
 # update license info
 package-deb-license:
-	echo "This package was debianized by $(PACKAGER) <$(PACKAGE_BUGREPORT)> on" > $(COPYRIGHT)
-	echo `date -R`                                                             >> $(COPYRIGHT)
-	echo ""                                                                    >> $(COPYRIGHT)
-	echo "It was downloaded from $(UPSTREAM_URL)"                              >> $(COPYRIGHT)
-	echo ""                                                                    >> $(COPYRIGHT)
-	echo "Upstream Author: $(AUTHOR) <$(PACKAGE_BUGREPORT)>"                   >> $(COPYRIGHT)
-	echo ""                                                                    >> $(COPYRIGHT)
-	echo "Copyright:  © 2011-" `date +"%Y"` "$(AUTHOR)"                        >> $(COPYRIGHT)
-	echo ""                                                                    >> $(COPYRIGHT)
-	echo "License:                                         "                   >> $(COPYRIGHT)
-	echo ""                                                                    >> $(COPYRIGHT)
-	cat $(top_builddir)/COPYING |                                              >> $(COPYRIGHT)
-	echo ""
-	echo "-----------------------------------------------------------------------------" >> $(COPYRIGHT)
-	echo ""
-#sh $(top_builddir)/misc/license.sh >> $(COPYRIGHT)
 
 # target for debian
 package-deb: package-deb-license local-distdir-remove dist
@@ -328,14 +316,43 @@ package-deb: package-deb-license local-distdir-remove dist
 	   cp $(top_builddir)/debian/control.jessie $(distdir)/debian/control; \
 	fi
 	sed -i 's/%%%STANDARDS-VERSION%%%/@DEB_STANDARDS_VERSION@/g' $(distdir)/debian/control #  debian policy version
-	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)/g' $(distdir)/debian/control                #  upstream version 
+	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)+nmuX/g' $(distdir)/debian/control           #  upstream version 
 	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control    #  bugreport address
+	sed -i 's/%%%VERSION%%%/$(VERSION)/g' $(distdir)/man/janeclone.man             	       #  upstream version
+	sed -i "s/%%%DATE%%%/`date +\"%B %d, %Y\"`/g" $(distdir)/man/janeclone.man
+	@echo "-----------------------------------------------------------------------------"
+	@cat $(distdir)/man/janeclone.man
+	@echo "-----------------------------------------------------------------------------"
 	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules                              #  rule file
-	rm -f $(distdir)/debian/*.ex                                                           #  delete extension files
+	rm -f $(distdir)/debian/*.ex                                                           #  delete example files
+	rm -f $(distdir)/debian/*.EX                                                           #  delete example files
+	rm -f $(distdir)/src/rc/COPYING							       #  license files are all 
+	rm -f $(distdir)/src/rc/gpl-2.0.txt						       #  in the "copyright"
+	ls $(distdir)/
+	sed -i 's/<possible notes regarding this package - if none, delete this file>//g' $(distdir)/debian/README.Debian
+	sed -i '4r README' $(distdir)/debian/README.Debian
+	sed -i 's/\r//'    $(distdir)/debian/README.Debian
 	@echo "-----------------------------------------------------------------------------"
-	cat $(distdir)/debian/control
+	echo "This package was debianized by $(PACKAGER) <$(PACKAGE_BUGREPORT)> on" > $(COPYRIGHT)
+	echo `date -R`                                                             >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "It was downloaded from $(UPSTREAM_URL)"                              >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "Upstream Author: $(AUTHOR) <$(PACKAGE_BUGREPORT)>"                   >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "Copyright:  © 2011-" `date +"%Y"` "$(AUTHOR)"                        >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	echo "License:                                         "                   >> $(COPYRIGHT)
+	echo ""                                                                    >> $(COPYRIGHT)
+	cat $(top_builddir)/COPYING |                                              >> $(COPYRIGHT)
+	echo ""
+	echo "-----------------------------------------------------------------------------" >> $(COPYRIGHT)
 	@echo "-----------------------------------------------------------------------------"
-	cat $(distdir)/debian/rules
+	@cat $(distdir)/debian/copyright
+	@echo "-----------------------------------------------------------------------------"
+	@cat $(distdir)/debian/control
+	@echo "-----------------------------------------------------------------------------"
+	@cat $(distdir)/debian/rules
 	@echo "-----------------------------------------------------------------------------"
 
 # local dist remove

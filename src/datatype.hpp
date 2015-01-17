@@ -125,95 +125,68 @@ static const std::string userAgent       = std::string("Monazilla/1.00 JaneClone
 // バージョン
 static const wxString janecloneVersion   = wxT(PACKAGE_VERSION);
 
-#ifndef __WXMAC__
-
-// ライセンスのデフォルトのパス
-static const wxString licencePath        = wxT("rc/gpl-2.0.txt");
+// リソースファイルのパス
+#if defined (__WXMSW__) || defined(__WXGTK__)
+   #ifdef DEBIAN_PACKAGE_BUILD
+      #define RESOURCE_PATH PREFIX_DIR "/share/pixmaps/janeclone/"
+   #else
+      #define RESOURCE_PATH "rc/"
+   #endif
+#elif defined(__WXMAC__)
+   #define RESOURCE_PATH "JaneClone.app/Contents/MacOS/rc/"
+#endif
 
 // Javascriptのデフォルトのパス
 static const wxString jsDir              = wxT("script/");
 static const wxString jsPath             = wxT("script/embedded.js");
 
-// 各ボタンに貼り付けられる画像
-static const wxString autoReloadImg      = wxT("rc/appointment-new.png");
-static const wxString redResExtractImg   = wxT("rc/system-search.png");
-static const wxString refreshImg         = wxT("rc/view-refresh.png");
-static const wxString scrollToNewResImg  = wxT("rc/go-bottom.png");
-static const wxString stopImg            = wxT("rc/dialog-error.png");
-static const wxString resExtractImg      = wxT("rc/edit-find-replace.png");
-static const wxString newThreadImg       = wxT("rc/go-last.png");
-static const wxString responseImg        = wxT("rc/page-edit.png");
-static const wxString bookMarkImg        = wxT("rc/bookmark-new.png");
-static const wxString deleteLogImg       = wxT("rc/edit-delete.png");
-static const wxString closeImg           = wxT("rc/emblem-unreadable.png");
-static const wxString normalSearchImg    = wxT("rc/system-search.png");
-static const wxString hideSearchBarImg   = wxT("rc/emblem-unreadable.png");
-static const wxString forwardImg         = wxT("rc/go-down.png");
-static const wxString backwardImg        = wxT("rc/go-up.png");
-static const wxString regexImg           = wxT("rc/emblem-regex.png");
-// ツールバー用アイコン
-static const wxString sideTreeImg        = wxT("rc/application-side-tree.png");
-static const wxString twoPaneWinImg      = wxT("rc/application-tile-horizontal.png");
-static const wxString thrPaneWinImg      = wxT("rc/view-choose.png");
-static const wxString thrColumnWinImg    = wxT("rc/view-file-columns.png");
-static const wxString configImg          = wxT("rc/configure-2.png");
-static const wxString logSearchImg       = wxT("rc/system-search-5.png");
-static const wxString helpImg            = wxT("rc/help-browser.png");
-// スレッド一覧リスト用画像
-static const wxString threadCheckImg     = wxT("rc/dialog-accept.png");
-static const wxString threadAddImg       = wxT("rc/edit-add-3.png");
-static const wxString threadDropImg      = wxT("rc/go-down-4.png");
-static const wxString threadNewImg       = wxT("rc/download-3.png");
-// スレタブ用画像
-static const wxString threadTabNewImg    = wxT("rc/document-new-7.png");
-static const wxString threadTabAddImg    = wxT("rc/document-new-8.png");
-static const wxString threadTabDrpImg    = wxT("rc/document-close-4.png");
-
-#else
-
 // ライセンスのデフォルトのパス
-static const wxString licencePath        = wxT("JaneClone.app/Contents/MacOS/rc/gpl-2.0.txt");
-
-// Javascriptのデフォルトのパス
-static const wxString jsDir              = wxT("JaneClone.app/Contents/MacOS/script/");
-static const wxString jsPath             = wxT("JaneClone.app/Contents/MacOS/script/embedded.js");
+static const wxString licencePath        = wxT(RESOURCE_PATH "gpl-2.0.txt");
 
 // 各ボタンに貼り付けられる画像
-static const wxString autoReloadImg      = wxT("JaneClone.app/Contents/MacOS/rc/appointment-new.png");
-static const wxString redResExtractImg   = wxT("JaneClone.app/Contents/MacOS/rc/system-search.png");
-static const wxString refreshImg         = wxT("JaneClone.app/Contents/MacOS/rc/view-refresh.png");
-static const wxString scrollToNewResImg  = wxT("JaneClone.app/Contents/MacOS/rc/go-bottom.png");
-static const wxString stopImg            = wxT("JaneClone.app/Contents/MacOS/rc/dialog-error.png");
-static const wxString resExtractImg      = wxT("JaneClone.app/Contents/MacOS/rc/edit-find-replace.png");
-static const wxString newThreadImg       = wxT("JaneClone.app/Contents/MacOS/rc/go-last.png");
-static const wxString responseImg        = wxT("JaneClone.app/Contents/MacOS/rc/page-edit.png");
-static const wxString bookMarkImg        = wxT("JaneClone.app/Contents/MacOS/rc/bookmark-new.png");
-static const wxString deleteLogImg       = wxT("JaneClone.app/Contents/MacOS/rc/edit-delete.png");
-static const wxString closeImg           = wxT("JaneClone.app/Contents/MacOS/rc/emblem-unreadable.png");
-static const wxString normalSearchImg    = wxT("JaneClone.app/Contents/MacOS/rc/system-search.png");
-static const wxString hideSearchBarImg   = wxT("JaneClone.app/Contents/MacOS/rc/emblem-unreadable.png");
-static const wxString forwardImg         = wxT("JaneClone.app/Contents/MacOS/rc/go-down.png");
-static const wxString backwardImg        = wxT("JaneClone.app/Contents/MacOS/rc/go-up.png");
-static const wxString regexImg           = wxT("JaneClone.app/Contents/MacOS/rc/emblem-regex.png");
+static const wxString autoReloadImg      = wxT(RESOURCE_PATH "appointment-new.png");
+static const wxString redResExtractImg   = wxT(RESOURCE_PATH "system-search.png");
+static const wxString refreshImg         = wxT(RESOURCE_PATH "view-refresh.png");
+static const wxString scrollToNewResImg	 = wxT(RESOURCE_PATH "go-bottom.png");
+static const wxString stopImg		 = wxT(RESOURCE_PATH "dialog-error.png");
+static const wxString resExtractImg	 = wxT(RESOURCE_PATH "edit-find-replace.png");
+static const wxString newThreadImg	 = wxT(RESOURCE_PATH "go-last.png");
+static const wxString goNextImg          = wxT(RESOURCE_PATH "go-next.png");
+static const wxString responseImg	 = wxT(RESOURCE_PATH "page-edit.png");
+static const wxString bookMarkImg	 = wxT(RESOURCE_PATH "bookmark-new.png");
+static const wxString deleteLogImg	 = wxT(RESOURCE_PATH "edit-delete.png");
+static const wxString closeImg		 = wxT(RESOURCE_PATH "emblem-unreadable.png");
+static const wxString normalSearchImg	 = wxT(RESOURCE_PATH "system-search.png");
+static const wxString hideSearchBarImg	 = wxT(RESOURCE_PATH "emblem-unreadable.png");
+static const wxString forwardImg	 = wxT(RESOURCE_PATH "go-down.png");
+static const wxString backwardImg	 = wxT(RESOURCE_PATH "go-up.png");
+static const wxString regexImg		 = wxT(RESOURCE_PATH "emblem-regex.png");
 // ツールバー用アイコン
-static const wxString sideTreeImg        = wxT("JaneClone.app/Contents/MacOS/rc/application-side-tree.png");
-static const wxString twoPaneWinImg      = wxT("JaneClone.app/Contents/MacOS/rc/application-tile-horizontal.png");
-static const wxString thrPaneWinImg      = wxT("JaneClone.app/Contents/MacOS/rc/view-choose.png");
-static const wxString thrColumnWinImg    = wxT("JaneClone.app/Contents/MacOS/rc/view-file-columns.png");
-static const wxString configImg          = wxT("JaneClone.app/Contents/MacOS/rc/configure-2.png");
-static const wxString logSearchImg       = wxT("JaneClone.app/Contents/MacOS/rc/system-search-5.png");
-static const wxString helpImg            = wxT("JaneClone.app/Contents/MacOS/rc/help-browser.png");
-// スレッド一覧リスト用画像
-static const wxString threadCheckImg     = wxT("JaneClone.app/Contents/MacOS/rc/dialog-accept.png");
-static const wxString threadAddImg       = wxT("JaneClone.app/Contents/MacOS/rc/edit-add-3.png");
-static const wxString threadDropImg      = wxT("JaneClone.app/Contents/MacOS/rc/go-down-4.png");
-static const wxString threadNewImg       = wxT("JaneClone.app/Contents/MacOS/rc/download-3.png");
+static const wxString sideTreeImg        = wxT(RESOURCE_PATH "application-side-tree.png");
+static const wxString twoPaneWinImg	 = wxT(RESOURCE_PATH "application-tile-horizontal.png");
+static const wxString thrPaneWinImg	 = wxT(RESOURCE_PATH "view-choose.png");
+static const wxString thrColumnWinImg	 = wxT(RESOURCE_PATH "view-file-columns.png");
+static const wxString configImg		 = wxT(RESOURCE_PATH "configure-2.png");
+static const wxString logSearchImg	 = wxT(RESOURCE_PATH "system-search-5.png");
+static const wxString helpImg		 = wxT(RESOURCE_PATH "help-browser.png");
+// スレッド一覧リスト用画像 
+static const wxString threadCheckImg	 = wxT(RESOURCE_PATH "dialog-accept.png");
+static const wxString threadAddImg	 = wxT(RESOURCE_PATH "edit-add-3.png");
+static const wxString threadDropImg	 = wxT(RESOURCE_PATH "go-down-4.png");
+static const wxString threadNewImg	 = wxT(RESOURCE_PATH "download-3.png");
 // スレタブ用画像
-static const wxString threadTabNewImg    = wxT("JaneClone.app/Contents/MacOS/rc/document-new-7.png");
-static const wxString threadTabAddImg    = wxT("JaneClone.app/Contents/MacOS/rc/document-new-8.png");
-static const wxString threadTabDrpImg    = wxT("JaneClone.app/Contents/MacOS/rc/document-close-4.png");
+static const wxString threadTabNewImg	 = wxT(RESOURCE_PATH "document-new-7.png");
+static const wxString threadTabAddImg	 = wxT(RESOURCE_PATH "document-new-8.png");
+static const wxString threadTabDrpImg	 = wxT(RESOURCE_PATH "document-close-4.png");
+// ツールバー用画像
+static const wxString folderImg          = wxT(RESOURCE_PATH "folder.png");
+static const wxString textHtmlImg        = wxT(RESOURCE_PATH "text-html.png");
+// スレッド上のデフォルトの画像アイコン
+static const wxString defaultIconImg     = wxT(RESOURCE_PATH "image-x-generic.png");
+static const wxString yahooIconImg       = wxT(RESOURCE_PATH "yahoo.png"); 
+static const wxString googleIconImg      = wxT(RESOURCE_PATH "google.png"); 
+static const wxString amazonIconImg      = wxT(RESOURCE_PATH "amazon.png"); 
 
-#endif
 
 /**
  * 構造体

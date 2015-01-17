@@ -40,7 +40,6 @@
 #include <wx/fs_mem.h>
 #include <wx/treectrl.h>
 #include <wx/fileconf.h>
-#include <guid.h>
 #include <babel.h>
 #include "datatype.hpp"
 #include "enums.hpp"
@@ -219,9 +218,9 @@ public:
       */
      static bool SubstringURI(const wxString& uri, PartOfURI* partOfUri);
      /**
-      * UUIDを生成する
+      * MD5を生成する
       */
-     static wxString GenerateUUIDString();
+     static wxString GenerateMD5String(const wxString& uri);
      /**
       * スレッドの勢い値を計算する
       * 勢い = 書き込み数 / スレが立ってからの秒数 * 86400

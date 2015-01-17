@@ -1893,16 +1893,14 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, std::uni
      imageFilePath += tmp;
 
      // 画像ファイルパスを決定する
-     wxString uuid = JaneCloneUtil::GenerateUUIDString();
-     uuid.Replace(wxT("{"), wxT(""), true);
-     uuid.Replace(wxT("}"), wxT(""), true);
+     wxString md5 = JaneCloneUtil::GenerateMD5String(href);
 
      wxString ext  = wxT(".") + result->ext;
      imageFilePath += wxFileSeparator;
-     imageFilePath += uuid;
+     imageFilePath += md5;
      imageFilePath += ext;
      result->imagePath = imageFilePath;
-     result->fileName  = uuid + ext;
+     result->fileName  = md5 + ext;
 
      /** Content-typeの判別 */
      wxString contentType = JaneCloneUtil::DetermineContentType(href);

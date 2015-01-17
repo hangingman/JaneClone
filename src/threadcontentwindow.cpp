@@ -229,34 +229,13 @@ void ThreadContentWindow::OnRightClickHtmlWindow(wxMouseEvent& event) {
 	  wxMenuItem* itemAmazon = new wxMenuItem(copy, ID_SearchSelectWordByAmazon, wxT("選択範囲をamazonで検索")); 
 
 
-#ifndef __WXMAC__
-	  wxImageHandler* pngLoader = new wxPNGHandler();
-	  wxImage::AddHandler(pngLoader);
-	  
 	  wxBitmap bitmap;
-#ifdef __WXMSW__
-	  bitmap.LoadFile(wxT("rc\\yahoo.png"), wxBITMAP_TYPE_PNG);
+	  bitmap.LoadFile(yahooIconImg, wxBITMAP_TYPE_PNG);
 	  itemYahoo->SetBitmap(bitmap);
-	  bitmap.LoadFile(wxT("rc\\google.png"), wxBITMAP_TYPE_PNG);
+	  bitmap.LoadFile(googleIconImg, wxBITMAP_TYPE_PNG);
 	  itemGoogle->SetBitmap(bitmap);
-	  bitmap.LoadFile(wxT("rc\\amazon.png"), wxBITMAP_TYPE_PNG);
+	  bitmap.LoadFile(amazonIconImg, wxBITMAP_TYPE_PNG);
 	  itemAmazon->SetBitmap(bitmap);
-#elif __WXGTK__
-	  bitmap.LoadFile(wxT("rc/yahoo.png"), wxBITMAP_TYPE_PNG);
-	  itemYahoo->SetBitmap(bitmap);
-	  bitmap.LoadFile(wxT("rc/google.png"), wxBITMAP_TYPE_PNG);
-	  itemGoogle->SetBitmap(bitmap);
-	  bitmap.LoadFile(wxT("rc/amazon.png"), wxBITMAP_TYPE_PNG);
-	  itemAmazon->SetBitmap(bitmap);
-#elif __WXMAC__
-	  bitmap.LoadFile(wxT("JaneClone.app/Contents/MacOS/rc/yahoo.png"), wxBITMAP_TYPE_PNG);
-	  itemYahoo->SetBitmap(bitmap);
-	  bitmap.LoadFile(wxT("JaneClone.app/Contents/MacOS/rc/google.png"), wxBITMAP_TYPE_PNG);
-	  itemGoogle->SetBitmap(bitmap);
-	  bitmap.LoadFile(wxT("JaneClone.app/Contents/MacOS/rc/amazon.png"), wxBITMAP_TYPE_PNG);
-	  itemAmazon->SetBitmap(bitmap);
-#endif
-#endif
 
 	  copy->Append(itemYahoo);
 	  copy->Append(itemGoogle);
