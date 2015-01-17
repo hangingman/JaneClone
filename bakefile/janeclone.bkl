@@ -6,6 +6,7 @@
 archs            = x86 x86_64;
 toolsets         = vs2013;
 local_wx_include = ./wxWidgets-WX_3_0_2/include ./wxWidgets-WX_3_0_2/include/msvc;
+autoconf_defines = "PACKAGE_VERSION=\"1.1.4\"";
 
 library sqlite3 {
 
@@ -62,7 +63,7 @@ library wxsqlite3 {
 
 program janeclone {
 
-  includedirs = ../sqlite3 ../wxsqlite3;
+  includedirs = ../sqlite3 ../wxsqlite3 ../babel ../json11;
   includedirs+= $local_wx_include;
 
   deps = sqlite3 wxsqlite3; //curlpp;
@@ -74,7 +75,8 @@ program janeclone {
     libdirs = ./wxWidgets-WX_3_0_2/lib/vc120_x64_dll;
 
   defines = "wxMSVC_VERSION_AUTO=1" "WXUSINGDLL=1";
-
+  defines += $autoconf_defines;
+  
   sources {
     ../src/anchoredresponsepopup.cpp
     ../src/drawpane.cpp
