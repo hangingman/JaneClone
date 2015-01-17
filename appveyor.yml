@@ -2,11 +2,11 @@
 # Custom environment variables
 #
 environment:
-	global:
-		MSYS_ROOT: C:/MinGW/msys/1.0
+  global:
+    MSYS_ROOT: C:/MinGW/msys/1.0
 
 matrix:
-	- COMPILER: "VC2013"
+  - COMPILER: "VC2013"
 
 #   - COMPILER: "MINGW32"
 
@@ -14,12 +14,11 @@ matrix:
 # scripts that run after cloning repository
 #
 install:
-	- cmd: 
 
 build_script:
-	- cmd: 'echo Build folder is: %APPVEYOR_BUILD_FOLDER%'
-	- cmd: 'cd %APPVEYOR_BUILD_FOLDER%\bakefile'
-	- cmd: '.\janeclone.bat'
+  - cmd: 'echo Build folder is: %APPVEYOR_BUILD_FOLDER%'
+  - cmd: 'cd %APPVEYOR_BUILD_FOLDER%\bakefile'
+  - cmd: '.\janeclone.bat'
 
 #install:
 #  - set PATH=%PATH%;C:\MinGW\msys\1.0\bin;C:\MinGW\bin
