@@ -788,7 +788,7 @@ void JaneClone::SetProperties()
 
      // ユーザーのホームディレクトリを取得
      wxDir workDir(::wxGetHomeDir());
-     wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     wxString jc = ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR;
      wxDir jcDir(jc);
 
      /**
@@ -883,9 +883,9 @@ void JaneClone::SetProperties()
  */
 void JaneClone::InitializeJaneClone(wxString& jc, wxDir& jcDir) 
 {
-     ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("dat"));
-     ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
-     ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("cache"));
+     ::wxMkdir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat"));
+     ::wxMkdir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("prop"));
+     ::wxMkdir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("cache"));
 }
 /**
  * DoLayout
@@ -1189,9 +1189,9 @@ void JaneClone::SetJaneCloneAuiPaneInfo()
      // もし初回起動であればフォント設定は行わない
      // すればセグメンテーション違反が起こりやすい
      const wxString prop = ::wxGetHomeDir() \
-	  + wxFileSeparator  \
+	  + wxFILE_SEP_PATH  \
 	  + JANECLONE_DIR    \
-	  + wxFileSeparator  \
+	  + wxFILE_SEP_PATH  \
 	  + APP_CONFIG_FILE;
 
      if ( wxFile::Exists(prop) ) 
@@ -1226,13 +1226,13 @@ void JaneClone::SetPreviousUserLookedTab()
 	  {
 	       /** 2chのdatファイルが入っていた場合の処理 */
 	       wxString outputPath = ::wxGetHomeDir() 
-		    + wxFileSeparator 
+		    + wxFILE_SEP_PATH 
 		    + JANECLONE_DIR
-		    + wxFileSeparator
+		    + wxFILE_SEP_PATH
 		    + wxT("dat")
-		    + wxFileSeparator
+		    + wxFILE_SEP_PATH
 		    + boardNameAscii
-		    + wxFileSeparator
+		    + wxFILE_SEP_PATH
 		    + boardNameAscii
 		    + wxT(".dat");
 
@@ -2062,8 +2062,8 @@ void JaneClone::CopyTBothDataToClipBoard(wxCommandEvent& event)
 void JaneClone::CheckLogDirectory(wxCommandEvent& event) 
 {
      // ファイルパスの組み立て
-     wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
-     wxString filePath = jcDir.GetName() + wxFileSeparator + wxT("dat");     
+     wxDir jcDir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
+     wxString filePath = jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat");     
 
      // datファイルパスを開く
      wxDir datDir(filePath);
@@ -3733,13 +3733,13 @@ void JaneClone::OnUserLastClosedBoardClick(wxCommandEvent& event)
 
      // ファイルのパスを設定する
      wxString outputPath = ::wxGetHomeDir() 
-	  + wxFileSeparator 
+	  + wxFILE_SEP_PATH 
 	  + JANECLONE_DIR
-	  + wxFileSeparator
+	  + wxFILE_SEP_PATH
 	  + wxT("dat")
-	  + wxFileSeparator
+	  + wxFILE_SEP_PATH
 	  + boardNameAscii
-	  + wxFileSeparator
+	  + wxFILE_SEP_PATH
 	  + boardNameAscii
 	  + wxT(".dat");
 

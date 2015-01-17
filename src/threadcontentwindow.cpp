@@ -64,14 +64,14 @@ wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, w
      // 設定ファイルの準備をする
      // ユーザーのホームディレクトリを取得
      wxDir workDir(::wxGetHomeDir());
-     wxDir jcDir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     wxDir jcDir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
 
      // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
      if (!workDir.HasSubDirs(JANECLONE_DIR)) {
 	  ::wxMkdir(jcDir.GetName());
      }
      if (!jcDir.HasSubDirs(wxT("prop"))) {
-	  ::wxMkdir(jcDir.GetName() + wxFileSeparator + wxT("prop"));
+	  ::wxMkdir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("prop"));
      }
 
      // スキンを使わないならデフォルトフォントを設定する
@@ -1007,37 +1007,37 @@ bool ThreadContentWindow::CheckSkinFiles(SkinInfo* skin)
      }
 
      // Footer.html
-     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("Footer.html"))) 
+     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Footer.html"))) 
      {
-	  const wxString filePath = skinPath + wxFileSeparator + wxT("Footer.html");
+	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Footer.html");
 	  skin->footer = ReadPlainTextFile(filePath);
 	  ret = true;
      }	  
      // Header.html
-     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("Header.html"))) 
+     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Header.html"))) 
      {
-	  const wxString filePath = skinPath + wxFileSeparator + wxT("Header.html");
+	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Header.html");
 	  skin->header = ReadPlainTextFile(filePath);
 	  ret = true;
      }
      // NewRes.html
-     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("NewRes.html"))) 
+     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("NewRes.html"))) 
      {
-	  const wxString filePath = skinPath + wxFileSeparator + wxT("NewRes.html");
+	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("NewRes.html");
 	  skin->newres = ReadPlainTextFile(filePath);
 	  ret = true;
      }
      // PopupRes.html
-     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("PopupRes.html"))) 
+     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("PopupRes.html"))) 
      {
-	  const wxString filePath = skinPath + wxFileSeparator + wxT("PopupRes.html");
+	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("PopupRes.html");
 	  skin->popup = ReadPlainTextFile(filePath);
 	  ret = true;
      }
      // Res.html
-     if (wxFile::Exists(skinPath + wxFileSeparator + wxT("Res.html"))) 
+     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Res.html"))) 
      {
-	  const wxString filePath = skinPath + wxFileSeparator + wxT("Res.html");
+	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Res.html");
 	  skin->res = ReadPlainTextFile(filePath);
 	  ret = true;
      }

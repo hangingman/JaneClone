@@ -494,7 +494,7 @@ void JaneCloneImageViewer::SaveAsImagesAll(wxCommandEvent& event)
 		    {
 			 wxString path, name, ext;
 			 wxFileName::SplitPath(filePath,&path,&name,&ext);
-			 wxCopyFile(filePath, dialog.GetPath() + wxFileSeparator + name + '.' + ext, true);
+			 wxCopyFile(filePath, dialog.GetPath() + wxFILE_SEP_PATH + name + '.' + ext, true);
 		    }
 	       }
 	  }
