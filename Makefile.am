@@ -95,7 +95,7 @@ AUTHOR="Hiroyuki Nagata"
 
 # OSX application bundle用の設定
 ICONFILE		= janeclone.icns
-ICONPATH		= $(top_builddir)/src/rc/$(ICONFILE)
+ICONPATH		= $(wildcard $(top_builddir)/src/rc/* )
 RCPATH			= $(top_builddir)/src/rc
 SCRIPTPATH		= $(top_builddir)/src/script
 PROGVER			= $(VERSION)
@@ -378,13 +378,12 @@ $(BUNDLE) :
 $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME):
 	@echo "==== Copying executable ===="
 	cp -f $(JANEEXE) $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME)
-	cp -rf $(RCPATH) $(BUNDLE)/Contents/MacOS
 	cp -rf $(SCRIPTPATH) $(BUNDLE)/Contents/MacOS
 
 #  This copies the icon file into the bundle.
 $(MACICON):
 	@echo "==== Copying icon file into bundle ===="
-	cp -f $(ICONPATH) $(BUNDLE)/Contents/Resources/$(ICONFILE)
+	cp -f $(ICONPATH) $(BUNDLE)/Contents/Resources/
 
 #  This creates the Contents/PkgInfo file.
 $(MACPKGINFO):
@@ -434,7 +433,7 @@ WXLIBPOSTFIX = *wx*@WX_VERSION_MAJOR@.@WX_VERSION_MINOR@.@WX_VERSION_MICRO@.dyli
 WXLIBDIR     = `@WX_CONFIG_PATH@ --prefix`/lib
 BINDIR	     = $(BUNDLE)/Contents/MacOS
 LIBDEFDIR    = /usr/local/lib
-JANEEXE      = $(top_builddir)/src/.libs/$(PACKAGE_NAME)
+JANEEXE      = $(top_builddir)/src/$(PACKAGE_NAME)
 MACJANEEXE   = $(BUNDLE)/Contents/MacOS/$(PACKAGE_NAME)
 DYLIBBUNDLER = dylibbundler
 
@@ -525,4 +524,3 @@ package-clean:
 	@echo 'delete working directory...'
 	rm -rf $(top_builddir)/extras/package/
 	rm -rf $(top_builddir)/extras/
-	rm -rf $(BUNDLE)

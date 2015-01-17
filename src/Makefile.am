@@ -4,7 +4,7 @@ EXTRA_DATA		= $(wildcard rc/*)
 
 bin_PROGRAMS 		= janeclone
 
-janecloneexecrcdir	= /usr/share/pixmaps/@PACKAGE@
+janecloneexecrcdir	= $(prefix)/share/pixmaps/@PACKAGE@
 janecloneexecrc_DATA	= $(wildcard rc/*)
 
 janecloneexecscriptdir	= $(datarootdir)/@PACKAGE@/script
@@ -94,12 +94,12 @@ endif
 # Build or not
 if BUILDING_SQLITE3
   janeclone_CXXFLAGS += -I$(top_builddir)/sqlite3
-  janeclone_LDADD    += $(top_builddir)/sqlite3/libsqlite3.la
+  janeclone_LDADD    += $(top_builddir)/sqlite3/libsqlite3.a
 endif
 
 if BUILDING_WXSQLITE3
   janeclone_CXXFLAGS += -I$(top_builddir)/wxsqlite3
-  janeclone_LDADD    += $(top_builddir)/wxsqlite3/libwxsqlite3.la
+  janeclone_LDADD    += $(top_builddir)/wxsqlite3/libwxsqlite3.a
 endif
 
 if BUILDING_CURLPP

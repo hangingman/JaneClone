@@ -133,7 +133,7 @@ static const wxString janecloneVersion   = wxT(PACKAGE_VERSION);
       #define RESOURCE_PATH "rc/"
    #endif
 #elif defined(__WXMAC__)
-   #define RESOURCE_PATH "JaneClone.app/Contents/MacOS/rc/"
+   #define RESOURCE_PATH "JaneClone.app/Contents/Resources/"
 #endif
 
 // Javascriptのデフォルトのパス
