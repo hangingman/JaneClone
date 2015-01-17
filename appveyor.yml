@@ -1,0 +1,37 @@
+#
+# Custom environment variables
+#
+environment:
+	global:
+		MSYS_ROOT: C:/MinGW/msys/1.0
+
+matrix:
+	- COMPILER: "VC2013"
+
+#   - COMPILER: "MINGW32"
+
+#
+# scripts that run after cloning repository
+#
+install:
+	- cmd: 
+
+build_script:
+	- cmd: 'echo Build folder is: %APPVEYOR_BUILD_FOLDER%'
+	- cmd: 'cd %APPVEYOR_BUILD_FOLDER%\bakefile'
+	- cmd: '.\janeclone.bat'
+
+#install:
+#  - set PATH=%PATH%;C:\MinGW\msys\1.0\bin;C:\MinGW\bin
+#
+#build_script:
+#  - cmd: 'echo Msys root is: %MSYS_ROOT%'
+#  - cmd: 'echo Build folder is: %APPVEYOR_BUILD_FOLDER%'
+#  - cmd: 'echo Bootstrap running...'
+#  - cmd: '%MSYS_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null;mount C:/MinGW /mingw; ./bootstrap"'
+#  - cmd: 'echo Configure running...' 
+#  - cmd: '%MSYS_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./configure"'
+#  - cmd: 'echo Make running...'
+#  - cmd: '%MSYS_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; make"'
+#  - cmd: 'echo binary running...'
+#  - cmd: '%MSYS_ROOT%/bin/bash -lc "cd $APPVEYOR_BUILD_FOLDER; exec 0</dev/null; ./foo"'
