@@ -95,6 +95,8 @@ endif
 if BUILDING_SQLITE3
   janeclone_CXXFLAGS += -I$(top_builddir)/sqlite3
   janeclone_LDADD    += $(top_builddir)/sqlite3/libsqlite3.a
+else
+  janeclone_LDFLAGS  += -lsqlite3
 endif
 
 if BUILDING_WXSQLITE3

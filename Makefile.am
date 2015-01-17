@@ -471,7 +471,7 @@ wxmac-dist-shared-lib:
 	      if [[ $$line != *: ]]; then \
 		 echo "--> For " $$file; \
 	         echo "Patching " $$line " to @executable_path/lib/" `basename $$line | sed -E 's/(^lib.*-)([0-9]\.[0-9]\.[0-9]).*/\1\2\.dylib/g'` ; \
-	         install_name_tool -change $${line} @executable_path/lib/`basename $$line` $${file};  \
+	         install_name_tool -change $${line} @executable_path/lib/`basename $$line | sed -E 's/(^lib.*-)([0-9]\.[0-9]\.[0-9]).*/\1\2\.dylib/g'` $${file};  \
 	      fi                          \
 	   done                           \
 	done

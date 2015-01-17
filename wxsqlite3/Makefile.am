@@ -7,10 +7,13 @@ libwxsqlite3_a_SOURCES  = wxsqlite3.cpp
 #libwxsqlite3_a_LDFLAGS  = -no-undefined -version-info 3:0:2
 libwxsqlite3_a_LIBADD	=
 
+# If wxsqlite3 is building, wxsqlite3 itself is static library
 if BUILDING_SQLITE3
-  # -DWXMAKINGDLL_WXSQLITE3
   AM_CXXFLAGS            += -I$(top_builddir)/sqlite3 -DwxUSE_DYNAMIC_SQLITE3_LOAD=0 -DWXSQLITE3_HAVE_METADATA=0 -DWXSQLITE3_HAVE_CODEC=0 -DWXSQLITE3_HAVE_LOAD_EXTENSION=0
   libwxsqlite3_a_LIBADD += $(top_builddir)/sqlite3/libsqlite3.a
+else
+  AM_CXXFLAGS            += -DwxUSE_DYNAMIC_SQLITE3_LOAD=0 -DWXSQLITE3_HAVE_METADATA=0 -DWXSQLITE3_HAVE_CODEC=0 -DWXSQLITE3_HAVE_LOAD_EXTENSION=0
+  libwxsqlite3_a_LDFLAG  =  -lsqlite3
 endif
 
 noinst_HEADERS = \
