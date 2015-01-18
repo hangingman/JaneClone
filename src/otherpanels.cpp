@@ -1,4 +1,4 @@
-/* JaneClone - a text board site viewer for 2ch
+﻿/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -512,7 +512,7 @@ OperationPanel::OperationPanel(wxWindow* parent, const wxPoint& pos, const wxSiz
      combo_box_3 = new wxComboBox(panel_10, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
      label_4 = new wxStaticText(panel_11, wxID_ANY, wxT("その他"));
      combo_box_4 = new wxComboBox(panel_11, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
-     checkbox_4 = new wxCheckBox(panel_5, wxID_ANY, wxT("スレ覧（ｼﾝｸﾞﾙｸﾘｯｸ）"));
+     checkbox_4 = new wxCheckBox(panel_5, wxID_ANY, wxT("スレ覧（シングルクリック）"));
      checkbox_5 = new wxCheckBox(panel_5, wxID_ANY, wxT("お気に入り"));
      checkbox_6 = new wxCheckBox(panel_5, wxID_ANY, wxT("閉じたスレ"));
      checkbox_7 = new wxCheckBox(panel_5, wxID_ANY, wxT("アドレスバー直打ち"));

@@ -1,4 +1,4 @@
-/* JaneClone - a text board site viewer for 2ch
+﻿/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -738,21 +738,21 @@ void SocketCommunication::DownloadThreadNew(const wxString& gzipPath,
 	  else if (rc == 203) 
 	  {
 	       // dat落ち確定
-	       wxString message = wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
 	  } 
 	  else if (rc == 302) 
 	  {
 	       // dat落ちか削除
-	       wxString message = wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
 	  } 
 	  else if (rc == 404) 
 	  {
 	       // dat落ちか削除
-	       wxString message = wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 	  }
 
@@ -902,7 +902,7 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
 	  else if (rc == 203) 
 	  {
 	       // dat落ち確定
-	       wxString message = wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 
 	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
@@ -912,7 +912,7 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
 	  else if (rc == 302) 
 	  {
 	       // dat落ちか削除
-	       wxString message = wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 	       DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
 
@@ -921,7 +921,7 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
 	  else if (rc == 404) 
 	  {
 	       // dat落ちか削除
-	       wxString message = wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 	  }
 
@@ -1061,19 +1061,19 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
 	  else if (rc == 203) 
 	  {
 	       // dat落ち確定
-	       wxString message = wxT("dat落ちや 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 	  } 
 	  else if (rc == 302) 
 	  {
 	       // dat落ちか削除
-	       wxString message = wxT("dat落ちか削除済みやな 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 	  } 
 	  else if (rc == 404) 
 	  {
 	       // dat落ちか削除
-	       wxString message = wxT("サーバが見つからん 彡(ﾟ)(ﾟ) ち〜ん\n");
+	       wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
 	       JaneCloneUiUtil::SendLoggingHelper(message);
 	  }
 

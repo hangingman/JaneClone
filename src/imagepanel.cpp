@@ -1,4 +1,4 @@
-/**
+﻿/**
  * imagepanel.cpp - simple panel for wxImage
  * I refer http://wiki.wxwidgets.org/An_image_panel
  *
