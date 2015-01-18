@@ -1,4 +1,4 @@
-
+﻿
 //  EnumString - A utility to provide stringizing support for C++ enums
 //  Author: Francis Xavier Joseph Pulikotil
 //

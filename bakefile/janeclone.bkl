@@ -74,7 +74,7 @@ program janeclone {
   if ( $archs == x86_64 )
     libdirs = ./wxWidgets-WX_3_0_2/lib/vc120_x64_dll;
 
-  defines = "wxMSVC_VERSION_AUTO=1" "WXUSINGDLL=1";
+  defines = "wxMSVC_VERSION_AUTO=1" "WXUSINGDLL=1" "_CRT_SECURE_NO_WARNINGS=1";
   defines += $autoconf_defines;
   
   sources {

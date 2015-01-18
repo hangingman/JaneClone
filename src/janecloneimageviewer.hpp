@@ -1,4 +1,4 @@
-/**
+﻿/**
  * janecloneimageviewer.hpp -  janeclone's plain imageviewer
  *
  * Copyright (C) 2013-2014 Hiroyuki Nagata <newserver002@gmail.com>

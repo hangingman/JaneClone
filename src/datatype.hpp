@@ -1,4 +1,4 @@
-/* JaneClone - a text board site viewer for 2ch
+﻿/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -125,7 +125,7 @@
 #endif
 
 // バージョン
-static const wxString janecloneVersion   = wxT(PACKAGE_VERSION);
+static const wxString janecloneVersion   = wxT( PACKAGE_VERSION );
 
 // リソースファイルのパス
 #if defined (__WXMSW__) || defined(__WXGTK__)

@@ -1,4 +1,4 @@
-
+﻿
 /* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
