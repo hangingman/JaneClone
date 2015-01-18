@@ -1,17 +1,43 @@
-powershell Set-ExecutionPolicy RemoteSigned
+@echo off
+@rem 
+@rem 管理者権限よこせ
+@rem reference: http://stackoverflow.com/a/18037959
+@rem 
+
+:checkPrivileges
+NET FILE 1>NUL 2>NUL
+if '%errorlevel%' == '0' ( goto gotPrivileges ) else ( goto getPrivileges )
+
+:getPrivileges
+if '%1'=='ELEV' (shift & goto gotPrivileges)
+ECHO.
+ECHO **************************************
+ECHO 管理者権限をいただきます
+ECHO **************************************
+
+setlocal DisableDelayedExpansion
+set "batchPath=%~0"
+setlocal EnableDelayedExpansion
+ECHO Set UAC = CreateObject^("Shell.Application"^) > "%temp%\OEgetPrivileges.vbs"
+ECHO UAC.ShellExecute "!batchPath!", "ELEV", "", "runas", 1 >> "%temp%\OEgetPrivileges.vbs"
+"%temp%\OEgetPrivileges.vbs"
+exit /B
+
+:gotPrivileges
+setlocal & pushd .
 
 @echo ==========================================================================
 @echo JaneCloneをVisualStudioでビルドするための環境を作ります。
 @echo だけど正直VC++とかいうクソ環境やめてMinGWを使ったほうがええと思うよ。
 @echo ==========================================================================
 
+powershell Set-ExecutionPolicy RemoteSigned
 powershell %~dp0janeclone.ps1
-
 powershell Set-ExecutionPolicy Restricted
 
-@rem
-@rem wxWidgetsに移動
-@rem
+@echo ==========================================================================
+@echo wxWidgetsに移動
+@echo ==========================================================================
 cd %~dp0wxWidgets-WX_3_0_2\build\msw
 
 @rem Remove the existing destination folders if the exist so that a complete rebuild occurs.
