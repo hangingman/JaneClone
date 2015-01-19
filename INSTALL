@@ -131,11 +131,35 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   https://github.com/Hiroyuki-Nagata/JaneClone/wiki/_pages
 
  [C.Windows(VC++)]
- C-1. 依存するライブラリのインストール
-  *** cmakeを使わせる予定、めんどくさい **
+ C-1. 環境構築
+ 
+   [ソースコードのチェックアウト]
+   以下のサイトからgitをダウンロードしてインストールしてください。設定などはご自身で調査をお願いします。
+   インストールできたら「Git Bash」を起動して、以下のコマンドを実行してください。
 
- C-2. パッケージング
-  *** 以下未稿 ***
+   $ cd [ソースを格納したいフォルダ]
+   $ git clone https://github.com/Hiroyuki-Nagata/JaneClone.git
+
+   ※チェックアウトが遅いときは「git clone」を「git clone --depth=50」などに変えてください。
+
+   [wxWidgetsのビルド]
+   チェックアウトしたディレクトリを$(JaneClone)と表記します。
+   エクスプローラで $(JaneClone)\bakefile に移動し「janeclone.bat」をダブルクリックで起動してください。
+   エラーなくバッチ処理が終了したら次の手順に進んでください。必要資材のダウンロードとビルドのため時間がかかります。
+
+   [Nugetの設定]
+   VisualStudio 2013を起動して、自動生成されたjaneclone.slnを開く。
+   メニューバーから「ツール -> NuGetパッケージマネージャー -> パッケージマネージャーコンソール」に移動
+   パッケージマネージャーコンソールのウィンドウが開くので、ウィンドウ上部の規定のプロジェクトをjanecloneに変更する。
+
+   対話環境が立ち上がるので、以下のように入力する
+   PM> Install-Package curlpp
+   PM> Install-Package libxml2
+   PM> Install-Package libiconv
+
+ C-2. ビルド
+
+   janecloneのソリューションを右クリックしてビルドする。
 
  [D.Linux(RedHat系)]
  D-1. 依存するライブラリのインストール

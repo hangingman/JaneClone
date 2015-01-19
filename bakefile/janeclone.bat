@@ -83,6 +83,8 @@ nmake -f makefile.vc BUILD=release SHARED=1 COMPILER_VERSION=120 OFFICIAL_BUILD=
 @rem ------------------
 @rem nmake -f makefile.vc BUILD=debug SHARED=1 COMPILER_VERSION=120 OFFICIAL_BUILD=1 >> 2013x86_Debug.txt
 
-@rem bakefile.batを呼ぶ
-cd %~dp
-call ".\bakefile.bat"
+@echo ==========================================================================
+@echo bakefileを起動してVisualStudioのプロジェクトファイルを作成します
+@echo ==========================================================================
+call "%~dp0bakefile.bat"
+exit
