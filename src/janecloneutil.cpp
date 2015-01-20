@@ -158,7 +158,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
 					     const wxString& resNumberStart, const wxString& resNumberEnd) {
 
      // ファイルパスの組み立てとファイルの有無確認
-     const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     const wxDir dir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
      wxString filePath = dir.GetName();
 
      // 複数レスをポップアップさせる
@@ -178,11 +178,11 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
 	  popupMultiResponse = true;
      }
 
-     filePath += wxFileSeparator;
+     filePath += wxFILE_SEP_PATH;
      filePath += wxT("dat");
-     filePath += wxFileSeparator;
+     filePath += wxFILE_SEP_PATH;
      filePath += boardNameAscii;
-     filePath += wxFileSeparator;
+     filePath += wxFILE_SEP_PATH;
      filePath += origNumber;
      filePath += wxT(".dat");
 
@@ -388,14 +388,14 @@ wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii,
 						 const long resNumber, const bool useTriangularBrackets) {
 
      // ファイルパスの組み立てとファイルの有無確認
-     const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     const wxDir dir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
      wxString filePath = dir.GetName();
 
-     filePath += wxFileSeparator;
+     filePath += wxFILE_SEP_PATH;
      filePath += wxT("dat");
-     filePath += wxFileSeparator;
+     filePath += wxFILE_SEP_PATH;
      filePath += boardNameAscii;
-     filePath += wxFileSeparator;
+     filePath += wxFILE_SEP_PATH;
      filePath += origNumber;
      filePath += wxT(".dat");
 
@@ -480,14 +480,14 @@ wxString JaneCloneUtil::FindResponseById(const wxString& boardNameAscii, const w
 					 const wxString& extractId) {
 
      // ファイルパスの組み立てとファイルの有無確認
-     const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+     const wxDir dir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
      wxString filePath = dir.GetName();
 
-     filePath += wxFileSeparator;
+     filePath += wxFILE_SEP_PATH;
      filePath += wxT("dat");
-     filePath += wxFileSeparator;
+     filePath += wxFILE_SEP_PATH;
      filePath += boardNameAscii;
-     filePath += wxFileSeparator;
+     filePath += wxFILE_SEP_PATH;
      filePath += origNumber;
      filePath += wxT(".dat");
 
@@ -1034,35 +1034,35 @@ wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,
 
      if (kind == KIND_THREAD_DAT) {
 	  // スレッドのdatファイル
-	  const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+	  const wxDir dir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
 	  filePath = dir.GetName();
 
-	  filePath += wxFileSeparator;
+	  filePath += wxFILE_SEP_PATH;
 	  filePath += wxT("dat");
-	  filePath += wxFileSeparator;
+	  filePath += wxFILE_SEP_PATH;
 	  filePath += boardNameAscii;
-	  filePath += wxFileSeparator;
+	  filePath += wxFILE_SEP_PATH;
 	  filePath += origNumber;
 	  filePath += wxT(".dat");
 
      } else if (kind == KIND_BOARD__DAT) {
 	  // 板一覧リストのdatファイル
-	  const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+	  const wxDir dir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
 	  filePath = dir.GetName();
 
-	  filePath += wxFileSeparator;
+	  filePath += wxFILE_SEP_PATH;
 	  filePath += wxT("dat");
-	  filePath += wxFileSeparator;
+	  filePath += wxFILE_SEP_PATH;
 	  filePath += boardNameAscii;
-	  filePath += wxFileSeparator;
+	  filePath += wxFILE_SEP_PATH;
 	  filePath += boardNameAscii;
 	  filePath += wxT(".dat");
      } else if (kind == KIND_DAT_PATH) {
 	  // datファイルのあるパス
-	  const wxDir dir(::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR);
+	  const wxDir dir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
 	  filePath = dir.GetName();
 
-	  filePath += wxFileSeparator;
+	  filePath += wxFILE_SEP_PATH;
 	  filePath += wxT("dat");
      }
 
@@ -1219,13 +1219,13 @@ void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThrea
 
      // ファイルのパスを設定する
      wxString outputPath = ::wxGetHomeDir() 
-	  + wxFileSeparator 
+	  + wxFILE_SEP_PATH 
 	  + JANECLONE_DIR
-	  + wxFileSeparator
+	  + wxFILE_SEP_PATH
 	  + wxT("dat")
-	  + wxFileSeparator
+	  + wxFILE_SEP_PATH
 	  + boardInfo.boardNameAscii
-	  + wxFileSeparator
+	  + wxFILE_SEP_PATH
 	  + boardInfo.boardNameAscii
 	  + wxT(".dat");
 
@@ -1300,9 +1300,9 @@ template <class T>
 void JaneCloneUtil::SetJaneCloneProperties(const wxString& key, const T& value) {
 
      // 設定ファイルの準備をする
-     const wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     const wxString jc = ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR;
      const wxDir jcDir(jc);
-     const wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     const wxString configFile = jcDir.GetName() + wxFILE_SEP_PATH + wxT("prop") + wxFILE_SEP_PATH + APP_CONFIG_FILE;
      wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
      config->Write(key, value);
@@ -1323,9 +1323,9 @@ template <class T>
 void JaneCloneUtil::GetJaneCloneProperties(const wxString& key, T* value) {
 
      // 設定ファイルの準備をする
-     const wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     const wxString jc = ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR;
      const wxDir jcDir(jc);
-     const wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     const wxString configFile = jcDir.GetName() + wxFILE_SEP_PATH + wxT("prop") + wxFILE_SEP_PATH + APP_CONFIG_FILE;
      wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
      config->Read(key, value);
@@ -1343,9 +1343,9 @@ template void JaneCloneUtil::GetJaneCloneProperties<bool>(const wxString& key, b
 bool JaneCloneUtil::GetJaneCloneEntryExist(const wxString& key) {
 
      // 設定ファイルの準備をする
-     const wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     const wxString jc = ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR;
      const wxDir jcDir(jc);
-     const wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     const wxString configFile = jcDir.GetName() + wxFILE_SEP_PATH + wxT("prop") + wxFILE_SEP_PATH + APP_CONFIG_FILE;
      wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
      bool ret = config->Exists(key);
@@ -1358,9 +1358,9 @@ bool JaneCloneUtil::GetJaneCloneEntryExist(const wxString& key) {
 void JaneCloneUtil::DeleteJaneClonePropertyEntry(const wxString& key) {
 
      // 設定ファイルの準備をする
-     const wxString jc = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR;
+     const wxString jc = ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR;
      const wxDir jcDir(jc);
-     const wxString configFile = jcDir.GetName() + wxFileSeparator + wxT("prop") + wxFileSeparator + APP_CONFIG_FILE;
+     const wxString configFile = jcDir.GetName() + wxFILE_SEP_PATH + wxT("prop") + wxFILE_SEP_PATH + APP_CONFIG_FILE;
      wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
 
      bool ret = config->DeleteEntry(key);
@@ -1380,7 +1380,7 @@ void JaneCloneUtil::DeleteJaneClonePropertyEntry(const wxString& key) {
 void JaneCloneUtil::CreateSpecifyDirectory(wxDir& specifyDir, const wxString& dirName) {
 
      if (!specifyDir.HasSubDirs(dirName)) {
-	  ::wxMkdir(specifyDir.GetName() + wxFileSeparator + dirName);
+	  ::wxMkdir(specifyDir.GetName() + wxFILE_SEP_PATH + dirName);
      }
 }
 /**
@@ -1398,13 +1398,13 @@ wxString JaneCloneUtil::CreateShingetsuThreadListFilePath(const wxString& nodeHo
      delete uri;
 
      wxString shingetsuFilePath = ::wxGetHomeDir()
-	  + wxFileSeparator 
+	  + wxFILE_SEP_PATH 
 	  + JANECLONE_DIR 
-	  + wxFileSeparator 
+	  + wxFILE_SEP_PATH 
 	  + wxT("shingetsu")
-	  + wxFileSeparator
+	  + wxFILE_SEP_PATH
 	  + hostname
-	  + wxFileSeparator
+	  + wxFILE_SEP_PATH
 	  + hostname
 	  + wxT(".csv");
 

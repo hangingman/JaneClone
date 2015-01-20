@@ -580,8 +580,8 @@ void ResponseWindow::PostConfirmForm(wxCommandEvent &event) {
  */
 int ResponseWindow::CheckCookie() {
 
-     wxString configFile = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR 
-	  + wxFileSeparator + wxT("prop") + wxFileSeparator + COOKIE_CONFIG_FILE;
+     wxString configFile = ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR 
+	  + wxFILE_SEP_PATH + wxT("prop") + wxFILE_SEP_PATH + COOKIE_CONFIG_FILE;
 
      if (!wxFile::Exists(configFile))
 	  return NO_COOKIE;

@@ -32,6 +32,7 @@
 #include <memory>
 #include <wx/regex.h>
 #include <wx/hashmap.h>
+#include <wx/filefn.h>
 
 // マクロ置換用マクロ
 #define XSTR(x) #x
@@ -54,13 +55,6 @@
 #define MAC_OSX_CURDIR_PREFIX wxGetCwd() + wxT("/JaneClone.app/Contents/MacOS/")
 /** HTML中のタグ */
 #define BR "<br/>"
-
-// ファイルの区切り文字
-#ifdef __WXMSW__
-  #define wxFileSeparator wxT("\\") 
-#else
-  #define wxFileSeparator wxT("/") 
-#endif
 
 // 実行ファイルの拡張子
 #ifdef __WXMSW__
@@ -93,9 +87,9 @@
 #define KIND_DAT_PATH     12
 
 // 板一覧情報ファイルのパス
-#define BOARD_LIST_PATH ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR + wxFileSeparator + wxT("dat") + wxFileSeparator + wxT("boardlist.html")
+#define BOARD_LIST_PATH ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR + wxFILE_SEP_PATH + wxT("dat") + wxFILE_SEP_PATH + wxT("boardlist.html")
 // 板一覧情報ファイルのヘッダ情報のパス
-#define BOARD_LIST_HEADER_PATH ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR + wxFileSeparator + wxT("dat") + wxFileSeparator + wxT("boardlistheader.html")
+#define BOARD_LIST_HEADER_PATH ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR + wxFILE_SEP_PATH + wxT("dat") + wxFILE_SEP_PATH + wxT("boardlistheader.html")
 
 /** 各ウィジェットの名前を表す定数値 */
 #define JANECLONE_WINDOW       wxT("janeclone_window")

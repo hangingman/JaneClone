@@ -111,7 +111,7 @@ int wxMain::OnExit() {
 
      if (JaneClone::restartAppFlag) {
 	  // 再起動処理を行う & このプロセスは殺す
-	  wxString execute = wxGetCwd() + wxFileSeparator + wxT("JaneClone") + wxExt;
+	  wxString execute = wxGetCwd() + wxFILE_SEP_PATH + wxT("JaneClone") + wxExt;
 	  ::wxExecute(execute + wxString::Format(_(" -p %lu"), pid), wxEXEC_ASYNC, NULL);
      }
 

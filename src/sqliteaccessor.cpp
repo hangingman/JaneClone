@@ -768,7 +768,7 @@ int SQLiteAccessor::HowManyRecord(const wxString tableName) {
  */
 wxString SQLiteAccessor::GetDBFilePath() {
 
-     wxString dbFile = ::wxGetHomeDir() + wxFileSeparator + JANECLONE_DIR + SQLITE_FILE_PATH;
+     wxString dbFile = ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR + SQLITE_FILE_PATH;
      return dbFile;
 }
 /**
