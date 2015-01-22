@@ -341,7 +341,7 @@ public:
      void SetJaneCloneManuBar();
      void SetProperties();
      void DoLayout();
-     void SetJaneCloneAuiPaneInfo();
+     void SetAuiPaneInfo();
      void SetPreviousUserLookedTab();
      void InitializeJaneClone(wxString& jc, wxDir& jcDir);
      // 2ch板一覧ツリーの初期化
@@ -521,6 +521,8 @@ private:
      void CreateCommonAuiToolBar(wxPanel* panel, wxBoxSizer* vbox, wxWindowID id, const wxString& boardName = wxEmptyString);
      // 検索ボックスを隠す
      void HideSearchBar(wxCommandEvent& event);
+     // ペイン更新
+     void UpdatePanes(bool immediate = true);
 
      // ユーザーがさわったコンボボックスを見つける
      wxComboBox* FindUserAttachedCombo(wxCommandEvent& event, wxWindow* parent) {

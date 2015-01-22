@@ -258,6 +258,35 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
      // ステータスバー設置
      this->CreateStatusBar(2);
 
+     // 板一覧ツリーを載せるノートブック
+     boardTreeNoteBook = new wxAuiNotebook(this, 
+					   ID_BoardTreeNoteBook, 
+					   wxDefaultPosition, 
+					   wxDefaultSize, 
+					   wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
+     boardTreeNoteBook->Connect(wxID_ANY,
+				wxEVT_ENTER_WINDOW,
+				wxMouseEventHandler(JaneClone::OnEnterWindow),
+				NULL, this);
+
+     // 2ch板一覧用ページ
+     m_boardTreePanel = new wxPanel(boardTreeNoteBook);
+     boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
+
+     // お気に入り用ページ
+     m_favoriteTreePanel = new wxPanel(boardTreeNoteBook);
+     boardTreeNoteBook->AddPage(m_favoriteTreePanel, wxT("お気に入り"), false);
+
+     // 閲覧中
+     m_nowReadingTreePanel = new wxPanel(boardTreeNoteBook);
+     boardTreeNoteBook->AddPage(m_nowReadingTreePanel, wxT("閲覧中"), false);
+
+#ifdef USE_SHINGETSU
+     // 新月の公開ノード用ページ
+     m_shingetsuTreePanel = new wxPanel(boardTreeNoteBook);
+     boardTreeNoteBook->AddPage(m_shingetsuTreePanel, wxT("新月公開ノード一覧"), false);
+#endif /** USE_SHINGETSU */
+
      // 各種GUI設定を行う
      SetProperties();       // 前回までの設定を読み出す
      DoLayout();            // 実際にレイアウトに展開する
@@ -905,11 +934,8 @@ void JaneClone::DoLayout()
      m_floatToolBar->AddTool(ID_SwitchSeparateXY,
 			     wxT("縦⇔横分割切り替え"),
 			     wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY),
-			     wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY),
-			     wxITEM_NORMAL,
-			     wxT("縦⇔横分割切り替え"),
-			     wxT("ウィンドウを３分割する形式を切り替えます."),
-	                     NULL);
+			     wxT("縦⇔横分割切り替え"));
+     m_floatToolBar->SetToolLongHelp(ID_SwitchSeparateXY, wxT("ウィンドウを３分割する形式を切り替えます."));
      m_floatToolBar->AddTool(ID_SwitchTwoThreePane,
 			     wxT("２⇔３ペイン切り替え"),
 			     wxBitmap(twoPaneWinImg, wxBITMAP_TYPE_ANY),
@@ -985,17 +1011,8 @@ void JaneClone::DoLayout()
 
      // 画面の分割を縦横どちらにするか
      // separateX = 日, separateY = 而
+     separateIsX = true;
      JaneCloneUtil::GetJaneCloneProperties(wxT("SeparateXY"), &separateIsX);
-     if (separateIsX)
-     {
-	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, 
-					 wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY));
-     }
-     else
-     {
-	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, 
-					 wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
-     }
 
      // 画面のペイン数を何個にするか
      paneIsThree = true; // デフォルト値=3
@@ -1005,7 +1022,7 @@ void JaneClone::DoLayout()
      JaneCloneUtil::GetJaneCloneProperties(wxT("RightIsThreadList"), &rightIsThreadList);
 
      // それぞれのペインの情報を設定する
-     SetJaneCloneAuiPaneInfo();
+     SetAuiPaneInfo();
 
      // 設定ファイルからレイアウト情報を読み取る
      wxString perspective = wxEmptyString;
@@ -1039,133 +1056,60 @@ void JaneClone::DoLayout()
      // end wxGlade
 }
 /**
- * SetJaneCloneAuiPaneInfo
+ * SetAuiPaneInfo
  * AuiManagerのPaneInfoを設定する
  */
-void JaneClone::SetJaneCloneAuiPaneInfo() 
+void JaneClone::SetAuiPaneInfo() 
 {     
      // 板一覧ツリーを表示するかどうか
      const bool enableBoardListTree = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
 
      // 上部・検索バーを設定する
      wxAuiPaneInfo search;
-     search.Name(wxT("searchbar"));
-     search.Top();
-     search.CloseButton(false);
+     search.Name(wxT("searchbar")).ToolbarPane().Layer(1).Top().Position(0)
+	  .MinSize(m_search_ctrl->GetBestSize())
+	  .BestSize((GetClientSize().GetWidth() -
+		     m_mgr.GetArtProvider()->GetMetric(wxAUI_DOCKART_GRIPPER_SIZE) * 3) / 3,
+		    m_floatToolBar->GetClientSize().GetHeight());
 
      // 上部・URL入力欄を設定する
      wxAuiPaneInfo url;
-     url.Name(wxT("urlbar"));
-     url.MinSize(wxSize(0, 16));
-     url.Top();
-     url.CloseButton(false);
+     url.Name(wxT("urlbar")).ToolbarPane().Layer(1).Top().MinSize(wxSize(0, 16)).Position(2);
 
      // アイコン付きのツールバーを設定する
      wxAuiPaneInfo toolBar;
-     toolBar.Name(wxT("toolBar"));
-     toolBar.Top();
-     toolBar.CloseButton(false);
+     toolBar.Name(wxT("toolBar")).ToolbarPane().Layer(1).Top().Position(1);
 
+     // 板一覧の幅初期値をウィンドウ幅の1/5とする
+     const int bestWidth = GetClientSize().GetWidth() / 5;
      // 左側・板一覧のツリーコントロールを設定する
      wxAuiPaneInfo boardTree;
-     if (enableBoardListTree) 
-     {
-          // ノートブックのサイズ調整
-	  wxSize client_size = GetClientSize();
-	  // 板一覧ツリーを載せるノートブック
-	  boardTreeNoteBook = new wxAuiNotebook(this, 
-						ID_BoardTreeNoteBook, 
-						wxPoint(client_size.x, client_size.y), 
-						wxDefaultSize, 
-						wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
-	  boardTreeNoteBook->SetLabel(BOARD_TREE_NOTEBOOK);
-	  boardTreeNoteBook->Connect(wxID_ANY,
-			     wxEVT_ENTER_WINDOW,
-			     wxMouseEventHandler(JaneClone::OnEnterWindow),
-			     NULL, this);
-	  
-          // 2ch板一覧用ページ
-	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
-	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
+     boardTree.Name(wxT("boardTree")).Layer(1).Left().CaptionVisible(false).Floatable(false)
+	  .BestSize(bestWidth, 100);
 
-	  // お気に入り用ページ
-	  m_favoriteTreePanel = new wxPanel(boardTreeNoteBook);
-	  boardTreeNoteBook->AddPage(m_favoriteTreePanel, wxT("お気に入り"), false);
-
-	  // 閲覧中
-	  m_nowReadingTreePanel = new wxPanel(boardTreeNoteBook);
-	  boardTreeNoteBook->AddPage(m_nowReadingTreePanel, wxT("閲覧中"), false);
-
-#ifdef USE_SHINGETSU
-	  // 新月の公開ノード用ページ
-	  m_shingetsuTreePanel = new wxPanel(boardTreeNoteBook);
-	  boardTreeNoteBook->AddPage(m_shingetsuTreePanel, wxT("新月公開ノード一覧"), false);
-#endif /** USE_SHINGETSU */
-
-	  boardTree.Name(wxT("boardTree"));
-	  boardTree.Left();
-	  boardTree.CloseButton(false);
-	  boardTree.BestSize(boardTreeNoteBook->GetSize());
-     }
-     
      // 左側下部・ログ出力ウィンドウを設定する
      wxAuiPaneInfo logWindow;
-     logWindow.Name(wxT("logWindow"));
-     logWindow.Left();
-     logWindow.CloseButton(false);
-     logWindow.MaxSize(20, 20);
+     logWindow.Name(wxT("logWindow")).Layer(1).Left().CaptionVisible(false).Floatable(false)
+	  .BestSize(bestWidth, 100);;
 
      // 右側上部・板一覧のノートブックとスレッド一覧リストが載ったウィンドウ
      wxAuiPaneInfo boardListThreadListInfo;
-     boardListThreadListInfo.Name(wxT("boardListThreadListInfo"));
-     boardListThreadListInfo.Right();
-     boardListThreadListInfo.Center();
-     boardListThreadListInfo.CloseButton(false);
-     boardListThreadListInfo.BestSize(400, 400);
+     boardListThreadListInfo.Name(wxT("boardListThreadListInfo")).CenterPane()
+	  .Floatable(false).BestSize(400, 400);
 
      // 右側下部・スレッド一覧タブとスレ表示画面が載ったウィンドウ
      wxAuiPaneInfo threadTabThreadContentInfo;
-     threadTabThreadContentInfo.Name(wxT("threadTabThreadContentInfo"));
-     threadTabThreadContentInfo.Right();
-     threadTabThreadContentInfo.Center();
-     threadTabThreadContentInfo.CloseButton(false);
-     threadTabThreadContentInfo.BestSize(400, 400);
+     threadTabThreadContentInfo.Name(wxT("threadTabThreadContentInfo")).CenterPane()
+	  .Floatable(false).BestSize(400, 400);
 
      m_mgr.AddPane(m_search_ctrl, search);
      m_mgr.AddPane(m_floatToolBar, toolBar);
      m_mgr.AddPane(m_url_input_panel, url);
-     if (enableBoardListTree) m_mgr.AddPane(boardTreeNoteBook, boardTree);
+     m_mgr.AddPane(boardTreeNoteBook, boardTree);
      m_mgr.AddPane(m_logCtrl, logWindow);
 
-     // 縦分割か横分割か(最初は３ペインでセット)
-     if (separateIsX) 
-     {
-	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
-	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
-     } 
-     else 
-     {
-	  m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
-	  m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
-     }
-
-     // ペイン数の設定
-     if (!paneIsThree)
-     {
-	  // ペイン数は２である
-	  if (rightIsThreadList)
-	  {
-	       // 板一覧は落とす
-	       m_mgr.DetachPane(boardNoteBook);
-	       boardNoteBook->Hide();
-	  }
-	  else
-	  {
-	       // スレ欄は落とす
-	       m_mgr.DetachPane(threadNoteBook);
-	       threadNoteBook->Hide();
-	  }
-     }
+     m_mgr.AddPane(boardNoteBook, boardListThreadListInfo);
+     m_mgr.AddPane(threadNoteBook, threadTabThreadContentInfo);
 
      // 各ウィンドウで識別用のラベルを設定する
      this->SetLabel(JANECLONE_WINDOW);
@@ -1175,10 +1119,10 @@ void JaneClone::SetJaneCloneAuiPaneInfo()
      m_logCtrl->SetLabel(LOG_WINDOW);
      boardNoteBook->SetLabel(BOARD_NOTEBOOK);
      threadNoteBook->SetLabel(THREAD_NOTEBOOK);
-     if (enableBoardListTree) boardTreeNoteBook->SetLabel(BOARD_TREE_NOTEBOOK);
+     boardTreeNoteBook->SetLabel(BOARD_TREE_NOTEBOOK);
 
      // 板一覧更ツリーの初期化
-     if (enableBoardListTree) InitializeBoardList();
+     InitializeBoardList();
      // ツールバーの明示化
      m_floatToolBar->Realize();
      /** 
@@ -1204,6 +1148,8 @@ void JaneClone::SetJaneCloneAuiPaneInfo()
 	  threadNoteBook->SetFont(ReadFontInfo(THREAD_NOTEBOOK));
 	  *m_logCtrl << wxT("フォント情報の読み出し終了…\n");
      }
+
+     UpdatePanes(false);
 }
 /**
  * SetPreviousUserLookedTab
@@ -4479,193 +4425,58 @@ void JaneClone::OnThreadListSort(wxCommandEvent& event) {
  * ツリーコントロールの表示・非表示切り替え
  */
 void JaneClone::ShowBoardListTree(wxCommandEvent& event) {
+     UpdatePanes();
+}
 
-     const bool toggled = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
-     if (!toggled) {
-	  m_mgr.DetachPane(boardTreeNoteBook);
-	  boardTreeNoteBook->Destroy();
-     } else {
-          // ノートブックのサイズ調整
-	  wxSize client_size = GetClientSize();
-	  // 板一覧ツリーの再設定
-	  boardTreeNoteBook = new wxAuiNotebook(this, 
-						ID_BoardTreeNoteBook, 
-						wxPoint(client_size.x, client_size.y), 
-						wxDefaultSize, 
-						wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
-	  boardTreeNoteBook->SetLabel(BOARD_TREE_NOTEBOOK);
-	  boardTreeNoteBook->Connect(wxID_ANY,
-			     wxEVT_ENTER_WINDOW,
-			     wxMouseEventHandler(JaneClone::OnEnterWindow),
-			     NULL, this);
+/**
+ * ペイン位置更新
+ */
+void JaneClone::UpdatePanes(bool immediate)
+{
+     wxAuiPaneInfo& boardTree		       = m_mgr.GetPane(boardTreeNoteBook);
+     wxAuiPaneInfo& logWindow		       = m_mgr.GetPane(m_logCtrl);
+     wxAuiPaneInfo& boardListThreadListInfo    = m_mgr.GetPane(boardNoteBook);
+     wxAuiPaneInfo& threadTabThreadContentInfo = m_mgr.GetPane(threadNoteBook);
 
-	  // 2ch板一覧用ページ
-	  m_boardTreePanel = new wxPanel(boardTreeNoteBook);
-	  boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
+     const bool flag = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
+     boardTree.Position(0).Show(flag);
+     logWindow.Position(1).Show(flag);
 
-	  // お気に入り用ページ
-	  m_favoriteTreePanel = new wxPanel(boardTreeNoteBook);
-	  boardTreeNoteBook->AddPage(m_favoriteTreePanel, wxT("お気に入り"), false);
+     m_floatToolBar->EnableTool(ID_SwitchSeparateXY, paneIsThree);
 
-	  // 閲覧中
-	  m_nowReadingTreePanel = new wxPanel(boardTreeNoteBook);
-	  boardTreeNoteBook->AddPage(m_nowReadingTreePanel, wxT("閲覧中"), false);
-
-#ifdef USE_SHINGETSU
-	  // 新月の公開ノード用ページ FIXME
-	  m_shingetsuTreePanel = new wxPanel(boardTreeNoteBook);
-	  boardTreeNoteBook->AddPage(m_shingetsuTreePanel, wxT("新月公開ノード一覧"), false);
-#endif /** USE_SHINGETSU */
-
-	  // 左側・板一覧のツリーコントロールを設定する
-	  wxAuiPaneInfo boardTree;
-	  boardTree.Name(wxT("boardTree"));
-	  boardTree.Left();
-	  boardTree.CloseButton(false);
-	  boardTree.BestSize(boardTreeNoteBook->GetSize());
-	  m_mgr.AddPane(boardTreeNoteBook, boardTree);
-          // 板一覧更ツリーの初期化
-	  InitializeBoardList();
+     if (paneIsThree)
+     {
+	  if (separateIsX)
+	  {
+	       boardListThreadListInfo.Center().Position(0).Show();
+	       threadTabThreadContentInfo.Center().Position(1).Show();
+	  } else
+	  {
+	       boardListThreadListInfo.Left().Position(0).Show();
+	       threadTabThreadContentInfo.Center().Position(0).Show();
+	  }
+     } else
+     {
+	  boardListThreadListInfo.Center().Position(0).Show(!rightIsThreadList);
+	  threadTabThreadContentInfo.Center().Position(0).Show(rightIsThreadList);
      }
 
-     // 全体の再描画
-     m_mgr.Update();
+     // 画像の切り替え
+     m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY,
+				    wxBitmap(separateIsX ? thrPaneWinImg : thrColumnWinImg,
+					     wxBITMAP_TYPE_ANY));
+
+     if (immediate)
+	  m_mgr.Update();
 }
+
 /**
  * 縦⇔横分割切り替え
  */
 void JaneClone::SwitchSeparateXY(wxCommandEvent& event) 
 {
-     wxAuiPaneInfo boardListThreadListInfo    = m_mgr.GetPane(boardNoteBook);
-     wxAuiPaneInfo threadTabThreadContentInfo = m_mgr.GetPane(threadNoteBook);
-
-     if (separateIsX) 
-     {
-	  // 現在横分割状態なので縦分割に変更
-	  separateIsX = false;
-	  // ペインの状態を変更する
-	  wxString message = wxT("現在横分割状態なので縦分割に変更\n");
-	  SendLogging(message);
-	  // 変更した情報をもとに、ペインを入れなおす
-	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo, wxAUI_INSERT_DOCK);
-	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo, wxAUI_INSERT_DOCK);
-
-     } 
-     else 
-     {
-	  // 現在縦分割状態なので横分割に変更
-	  separateIsX = true;
-	  wxString message = wxT("現在縦分割状態なので横分割に変更\n");
-	  SendLogging(message);
-
-	  // 板一覧ツリーを表示するかどうか
-	  const bool enableBoardListTree = m_floatToolBar->GetToolToggled(ID_ShowBoardListTree);
-
-	  // 上部・検索バーを設定する
-	  wxAuiPaneInfo search;
-	  search.Name(wxT("searchbar"));
-	  search.Top();
-	  search.CloseButton(false);
-
-	  // 上部・URL入力欄を設定する
-	  wxAuiPaneInfo url;
-	  url.Name(wxT("urlbar"));
-	  url.MinSize(wxSize(0, 16));
-	  url.Top();
-	  url.CloseButton(false);
-
-	  // アイコン付きのツールバーを設定する
-	  wxAuiPaneInfo toolBar;
-	  toolBar.Name(wxT("toolBar"));
-	  toolBar.Top();
-	  toolBar.CloseButton(false);
-
-	  // 左側・板一覧のツリーコントロールを設定する
-	  wxAuiPaneInfo boardTree;
-	  if (enableBoardListTree) 
-	  {
-	       // 板一覧ツリー
-	       if (!boardTreeNoteBook) 
-	       {
-		    // ノートブックのサイズ調整
-		    wxSize client_size = GetClientSize();
-		    // 板一覧ツリーを載せるノートブック
-		    boardTreeNoteBook = new wxAuiNotebook(this, 
-							  ID_BoardTreeNoteBook, 
-							  wxPoint(client_size.x, client_size.y), 
-							  wxDefaultSize, 
-							  wxAUI_NB_TAB_FIXED_WIDTH|wxAUI_NB_SCROLL_BUTTONS|wxAUI_NB_TOP);
-		    boardTreeNoteBook->SetLabel(BOARD_TREE_NOTEBOOK);
-		    boardTreeNoteBook->Connect(wxID_ANY,
-					       wxEVT_ENTER_WINDOW,
-					       wxMouseEventHandler(JaneClone::OnEnterWindow),
-					       NULL, this);
-
-		    // 2ch板一覧用ページ
-		    m_boardTreePanel = new wxPanel(boardTreeNoteBook);
-		    boardTreeNoteBook->AddPage(m_boardTreePanel, wxT("2ch板一覧"), false);
-
-		    // お気に入り用ページ
-		    m_favoriteTreePanel = new wxPanel(boardTreeNoteBook);
-		    boardTreeNoteBook->AddPage(m_favoriteTreePanel, wxT("お気に入り"), false);
-
-#ifdef USE_SHINGETSU
-		    // 新月の公開ノード用ページ FIXME
-		    m_shingetsuTreePanel = new wxPanel(boardTreeNoteBook);
-		    boardTreeNoteBook->AddPage(m_shingetsuTreePanel, wxT("新月公開ノード一覧"), false);
-#endif /** USE_SHINGETSU */
-
-	       }
-	       boardTree.Name(wxT("boardTree"));
-	       boardTree.Left();
-	       boardTree.CloseButton(false);
-	       boardTree.BestSize(boardTreeNoteBook->GetSize());
-	  }
-     
-	  // 左側下部・ログ出力ウィンドウを設定する
-	  wxAuiPaneInfo logWindow;
-	  logWindow.Name(wxT("logWindow"));
-	  logWindow.Left();
-	  logWindow.CloseButton(false);
-	  logWindow.MaxSize(20, 20);
-
-	  // 右側上部・板一覧のノートブックとスレッド一覧リストが載ったウィンドウ
-	  wxAuiPaneInfo boardListThreadListInfo;
-	  boardListThreadListInfo.Name(wxT("boardListThreadListInfo"));
-	  boardListThreadListInfo.Right();
-	  boardListThreadListInfo.Center();
-	  boardListThreadListInfo.CloseButton(false);
-	  boardListThreadListInfo.BestSize(400, 400);
-
-	  // 右側下部・スレッド一覧タブとスレ表示画面が載ったウィンドウ
-	  wxAuiPaneInfo threadTabThreadContentInfo;
-	  threadTabThreadContentInfo.Name(wxT("threadTabThreadContentInfo"));
-	  threadTabThreadContentInfo.Right();
-	  threadTabThreadContentInfo.Center();
-	  threadTabThreadContentInfo.CloseButton(false);
-	  threadTabThreadContentInfo.BestSize(400, 400);
-
-	  m_mgr.InsertPane(m_url_input_panel, url);
-	  m_mgr.InsertPane(m_floatToolBar, toolBar);
-	  m_mgr.InsertPane(m_search_ctrl, search);
-	  m_mgr.InsertPane(m_logCtrl, logWindow);
-	  if (enableBoardListTree) m_mgr.InsertPane(boardTreeNoteBook, boardTree);
-	  m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo);
-	  m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo);
-     }
-
-     // 画像の切り替え
-     if (separateIsX)
-     {
-	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrColumnWinImg, wxBITMAP_TYPE_ANY));
-     }
-     else
-     {
-	  m_floatToolBar->SetToolBitmap (ID_SwitchSeparateXY, wxBitmap(thrPaneWinImg, wxBITMAP_TYPE_ANY));
-     }
-     
-     // 全体の再描画
-     m_mgr.Update();
+     separateIsX = !separateIsX;
+     UpdatePanes();
 }
 
 /**
@@ -4673,56 +4484,8 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event)
  */
 void JaneClone::SwitchTwoThreePane(wxCommandEvent& event)
 {
-     // ペイン数の設定
-     if (paneIsThree)
-     {
-	  // ペイン数は３である
-	  if (rightIsThreadList)
-	  {
-	       // 右側下部・スレッド一覧タブとスレ表示画面が載ったウィンドウ
-	       wxAuiPaneInfo threadTabThreadContentInfo;
-	       threadTabThreadContentInfo.Name(wxT("threadTabThreadContentInfo"));
-	       threadTabThreadContentInfo.Right();
-	       threadTabThreadContentInfo.Center();
-	       threadTabThreadContentInfo.CloseButton(false);
-	       threadTabThreadContentInfo.BestSize(400, 400);
-	       m_mgr.InsertPane(threadNoteBook, threadTabThreadContentInfo);
-	       threadNoteBook->Show();
-	  }
-	  else
-	  {
-	       // 右側上部・板一覧のノートブックとスレッド一覧リストが載ったウィンドウ
-	       wxAuiPaneInfo boardListThreadListInfo;
-	       boardListThreadListInfo.Name(wxT("boardListThreadListInfo"));
-	       boardListThreadListInfo.Right();
-	       boardListThreadListInfo.Center();
-	       boardListThreadListInfo.CloseButton(false);
-	       boardListThreadListInfo.BestSize(400, 400);
-	       m_mgr.InsertPane(boardNoteBook, boardListThreadListInfo);
-	       boardNoteBook->Show();
-	  }
-     }
-     else
-     {
-	  // ペイン数は２である
-	  if (rightIsThreadList)
-	  {
-	       // スレ欄は落とす
-	       m_mgr.DetachPane(threadNoteBook);
-	       threadNoteBook->Hide();
-	  }
-	  else
-	  {
-	       // 板一覧は落とす
-	       m_mgr.DetachPane(boardNoteBook);
-	       boardNoteBook->Hide();
-	  }
-     }
-
-     // 全体の再描画
-     m_mgr.Update();
-     // bool値の更新
-     paneIsThree = (!paneIsThree);
+     paneIsThree = !paneIsThree;
+     UpdatePanes();
 }
 
 /**
