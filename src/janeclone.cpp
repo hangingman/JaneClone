@@ -102,6 +102,7 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
    EVT_MENU(ID_ShowBoardListTree, JaneClone::ShowBoardListTree)
    EVT_MENU(ID_SwitchSeparateXY, JaneClone::SwitchSeparateXY)
    EVT_MENU(ID_SwitchTwoThreePane, JaneClone::SwitchTwoThreePane)
+   EVT_MENU(ID_SwitchRightPane, JaneClone::SwitchRightPane)
    EVT_MENU(ID_CallSettingWindow, JaneClone::CallSettingWindow)
    EVT_MENU(ID_CallViewerSettingWindow, JaneClone::CallViewerSettingWindow)
 
@@ -4443,6 +4444,7 @@ void JaneClone::UpdatePanes(bool immediate)
      logWindow.Position(1).Show(flag);
 
      m_floatToolBar->EnableTool(ID_SwitchSeparateXY, paneIsThree);
+     m_floatToolBar->EnableTool(ID_SwitchRightPane, !paneIsThree);
 
      if (paneIsThree)
      {
@@ -4485,6 +4487,15 @@ void JaneClone::SwitchSeparateXY(wxCommandEvent& event)
 void JaneClone::SwitchTwoThreePane(wxCommandEvent& event)
 {
      paneIsThree = !paneIsThree;
+     UpdatePanes();
+}
+
+/**
+ * 右側切り替え
+ */
+void JaneClone::SwitchRightPane(wxCommandEvent& event)
+{
+     rightIsThreadList = !rightIsThreadList;
      UpdatePanes();
 }
 
