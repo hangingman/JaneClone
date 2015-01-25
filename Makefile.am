@@ -84,7 +84,7 @@ WIN32_DEP   = libstdc++ libgcc libxml2 zlib libcurl libjpeg libpng libtiff sslea
 RPM_MACRO   = $(top_builddir)/extras/package/.rpmmacros
 # <パッケージ名>-<バージョン番号>.<リリース番号>.spec
 SPECFILE	= $(PACKAGE_NAME)-$(VERSION).spec
-SPECFILE_PATH	= $(top_builddir)/extras/package/SPECS/$(SPECFILE)
+SPECFILE_PATH	= $(top_builddir)//$(SPECFILE)
 # <パッケージ名>-<バージョン番号>.<リリース番号>.<アーキテクチャ>.rpm
 RPMNAME		= $(PACKAGE_NAME)-$(VERSION).`uname -m`.rpm
 
@@ -215,64 +215,69 @@ package-win64-zip: prepare-package
 	)
 	( cd $(top_builddir)/extras && zip -r $(PACKAGE)-win64-$(VERSION).zip package/ && mv $(PACKAGE)-win64-$(VERSION).zip ../ )
 
-# RH系ディストリビューション向けのインストーラ作成
-package-rpm: package-clean
-	@echo 'RPM package create start...'
-	mkdir -p $(top_builddir)/extras/package/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-	touch $(RPM_MACRO)
-	echo "%_topdir $(top_builddir)/extras/package" > $(RPM_MACRO)
-	echo "%packager Hiroyuki Nagata <$(PACKAGE_BUGREPORT)>" >> $(RPM_MACRO)
-	echo "%_sysconfdir /etc" >> $(RPM_MACRO)
-	$(MAKE) dist
-	mv $(distdir).tar.gz $(top_builddir)/extras/package/SOURCES
+# specファイルの生成
+generate-spec:
+	@echo "Create SPEC file..."
 # SPECファイルを作成する
 	touch $(SPECFILE_PATH)
-	echo "" > $(SPECFILE_PATH)
-	echo "%define		name	$(PACKAGE_NAME)" >> $(SPECFILE_PATH)
-	echo "%define		version $(VERSION)" >> $(SPECFILE_PATH)
-	echo "%define		release 0" >> $(SPECFILE_PATH)
-	echo "%define		prefix  /usr" >> $(SPECFILE_PATH)
-	echo "" >> $(SPECFILE_PATH)
-	echo "License:		GPL" >> $(SPECFILE_PATH)
-	echo "Group:		Applications/Internet" >> $(SPECFILE_PATH)
-	echo "Source:		$(distdir).tar.gz" >> $(SPECFILE_PATH)
-	echo "Summary:		Cross Platform 2ch browser" >> $(SPECFILE_PATH)
-	echo "Packager:		Hiroyuki Nagata" >> $(SPECFILE_PATH)
-	echo "Distribution:	`lsb_release -i | awk {'print $$3'}`" >> $(SPECFILE_PATH)
-	echo "BuildRoot:	/var/tmp/%{name}-%{version}-root" >> $(SPECFILE_PATH)
-	echo "Url:		http://hiroyuki-nagata.github.io/" >> $(SPECFILE_PATH)
-	echo "Vendor:		Hiroyuki Nagata<$(PACKAGE_BUGREPORT)>" >> $(SPECFILE_PATH)
-	echo "" >> $(SPECFILE_PATH)
-	echo "Requires:		filesystem" >> $(SPECFILE_PATH)
-	echo "" >> $(SPECFILE_PATH)
-	echo "pBuildRequires:	gcc-c++" >> $(SPECFILE_PATH)
-	echo "BuildRequires:	ncurses-devel" >> $(SPECFILE_PATH)
-	echo "BuildRequires:	zlib-devel" >> $(SPECFILE_PATH)
-	echo "BuildRequires:	wxGTK-devel >= 2.8.12" >> $(SPECFILE_PATH)
-	echo "BuildRequires:	sqlite-devel" >> $(SPECFILE_PATH)
-	echo "BuildRequires:	libxml2-devel" >> $(SPECFILE_PATH)
-	echo "" >> $(SPECFILE_PATH)
-	echo "%description" >> $(SPECFILE_PATH)
-	echo "JaneClone is a plain browser dedicated to read 2ch thread. Using a library called wxWidgets." >> $(SPECFILE_PATH)
-	echo "It will work on Windows, Linux, Mac. It will keep the platform-specific user interface." >> $(SPECFILE_PATH)
-	echo "" >> $(SPECFILE_PATH)
-	echo "%prep" >> $(SPECFILE_PATH)
-	echo "%setup -q" >> $(SPECFILE_PATH)
-	echo "" >> $(SPECFILE_PATH)
-	echo "%build" >> $(SPECFILE_PATH)
-	echo "rm -rf $RPM_BUILD_ROOT" >> $(SPECFILE_PATH)
-	echo "CXXFLAGS=$RPM_OPT_FLAGS ./configure --prefix=%{prefix}" >> $(SPECFILE_PATH)
-	echo "make" >> $(SPECFILE_PATH)
-	echo "" >> $(SPECFILE_PATH)
-	echo "%install" >> $(SPECFILE_PATH)
-	echo "[ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;" >> $(SPECFILE_PATH)
-	echo "make -e prefix=$RPM_BUILD_ROOT%{prefix} install" >> $(SPECFILE_PATH)
-	echo "" >> $(SPECFILE_PATH)
-	echo "%clean" >> $(SPECFILE_PATH)
-	echo "[ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;" >> $(SPECFILE_PATH)
-	echo "" >> $(SPECFILE_PATH)
+	@echo "%define	       name    janeclone					 "	> $(SPECFILE_PATH)
+	@echo "%define	       version 1.1.4						 "	>> $(SPECFILE_PATH)
+	@echo "%define	       release 0						 "	>> $(SPECFILE_PATH)
+	@echo "%define	       prefix  /usr						 "	>> $(SPECFILE_PATH)
+	@echo "%define	       _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm"	>> $(SPECFILE_PATH)
+	@echo "										 "	>> $(SPECFILE_PATH)
+	@echo "Name:	%{name}								 "	>> $(SPECFILE_PATH)
+	@echo "Version: %{version}							 "	>> $(SPECFILE_PATH)
+	@echo "Release: %{release}							 "	>> $(SPECFILE_PATH)
+	@echo "Source: %{name}_%{version}.tar.gz					 "	>> $(SPECFILE_PATH)
+	@echo "Packager: Hiroyuki Nagata <newserver002@gmail.com>			 "	>> $(SPECFILE_PATH)
+	@echo "BuildRoot: /var/tmp/%{name}-%{version}-root				 "	>> $(SPECFILE_PATH)
+	@echo "Summary: Cross Platform 2ch browser					 "	>> $(SPECFILE_PATH)
+	@echo "License: see /usr/share/doc/janeclone/copyright				 "	>> $(SPECFILE_PATH)
+	@echo "Group: Applications/Internet						 "	>> $(SPECFILE_PATH)
+	@echo "Url: http://hiroyuki-nagata.github.io/					 "	>> $(SPECFILE_PATH)
+	@echo "										 "	>> $(SPECFILE_PATH)
+	@echo "Requires: filesystem							 "	>> $(SPECFILE_PATH)
+	@echo "										 "	>> $(SPECFILE_PATH)
+	@echo "BuildRequires: gcc-c++							 "      >> $(SPECFILE_PATH) 
+	@echo "BuildRequires: zlib-devel						 "      >> $(SPECFILE_PATH) 
+	@echo "BuildRequires: wxGTK-devel						 "      >> $(SPECFILE_PATH) 
+	@echo "BuildRequires: libxml2-devel						 "      >> $(SPECFILE_PATH) 
+	@echo "										 "	>> $(SPECFILE_PATH)
+	@echo "%description" >> $(SPECFILE_PATH)
+	@echo "JaneClone is a plain browser dedicated to read 2ch thread. Using a library called wxWidgets." >> $(SPECFILE_PATH)
+	@echo "It will work on Windows, Linux, Mac. It will keep the platform-specific user interface." >> $(SPECFILE_PATH)
+	@echo "" >> $(SPECFILE_PATH)
+	@echo "%prep" >> $(SPECFILE_PATH)
+	@echo "%setup -q" >> $(SPECFILE_PATH)
+	@echo "" >> $(SPECFILE_PATH)
+	@echo "%build" >> $(SPECFILE_PATH)
+	@echo "rm -rf $RPM_BUILD_ROOT" >> $(SPECFILE_PATH)
+	@echo "./bootstrap" >> $(SPECFILE_PATH)
+	@echo "CXXFLAGS=$RPM_OPT_FLAGS ./configure --prefix=%{prefix}" >> $(SPECFILE_PATH)
+	@echo "make" >> $(SPECFILE_PATH)
+	@echo "" >> $(SPECFILE_PATH)
+	@echo "%install" >> $(SPECFILE_PATH)
+	@echo "[ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;" >> $(SPECFILE_PATH)
+	@echo "make -e prefix=$RPM_BUILD_ROOT%{prefix} install" >> $(SPECFILE_PATH)
+	@echo "" >> $(SPECFILE_PATH)
+	@echo "%clean" >> $(SPECFILE_PATH)
+	@echo "[ -d $RPM_BUILD_ROOT ] && rm -rf $RPM_BUILD_ROOT;" >> $(SPECFILE_PATH)
+	@echo "" >> $(SPECFILE_PATH)
+	@cat $(SPECFILE_PATH)
+
+# RH系ディストリビューション向けのインストーラ作成
+package-rpm: package-clean generate-spec
+	@echo 'RPM package create start...'
+#mkdir -p $(top_builddir)/extras/package/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+#	touch $(RPM_MACRO)
+# 	echo "%_topdir $(top_builddir)/extras/package" > $(RPM_MACRO)
+# 	echo "%packager Hiroyuki Nagata <$(PACKAGE_BUGREPORT)>" >> $(RPM_MACRO)
+# 	echo "%_sysconfdir /etc" >> $(RPM_MACRO)
+# 	$(MAKE) dist
+# 	mv $(distdir).tar.gz $(top_builddir)/extras/package/SOURCES
 # rpmbuildを実行する
-	cd $(top_builddir)/extras/package/SPECS && rpmbuild --macros=$(RPM_MACRO) -ba $(SPECFILE)
+#	cd $(top_builddir)/extras/package/SPECS && rpmbuild --macros=$(RPM_MACRO) -ba $(SPECFILE)
 	@echo 'RPM package create end...'
 
 #

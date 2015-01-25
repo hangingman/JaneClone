@@ -112,9 +112,9 @@ NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, c
      basicAuthUserNameTC = new wxTextCtrl(panel_8, wxID_ANY, wxEmptyString);
      label_13 = new wxStaticText(panel_9, wxID_ANY, wxT("Password:"));
      basicAuthPasswordTC = new wxTextCtrl(panel_9, wxID_ANY, wxEmptyString);
-     label_4 = new wxStaticText(panel_2, wxID_ANY, wxT("受信タイムアウト（秒）"));
+     label_4 = new wxStaticText(panel_2, wxID_ANY, wxT("受信タイムアウト（ミリ秒）"));
      receiveTimeoutTC = new wxTextCtrl(panel_2, wxID_ANY, wxT("30000"));
-     label_5 = new wxStaticText(panel_3, wxID_ANY, wxT("接続タイムアウト（秒）"));
+     label_5 = new wxStaticText(panel_3, wxID_ANY, wxT("接続タイムアウト（ミリ秒）"));
      connectTimeoutTC = new wxTextCtrl(panel_3, wxID_ANY, wxT("10000"));
      label_3 = new wxStaticText(panel_4, wxID_ANY, wxT("ボード一覧取得URL"));
      boardListURLTC = new wxTextCtrl(panel_4, wxID_ANY, wxT("http://menu.2ch.net/bbsmenu.html"));
