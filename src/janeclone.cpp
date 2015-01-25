@@ -3306,11 +3306,13 @@ void JaneClone::SetPopUpWindow(wxHtmlCellEvent& event, wxString& boardNameAscii,
 
      // 取得したレスをポップアップさせる
      AnchoredResponsePopup* popup = new AnchoredResponsePopup(threadNoteBook, anchorPoint, wxSize(640, 300), htmlDOM);
-     JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("anchor point: %d, %d\n"), anchorPoint.x, anchorPoint.y));
+     // FIXME: ログの出力レベル切り替えが必要か
+     //JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("anchor point: %d, %d\n"), anchorPoint.x, anchorPoint.y));
 
      // マウスカーソルの位置に調整する
      wxPoint p = ClientToScreen(wxGetMousePosition());
-     JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("mouse point: %d, %d\n"), p.x, p.y));
+     // FIXME: ログの出力レベル切り替えが必要か
+     //JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("mouse point: %d, %d\n"), p.x, p.y));
      popup->Position(anchorPoint, wxSize(p.x + 50, p.y - 150));
      popup->Popup();
 

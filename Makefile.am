@@ -121,7 +121,7 @@ package-win32-msi: prepare-package check-nsis
 	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
-	for f in `find $(top_builddir)/src/.libs -name $(PACKAGE_NAME).exe`; do                             \
+	for f in `find $(top_builddir)/src/.libs/ -name $(PACKAGE).exe`; do                             \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
 	for f in `find $(bindir) $(libdir) -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do          \
@@ -149,7 +149,7 @@ package-win32-zip: prepare-package
 	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
-	for f in `find $(top_builddir)/src/.libs -name $(PACKAGE_NAME).exe`; do                             \
+	for f in `find $(top_builddir)/src/.libs/ -name $(PACKAGE).exe`; do                             \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
 	for f in `find $(bindir) $(libdir) -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do          \
@@ -174,7 +174,7 @@ package-win64-msi: prepare-package check-nsis
 	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
-	for f in `find $(top_builddir)/src/.libs -name $(PACKAGE_NAME).exe`; do                             \
+	for f in `find $(top_builddir)/src/.libs/ -name $(PACKAGE).exe`; do                             \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
 	for f in `find $(bindir) $(libdir) -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do          \
@@ -202,7 +202,7 @@ package-win64-zip: prepare-package
 	for f in `find $(top_builddir) -name \*.dll`; do                                                    \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
-	for f in `find $(top_builddir)/src/.libs -name $(PACKAGE_NAME).exe`; do                             \
+	for f in `find $(top_builddir)/src/.libs/ -name $(PACKAGE).exe`; do                             \
 	   cp -p $${f} $(top_builddir)/extras/package;                                                      \
 	done
 	for f in `find $(bindir) $(libdir) -name wx*@WX_VERSION_MAJOR@@WX_VERSION_MINOR@*.dll`; do          \

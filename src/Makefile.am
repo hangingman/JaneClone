@@ -78,8 +78,8 @@ ACLOCAL_AMFLAGS    = -I m4
 # For Icon build and library dependency
 if USE_WINDRES
 # Platform is Windows
-janeclone_LDFLAGS  = $(JC_FLAG_STRING) janeclone_rc.o
-janeclone_LDADD    = @XML2LIBS@ @CRYPTO_LIBS@ $(top_builddir)/cmdline_twitter/libctw.a
+janeclone_LDFLAGS  = $(JC_FLAG_STRING) -s
+janeclone_LDADD    = janeclone_rc.o @XML2LIBS@ @CRYPTO_LIBS@ $(top_builddir)/cmdline_twitter/libctw.a
 
 janeclone_rc.o : $(top_builddir)/src/rc/icon.rc
 	@WX_RESCOMP@ -i $^ -O coff -o $@
@@ -92,16 +92,16 @@ janeclone_LDADD    = @XML2LIBS@ @CRYPTO_LIBS@ $(top_builddir)/cmdline_twitter/li
 endif
 
 # Build or not
+if BUILDING_WXSQLITE3
+  janeclone_CXXFLAGS += -I$(top_builddir)/wxsqlite3
+  janeclone_LDADD    += $(top_builddir)/wxsqlite3/libwxsqlite3.a
+endif
+
 if BUILDING_SQLITE3
   janeclone_CXXFLAGS += -I$(top_builddir)/sqlite3
   janeclone_LDADD    += $(top_builddir)/sqlite3/libsqlite3.a
 else
   janeclone_LDFLAGS  += -lsqlite3
-endif
-
-if BUILDING_WXSQLITE3
-  janeclone_CXXFLAGS += -I$(top_builddir)/wxsqlite3
-  janeclone_LDADD    += $(top_builddir)/wxsqlite3/libwxsqlite3.a
 endif
 
 if BUILDING_CURLPP
