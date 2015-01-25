@@ -1,5 +1,276 @@
 Non-maintainer upload
 
+commit 3d7d957
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-25
+
+    Add SPEC file generate batch
+    Change NetworkSettingPanel's timeout unit sec -> msec Fix #51
+
+Makefile.am
+src/otherpanels.cpp
+
+commit 3f32505
+Merge: 37c0c50 81ead3f
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-25
+
+    Merge pull request #58 from vabock/refactor_pane
+    
+    Refactor wxAui pane by vabock
+
+commit 81ead3f
+Author: Vabock <vabock@gmail.com>
+Date:   2015-01-24
+
+    Implement SwitchRightPane Tool Button
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit a8bb7b0
+Author: Vabock <vabock@gmail.com>
+Date:   2015-01-22
+
+    Refactor wxAui Pane Handling
+    Fixes #54
+
+src/janeclone.cpp
+src/janeclone.hpp
+
+commit 37c0c50
+Merge: 9b08c5e f6d00b0
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-20
+
+    Merge pull request #56 from vabock/dev/pathsep
+    
+    Use wxFILE_SEP_PATH instead of wxFileSeparator
+
+commit 9b08c5e
+Author: Hiroyuki Nagata <newserver002@gmail.com>
+Date:   2015-01-19
+
+    Write INSTALL for detail [skip ci]
+
+INSTALL
+bakefile/janeclone.bat
+bakefile/janeclone.ps1
+
+commit 4bd2f9a
+Merge: f487fdb f4ab968
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-18
+
+    Merge pull request #55 from Hiroyuki-Nagata/vc
+    
+    Deal with Visual Studio [skip ci]
+
+commit f4ab968
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-18
+
+    Fix source code UTF-8 -> UTF-8 BOM
+
+bakefile/janeclone.bkl
+src/anchoredresponsepopup.cpp
+src/anchoredresponsepopup.hpp
+src/datatype.hpp
+src/drawpane.cpp
+src/drawpane.hpp
+src/enums.hpp
+src/enumstring.hpp
+src/extractboardlist.cpp
+src/extractboardlist.hpp
+src/imagepanel.cpp
+src/imagepanel.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneimageviewer.cpp
+src/janecloneimageviewer.hpp
+src/janecloneuiutil.cpp
+src/janecloneuiutil.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/main.cpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/settingwindow.cpp
+src/settingwindow.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+src/threadcontentwebview.cpp
+src/threadcontentwebview.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit e0f4ef3
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-18
+
+    Fix char concat for MSVC
+
+bakefile/janeclone.bat
+src/datatype.hpp
+
+commit 2c845d6
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-18
+
+    Fix bakefile and datatype.hpp for MSVC
+
+bakefile/janeclone.bkl
+src/datatype.hpp
+
+commit 1beee55
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-17
+
+    Fix bakefile and batch file
+
+bakefile/bakefile.bat
+bakefile/janeclone.bat
+bakefile/janeclone.bkl
+
+commit f487fdb
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-17
+
+    Fix bsd-sed bug
+    Fix sqlite3 is sys, wxsqlite3 is builtin situasion bug
+
+Makefile.am
+configure.ac
+src/Makefile.am
+wxsqlite3/Makefile.am
+
+commit 6bd7565
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-17
+
+    Fix janeclone.bat
+
+bakefile/janeclone.bat
+
+commit 62fbbf3
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-17
+
+    Fix janeclone.bat
+
+bakefile/janeclone.bat
+bakefile/janeclone.ps1
+
+commit 596dbf1
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-17
+
+    Fix bsd sed error "sed: illegal option -- r "
+
+Makefile.am
+
+commit b51f310
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-17
+
+    Replace small build number from osx dylib
+
+Makefile.am
+
+commit dc08d31
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-17
+
+    Fix OSX ResourcePath (JaneClone.app/Contents/MacOS/rc/ -> JaneClone.app/Contents/Resources)
+    Fix Linux ResourcePath (/usr/share/pixmaps/janeclone -> $(prefix)/share/pixmaps/janeclone)
+    SQLite3 & wxSQLite3 build is now static
+
+Makefile.am
+misc/osx-dependency-check.sh
+sqlite3/Makefile.am
+src/Makefile.am
+src/datatype.hpp
+wxsqlite3/Makefile.am
+
+commit f6d00b0
+Author: Vabock <vabock@gmail.com>
+Date:   2015-01-17
+
+    Use wxFILE_SEP_PATH instead of wxFileSeparator
+
+src/anchoredresponsepopup.cpp
+src/datatype.hpp
+src/janeclone.cpp
+src/janecloneimageviewer.cpp
+src/janecloneutil.cpp
+src/main.cpp
+src/responsewindow.cpp
+src/socketcommunication.cpp
+src/sqliteaccessor.cpp
+src/threadcontentwebview.cpp
+src/threadcontentwindow.cpp
+
+commit a2f2dab
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-17
+
+    Fix matrix element of appveyor.yml
+
+appveyor.yml
+
+commit 5beb7c2
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-17
+
+    Delete tab from appveyor.yml
+
+appveyor.yml
+
+commit 43f8f82
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-17
+
+    Add appveyor.yml
+
+appveyor.yml
+bakefile/janeclone.ps1
+
+commit e03c395
+Merge: 2479a9d 763e334
+Author: Hiroyuki Nagata <hiroyuki-nagata@panzer_girl.com>
+Date:   2015-01-17
+
+    Merge branch 'master' into vc
+
+commit 763e334
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-16
+
+    Add forgotten man page file
+
+man/janeclone.man
+
+commit 13e7ab1
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-16
+
+    Add consideration for $prefix + "/share/pixmaps/janeclone/"
+
+ChangeLog
+Makefile.am
+configure.ac
+misc/janeclone.menu
+src/Makefile.am
+src/datatype.hpp
+
 commit fe78b8a
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2015-01-16
@@ -196,6 +467,17 @@ src/Makefile.am
 src/janecloneutil.cpp
 src/janecloneutil.hpp
 src/socketcommunication.cpp
+
+commit 2479a9d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-12
+
+    Make branch for visual studio
+
+bakefile/janeclone.bat
+bakefile/janeclone.bkl
+bakefile/janeclone.ps1
+janeclone.bkl
 
 commit ab9d9a2
 Merge: 454dd11 d06c8bc

@@ -1600,7 +1600,8 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event)
      
      if (linkInfo && linkInfo->GetHref() != wxEmptyString) 
      {
-	  JaneCloneUiUtil::SendLoggingHelper(linkInfo->GetHref());
+	  // FIXME: ログの出力レベル切り替えが必要か
+	  //JaneCloneUiUtil::SendLoggingHelper(linkInfo->GetHref());
 	  wxString rest;
 
 	  if ( linkInfo->GetTarget() == _T("_blank") ) 
@@ -1629,7 +1630,9 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event)
 	       }
 	       // アンカーの出現位置
 	       wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
-	       JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("Anchor X:%d, Y:%d\n"), anchorPoint.x, anchorPoint.y));
+
+	       // FIXME: ログの出力レベル切り替えが必要か
+	       // JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("Anchor X:%d, Y:%d\n"), anchorPoint.x, anchorPoint.y));
 	       // 取得した情報を元に新しいポップアップウィンドウを出現させる
 	       SetPopUpWindow(event, boardNameAscii, origNumber, resNumber, anchorPoint);
 
@@ -1641,7 +1644,8 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event)
 	       {
 		    // アンカーの出現位置
 		    wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
-		    JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("Anchor X:%d, Y:%d\n"), anchorPoint.x, anchorPoint.y));
+		    // FIXME: ログの出力レベル切り替えが必要か
+		    //JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("Anchor X:%d, Y:%d\n"), anchorPoint.x, anchorPoint.y));
 
 		    const wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
 		    wxString boardNameAscii = tiHash[title].boardNameAscii;
@@ -1655,7 +1659,8 @@ void JaneClone::OnCellHover(wxHtmlCellEvent& event)
 	  {
 	       // アンカーの出現位置
 	       wxPoint anchorPoint(cell->GetPosX(), cell->GetPosY());
-	       JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("Anchor X:%d, Y:%d\n"), anchorPoint.x, anchorPoint.y));
+	       // FIXME: ログの出力レベル切り替えが必要か
+	       // JaneCloneUiUtil::SendLoggingHelper(wxString::Format(wxT("Anchor X:%d, Y:%d\n"), anchorPoint.x, anchorPoint.y));
 
 	       const wxString title = threadNoteBook->GetPageText(threadNoteBook->GetSelection());
 	       wxString boardNameAscii = tiHash[title].boardNameAscii;

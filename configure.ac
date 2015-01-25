@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.67])
-AC_INIT([JaneClone], [1.1.4], [newserver002@gmail.com])
+AC_INIT([JaneClone], [1.1.5], [newserver002@gmail.com])
 
 # SCM URL
 AC_SUBST(UPSTREAM_URL, [https://github.com/Hiroyuki-Nagata/JaneClone])
