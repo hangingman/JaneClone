@@ -161,24 +161,36 @@ if test $has_sqlite3 = 0; then
   AC_MSG_NOTICE([we will build sqlite3...])
   AM_CONDITIONAL(BUILDING_SQLITE3, true)
 fi
-# Checks for libwxsqlite3 ( if not exist, build it )
-AC_MSG_CHECKING([for wxsqlite3])
-AC_LANG_PUSH(C++)
-SAVE_LIBS="$LIBS"
-LIBS="$LIBS -lwxsqlite3-$wx_config_major_version"".""$wx_config_minor_version"
-AC_TRY_LINK([#include <wx/wxsqlite3.h>], 
-	    [wxSQLite3Database db;],
-	    has_wxsqlite3=1,
-	    has_wxsqlite3=0)
-AC_LANG_POP(C++)
-if test $has_wxsqlite3 = 0; then
-  AC_MSG_RESULT([no])
-  AC_MSG_NOTICE([we will build wxsqlite3...])
-  AM_CONDITIONAL(BUILDING_WXSQLITE3, true)
-  LIBS="$SAVE_LIBS"
-else
-  AC_MSG_RESULT([yes])
-fi
+
+#-----------------------------------------------------------------------
+#   libwxsqlite3 ( if not exist, build it )
+#
+AS_IF([test x"$PLATFORM_STRING" = x"Linux" -o x"$PLATFORM_STRING" = x"BSD"], [
+    # Linux will use pkg-config
+    PKG_CHECK_MODULES([WXSQLITE3], [wxsqlite3-$wx_config_major_version.$wx_config_minor_version])
+    CXXFLAGS="$CXXFLAGS $WXSQLITE3_CFLAGS"
+    LIBS="$LIBS $WXSQLITE3_LIBS"
+    ], [
+    # Others will check AC_TRY_LINK
+    AC_MSG_CHECKING([for wxsqlite3])                                              
+    AC_LANG_PUSH(C++)                                                             
+    SAVE_LIBS="$LIBS"                                                             
+    LIBS="$LIBS -lwxsqlite3-$wx_config_major_version"".""$wx_config_minor_version"
+    AC_TRY_LINK([#include <wx/wxsqlite3.h>],                                      
+                [wxSQLite3Database db;],                                          
+                has_wxsqlite3=1,                                                  
+                has_wxsqlite3=0)                                                  
+    AC_LANG_POP(C++)                                                              
+    if test $has_wxsqlite3 = 0; then                                              
+      AC_MSG_RESULT([no])                                                         
+      AC_MSG_NOTICE([we will build wxsqlite3...])                                 
+      AM_CONDITIONAL(BUILDING_WXSQLITE3, true)                                    
+      LIBS="$SAVE_LIBS"                                                           
+    else                                                                          
+      AC_MSG_RESULT([yes])                                                        
+    fi
+])
+#-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
 #   libcurl build flag

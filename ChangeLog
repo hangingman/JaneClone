@@ -1,5 +1,34 @@
 Non-maintainer upload
 
+commit 4cd0b19
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-25
+
+    Fix MinGW build
+
+Makefile.am
+src/Makefile.am
+src/janeclone.cpp
+
+commit 3fe5c50
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-01-25
+
+    Update README.md [skip ci
+
+README.md
+
+commit e6c82b2
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-25
+
+    Release JaneClone-1.1.5
+
+ChangeLog
+NEWS
+configure.ac
+src/janeclone.cpp
+
 commit 3d7d957
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2015-01-25
