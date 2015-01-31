@@ -1574,7 +1574,7 @@ void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
 	  iArray.Add(ID_OthersSampleLabel);
      }
 
-     for (int i = 0; i < iArray.size(); i++ )
+     for (unsigned int i = 0; i < iArray.size(); i++ )
      {
 	  wxWindow* window = FindWindowById(static_cast<long>(iArray[i]), this);
 
@@ -1700,7 +1700,7 @@ void TabColorSettingPanel::set_properties()
      iArray.Add(ID_ThreadTabPartialContentFontColorButton);
      iArray.Add(ID_AutoReloadFontColorButton);
 
-     for (int i = 0; i < iArray.size(); i++ )
+     for (unsigned int i = 0; i < iArray.size(); i++ )
      {
 	  this->SetSampleFontColorSetting(iArray[i]);
      }
@@ -1854,7 +1854,7 @@ void TabColorSettingPanel::SetSampleBGColorSetting(const int id)
 	  iArray.Add(ID_PartialContentDeactiveTabSampleLabel); 
      }
 
-     for (int i = 0; i < iArray.size(); i++ )
+     for (unsigned int i = 0; i < iArray.size(); i++ )
      {
 	  wxWindow* window = FindWindowById(static_cast<long>(iArray[i]), this);
 
@@ -1974,7 +1974,7 @@ void TabColorSettingPanel::SetSampleFontColorSetting(const int id)
      }
 
 
-     for ( int i = 0; i < iArray.size(); i++ )
+     for (unsigned int i = 0; i < iArray.size(); i++ )
      {	  
 	  wxWindow* window = FindWindowById(static_cast<long>(iArray[i]), this);
 #if wxCHECK_VERSION(2, 9, 1)

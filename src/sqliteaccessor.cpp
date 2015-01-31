@@ -37,11 +37,11 @@ SQLiteAccessor::SQLiteAccessor() {
 
 	  // 2chのすべての板一覧情報
 	  db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO "
-			          "(BOARDNAME_KANJI TEXT, "
-			           "BOARD_URL       TEXT, "
-			           "CATEGORY        TEXT, "
-			           "IS_OUTSIDE      INTEGER" /** true:1, false:0 */
-			       ")"));
+			          L"(BOARDNAME_KANJI TEXT, "
+			          L"BOARD_URL       TEXT, "
+			          L"CATEGORY        TEXT, "
+			          L"IS_OUTSIDE      INTEGER" /** true:1, false:0 */
+			       L")"));
 
 #ifdef USE_SHINGETSU
 	  // ユーザーが登録している新月のノード情報
@@ -1020,7 +1020,7 @@ bool SQLiteAccessor::GetImageFileName(const wxArrayString& fileNameArray, std::v
      // リザルトセットを用意する
      wxSQLite3ResultSet rs;      
 
-     for (int i = 0; i < fileNameArray.GetCount(); i++) {
+     for (unsigned int i = 0; i < fileNameArray.GetCount(); i++) {
           const wxString sqlSe = wxT("select UUID_FILENAME from CACHED_IMAGE where FILENAME = ? ");
 	  wxSQLite3Statement stmt = db.PrepareStatement (sqlSe);
 	  stmt.ClearBindings();
@@ -1099,11 +1099,11 @@ bool SQLiteAccessor::SetOutSideBoardInfo(const wxString& url,const wxString& boa
 
      // SQL文を用意する
      const wxString sqlIn = wxT("INSERT INTO BOARD_INFO "
-				"(BOARDNAME_KANJI, "
-				  "BOARD_URL, "
-				  "CATEGORY, "
-				  "IS_OUTSIDE"
-				") VALUES (?, ?, ?, '1')");
+				L"(BOARDNAME_KANJI, "
+				 L"BOARD_URL, "
+				 L"CATEGORY, "
+				 L"IS_OUTSIDE"
+				L") VALUES (?, ?, ?, '1')");
       
      // SQL文を実行する
      wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);

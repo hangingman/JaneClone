@@ -119,7 +119,11 @@
 #endif
 
 // バージョン
-static const wxString janecloneVersion   = wxT( PACKAGE_VERSION );
+#ifdef _MSC_VER
+   static const wxString janecloneVersion = wxT("Unknown"); // FIXME: Preprocessor cannot read PACKAGE_VERSION ??
+#else
+   static const wxString janecloneVersion = wxT( PACKAGE_VERSION );
+#endif
 
 // リソースファイルのパス
 #if defined (__WXMSW__) || defined(__WXGTK__)

@@ -200,7 +200,7 @@ wxString AnchoredResponsePopup::ReadPlainTextFile(const wxString& filePath) {
      wxString   htmlDOM;
      textFile.Open(filePath, wxConvUTF8);
 
-     for (int i = 0; i < textFile.GetLineCount(); i++) {
+     for (unsigned int i = 0; i < textFile.GetLineCount(); i++) {
 	  htmlDOM += textFile[i];
      }
 

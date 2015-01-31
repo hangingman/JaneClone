@@ -100,7 +100,7 @@ program janeclone {
     ../src/threadcontentwindow.cpp
     ../src/virtualboardlistctrl.cpp
     ../babel/babel.cpp
-    ../json11/json11.cpp
+    //../json11/json11.cpp
   }
 
   headers {
@@ -121,6 +121,7 @@ program janeclone {
     ../src/threadcontentwindow.hpp
     ../src/virtualboardlistctrl.hpp
     ../babel/babel.h
-    ../json11/json11.hpp
+    ../src/datatype.hpp
+    //../json11/json11.hpp
   }
 }

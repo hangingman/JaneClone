@@ -141,6 +141,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
    $ git clone https://github.com/Hiroyuki-Nagata/JaneClone.git
 
    ※チェックアウトが遅いときは「git clone」を「git clone --depth=50」などに変えてください。
+   ※Visual Studioの内部機能の「チームエクスプローラー」からソースをチェックアウトすることもできます。
 
    [wxWidgetsのビルド]
    チェックアウトしたディレクトリを$(JaneClone)と表記します。
@@ -160,6 +161,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
  C-2. ビルド
 
    janecloneのソリューションを右クリックしてビルドする。
+   ビルドの際は「Release」でビルドしてください。
 
  [D.Linux(RedHat系)]
  D-1. 依存するライブラリのインストール

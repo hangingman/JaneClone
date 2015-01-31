@@ -833,7 +833,7 @@ void JaneClone::SetProperties()
      babel::init_babel();
      // XRCの初期化を行う
      wxXmlResource::Get()->InitAllHandlers();
-     bool bRet = wxXmlResource::Get()->Load(wxT(RESOURCE_PATH "*.xrc"));
+     bool bRet = wxXmlResource::Get()->Load(wxT(RESOURCE_PATH L"*.xrc"));
 
      if( !bRet )
      {
@@ -882,7 +882,7 @@ void JaneClone::SetProperties()
      jcNeedDir.Add(wxT("shingetsu"));
      jcNeedDir.Add(wxT("prop"));
      jcNeedDir.Add(wxT("cache"));
-     for (int i = 0; i < jcNeedDir.GetCount(); i++ ) 
+     for (unsigned int i = 0; i < jcNeedDir.GetCount(); i++ ) 
      {
 	  JaneCloneUtil::CreateSpecifyDirectory(chkDir, jcNeedDir[i]);
      }
