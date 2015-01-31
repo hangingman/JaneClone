@@ -870,7 +870,7 @@ wxString JaneCloneUtil::AddID(const wxString& responseText) {
 						       it->first.c_str()),
 
 				      wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\" />"
-							   "<font color=\"#ff0000\">ID</font></a>"), 
+							   L"<font color=\"#ff0000\">ID</font></a>"), 
 						       it->first.c_str(), 
 						       it->first.c_str()),
 				      true);
@@ -880,7 +880,7 @@ wxString JaneCloneUtil::AddID(const wxString& responseText) {
 						       it->first.c_str()),
 
 				      wxString::Format(wxT("<a href=\"#_%s\" />"
-							   "<font color=\"#ff0000\">ID</font></a>"), 
+							   L"<font color=\"#ff0000\">ID</font></a>"), 
 						       it->first.c_str(), 
 						       it->first.c_str()),
 				      true);

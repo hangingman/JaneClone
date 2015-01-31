@@ -25,10 +25,10 @@ library wxsqlite3 {
 
   includedirs = ../sqlite3 ../wxsqlite3 $local_wx_include;
   
-  if ( $archs == x86 )
+  if ( $(archs) == x86 )
     libdirs = ./wxWidgets-WX_3_0_2/lib/vc120_dll;
   
-  if ( $archs == x86_64 )
+  if ( $(archs) == x86_64 )
     libdirs = ./wxWidgets-WX_3_0_2/lib/vc120_x64_dll;
   
   defines = WXMAKINGDLL_WXSQLITE3 "wxUSE_DYNAMIC_SQLITE3_LOAD=0" "WXSQLITE3_HAVE_METADATA=0" "WXSQLITE3_HAVE_CODEC=0" "WXSQLITE3_HAVE_LOAD_EXTENSION=0";
@@ -72,10 +72,10 @@ program janeclone {
 
   deps = sqlite3 wxsqlite3; //curlpp;
   
-  if ( $archs == x86 )
+  if ( $(archs) == x86 )
     libdirs = ./wxWidgets-WX_3_0_2/lib/vc120_dll;
   
-  if ( $archs == x86_64 )
+  if ( $(archs) == x86_64 )
     libdirs = ./wxWidgets-WX_3_0_2/lib/vc120_x64_dll;
 
   defines = "wxMSVC_VERSION_AUTO=1" "WXUSINGDLL=1" "_CRT_SECURE_NO_WARNINGS=1" "CURLPP_STATICLIB=1";
