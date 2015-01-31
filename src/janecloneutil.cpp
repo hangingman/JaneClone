@@ -20,12 +20,13 @@
  */
 
 #include "janecloneutil.hpp"
+
 #if defined(__APPLE__)
-#define COMMON_DIGEST_FOR_OPENSSL
-#include <CommonCrypto/CommonDigest.h>
-#define MD5 CC_MD5
+   #define COMMON_DIGEST_FOR_OPENSSL
+   #include <CommonCrypto/CommonDigest.h>
+   #define MD5 CC_MD5
 #else
-#include <openssl/md5.h>
+   #include <openssl/md5.h>
 #endif
 
 /**
@@ -1084,7 +1085,12 @@ wxString JaneCloneUtil::GetTimeNow() {
 std::string JaneCloneUtil::UrlEncode(const std::string& str) {
 
      std::string retStr;  
-  
+     
+     // FIXME: See http://tools.ietf.org/html/rfc1866#section-8.2.1
+     //
+     // legitimate "application/x-www-form-urlencoded"
+     // use white space is '+', not '%20'
+     //
      std::string::size_type length = str.size();   
      for ( std::string::size_type i = 0 ; i < length ; i++ )  
      {  
@@ -1099,10 +1105,10 @@ std::string JaneCloneUtil::UrlEncode(const std::string& str) {
 	  }  
 	  else  
 	  {  
-	       retStr += '%';  
-	       char tmp[ 3 ];  
-	       snprintf( tmp, 3, "%X", static_cast< unsigned char >( str[ i ] ));  
-	       retStr += tmp;  
+	       retStr += '%';
+	       std::ostringstream stream;
+	       stream << std::hex << std::uppercase << static_cast<int>(str[i] & 0xff);
+	       retStr += stream.str();
 	  }  
      }  
   
