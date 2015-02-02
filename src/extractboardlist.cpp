@@ -136,9 +136,10 @@ static int writeToWxString(void* context, const char* buffer, int len) {
      return len;
 }
 
-static void closeWxString(void* context) {
+static int closeWxString(void* context) {
      wxString* t = static_cast<wxString*>(context);
-     *t += wxString::FromAscii("\n");
+     *t += wxT("\n");
+     return 0;
 }
 
 /**
@@ -146,11 +147,13 @@ static void closeWxString(void* context) {
  */
 const wxString ExtractBoardList::HtmlFormat(const wxString& html)
 {
-     htmlDocPtr docPtr = htmlReadMemory(html.mb_str(), html.Len(), "", "utf-8", HTML_PARSE_RECOVER);
+     wxString val;
+     const wxCharBuffer& cb = html.utf8_str();
+
+     htmlDocPtr docPtr = htmlReadMemory(cb.data(), ::strlen(cb.data()), "", "utf-8", HTML_PARSE_RECOVER);
      if (docPtr)
      {
 	  // libxml2の***Ptrは何かの構造体のポインタ
-	  wxString val;
 	  xmlOutputBufferPtr buf = xmlOutputBufferCreateIO((xmlOutputWriteCallback)writeToWxString,
 							   (xmlOutputCloseCallback)closeWxString,
 							   &val, 0);
@@ -159,8 +162,10 @@ const wxString ExtractBoardList::HtmlFormat(const wxString& html)
 				   docPtr, 
 				   "utf-8");
 
-	  return val;
+	  xmlOutputBufferClose(buf);
+	  xmlFreeDoc(docPtr);
      }
+     xmlCleanupParser();
 
-     return wxEmptyString;
+     return val;
 }
