@@ -717,7 +717,7 @@ wxString JaneCloneUtil::ReplaceURLText(const wxString& responseText) {
 	       result += tmp.SubString(0, start - 1);
 	       result += wxT("<a href=\"");
 	       result += tmp.SubString(start, start + len - 1);
-	       result += wxT("\"/>");
+	       result += wxT("\">");
 	       result += tmp.SubString(start, start + len - 1);
 	       result += wxT("</a>");
 	  }
@@ -798,7 +798,7 @@ wxString JaneCloneUtil::AddAnchorTag(wxString& responseText) {
 	       result += tmp.SubString(0, start - 1);
 	       result += wxT("<a href=\"#");
 	       result += tmp.SubString(start, start + len - 1);
-	       result += wxT("\"/>&gt;&gt;");
+	       result += wxT("\">&gt;&gt;");
 	       result += tmp.SubString(start, start + len - 1);
 	       result += wxT("</a>");
 	  }
@@ -840,14 +840,14 @@ wxString JaneCloneUtil::AddID(const wxString& responseText) {
 	       result += tmp.SubString(0, start - 1);
 
 #ifdef USE_WX_WEBVIEW /** ID link and javascript function */
-	       result += wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\" />ID</a>:%s"), 
+	       result += wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\">ID</a>:%s"), 
 					  id.c_str(), id.c_str(), id.c_str());
 
 	       result += wxString::Format(wxT(" [%d/yyy%syyy] "), 
 					  hashmap[id], id.c_str());
 #else          /** ID link and javascript function */
-	       result += wxString::Format(wxT("<a href=\"#_%s\" />ID</a>:%s"), 
-					  id.c_str(), id.c_str(), id.c_str());
+	       result += wxString::Format(wxT("<a href=\"#_%s\">ID</a>:%s"), 
+					  id.c_str(), id.c_str());
 
 	       result += wxString::Format(wxT(" [%d/yyy%syyy] "), 
 					  hashmap[id], id.c_str());
@@ -866,21 +866,21 @@ wxString JaneCloneUtil::AddID(const wxString& responseText) {
 		       // このへんのコード汚い！
 
 #ifdef USE_WX_WEBVIEW /** ID link and javascript function */
-		       result.Replace(wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\" />ID</a>"), 
+		       result.Replace(wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\">ID</a>"), 
 						       it->first.c_str(), 
 						       it->first.c_str()),
 
-				      wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\" />"
+				      wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\">"
 							   L"<font color=\"#ff0000\">ID</font></a>"), 
 						       it->first.c_str(), 
 						       it->first.c_str()),
 				      true);
 #else                /** ID link and javascript function */
-		       result.Replace(wxString::Format(wxT("<a href=\"#_%s\" />ID</a>"), 
+		       result.Replace(wxString::Format(wxT("<a href=\"#_%s\">ID</a>"), 
 						       it->first.c_str(), 
 						       it->first.c_str()),
 
-				      wxString::Format(wxT("<a href=\"#_%s\" />"
+				      wxString::Format(wxT("<a href=\"#_%s\">"
 							   L"<font color=\"#ff0000\">ID</font></a>"), 
 						       it->first.c_str(), 
 						       it->first.c_str()),
