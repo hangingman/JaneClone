@@ -52,68 +52,47 @@
 typedef std::tuple<wxString, wxControl*> WxCtrlTuple;
 typedef std::vector<WxCtrlTuple>         WxCtrlTupleList;
 
-//
-// Get Properties Utility Macros
-// TODO: マクロにするより親クラスでtemplate methodパターンにしたほうがよさそう
-//
-#define JC_GET_WIDGETS_PROPERTIES                                                         \
-     for( WxCtrlTupleList::iterator i = tupleList.begin(); i != tupleList.end(); ++i )    \
-     {											  \
-	  wxString widgetsName = std::get<0>(*i);					  \
-	  wxControl* ctrl = std::get<1>(*i);					          \
-											  \
-          if (ctrl->IsKindOf(wxCLASSINFO(wxTextCtrl)))				          \
-	  {									          \
-               wxString widgetsInfo = wxEmptyString;					  \
-               JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);          \
-	       wxTextCtrl* tmp = dynamic_cast<wxTextCtrl*>(ctrl);		          \
-	       tmp->SetValue(widgetsInfo);					          \
-	  }									          \
-	  else if (ctrl->IsKindOf(wxCLASSINFO(wxCheckBox)))			          \
-	  {									          \
-               bool widgetsInfo = false;                                                  \
-               JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);          \
-	       wxCheckBox* tmp = dynamic_cast<wxCheckBox*>(ctrl);		          \
-	       tmp->SetValue(widgetsInfo);					          \
-	  }									          \
-     }											  \
+/**
+ * 設定画面の基底クラス
+ */
+class SettingPanelBase: public wxPanel {
 
-//
-// Set Properties Utility Macros
-//
-#define JC_SET_WIDGETS_PROPERTIES                                                         \
-     for( WxCtrlTupleList::iterator i = tupleList.begin(); i != tupleList.end(); ++i )    \
-     {											  \
-	  wxString widgetsName = std::get<0>(*i);					  \
-	  wxControl* ctrl = std::get<1>(*i);                                              \
-          if (ctrl->IsKindOf(wxCLASSINFO(wxTextCtrl)))				          \
-	  {									          \
-               wxString widgetsInfo = wxEmptyString;					  \
-	       wxTextCtrl* tmp = dynamic_cast<wxTextCtrl*>(ctrl);		          \
-	       widgetsInfo = tmp->GetValue();                                             \
-               JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);           \
-	  }                                                                               \
-	  else if (ctrl->IsKindOf(wxCLASSINFO(wxCheckBox)))			          \
-	  {									          \
-               bool widgetsInfo = false;                                                  \
-	       wxCheckBox* tmp = dynamic_cast<wxCheckBox*>(ctrl);		          \
-	       widgetsInfo = tmp->GetValue();			                          \
-               JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);           \
-	  }									          \
-     }											  \
+public:
+     SettingPanelBase(wxWindow* parent,
+                      wxWindowID id = wxID_ANY,
+                      const wxPoint& pos = wxDefaultPosition,
+                      const wxSize& size = wxDefaultSize,
+                      long style = wxTAB_TRAVERSAL,
+                      const wxString& name = wxPanelNameStr):
+          wxPanel(parent, id, pos, size, style, name)
+          {
+               this->tupleList = {};
+          };
+
+     // パネルに設定されたプロパティをプロパティファイルに一括保存する
+     virtual void save_properties() {};
+     virtual void set_properties() {};
+
+protected:
+     virtual void do_layout() {};
+
+     WxCtrlTupleList tupleList;
+     void GetWidgetsProperties();
+     void SetWidgetsProperties();
+};
+
 
 /**
  * 各種ネットワーク設定用画面
  */
-class NetworkSettingPanel: public wxPanel {
+class NetworkSettingPanel: public SettingPanelBase {
 
 public:
      // begin wxGlade: NetworkSettingPanel::ids
      // end wxGlade
      NetworkSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition,
 			 const wxSize& size=wxDefaultSize, long style=0);
-
-     void save_properties();
+     void save_properties() override;
 
 #ifdef __WXMAC__
      // リソースの更新を行う
@@ -129,8 +108,8 @@ public:
 
 private:
      // begin wxGlade: NetworkSettingPanel::methods
-     void set_properties();
-     void do_layout();
+     void set_properties() override;
+     void do_layout() override;
      // end wxGlade
 
 #ifdef __WXMAC__
@@ -194,7 +173,7 @@ protected:
 /**
  * 各種パス設定用画面
  */
-class PathSettingPanel: public wxPanel {
+class PathSettingPanel: public SettingPanelBase {
 public:
      // begin wxGlade: PathSettingPanel::ids
      // end wxGlade
@@ -202,8 +181,8 @@ public:
 
 private:
      // begin wxGlade: PathSettingPanel::methods
-     void set_properties();
-     void do_layout();
+     void set_properties() override;
+     void do_layout() override;
      // end wxGlade
      void OnBrowserCheck(wxCommandEvent& event) {
 	  // デフォルトのブラウザを指定する
@@ -268,7 +247,7 @@ protected:
 /**
  * 各種動作設定用画面
  */
-class BehaviorPanel: public wxPanel {
+class BehaviorPanel: public SettingPanelBase {
 public:
     // begin wxGlade: BehaviorPanel::ids
     // end wxGlade
@@ -277,8 +256,8 @@ public:
 
 private:
     // begin wxGlade: BehaviorPanel::methods
-    void set_properties();
-    void do_layout();
+    void set_properties() override;
+    void do_layout() override;
     // end wxGlade
 
 protected:
@@ -312,17 +291,17 @@ protected:
  */
 // begin wxGlade: ::extracode
 // end wxGlade
-class OperationPanel: public wxPanel {
+class OperationPanel: public SettingPanelBase {
+
 public:
      // begin wxGlade: OperationPanel::ids
      // end wxGlade
-
      OperationPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
 private:
      // begin wxGlade: OperationPanel::methods
-     void set_properties();
-     void do_layout();
+     void set_properties() override;
+     void do_layout() override;
      // end wxGlade
 
 protected:
@@ -388,7 +367,7 @@ protected:
 // begin wxGlade: ::extracode
 // end wxGlade
 
-class KakikomiPanel: public wxPanel {
+class KakikomiPanel: public SettingPanelBase {
 public:
      // begin wxGlade: KakikomiPanel::ids
      // end wxGlade
@@ -396,8 +375,8 @@ public:
 
 private:
      // begin wxGlade: KakikomiPanel::methods
-     void set_properties();
-     void do_layout();
+     void set_properties() override;
+     void do_layout() override;
      // end wxGlade
 
 protected:
@@ -446,17 +425,17 @@ protected:
 /**
  * スレ表示欄の設定画面
  */
-class DoePanel: public wxPanel {
+class DoePanel: public SettingPanelBase {
+
 public:
      // begin wxGlade: DoePanel::ids
      // end wxGlade
-
      DoePanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
 private:
      // begin wxGlade: DoePanel::methods
-     void set_properties();
-     void do_layout();
+     void set_properties() override;
+     void do_layout() override;
      // end wxGlade
 
 protected:
@@ -500,15 +479,15 @@ protected:
 /**
  * その他の設定画面１
  */
-class OtherSettingPanelOne: public wxPanel {
+class OtherSettingPanelOne: public SettingPanelBase {
 
 public:
      OtherSettingPanelOne(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
      const static wxString checkboxlabels[];
 
 private:
-     void set_properties();
-     void do_layout();
+     void set_properties() override;
+     void do_layout() override;
 
 protected:
      // チェックボックス
@@ -531,7 +510,7 @@ protected:
 /**
  * ユーザー設定設定用画面
  */
-class UserSettingPanel: public wxPanel {
+class UserSettingPanel: public SettingPanelBase {
 public:
      // begin wxGlade: UserSettingPanel::ids
      // end wxGlade
@@ -539,13 +518,12 @@ public:
 		      const wxPoint& pos=wxDefaultPosition,
 		      const wxSize& size=wxDefaultSize,
 		      long style=0);
-
-     void save_properties();
+     void save_properties() override;
 
 private:
      // begin wxGlade: UserSettingPanel::methods
-     void set_properties();
-     void do_layout();
+     void set_properties() override;
+     void do_layout() override;
      // end wxGlade
 
      // ユーザーがリンクをクリックした場合ブラウザでジャンプ
@@ -586,7 +564,7 @@ protected:
 /**
  * 色・フォント設定用画面
  */
-class ColorFontSettingPanel: public wxPanel {
+class ColorFontSettingPanel: public SettingPanelBase {
 
 public:
      // begin wxGlade: ColorFontSettingPanel::ids
@@ -636,8 +614,8 @@ public:
 
 private:
      // begin wxGlade: ColorFontSettingPanel::methods
-     void set_properties();
-     void do_layout();
+     void set_properties() override;
+     void do_layout() override;
      // end wxGlade
 
      // 色選択用ダイアログを表示させる
@@ -751,7 +729,7 @@ protected:
 /**
  * タブ色設定用画面
  */
-class TabColorSettingPanel: public wxPanel {
+class TabColorSettingPanel: public SettingPanelBase {
 
 public:
      // begin wxGlade: TabColorSettingPanel::ids
@@ -760,8 +738,8 @@ public:
 
 private:
      // begin wxGlade: TabColorSettingPanel::methods
-     void set_properties();
-     void do_layout();
+     void set_properties() override;
+     void do_layout() override;
      // end wxGlade
 
      // タブ色設定用画面のボタンイベントを処理する
@@ -842,17 +820,17 @@ protected:
 /**
  * タブ操作設定用画面
  */
-class TabControlSettingPanel: public wxPanel {
+class TabControlSettingPanel: public SettingPanelBase {
+
 public:
      // begin wxGlade: TabControlSettingPanel::ids
      // end wxGlade
-
      TabControlSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
 private:
      // begin wxGlade: TabControlSettingPanel::methods
-     void set_properties();
-     void do_layout();
+     void set_properties() override;
+     void do_layout() override;
      // end wxGlade
 
 protected:

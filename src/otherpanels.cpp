@@ -76,11 +76,63 @@ BEGIN_EVENT_TABLE(TabColorSettingPanel, wxPanel)
    EVT_BUTTON(ID_AutoReloadFontColorButton             , TabColorSettingPanel::OnClickTabColorSettingButton)
 END_EVENT_TABLE()
 
+
+/**
+ * 設定画面の基底クラス
+ */
+void SettingPanelBase::GetWidgetsProperties()
+{
+     for( WxCtrlTupleList::iterator i = tupleList.begin(); i != tupleList.end(); ++i )
+     {
+	  wxString widgetsName = std::get<0>(*i);
+	  wxControl* ctrl = std::get<1>(*i);
+
+	  if (ctrl->IsKindOf(wxCLASSINFO(wxTextCtrl)))
+	  {
+	       wxString widgetsInfo = wxEmptyString;
+	       JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+	       wxTextCtrl* tmp = dynamic_cast<wxTextCtrl*>(ctrl);
+	       tmp->SetValue(widgetsInfo);
+	  }
+	  else if (ctrl->IsKindOf(wxCLASSINFO(wxCheckBox)))
+	  {
+	       bool widgetsInfo = false;
+	       JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+	       wxCheckBox* tmp = dynamic_cast<wxCheckBox*>(ctrl);
+	       tmp->SetValue(widgetsInfo);
+	  }
+     }
+}
+
+void SettingPanelBase::SetWidgetsProperties()
+{
+     for( WxCtrlTupleList::iterator i = tupleList.begin(); i != tupleList.end(); ++i )
+     {
+	  wxString widgetsName = std::get<0>(*i);
+	  wxControl* ctrl = std::get<1>(*i);
+	  if (ctrl->IsKindOf(wxCLASSINFO(wxTextCtrl)))
+	  {
+	       wxString widgetsInfo = wxEmptyString;
+	       wxTextCtrl* tmp = dynamic_cast<wxTextCtrl*>(ctrl);
+	       widgetsInfo = tmp->GetValue();
+	       JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+	  }
+	  else if (ctrl->IsKindOf(wxCLASSINFO(wxCheckBox)))
+	  {
+	       bool widgetsInfo = false;
+	       wxCheckBox* tmp = dynamic_cast<wxCheckBox*>(ctrl);
+	       widgetsInfo = tmp->GetValue();
+	       JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
+	  }
+     }
+}
+
+
 /**
  * 各種ネットワーク設定用画面
  */
 NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-     wxPanel(parent, ID_NetworkPanel, pos, size, wxTAB_TRAVERSAL) {
+     SettingPanelBase(parent, ID_NetworkPanel, pos, size, wxTAB_TRAVERSAL) {
 
      // begin wxGlade: NetworkSettingPanel::NetworkSettingPanel
      panel_5 = new wxPanel(this, wxID_ANY);
@@ -137,7 +189,6 @@ NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, c
 
 void NetworkSettingPanel::set_properties()
 {
-     WxCtrlTupleList tupleList;
      tupleList.push_back(WxCtrlTuple(wxT("ID_Receive_Timeout_Sec"),           receiveTimeoutTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_Connection_Timeout_Sec"),        connectTimeoutTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBasicAuthUserName"), basicAuthUserNameTC));
@@ -152,13 +203,11 @@ void NetworkSettingPanel::set_properties()
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),	boardListURLTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelReceiveBufferSize"), receiveBufferSizeTC));
-     // maxConnSC
-     JC_GET_WIDGETS_PROPERTIES
+     this->GetWidgetsProperties();
 }
 
 void NetworkSettingPanel::save_properties()
 {
-     WxCtrlTupleList tupleList;
      tupleList.push_back(WxCtrlTuple(wxT("ID_Receive_Timeout_Sec"),           receiveTimeoutTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_Connection_Timeout_Sec"),        connectTimeoutTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBasicAuthUserName"), basicAuthUserNameTC));
@@ -173,8 +222,7 @@ void NetworkSettingPanel::save_properties()
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),	boardListURLTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelReceiveBufferSize"), receiveBufferSizeTC));
-     // maxConnSC
-     JC_SET_WIDGETS_PROPERTIES
+     this->SetWidgetsProperties();
 }
 
 void NetworkSettingPanel::do_layout() {
@@ -248,7 +296,7 @@ void NetworkSettingPanel::do_layout() {
  * 各種パス設定用画面
  */
 PathSettingPanel::PathSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-wxPanel(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
+SettingPanelBase(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
 
      // begin wxGlade: PathSettingPanel::PathSettingPanel
      browserCheck = new wxCheckBox(this, ID_BrowserCheck, wxT("ブラウザを指定する"));
@@ -372,7 +420,7 @@ void PathSettingPanel::do_layout() {
  * 各種動作設定用画面
  */
 BehaviorPanel::BehaviorPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-    wxPanel(parent, ID_BehaviorPanel, pos, size, wxTAB_TRAVERSAL)
+    SettingPanelBase(parent, ID_BehaviorPanel, pos, size, wxTAB_TRAVERSAL)
 {
     // begin wxGlade: BehaviorPanel::BehaviorPanel
     panel_5 = new wxPanel(this, wxID_ANY);
@@ -472,7 +520,7 @@ void BehaviorPanel::do_layout()
  * 各種操作設定用画面
  */
 OperationPanel::OperationPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-     wxPanel(parent, ID_OperationPanel, pos, size, wxTAB_TRAVERSAL)
+     SettingPanelBase(parent, ID_OperationPanel, pos, size, wxTAB_TRAVERSAL)
 {
      // begin wxGlade: OperationPanel::OperationPanel
      panel_3 = new wxPanel(this, wxID_ANY);
@@ -648,7 +696,7 @@ void OperationPanel::do_layout()
  * 書き込み設定用画面
  */
 KakikomiPanel::KakikomiPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-     wxPanel(parent, ID_KakikomiPanel, pos, size, wxTAB_TRAVERSAL)
+     SettingPanelBase(parent, ID_KakikomiPanel, pos, size, wxTAB_TRAVERSAL)
 {
      // begin wxGlade: KakikomiPanel::KakikomiPanel
      panel_3 = new wxPanel(this, wxID_ANY);
@@ -770,7 +818,7 @@ void KakikomiPanel::do_layout()
  * スレ表示欄の設定画面
  */
 DoePanel::DoePanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-     wxPanel(parent, ID_DoePanel, pos, size, wxTAB_TRAVERSAL)
+     SettingPanelBase(parent, ID_DoePanel, pos, size, wxTAB_TRAVERSAL)
 {
      // begin wxGlade: DoePanel::DoePanel
      panel_8 = new wxPanel(this, wxID_ANY);
@@ -895,7 +943,7 @@ const wxString OtherSettingPanelOne::checkboxlabels[] = {
 };
 
 OtherSettingPanelOne::OtherSettingPanelOne(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-     wxPanel(parent, ID_OtherSettingPanelOne, pos, size, wxTAB_TRAVERSAL)
+     SettingPanelBase(parent, ID_OtherSettingPanelOne, pos, size, wxTAB_TRAVERSAL)
 {
      for ( size_t i = 0; i < JaneCloneUtil::ArrayLength(checkboxlabels); i++ )
      {
@@ -973,7 +1021,7 @@ void OtherSettingPanelOne::do_layout()
  * ユーザー設定設定用画面
  */
 UserSettingPanel::UserSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-     wxPanel(parent, ID_UserSettingPanel, pos, size, wxTAB_TRAVERSAL)
+     SettingPanelBase(parent, ID_UserSettingPanel, pos, size, wxTAB_TRAVERSAL)
 {
      // begin wxGlade: UserSettingPanel::UserSettingPanel
      panel_3 = new wxPanel(this, wxID_ANY);
@@ -1038,23 +1086,21 @@ void UserSettingPanel::set_properties()
      window_2->SetPage(text2);
 
      // プロパティファイルから設定項目を取得する
-     WxCtrlTupleList tupleList;
      tupleList.push_back(WxCtrlTuple(wxT("ID_MaruUserID"),       maruUserID));
      tupleList.push_back(WxCtrlTuple(wxT("ID_MaruUserPassword"), maruUserPassword));
      tupleList.push_back(WxCtrlTuple(wxT("ID_BEMailAddress"),    beMailAddress));
      tupleList.push_back(WxCtrlTuple(wxT("ID_BEPassword"),       bePassword));
-     JC_GET_WIDGETS_PROPERTIES
+     this->GetWidgetsProperties();
 }
 
 void UserSettingPanel::save_properties()
 {
      // GUIに入力されている項目を読みだして設定する
-     WxCtrlTupleList tupleList;
      tupleList.push_back(WxCtrlTuple(wxT("ID_MaruUserID"),       maruUserID));
      tupleList.push_back(WxCtrlTuple(wxT("ID_MaruUserPassword"), maruUserPassword));
      tupleList.push_back(WxCtrlTuple(wxT("ID_BEMailAddress"),    beMailAddress));
      tupleList.push_back(WxCtrlTuple(wxT("ID_BEPassword"),       bePassword));
-     JC_SET_WIDGETS_PROPERTIES
+     this->SetWidgetsProperties();
 }
 
 void UserSettingPanel::do_layout()
@@ -1105,7 +1151,7 @@ void UserSettingPanel::do_layout()
 // begin wxGlade: ::extracode
 // end wxGlade
 ColorFontSettingPanel::ColorFontSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-     wxPanel(parent, ID_ColorFontSettingPanel, pos, size, wxTAB_TRAVERSAL)
+     SettingPanelBase(parent, ID_ColorFontSettingPanel, pos, size, wxTAB_TRAVERSAL)
 {
      // begin wxGlade: ColorFontSettingPanel::ColorFontSettingPanel
      panel_3 = new wxPanel(this, wxID_ANY);
@@ -1620,7 +1666,7 @@ void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
  * タブ色設定用画面
  */
 TabColorSettingPanel::TabColorSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-     wxPanel(parent, ID_TabColorSettingPanel, pos, size, wxTAB_TRAVERSAL)
+     SettingPanelBase(parent, ID_TabColorSettingPanel, pos, size, wxTAB_TRAVERSAL)
 {
      // begin wxGlade: TabColorSettingPanel::TabColorSettingPanel
      panel_2 = new wxPanel(this, wxID_ANY);
@@ -2026,7 +2072,7 @@ void TabColorSettingPanel::SetSampleFontColorSetting(const int id)
 
 
 TabControlSettingPanel::TabControlSettingPanel(wxWindow* parent, const wxPoint& pos, const wxSize& size, long style):
-    wxPanel(parent, ID_TabControlSettingPanel, pos, size, wxTAB_TRAVERSAL)
+    SettingPanelBase(parent, ID_TabControlSettingPanel, pos, size, wxTAB_TRAVERSAL)
 {
     // begin wxGlade: TabControlSettingPanel::TabControlSettingPanel
     panel_5 = new wxPanel(this, wxID_ANY);
