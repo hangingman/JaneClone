@@ -2,7 +2,7 @@ Source: janeclone
 Section: net
 Priority: extra
 Maintainer: hiroyuki nagata <%%%PACKAGE_BUGREPORT%%%>
-Build-Depends: debhelper (>= 8), autotools-dev, libwxbase3.0-dev, libwxsqlite3-3.0-dev, libxml2-dev, libcurl4-openssl-dev, cdbs, gnome-pkg-tools
+Build-Depends: debhelper (>= 8), autotools-dev, libwxbase3.0-dev, libwxsqlite3-3.0-dev, libxml2-dev, libcurl4-openssl-dev, cdbs, devscripts, gnome-pkg-tools
 Standards-Version: %%%STANDARDS-VERSION%%%
 Homepage: https://github.com/hangingman/JaneClone
 
