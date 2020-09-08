@@ -49,34 +49,57 @@
 // end wxGlade
 
 // Utility class definition
-typedef std::tuple<wxString, wxTextCtrl*> TextCtrlTuple;
-typedef std::vector<TextCtrlTuple>        TextCtrlTupleList;
+typedef std::tuple<wxString, wxControl*> WxCtrlTuple;
+typedef std::vector<WxCtrlTuple>         WxCtrlTupleList;
 
 //
 // Get Properties Utility Macros
+// TODO: マクロにするより親クラスでtemplate methodパターンにしたほうがよさそう
 //
 #define JC_GET_WIDGETS_PROPERTIES                                                         \
-     for( TextCtrlTupleList::iterator i = tupleList.begin(); i != tupleList.end(); ++i )  \
+     for( WxCtrlTupleList::iterator i = tupleList.begin(); i != tupleList.end(); ++i )    \
      {											  \
 	  wxString widgetsName = std::get<0>(*i);					  \
-	  wxString widgetsInfo = wxEmptyString;						  \
-	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);		  \
+	  wxControl* ctrl = std::get<1>(*i);					          \
 											  \
-	  if (widgetsInfo != wxEmptyString)						  \
-	  {										  \
-	       std::get<1>(*i)->SetValue(widgetsInfo);					  \
-	  }										  \
+          if (ctrl->IsKindOf(wxCLASSINFO(wxTextCtrl)))				          \
+	  {									          \
+               wxString widgetsInfo = wxEmptyString;					  \
+               JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);          \
+	       wxTextCtrl* tmp = dynamic_cast<wxTextCtrl*>(ctrl);		          \
+	       tmp->SetValue(widgetsInfo);					          \
+	  }									          \
+	  else if (ctrl->IsKindOf(wxCLASSINFO(wxCheckBox)))			          \
+	  {									          \
+               bool widgetsInfo = false;                                                  \
+               JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);          \
+	       wxCheckBox* tmp = dynamic_cast<wxCheckBox*>(ctrl);		          \
+	       tmp->SetValue(widgetsInfo);					          \
+	  }									          \
      }											  \
 
 //
 // Set Properties Utility Macros
 //
 #define JC_SET_WIDGETS_PROPERTIES                                                         \
-     for( TextCtrlTupleList::iterator i = tupleList.begin(); i != tupleList.end(); ++i )  \
+     for( WxCtrlTupleList::iterator i = tupleList.begin(); i != tupleList.end(); ++i )    \
      {											  \
 	  wxString widgetsName = std::get<0>(*i);					  \
-	  wxString widgetsInfo = std::get<1>(*i)->GetValue();				  \
-	  JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);		  \
+	  wxControl* ctrl = std::get<1>(*i);                                              \
+          if (ctrl->IsKindOf(wxCLASSINFO(wxTextCtrl)))				          \
+	  {									          \
+               wxString widgetsInfo = wxEmptyString;					  \
+	       wxTextCtrl* tmp = dynamic_cast<wxTextCtrl*>(ctrl);		          \
+	       widgetsInfo = tmp->GetValue();                                             \
+               JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);           \
+	  }                                                                               \
+	  else if (ctrl->IsKindOf(wxCLASSINFO(wxCheckBox)))			          \
+	  {									          \
+               bool widgetsInfo = false;                                                  \
+	       wxCheckBox* tmp = dynamic_cast<wxCheckBox*>(ctrl);		          \
+	       widgetsInfo = tmp->GetValue();			                          \
+               JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);           \
+	  }									          \
      }											  \
 
 /**
@@ -87,7 +110,7 @@ class NetworkSettingPanel: public wxPanel {
 public:
      // begin wxGlade: NetworkSettingPanel::ids
      // end wxGlade
-     NetworkSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition, 
+     NetworkSettingPanel(wxWindow* parent, const wxPoint& pos=wxDefaultPosition,
 			 const wxSize& size=wxDefaultSize, long style=0);
 
      void save_properties();
@@ -206,7 +229,7 @@ private:
 	  // パス設定をクリアする
 	  const int id = event.GetId();
 
-	  if (id == ID_ClearBrowserPath) {     
+	  if (id == ID_ClearBrowserPath) {
 	       JaneCloneUtil::DeleteJaneClonePropertyEntry(wxT("DEFAULT_BROWSER_PATH"));
 	  } else if (id == ID_ClearBoardListPath) {
 	       JaneCloneUtil::DeleteJaneClonePropertyEntry(wxT("DEFAULT_BOARDLIST_PATH"));
@@ -512,9 +535,9 @@ class UserSettingPanel: public wxPanel {
 public:
      // begin wxGlade: UserSettingPanel::ids
      // end wxGlade
-     UserSettingPanel(wxWindow* parent, 
-		      const wxPoint& pos=wxDefaultPosition, 
-		      const wxSize& size=wxDefaultSize, 
+     UserSettingPanel(wxWindow* parent,
+		      const wxPoint& pos=wxDefaultPosition,
+		      const wxSize& size=wxDefaultSize,
 		      long style=0);
 
      void save_properties();
@@ -796,7 +819,7 @@ protected:
      wxButton* threadTabUpdateFontColorButton;
      wxButton* threadTabPartialContentFontColorButton;
      wxButton* deactiveTabBGColorButton;
-     wxButton* autoReloadFontColorButton; 
+     wxButton* autoReloadFontColorButton;
 
      wxStaticBox* sizer_6_staticbox;
      wxStaticBox* sizer_5_staticbox;
@@ -859,11 +882,11 @@ class NewBoardAddDialog: public wxDialog {
 public:
      // begin wxGlade: NewBoardAddDialog::ids
      // end wxGlade
-     NewBoardAddDialog(wxWindow* parent, 
-		       int id, 
-		       const wxString& title, 
-		       const wxPoint& pos=wxDefaultPosition, 
-		       const wxSize& size=wxDefaultSize, 
+     NewBoardAddDialog(wxWindow* parent,
+		       int id,
+		       const wxString& title,
+		       const wxPoint& pos=wxDefaultPosition,
+		       const wxSize& size=wxDefaultSize,
 		       long style=wxDEFAULT_DIALOG_STYLE);
 
 private:

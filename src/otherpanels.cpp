@@ -42,38 +42,38 @@ BEGIN_EVENT_TABLE(UserSettingPanel, wxPanel)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(ColorFontSettingPanel, wxPanel)
-   EVT_BUTTON(ID_TreeFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_ThreadListFontButton,    ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_ExtractFontButton,       ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_LogWindowFontButton,     ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_ThreadTitleFontButton,   ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_KakikoFontButton,        ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_MemoFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_HintFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_LinkFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_OthersFontButton,        ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_AllFontButton,           ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_BoardListBGColorButton,  ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_ThreadListBGColorButton, ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_LogWindowBGColorButton,  ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_ThreadTitleBGColorButton,ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_ThreadViewBGColorButton, ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_MemoBGColorButton,       ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_HintBGColorButton,       ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_PopupBGColorButton,      ColorFontSettingPanel::OnClickColorFontSettingButton) 
-   EVT_BUTTON(ID_AllBGColorButton,        ColorFontSettingPanel::OnClickColorFontSettingButton) 
+   EVT_BUTTON(ID_TreeFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_ThreadListFontButton,    ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_ExtractFontButton,       ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_LogWindowFontButton,     ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_ThreadTitleFontButton,   ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_KakikoFontButton,        ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_MemoFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_HintFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_LinkFontButton,          ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_OthersFontButton,        ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_AllFontButton,           ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_BoardListBGColorButton,  ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_ThreadListBGColorButton, ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_LogWindowBGColorButton,  ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_ThreadTitleBGColorButton,ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_ThreadViewBGColorButton, ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_MemoBGColorButton,       ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_HintBGColorButton,       ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_PopupBGColorButton,      ColorFontSettingPanel::OnClickColorFontSettingButton)
+   EVT_BUTTON(ID_AllBGColorButton,        ColorFontSettingPanel::OnClickColorFontSettingButton)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(TabColorSettingPanel, wxPanel)
-   EVT_BUTTON(ID_ActiveTabBGColorButton                , TabColorSettingPanel::OnClickTabColorSettingButton) 	
-   EVT_BUTTON(ID_DeactiveTabBGColorButton              , TabColorSettingPanel::OnClickTabColorSettingButton) 	
-   EVT_BUTTON(ID_ThreadTabDefaultFontColorButton       , TabColorSettingPanel::OnClickTabColorSettingButton) 	
-   EVT_BUTTON(ID_ThreadTabReadingFontColorButton       , TabColorSettingPanel::OnClickTabColorSettingButton) 	
-   EVT_BUTTON(ID_ThreadTabBrokenFontColorButton        , TabColorSettingPanel::OnClickTabColorSettingButton) 	
-   EVT_BUTTON(ID_ThreadTabCannotPostFontColorButton    , TabColorSettingPanel::OnClickTabColorSettingButton) 	
-   EVT_BUTTON(ID_ThreadTabUpdateFontColorButton        , TabColorSettingPanel::OnClickTabColorSettingButton) 	
-   EVT_BUTTON(ID_ThreadTabPartialContentFontColorButton, TabColorSettingPanel::OnClickTabColorSettingButton) 	
-   EVT_BUTTON(ID_AutoReloadFontColorButton             , TabColorSettingPanel::OnClickTabColorSettingButton) 	
+   EVT_BUTTON(ID_ActiveTabBGColorButton                , TabColorSettingPanel::OnClickTabColorSettingButton)
+   EVT_BUTTON(ID_DeactiveTabBGColorButton              , TabColorSettingPanel::OnClickTabColorSettingButton)
+   EVT_BUTTON(ID_ThreadTabDefaultFontColorButton       , TabColorSettingPanel::OnClickTabColorSettingButton)
+   EVT_BUTTON(ID_ThreadTabReadingFontColorButton       , TabColorSettingPanel::OnClickTabColorSettingButton)
+   EVT_BUTTON(ID_ThreadTabBrokenFontColorButton        , TabColorSettingPanel::OnClickTabColorSettingButton)
+   EVT_BUTTON(ID_ThreadTabCannotPostFontColorButton    , TabColorSettingPanel::OnClickTabColorSettingButton)
+   EVT_BUTTON(ID_ThreadTabUpdateFontColorButton        , TabColorSettingPanel::OnClickTabColorSettingButton)
+   EVT_BUTTON(ID_ThreadTabPartialContentFontColorButton, TabColorSettingPanel::OnClickTabColorSettingButton)
+   EVT_BUTTON(ID_AutoReloadFontColorButton             , TabColorSettingPanel::OnClickTabColorSettingButton)
 END_EVENT_TABLE()
 
 /**
@@ -135,40 +135,44 @@ NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, c
 }
 
 
-void NetworkSettingPanel::set_properties() 
+void NetworkSettingPanel::set_properties()
 {
-     TextCtrlTupleList tupleList;
-     tupleList.push_back(TextCtrlTuple(wxT("ID_Receive_Timeout_Sec"),           receiveTimeoutTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_Connection_Timeout_Sec"),        connectTimeoutTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBasicAuthUserName"), basicAuthUserNameTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBasicAuthPassword"), basicAuthPasswordTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxyReceiveAddr"),  recProxyAddrTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxyReceivePort"),  recProxyPortTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySendAddr"),     sedProxyAddrTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySendPort"),     sedProxyPortTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthAddr"),  authSSLAddrTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),	boardListURLTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelReceiveBufferSize"), receiveBufferSizeTC));
+     WxCtrlTupleList tupleList;
+     tupleList.push_back(WxCtrlTuple(wxT("ID_Receive_Timeout_Sec"),           receiveTimeoutTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_Connection_Timeout_Sec"),        connectTimeoutTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBasicAuthUserName"), basicAuthUserNameTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBasicAuthPassword"), basicAuthPasswordTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelUseProxy"),          proxyUseCheck));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelUseProxyCache"),     proxyCacheUseCheck));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxyReceiveAddr"),  recProxyAddrTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxyReceivePort"),  recProxyPortTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySendAddr"),     sedProxyAddrTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySendPort"),     sedProxyPortTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthAddr"),  authSSLAddrTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),	boardListURLTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelReceiveBufferSize"), receiveBufferSizeTC));
      // maxConnSC
      JC_GET_WIDGETS_PROPERTIES
 }
 
 void NetworkSettingPanel::save_properties()
 {
-     TextCtrlTupleList tupleList;
-     tupleList.push_back(TextCtrlTuple(wxT("ID_Receive_Timeout_Sec"),           receiveTimeoutTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_Connection_Timeout_Sec"),        connectTimeoutTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBasicAuthUserName"), basicAuthUserNameTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBasicAuthPassword"), basicAuthPasswordTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxyReceiveAddr"),  recProxyAddrTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxyReceivePort"),  recProxyPortTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySendAddr"),     sedProxyAddrTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySendPort"),     sedProxyPortTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthAddr"),  authSSLAddrTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),	boardListURLTC));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_NetworkPanelReceiveBufferSize"), receiveBufferSizeTC));
+     WxCtrlTupleList tupleList;
+     tupleList.push_back(WxCtrlTuple(wxT("ID_Receive_Timeout_Sec"),           receiveTimeoutTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_Connection_Timeout_Sec"),        connectTimeoutTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBasicAuthUserName"), basicAuthUserNameTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBasicAuthPassword"), basicAuthPasswordTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelUseProxy"),          proxyUseCheck));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelUseProxyCache"),     proxyCacheUseCheck));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxyReceiveAddr"),  recProxyAddrTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxyReceivePort"),  recProxyPortTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySendAddr"),     sedProxyAddrTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySendPort"),     sedProxyPortTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthAddr"),  authSSLAddrTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),	boardListURLTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelReceiveBufferSize"), receiveBufferSizeTC));
      // maxConnSC
      JC_SET_WIDGETS_PROPERTIES
 }
@@ -251,10 +255,10 @@ wxPanel(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
      label_1 = new wxStaticText(this, wxID_ANY, wxT("ブラウザのパス"));
 
 #ifdef __WXGTK__
-     browserPathTC = new wxTextCtrl(this, 
-				    ID_BrowserPathTC, 
-				    wxEmptyString, 
-				    wxDefaultPosition, 
+     browserPathTC = new wxTextCtrl(this,
+				    ID_BrowserPathTC,
+				    wxEmptyString,
+				    wxDefaultPosition,
 				    wxDefaultSize,
 				    wxTE_READONLY);
 #endif
@@ -263,10 +267,10 @@ wxPanel(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
 
      label_2 = new wxStaticText(this, wxID_ANY, wxT("ログとボード一覧のフォルダ（次回起動時から有効）"));
 #ifdef __WXGTK__
-     boardListTC = new wxTextCtrl(this, 
-				  ID_BoardListTC, 
+     boardListTC = new wxTextCtrl(this,
+				  ID_BoardListTC,
 				  wxEmptyString,
-				  wxDefaultPosition, 
+				  wxDefaultPosition,
 				  wxDefaultSize,
 				  wxTE_READONLY);
 #endif
@@ -275,10 +279,10 @@ wxPanel(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
 
      label_3 = new wxStaticText(this, wxID_ANY, wxT("スキンのフォルダ（次回起動時から有効）"));
 #ifdef __WXGTK__
-     skinPathTC = new wxTextCtrl(this, 
-			       ID_SkinPathTC, 
+     skinPathTC = new wxTextCtrl(this,
+			       ID_SkinPathTC,
 			       wxEmptyString,
-			       wxDefaultPosition, 
+			       wxDefaultPosition,
 			       wxDefaultSize,
 			       wxTE_READONLY);
 #endif
@@ -504,7 +508,7 @@ OperationPanel::OperationPanel(wxWindow* parent, const wxPoint& pos, const wxSiz
 	  wxT("無ければ取得"),
 	  wxT("更新チェック")
      };
-     
+
      combo_box_1 = new wxComboBox(panel_8, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
      label_2 = new wxStaticText(panel_9, wxID_ANY, wxT("ダブルクリック"));
      combo_box_2 = new wxComboBox(panel_9, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 4, combo_box_choices, wxCB_DROPDOWN);
@@ -678,7 +682,7 @@ KakikomiPanel::KakikomiPanel(wxWindow* parent, const wxPoint& pos, const wxSize&
 	  wxT("リスト形式"),
 	  wxT("メニュー形式")
      };
-     
+
      combo_box_1 = new wxComboBox(panel_5, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 2, combo_box_choices, wxCB_DROPDOWN);
      label_4 = new wxStaticText(panel_9, wxID_ANY, wxT("名前"));
      checkbox_14 = new wxCheckBox(panel_9, wxID_ANY, wxT("１行目をデフォルト"));
@@ -898,7 +902,7 @@ OtherSettingPanelOne::OtherSettingPanelOne(wxWindow* parent, const wxPoint& pos,
 	  panels[i]      = new wxPanel(this, wxID_ANY);
 	  checkboxes[i]  = new wxCheckBox(panels[i] , wxID_ANY, checkboxlabels[i]);
      }
-     
+
      restPanels[0] = new wxPanel(this, wxID_ANY);
      retainBoardST = new wxStaticText(restPanels[0], wxID_ANY, wxT("解放しないで保持する板情報の数"));
      retainBoardSC = new wxSpinCtrl(restPanels[0], wxID_ANY);
@@ -985,11 +989,11 @@ UserSettingPanel::UserSettingPanel(wxWindow* parent, const wxPoint& pos, const w
      label_1 = new wxStaticText(panel_8, wxID_ANY, wxT("User ID:"));
      maruUserID = new wxTextCtrl(panel_8, ID_MaruUserID, wxEmptyString);
      label_2 = new wxStaticText(panel_9, wxID_ANY, wxT("Password:"));
-     maruUserPassword = new wxTextCtrl(panel_9, 
-				       ID_MaruUserPassword, 
-				       wxEmptyString, 
-				       wxDefaultPosition, 
-				       wxDefaultSize, 
+     maruUserPassword = new wxTextCtrl(panel_9,
+				       ID_MaruUserPassword,
+				       wxEmptyString,
+				       wxDefaultPosition,
+				       wxDefaultSize,
 				       wxTE_PASSWORD);
      maruAutoLoginCheck = new wxCheckBox(panel_5, ID_MaruAutoLoginCheck, wxT("起動時に自動ログインする"));
      maruLogoutButton = new wxButton(panel_5, ID_MaruLogoutButton, wxT("ログアウト"));
@@ -997,11 +1001,11 @@ UserSettingPanel::UserSettingPanel(wxWindow* parent, const wxPoint& pos, const w
      label_3 = new wxStaticText(panel_6, wxID_ANY, wxT("メールアドレス:"));
      beMailAddress = new wxTextCtrl(panel_6, ID_BEMailAddress, wxEmptyString);
      label_4 = new wxStaticText(panel_7, wxID_ANY, wxT("パスワード:"));
-     bePassword = new wxTextCtrl(panel_7, 
-				 ID_BEPassword, 
-				 wxEmptyString, 
-				 wxDefaultPosition, 
-				 wxDefaultSize, 
+     bePassword = new wxTextCtrl(panel_7,
+				 ID_BEPassword,
+				 wxEmptyString,
+				 wxDefaultPosition,
+				 wxDefaultSize,
 				 wxTE_PASSWORD);
 
      set_properties();
@@ -1015,10 +1019,10 @@ void UserSettingPanel::set_properties()
      // begin wxGlade: UserSettingPanel::set_properties
      // end wxGlade
      const wxColour bgColor    = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME);
-     const wxString bgColorStr = bgColor.GetAsString(wxC2S_HTML_SYNTAX);     
+     const wxString bgColorStr = bgColor.GetAsString(wxC2S_HTML_SYNTAX);
 
      // 2ch
-     const wxString text1 = 
+     const wxString text1 =
 	  wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;\
 	       charset=UTF-8\"><title></title></head><body BGCOLOR=\"") + bgColorStr + wxT("\">\
                <span>２ちゃんねるビューア●に登録する　</span><a href=\"http://2ch.tora3.net\">http://2ch.tora3.net</a>\
@@ -1034,22 +1038,22 @@ void UserSettingPanel::set_properties()
      window_2->SetPage(text2);
 
      // プロパティファイルから設定項目を取得する
-     TextCtrlTupleList tupleList;
-     tupleList.push_back(TextCtrlTuple(wxT("ID_MaruUserID"),       maruUserID));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_MaruUserPassword"), maruUserPassword));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_BEMailAddress"),    beMailAddress));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_BEPassword"),       bePassword));
+     WxCtrlTupleList tupleList;
+     tupleList.push_back(WxCtrlTuple(wxT("ID_MaruUserID"),       maruUserID));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_MaruUserPassword"), maruUserPassword));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_BEMailAddress"),    beMailAddress));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_BEPassword"),       bePassword));
      JC_GET_WIDGETS_PROPERTIES
 }
 
 void UserSettingPanel::save_properties()
 {
      // GUIに入力されている項目を読みだして設定する
-     TextCtrlTupleList tupleList;
-     tupleList.push_back(TextCtrlTuple(wxT("ID_MaruUserID"),       maruUserID));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_MaruUserPassword"), maruUserPassword));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_BEMailAddress"),    beMailAddress));
-     tupleList.push_back(TextCtrlTuple(wxT("ID_BEPassword"),       bePassword));
+     WxCtrlTupleList tupleList;
+     tupleList.push_back(WxCtrlTuple(wxT("ID_MaruUserID"),       maruUserID));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_MaruUserPassword"), maruUserPassword));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_BEMailAddress"),    beMailAddress));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_BEPassword"),       bePassword));
      JC_SET_WIDGETS_PROPERTIES
 }
 
@@ -1178,7 +1182,7 @@ void ColorFontSettingPanel::set_properties()
 {
      // ウィジェットとウィジェット名のペアを作成
      static const int STATIC_TEXT_NUMBER = 11;
-     
+
      /**
       * フォントを設定する
       */
@@ -1188,16 +1192,16 @@ void ColorFontSettingPanel::set_properties()
      std::pair <wxString, BasicDrawPane*> *pFontArray = new std::pair<wxString, BasicDrawPane*>[STATIC_TEXT_NUMBER];
 #endif
      pFontArray[0]  = std::make_pair(wxT("ID_TreeFontButton"),        treeSampleLabel);
-     pFontArray[1]  = std::make_pair(wxT("ID_ThreadListFontButton"),  threadListSampleLabel);  
-     pFontArray[2]	= std::make_pair(wxT("ID_ExtractFontButton"),	  extractSampleLabel);	 
-     pFontArray[3]	= std::make_pair(wxT("ID_LogWindowFontButton"),	  logWindowSampleLabel);	 
+     pFontArray[1]  = std::make_pair(wxT("ID_ThreadListFontButton"),  threadListSampleLabel);
+     pFontArray[2]	= std::make_pair(wxT("ID_ExtractFontButton"),	  extractSampleLabel);
+     pFontArray[3]	= std::make_pair(wxT("ID_LogWindowFontButton"),	  logWindowSampleLabel);
      pFontArray[4]	= std::make_pair(wxT("ID_ThreadTitleFontButton"), threadTitleSampleLabel);
-     pFontArray[5]	= std::make_pair(wxT("ID_KakikoFontButton"),	  threadViewSampleLabel); 
-     pFontArray[6]	= std::make_pair(wxT("ID_MemoFontButton"),	  kakikoSampleLabel);	 
-     pFontArray[7]	= std::make_pair(wxT("ID_HintFontButton"),	  memoSampleLabel);	 
-     pFontArray[8]	= std::make_pair(wxT("ID_LinkFontButton"),	  hintSampleLabel);	 
-     pFontArray[9]	= std::make_pair(wxT("ID_OthersFontButton"),	  linkSampleLabel);	 
-     pFontArray[10] = std::make_pair(wxT("ID_AllFontButton"),	  othersSampleLabel);	 
+     pFontArray[5]	= std::make_pair(wxT("ID_KakikoFontButton"),	  threadViewSampleLabel);
+     pFontArray[6]	= std::make_pair(wxT("ID_MemoFontButton"),	  kakikoSampleLabel);
+     pFontArray[7]	= std::make_pair(wxT("ID_HintFontButton"),	  memoSampleLabel);
+     pFontArray[8]	= std::make_pair(wxT("ID_LinkFontButton"),	  hintSampleLabel);
+     pFontArray[9]	= std::make_pair(wxT("ID_OthersFontButton"),	  linkSampleLabel);
+     pFontArray[10] = std::make_pair(wxT("ID_AllFontButton"),	  othersSampleLabel);
 
      for (int i = 0; i < STATIC_TEXT_NUMBER; i++ )
      {
@@ -1205,7 +1209,7 @@ void ColorFontSettingPanel::set_properties()
 	  wxString widgetsInfo = wxEmptyString;
 	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
 
-	  if (widgetsInfo != wxEmptyString) 
+	  if (widgetsInfo != wxEmptyString)
 	  {
 	       wxFont font;
 	       bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
@@ -1229,15 +1233,15 @@ void ColorFontSettingPanel::set_properties()
 #endif
 
      pBGArray[0]  = std::make_pair(wxT("ID_BoardListBGColorButton"),   treeSampleLabel);
-     pBGArray[1]  = std::make_pair(wxT("ID_ThreadListBGColorButton"),  threadListSampleLabel);  
-     pBGArray[2]  = std::make_pair(wxT("ID_ThreadListBGColorButton"),  extractSampleLabel);	 
-     pBGArray[3]  = std::make_pair(wxT("ID_LogWindowBGColorButton"),   logWindowSampleLabel);	 
+     pBGArray[1]  = std::make_pair(wxT("ID_ThreadListBGColorButton"),  threadListSampleLabel);
+     pBGArray[2]  = std::make_pair(wxT("ID_ThreadListBGColorButton"),  extractSampleLabel);
+     pBGArray[3]  = std::make_pair(wxT("ID_LogWindowBGColorButton"),   logWindowSampleLabel);
      pBGArray[4]  = std::make_pair(wxT("ID_ThreadTitleBGColorButton"), threadTitleSampleLabel);
-     pBGArray[5]  = std::make_pair(wxT("ID_ThreadViewBGColorButton"),  threadViewSampleLabel); 
-     pBGArray[6]  = std::make_pair(wxT("ID_MemoBGColorButton"),	       kakikoSampleLabel);	 
-     pBGArray[7]  = std::make_pair(wxT("ID_MemoBGColorButton"),	       memoSampleLabel);	 
-     pBGArray[8]  = std::make_pair(wxT("ID_HintBGColorButton"),	       hintSampleLabel);	 
-     pBGArray[9]  = std::make_pair(wxT("ID_PopupBGColorButton"),       linkSampleLabel);	 
+     pBGArray[5]  = std::make_pair(wxT("ID_ThreadViewBGColorButton"),  threadViewSampleLabel);
+     pBGArray[6]  = std::make_pair(wxT("ID_MemoBGColorButton"),	       kakikoSampleLabel);
+     pBGArray[7]  = std::make_pair(wxT("ID_MemoBGColorButton"),	       memoSampleLabel);
+     pBGArray[8]  = std::make_pair(wxT("ID_HintBGColorButton"),	       hintSampleLabel);
+     pBGArray[9]  = std::make_pair(wxT("ID_PopupBGColorButton"),       linkSampleLabel);
      pBGArray[10] = std::make_pair(wxT("ID_AllFontButton"),	       othersSampleLabel);
 
      for (int i = 0; i < STATIC_TEXT_NUMBER; i++ )
@@ -1246,7 +1250,7 @@ void ColorFontSettingPanel::set_properties()
 	  wxString widgetsInfo = wxEmptyString;
 	  JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
 
-	  if (widgetsInfo != wxEmptyString) 
+	  if (widgetsInfo != wxEmptyString)
 	  {
 	       wxColour bgColor;
 	       bool ret = bgColor.Set(widgetsInfo);
@@ -1352,20 +1356,20 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
      // switch文で書きたいけどうまく行かないのでif文
      const int id = event.GetId();
 
-     if (id == ID_TreeFontButton        ||	// ツリーフォント設定ボタン	     
-	 id == ID_ThreadListFontButton	||	// スレ欄フォント設定ボタン	     
-	 id == ID_ExtractFontButton	||	// 抽出フォント設定ボタン		 
-	 id == ID_LogWindowFontButton	||	// ログ出力画面フォント設定ボタン    
+     if (id == ID_TreeFontButton        ||	// ツリーフォント設定ボタン
+	 id == ID_ThreadListFontButton	||	// スレ欄フォント設定ボタン
+	 id == ID_ExtractFontButton	||	// 抽出フォント設定ボタン
+	 id == ID_LogWindowFontButton	||	// ログ出力画面フォント設定ボタン
 	 id == ID_ThreadTitleFontButton ||	// スレッドタイトルフォント設定ボタン
-	 id == ID_KakikoFontButton	||	// 書き込みフォント設定ボタン	     
-	 id == ID_MemoFontButton        ||	// メモ欄フォント設定ボタン	     
-	 id == ID_HintFontButton	||	// ヒントフォント設定ボタン	     
-	 id == ID_LinkFontButton	||	// リンクフォント設定ボタン	     
-	 id == ID_OthersFontButton      ||	// その他フォント設定ボタン	     
+	 id == ID_KakikoFontButton	||	// 書き込みフォント設定ボタン
+	 id == ID_MemoFontButton        ||	// メモ欄フォント設定ボタン
+	 id == ID_HintFontButton	||	// ヒントフォント設定ボタン
+	 id == ID_LinkFontButton	||	// リンクフォント設定ボタン
+	 id == ID_OthersFontButton      ||	// その他フォント設定ボタン
 	 id == ID_AllFontButton			// すべてフォント設定ボタン
 	  ) {
-          /**		  
-	   * フォント設定 
+          /**
+	   * フォント設定
 	   */
 	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
 	  const wxString font = wxString((const char*)str.c_str(), wxConvUTF8);
@@ -1377,15 +1381,15 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 	  }
 
      } else if (
-	  id == ID_BoardListBGColorButton   ||	// スレ欄背景色設定ボタン	    
-	  id == ID_ThreadListBGColorButton  ||	// 抽出背景色設定ボタン		    
-	  id == ID_LogWindowBGColorButton   ||	// ログ出力画面背景色設定ボタン	    
-	  id == ID_ThreadTitleBGColorButton ||	// スレッドタイトル背景色設定ボタン 
-	  id == ID_ThreadViewBGColorButton  ||	// スレビュー背景色設定ボタン	    
-	  id == ID_MemoBGColorButton        ||	// メモ欄背景色設定ボタン	    
-	  id == ID_HintBGColorButton	    ||	// ヒント背景色設定ボタン	    
-	  id == ID_PopupBGColorButton	    ||	// ポップアップ背景色設定ボタン	    
-	  id == ID_AllBGColorButton		// すべての背景色設定ボタン	    
+	  id == ID_BoardListBGColorButton   ||	// スレ欄背景色設定ボタン
+	  id == ID_ThreadListBGColorButton  ||	// 抽出背景色設定ボタン
+	  id == ID_LogWindowBGColorButton   ||	// ログ出力画面背景色設定ボタン
+	  id == ID_ThreadTitleBGColorButton ||	// スレッドタイトル背景色設定ボタン
+	  id == ID_ThreadViewBGColorButton  ||	// スレビュー背景色設定ボタン
+	  id == ID_MemoBGColorButton        ||	// メモ欄背景色設定ボタン
+	  id == ID_HintBGColorButton	    ||	// ヒント背景色設定ボタン
+	  id == ID_PopupBGColorButton	    ||	// ポップアップ背景色設定ボタン
+	  id == ID_AllBGColorButton		// すべての背景色設定ボタン
 	  ) {
 	  /**
 	   * 背景色設定
@@ -1402,7 +1406,7 @@ void ColorFontSettingPanel::OnClickColorFontSettingButton(wxCommandEvent& event)
 	  }
 
      }
-     
+
 #else
      // メインスレッドに更新してもらう
      m_id = id;
@@ -1424,7 +1428,7 @@ bool ColorFontSettingPanel::SetEachFontSetting(const wxString& font)
      data.SetInitialFont(canvasFont);
      wxFontDialog dialog(this, data);
 
-     if ( wxID_OK == dialog.ShowModal() ) 
+     if ( wxID_OK == dialog.ShowModal() )
      {
      	  // フォント設定用データを用意する
      	  wxFontData retData = dialog.GetFontData();
@@ -1448,25 +1452,25 @@ void ColorFontSettingPanel::SetSampleFontSetting(const int id)
      int wannaChangeID = -1;
 
      if (id == ID_TreeFontButton) {
-	  wannaChangeID = ID_TreeSampleLabel;	  
+	  wannaChangeID = ID_TreeSampleLabel;
      } else if (id == ID_ThreadListFontButton) {
-	  wannaChangeID = ID_ThreadListSampleLabel;	  
+	  wannaChangeID = ID_ThreadListSampleLabel;
      } else if (id == ID_ExtractFontButton) {
-	  wannaChangeID = ID_ExtractSampleLabel;	  
+	  wannaChangeID = ID_ExtractSampleLabel;
      } else if (id == ID_LogWindowFontButton) {
-	  wannaChangeID = ID_LogWindowSampleLabel;	  
+	  wannaChangeID = ID_LogWindowSampleLabel;
      } else if (id == ID_ThreadTitleFontButton) {
-	  wannaChangeID = ID_ThreadTitleSampleLabel;	  
+	  wannaChangeID = ID_ThreadTitleSampleLabel;
      } else if (id == ID_KakikoFontButton) {
-	  wannaChangeID = ID_KakikoSampleLabel;	  
+	  wannaChangeID = ID_KakikoSampleLabel;
      } else if (id == ID_MemoFontButton) {
-	  wannaChangeID = ID_MemoSampleLabel;	  
+	  wannaChangeID = ID_MemoSampleLabel;
      } else if (id == ID_HintFontButton) {
-	  wannaChangeID = ID_HintSampleLabel;	  
+	  wannaChangeID = ID_HintSampleLabel;
      } else if (id == ID_LinkFontButton) {
 	  wannaChangeID = ID_LinkSampleLabel;
      } else if (id == ID_OthersFontButton) {
-	  wannaChangeID = ID_OthersSampleLabel;	  
+	  wannaChangeID = ID_OthersSampleLabel;
      } else if (id == ID_AllFontButton) {
 	  wannaChangeID = ID_AllSampleLabel;
      }
@@ -1545,21 +1549,21 @@ void ColorFontSettingPanel::SetSampleBGColorSetting(const int id)
      wxArrayInt iArray;
 
      if (id == ID_BoardListBGColorButton) {
-	  iArray.Add(ID_TreeSampleLabel);	  
+	  iArray.Add(ID_TreeSampleLabel);
      } else if (id == ID_ThreadListBGColorButton) {
 	  iArray.Add(ID_ThreadListSampleLabel);
 	  iArray.Add(ID_ExtractSampleLabel);
      } else if (id == ID_LogWindowBGColorButton) {
-	  iArray.Add(ID_LogWindowSampleLabel);	  
+	  iArray.Add(ID_LogWindowSampleLabel);
      } else if (id == ID_ThreadTitleBGColorButton) {
-	  iArray.Add(ID_ThreadTitleSampleLabel);	  
+	  iArray.Add(ID_ThreadTitleSampleLabel);
      } else if (id == ID_MemoBGColorButton) {
 	  iArray.Add(ID_KakikoSampleLabel);
-	  iArray.Add(ID_MemoSampleLabel);	  
+	  iArray.Add(ID_MemoSampleLabel);
      } else if (id == ID_HintBGColorButton) {
-	  iArray.Add(ID_HintSampleLabel);	  
+	  iArray.Add(ID_HintSampleLabel);
      } else if (id == ID_PopupBGColorButton) {
-	  iArray.Add(ID_LinkSampleLabel);	  
+	  iArray.Add(ID_LinkSampleLabel);
      } else if (id == ID_AllFontButton) {
 	  iArray.Add(ID_TreeSampleLabel);
 	  iArray.Add(ID_ThreadListSampleLabel);
@@ -1764,7 +1768,7 @@ void TabColorSettingPanel::OnClickTabColorSettingButton(wxCommandEvent& event)
 {
 
      const int id = event.GetId();
-     
+
      if ( id == ID_ActiveTabBGColorButton  ||
 	  id ==	ID_DeactiveTabBGColorButton )
      {
@@ -1780,15 +1784,15 @@ void TabColorSettingPanel::OnClickTabColorSettingButton(wxCommandEvent& event)
 	  {
 	       SetSampleBGColorSetting(id);
 	  }
-     } else if ( id == ID_ThreadTabDefaultFontColorButton	 || 
-		 id == ID_ThreadTabReadingFontColorButton	 || 
-		 id == ID_ThreadTabBrokenFontColorButton	 || 
-		 id == ID_ThreadTabCannotPostFontColorButton	 || 
-		 id == ID_ThreadTabUpdateFontColorButton	 || 
-		 id == ID_ThreadTabPartialContentFontColorButton || 
+     } else if ( id == ID_ThreadTabDefaultFontColorButton	 ||
+		 id == ID_ThreadTabReadingFontColorButton	 ||
+		 id == ID_ThreadTabBrokenFontColorButton	 ||
+		 id == ID_ThreadTabCannotPostFontColorButton	 ||
+		 id == ID_ThreadTabUpdateFontColorButton	 ||
+		 id == ID_ThreadTabPartialContentFontColorButton ||
 		 id == ID_AutoReloadFontColorButton )
      {
-          /**		  
+          /**
 	   * 文字色設定
 	   */
 	  const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(id) );
@@ -1838,20 +1842,20 @@ void TabColorSettingPanel::SetSampleBGColorSetting(const int id)
      wxArrayInt iArray;
 
      if (id == ID_ActiveTabBGColorButton) {
-	  iArray.Add(ID_DefaultActiveTabSampleLabel         ); 	  
-	  iArray.Add(ID_ReadingActiveTabSampleLabel	    ); 
-	  iArray.Add(ID_BrokenActiveTabSampleLabel	    ); 
-	  iArray.Add(ID_CannotPostActiveTabSampleLabel	    ); 
-	  iArray.Add(ID_UpdateActiveTabSampleLabel	    ); 
-	  iArray.Add(ID_PartialContentActiveTabSampleLabel  ); 
-	  iArray.Add(ID_AutoReloadSampleLabel		    ); 
+	  iArray.Add(ID_DefaultActiveTabSampleLabel         );
+	  iArray.Add(ID_ReadingActiveTabSampleLabel	    );
+	  iArray.Add(ID_BrokenActiveTabSampleLabel	    );
+	  iArray.Add(ID_CannotPostActiveTabSampleLabel	    );
+	  iArray.Add(ID_UpdateActiveTabSampleLabel	    );
+	  iArray.Add(ID_PartialContentActiveTabSampleLabel  );
+	  iArray.Add(ID_AutoReloadSampleLabel		    );
      } else if (id == ID_DeactiveTabBGColorButton) {
-	  iArray.Add(ID_DefaultDeactiveTabSampleLabel	    ); 
-	  iArray.Add(ID_ReadingDeactiveTabSampleLabel	    ); 
-	  iArray.Add(ID_BrokenDeactiveTabSampleLabel	    ); 
-	  iArray.Add(ID_CannotPostDeactiveTabSampleLabel    ); 
-	  iArray.Add(ID_UpdateDeactiveTabSampleLabel	    ); 
-	  iArray.Add(ID_PartialContentDeactiveTabSampleLabel); 
+	  iArray.Add(ID_DefaultDeactiveTabSampleLabel	    );
+	  iArray.Add(ID_ReadingDeactiveTabSampleLabel	    );
+	  iArray.Add(ID_BrokenDeactiveTabSampleLabel	    );
+	  iArray.Add(ID_CannotPostDeactiveTabSampleLabel    );
+	  iArray.Add(ID_UpdateDeactiveTabSampleLabel	    );
+	  iArray.Add(ID_PartialContentDeactiveTabSampleLabel);
      }
 
      for (unsigned int i = 0; i < iArray.size(); i++ )
@@ -1901,7 +1905,7 @@ void TabColorSettingPanel::SetSampleBGColorSetting(const int id)
 			 JaneCloneUtil::SetJaneCloneProperties(widgetsName, widgetsInfo);
 		    }
 	       }
-	       
+
 
 	  } else {
 	       wxMessageBox(wxT("内部エラー, 背景色の変更に失敗しました."), wxT("設定画面"), wxICON_ERROR);
@@ -1931,7 +1935,7 @@ void TabColorSettingPanel::SetSampleFontColorSetting(const int id)
      wxArrayInt iArray;
      wxString defaultRGB = wxEmptyString;
 
-     if ( id == ID_ThreadTabDefaultFontColorButton ) 
+     if ( id == ID_ThreadTabDefaultFontColorButton )
      {
 	  defaultRGB = wxT("rgb(0,0,0)");
 	  iArray.Add(ID_DefaultActiveTabSampleLabel);
@@ -1975,7 +1979,7 @@ void TabColorSettingPanel::SetSampleFontColorSetting(const int id)
 
 
      for (unsigned int i = 0; i < iArray.size(); i++ )
-     {	  
+     {
 	  wxWindow* window = FindWindowById(static_cast<long>(iArray[i]), this);
 #if wxCHECK_VERSION(2, 9, 1)
 	  if ( wxGenericStaticText* bdp = dynamic_cast<wxGenericStaticText*>(window))
@@ -2113,7 +2117,7 @@ void TabControlSettingPanel::do_layout()
  * 外部板登録ダイアログ
  * もしDBに更新あれば返り値は1, 無ければ0
  */
-NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& title, 
+NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& title,
 				     const wxPoint& pos, const wxSize& size, long style):
      wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxSTAY_ON_TOP)
 {
@@ -2129,10 +2133,10 @@ NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& t
      // 板URLは入力されたあとフォーカスがなくなったらイベントを起こす
      label_1 = new wxStaticText(panel_4, wxID_ANY, wxT("板URL　"));
      text_ctrl_1 = new wxTextCtrl(panel_4, wxID_ANY, wxEmptyString);
-     text_ctrl_1->Connect(wxID_ANY,					      
+     text_ctrl_1->Connect(wxID_ANY,
 			  wxEVT_KILL_FOCUS,
 			  wxCommandEventHandler(NewBoardAddDialog::CheckBoardUrl),
-			  NULL, this);					      
+			  NULL, this);
 
      label_2 = new wxStaticText(panel_5, wxID_ANY, wxT("板名　　"));
      text_ctrl_2 = new wxTextCtrl(panel_5, wxID_ANY, wxEmptyString);
@@ -2140,13 +2144,13 @@ NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& t
      button_3->Connect(wxID_ANY,
 		       wxEVT_COMMAND_BUTTON_CLICKED,
 		       wxCommandEventHandler(NewBoardAddDialog::GetShitarabaBoardInfo),
-		       NULL, this);					       
+		       NULL, this);
 
      label_3 = new wxStaticText(panel_6, wxID_ANY, wxT("カテゴリ"));
 
      const wxArrayString categoryList = SQLiteAccessor::GetCategoryList();
-     combo_box_1 = new wxComboBox(panel_6, wxID_ANY, wxT("外部板"), 
-				  wxDefaultPosition, 
+     combo_box_1 = new wxComboBox(panel_6, wxID_ANY, wxT("外部板"),
+				  wxDefaultPosition,
 				  wxDefaultSize,
 				  categoryList,
 				  wxCB_DROPDOWN);
@@ -2161,8 +2165,8 @@ NewBoardAddDialog::NewBoardAddDialog(wxWindow* parent, int id, const wxString& t
 		       NULL, this);
 
      button_2 = new wxButton(panel_1, wxID_ANY, wxT("キャンセル"));
-     button_2->Connect(wxID_ANY,					
-		       wxEVT_COMMAND_BUTTON_CLICKED,				
+     button_2->Connect(wxID_ANY,
+		       wxEVT_COMMAND_BUTTON_CLICKED,
 		       wxCommandEventHandler(NewBoardAddDialog::OnClickCancel),
 		       NULL, this);
 
@@ -2224,10 +2228,10 @@ void NewBoardAddDialog::OnClickOK(wxCommandEvent& event)
 
      if ( url       == wxEmptyString ||
 	  boardName == wxEmptyString ||
-	  category  == wxEmptyString ) 
+	  category  == wxEmptyString )
      {
 	  // 必須項目が抜けている
-	  wxMessageBox(wxT("エラー, 新規追加板のURL, 板名, カテゴリを入力してください."), 
+	  wxMessageBox(wxT("エラー, 新規追加板のURL, 板名, カテゴリを入力してください."),
 		       wxT("新規追加板の登録"), wxICON_ERROR);
 	  Close(true);
      }
@@ -2281,8 +2285,8 @@ void NewBoardAddDialog::GetShitarabaBoardInfo(wxCommandEvent& event)
      if ( url == wxEmptyString )
      {
 	  button_3->Enable(false);
-	  wxMessageBox(wxT("エラー, したらば掲示板の板情報取得に失敗しました."), 
-		       wxT("新規追加板の登録"), wxICON_ERROR);	  
+	  wxMessageBox(wxT("エラー, したらば掲示板の板情報取得に失敗しました."),
+		       wxT("新規追加板の登録"), wxICON_ERROR);
 	  return;
      }
 
@@ -2305,9 +2309,9 @@ void NewBoardAddDialog::GetShitarabaBoardInfo(wxCommandEvent& event)
 	  }
      }
 
-     wxMessageBox(wxT("エラー, したらば掲示板の板情報取得に失敗しました."), 
-		  wxT("新規追加板の登録"), wxICON_ERROR);	  
+     wxMessageBox(wxT("エラー, したらば掲示板の板情報取得に失敗しました."),
+		  wxT("新規追加板の登録"), wxICON_ERROR);
 
      button_3->Enable(false);
-     return;     
+     return;
 }
