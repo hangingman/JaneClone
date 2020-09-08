@@ -43,28 +43,6 @@ library wxsqlite3 {
   }
 }
 
-// library ctw {
-
-//   includedirs = ../cmdline_twitter/oauth ../cmdline_twitter/ui;
-//   includedirs+= ../cmdline_twitter/hashcodes ../cmdline_twitter/twitter;
-//   includedirs+= ../cmdline_twitter/http;
-
-//   sources {
-//     ../cmdline_twitter/oauth/oauth.cpp
-//     ../cmdline_twitter/oauth/base64.cpp
-//     ../cmdline_twitter/ui/simple_terminal.cpp
-//     ../cmdline_twitter/ui/simple_ui.cpp
-//     ../cmdline_twitter/hashcodes/md5.cpp
-//     ../cmdline_twitter/hashcodes/hashtest_cpp.cpp
-//     ../cmdline_twitter/hashcodes/sha1.cpp
-//     ../cmdline_twitter/hashcodes/crypto_hash.cpp
-//     ../cmdline_twitter/twitter/twitter_client.cpp
-//     ../cmdline_twitter/http/httpclient.cpp
-//     ../cmdline_twitter/http/httpcurl.cpp
-//   }
-// }
-
-
 program janeclone {
 
   includedirs = ../sqlite3 ../wxsqlite3 ../babel;

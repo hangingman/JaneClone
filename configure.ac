@@ -6,7 +6,7 @@ AC_INIT([JaneClone], [1.1.5], [newserver002@gmail.com])
 
 # SCM URL
 AC_SUBST(UPSTREAM_URL, [https://github.com/Hiroyuki-Nagata/JaneClone])
-# Refering Debian Policy Version 
+# Refering Debian Policy Version
 # -> http://www.debian.or.jp/community/devel/debian-policy-ja/policy.ja.html/
 AC_SUBST(DEB_STANDARDS_VERSION, [3.9.3])
 AC_CANONICAL_TARGET
@@ -16,7 +16,7 @@ AC_CONFIG_SRCDIR([src/enums.hpp])
 AC_CONFIG_HEADERS([config.h:curlpp/include/curlpp/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_SYS_LARGEFILE
-AS_IF([test "$prefix" = "NONE"], 
+AS_IF([test "$prefix" = "NONE"],
       [AC_DEFINE_UNQUOTED([PREFIX_DIR], ["/usr/local"], [--prefix dir macro])],
       [AC_DEFINE_UNQUOTED([PREFIX_DIR], ["$prefix"],    [--prefix dir macro])]
 )
@@ -89,11 +89,11 @@ fi
 
 # Checks for libxml2
 AC_PATH_PROGS(XML2CONFIG, xml2-config)
-AC_MSG_CHECKING(for special libxml2 includes) 
-if test "x$XML2CONFIG" = "x"; then 
-   AC_MSG_RESULT(libxml2 config not found) 
-   else 
-   XML2CFLAGS=`$XML2CONFIG --cflags` 
+AC_MSG_CHECKING(for special libxml2 includes)
+if test "x$XML2CONFIG" = "x"; then
+   AC_MSG_RESULT(libxml2 config not found)
+   else
+   XML2CFLAGS=`$XML2CONFIG --cflags`
    AC_MSG_RESULT($XML2CFLAGS)
    AC_SUBST(XML2CFLAGS)
    AC_CHECK_LIB(xml2, xmlReadMemory)
@@ -130,7 +130,7 @@ AM_PATH_WXCONFIG($reqwx, wxWin=1)
 if test "$wxWin" != 1; then
 	AC_MSG_ERROR([
 		wxWidgets must be installed on your system.
- 
+
 		Please check that wx-config is in path, the directory
 		where wxWidgets libraries are installed (returned by
 		'wx-config --libs' or 'wx-config --static --libs' command)
@@ -172,22 +172,22 @@ AS_IF([test x"$PLATFORM_STRING" = x"Linux" -o x"$PLATFORM_STRING" = x"BSD"], [
     LIBS="$LIBS $WXSQLITE3_LIBS"
     ], [
     # Others will check AC_TRY_LINK
-    AC_MSG_CHECKING([for wxsqlite3])                                              
-    AC_LANG_PUSH(C++)                                                             
-    SAVE_LIBS="$LIBS"                                                             
+    AC_MSG_CHECKING([for wxsqlite3])
+    AC_LANG_PUSH(C++)
+    SAVE_LIBS="$LIBS"
     LIBS="$LIBS -lwxsqlite3-$wx_config_major_version"".""$wx_config_minor_version"
-    AC_TRY_LINK([#include <wx/wxsqlite3.h>],                                      
-                [wxSQLite3Database db;],                                          
-                has_wxsqlite3=1,                                                  
-                has_wxsqlite3=0)                                                  
-    AC_LANG_POP(C++)                                                              
-    if test $has_wxsqlite3 = 0; then                                              
-      AC_MSG_RESULT([no])                                                         
-      AC_MSG_NOTICE([we will build wxsqlite3...])                                 
-      AM_CONDITIONAL(BUILDING_WXSQLITE3, true)                                    
-      LIBS="$SAVE_LIBS"                                                           
-    else                                                                          
-      AC_MSG_RESULT([yes])                                                        
+    AC_TRY_LINK([#include <wx/wxsqlite3.h>],
+                [wxSQLite3Database db;],
+                has_wxsqlite3=1,
+                has_wxsqlite3=0)
+    AC_LANG_POP(C++)
+    if test $has_wxsqlite3 = 0; then
+      AC_MSG_RESULT([no])
+      AC_MSG_NOTICE([we will build wxsqlite3...])
+      AM_CONDITIONAL(BUILDING_WXSQLITE3, true)
+      LIBS="$SAVE_LIBS"
+    else
+      AC_MSG_RESULT([yes])
     fi
 ])
 #-----------------------------------------------------------------------
@@ -206,16 +206,16 @@ AC_DEFUN([MY_CURL],[
  check="7.10.0"
  dnl check_hex must be UPPERCASE if any hex letters are present
  check_hex="070A00"
- dnl for cross compiling, variable curl-config 
+ dnl for cross compiling, variable curl-config
  AC_PATH_PROGS(CURLCONFIG, curl-config)
- 
+
  AC_MSG_CHECKING([for curl >= $check])
- 
+
  if eval $CURLCONFIG --version 2>/dev/null >/dev/null; then
    ver=`$CURLCONFIG --version | sed -e "s/libcurl //g"`
    hex_ver=`$CURLCONFIG --vernum | tr 'a-f' 'A-F'`
    ok=`echo "ibase=16; if($hex_ver>=$check_hex) $hex_ver else 0" | bc`
- 
+
    if test x$ok != x0; then
      my_cv_curl_vers="$ver"
      AC_MSG_RESULT([$my_cv_curl_vers])
@@ -241,7 +241,7 @@ AC_MSG_CHECKING([for curlpp])
 AC_LANG_PUSH(C++)
 SAVE_LIBS="$LIBS"
 LIBS="$LIBS -lcurlpp"
-AC_TRY_LINK([#include <curlpp/Easy.hpp>], 
+AC_TRY_LINK([#include <curlpp/Easy.hpp>],
 	    [curlpp::Easy easy;],
 	    has_curlpp=1,
 	    has_curlpp=0)
@@ -307,7 +307,7 @@ case "${ax_cv_c_compiler_vendor}" in
 	   CXXFLAGS="$CXXFLAGS -stdlib=libc++"
 	fi
 	   AX_CXX_COMPILE_STDCXX_11([noext], [mandatory])
-        ;;	
+        ;;
    *)
 	AC_MSG_ERROR("ERROR: JaneClone cannot compile with this compiler.")
 	;;
@@ -330,27 +330,26 @@ AC_FUNC_STRERROR_R
 
 # Setting for generate Makefile location
 AC_CONFIG_FILES([Makefile
-		 cmdline_twitter/Makefile
                  src/Makefile
 		 test/Makefile])
 # sqlite3
-AM_COND_IF([BUILDING_SQLITE3],	
+AM_COND_IF([BUILDING_SQLITE3],
 	   [AC_CONFIG_FILES([sqlite3/Makefile]) ])
 # wxsqlite3
 AM_COND_IF([BUILDING_WXSQLITE3],
 	   [AC_CONFIG_FILES([wxsqlite3/Makefile]) ])
 # curlpp
 AM_COND_IF([BUILDING_CURLPP],
-	   [AC_CONFIG_FILES([curlpp/Makefile			      
-			     curlpp/src/Makefile		      
-			     curlpp/src/curlpp/Makefile		      
-			     curlpp/src/curlpp/internal/Makefile      
-			     curlpp/src/utilspp/Makefile	      
-			     curlpp/include/Makefile		      
-			     curlpp/include/curlpp/Makefile	      
-			     curlpp/include/curlpp/internal/Makefile  
-			     curlpp/include/utilspp/Makefile	      
-			     curlpp/include/utilspp/functor/Makefile  
+	   [AC_CONFIG_FILES([curlpp/Makefile
+			     curlpp/src/Makefile
+			     curlpp/src/curlpp/Makefile
+			     curlpp/src/curlpp/internal/Makefile
+			     curlpp/src/utilspp/Makefile
+			     curlpp/include/Makefile
+			     curlpp/include/curlpp/Makefile
+			     curlpp/include/curlpp/internal/Makefile
+			     curlpp/include/utilspp/Makefile
+			     curlpp/include/utilspp/functor/Makefile
 			     curlpp/include/utilspp/singleton/Makefile])])
 
 # Output
@@ -364,7 +363,7 @@ AC_MSG_RESULT([CXX:	  $CXX])
 AC_MSG_RESULT([CPPFLAGS:  $CPPFLAGS])
 AC_MSG_RESULT([CXXFLAGS:  $CXXFLAGS])
 AC_MSG_RESULT([LIBS:	  $LIBS])
-AM_COND_IF([BUILDING_SQLITE3],	
+AM_COND_IF([BUILDING_SQLITE3],
 	   [AC_MSG_RESULT([sqlite3  :	  builtin])],
 	   [AC_MSG_RESULT([sqlite3  :	  sys])])
 AM_COND_IF([BUILDING_WXSQLITE3],

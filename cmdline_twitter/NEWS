@@ -1,4 +1,0 @@
-Release 0.0.3 (2015-01-04 Hiroyuki Nagata <newserver002@gmail.com>)
-===================================================================
-
-cmdline_twitterをautotoolsでビルド出来るようにした

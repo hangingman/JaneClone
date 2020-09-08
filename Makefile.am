@@ -1,5 +1,5 @@
 # 依存関係にあるソース群
-SUBDIRS = 
+SUBDIRS =
 
 if BUILDING_SQLITE3
    SUBDIRS += sqlite3
@@ -13,7 +13,7 @@ if BUILDING_CURLPP
    SUBDIRS += curlpp
 endif
 
-SUBDIRS += cmdline_twitter src test
+SUBDIRS += src test
 
 # パッケージ作成用サブディレクトリも設定する
 DIST_SUBDIRS = $(SUBDIRS)
@@ -239,10 +239,10 @@ generate-spec:
 	@echo "										 "	>> $(SPECFILE_PATH)
 	@echo "Requires: filesystem							 "	>> $(SPECFILE_PATH)
 	@echo "										 "	>> $(SPECFILE_PATH)
-	@echo "BuildRequires: gcc-c++							 "      >> $(SPECFILE_PATH) 
-	@echo "BuildRequires: zlib-devel						 "      >> $(SPECFILE_PATH) 
-	@echo "BuildRequires: wxGTK-devel						 "      >> $(SPECFILE_PATH) 
-	@echo "BuildRequires: libxml2-devel						 "      >> $(SPECFILE_PATH) 
+	@echo "BuildRequires: gcc-c++							 "      >> $(SPECFILE_PATH)
+	@echo "BuildRequires: zlib-devel						 "      >> $(SPECFILE_PATH)
+	@echo "BuildRequires: wxGTK-devel						 "      >> $(SPECFILE_PATH)
+	@echo "BuildRequires: libxml2-devel						 "      >> $(SPECFILE_PATH)
 	@echo "										 "	>> $(SPECFILE_PATH)
 	@echo "%description" >> $(SPECFILE_PATH)
 	@echo "JaneClone is a plain browser dedicated to read 2ch thread. Using a library called wxWidgets." >> $(SPECFILE_PATH)
@@ -321,7 +321,7 @@ package-deb: package-deb-license local-distdir-remove dist
 	   cp $(top_builddir)/debian/control.jessie $(distdir)/debian/control; \
 	fi
 	sed -i 's/%%%STANDARDS-VERSION%%%/@DEB_STANDARDS_VERSION@/g' $(distdir)/debian/control #  debian policy version
-	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)+nmuX/g' $(distdir)/debian/control           #  upstream version 
+	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)+nmuX/g' $(distdir)/debian/control           #  upstream version
 	sed -i 's/%%%PACKAGE_BUGREPORT%%%/$(PACKAGE_BUGREPORT)/g' $(distdir)/debian/control    #  bugreport address
 	sed -i 's/%%%VERSION%%%/$(VERSION)/g' $(distdir)/man/janeclone.man             	       #  upstream version
 	sed -i "s/%%%DATE%%%/`date +\"%B %d, %Y\"`/g" $(distdir)/man/janeclone.man
@@ -331,7 +331,7 @@ package-deb: package-deb-license local-distdir-remove dist
 	cp $(top_builddir)/debian/rules   $(distdir)/debian/rules                              #  rule file
 	rm -f $(distdir)/debian/*.ex                                                           #  delete example files
 	rm -f $(distdir)/debian/*.EX                                                           #  delete example files
-	rm -f $(distdir)/src/rc/COPYING							       #  license files are all 
+	rm -f $(distdir)/src/rc/COPYING							       #  license files are all
 	rm -f $(distdir)/src/rc/gpl-2.0.txt						       #  in the "copyright"
 	ls $(distdir)/
 	sed -i 's/<possible notes regarding this package - if none, delete this file>//g' $(distdir)/debian/README.Debian
