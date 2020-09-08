@@ -88,8 +88,9 @@ SPECFILE_PATH	= $(top_builddir)//$(SPECFILE)
 # <パッケージ名>-<バージョン番号>.<リリース番号>.<アーキテクチャ>.rpm
 RPMNAME		= $(PACKAGE_NAME)-$(VERSION).`uname -m`.rpm
 
-# Debian用COPYRIGHTの場所
+# Debian用copyright/compatの場所
 COPYRIGHT=$(distdir)/debian/copyright
+COMPAT=$(distdir)/debian/compat
 PACKAGER="Hiroyuki Nagata"
 AUTHOR="Hiroyuki Nagata"
 
@@ -308,17 +309,14 @@ package-deb-license:
 
 # target for debian
 package-deb: package-deb-license local-distdir-remove dist
-	(tar xvf $(distdir).tar.gz && cd $(distdir) && yes | dh_make -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
+	(tar xvf $(distdir).tar.gz && cd $(distdir) && dh_make --yes -n -s -e $(PACKAGE_BUGREPORT) -f ../$(distdir).tar.gz)
 	@echo "This env is Travis ? -> $(TRAVIS_CI)"
 	@if test "$(TRAVIS_CI)" = "true"; then                                 \
 	   echo "This is Travis CI, use Debian ubuntu control file...";        \
 	   cp $(top_builddir)/debian/control.ubuntu $(distdir)/debian/control; \
-	elif test "$(WX_VERSION_MAJOR)" = "2"; then                            \
-	   echo "use Debian wheezy control file...";                           \
-	   cp $(top_builddir)/debian/control.wheezy $(distdir)/debian/control; \
 	else                                                                   \
-	   echo "use Debian jessie control file...";                           \
-	   cp $(top_builddir)/debian/control.jessie $(distdir)/debian/control; \
+	   echo "use Debian buster control file...";                           \
+	   cp $(top_builddir)/debian/control.buster $(distdir)/debian/control; \
 	fi
 	sed -i 's/%%%STANDARDS-VERSION%%%/@DEB_STANDARDS_VERSION@/g' $(distdir)/debian/control #  debian policy version
 	sed -i 's/%%%VERSION%%%/$(PACKAGE_VERSION)+nmuX/g' $(distdir)/debian/control           #  upstream version
@@ -352,8 +350,11 @@ package-deb: package-deb-license local-distdir-remove dist
 	cat $(top_builddir)/COPYING |                                              >> $(COPYRIGHT)
 	echo ""
 	echo "-----------------------------------------------------------------------------" >> $(COPYRIGHT)
+	echo "10" > $(COMPAT)
 	@echo "-----------------------------------------------------------------------------"
 	@cat $(distdir)/debian/copyright
+	@echo "-----------------------------------------------------------------------------"
+	@cat $(distdir)/debian/compat
 	@echo "-----------------------------------------------------------------------------"
 	@cat $(distdir)/debian/control
 	@echo "-----------------------------------------------------------------------------"

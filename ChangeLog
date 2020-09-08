@@ -1,5 +1,247 @@
 Non-maintainer upload
 
+commit b72640b
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2020-09-08
+
+    Fix Travis script
+
+.travis.yml
+
+commit 740f05f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2020-09-08
+
+    Remove cmdline_twitter
+
+Makefile.am
+bakefile/janeclone.bkl
+cmdline_twitter/AUTHORS
+cmdline_twitter/COPYING
+cmdline_twitter/ChangeLog
+cmdline_twitter/INSTALL
+cmdline_twitter/LICENSE
+cmdline_twitter/Makefile.am
+cmdline_twitter/NEWS
+cmdline_twitter/README
+cmdline_twitter/README.md
+cmdline_twitter/hashcodes/byteorder.hpp
+cmdline_twitter/hashcodes/crypto_hash.cpp
+cmdline_twitter/hashcodes/crypto_hash.hpp
+cmdline_twitter/hashcodes/hashtest_cpp.cpp
+cmdline_twitter/hashcodes/hmac.hpp
+cmdline_twitter/hashcodes/md5.cpp
+cmdline_twitter/hashcodes/md5.hpp
+cmdline_twitter/hashcodes/portable_endian.hpp
+cmdline_twitter/hashcodes/sha1.cpp
+cmdline_twitter/hashcodes/sha1.hpp
+cmdline_twitter/http/httpclient.cpp
+cmdline_twitter/http/httpclient.hpp
+cmdline_twitter/http/httpcurl.cpp
+cmdline_twitter/http/httpcurl.hpp
+cmdline_twitter/include/minisetting.hpp
+cmdline_twitter/include/picojson.h
+cmdline_twitter/include/typedef.hpp
+cmdline_twitter/keys/apikeys.hpp
+cmdline_twitter/main.cpp
+cmdline_twitter/main.hpp
+cmdline_twitter/oauth/base64.cpp
+cmdline_twitter/oauth/base64.hpp
+cmdline_twitter/oauth/oauth.cpp
+cmdline_twitter/oauth/oauth.hpp
+cmdline_twitter/sample_setkey.sh
+cmdline_twitter/twitter/twitter_client.cpp
+cmdline_twitter/twitter/twitter_client.hpp
+cmdline_twitter/twitter/twitter_json.hpp
+cmdline_twitter/ui/simple_terminal.cpp
+cmdline_twitter/ui/simple_terminal.hpp
+cmdline_twitter/ui/simple_ui.cpp
+cmdline_twitter/ui/simple_ui.hpp
+cmdline_twitter/write_apikeys.sh
+configure.ac
+src/Makefile.am
+
+commit 2fd1229
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2020-09-08
+
+    Fix .travis.yml
+
+.travis.yml
+
+commit 539c7ad
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2020-09-08
+
+    Remove json11
+
+bakefile/janeclone.bkl
+json11/LICENSE.txt
+json11/README.md
+json11/json11.cpp
+json11/json11.hpp
+json11/test.cpp
+src/Makefile.am
+
+commit 8277f2f
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2020-09-08
+
+    Rename TextCtrlTupleList to WxCtrlTupleList, to use other widgets
+
+src/otherpanels.cpp
+src/otherpanels.hpp
+
+commit 4a982b2
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2020-09-08
+
+    Remove DownloadBoardListMod, enable to modify boardList URL
+
+src/janecloneutil.cpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+
+commit 42034bb
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2020-09-08
+
+    Fix mail address
+
+src/anchoredresponsepopup.cpp
+src/anchoredresponsepopup.hpp
+src/datatype.hpp
+src/drawpane.cpp
+src/drawpane.hpp
+src/enums.hpp
+src/extractboardlist.cpp
+src/extractboardlist.hpp
+src/imagepanel.cpp
+src/imagepanel.hpp
+src/janeclone.cpp
+src/janeclone.hpp
+src/janecloneimageviewer.cpp
+src/janecloneimageviewer.hpp
+src/janecloneuiutil.cpp
+src/janecloneuiutil.hpp
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+src/main.cpp
+src/otherpanels.cpp
+src/otherpanels.hpp
+src/responsewindow.cpp
+src/responsewindow.hpp
+src/settingwindow.cpp
+src/settingwindow.hpp
+src/socketcommunication.cpp
+src/socketcommunication.hpp
+src/sqliteaccessor.cpp
+src/sqliteaccessor.hpp
+src/threadcontentbar.cpp
+src/threadcontentbar.hpp
+src/threadcontentwebview.cpp
+src/threadcontentwebview.hpp
+src/threadcontentwindow.cpp
+src/threadcontentwindow.hpp
+src/virtualboardlistctrl.cpp
+src/virtualboardlistctrl.hpp
+
+commit be1a95a
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2020-09-08
+
+    Fix .gitignore, update README.md, fix incorrect preprocessor cond
+
+.gitignore
+INSTALL
+INSTALL.md
+README.md
+src/sqliteaccessor.cpp
+
+commit c6fe3b3
+Merge: 3cc414d 1a361d9
+Author: Hiroyuki-Nagata <newserver002@gmail.com>
+Date:   2015-02-03
+
+    Merge pull request #63 from vabock/htmlsourcedlg-fix
+    
+    HtmlSourceDialog fix
+
+commit 1a361d9
+Author: Vabock <vabock@gmail.com>
+Date:   2015-02-02
+
+    Fix wrong initialization of HtmlSourceDialog
+    Fix incorrect utf-8 string length
+    Fix wrong return type of xmlOutputCloseCallback
+    Add missing xmlOutputBufferClose(), xmlFreeDoc(), xmlCleanupParser() calls
+
+src/extractboardlist.cpp
+src/threadcontentwindow.cpp
+
+commit deb8f72
+Author: Vabock <vabock@gmail.com>
+Date:   2015-02-02
+
+    Fix invalid "A" tags
+
+src/janecloneutil.cpp
+
+commit 3cc414d
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-31
+
+    Remove snprintf function
+
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+
+commit 45c9075
+Author: hiroyuki-nagata <newserver002@gmail.com>
+Date:   2015-01-31
+
+    Add snprintf for MSVC
+
+bakefile/janeclone.bkl
+src/janecloneutil.cpp
+src/janecloneutil.hpp
+
+commit 3b78f9f
+Author: hiroyuki-nagata <newserver002@gmail.com>
+Date:   2015-01-31
+
+    Fix MSVC compiler warning, change babel's encoding [skip ci]
+
+INSTALL
+babel/babel.cpp
+babel/babel.h
+bakefile/janeclone.bkl
+src/anchoredresponsepopup.cpp
+src/datatype.hpp
+src/janeclone.cpp
+src/otherpanels.cpp
+src/sqliteaccessor.cpp
+
+commit ea6d8d7
+Author: hiroyuki-nagata <newserver002@gmail.com>
+Date:   2015-01-31
+
+    Update batch files ( LF -> CRLF ) [skip ci]
+
+bakefile/bakefile.bat
+bakefile/janeclone.bat
+bakefile/janeclone.bkl
+
+commit bad4f68
+Author: hiroyuki nagata <newserver002@gmail.com>
+Date:   2015-01-27
+
+    Fix #59 If platform is linux or bsd, use pkg-config for checking
+    wxsqlite3 [skip ci]
+
+ChangeLog
+configure.ac
+
 commit 4cd0b19
 Author: hiroyuki nagata <newserver002@gmail.com>
 Date:   2015-01-25
@@ -1108,7 +1350,7 @@ Date:   2014-12-15
     This reverts commit 90ef407ebcdea830332caa6cdb5e5f458b4d4db1.
     
     Conflicts:
-    	configure.ac
+            configure.ac
 
 Makefile.am
 configure.ac
@@ -1578,7 +1820,7 @@ Date:   2014-11-03
     I forget below commit pull...
     
     Conflicts:
-    	.travis.yml
+            .travis.yml
 
 commit a189df2
 Author: hiroyuki nagata <newserver002@gmail.com>
@@ -3191,7 +3433,7 @@ Date:   2013-11-20
     Merge branch 'master' of github.com:Hiroyuki-Nagata/JaneClone
     
     Conflicts:
-    	libwxnkf/wxnkfencoding.cpp
+            libwxnkf/wxnkfencoding.cpp
     
     修正を前に戻してマージ
 
@@ -4473,8 +4715,6 @@ Date:   2013-07-18
     ・雑多なファイルの移動
 
 Makefile.am
-janeclone.nsi.in
-janeclone.wrapper
 misc/janeclone.nsi.in
 misc/janeclone.wrapper
 
@@ -6505,7 +6745,6 @@ src/extractboardlist.hpp
 src/janeclone.cpp
 src/janeclone.hpp
 src/metakitaccessor.cpp
-src/metakitaccessor.hpp
 src/sqliteaccessor.cpp
 src/sqliteaccessor.hpp
 
@@ -6754,54 +6993,8 @@ libmk4/handler.inl
 libmk4/header.h
 libmk4/include/Makefile.am
 libmk4/include/Makefile.in
-libmk4/include/mk4.h
-libmk4/include/mk4.inl
-libmk4/include/mk4dll.h
-libmk4/include/mk4io.h
-libmk4/include/mk4str.h
-libmk4/include/mk4str.inl
 libmk4/libmk4/Makefile.am
 libmk4/libmk4/Makefile.in
-libmk4/libmk4/borc.h
-libmk4/libmk4/column.cpp
-libmk4/libmk4/column.h
-libmk4/libmk4/column.inl
-libmk4/libmk4/custom.cpp
-libmk4/libmk4/custom.h
-libmk4/libmk4/derived.cpp
-libmk4/libmk4/derived.h
-libmk4/libmk4/doxy.h
-libmk4/libmk4/field.cpp
-libmk4/libmk4/field.h
-libmk4/libmk4/field.inl
-libmk4/libmk4/fileio.cpp
-libmk4/libmk4/format.cpp
-libmk4/libmk4/format.h
-libmk4/libmk4/gnuc.h
-libmk4/libmk4/handler.cpp
-libmk4/libmk4/handler.h
-libmk4/libmk4/handler.inl
-libmk4/libmk4/header.h
-libmk4/libmk4/mfc.h
-libmk4/libmk4/msvc.h
-libmk4/libmk4/mwcw.h
-libmk4/libmk4/persist.cpp
-libmk4/libmk4/persist.h
-libmk4/libmk4/remap.cpp
-libmk4/libmk4/remap.h
-libmk4/libmk4/std.cpp
-libmk4/libmk4/std.h
-libmk4/libmk4/store.cpp
-libmk4/libmk4/store.h
-libmk4/libmk4/store.inl
-libmk4/libmk4/string.cpp
-libmk4/libmk4/table.cpp
-libmk4/libmk4/univ.cpp
-libmk4/libmk4/univ.h
-libmk4/libmk4/univ.inl
-libmk4/libmk4/view.cpp
-libmk4/libmk4/viewx.cpp
-libmk4/libmk4/win.h
 libmk4/mfc.h
 libmk4/mk4.h
 libmk4/mk4.inl
@@ -6835,21 +7028,7 @@ libwxnkf/flagset.cpp
 libwxnkf/flagset.h
 libwxnkf/include/Makefile.am
 libwxnkf/include/Makefile.in
-libwxnkf/include/wx/wxnkf.h
 libwxnkf/libwxnkf/Makefile.am
-libwxnkf/libwxnkf/Makefile.in
-libwxnkf/libwxnkf/flagset.cpp
-libwxnkf/libwxnkf/flagset.h
-libwxnkf/libwxnkf/utf16util.cpp
-libwxnkf/libwxnkf/utf16util.h
-libwxnkf/libwxnkf/utf8table.cpp
-libwxnkf/libwxnkf/utf8table.h
-libwxnkf/libwxnkf/util.cpp
-libwxnkf/libwxnkf/util.h
-libwxnkf/libwxnkf/wxnkf.cpp
-libwxnkf/libwxnkf/wxnkfbaseconfig.h
-libwxnkf/libwxnkf/wxnkfencoding.cpp
-libwxnkf/libwxnkf/wxnkfencoding.h
 libwxnkf/utf16util.cpp
 libwxnkf/utf16util.h
 libwxnkf/utf8table.cpp
@@ -7287,9 +7466,6 @@ ChangeLog
 INSTALL
 Makefile.am
 Makefile.in
-Makefile.msw_x64.mk
-Makefile.osx.mk
-Makefile.unx.mk
 NEWS
 aclocal.m4
 config.guess
@@ -7374,19 +7550,6 @@ libwxnkf/libwxnkf/wxnkf.cpp
 libwxnkf/libwxnkf/wxnkfbaseconfig.h
 libwxnkf/libwxnkf/wxnkfencoding.cpp
 libwxnkf/libwxnkf/wxnkfencoding.h
-libwxnkf/src/flagset.cpp
-libwxnkf/src/flagset.h
-libwxnkf/src/utf16util.cpp
-libwxnkf/src/utf16util.h
-libwxnkf/src/utf8table.cpp
-libwxnkf/src/utf8table.h
-libwxnkf/src/util.cpp
-libwxnkf/src/util.h
-libwxnkf/src/wx/wxnkf.h
-libwxnkf/src/wxnkf.cpp
-libwxnkf/src/wxnkfbaseconfig.h
-libwxnkf/src/wxnkfencoding.cpp
-libwxnkf/src/wxnkfencoding.h
 ltmain.sh
 m4/libtool.m4
 m4/ltoptions.m4
@@ -7920,23 +8083,7 @@ Date:   2012-09-08
     構成とファイル名の変更
 
 Makefile
-include/AnchoredResponsePopup.h
-include/DataType.h
-include/ExtractBoardList.h
-include/JaneClone.h
-include/JaneCloneUtil.h
-include/MetakitAccessor.h
-include/SocketCommunication.h
-include/ThreadContentWindow.h
-include/VirtualBoardListCtrl.h
 libwxnkf/Makefile
-libwxnkf/include/flagset.h
-libwxnkf/include/utf16util.h
-libwxnkf/include/utf8table.h
-libwxnkf/include/util.h
-libwxnkf/include/wx/wxnkf.h
-libwxnkf/include/wxnkfbaseconfig.h
-libwxnkf/include/wxnkfencoding.h
 libwxnkf/src/flagset.h
 libwxnkf/src/utf16util.h
 libwxnkf/src/utf8table.h
@@ -7944,15 +8091,6 @@ libwxnkf/src/util.h
 libwxnkf/src/wx/wxnkf.h
 libwxnkf/src/wxnkfbaseconfig.h
 libwxnkf/src/wxnkfencoding.h
-src/AnchoredResponsePopup.cpp
-src/ExtractBoardList.cpp
-src/JaneClone.cpp
-src/JaneCloneUtil.cpp
-src/Main.cpp
-src/MetakitAccessor.cpp
-src/SocketCommunication.cpp
-src/ThreadContentWindow.cpp
-src/VirtualBoardListCtrl.cpp
 src/anchoredresponsepopup.cpp
 src/anchoredresponsepopup.hpp
 src/datatype.hpp
@@ -8473,22 +8611,11 @@ Date:   2012-08-15
 
 Makefile
 include/JaneCloneUtil.h
-libnkf/FlagSet.cpp
-libnkf/FlagSet.h
 libnkf/InputCodeList.cpp
 libnkf/InputCodeList.h
-libnkf/LibNKF.cpp
 libnkf/LibNKF.h
-libnkf/Makefile
-libnkf/NKFBaseConfig.h
 libnkf/NKFNativeEncoding.cpp
 libnkf/NKFNativeEncoding.h
-libnkf/UTF16Util.cpp
-libnkf/UTF16Util.h
-libnkf/UTF8Table.cpp
-libnkf/UTF8Table.h
-libnkf/Util.cpp
-libnkf/Util.h
 libwxnkf/Makefile
 libwxnkf/include/flagset.h
 libwxnkf/include/utf16util.h

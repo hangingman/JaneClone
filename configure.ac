@@ -2,10 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.67])
-AC_INIT([JaneClone], [1.1.5], [newserver002@gmail.com])
+AC_INIT([JaneClone], [1.1.5], [idiotpanzer@gmail.com])
 
 # SCM URL
-AC_SUBST(UPSTREAM_URL, [https://github.com/Hiroyuki-Nagata/JaneClone])
+AC_SUBST(UPSTREAM_URL, [https://github.com/hangingman/JaneClone])
 # Refering Debian Policy Version
 # -> http://www.debian.or.jp/community/devel/debian-policy-ja/policy.ja.html/
 AC_SUBST(DEB_STANDARDS_VERSION, [3.9.3])
