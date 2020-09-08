@@ -2399,17 +2399,16 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
 	       // ProxyCache
 	       if ( propMap.find(wxT("ID_NetworkPanelUseProxyCache")) != propMap.end())
 	       {
+		    // TODO: Proxyキャッシュとはなんだ
 		    bool useProxyCache = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxyCache")]);
-		    // TODO: (・_・)
-		    //request.setOpt(new curlpp::options::UserPwd(std::string(concat.mb_str())));
 	       }
 
 	       // PROXYを使用する設定
 	       if (io == SEND)
 	       {
 		    // 送信
-		    // wxT("ID_NetworkPanelProxySendAddr")	,/* Proxy送信用アドレス					*/
-		    // wxT("ID_NetworkPanelProxySendPort")	,/* Proxy送信用ポート					*/
+		    // Proxy送信用アドレス
+		    // Proxy送信用ポート
 		    if ( propMap.find(wxT("ID_NetworkPanelProxySendAddr")) != propMap.end() &&
 			 propMap.find(wxT("ID_NetworkPanelProxySendPort")) != propMap.end())
 		    {
@@ -2417,23 +2416,23 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
 			 const wxString port  = propMap[wxT("ID_NetworkPanelProxySendPort")];
 			 long p = 0;
 
-			 if ( proxy.IsWord() && port.IsNumber() && port.ToLong(&p, 10))
+			 if ( port.ToLong(&p, 10))
 			 {
+                              JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy送信: %s:%ld\n", proxy, p));
 			      request.setOpt(new curlpp::options::Proxy(std::string(proxy.mb_str())));
 			      request.setOpt(new curlpp::options::ProxyPort(p));
 			 }
 			 else
 			 {
-			      const wxString message = wxT("無効なProxy設定が無視されました");
-			      JaneCloneUiUtil::SendLoggingHelper(message);
+			      JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
 			 }
 		    }
 	       }
 	       else
 	       {
 		    // 受信
-		    // wxT("ID_NetworkPanelProxyReceiveAddr")	,/* Proxy受信用アドレス					*/
-		    // wxT("ID_NetworkPanelProxyReceivePort")	,/* Proxy受信用ポート					*/
+		    // Proxy受信用アドレス
+		    // Proxy受信用ポート
 		    if ( propMap.find(wxT("ID_NetworkPanelProxyReceiveAddr")) != propMap.end() &&
 			 propMap.find(wxT("ID_NetworkPanelProxyReceivePort")) != propMap.end())
 		    {
@@ -2441,15 +2440,15 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
 			 const wxString port  = propMap[wxT("ID_NetworkPanelProxyReceivePort")];
 			 long p = 0;
 
-			 if ( proxy.IsWord() && port.IsNumber() && port.ToLong(&p, 10) )
+			 if ( port.ToLong(&p, 10) )
 			 {
+                              JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy受信: %s:%ld\n", proxy, p));
 			      request.setOpt(new curlpp::options::Proxy(std::string(proxy.mb_str())));
 			      request.setOpt(new curlpp::options::ProxyPort(p));
 			 }
 			 else
 			 {
-			      const wxString message = wxT("無効なProxy設定が無視されました");
-			      JaneCloneUiUtil::SendLoggingHelper(message);
+			      JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
 			 }
 		    }
 	       }
