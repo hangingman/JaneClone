@@ -96,7 +96,7 @@ public:
       * @param  ファイル名
       * @return ダウンロードしたcsvファイルの保存先
       */
-     wxString DownloadShingetsuThread(const wxString& nodeHostname, 
+     wxString DownloadShingetsuThread(const wxString& nodeHostname,
 				      const wxString& title, const wxString& filename);
 #endif /** USE_SHINGETSU */
 
@@ -192,13 +192,7 @@ private:
      /**
       * 新規に板一覧情報を取得しに行く
       */
-     int DownloadBoardListNew(const wxString& outputPath,
-			      const wxString& headerPath);
-     /**
-      * 前回との差分を取得しに行く
-      */
-     int DownloadBoardListMod(const wxString& outputPath,
-			      const wxString& headerPath);
+     int DownloadBoardListNew(const wxString& outputPath, const wxString& headerPath);
      /**
       * 新規にスレッド一覧をダウンロードしてくるメソッド
       * @param gzipのダウンロード先パス
@@ -257,7 +251,7 @@ private:
       */
      int DownloadThreadPast(const wxString& gzipPath, const wxString& headerPath,
 			    const wxString& boardNameAscii, const wxString& origNumber,
-			    const wxString& hostName, const wxString& ext = wxT(".dat.gz"));     
+			    const wxString& hostName, const wxString& ext = wxT(".dat.gz"));
 
      /**
       * 通信ログに残っているHTTPレスポンスコードを取得する

@@ -56,7 +56,7 @@ void JaneCloneUtil::DecommpressFile(wxString & inputPath,
  * @param wxString& inputPath  読み込み元のパス
  * @param wxString& outputPath 出力先ファイルのパス
  */
-void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath, wxString & outputPath) 
+void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath, wxString & outputPath)
 {
      std::ifstream ifs(inputPath.mb_str());
      std::ofstream ofs(outputPath.mb_str());
@@ -149,13 +149,13 @@ size_t JaneCloneUtil::GetFileSize(const wxString& filePath) {
 }
 /**
  * アンカーで指定されたレスをファイルから読み取ってDOM形式にして送り返す
- * @param  const wxString& boardNameAscii	  板名の英語名	
+ * @param  const wxString& boardNameAscii	  板名の英語名
  * @param  const wxString& origNumber		  UNIXタイムベースのオリジナルな番号
  * @param  const wxString& resNumberStart	  取得するレスの番号(開始点)
  * @param  const wxString& resNumberEnd		  取得するレスの番号(終了点)
  * @return wxString	   取得したレスの内容
  */
-wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, const wxString& origNumber, 
+wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, const wxString& origNumber,
 					     const wxString& resNumberStart, const wxString& resNumberEnd) {
 
      // ファイルパスの組み立てとファイルの有無確認
@@ -168,7 +168,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
      // 入力文字列の検証
      int start = wxAtoi(resNumberStart);
      if ( start < 0 || 1000 < start ) return wxEmptyString;
-     
+
      int end   = 0;
      if (resNumberEnd != wxEmptyString) {
 	  end = wxAtoi(resNumberEnd);
@@ -217,7 +217,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
 	       wxString str  = arraystr[i];
 	       lumpOfHTML += wxT("<dt>");
 	       lumpOfHTML += wxString::Format(wxT("%d"), curnumber);
-	       
+
 	       if (regexThread.IsValid() && curnumber > 1) {
 		    // >>1 以外の処理
 		    if (regexThread.Matches(str)) {
@@ -281,7 +281,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
 	  /**
 	   * 単独レスをポップアップさせる
 	   */
-	  
+
 	  wxTextFile datFile;
 	  datFile.Open(filePath, wxConvUTF8);
 	  wxString str;
@@ -370,7 +370,7 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
 	       lumpOfHTML += res;
 	  }
      }
-     
+
      // HTMLソースを加える
      lumpOfHTML += HTML_FOOTER;
 
@@ -379,13 +379,13 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
 /**
  * アンカーで指定されたレスをファイルから読み取ってレスだけを返す
  *
- * @param  const wxString& boardNameAscii	  板名の英語名	
+ * @param  const wxString& boardNameAscii	  板名の英語名
  * @param  const wxString& origNumber		  UNIXタイムベースのオリジナルな番号
  * @param  const long	   resNumber		  取得するレスの番号
  * @param  const bool	   useTriangularBrackets  true = 返り値に'>'がつく, false = '>'がつかない
  * @return wxString	   取得したレスの内容
  */
-wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii, const wxString& origNumber, 
+wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii, const wxString& origNumber,
 						 const long resNumber, const bool useTriangularBrackets) {
 
      // ファイルパスの組み立てとファイルの有無確認
@@ -430,10 +430,10 @@ wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii,
      }
 
      wxString res = wxEmptyString;
-     
+
      if (useTriangularBrackets) {
 	  res = wxT(">");
-     }     
+     }
 
      // 正規表現でレスの内容を取り出してメモリに展開する
 
@@ -472,12 +472,12 @@ wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii,
 }
 /**
  * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
- * @param  const wxString& boardNameAscii	  板名の英語名	
+ * @param  const wxString& boardNameAscii	  板名の英語名
  * @param  const wxString& origNumber		  UNIXタイムベースのオリジナルな番号
  * @param  const wxString& extractId		  抽出対象のID
  * @return wxString	   取得したレスの内容
  */
-wxString JaneCloneUtil::FindResponseById(const wxString& boardNameAscii, const wxString& origNumber, 
+wxString JaneCloneUtil::FindResponseById(const wxString& boardNameAscii, const wxString& origNumber,
 					 const wxString& extractId) {
 
      // ファイルパスの組み立てとファイルの有無確認
@@ -512,7 +512,7 @@ wxString JaneCloneUtil::FindResponseById(const wxString& boardNameAscii, const w
 
 	  int curnumber = i + 1;
 	  wxString str  = datFile[i];
-	       
+
 	  if (regexThread.IsValid() && curnumber > 1 && regexThread.Matches(str) && regexThread.GetMatch(str, 3).Contains(extractId) ) {
 	       // >>1 以外の処理
 	       // マッチさせたそれぞれの要素を取得する
@@ -597,7 +597,7 @@ wxString JaneCloneUtil::FindResponseById(const wxString& boardNameAscii, const w
      }
 
      datFile.Close();
-     
+
      // HTMLソースを加える
      lumpOfHTML += HTML_FOOTER;
 
@@ -624,9 +624,9 @@ void JaneCloneUtil::CloseWxString(void* context) {
  */
 bool JaneCloneUtil::DDNodeHasTarget(const htmlNodePtr dd, const wxString& target)
 {
-     for (htmlNodePtr ptr = dd->children; ptr != NULL; ptr = ptr->next) 
+     for (htmlNodePtr ptr = dd->children; ptr != NULL; ptr = ptr->next)
      {
-	  if (ptr->type == XML_ELEMENT_NODE && 
+	  if (ptr->type == XML_ELEMENT_NODE &&
 	      xmlStrcasecmp(ptr->name, (const xmlChar*) "a") == 0)
 	  {
 	       xmlAttr* attribute = ptr->properties;
@@ -645,8 +645,8 @@ bool JaneCloneUtil::DDNodeHasTarget(const htmlNodePtr dd, const wxString& target
 			      return true;
 			 }
 		    }
-					
-		    xmlFree(value); 
+
+		    xmlFree(value);
 		    attribute = attribute->next;
 	       }
 	  }
@@ -664,7 +664,7 @@ bool JaneCloneUtil::DDNodeHasTarget(const htmlNodePtr dd, const wxString& target
 wxString JaneCloneUtil::FindResponseByIndex(const wxString& rawHtml, const wxString& extractIndex) {
 
      const std::string temporary = std::string(rawHtml.mb_str());
-     const htmlDocPtr docPtr = htmlReadMemory(temporary.c_str(), temporary.size(), "", "utf-8", 
+     const htmlDocPtr docPtr = htmlReadMemory(temporary.c_str(), temporary.size(), "", "utf-8",
 					      HTML_PARSE_RECOVER|HTML_PARSE_NOERROR|HTML_PARSE_NOWARNING);
 
      // HTMLのDOM形式にする
@@ -676,7 +676,7 @@ wxString JaneCloneUtil::FindResponseByIndex(const wxString& rawHtml, const wxStr
 	  const htmlNodePtr body = root->children->next;
 	  for (htmlNodePtr node = body->children; node != NULL; node = node->next)
 	  {
-	       if (node->type == XML_ELEMENT_NODE && 
+	       if (node->type == XML_ELEMENT_NODE &&
 		   xmlStrcasecmp(node->name, (const xmlChar*) "dd") == 0)
 	       {
 		    const htmlNodePtr dd = node->children;
@@ -807,7 +807,7 @@ wxString JaneCloneUtil::AddAnchorTag(wxString& responseText) {
 	  return responseText;
      }
 
-     return result;     
+     return result;
 }
 /**
  * プレインテキスト内に2chのIDがあれば<a>タグをつける
@@ -840,18 +840,18 @@ wxString JaneCloneUtil::AddID(const wxString& responseText) {
 	       result += tmp.SubString(0, start - 1);
 
 #ifdef USE_WX_WEBVIEW /** ID link and javascript function */
-	       result += wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\">ID</a>:%s"), 
+	       result += wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\">ID</a>:%s"),
 					  id.c_str(), id.c_str(), id.c_str());
 
-	       result += wxString::Format(wxT(" [%d/yyy%syyy] "), 
+	       result += wxString::Format(wxT(" [%d/yyy%syyy] "),
 					  hashmap[id], id.c_str());
 #else          /** ID link and javascript function */
-	       result += wxString::Format(wxT("<a href=\"#_%s\">ID</a>:%s"), 
+	       result += wxString::Format(wxT("<a href=\"#_%s\">ID</a>:%s"),
 					  id.c_str(), id.c_str());
 
-	       result += wxString::Format(wxT(" [%d/yyy%syyy] "), 
+	       result += wxString::Format(wxT(" [%d/yyy%syyy] "),
 					  hashmap[id], id.c_str());
-#endif	       
+#endif
 	  }
 	  // 残りをくっつける
 	  result += tmp;
@@ -866,36 +866,36 @@ wxString JaneCloneUtil::AddID(const wxString& responseText) {
 		       // このへんのコード汚い！
 
 #ifdef USE_WX_WEBVIEW /** ID link and javascript function */
-		       result.Replace(wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\">ID</a>"), 
-						       it->first.c_str(), 
+		       result.Replace(wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\">ID</a>"),
+						       it->first.c_str(),
 						       it->first.c_str()),
 
 				      wxString::Format(wxT("<a href=\"#_%s\" onmouseover=\"popUp('%s');\" onmouseout=\"hidePop();\">"
-							   L"<font color=\"#ff0000\">ID</font></a>"), 
-						       it->first.c_str(), 
+							   L"<font color=\"#ff0000\">ID</font></a>"),
+						       it->first.c_str(),
 						       it->first.c_str()),
 				      true);
 #else                /** ID link and javascript function */
-		       result.Replace(wxString::Format(wxT("<a href=\"#_%s\">ID</a>"), 
-						       it->first.c_str(), 
+		       result.Replace(wxString::Format(wxT("<a href=\"#_%s\">ID</a>"),
+						       it->first.c_str(),
 						       it->first.c_str()),
 
 				      wxString::Format(wxT("<a href=\"#_%s\">"
-							   L"<font color=\"#ff0000\">ID</font></a>"), 
-						       it->first.c_str(), 
+							   L"<font color=\"#ff0000\">ID</font></a>"),
+						       it->first.c_str(),
 						       it->first.c_str()),
 				      true);
 
 #endif
 	       }
 	  }
-	  
+
 
      } else {
 	  return responseText;
      }
 
-     return result;     
+     return result;
 }
 
 /**
@@ -905,7 +905,7 @@ wxString JaneCloneUtil::AddColorAnchoredID(const wxString& html)
 {
 
      const std::string temporary = std::string(html.mb_str());
-     const htmlDocPtr docPtr = htmlReadMemory(temporary.c_str(), temporary.size(), "", "utf-8", 
+     const htmlDocPtr docPtr = htmlReadMemory(temporary.c_str(), temporary.size(), "", "utf-8",
 					      HTML_PARSE_RECOVER|HTML_PARSE_NOERROR|HTML_PARSE_NOWARNING);
 
      WX_DECLARE_STRING_HASH_MAP( int, ExtractIdHash );
@@ -917,7 +917,7 @@ wxString JaneCloneUtil::AddColorAnchoredID(const wxString& html)
 	  const htmlNodePtr body = root->children->next;
 	  for (htmlNodePtr node = body->children; node != NULL; node = node->next)
 	  {
-	       if (node->type == XML_ELEMENT_NODE && 
+	       if (node->type == XML_ELEMENT_NODE &&
 		   xmlStrcasecmp(node->name, (const xmlChar*) "dd") == 0)
 	       {
 		    const htmlNodePtr dd = node->children;
@@ -926,9 +926,9 @@ wxString JaneCloneUtil::AddColorAnchoredID(const wxString& html)
 			node->type == XML_ELEMENT_NODE &&
 			xmlStrcasecmp(dd->name, (const xmlChar*) "table") == 0)
 		    {
-			 for (htmlNodePtr ptr = dd->children; ptr != NULL; ptr = ptr->next) 
+			 for (htmlNodePtr ptr = dd->children; ptr != NULL; ptr = ptr->next)
 			 {
-			      if (ptr->type == XML_ELEMENT_NODE && 
+			      if (ptr->type == XML_ELEMENT_NODE &&
 				  xmlStrcasecmp(ptr->name, (const xmlChar*) "a") == 0)
 			      {
 				   xmlAttr* attribute = ptr->properties;
@@ -950,8 +950,8 @@ wxString JaneCloneUtil::AddColorAnchoredID(const wxString& html)
 						  hashmap[number] = hashmap[number] + 1; // hashmap[number]++ と書くとclangでは最適化されて思うように動かない
 					     }
 					}
-					
-					xmlFree(value); 
+
+					xmlFree(value);
 					attribute = attribute->next;
 				   }
 			      }
@@ -975,7 +975,7 @@ wxString JaneCloneUtil::AddColorAnchoredID(const wxString& html)
 
 		    const wxString index = regexIndex.GetMatch(tmp, 1);
 		    wxString color = wxEmptyString;
-		    
+
 		    switch (hashmap[index])
 		    {
 		    case 0:
@@ -988,7 +988,7 @@ wxString JaneCloneUtil::AddColorAnchoredID(const wxString& html)
 		    case 4:
 			 color = wxT("#ff00ff");
 			 break;
-			 
+
 		    case 5:
 			 color = wxT("#ff0000");
 			 break;
@@ -1084,35 +1084,35 @@ wxString JaneCloneUtil::GetTimeNow() {
  */
 std::string JaneCloneUtil::UrlEncode(const std::string& str) {
 
-     std::string retStr;  
-     
+     std::string retStr;
+
      // FIXME: See http://tools.ietf.org/html/rfc1866#section-8.2.1
      //
      // legitimate "application/x-www-form-urlencoded"
      // use white space is '+', not '%20'
      //
-     std::string::size_type length = str.size();   
-     for ( std::string::size_type i = 0 ; i < length ; i++ )  
-     {  
-	  if (( '0' <= str[ i ] && str[ i ] <= '9' ) ||  
-	      ( 'a' <= str[ i ] && str[ i ] <= 'z' ) ||  
-	      ( 'A' <= str[ i ] && str[ i ] <= 'Z' ) ||  
-	      str[ i ] == '-'   || str[ i ] == '.'   ||  
-	      str[ i ] == '_'   || str[ i ] == '~' )  
-	  {  
-	       // 数字/アルファベット/[-][.][_][~]はそのまま  
-	       retStr += str[ i ];  
-	  }  
-	  else  
-	  {  
+     std::string::size_type length = str.size();
+     for ( std::string::size_type i = 0 ; i < length ; i++ )
+     {
+	  if (( '0' <= str[ i ] && str[ i ] <= '9' ) ||
+	      ( 'a' <= str[ i ] && str[ i ] <= 'z' ) ||
+	      ( 'A' <= str[ i ] && str[ i ] <= 'Z' ) ||
+	      str[ i ] == '-'   || str[ i ] == '.'   ||
+	      str[ i ] == '_'   || str[ i ] == '~' )
+	  {
+	       // 数字/アルファベット/[-][.][_][~]はそのまま
+	       retStr += str[ i ];
+	  }
+	  else
+	  {
 	       retStr += '%';
 	       std::ostringstream stream;
 	       stream << std::hex << std::uppercase << static_cast<int>(str[i] & 0xff);
 	       retStr += stream.str();
-	  }  
-     }  
-  
-     return retStr;  
+	  }
+     }
+
+     return retStr;
 }
 /**
  * 文字列中の実体参照文字を変換する
@@ -1151,6 +1151,10 @@ wxString JaneCloneUtil::DetermineContentType(const wxString& href) {
 }
 /**
  * URIから各パラメーターを抜き取る
+ * protocol: http|https|ttp|ftp
+ * hostname: maru.2ch.net
+ * port: 8080
+ * path: /menu.html
  */
 bool JaneCloneUtil::SubstringURI(const wxString& uri, PartOfURI* partOfUri) {
 
@@ -1169,7 +1173,7 @@ bool JaneCloneUtil::SubstringURI(const wxString& uri, PartOfURI* partOfUri) {
 }
 /**
  * MD5を生成する
- */     
+ */
 wxString JaneCloneUtil::GenerateMD5String(const wxString& uri) {
 
      wxString result;
@@ -1224,8 +1228,8 @@ wxString JaneCloneUtil::CalcThreadMomentum(wxString& itemResponse, wxString& ite
 void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThreadMap, URLvsBoardName& boardInfo) {
 
      // ファイルのパスを設定する
-     wxString outputPath = ::wxGetHomeDir() 
-	  + wxFILE_SEP_PATH 
+     wxString outputPath = ::wxGetHomeDir()
+	  + wxFILE_SEP_PATH
 	  + JANECLONE_DIR
 	  + wxFILE_SEP_PATH
 	  + wxT("dat")
@@ -1250,12 +1254,12 @@ void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThrea
      // テキストファイルの終端まで読み込む
      for (wxString line = datfile.GetFirstLine(); !datfile.Eof(); line = datfile.GetNextLine()) {
 
-	  if (line.Contains(_("&"))) { 
+	  if (line.Contains(_("&"))) {
 	       line = ConvCharacterReference(line);
 	  }
 
 	  ThreadList threadInfoList;
-	  
+
 	  // 番号
 	  threadInfoList.number = loopNumber;
 	  // 板名
@@ -1290,7 +1294,7 @@ void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThrea
 
 	  // 項目を追加する
 	  oldThreadMap.insert(std::map<wxString, ThreadList>::value_type(threadInfoList.oid, threadInfoList));
-	  
+
 	  // ループ変数をインクリメント
 	  ++loopNumber;
      }
@@ -1375,7 +1379,7 @@ void JaneCloneUtil::DeleteJaneClonePropertyEntry(const wxString& key) {
 		       wxT("コンフィグファイル"),
 		       wxICON_ERROR);
      }
-     
+
      config->Flush();
      delete config;
 }
@@ -1404,9 +1408,9 @@ wxString JaneCloneUtil::CreateShingetsuThreadListFilePath(const wxString& nodeHo
      delete uri;
 
      wxString shingetsuFilePath = ::wxGetHomeDir()
-	  + wxFILE_SEP_PATH 
-	  + JANECLONE_DIR 
-	  + wxFILE_SEP_PATH 
+	  + wxFILE_SEP_PATH
+	  + JANECLONE_DIR
+	  + wxFILE_SEP_PATH
 	  + wxT("shingetsu")
 	  + wxFILE_SEP_PATH
 	  + hostname
@@ -1492,7 +1496,7 @@ wxString JaneCloneUtil::ProcessRestResponse(wxString& threadRecord, int number) 
 	       // マッチさせたそれぞれの要素を取得する
 	       default_nanashi = regexThread.GetMatch(threadRecord, 1);
 	       mail = regexThread.GetMatch(threadRecord, 2);
-	       day_and_ID = regexThread.GetMatch(threadRecord, 3);	       
+	       day_and_ID = regexThread.GetMatch(threadRecord, 3);
 	       // レスの最初に<table>タグを入れる
 	       res.Append(wxT("<table border=0 id=\"") + num + wxT("\">"));
 	       res.Append(regexThread.GetMatch(threadRecord, 4));
@@ -1560,7 +1564,7 @@ void JaneCloneUtil::SplitStdString(std::vector<std::string>& theStringVector,	/*
 size_t JaneCloneUtil::GetFileNamesRecursive(const wxDir& targetDir, wxArrayString& result)
 {
      size_t ret = 1;
-     
+
      JaneCloneDirTraverser* traverser = new JaneCloneDirTraverser();
      targetDir.Traverse(*traverser);
      traverser->GetResultFiles(result);
