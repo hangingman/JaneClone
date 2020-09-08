@@ -45,9 +45,7 @@ janeclone_SOURCES 	= extractboardlist.hpp        \
 		          janecloneuiutil.cpp         \
 		          janecloneuiutil.hpp         \
 			  ../babel/babel.cpp          \
-			  ../babel/babel.h            \
-			  ../json11/json11.cpp	      \
-			  ../json11/json11.hpp
+			  ../babel/babel.h
 
 if USE_WX_WEBVIEW
 # wxWebView support
