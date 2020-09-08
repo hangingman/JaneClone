@@ -1,7 +1,7 @@
 ﻿/**
  * janecloneimageviewer.hpp -  janeclone's plain imageviewer
  *
- * Copyright (C) 2013-2014 Hiroyuki Nagata <newserver002@gmail.com>
+ * Copyright (C) 2013-2014 Hiroyuki Nagata <idiotpanzer@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  * Contributor:
- *	Hiroyuki Nagata <newserver002@gmail.com>
+ *	Hiroyuki Nagata <idiotpanzer@gmail.com>
  */
 #ifndef JANECLONEIMAGEVIEWER_HPP_
 #define JANECLONEIMAGEVIEWER_HPP_

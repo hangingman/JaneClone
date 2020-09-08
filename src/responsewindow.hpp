@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  * Contributor:
- *	Hiroyuki Nagata <newserver002@gmail.com>
+ *	Hiroyuki Nagata <idiotpanzer@gmail.com>
  */
 
 #ifndef RESPONSEWINDOW_HPP_
