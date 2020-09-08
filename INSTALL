@@ -27,7 +27,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
 
  [A.Windows(MinGW32)]
  A-1. 依存するライブラリのインストール
-  
+
   ライブラリは動的リンクにて作成します。
   必要なライブラリはwxWidgets-3.0, libxml2, zlib, libcurlです.
   MinGW環境はmsys2(http://sourceforge.net/projects/msys2/)を推奨します.
@@ -35,9 +35,9 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   [msys2のインストール]
   http://sourceforge.net/projects/msys2/files/Base/
   より、環境にあったものをダウンロードしてください。
-  64BitOSならば64bit版を落としておきましょう。(64Bit→x86_64、32Bit→i686です) 
+  64BitOSならば64bit版を落としておきましょう。(64Bit→x86_64、32Bit→i686です)
   その後インストーラよりインストールすると、c:\にフォルダができてます。(64Bitならmsys64になります)
-   
+
   その中にあるmingw32_shell.batを動かしてシェルが動けばＯＫです。
   まずは
 
@@ -81,9 +81,9 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   [msys2のインストール]
   http://sourceforge.net/projects/msys2/files/Base/
   より、環境にあったものをダウンロードしてください。
-  64BitOSならば64bit版を落としておきましょう。(64Bit→x86_64、32Bit→i686です) 
+  64BitOSならば64bit版を落としておきましょう。(64Bit→x86_64、32Bit→i686です)
   その後インストーラよりインストールすると、c:\にフォルダができてます。(64Bitならmsys64になります)
-   
+
   その中にあるmingw64_shell.batを動かしてシェルが動けばＯＫです。
   まずは
 
@@ -132,7 +132,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
 
  [C.Windows(VC++)]
  C-1. 環境構築
- 
+
    [ソースコードのチェックアウト]
    以下のサイトからgitをダウンロードしてインストールしてください。設定などはご自身で調査をお願いします。
    インストールできたら「Git Bash」を起動して、以下のコマンドを実行してください。
@@ -205,11 +205,11 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   また,Travis環境( Ubuntu 12.0.4 x86_64の環境)で常にパッケージビルドを行っています.
 
   // JaneClone本体のビルド用
-  # apt-get install debhelper autotools-dev libatk1.0-0 libc6		\ 
+  # apt-get install debhelper autotools-dev libatk1.0-0 libc6		\
   libcairo2 libdbus-1-3 libfontconfig1 libfreetype6 libgcc1   		\
   libglib2.0-0 libgtk2.0-0 libpango1.0-0 libstdc++6 libwxbase2.8-0 	\
   libwxgtk2.8-0 libxml2-dev autoconf automake libtool devscripts        \
-  fonts-mona cdbs
+  fonts-mona cdbs libwxsqlite3-3.0-dev
 
   // ソースをダウンロードするため
   # apt-get install git
@@ -296,5 +296,5 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
   $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
   $ cd /path/to/JaneClone
   $ ./bootstrap
-  $ ./configure CC='clang' CXX='clang++ -std=c++11 -stdlib=libc++'  
+  $ ./configure CC='clang' CXX='clang++ -std=c++11 -stdlib=libc++'
   $ make
