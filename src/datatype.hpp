@@ -33,6 +33,8 @@
 #include <wx/regex.h>
 #include <wx/hashmap.h>
 #include <wx/filefn.h>
+#include <wx/stdpaths.h>
+#include <wx/filename.h>
 
 // マクロ置換用マクロ
 #define XSTR(x) #x
@@ -58,9 +60,9 @@
 
 // 実行ファイルの拡張子
 #ifdef __WXMSW__
-  #define wxExt wxT(".exe") 
+  #define wxExt wxT(".exe")
 #else
-  #define wxExt wxT("") 
+  #define wxExt wxT("")
 #endif
 
 /**
@@ -101,9 +103,9 @@
 #define SHINGETU_NODE_PANEL    wxT("m_shingetsu_tree_panel")
 #define BOARD_TREE_SEARCH      wxT("board_tree_search")
 #define THREADLIST_SEARCH      wxT("thread_list_search")
-#define FAVS_TREE              wxT("favs_tree")   
+#define FAVS_TREE              wxT("favs_tree")
 #define NOW_READ_TREE          wxT("now_read_tree")
-#define FAVS_TREE_SEARCH       wxT("favs_tree_search") 	
+#define FAVS_TREE_SEARCH       wxT("favs_tree_search")
 #define NOW_READ_TREE_SEARCH   wxT("now_read_tree_seach")
 #define SHINGETU_NODE_SEARCH   wxT("m_shingetsu_tree_search")
 #define LOG_WINDOW             wxT("m_logCtrl")
@@ -119,18 +121,22 @@
 #endif
 
 // バージョン
-#ifdef _MSC_VER
-   static const wxString janecloneVersion = wxT("Unknown"); // FIXME: Preprocessor cannot read PACKAGE_VERSION ??
-#else
-   static const wxString janecloneVersion = wxT( PACKAGE_VERSION );
-#endif
+static const wxString janecloneVersion = wxT( PACKAGE_VERSION );
+
+// 実行されているバイナリのパス
+inline wxString GetJcExecutablePath()
+{
+     wxFileName f(wxStandardPaths::Get().GetExecutablePath());
+     wxString appPath(f.GetPath());
+     return appPath;
+}
 
 // リソースファイルのパス
 #if defined (__WXMSW__) || defined(__WXGTK__)
    #ifdef DEBIAN_PACKAGE_BUILD
       #define RESOURCE_PATH PREFIX_DIR "/share/pixmaps/janeclone/"
    #else
-      #define RESOURCE_PATH "rc/"
+      #define RESOURCE_PATH GetJcExecutablePath() + wxFILE_SEP_PATH + "rc"
    #endif
 #elif defined(__WXMAC__)
    #define RESOURCE_PATH "JaneClone.app/Contents/Resources/"
@@ -141,51 +147,51 @@ static const wxString jsDir              = wxT("script/");
 static const wxString jsPath             = wxT("script/embedded.js");
 
 // ライセンスのデフォルトのパス
-static const wxString licencePath        = wxT(RESOURCE_PATH L"gpl-2.0.txt");
+static const wxString licencePath        = RESOURCE_PATH + wxFILE_SEP_PATH + "gpl-2.0.txt";
 
 // 各ボタンに貼り付けられる画像
-static const wxString autoReloadImg      = wxT(RESOURCE_PATH L"appointment-new.png");
-static const wxString redResExtractImg   = wxT(RESOURCE_PATH L"system-search.png");
-static const wxString refreshImg         = wxT(RESOURCE_PATH L"view-refresh.png");
-static const wxString scrollToNewResImg	 = wxT(RESOURCE_PATH L"go-bottom.png");
-static const wxString stopImg		 = wxT(RESOURCE_PATH L"dialog-error.png");
-static const wxString resExtractImg	 = wxT(RESOURCE_PATH L"edit-find-replace.png");
-static const wxString newThreadImg	 = wxT(RESOURCE_PATH L"go-last.png");
-static const wxString goNextImg          = wxT(RESOURCE_PATH L"go-next.png");
-static const wxString responseImg	 = wxT(RESOURCE_PATH L"page-edit.png");
-static const wxString bookMarkImg	 = wxT(RESOURCE_PATH L"bookmark-new.png");
-static const wxString deleteLogImg	 = wxT(RESOURCE_PATH L"edit-delete.png");
-static const wxString closeImg		 = wxT(RESOURCE_PATH L"emblem-unreadable.png");
-static const wxString normalSearchImg	 = wxT(RESOURCE_PATH L"system-search.png");
-static const wxString hideSearchBarImg	 = wxT(RESOURCE_PATH L"emblem-unreadable.png");
-static const wxString forwardImg	 = wxT(RESOURCE_PATH L"go-down.png");
-static const wxString backwardImg	 = wxT(RESOURCE_PATH L"go-up.png");
-static const wxString regexImg		 = wxT(RESOURCE_PATH L"emblem-regex.png");
+static const wxString autoReloadImg      = RESOURCE_PATH + wxFILE_SEP_PATH + "appointment-new.png";
+static const wxString redResExtractImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "system-search.png";
+static const wxString refreshImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "view-refresh.png";
+static const wxString scrollToNewResImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "go-bottom.png";
+static const wxString stopImg		 = RESOURCE_PATH + wxFILE_SEP_PATH + "dialog-error.png";
+static const wxString resExtractImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "edit-find-replace.png";
+static const wxString newThreadImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "go-last.png";
+static const wxString goNextImg		 = RESOURCE_PATH + wxFILE_SEP_PATH + "go-next.png";
+static const wxString responseImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "page-edit.png";
+static const wxString bookMarkImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "bookmark-new.png";
+static const wxString deleteLogImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "edit-delete.png";
+static const wxString closeImg		 = RESOURCE_PATH + wxFILE_SEP_PATH + "emblem-unreadable.png";
+static const wxString normalSearchImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "system-search.png";
+static const wxString hideSearchBarImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "emblem-unreadable.png";
+static const wxString forwardImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "go-down.png";
+static const wxString backwardImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "go-up.png";
+static const wxString regexImg		 = RESOURCE_PATH + wxFILE_SEP_PATH + "emblem-regex.png";
 // ツールバー用アイコン
-static const wxString sideTreeImg        = wxT(RESOURCE_PATH L"application-side-tree.png");
-static const wxString twoPaneWinImg	 = wxT(RESOURCE_PATH L"application-tile-horizontal.png");
-static const wxString thrPaneWinImg	 = wxT(RESOURCE_PATH L"view-choose.png");
-static const wxString thrColumnWinImg	 = wxT(RESOURCE_PATH L"view-file-columns.png");
-static const wxString configImg		 = wxT(RESOURCE_PATH L"configure-2.png");
-static const wxString logSearchImg	 = wxT(RESOURCE_PATH L"system-search-5.png");
-static const wxString helpImg		 = wxT(RESOURCE_PATH L"help-browser.png");
-// スレッド一覧リスト用画像 
-static const wxString threadCheckImg	 = wxT(RESOURCE_PATH L"dialog-accept.png");
-static const wxString threadAddImg	 = wxT(RESOURCE_PATH L"edit-add-3.png");
-static const wxString threadDropImg	 = wxT(RESOURCE_PATH L"go-down-4.png");
-static const wxString threadNewImg	 = wxT(RESOURCE_PATH L"download-3.png");
+static const wxString sideTreeImg        = RESOURCE_PATH + wxFILE_SEP_PATH + "application-side-tree.png";
+static const wxString twoPaneWinImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "application-tile-horizontal.png";
+static const wxString thrPaneWinImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "view-choose.png";
+static const wxString thrColumnWinImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "view-file-columns.png";
+static const wxString configImg		 = RESOURCE_PATH + wxFILE_SEP_PATH + "configure-2.png";
+static const wxString logSearchImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "system-search-5.png";
+static const wxString helpImg		 = RESOURCE_PATH + wxFILE_SEP_PATH + "help-browser.png";
+// スレッド一覧リスト用画像
+static const wxString threadCheckImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "dialog-accept.png";
+static const wxString threadAddImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "edit-add-3.png";
+static const wxString threadDropImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "go-down-4.png";
+static const wxString threadNewImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "download-3.png";
 // スレタブ用画像
-static const wxString threadTabNewImg	 = wxT(RESOURCE_PATH L"document-new-7.png");
-static const wxString threadTabAddImg	 = wxT(RESOURCE_PATH L"document-new-8.png");
-static const wxString threadTabDrpImg	 = wxT(RESOURCE_PATH L"document-close-4.png");
+static const wxString threadTabNewImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "document-new-7.png";
+static const wxString threadTabAddImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "document-new-8.png";
+static const wxString threadTabDrpImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "document-close-4.png";
 // ツールバー用画像
-static const wxString folderImg          = wxT(RESOURCE_PATH L"folder.png");
-static const wxString textHtmlImg        = wxT(RESOURCE_PATH L"text-html.png");
+static const wxString folderImg          = RESOURCE_PATH + wxFILE_SEP_PATH + "folder.png";
+static const wxString textHtmlImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "text-html.png";
 // スレッド上のデフォルトの画像アイコン
-static const wxString defaultIconImg     = wxT(RESOURCE_PATH L"image-x-generic.png");
-static const wxString yahooIconImg       = wxT(RESOURCE_PATH L"yahoo.png"); 
-static const wxString googleIconImg      = wxT(RESOURCE_PATH L"google.png"); 
-static const wxString amazonIconImg      = wxT(RESOURCE_PATH L"amazon.png"); 
+static const wxString defaultIconImg     = RESOURCE_PATH + wxFILE_SEP_PATH + "image-x-generic.png";
+static const wxString yahooIconImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "yahoo.png";
+static const wxString googleIconImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "google.png";
+static const wxString amazonIconImg	 = RESOURCE_PATH + wxFILE_SEP_PATH + "amazon.png";
 
 
 /**
@@ -201,7 +207,7 @@ typedef struct
 } URLvsBoardName;
 
 // スレッド一覧用のクラス
-typedef struct 
+typedef struct
 {
      // キー値(ホスト名にこの番号をつけることでスレッドのURLになる)
      wxString oid;
@@ -228,7 +234,7 @@ typedef struct
 } ThreadList;
 
 // 2chの板名(ascii)と固有番号を対応させて保存するクラス
-typedef struct 
+typedef struct
 {
      // スレッドタイトル
      wxString title;
@@ -239,7 +245,7 @@ typedef struct
 } ThreadInfo;
 
 // 書き込みを行う際の投稿内容
-typedef struct 
+typedef struct
 {
      wxString name;
      wxString mail;
@@ -247,7 +253,7 @@ typedef struct
 } PostContent;
 
 // 画像をダウンロードした後の結果
-typedef struct 
+typedef struct
 {
      wxString imagePath; // 画像ファイルのパス
      wxString imageURL;  // 画像ファイルのURL
@@ -258,7 +264,7 @@ typedef struct
 } DownloadImageResult;
 
 // URIを分解した時の各要素
-typedef struct 
+typedef struct
 {
      wxString protocol;
      wxString hostname;
@@ -267,7 +273,7 @@ typedef struct
 } PartOfURI;
 
 // スキン使用時の各種情報
-typedef struct 
+typedef struct
 {
      wxString footer; // Footer.html
      wxString header; // Header.html
@@ -278,7 +284,7 @@ typedef struct
 } SkinInfo;
 
 // ダウンロードした画像情報
-typedef struct 
+typedef struct
 {
      wxString fileName;     // URLを含んだファイル名    ex) http://hogehoge/donwload0x0x.jpg
      wxString uuidFileName; // UUIDを配られたファイル名 ex) XXXXXXXXXXXXXXXX.jpg
@@ -321,7 +327,7 @@ static const wxString FAIL_TO_POST = wxT("<html><head><meta http-equiv=\"Content
 			charset=UTF-8\"><title></title></head><body><span>レスの投稿に失敗しました</span></body></html>");
 
 // 読み込みに失敗した場合に表示するページ
-static const wxString FAIL_TO_READ_PAGE = 
+static const wxString FAIL_TO_READ_PAGE =
      wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"><title></title></head><body><span>ファイルの読み込みに失敗しました・リロードしてみてください</span></body></html>");
 
 // フッター部分にあたるHTML
