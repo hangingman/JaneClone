@@ -107,7 +107,7 @@ public:
       * @param wxString& outputPath 出力先ファイルのパス
       */
      static void ConvertEUCJPToUTF8(wxString& inputPath, wxString& outputPath);
-	
+
      /**
       * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
       */
@@ -122,33 +122,33 @@ public:
      static size_t GetFileSize(const wxString& filePath);
      /**
       * アンカーで指定されたレスをファイルから読み取ってDOM形式にして送り返す
-      * @param  const wxString& boardNameAscii         板名の英語名  
+      * @param  const wxString& boardNameAscii         板名の英語名
       * @param  const wxString& origNumber             UNIXタイムベースのオリジナルな番号
       * @param  const wxString& resNumberStart         取得するレスの番号(開始点)
       * @param  const wxString& resNumberEnd           取得するレスの番号(終了点)
       * @return wxString        取得したレスの内容
       */
-     static wxString FindAnchoredResponse(const wxString& boardNameAscii, const wxString& origNumber, 
+     static wxString FindAnchoredResponse(const wxString& boardNameAscii, const wxString& origNumber,
 					  const wxString& resNumberStart, const wxString& resNumberEnd=wxEmptyString);
      /**
       * アンカーで指定されたレスをファイルから読み取ってレスだけを返す
       *
-      * @param  const wxString& boardNameAscii         板名の英語名  
+      * @param  const wxString& boardNameAscii         板名の英語名
       * @param  const wxString& origNumber             UNIXタイムベースのオリジナルな番号
       * @param  const long      resNumber              取得するレスの番号
       * @param  const bool      useTriangularBrackets  true = 返り値に'>'がつく, false = '>'がつかない
       * @return wxString        取得したレスの内容
       */
-     static wxString FindAnchoredResponseText(const wxString& boardNameAscii, const wxString& origNumber, 
+     static wxString FindAnchoredResponseText(const wxString& boardNameAscii, const wxString& origNumber,
 					      const long resNumber, const bool useTriangularBrackets=true);
      /**
       * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
-      * @param  const wxString& boardNameAscii         板名の英語名  
+      * @param  const wxString& boardNameAscii         板名の英語名
       * @param  const wxString& origNumber             UNIXタイムベースのオリジナルな番号
       * @param  const wxString& extractId              抽出対象のID
       * @return wxString        取得したレスの内容
       */
-     static wxString FindResponseById(const wxString& boardNameAscii, const wxString& origNumber, 
+     static wxString FindResponseById(const wxString& boardNameAscii, const wxString& origNumber,
 				      const wxString& extractId);
      /**
       * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
@@ -216,6 +216,10 @@ public:
       */
      static wxString DetermineContentType(const wxString& href);
      /**
+      * URLの末尾にある拡張子が何か判別し、wxBitmapTypeを返す
+      */
+     static wxBitmapType DetermineBitmapType(const wxString& ext);
+     /**
       * URIから各パラメーターを抜き取る
       */
      static bool SubstringURI(const wxString& uri, PartOfURI* partOfUri);
@@ -239,12 +243,12 @@ public:
      /**
       * プロパティファイルの指定されたKEYを指定されたVALUEで書き換える
       */
-     template <class T> 
+     template <class T>
      static void SetJaneCloneProperties(const wxString& key, const T& value);
      /**
       * プロパティファイルの指定されたKEYを読み取る
       */
-     template <class T> 
+     template <class T>
      static void GetJaneCloneProperties(const wxString& key, T* value);
      /**
       * プロパティファイルの指定されたKEYがあるかどうか確認する
@@ -290,14 +294,14 @@ public:
       * @param  bool型文字列
       * @result true or false
       */
-     static bool ParseBool( const wxString& s ) 
+     static bool ParseBool( const wxString& s )
 	  {
 	       return s.at(0) == '1';
 	  };
 
      template<typename TYPE, std::size_t SIZE>
      static std::size_t ArrayLength(const TYPE (&)[SIZE])
-	  {   
+	  {
 	       return SIZE;
 	  };
 

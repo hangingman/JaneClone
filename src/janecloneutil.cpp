@@ -1149,6 +1149,53 @@ wxString JaneCloneUtil::DetermineContentType(const wxString& href) {
 
      return wxEmptyString;
 }
+
+/**
+ * 拡張子が何か判別し、wxBitmapTypeを返す
+ */
+wxBitmapType JaneCloneUtil::DetermineBitmapType(const wxString& ext)
+{
+     wxBitmapType type = wxBITMAP_TYPE_ANY;
+
+     if (!ext.CmpNoCase(wxT("png")))
+     {
+	  type = wxBITMAP_TYPE_PNG;
+     }
+     else if (!ext.CmpNoCase(wxT("jpg")))
+     {
+	  type = wxBITMAP_TYPE_JPEG;
+     }
+     else if (!ext.CmpNoCase(wxT("jpeg")))
+     {
+	  type = wxBITMAP_TYPE_JPEG;
+     }
+     else if (!ext.CmpNoCase(wxT("gif")))
+     {
+	  type = wxBITMAP_TYPE_GIF;
+     }
+     else if (!ext.CmpNoCase(wxT("bmp")))
+     {
+	  type = wxBITMAP_TYPE_BMP;
+     }
+     else if (!ext.CmpNoCase(wxT("ico")))
+     {
+	  type = wxBITMAP_TYPE_ICO;
+     }
+     else if (!ext.CmpNoCase(wxT("xpm")))
+     {
+	  type = wxBITMAP_TYPE_XPM;
+     }
+     else if (!ext.CmpNoCase(wxT("tiff")))
+     {
+	  type = wxBITMAP_TYPE_TIF;
+     }
+     else
+     {
+	  type = wxBITMAP_TYPE_ANY;
+     }
+
+     return type;
+}
 /**
  * URIから各パラメーターを抜き取る
  * protocol: http|https|ttp|ftp
