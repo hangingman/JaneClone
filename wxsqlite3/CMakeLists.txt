@@ -12,7 +12,7 @@ add_library(wxsqlite3 SHARED ${wxsqlite3_SRCS})
 
 include("${wxWidgets_USE_FILE}")
 
-if(BUILDING_SQLITE3)
+if(BUILDING_SQLite3)
   include_directories(${root_SOURCE_DIR}/sqlite3 ${root_SOURCE_DIR}/wxsqlite3)
   target_link_libraries(wxsqlite3 sqlite3)
 else()
