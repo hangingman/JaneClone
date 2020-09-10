@@ -38,18 +38,16 @@ before_install:
 
 install:
   - echo $TRAVIS_OS_NAME
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -qq gnulib dh-make; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install libwxbase3.0 libwxgtk3.0-dev libwxsqlite3-3.0-dev libxml2-dev libcurl4-openssl-dev libssl-dev debhelper autotools-dev automake gnupg lintian fakeroot pbuilder cdbs gnome-pkg-tools devscripts; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install gnu-sed wxmac; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install libwxbase3.0 libwxgtk3.0-dev libwxsqlite3-3.0-dev libxml2-dev libcurl4-openssl-dev libssl-dev cmake ninja-build; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install gnu-sed wxmac cmake ninja; fi
 
 before_script:
   - echo $TRAVIS_OS_NAME
-  - autoreconf -i -I/usr/share/gnulib/m4 -I `pwd`/m4
 
 script:
   - echo $TRAVIS_OS_NAME
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then ./configure && make package-deb-local; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ./configure && make && make osx-make-bin package-osx-intel64-dmg; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sh ninja_rebuild.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then sh ninja_rebuild.sh; fi
 
 branches:
   only:
@@ -61,4 +59,4 @@ notifications:
     on_failure: always
 
 after_success:
-  - if [ "$TRAVIS_OS_NAME" == "osx" -o "$CXX" == "clang++" ]; then cd misc && ./upload_bintray.sh; fi
+  - echo $TRAVIS_OS_NAME
