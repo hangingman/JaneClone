@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
 project(
-  janeclone
+  root
   VERSION 1.1.6
   LANGUAGES CXX
   HOMEPAGE_URL "http://hangingman.github.io/JaneClone/"
