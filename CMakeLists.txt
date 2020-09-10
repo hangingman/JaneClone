@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 project(
   root
@@ -7,11 +8,11 @@ project(
   HOMEPAGE_URL "http://hangingman.github.io/JaneClone/"
   DESCRIPTION "plain browser dedicated to read 5ch thread")
 
+include(IdentifyOS)
 add_definitions(-DPACKAGE_VERSION="${PROJECT_VERSION}")
 add_definitions(-DHAVE_CONFIG_H)
 configure_file(config.h.in config.h @ONLY)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 set(UPSTREAM_URL
     "https://github.com/hangingman/JaneClone"
     CACHE INTERNAL "")
@@ -57,3 +58,9 @@ if(NOT WxSQLite3_FOUND)
 endif()
 
 add_subdirectory(src)
+
+if(${CMAKE_OS_NAME} MATCHES "(Debian|Ubuntu)")
+  set(CPACK_GENERATOR "DEB")
+  set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Hiroyuki Nagata")
+  include(CPack)
+endif()

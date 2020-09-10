@@ -2,4 +2,4 @@
 
 cd build
 cmake -G "Ninja" ..
-ninja -k 0
+ninja $@
