@@ -1371,28 +1371,45 @@ template void JaneCloneUtil::SetJaneCloneProperties<wxString>(const wxString& ke
 template void JaneCloneUtil::SetJaneCloneProperties<long>(const wxString& key, const long& value);
 template void JaneCloneUtil::SetJaneCloneProperties<double>(const wxString& key, const double& value);
 template void JaneCloneUtil::SetJaneCloneProperties<bool>(const wxString& key, const bool& value);
+
 /**
  * プロパティファイルの指定されたKEYを読みとってvalueに格納
- * @param  const wxString&  key    キー
- * @param        <class T>* value  値
+ * @param  const wxString&  key      キー
+ * @param        <class T>* value    値
+ * @param  const wxString&  defaultVal  デフォルト値
  */
-template <class T>
-void JaneCloneUtil::GetJaneCloneProperties(const wxString& key, T* value) {
-
+inline wxConfig* loadDefaultConfig()
+{
      // 設定ファイルの準備をする
      const wxString jc = ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR;
      const wxDir jcDir(jc);
      const wxString configFile = jcDir.GetName() + wxFILE_SEP_PATH + wxT("prop") + wxFILE_SEP_PATH + APP_CONFIG_FILE;
      wxFileConfig* config = new wxFileConfig(wxT("JaneClone"), wxEmptyString, configFile, wxEmptyString, wxCONFIG_USE_LOCAL_FILE);
-
-     config->Read(key, value);
-     delete config;
+     return config;
 }
+
+template <class T>
+void JaneCloneUtil::GetJaneCloneProperties(const wxString& key, T* value)
+{
+     loadDefaultConfig()->Read(key, value);
+}
+
+template <class T>
+void JaneCloneUtil::GetJaneCloneProperties(const wxString& key, T* value, T defaultVal)
+{
+     loadDefaultConfig()->Read(key, value, defaultVal);
+}
+
 // テンプレート関数の実体化
 template void JaneCloneUtil::GetJaneCloneProperties<wxString>(const wxString& key, wxString* value);
 template void JaneCloneUtil::GetJaneCloneProperties<long>(const wxString& key, long* value);
 template void JaneCloneUtil::GetJaneCloneProperties<double>(const wxString& key, double* value);
 template void JaneCloneUtil::GetJaneCloneProperties<bool>(const wxString& key, bool* value);
+
+template void JaneCloneUtil::GetJaneCloneProperties<wxString>(const wxString& key, wxString* value, wxString defaultVal = "");
+template void JaneCloneUtil::GetJaneCloneProperties<long>(const wxString& key, long* value, long defaultVal = 0L);
+template void JaneCloneUtil::GetJaneCloneProperties<double>(const wxString& key, double* value, double defaultVal = 0.0);
+template void JaneCloneUtil::GetJaneCloneProperties<bool>(const wxString& key, bool* value, bool defaultVal = false);
 
 /**
  * プロパティファイルの指定されたKEYがあるかどうか確認する

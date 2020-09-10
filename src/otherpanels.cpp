@@ -90,14 +90,14 @@ void SettingPanelBase::GetWidgetsProperties()
 	  if (ctrl->IsKindOf(wxCLASSINFO(wxTextCtrl)))
 	  {
 	       wxString widgetsInfo = wxEmptyString;
-	       JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+	       JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo, widgetsInfo);
 	       wxTextCtrl* tmp = dynamic_cast<wxTextCtrl*>(ctrl);
 	       tmp->SetValue(widgetsInfo);
 	  }
 	  else if (ctrl->IsKindOf(wxCLASSINFO(wxCheckBox)))
 	  {
 	       bool widgetsInfo = false;
-	       JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+	       JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo, widgetsInfo);
 	       wxCheckBox* tmp = dynamic_cast<wxCheckBox*>(ctrl);
 	       tmp->SetValue(widgetsInfo);
 	  }
@@ -144,6 +144,7 @@ NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, c
      panel_9 = new wxPanel(panel_7, wxID_ANY);
      panel_8 = new wxPanel(panel_7, wxID_ANY);
      panel_6 = new wxPanel(panel_1, wxID_ANY);
+     panel_10 = new wxPanel(this, wxID_ANY);
 #ifndef __WXMAC__
      proxyUseCheck = new wxCheckBox(panel_6, wxID_ANY, wxT("Proxyを使用する"));
      proxyCacheUseCheck = new wxCheckBox(panel_6, wxID_ANY, wxT("Proxy使用時にキャッシュを使用しない"));
@@ -174,6 +175,8 @@ NetworkSettingPanel::NetworkSettingPanel(wxWindow* parent, const wxPoint& pos, c
      receiveBufferSizeTC = new wxTextCtrl(panel_5, wxID_ANY, wxT("32"));
      label_2 = new wxStaticText(panel_5, wxID_ANY, wxT("最大接続数"));
      maxConnSC = new wxSpinCtrl(panel_5, wxID_ANY, wxT("3"), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+     label_14 = new wxStaticText(panel_10, wxID_ANY, wxT("2chにアクセスする時のユーザーエージェント"));
+     userAgentTC = new wxTextCtrl(panel_10, wxID_ANY, wxString(userAgent));
 
      set_properties();
      do_layout();
@@ -201,8 +204,9 @@ void NetworkSettingPanel::set_properties()
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySendPort"),     sedProxyPortTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthAddr"),  authSSLAddrTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
-     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),	boardListURLTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),      boardListURLTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelReceiveBufferSize"), receiveBufferSizeTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelUserAgent"),         userAgentTC));
      this->GetWidgetsProperties();
 }
 
@@ -220,8 +224,9 @@ void NetworkSettingPanel::save_properties()
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySendPort"),     sedProxyPortTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthAddr"),  authSSLAddrTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelProxySSLAuthPort"),  authSSLPortTC));
-     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),	boardListURLTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelBoardListURL"),      boardListURLTC));
      tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelReceiveBufferSize"), receiveBufferSizeTC));
+     tupleList.push_back(WxCtrlTuple(wxT("ID_NetworkPanelUserAgent"),         userAgentTC));
      this->SetWidgetsProperties();
 }
 
@@ -238,6 +243,7 @@ void NetworkSettingPanel::do_layout() {
      wxBoxSizer* sizer_8 = new wxBoxSizer(wxHORIZONTAL);
      wxBoxSizer* sizer_7 = new wxBoxSizer(wxHORIZONTAL);
      wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
+     wxBoxSizer* sizer_9 = new wxBoxSizer(wxVERTICAL);
 #ifndef __WXMAC__
      sizer_6->Add(proxyUseCheck, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
      sizer_6->Add(proxyCacheUseCheck, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
@@ -287,6 +293,10 @@ void NetworkSettingPanel::do_layout() {
      sizer_5->Add(maxConnSC, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
      panel_5->SetSizer(sizer_5);
      vbox->Add(panel_5, 0, wxEXPAND, 0);
+     sizer_9->Add(label_14, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+     sizer_9->Add(userAgentTC, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 5);
+     panel_10->SetSizer(sizer_9);
+     vbox->Add(panel_10, 0, wxEXPAND, 0);
      SetSizer(vbox);
      vbox->Fit(this);
      // end wxGlade
@@ -346,10 +356,10 @@ SettingPanelBase(parent, ID_PathSettingPanel, pos, size, wxTAB_TRAVERSAL) {
 void PathSettingPanel::set_properties() {
      bool specifyBrowser = false;
      wxString browserPath, boardListPath, skinPath;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("SPECIFY_DEFAULT_BROWSER"), &specifyBrowser);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("DEFAULT_BROWSER_PATH"), &browserPath);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("DEFAULT_BOARDLIST_PATH"), &boardListPath);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("DEFAULT_SKINFILE_PATH"), &skinPath);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("SPECIFY_DEFAULT_BROWSER"), &specifyBrowser, specifyBrowser);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("DEFAULT_BROWSER_PATH"), &browserPath, browserPath);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("DEFAULT_BOARDLIST_PATH"), &boardListPath, boardListPath);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("DEFAULT_SKINFILE_PATH"), &skinPath, skinPath);
      browserCheck->SetValue(specifyBrowser);
 
 #ifdef __WXGTK__

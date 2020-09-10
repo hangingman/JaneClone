@@ -167,6 +167,9 @@ protected:
      wxStaticText* label_2;
      wxSpinCtrl* maxConnSC;
      wxPanel* panel_5;
+     wxPanel* panel_10;
+     wxStaticText* label_14;
+     wxTextCtrl* userAgentTC;
      // end wxGlade
 }; // wxGlade: end class
 

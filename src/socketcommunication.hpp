@@ -314,6 +314,10 @@ private:
       * コンフィグ情報をCurl++のオブジェクトに設定する
       */
      void LoadConfiguration(curlpp::Easy& request, const bool io);
+     /**
+      * ユーザの設定しているユーザーエージェントを取得する
+      */
+     std::string CustomUserAgent();
 };
 
 #endif /* SOCKETCOMMUNICATION_HPP_ */

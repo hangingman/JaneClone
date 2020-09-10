@@ -42,6 +42,7 @@
 #include <wx/fs_mem.h>
 #include <wx/treectrl.h>
 #include <wx/fileconf.h>
+#include <wx/config.h>
 #include <babel.h>
 #include "datatype.hpp"
 #include "enums.hpp"
@@ -248,6 +249,8 @@ public:
      /**
       * プロパティファイルの指定されたKEYを読み取る
       */
+     template <class T>
+     static void GetJaneCloneProperties(const wxString& key, T* value, T defaultVal);
      template <class T>
      static void GetJaneCloneProperties(const wxString& key, T* value);
      /**

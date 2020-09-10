@@ -51,8 +51,8 @@ SocketCommunication::SocketCommunication()
 
      for ( auto key : properties )
      {
-	  wxString val;
-	  JaneCloneUtil::GetJaneCloneProperties(key, &val);
+	  wxString val = wxEmptyString;
+	  JaneCloneUtil::GetJaneCloneProperties(key, &val, val);
 	  if ( val != wxEmptyString )
 	  {
 	       propMap[key] = val;
@@ -109,8 +109,7 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
      PartOfURI uri;
      JaneCloneUtil::SubstringURI(link, &uri);
 
-     wxString server = uri.hostname == wxEmptyString ?
-          wxT("menu.2ch.net") : uri.hostname;
+     wxString server = uri.hostname == wxEmptyString ? wxT("menu.2ch.net") : uri.hostname;
      wxString path = uri.path == wxEmptyString ? wxT("/bbsmenu.html") : uri.path;
 
      // ヘッダの作成
@@ -118,9 +117,10 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
      headers.push_back("Accept-Encoding: gzip");
      headers.push_back(std::string(wxString::Format(wxT("Host: %s"), server).mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("User-Agent: " + CustomUserAgent());
 
-     const std::string url = std::string(uri.protocol.mb_str()) + "://" + std::string(server.mb_str()) + std::string(path.mb_str());
+     const std::string url = std::string(uri.protocol.mb_str())
+          + "://" + std::string(server.mb_str()) + std::string(path.mb_str());
 
      try {
 
@@ -326,7 +326,7 @@ int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
      headers.push_back("Accept: */*");
      headers.push_back("Referer: " + std::string(boardURL.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("User-Agent: " + CustomUserAgent());
      headers.push_back("Connection: close");
 
      wxString server = hostName;
@@ -424,7 +424,7 @@ int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath,
      headers.push_back("Accept: */*");
      headers.push_back("Referer: " + std::string(boardURL.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("User-Agent: " + CustomUserAgent());
      headers.push_back("Connection: close");
 
      wxString server = hostName;
@@ -605,7 +605,7 @@ void SocketCommunication::DownloadThreadNew(const wxString& gzipPath,
      headers.push_back("Accept: */*");
      headers.push_back("Referer: "+ std::string(referer.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("User-Agent: " + CustomUserAgent());
      headers.push_back("Connection: close");
 
      wxString server = hostName;
@@ -744,7 +744,7 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
      headers.push_back("If-Modified-Since: " + std::string(lastModifiedTime.mb_str()));
      headers.push_back("If-None-Match: " + std::string(etag.mb_str()));
      headers.push_back("Range: bytes= " + std::string(fileSize.ToString().mb_str()) + std::string("-"));
-     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("User-Agent: " + CustomUserAgent());
      headers.push_back("Connection: close");
 
      wxString server = hostName;
@@ -922,7 +922,7 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
      headers.push_back("Accept: */*");
      headers.push_back("Referer: "+ std::string(referer.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("User-Agent: " + CustomUserAgent());
      headers.push_back("Connection: close");
 
      try {
@@ -1196,7 +1196,7 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
      headers.push_back("Accept: */*");
      headers.push_back("Referer: " + std::string(referer.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("User-Agent: " + CustomUserAgent());
      headers.push_back("Content-Length: " + kakikomiSize);
      headers.push_back("Content-Type: application/x-www-form-urlencoded");
      headers.push_back("Connection: close");
@@ -1275,8 +1275,8 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      // 不可視項目値をコンフィグファイルから取得する
      InitializeCookie();
      wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR");
-     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName, hiddenName);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal, hiddenVal);
 
      // Cookie値を構築する
      wxString cookie;
@@ -1364,7 +1364,7 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      headers.push_back("Accept: */*");
      headers.push_back("Referer: " + std::string(referer.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("User-Agent: " + CustomUserAgent());
      headers.push_back("Content-Length: " + kakikomiSize);
      headers.push_back("Content-Type: application/x-www-form-urlencoded");
      headers.push_back("Cookie: " + std::string(cookie.mb_str()));
@@ -1447,8 +1447,8 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      // 不可視項目値をコンフィグファイルから取得する
      InitializeCookie();
      wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR");
-     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName);
-     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName, hiddenName);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal, hiddenVal);
 
      // Cookie値を構築する
      wxString cookie;
@@ -1536,7 +1536,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      headers.push_back("Accept: */*");
      headers.push_back("Referer: " + std::string(referer.mb_str()));
      headers.push_back("Accept-Language: ja");
-     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("User-Agent: " + CustomUserAgent());
      headers.push_back("Content-Length: " + kakikomiSize);
      headers.push_back("Content-Type: application/x-www-form-urlencoded");
      headers.push_back("Cookie: " + std::string(cookie.mb_str()));
@@ -1624,21 +1624,21 @@ void SocketCommunication::AssembleCookie(wxString& cookie, const wxString& hidde
      bool     widgetsInfo = false;
      const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(ID_ResponseWindowBeChk) );
      widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
-     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo, widgetsInfo);
      if (widgetsInfo)
      {
 	  // BEログインして書き込む場合
 	  wxString dmdm = wxEmptyString;
 	  wxString mdmd = wxEmptyString;
-	  JaneCloneUtil::GetJaneCloneProperties(wxT("DMDM"), &dmdm);
-	  JaneCloneUtil::GetJaneCloneProperties(wxT("MDMD"), &mdmd);
+	  JaneCloneUtil::GetJaneCloneProperties(wxT("DMDM"), &dmdm, dmdm);
+	  JaneCloneUtil::GetJaneCloneProperties(wxT("MDMD"), &mdmd, mdmd);
 
 	  if ( dmdm.Len() == 0 || mdmd.Len() == 0 )
 	  {
 	       // クッキーがないのでログインしてクッキー☆をもらう
 	       LoginBe2ch();
-	       JaneCloneUtil::GetJaneCloneProperties(wxT("DMDM"), &dmdm);
-	       JaneCloneUtil::GetJaneCloneProperties(wxT("MDMD"), &mdmd);
+	       JaneCloneUtil::GetJaneCloneProperties(wxT("DMDM"), &dmdm, dmdm);
+	       JaneCloneUtil::GetJaneCloneProperties(wxT("MDMD"), &mdmd, mdmd);
 	       SubstringCookie(dmdm);
 	       SubstringCookie(mdmd);
 
@@ -1669,12 +1669,12 @@ void SocketCommunication::AssembleCookie(wxString& cookie, const wxString& hidde
 
      // Cookie-PONの取得
      wxString cookiePon;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-PON"), &cookiePon);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-PON"), &cookiePon, cookiePon);
      SubstringCookie(cookiePon);
 
      // Cookie-HAPの取得
      wxString cookieHap;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-HAP"), &cookieHap);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("Cookie-HAP"), &cookieHap, cookieHap);
      SubstringCookie(cookieHap);
 
      // 隠し要素の取得
@@ -1682,7 +1682,7 @@ void SocketCommunication::AssembleCookie(wxString& cookie, const wxString& hidde
 
      // PRENの取得
      wxString pren;
-     JaneCloneUtil::GetJaneCloneProperties(wxT("PREN"), &pren);
+     JaneCloneUtil::GetJaneCloneProperties(wxT("PREN"), &pren, pren);
      SubstringCookie(pren);
 
      if (cookiePon.Len() != 0)
@@ -2126,7 +2126,7 @@ void SocketCommunication::LoginBe2ch()
      headers.push_back("POST /test/login.php HTTP/1.1");
      headers.push_back("Accept-Encoding: gzip");
      headers.push_back("Accept: */*");
-     headers.push_back("User-Agent: " + userAgent);
+     headers.push_back("User-Agent: " + CustomUserAgent());
      headers.push_back("Content-Type: application/x-www-form-urlencoded");
      headers.push_back("Host: be.2ch.net");
      headers.push_back("Content-Length: " + kakikomiSize);
@@ -2456,4 +2456,14 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
 	       // wxT("ID_NetworkPanelProxySSLAuthPort")	,/* Proxy SSL認証用ポート				*/
 	  }
      }
+}
+
+/**
+ * ユーザの設定しているユーザーエージェントを取得する
+ */
+inline std::string SocketCommunication::CustomUserAgent()
+{
+     wxString customUserAgent = wxEmptyString;
+     JaneCloneUtil::GetJaneCloneProperties(wxT("ID_NetworkPanelUserAgent"), &customUserAgent, wxString(userAgent));
+     return customUserAgent.ToStdString();
 }

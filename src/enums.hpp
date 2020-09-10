@@ -2,7 +2,7 @@
  * enums.hpp - janeclones' enums
  *
  * Copyright (C) 2013-2014 Hiroyuki Nagata <idiotpanzer@gmail.com>
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -205,10 +205,11 @@ X_TABLE_ITEM(ID_NetworkPanelProxyReceivePort)	/* Proxy受信用ポート			     
 X_TABLE_ITEM(ID_NetworkPanelProxySendAddr)	/* Proxy送信用アドレス			                */ \
 X_TABLE_ITEM(ID_NetworkPanelProxySendPort)	/* Proxy送信用ポート			                */ \
 X_TABLE_ITEM(ID_NetworkPanelProxySSLAuthAddr)	/* Proxy SSL認証用アドレス		                */ \
-X_TABLE_ITEM(ID_NetworkPanelProxySSLAuthPort)	/* Proxy SSL認証用ポート		                */ \
-X_TABLE_ITEM(ID_NetworkPanelBoardListURL)       /* ボード一覧取得URL                                    */ \
-X_TABLE_ITEM(ID_NetworkPanelReceiveBufferSize)  /* 受信バッファサイズ                                   */ \
-X_TABLE_ITEM(ID_NetworkPanelMaxConn)            /* 最大接続数                                           */ \
+X_TABLE_ITEM(ID_NetworkPanelProxySSLAuthPort)	/* Proxy SSL認証用ポート		                        */ \
+X_TABLE_ITEM(ID_NetworkPanelBoardListURL)       /* ボード一覧取得URL                                      */ \
+X_TABLE_ITEM(ID_NetworkPanelReceiveBufferSize)  /* 受信バッファサイズ                                      */ \
+X_TABLE_ITEM(ID_NetworkPanelMaxConn)            /* 最大接続数                                             */ \
+X_TABLE_ITEM(ID_NetworkPanelUserAgent)          /* 2chにアクセスする時のユーザーエージェント                  */ \
 X_TABLE_ITEM(ID_PathSettingPanel) 		/* 各種パス設定用画面					*/ \
 X_TABLE_ITEM(ID_BrowserCheck)			/* 使用するブラウザを指定するかどうか			*/ \
 X_TABLE_ITEM(ID_BrowserPathTC)			/* ブラウザのパスをもつテキストコントロール		        */ \
@@ -327,7 +328,7 @@ enum JANECLONE_ENUMS {
      X_TABLE
      #undef X
      ID_UserLastClosedThreadClick = 1000,  // ユーザーが最後に閉じたスレッドの情報をクリックした(動的なIDのため1000~)
-     ID_UserLastClosedBoardClick  = 1100,  // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)     
+     ID_UserLastClosedBoardClick  = 1100,  // ユーザーが最後に閉じた板の情報をクリックした(動的なIDのため1100~)
      ID_UserFavoriteThreadClick   = 1200,  // ユーザーがお気に入りに登録したスレッドの情報をクリックした(動的なIDのため1200~)
      ID_ThreadContentBar  = 1500           // ThreadContentBar自体のID(動的なIDのため1500~)
 };
