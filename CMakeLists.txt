@@ -59,8 +59,19 @@ endif()
 
 add_subdirectory(src)
 
+#
+# Debianパッケージの設定
+#
 if(${CMAKE_OS_NAME} MATCHES "(Debian|Ubuntu)")
   set(CPACK_GENERATOR "DEB")
   set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Hiroyuki Nagata")
+  set(CPACK_PACKAGE_NAME "janeclone")
+  set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libwxbase3.0, libwxgtk3.0")
+
+  install(TARGETS janeclone RUNTIME DESTINATION "/usr/bin/")
+  file(GLOB RC_FILES ${janeclone_SOURCE_DIR}/rc/*)
+  install(FILES ${RC_FILES} DESTINATION /usr/share/pixmaps/janeclone/)
+
   include(CPack)
 endif()
