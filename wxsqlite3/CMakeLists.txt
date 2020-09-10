@@ -5,6 +5,10 @@ add_definitions(-DWXSQLITE3_HAVE_METADATA=0)
 add_definitions(-DWXSQLITE3_HAVE_CODEC=0)
 add_definitions(-DWXSQLITE3_HAVE_LOAD_EXTENSION=0)
 
+if(APPLE)
+  add_definitions(-Wno-potentially-evaluated-expression)
+endif()
+
 set(wxsqlite3_HEADERS wx/wxsqlite3.h wx/wxsqlite3def.h wx/wxsqlite3dyn.h
                       wx/wxsqlite3opt.h)
 set(wxsqlite3_SRCS wxsqlite3.cpp)

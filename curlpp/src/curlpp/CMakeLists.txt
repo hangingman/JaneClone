@@ -14,4 +14,5 @@ set(curlpp_SRCS
     autolink.h)
 
 add_library(curlpp SHARED ${curlpp_SRCS})
-target_link_libraries(internal)
+target_link_libraries(curlpp internal)
+target_link_libraries(curlpp utilspp)
