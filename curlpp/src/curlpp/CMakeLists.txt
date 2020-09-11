@@ -1,4 +1,3 @@
-add_subdirectory(internal)
 include_directories(${CURL_INCLUDE_DIRS} ${curlpp_SOURCE_DIR}/include
                     ${CMAKE_BINARY_DIR}/curlpp/include)
 
@@ -11,8 +10,11 @@ set(curlpp_SRCS
     Multi.cpp
     OptionBase.cpp
     Options.cpp
-    autolink.h)
+    internal/CurlHandle.cpp
+    internal/OptionList.cpp
+    internal/OptionSetter.cpp
+    internal/SList.cpp)
 
 add_library(curlpp SHARED ${curlpp_SRCS})
-target_link_libraries(curlpp internal)
+target_link_libraries(curlpp ${CURL_LIBRARIES})
 target_link_libraries(curlpp utilspp)

@@ -833,7 +833,7 @@ void JaneClone::SetProperties()
      babel::init_babel();
      // XRCの初期化を行う
      wxXmlResource::Get()->InitAllHandlers();
-     bool bRet = wxXmlResource::Get()->Load(RESOURCE_PATH + wxFILE_SEP_PATH + "*.xrc");
+     bool bRet = wxXmlResource::Get()->Load(GetResourcePath("*.xrc"));
 
      if( !bRet )
      {
