@@ -24,22 +24,20 @@
 
 #include <iostream>
 #include <tuple>
+#include <functional>
 #include <wx/wx.h>
 #include <wx/dir.h>
 #include <wx/file.h>
 #include <wx/datetime.h>
+#include <wx/utils.h>
 #include <wx/wxsqlite3.h>
 #include "enums.hpp"
 #include "datatype.hpp"
 
 // SQLiteのデータベースファイルのパス
-#ifdef __WXMSW__
-static const wxString SQLITE_FILE_PATH = wxT("\\janeclone.db");
-#else
-static const wxString SQLITE_FILE_PATH = wxT("/janeclone.db");
-#endif
+static const wxString SQLITE_FILE_NAME = wxT("janeclone.db");
 
-// SQL処理
+
 #define INITIALIZE_JC_WXSQLITE3(db, now)        \
     try {                                       \
     wxString dbFile = GetDBFilePath();          \
@@ -67,6 +65,9 @@ static const wxString SQLITE_FILE_PATH = wxT("/janeclone.db");
         wxMessageBox(e.GetMessage());           \
     }                                           \
 
+// 長い型名のエイリアスを作る
+using DB = wxSQLite3Database;
+using Stmt = wxSQLite3Statement;
 
 class SQLiteAccessor {
 
@@ -75,6 +76,12 @@ public:
      * SQLiteデータベースの初期化・トランザクションあり
      */
     SQLiteAccessor();
+
+    // SQL処理用のクロージャ
+
+    // dbファイルの初期化
+    static std::function<void(DB&)> AutoCloseable(std::function<void(DB&)> block);
+
     /**
      * 板一覧情報のコミットを行う
      */
@@ -198,13 +205,12 @@ public:
      */
     static bool SetOutSideBoardInfo(const wxString& url,const wxString& boardName,const wxString& category);
 
-private:
-
     /**
      * JaneCloneが使用するSQLiteのDBファイルの場所を返す
      */
     static wxString GetDBFilePath();
 
+private:
     wxArrayString* boardInfoArray;
 };
 

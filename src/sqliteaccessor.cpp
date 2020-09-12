@@ -21,79 +21,118 @@
 
 #include "sqliteaccessor.hpp"
 
+// dbファイルの初期化
+std::function<void(DB&)> SQLiteAccessor::AutoCloseable(std::function<void(DB&)> block) {
+
+    return [&](DB& db) -> void {
+        try {
+            wxString dbFile = GetDBFilePath();
+            DB::InitializeSQLite();
+            db.Open(dbFile);
+            db.Begin();
+
+            // 実際の処理を実行
+            block(db);
+
+            db.Commit();
+            db.Close();
+        } catch (wxSQLite3Exception& e) {
+            wxMessageBox(e.GetMessage());
+        }
+    };
+}
+
 /**
  * データベースの初期化、トランザクションあり
  */
 SQLiteAccessor::SQLiteAccessor() {
 
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
-
-    try {
-        wxSQLite3Database::InitializeSQLite();
-        wxSQLite3Database db;
-        db.Open(dbFile);
-        db.Begin();
-
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
         // 2chのすべての板一覧情報
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO "
-                             L"(BOARDNAME_KANJI TEXT, "
-                             L"BOARD_URL       TEXT, "
-                             L"CATEGORY        TEXT, "
-                             L"IS_OUTSIDE      INTEGER" /** true:1, false:0 */
-                             L")"));
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS board_info ("
+                             "    boardname_kanji TEXT,"
+                             "	  board_url		  TEXT,"
+                             "	  category		  TEXT,"
+                             "    is_outside      INTEGER" /** true:1, false:0 */
+                             ");"));
 
 #ifdef USE_SHINGETSU
         // ユーザーが登録している新月のノード情報
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS BOARD_INFO_SHINGETSU(TIMEINFO TIMESTAMP, BOARD_URL TEXT)"));
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS board_info_shingetsu ("
+                             "    timeinfo  TIMESTAMP,"
+                             "    board_URL TEXT"
+                             ");"));
 #endif /** USE_SHINGETSU */
 
         // ユーザーが前回見ていたタブについての情報
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_BOARDLIST(BOARDNAME_KANJI TEXT)"));
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_LOOKING_THREADLIST(THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS user_looking_boardlist ("
+                             "    boardname_kanji TEXT);"));
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS user_looking_threadlist ("
+                             "    thread_title    TEXT,"
+                             "    thread_orig_num TEXT,"
+                             "    boardname_ascii TEXT"
+                             ");"));
         // ユーザーが最近閉じたタブについての情報
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_CLOSED_BOARDLIST(TIMEINFO TIMESTAMP, BOARDNAME_KANJI TEXT, BOARD_URL TEXT, BOARDNAME_ASCII TEXT)"));
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_CLOSED_THREADLIST(TIMEINFO TIMESTAMP, THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_FAVORITE_THREADLIST(TIMEINFO TIMESTAMP, THREAD_TITLE TEXT, THREAD_ORIG_NUM TEXT, BOARDNAME_ASCII TEXT)"));
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS user_closed_boardlist ("
+                             "    timeinfo        TIMESTAMP,"
+                             "    boardname_kanji TEXT,"
+                             "    board_url       TEXT,"
+                             "    boardname_ascii TEXT"
+                             ");"));
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS user_closed_threadlist ("
+                             "    timeinfo TIMESTAMP,"
+                             "    thread_title    TEXT,"
+                             "    thread_orig_num TEXT,"
+                             "    boardname_ascii TEXT"
+                             ");"));
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS user_favorite_threadlist ("
+                             "    timeinfo TIMESTAMP,"
+                             "    thread_title    TEXT,"
+                             "    thread_orig_num TEXT,"
+                             "    boardname_ascii TEXT"
+                             ");"));
         // ユーザーが検索したキーワードを保存する(板一覧ツリー、スレッド一覧リスト、スレッド表示ウィンドウでの検索)
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_SEARCHED_BOARDNAME(TIMEINFO TIMESTAMP, KEYWORD TEXT)"));
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_SEARCHED_THREADNAME(TIMEINFO TIMESTAMP, KEYWORD TEXT)"));
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS USER_SEARCHED_THREADCONTENTS(TIMEINFO TIMESTAMP, KEYWORD TEXT)"));
-
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS user_searched_boardname ("
+                             "    timeinfo TIMESTAMP,"
+                             "    keyword  TEXT"
+                             ");"));
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS user_searched_threadname ("
+                             "    timeinfo TIMESTAMP,"
+                             "    keyword  TEXT"
+                             ");"));
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS user_searched_threadcontents ("
+                             "    timeinfo TIMESTAMP,"
+                             "    keyword  TEXT"
+                             ");"));
         // 画像データの保存先
-        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS CACHED_IMAGE(TIMEINFO TIMESTAMP, FILENAME TEXT, UUID_FILENAME TEXT)"));
+        db.ExecuteUpdate(wxT("CREATE TABLE IF NOT EXISTS cached_image ("
+                             "    timeinfo      TIMESTAMP,"
+                             "    filename      TEXT,"
+                             "    uuid_filename TEXT"
+                             ");"));
+    })(db);
 
-        db.Commit();
-        db.Close();
-
-    } catch (wxSQLite3Exception& e) {
-        wxMessageBox(e.GetMessage());
-    }
 }
+
 /**
  * 板一覧情報のコミットを行う
  */
 void SQLiteAccessor::SetBoardInfoCommit(wxArrayString* boardInfoArray) {
 
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
+    DB db;
 
-    try {
-
-        // dbファイルの初期化
-        wxSQLite3Database::InitializeSQLite();
-        wxSQLite3Database db;
-        db.Open(dbFile);
-        db.Begin();
-
+    AutoCloseable([&](DB& db)
+    {
         // 既存のデータは消しておく
         const wxString sqlDel = wxT("DELETE FROM BOARD_INFO");
-        wxSQLite3Statement stmt1 = db.PrepareStatement(sqlDel);
+        auto stmt1 = db.PrepareStatement(sqlDel);
         stmt1.ExecuteUpdate();
 
         // 板一覧更新では外部板情報はコミットされない
         const wxString sqlIn = wxT("INSERT INTO BOARD_INFO (BOARDNAME_KANJI, BOARD_URL, CATEGORY, IS_OUTSIDE) VALUES (?, ?, ?, '0')");
-        wxSQLite3Statement stmt2 = db.PrepareStatement (sqlIn);
+        auto stmt2 = db.PrepareStatement (sqlIn);
 
         for (unsigned int i = 0; i < boardInfoArray->GetCount(); i += 3) {
             // レコードを追加する
@@ -103,13 +142,7 @@ void SQLiteAccessor::SetBoardInfoCommit(wxArrayString* boardInfoArray) {
             stmt2.Bind(3, boardInfoArray->Item(i+2));
             stmt2.ExecuteUpdate();
         }
-        // コミット実行
-        db.Commit();
-        db.Close();
-
-    } catch (wxSQLite3Exception& e) {
-        wxMessageBox(e.GetMessage());
-    }
+    });
 }
 /**
  * 板一覧情報をSQLite内のテーブルから取得しArrayStringの形で返す
@@ -765,12 +798,24 @@ int SQLiteAccessor::HowManyRecord(const wxString tableName) {
 }
 /**
  * JaneCloneが使用するSQLiteのDBファイルの場所を返す
+ * 環境変数"JANECLONE_DB_FILE_PATH"が設定されていればその値を返す
  */
 wxString SQLiteAccessor::GetDBFilePath() {
 
-    wxString dbFile = ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR + SQLITE_FILE_PATH;
-    return dbFile;
+    wxString dbFileFullPath = wxEmptyString;
+    bool hasEnvVal = wxGetEnv(
+        wxT("JANECLONE_DB_FILE_PATH"), &dbFileFullPath
+	);
+    if (hasEnvVal) {
+        return dbFileFullPath;
+    }
+
+    wxFileName dbFile = wxFileName::DirName(::wxGetHomeDir());
+    dbFile.AppendDir(JANECLONE_DIR);
+    dbFile.SetFullName(SQLITE_FILE_NAME);
+    return dbFile.GetFullPath();
 }
+
 /**
  * ユーザーが検索ボックスで検索したキーワードをSQLiteに格納する
  */
