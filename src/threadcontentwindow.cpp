@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -37,9 +37,9 @@ BEGIN_EVENT_TABLE(ThreadContentWindow, wxHtmlWindow)
    EVT_MENU(ID_SearchThreadBySelectWord,ThreadContentWindow::SearchThreadBySelectWord)
    EVT_MENU(ID_CallResponseWindowAnchor, ThreadContentWindow::CallResponseWindowWithAnchor)
    EVT_MENU(ID_CallResponseWindowQuote, ThreadContentWindow::CallResponseWindowWithQuote)
-   EVT_MENU(ID_CopyTContentsToClipBoard, ThreadContentWindow::CopyTContentsToClipBoard) 
-   EVT_MENU(ID_CopyTAllToClipBoard, ThreadContentWindow::CopyTAllToClipBoard)   
-   EVT_SIZE(ThreadContentWindow::OnSize) 
+   EVT_MENU(ID_CopyTContentsToClipBoard, ThreadContentWindow::CopyTContentsToClipBoard)
+   EVT_MENU(ID_CopyTAllToClipBoard, ThreadContentWindow::CopyTAllToClipBoard)
+   EVT_SIZE(ThreadContentWindow::OnSize)
    #ifdef DEBUG
    EVT_MENU(ID_HtmlSourceDebug, ThreadContentWindow::HtmlSourceDebug)
    #endif
@@ -78,7 +78,7 @@ wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, w
      SkinInfo* skinInfo = new SkinInfo;
      bool       useSkin = CheckSkinFiles(skinInfo);
      delete skinInfo;
-     
+
      if (!useSkin) {
 
 	  // フォントのポイント数
@@ -135,7 +135,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 	  htmlSource += skinInfo->header;
      } else {
 	  htmlSource += HTML_HEADER;
-     }     
+     }
 
      // テキストファイルの読み込み
      wxTextFile datfile;
@@ -145,7 +145,7 @@ const wxString ThreadContentWindow::GetConvertedDatFile(const wxString& threadCo
 
      // ファイルがオープンされているならば
      if (datfile.IsOpened()) {
-	  for (str = datfile.GetFirstLine(); 
+	  for (str = datfile.GetFirstLine();
 	       !datfile.Eof();
 	       str = datfile.GetNextLine()) {
 
@@ -226,7 +226,7 @@ void ThreadContentWindow::OnRightClickHtmlWindow(wxMouseEvent& event) {
 	  // 検索用のアイテムを設定する
 	  wxMenuItem* itemYahoo = new wxMenuItem(copy, ID_SearchSelectWordByYahoo, wxT("選択範囲をYahooで検索"));
 	  wxMenuItem* itemGoogle = new wxMenuItem(copy, ID_SearchSelectWordByGoogle, wxT("選択範囲をGoogleで検索"));
-	  wxMenuItem* itemAmazon = new wxMenuItem(copy, ID_SearchSelectWordByAmazon, wxT("選択範囲をamazonで検索")); 
+	  wxMenuItem* itemAmazon = new wxMenuItem(copy, ID_SearchSelectWordByAmazon, wxT("選択範囲をamazonで検索"));
 
 
 	  wxBitmap bitmap;
@@ -291,16 +291,16 @@ void ThreadContentWindow::CopyFromHtmlWindow(wxCommandEvent& event) {
 /*
  * HtmlWindowで選択しているURLをクリップボードにコピーする
  */
-void ThreadContentWindow::CopyURLFromHtmlWindow(wxCommandEvent& event) 
+void ThreadContentWindow::CopyURLFromHtmlWindow(wxCommandEvent& event)
 {
      wxString url;
 
-     if (m_linkInfo) 
+     if (m_linkInfo)
      {
 	  url = m_linkInfo->GetHref();
      }
 
-     if (wxTheClipboard->Open()) 
+     if (wxTheClipboard->Open())
      {
 	  wxTheClipboard->Clear();
 	  wxTheClipboard->SetData(new wxTextDataObject(url));
@@ -350,14 +350,14 @@ HtmlSourceDialog::HtmlSourceDialog(const wxString& html)
 /*
  * HtmlWindowでテキストを全て選択する
  */
-void ThreadContentWindow::SelectAllTextHtmlWindow(wxCommandEvent& event) 
+void ThreadContentWindow::SelectAllTextHtmlWindow(wxCommandEvent& event)
 {
      this->SelectAll();
 }
 /**
  * 選択したテキストでヤフー検索
  */
-void ThreadContentWindow::SearchSelectWordByYahoo(wxCommandEvent& event) 
+void ThreadContentWindow::SearchSelectWordByYahoo(wxCommandEvent& event)
 {
      // 検索方法の元ネタは右：http://developer.yahoo.co.jp/other/query_parameters/search/websearch.html
      wxString url = wxT("http://search.yahoo.co.jp/search?p=");
@@ -368,7 +368,7 @@ void ThreadContentWindow::SearchSelectWordByYahoo(wxCommandEvent& event)
 /**
  * 選択したテキストでGoogle検索
  */
-void ThreadContentWindow::SearchSelectWordByGoogle(wxCommandEvent& event) 
+void ThreadContentWindow::SearchSelectWordByGoogle(wxCommandEvent& event)
 {
      // ここはHTTPSじゃなくてHTTP通信でいいのかなあ？
      wxString url = wxT("http://www.google.co.jp/search?q=");
@@ -379,21 +379,21 @@ void ThreadContentWindow::SearchSelectWordByGoogle(wxCommandEvent& event)
 /**
  * 選択したテキストでAmazon検索
  */
-void ThreadContentWindow::SearchSelectWordByAmazon(wxCommandEvent& event) 
+void ThreadContentWindow::SearchSelectWordByAmazon(wxCommandEvent& event)
 {
      // AmazonはShift_JISによるURLエンコードしか受け付けないようだ
      wxString url = wxT("http://www.amazon.co.jp/gp/search/?__mk_ja_JP=%83J%83%5E%83J%83i&field-keywords=");
      const std::string buffer = babel::utf8_to_sjis(std::string(m_selectedText.mb_str()));
      const wxString urlEncode(JaneCloneUtil::UrlEncode(buffer).c_str(), wxConvUTF8);
      url += urlEncode;
-	
+
      // 文字列をutf-8からShift_JISに変換しておく必要があるようだ
      wxLaunchDefaultBrowser(url);
 }
 /**
  * 選択したテキストでスレタイ検索
  */
-void ThreadContentWindow::SearchThreadBySelectWord(wxCommandEvent& event) 
+void ThreadContentWindow::SearchThreadBySelectWord(wxCommandEvent& event)
 {
      // ! Fix Me !
      // 機能がいまいちよくわからない。もうちょっと考える。
@@ -401,10 +401,10 @@ void ThreadContentWindow::SearchThreadBySelectWord(wxCommandEvent& event)
 /**
  * リサイズ時のイベント
  */
-void ThreadContentWindow::OnSize(wxSizeEvent& event) 
+void ThreadContentWindow::OnSize(wxSizeEvent& event)
 {
      // 現在位置の取得
-     int x, y; 
+     int x, y;
      GetViewStart(&x, &y);
      wxHtmlWindow::OnSize(event);
      Scroll(x, y);
@@ -413,33 +413,33 @@ void ThreadContentWindow::OnSize(wxSizeEvent& event)
 /**
  * 左クリック時に起こるイベント
  */
-void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) 
-{     
+void ThreadContentWindow::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event)
+{
      const wxHtmlLinkInfo linkInfo = event.GetLinkInfo();
      const wxString href = linkInfo.GetHref();
      const wxString target = linkInfo.GetTarget();
      wxString rest = wxEmptyString;
      long res = 0;
-     
+
      // bmp,jpg,jpeg,png,gifなどの拡張子が末尾に付いている場合ダウンロードを行う
-     if (regexImage.IsValid()) 
+     if (regexImage.IsValid())
      {
 	  // 正規表現のコンパイルにエラーがなければマッチさせる
-	  if (regexImage.Matches(href)) 
+	  if (regexImage.Matches(href))
 	  {
 	       // 画像ファイルをクリックしたのでダウンロードする
 	       const wxString ext = regexImage.GetMatch(href, 3);
 	       this->SetJaneCloneImageViewer(href, ext);
 
-	  } 
-	  else if (href.StartsWith(wxT("#"), &rest) && rest.ToLong(&res, 10)) 
+	  }
+	  else if (href.StartsWith(wxT("#"), &rest) && rest.ToLong(&res, 10))
 	  {
-	       if ( 0 < res && res <= 1000) 
+	       if ( 0 < res && res <= 1000)
 	       {
 		    OnLeftClickResponseNumber(event, href, res);
 	       }
-	  } 
-	  else 
+	  }
+	  else
 	  {
 	       // 通常のリンクかどうか判定して処理
 	       OnClickOrdinaryLink(href);
@@ -492,29 +492,29 @@ void ThreadContentWindow::OnLeftClickResponseNumber(wxHtmlLinkEvent& event, cons
 /**
  * リンクが2chのものかどうか判定
  */
-void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link) 
+void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link)
 {
      // デフォルトのブラウザを使用するかどうか
      bool useDefaultBrowser = true;
      // URLからホスト名を取得する
      PartOfURI uri;
      bool ret = JaneCloneUtil::SubstringURI(link, &uri);
-     
-     if (ret) 
+
+     if (ret)
      {
 	  if (uri.hostname.Contains(wxT("2ch.net"))) useDefaultBrowser = false;
-     } 
-     else 
+     }
+     else
      {
 	  // エラー、とりあえずブラウザで開く
 	  useDefaultBrowser = true;
      }
 
-     if (useDefaultBrowser) 
+     if (useDefaultBrowser)
      {
 	  wxLaunchDefaultBrowser(link);
-     } 
-     else 
+     }
+     else
      {
 	  // 板の場合：      http://anago.2ch.net/software
 	  // スレッドの場合：http://anago.2ch.net/test/read.cgi/software/1365347301
@@ -538,23 +538,23 @@ void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link)
 	  wxString origNumber;     // スレッドの固有番号
 	  wxString title;          // スレッドの名前
 
-	  if (urlIsThread) 
+	  if (urlIsThread)
 	  {
-	       if (container.size() < 4) 
+	       if (container.size() < 4)
 	       {
 		    // ERROR
 		    wxLaunchDefaultBrowser(link);
 		    return;
 	       }
-	       
+
 	       boardNameAscii = wxString(container.at(3).c_str(), wxConvUTF8);
 	       boardURL       = wxT("http://") + host + wxT("/") + boardNameAscii;
 	       origNumber     = wxString(container.at(4).c_str(), wxConvUTF8);
 
-	  } 
-	  else 
+	  }
+	  else
 	  {
-	       if (container.size() < 1) 
+	       if (container.size() < 1)
 	       {
 		    // ERROR
 		    wxLaunchDefaultBrowser(link);
@@ -564,7 +564,7 @@ void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link)
 	       boardURL       = wxT("http://") + host + wxT("/") + boardNameAscii;
 	  }
 
-	  if (wxWindow* grand = this->GetGrandParent()) 
+	  if (wxWindow* grand = this->GetGrandParent())
 	  {
 	       wxAuiNotebook* threadNoteBook = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(THREAD_NOTEBOOK));
 	       wxAuiNotebook* boardNoteBook  = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(BOARD_NOTEBOOK));
@@ -574,17 +574,17 @@ void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link)
 		    // 必要な構造体を宣言する
 		    ThreadInfo threadInfoHash;
 		    URLvsBoardName boardInfoHash;
-	       
+
 		    if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(boardNoteBook->GetParent())) {
 
 			 // ハッシュから板名を探す
 			 NameURLHash::iterator it;
-			 for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it) 
+			 for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it)
 			 {
 			      wxString key  = it->first;
 			      boardInfoHash = it->second;
 
-			      if (boardInfoHash.boardNameAscii == boardNameAscii) 
+			      if (boardInfoHash.boardNameAscii == boardNameAscii)
 			      {
 				   boardName = boardInfoHash.boardName;
 				   break;
@@ -596,9 +596,9 @@ void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link)
 			 if (!urlIsThread) return; // スレッドでないならここで終了
 
 			 // スレッドタイトルを取得するため、リストコントロールを引き出してくる
-			 VirtualBoardListCtrl* vbListCtrl = 
+			 VirtualBoardListCtrl* vbListCtrl =
 			      dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardInfoHash.boardName));
-			 if (vbListCtrl == NULL) 
+			 if (vbListCtrl == NULL)
 			 {
 			      // ERROR
 			      wxLaunchDefaultBrowser(link);
@@ -606,23 +606,23 @@ void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link)
 			 }
 
 			 // STLで見つけてやる.ラムダ式など使ってみる.
-			 std::vector<VirtualBoardListItem>::iterator it2 = 
-			      std::find_if(vbListCtrl->m_vBoardList.begin(), 
+			 std::vector<VirtualBoardListItem>::iterator it2 =
+			      std::find_if(vbListCtrl->m_vBoardList.begin(),
 					   vbListCtrl->m_vBoardList.end(),
 					   [&origNumber] (const VirtualBoardListItem& item) -> bool {
 						return item.getOid() == origNumber;
 					   });
 
-			 if (it2 != vbListCtrl->m_vBoardList.end()) 
+			 if (it2 != vbListCtrl->m_vBoardList.end())
 			 {
 			      // タイトル取得
 			      const wxString title = (*it2).getTitle();
- 
+
 			      // ソケット通信を行う
 			      SocketCommunication* sock = new SocketCommunication();
-			      const wxString threadContentPath = sock->DownloadThread(boardName, 
-										      boardURL, 
-										      boardNameAscii, 
+			      const wxString threadContentPath = sock->DownloadThread(boardName,
+										      boardURL,
+										      boardNameAscii,
 										      origNumber);
 			      delete sock;
 			      // 無事に通信が終了したならばステータスバーに表示
@@ -641,8 +641,8 @@ void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link)
 
 			      wxJaneClone->SetThreadInfoHash(tiHash);
 
-			 } 
-			 else 
+			 }
+			 else
 			 {
 			      // ERROR
 			      wxLaunchDefaultBrowser(link);
@@ -650,32 +650,32 @@ void ThreadContentWindow::OnClickOrdinaryLink(const wxString& link)
 			 }
 		    }
 	       }
-	  }  
+	  }
      }
 }
 /*
  * レス番号を指定して書き込みウィンドウを開く
  */
-void ThreadContentWindow::CallResponseWindowWithAnchor(wxCommandEvent& event) 
+void ThreadContentWindow::CallResponseWindowWithAnchor(wxCommandEvent& event)
 {
      /**
       * ここのコードはthis->GetGrandParent()と書けば一度にJaneClone本体のインスタンスが
       * 取得できるはずなのだができない.一度JaneCloneの子インスタンスを取得してから
       * 改めてJaneClone本体のインスタンスを取得している. Is this bug ?
       */
-     if (wxWindow* grand = this->GetGrandParent()) 
+     if (wxWindow* grand = this->GetGrandParent())
      {
 	  wxAuiNotebook* threadNoteBook = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(THREAD_NOTEBOOK));
 	  wxAuiNotebook* boardNoteBook  = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(BOARD_NOTEBOOK));
 	  wxTextCtrl*    m_logCtrl      = dynamic_cast<wxTextCtrl*>(grand->FindWindowByLabel(LOG_WINDOW));
 
-	  if (threadNoteBook && boardNoteBook) 
+	  if (threadNoteBook && boardNoteBook)
 	  {
 	       // 必要な構造体を宣言する
 	       ThreadInfo threadInfoHash;
 	       URLvsBoardName boardInfoHash;
-	       
-	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(boardNoteBook->GetParent())) 
+
+	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(boardNoteBook->GetParent()))
 	       {
 		    // スレッド情報をコピーしてくる
 		    ThreadInfoHash tiHash;
@@ -687,7 +687,7 @@ void ThreadContentWindow::CallResponseWindowWithAnchor(wxCommandEvent& event)
 
 		    // ハッシュからURLを探す
 		    NameURLHash::iterator it;
-		    for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it) 
+		    for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it)
 		    {
 			 wxString key = it->first;
 			 boardInfoHash = it->second;
@@ -711,21 +711,21 @@ void ThreadContentWindow::CallResponseWindowWithAnchor(wxCommandEvent& event)
 /*
  * レス内容を引用して書き込みウィンドウを開く
  */
-void ThreadContentWindow::CallResponseWindowWithQuote(wxCommandEvent& event) 
+void ThreadContentWindow::CallResponseWindowWithQuote(wxCommandEvent& event)
 {
-     if (wxWindow* grand = this->GetGrandParent()) 
+     if (wxWindow* grand = this->GetGrandParent())
      {
 	  wxAuiNotebook* threadNoteBook = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(THREAD_NOTEBOOK));
 	  wxAuiNotebook* boardNoteBook  = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(BOARD_NOTEBOOK));
 	  wxTextCtrl*    m_logCtrl      = dynamic_cast<wxTextCtrl*>(grand->FindWindowByLabel(LOG_WINDOW));
 
-	  if (threadNoteBook && boardNoteBook) 
+	  if (threadNoteBook && boardNoteBook)
 	  {
 	       // 必要な構造体を宣言する
 	       ThreadInfo threadInfoHash;
 	       URLvsBoardName boardInfoHash;
-	       
-	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(boardNoteBook->GetParent())) 
+
+	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(boardNoteBook->GetParent()))
 	       {
 		    // スレッド情報をコピーしてくる
 		    ThreadInfoHash tiHash;
@@ -737,7 +737,7 @@ void ThreadContentWindow::CallResponseWindowWithQuote(wxCommandEvent& event)
 
 		    // ハッシュからURLを探す
 		    NameURLHash::iterator it;
-		    for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it) 
+		    for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it)
 		    {
 			 wxString key = it->first;
 			 boardInfoHash = it->second;
@@ -751,7 +751,7 @@ void ThreadContentWindow::CallResponseWindowWithQuote(wxCommandEvent& event)
 		    // レス用のウィンドウは 640:480なので、ちょうど中央にくるように調整する
 		    wxPoint point(wScreenPx/2 - 320, hScreenPx/2 - 240);
 		    ResponseWindow* response = new ResponseWindow(wxJaneClone, title, boardInfoHash, threadInfoHash, point, m_logCtrl);
-		
+
 		    // ウィンドウにテキストを設定する
 		    wxString quote  = wxString::Format(wxT(">>%ld\n"), m_response);
 		    quote += JaneCloneUtil::FindAnchoredResponseText(threadInfoHash.boardNameAscii, threadInfoHash.origNumber, m_response);
@@ -790,39 +790,39 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      wxBitmapType type;
 
      // FIXME: たぶん正規表現使った方がいい
-     if (!ext.CmpNoCase(wxT("png"))) 
+     if (!ext.CmpNoCase(wxT("png")))
      {
 	  type = wxBITMAP_TYPE_PNG;
-     } 
-     else if (!ext.CmpNoCase(wxT("jpg"))) 
+     }
+     else if (!ext.CmpNoCase(wxT("jpg")))
      {
 	  type = wxBITMAP_TYPE_JPEG;
-     } 
-     else if (!ext.CmpNoCase(wxT("jpeg"))) 
+     }
+     else if (!ext.CmpNoCase(wxT("jpeg")))
      {
 	  type = wxBITMAP_TYPE_JPEG;
-     } 
-     else if (!ext.CmpNoCase(wxT("gif"))) 
+     }
+     else if (!ext.CmpNoCase(wxT("gif")))
      {
 	  type = wxBITMAP_TYPE_GIF;
-     } 
-     else if (!ext.CmpNoCase(wxT("bmp"))) 
+     }
+     else if (!ext.CmpNoCase(wxT("bmp")))
      {
 	  type = wxBITMAP_TYPE_BMP;
-     } 
-     else if (!ext.CmpNoCase(wxT("ico"))) 
+     }
+     else if (!ext.CmpNoCase(wxT("ico")))
      {
 	  type = wxBITMAP_TYPE_ICO;
-     } 
-     else if (!ext.CmpNoCase(wxT("xpm"))) 
+     }
+     else if (!ext.CmpNoCase(wxT("xpm")))
      {
 	  type = wxBITMAP_TYPE_XPM;
-     } 
-     else if (!ext.CmpNoCase(wxT("tiff"))) 
+     }
+     else if (!ext.CmpNoCase(wxT("tiff")))
      {
 	  type = wxBITMAP_TYPE_TIF;
-     } 
-     else 
+     }
+     else
      {
 	  type = wxBITMAP_TYPE_ANY;
      }
@@ -830,9 +830,9 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      // resultの結果を元に画像のサムネイルと画像を配置する
      wxImage image;
      wxBitmap bitmap;
-     
+
      // load wxImage
-     if (!image.LoadFile(result->imagePath)) 
+     if (!image.LoadFile(result->imagePath))
      {
 	  wxMessageBox(wxT("画像ファイルの読み出しに失敗しました"),
 		       wxT("画像ビューア"),
@@ -843,7 +843,7 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      // wxImage to wxBitmap
      bitmap = wxBitmap(image);
 
-     if (!bitmap.Ok()) 
+     if (!bitmap.Ok())
      {
 	  wxMessageBox(wxT("画像データの内部変換に失敗しました"),
 		       wxT("画像ビューア"),
@@ -856,7 +856,7 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
      // FIXME: JaneClone-1.1.5
      // wxMemoryFSHandler::AddFile(filename, bitmap, type);
      // 現在位置の取得とスクロール
-     int x, y; 
+     int x, y;
      GetViewStart(&x, &y);
      this->AppendToPage(wxEmptyString);
      Scroll(x, y);
@@ -864,26 +864,26 @@ void ThreadContentWindow::SetJaneCloneImageViewer(const wxString& href, const wx
 /*
  * HTMLのデバッグ用イベント
  */
-void ThreadContentWindow::HtmlSourceDebug(wxCommandEvent& event) 
+void ThreadContentWindow::HtmlSourceDebug(wxCommandEvent& event)
 {
      wxMessageBox(this->m_htmlSource);
 }
 /*
  * レスの内容をクリップボードにコピーする
  */
-void ThreadContentWindow::CopyTContentsToClipBoard(wxCommandEvent& event) 
+void ThreadContentWindow::CopyTContentsToClipBoard(wxCommandEvent& event)
 {
-     if (wxWindow* grand = this->GetGrandParent()) 
+     if (wxWindow* grand = this->GetGrandParent())
      {
 	  wxAuiNotebook* threadNoteBook = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(THREAD_NOTEBOOK));
 
-	  if (threadNoteBook) 
+	  if (threadNoteBook)
 	  {
 	       // 必要な構造体を宣言する
 	       ThreadInfo threadInfoHash;
 	       URLvsBoardName boardInfoHash;
-	       
-	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(threadNoteBook->GetParent())) 
+
+	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(threadNoteBook->GetParent()))
 	       {
 		    // スレッド情報をコピーしてくる
 		    ThreadInfoHash tiHash;
@@ -903,11 +903,11 @@ void ThreadContentWindow::CopyTContentsToClipBoard(wxCommandEvent& event)
 	       }
 
 	       // レスの内容を取得する
-	       const wxString response = JaneCloneUtil::FindAnchoredResponseText(threadInfoHash.boardNameAscii, 
+	       const wxString response = JaneCloneUtil::FindAnchoredResponseText(threadInfoHash.boardNameAscii,
 										 threadInfoHash.origNumber,
 										 m_response, false);
 
-	       if (wxTheClipboard->Open()) 
+	       if (wxTheClipboard->Open())
 	       {
 		    // 情報をクリップボードに渡す
 		    wxTheClipboard->Clear();
@@ -920,7 +920,7 @@ void ThreadContentWindow::CopyTContentsToClipBoard(wxCommandEvent& event)
 /*
  * 指定されたレスの内容をすべてクリップボードにコピーする
  */
-void ThreadContentWindow::CopyTAllToClipBoard(wxCommandEvent& event) 
+void ThreadContentWindow::CopyTAllToClipBoard(wxCommandEvent& event)
 {
      // 必要な構造体を宣言する
      ThreadInfo     threadInfoHash;
@@ -928,12 +928,12 @@ void ThreadContentWindow::CopyTAllToClipBoard(wxCommandEvent& event)
      wxString       response;
      wxString       boardURL;
 
-     if (wxWindow* grand = this->GetGrandParent()) 
+     if (wxWindow* grand = this->GetGrandParent())
      {
 	  wxAuiNotebook* threadNoteBook = dynamic_cast<wxAuiNotebook*>(grand->FindWindowByLabel(THREAD_NOTEBOOK));
-	  if (threadNoteBook) 
-	  {	       
-	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(threadNoteBook->GetParent())) 
+	  if (threadNoteBook)
+	  {
+	       if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(threadNoteBook->GetParent()))
 	       {
 		    // スレッド情報をコピーしてくる
 		    ThreadInfoHash tiHash;
@@ -945,7 +945,7 @@ void ThreadContentWindow::CopyTAllToClipBoard(wxCommandEvent& event)
 
 		    // ハッシュからURLを探す
 		    NameURLHash::iterator it;
-		    for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it) 
+		    for (it = wxJaneClone->retainHash.begin(); it != wxJaneClone->retainHash.end(); ++it)
 		    {
 			 const wxString key = it->first;
 			 boardInfoHash = it->second;
@@ -964,7 +964,7 @@ void ThreadContentWindow::CopyTAllToClipBoard(wxCommandEvent& event)
 
      // ホスト名の後の板名を除く
      int begin = threadURL.Find(threadInfoHash.boardNameAscii);
-     if (begin == wxNOT_FOUND) 
+     if (begin == wxNOT_FOUND)
      {
 	  return;
      }
@@ -975,7 +975,7 @@ void ThreadContentWindow::CopyTAllToClipBoard(wxCommandEvent& event)
      threadURL += threadInfoHash.origNumber;
      threadURL += wxT("/");
 
-     if (wxTheClipboard->Open()) 
+     if (wxTheClipboard->Open())
      {
 	  wxTheClipboard->SetData(new wxTextDataObject(threadInfoHash.title + wxT("\n") + threadURL + wxT("\n") + response));
 	  wxTheClipboard->Close();
@@ -984,7 +984,7 @@ void ThreadContentWindow::CopyTAllToClipBoard(wxCommandEvent& event)
 /**
  * スキン用のファイルが有るかどうか確認する
  */
-bool ThreadContentWindow::CheckSkinFiles(SkinInfo* skin) 
+bool ThreadContentWindow::CheckSkinFiles(SkinInfo* skin)
 {
      // スキン用のパスが設定されていなければ即リターン
      const wxString key = wxT("DEFAULT_SKINFILE_PATH");
@@ -992,48 +992,48 @@ bool ThreadContentWindow::CheckSkinFiles(SkinInfo* skin)
      JaneCloneUtil::GetJaneCloneProperties(key, &skinPath);
      bool ret = false;
 
-     if (skinPath == wxEmptyString) 
+     if (skinPath == wxEmptyString)
      {
 	  return false;
      }
 
-     if (!wxDir::Exists(skinPath)) 
+     if (!wxDir::Exists(skinPath))
      {
-	  wxMessageBox(wxT("スキン用のディレクトリが存在しません、設定画面を開いてスキンのパス設定を確認してください。"), 
+	  wxMessageBox(wxT("スキン用のディレクトリが存在しません、設定画面を開いてスキンのパス設定を確認してください。"),
 		       wxT("スキン設定"), wxICON_ERROR);
 	  return false;
      }
 
      // Footer.html
-     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Footer.html"))) 
+     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Footer.html")))
      {
 	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Footer.html");
 	  skin->footer = ReadPlainTextFile(filePath);
 	  ret = true;
-     }	  
+     }
      // Header.html
-     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Header.html"))) 
+     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Header.html")))
      {
 	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Header.html");
 	  skin->header = ReadPlainTextFile(filePath);
 	  ret = true;
      }
      // NewRes.html
-     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("NewRes.html"))) 
+     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("NewRes.html")))
      {
 	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("NewRes.html");
 	  skin->newres = ReadPlainTextFile(filePath);
 	  ret = true;
      }
      // PopupRes.html
-     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("PopupRes.html"))) 
+     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("PopupRes.html")))
      {
 	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("PopupRes.html");
 	  skin->popup = ReadPlainTextFile(filePath);
 	  ret = true;
      }
      // Res.html
-     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Res.html"))) 
+     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Res.html")))
      {
 	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Res.html");
 	  skin->res = ReadPlainTextFile(filePath);
@@ -1042,18 +1042,18 @@ bool ThreadContentWindow::CheckSkinFiles(SkinInfo* skin)
      // ***.js
      // TODO: SpiderMonkeyの適用
 
-     if (ret) 
-     {  
+     if (ret)
+     {
 	  const wxString message = wxT("スキンを適用します\n");
 	  JaneCloneUiUtil::SendLoggingHelper(message);
      }
-     
+
      return ret;
 }
 /**
  * 指定されたファイル中のテキストをメモリに展開する
  */
-wxString ThreadContentWindow::ReadPlainTextFile(const wxString& filePath) 
+wxString ThreadContentWindow::ReadPlainTextFile(const wxString& filePath)
 {
      wxTextFile textFile;
      wxString   htmlDOM;

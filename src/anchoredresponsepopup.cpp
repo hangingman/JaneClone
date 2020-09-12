@@ -1,4 +1,4 @@
-﻿
+
 /* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
@@ -54,7 +54,7 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
      wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
      // wxHtmlWindowにHTMLソースを設定する
      htmlWin = new wxHtmlWindow(this, wxID_ANY, wxPoint(0, 0), size, wxHW_SCROLLBAR_AUTO);
-     
+
      if (!useSkin) {
 	  const int p = 12;
 	  static int f_size[] = {p - 2, p - 1, p, p + 1, p + 2, p + 3, p + 4 };
@@ -151,7 +151,7 @@ bool AnchoredResponsePopup::CheckSkinFiles(SkinInfo* skin) {
      }
 
      if (!wxDir::Exists(skinPath)) {
-	  wxMessageBox(wxT("スキン用のディレクトリが存在しません、設定画面を開いてスキンのパス設定を確認してください。"), 
+	  wxMessageBox(wxT("スキン用のディレクトリが存在しません、設定画面を開いてスキンのパス設定を確認してください。"),
 		       wxT("スキン設定"), wxICON_ERROR);
 	  return false;
      }
@@ -161,7 +161,7 @@ bool AnchoredResponsePopup::CheckSkinFiles(SkinInfo* skin) {
 	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Footer.html");
 	  skin->footer = ReadPlainTextFile(filePath);
 	  ret = true;
-     }	  
+     }
      // Header.html
      if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Header.html"))) {
 	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Header.html");
@@ -188,7 +188,7 @@ bool AnchoredResponsePopup::CheckSkinFiles(SkinInfo* skin) {
      }
      // ***.js
      // TODO: SpiderMonkeyの適用
-     
+
      return ret;
 }
 /**

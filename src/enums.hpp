@@ -1,4 +1,4 @@
-﻿/**
+/**
  * enums.hpp - janeclones' enums
  *
  * Copyright (C) 2013-2014 Hiroyuki Nagata <idiotpanzer@gmail.com>

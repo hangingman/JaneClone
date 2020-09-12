@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -33,12 +33,12 @@ BEGIN_EVENT_TABLE(BasicDrawPane, wxPanel)
   EVT_KEY_UP(BasicDrawPane::keyReleased)
   EVT_MOUSEWHEEL(BasicDrawPane::mouseWheelMoved)
 */
- 
+
 // catch paint events
 EVT_PAINT(BasicDrawPane::PaintEvent)
- 
+
 END_EVENT_TABLE()
- 
+
 // some useful events
 /*
   void BasicDrawPane::mouseMoved(wxMouseEvent& event) {}
@@ -50,7 +50,7 @@ END_EVENT_TABLE()
   void BasicDrawPane::keyPressed(wxKeyEvent& event) {}
   void BasicDrawPane::keyReleased(wxKeyEvent& event) {}
 */
- 
+
 BasicDrawPane::BasicDrawPane(wxWindow* parent, wxWindowID id, const wxString& title) :
 wxPanel(parent)
 {
@@ -59,12 +59,12 @@ wxPanel(parent)
      // ID
      this->SetId(id);
 }
- 
+
 /*
  * Called by the system of by wxWidgets when the panel needs
  * to be redrawn. You can also trigger this call by
  * calling Refresh()/Update().
- */ 
+ */
 void BasicDrawPane::PaintEvent(wxPaintEvent & evt)
 {
      wxPaintDC dc(this);
@@ -98,7 +98,7 @@ void BasicDrawPane::Render(wxDC&  dc)
      int width, height;
      this->GetSize(&width, &height);
 
-     if ( m_bgColor.IsOk() ) 
+     if ( m_bgColor.IsOk() )
      {
 	  dc.SetBrush(wxBrush(m_bgColor));
 	  dc.DrawRectangle(0, 0, width, height);

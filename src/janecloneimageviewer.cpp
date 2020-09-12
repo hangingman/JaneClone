@@ -1,4 +1,4 @@
-﻿/**
+/**
  * janecloneimageviewer.cpp - janeclone's plain imageviewer
  *
  * Copyright (c) 2013 Hiroyuki Nagata <idiotpanzer@gmail.com>

@@ -1,9 +1,9 @@
-﻿/**
+/**
  * imagepanel.cpp - simple panel for wxImage
  * I refer http://wiki.wxwidgets.org/An_image_panel
  *
  * Copyright (c) 2013 Hiroyuki Nagata <idiotpanzer@gmail.com>
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -39,7 +39,7 @@ BEGIN_EVENT_TABLE(wxImagePanel, wxPanel)
 */
 // catch paint events
 EVT_PAINT(wxImagePanel::PaintEvent)
- 
+
 END_EVENT_TABLE()
 
 /**
@@ -83,6 +83,7 @@ void wxImagePanel::PaintEvent(wxPaintEvent & evt) {
      // depending on your system you may need to look at double-buffered dcs
      wxPaintDC dc(this);
      Render(dc);
+
 }
 /*
  * Alternatively, you can use a clientDC to paint on the panel
@@ -143,7 +144,7 @@ void wxImagePanel::Resize(bool toBig) {
 	       return;
 	  } else if (toBig) {
 	       // 大きくする
-	       this->magnification += 0.1;	       
+	       this->magnification += 0.1;
 	  } else if (!toBig && magnification == 0.1) {
 	       return;
 	  } else {
@@ -173,8 +174,8 @@ void wxImagePanel::Reset() {
      if (originalHeight <= 0 || originalWidth <= 0) {
 	  return;
      }
-     
-     bool ret = image.LoadFile(imageInfo.imagePath, m_type);	  
+
+     bool ret = image.LoadFile(imageInfo.imagePath, m_type);
      if (!ret) {
 	  wxMessageBox(wxT("リサイズ実行時に画像ファイルが見つかりませんでした"));
 	  return;
@@ -193,4 +194,3 @@ double wxImagePanel::GetMagnification() {
 void wxImagePanel::SetMagnification(double magnification) {
      this->magnification = magnification;
 }
-

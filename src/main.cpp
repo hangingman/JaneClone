@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -33,7 +33,7 @@ static const wxCmdLineEntryDesc gCmdLineDesc[] =
 {
      // コマンドラインオプションに -p or pid=xxx と入力された場合
 #if wxCHECK_VERSION(2, 9, 0)
-     { wxCMD_LINE_OPTION, "p", "pid", "past worked JaneClone pid", 
+     { wxCMD_LINE_OPTION, "p", "pid", "past worked JaneClone pid",
 #else
        { wxCMD_LINE_OPTION, wxT("p"), wxT("pid"), wxT("past worked JaneClone pid"),
 #endif
@@ -78,22 +78,22 @@ bool wxMain::OnInit() {
 
     if (!wxApp::OnInit())
 	 return false;
-     
+
     // コマンドラインで与えられた引数を取得する
     if (m_pid != 0 && m_pid == wxGetProcessId()) {
 	 // このプロセスをしばらく待機
 	 // ! Fix Me ! なんかここ実装しなくても動作してるけど…
     }
-     
+
     // JaneClone起動前に複数起動をチェックする
     const wxString name = wxString::Format(_("JaneClone-%s"), wxGetUserId().c_str());
     m_checker = new wxSingleInstanceChecker(name);
     if ( m_checker->IsAnotherRunning()) {
-	 wxMessageBox(wxT("誤作動防止のためJaneCloneは複数起動できません。終了します。"), 
+	 wxMessageBox(wxT("誤作動防止のためJaneCloneは複数起動できません。終了します。"),
 	    wxT("JaneClone起動"), wxOK | wxICON_ERROR);
 	 return false;
     }
-     
+
     wxInitAllImageHandlers();
     wxImage::AddHandler( new wxPNGHandler );
     wxFileSystem::AddHandler(new wxMemoryFSHandler);
@@ -124,15 +124,15 @@ int wxMain::OnExit() {
  */
 int wxMain::FilterEvent(wxEvent& event) {
 
-    if (event.GetEventType() == wxEVT_KEY_DOWN) 
+    if (event.GetEventType() == wxEVT_KEY_DOWN)
     {
 	  wxKeyEvent e = dynamic_cast<wxKeyEvent&>(event);
 
-	  if(e.GetModifiers() == wxMOD_CONTROL) 
+	  if(e.GetModifiers() == wxMOD_CONTROL)
 	  {
 	       // Ctrlキー同時押し
 	       bool ret = -1;
-	       switch(e.GetKeyCode()) 
+	       switch(e.GetKeyCode())
 	       {
 	       case 'F':
 		    wxJaneClone->CtrlF(e);
@@ -143,12 +143,12 @@ int wxMain::FilterEvent(wxEvent& event) {
 	       }
 
 	       return -1;
-	  } 
+	  }
 	  else
 	  {
 	       // 普通のキー
 	       bool ret = -1;
-	       switch(e.GetKeyCode()) 
+	       switch(e.GetKeyCode())
 	       {
 	       case WXK_RETURN:
 		    ret = wxJaneClone->Enter(e);
@@ -163,7 +163,7 @@ int wxMain::FilterEvent(wxEvent& event) {
 
 	  return -1;
     }
- 
+
     return -1;
 }
 

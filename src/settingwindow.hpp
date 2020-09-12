@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -31,15 +31,15 @@
 #include "enums.hpp"
 #include "otherpanels.hpp"
 
-class SettingDialog: public wxDialog 
+class SettingDialog: public wxDialog
 {
 
 public:
      /**
       * 設定画面のコンストラクタ
       */
-     SettingDialog(wxWindow* parent, 
-		   int id, 
+     SettingDialog(wxWindow* parent,
+		   int id,
 		   const wxString& title);
 
 #ifdef __WXMAC__
@@ -90,15 +90,15 @@ protected:
 /**
  * ビューア設定画面
  */
-class ViewerSettingDialog: public wxDialog 
+class ViewerSettingDialog: public wxDialog
 {
 
 public:
      /**
       * ビューア設定画面のコンストラクタ
       */
-     ViewerSettingDialog(wxWindow* parent, 
-			 int id, 
+     ViewerSettingDialog(wxWindow* parent,
+			 int id,
 			 const wxString& title);
 
 private:

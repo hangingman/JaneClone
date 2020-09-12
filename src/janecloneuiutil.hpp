@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -43,7 +43,7 @@ public:
      /**
       * wxWidgetsのイベント通知関数のラッパー
       *
-      * @param const wxWindowID type 
+      * @param const wxWindowID type
       * @param const wxWindowID id
       * @param const wxString&   m          Message for event destination
       * @param wxObject* o          wxObject for event destination
@@ -58,8 +58,3 @@ public:
 };
 
 #endif /* JANECLONEUIUTIL_HPP_ */
-
-
-
-
-

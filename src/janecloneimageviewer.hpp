@@ -1,8 +1,8 @@
-﻿/**
+/**
  * janecloneimageviewer.hpp -  janeclone's plain imageviewer
  *
  * Copyright (C) 2013-2014 Hiroyuki Nagata <idiotpanzer@gmail.com>
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -48,7 +48,7 @@ public:
      JaneCloneImageViewer(wxWindow* parent, int id, const wxString& title,
 			  const wxPoint& pos = wxDefaultPosition, const wxSize& size =
 			  wxDefaultSize, long style = wxDEFAULT_FRAME_STYLE);
-     
+
      // 画像ファイルの情報を設定する
      void SetImageFile(std::unique_ptr<DownloadImageResult>& result);
      // ウィンドウ上で右クリックした場合の処理
@@ -58,7 +58,7 @@ private:
      /// Default constructor
      JaneCloneImageViewer();
      ~JaneCloneImageViewer();
-   
+
      void set_properties(const wxString& title);
      void do_layout();
 

@@ -1,9 +1,9 @@
-﻿/**
+/**
  * imagepanel.hpp - simple panel for wxImage
  * I refer http://wiki.wxwidgets.org/An_image_panel
  *
  * Copyright (C) 2013-2014 Hiroyuki Nagata <idiotpanzer@gmail.com>
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -39,7 +39,7 @@ public:
      /// Copy constructor
      wxImagePanel(const wxImagePanel& rhs);
      /// Assignment operator
-     wxImagePanel& operator=(const wxImagePanel& rhs);     
+     wxImagePanel& operator=(const wxImagePanel& rhs);
 
      void PaintEvent(wxPaintEvent & evt);
      void PaintNow();
@@ -50,7 +50,7 @@ public:
 	  {
 	       return imageInfo;
 	  };
-     
+
      void Rotate90(bool clockwise);
      void Resize(bool toBig);
      void Reset();

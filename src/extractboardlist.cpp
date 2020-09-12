@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -96,7 +96,7 @@ void ExtractBoardList::FindBoardInfo(xmlNode*& element) {
 		    for (xmlAttrPtr attr = node->properties; attr != NULL; attr = attr->next) {
 			 if (xmlStrcasecmp(attr->name, (const xmlChar*) "HREF") == 0) {
 			      // 配列に要素を詰め込む
-			      if (sizeof(node->children->content) > 0 && 
+			      if (sizeof(node->children->content) > 0 &&
 				  sizeof(node->properties[0].children->content) > 0) {
 				   // wx-2.8ではキャストの方法がこれしかない
 				   wxString name((const char*) node->children->content, wxConvUTF8);
@@ -157,9 +157,9 @@ const wxString ExtractBoardList::HtmlFormat(const wxString& html)
 	  xmlOutputBufferPtr buf = xmlOutputBufferCreateIO((xmlOutputWriteCallback)writeToWxString,
 							   (xmlOutputCloseCallback)closeWxString,
 							   &val, 0);
-	  
+
 	  htmlDocContentDumpOutput(buf,
-				   docPtr, 
+				   docPtr,
 				   "utf-8");
 
 	  xmlOutputBufferClose(buf);

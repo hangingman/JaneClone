@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -33,10 +33,10 @@ IMPLEMENT_DYNAMIC_CLASS(VirtualBoardListCtrl, wxListCtrl)
  * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
  * @rapam bool	   targetIsShingetsu		 読み込み対象は新月のCSVか
  */
-VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent, 
+VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,
 					   const wxWindowID id,
 					   const wxString& boardName,
-					   const wxString& outputPath, 
+					   const wxString& outputPath,
 					   const std::map<wxString,ThreadList>& oldThreadMap,
 					   bool targetIsShingetsu):
 
@@ -77,11 +77,11 @@ wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRT
 	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
 	  if(ret) m_attr.SetFont(font);
      }
-     
+
      widgetsName = wxT("ID_ExtractFontButton");
      widgetsInfo.Clear();
      JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-     if (widgetsInfo != wxEmptyString) 
+     if (widgetsInfo != wxEmptyString)
      {
 	  wxFont font;
 	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
@@ -91,7 +91,7 @@ wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRT
      widgetsName = wxT("ID_ThreadListBGColorButton");
      widgetsInfo.Clear();
      JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-     if (widgetsInfo != wxEmptyString) 
+     if (widgetsInfo != wxEmptyString)
      {
 	  wxColour bgColor;
 	  bool ret = bgColor.Set(widgetsInfo);
@@ -101,8 +101,8 @@ wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRT
 	  // デフォルト設定
 	  m_attr.SetBackgroundColour(*wxLIGHT_GREY);
 	  m_attr_search.SetBackgroundColour(wxColour(wxT("YELLOW")));
-     }     
-     
+     }
+
      // ファイル読み出しメソッドの変更
 #ifdef USE_SHINGETSU
      targetIsShingetsu ? FileLoadMethodShingetsu(boardName, outputPath, oldThreadMap)
@@ -144,7 +144,7 @@ wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRT
 /**
  * 2chのdatファイルを読み出す処理
  */
-void VirtualBoardListCtrl::FileLoadMethod2ch(const wxString& boardName, const wxString& outputPath, 
+void VirtualBoardListCtrl::FileLoadMethod2ch(const wxString& boardName, const wxString& outputPath,
 					     const std::map<wxString,ThreadList>& oldThreadMap) {
 
      // 過去のデータがあるかどうかのフラグを立てる
@@ -274,7 +274,7 @@ void VirtualBoardListCtrl::FileLoadMethod2ch(const wxString& boardName, const wx
 /**
  * 新月ののcsvファイルを読み出す処理
  */
-void VirtualBoardListCtrl::FileLoadMethodShingetsu(const wxString& boardName, const wxString& outputPath, 
+void VirtualBoardListCtrl::FileLoadMethodShingetsu(const wxString& boardName, const wxString& outputPath,
 						   const std::map<wxString,ThreadList>& oldThreadMap) {
 
      // テキストファイルの読み込み
@@ -295,7 +295,7 @@ void VirtualBoardListCtrl::FileLoadMethodShingetsu(const wxString& boardName, co
 
 	  // lineをコンマで分割する
 	  wxStringTokenizer tkz(line, wxT(","));
-	  
+
 	  while (tkz.HasMoreTokens()) {
 
 	       itemFilename   = tkz.GetNextToken();
@@ -370,14 +370,14 @@ VirtualBoardList VirtualBoardListCtrl::ThreadListUpdate(const wxString& boardNam
      // テキストファイルの終端まで読み込む
      for (wxString line = datfile.GetFirstLine(); !datfile.Eof(); line = datfile.GetNextLine()) {
 
-	  if (line.Contains(_("&"))) { 
+	  if (line.Contains(_("&"))) {
 	       line = JaneCloneUtil::ConvCharacterReference(line);
 	  }
 
 	  // アイテム用の文字列を先に宣言する
 	  wxString itemNumber, itemBoardName, itemOid, itemSince, itemTitle, itemResponse, itemCachedResponseNumber,
 	       itemNewResponseNumber, itemIncreaseResponseNumber, itemMomentum, itemLastUpdate;
-	  
+
 	  // 番号
 	  itemNumber = wxString::Format(wxT("%i"), loopNumber);
 	  // 板名
@@ -524,7 +524,7 @@ wxListItemAttr* VirtualBoardListCtrl::OnGetItemAttr(long item) const {
 	       return (wxListItemAttr*)&m_attr_search;
 	  }
      }
-     
+
      return item % 2 ? NULL : (wxListItemAttr*)&m_attr;
 }
 /**
@@ -557,7 +557,7 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,const wxString& boar
 	  // datファイルの１行目だけ読み込む
 	  wxString line = datfile.GetFirstLine();
 
-	  if (line.Contains(_("&"))) { 
+	  if (line.Contains(_("&"))) {
 	       line = JaneCloneUtil::ConvCharacterReference(line);
 	  }
 	  /**
@@ -635,8 +635,8 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,const wxString& boar
  * 内部のリストをソートする
  */
 void VirtualBoardListCtrl::SortVectorItems(int col) {
-     
-     
+
+
      this->Hide();
      f_nowSearching = false;
 
@@ -652,7 +652,7 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
 	  f_check ? f_check = false
 	       : f_check = true;
 	  break;
-     
+
      case COL_NUM:
 	  f_number ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseNumber)
 	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardNumber);
@@ -672,11 +672,11 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
 	  f_response ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseResponse)
 	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardResponse);
 	  f_response ? f_response = false
-	       : f_response = true; 
+	       : f_response = true;
 
 	  break;
      case COL_CACHEDRES:
-	  
+
 	  f_cachedResponseNumber ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseCachedResponseNumber)
 	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardCachedResponseNumber);
 	  f_cachedResponseNumber ? f_cachedResponseNumber = false
@@ -685,7 +685,7 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
 	  break;
 
      case COL_NEWRESP:
-	  
+
 	  f_newResponseNumber ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseNewResponseNumber)
 	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardNewResponseNumber);
 	  f_newResponseNumber ? f_newResponseNumber = false
@@ -693,7 +693,7 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
 
 	  break;
      case COL_INCRESP:
-	  
+
 	  f_increaseResponseNumber ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseIncreaseResNum)
 	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardIncreaseResNum);
 	  f_increaseResponseNumber ? f_increaseResponseNumber = false
@@ -709,7 +709,7 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
 
 	  break;
      case COL_LASTUP:
-	  
+
 	  f_lastUpdate ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseLastUpdate)
 	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardLastUpdate);
 	  f_lastUpdate ? f_lastUpdate = false
@@ -717,7 +717,7 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
 
 	  break;
      case COL_SINCE:
-	  
+
 	  f_since ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseSince)
 	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardSince);
 	  f_since ? f_since = false
@@ -725,7 +725,7 @@ void VirtualBoardListCtrl::SortVectorItems(int col) {
 
 	  break;
      case COL_OID:
-	  
+
 	  f_since ? std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateReverseOid)
 	       : std::sort(m_vBoardList.begin(), m_vBoardList.end(), VirtualBoardListItem::PredicateForwardOid);
 	  f_since ? f_since = false
@@ -759,25 +759,25 @@ void VirtualBoardListCtrl::SearchAndSortItems(const wxString& keyword) {
      f_nowSearching = true;
 
      VirtualBoardList work;
-     
+
      // 文字列に一致するものをコピーして再構築
-     std::copy_if(m_vBoardList.begin(), 
-		  m_vBoardList.end(), 
-		  back_inserter(work), 
+     std::copy_if(m_vBoardList.begin(),
+		  m_vBoardList.end(),
+		  back_inserter(work),
 		  [&keyword] (const VirtualBoardListItem& item) -> bool {
 		       return item.getTitle().Contains(keyword);
 		  });
      // 当てはまった数を記録
      searchItemNum = work.size();
-     
+
      // 文字列に一致しないものをコピーして再構築
-     std::copy_if(m_vBoardList.begin(), 
-		  m_vBoardList.end(), 
-		  back_inserter(work), 
+     std::copy_if(m_vBoardList.begin(),
+		  m_vBoardList.end(),
+		  back_inserter(work),
 		  [&keyword] (const VirtualBoardListItem& item) -> bool {
 		       return ! item.getTitle().Contains(keyword);
 		  });
-     
+
      // リストを削除して構築し直す
      m_vBoardList.clear();
      m_vBoardList = std::move(work);

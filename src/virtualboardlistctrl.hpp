@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -34,8 +34,6 @@
 /**
  * スレッドの状態
  */
-
-
 static const int THREAD_STATE_NORMAL = -1;
 static const int THREAD_STATE_CHECK  =  0;
 static const int THREAD_STATE_ADD    =  1;
@@ -53,14 +51,14 @@ public:
      /**
       * 仮想リストの１アイテムを表すオブジェクトのコンストラクタ
       */
-     VirtualBoardListItem(const wxString& number, const wxString& title, const wxString& response, 
+     VirtualBoardListItem(const wxString& number, const wxString& title, const wxString& response,
 			  const wxString& cachedResponseNumber, const wxString& newResponseNumber, const wxString& increaseResponseNumber,
 			  const wxString& momentum, const wxString& lastUpdate, const wxString& since,
 			  const wxString& oid, const wxString& boardName) {
-	       
+
 	  // 各項目を設定する
 	  m_number                 = number;
-	  m_title		   = title; 
+	  m_title		   = title;
 	  m_response		   = response;
 	  m_cachedResponseNumber   = cachedResponseNumber;
 	  m_newResponseNumber	   = newResponseNumber;
@@ -129,8 +127,8 @@ public:
      wxString getFilename() const {
 	  return m_filename;
      };
-     
-     // それぞれのカラムをソートするPreidicate関数     
+
+     // それぞれのカラムをソートするPreidicate関数
 
      // ! Fix Me ! 繰り返しが多すぎる。もう少し効率的に書ける方法を探すべき
      static bool PredicateForwardCheck(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
@@ -144,11 +142,11 @@ public:
      static bool PredicateForwardNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getNumber()) < wxAtoi(rItem.getNumber());
      };
-     
+
      static bool PredicateReverseNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getNumber()) > wxAtoi(rItem.getNumber());
      };
-     
+
      static bool PredicateForwardTitle(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return lItem.getTitle() > rItem.getTitle();
      };
@@ -160,7 +158,7 @@ public:
      static bool PredicateForwardResponse(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getResponse()) < wxAtoi(rItem.getResponse());
      };
-     
+
      static bool PredicateReverseResponse(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getResponse()) > wxAtoi(rItem.getResponse());
      };
@@ -168,7 +166,7 @@ public:
      static bool PredicateForwardCachedResponseNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getCachedResponseNumber()) < wxAtoi(rItem.getCachedResponseNumber());
      };
-     
+
      static bool PredicateReverseCachedResponseNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getCachedResponseNumber()) > wxAtoi(rItem.getCachedResponseNumber());
      };
@@ -176,7 +174,7 @@ public:
      static bool PredicateForwardNewResponseNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getNewResponseNumber()) < wxAtoi(rItem.getNewResponseNumber());
      };
-     
+
      static bool PredicateReverseNewResponseNumber(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getNewResponseNumber()) > wxAtoi(rItem.getNewResponseNumber());
      };
@@ -184,7 +182,7 @@ public:
      static bool PredicateForwardIncreaseResNum(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getIncreaseResponseNumber()) < wxAtoi(rItem.getIncreaseResponseNumber());
      };
-     
+
      static bool PredicateReverseIncreaseResNum(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getIncreaseResponseNumber()) > wxAtoi(rItem.getIncreaseResponseNumber());
      };
@@ -192,7 +190,7 @@ public:
      static bool PredicateForwardMomentum(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getMomentum()) < wxAtoi(rItem.getMomentum());
      };
-     
+
      static bool PredicateReverseMomentum(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getMomentum()) > wxAtoi(rItem.getMomentum());
      };
@@ -200,7 +198,7 @@ public:
      static bool PredicateForwardLastUpdate(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return lItem.getLastUpdate() < rItem.getLastUpdate();
      };
-     
+
      static bool PredicateReverseLastUpdate(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return lItem.getLastUpdate() > rItem.getLastUpdate();
      };
@@ -208,7 +206,7 @@ public:
      static bool PredicateForwardSince(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return lItem.getSince() < rItem.getSince();
      };
-     
+
      static bool PredicateReverseSince(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return lItem.getSince() > rItem.getSince();
      };
@@ -216,7 +214,7 @@ public:
      static bool PredicateForwardOid(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getOid()) < wxAtoi(rItem.getOid());
      };
-     
+
      static bool PredicateReverseOid(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return wxAtoi(lItem.getOid()) > wxAtoi(rItem.getOid());
      };
@@ -224,7 +222,7 @@ public:
      static bool PredicateForwardBoardName(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return lItem.getBoardName() < rItem.getBoardName();
      };
-     
+
      static bool PredicateReverseBoardName(const VirtualBoardListItem& lItem, const VirtualBoardListItem& rItem){
 	  return lItem.getBoardName() > rItem.getBoardName();
      };
@@ -300,21 +298,21 @@ public:
       */
      VirtualBoardListCtrl(wxWindow* parent,
 			  const wxWindowID id,
-			  const wxString& boardName, 
-			  const wxString& outputPath, 
-			  const std::map<wxString,ThreadList>& oldThreadMap, 
+			  const wxString& boardName,
+			  const wxString& outputPath,
+			  const std::map<wxString,ThreadList>& oldThreadMap,
 			  bool targetIsShingetsu = false);
      /**
       * 2chのdatファイルを読み出す処理
       */
-     void FileLoadMethod2ch(const wxString& boardName, const wxString& outputPath, 
+     void FileLoadMethod2ch(const wxString& boardName, const wxString& outputPath,
 			    const std::map<wxString,ThreadList>& oldThreadMap);
 
 #ifdef USE_SHINGETSU
      /**
       * 新月ののcsvファイルを読み出す処理
       */
-     void FileLoadMethodShingetsu(const wxString& boardName, const wxString& outputPath, 
+     void FileLoadMethodShingetsu(const wxString& boardName, const wxString& outputPath,
 				  const std::map<wxString,ThreadList>& oldThreadMap);
 #endif /** USE_SHINGETSU */
      /**
@@ -365,7 +363,7 @@ public:
      long GetItemCount() {
 	  return m_vBoardList.size();
      }
-     
+
      // 内部にあるリスト
      VirtualBoardList m_vBoardList;
 

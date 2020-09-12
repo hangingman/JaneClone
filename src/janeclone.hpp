@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -119,7 +119,7 @@ public:
      // JaneClone内部のイメージビューアのインスタンス
      static JaneCloneImageViewer* imageViewer;
      static JaneCloneImageViewer* GetJaneCloneImageViewer();
-     
+
      // 再起動処理のためのフラグ
      static bool restartAppFlag;
      // ユーザーが最後に触ったノートブックのオブジェクトを記憶する
@@ -175,10 +175,10 @@ public:
 	       }
 	  } else if (this->userLastAttachedNotebook == THREAD_NOTEBOOK) {
                // スレッド内容ウィンドウの処理
-	       ThreadContentBar* contentBar = 
+	       ThreadContentBar* contentBar =
 		    dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(threadNoteBook->GetSelection()));
-	  
-	       if ( wxPanel* searchBarPanel 
+
+	       if ( wxPanel* searchBarPanel
 		    = dynamic_cast<wxPanel*>(wxWindow::FindWindowById(ID_ThreadContentSearchBar, contentBar))) {
 		    // スレッド内容バーの子ウィンドウを取り出して命令する
 		    searchBarPanel->GetNextSibling()->SetFocus();
@@ -194,7 +194,7 @@ public:
      };
 
 #ifdef __WXMAC__
-     /** 
+     /**
       * 送られてきた情報をもとにGUIを更新するMacOSX特別処理 Macいい加減にしろよ...
       */
      void UpdateJaneCloneUI(wxUpdateUIEvent& event) {
@@ -243,7 +243,7 @@ public:
 		    vbox->Add(m_fav_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
 		    m_favoriteTreePanel->SetSizer(vbox);
 		    m_favoriteTreePanel->Fit();
-	       } 
+	       }
 	       break;
 
 	       case ID_NowReadingTreectrl: // 閲覧中ツリー
@@ -254,9 +254,9 @@ public:
 		    vbox->Add(m_now_reading_tree_ctrl, 1, wxLEFT | wxRIGHT | wxEXPAND, 5);
 		    m_nowReadingTreePanel->SetSizer(vbox);
 		    m_nowReadingTreePanel->Fit();
-	       } 
+	       }
 	       break;
-	       
+
 	       }
 	  }
      };
@@ -298,11 +298,11 @@ public:
      void CopyBTitleToClipBoard(wxCommandEvent& event);
      void CopyBBothDataToClipBoard(wxCommandEvent& event);
      void DeleteBSelectedDatFile(wxCommandEvent& event);
-     void DeleteBAllDatFile(wxCommandEvent& event);        
+     void DeleteBAllDatFile(wxCommandEvent& event);
      void DeleteBAllDatFileWithoutFav(wxCommandEvent& event);
      void CallResponseWindow(wxCommandEvent& event);
      void OnThreadListSort(wxCommandEvent& event);
-     
+
      // スレタブでの処理
      void OneThreadTabClose(wxCommandEvent& event);
      void ExcepSelThreadTabClose(wxCommandEvent& event);
@@ -435,9 +435,9 @@ public:
       * 右上のオブジェクトとメソッド
       */
      // ノートブックに反映する際のコールバック
-     void SetThreadListItemNew( wxString boardName, wxString outputPath, size_t selectedPage, 
+     void SetThreadListItemNew( wxString boardName, wxString outputPath, size_t selectedPage,
 				const std::map<wxString,ThreadList>& oldThreadMap);
-     void SetThreadListItemUpdate( wxString boardName,  wxString outputPath, size_t selectedPage, 
+     void SetThreadListItemUpdate( wxString boardName,  wxString outputPath, size_t selectedPage,
 				   const std::map<wxString,ThreadList>& oldThreadMap);
      void UpdateThreadTabIcons();
 
@@ -477,7 +477,7 @@ private:
 			 wxString& origNumber, wxString& extractId, wxPoint& anchorPoint);
      // 被レス状態を元に新しいポップアップウィンドウを出現させる
      void SetPopUpWindowByIndex(wxHtmlCellEvent& event, wxString& extractIndex, wxPoint& anchorPoint);
-     
+
      /**
       *  フォント読み出し系の処理
       */

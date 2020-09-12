@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -308,18 +308,18 @@ typedef struct
 
 // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
 // URLvsBoardNameのHashMap（板名をkeyとしてBoardURLとascii文字の固有名を持つ）
-WX_DECLARE_HASH_MAP( wxString,	 // type of the keys
-		  URLvsBoardName,// type of the values
-		  wxStringHash , // hasher
-		  wxStringEqual, // key equality predicate
-		  NameURLHash);	 // name of the class
+WX_DECLARE_HASH_MAP( wxString, // type of the keys
+		  URLvsBoardName,      // type of the values
+		  wxStringHash ,       // hasher
+		  wxStringEqual,       // key equality predicate
+		  NameURLHash);	       // name of the class
 
 // ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
-WX_DECLARE_HASH_MAP( wxString,		// type of the keys
-		  ThreadInfo,		// 実体を詰める
-		  wxStringHash ,	// hasher
-		  wxStringEqual,	// key equality predicate
-		  ThreadInfoHash);	// name of the class
+WX_DECLARE_HASH_MAP( wxString,        // type of the keys
+                     ThreadInfo,      // 実体を詰める
+                     wxStringHash ,   // hasher
+                     wxStringEqual,   // key equality predicate
+                     ThreadInfoHash); // name of the class
 
 
 /**

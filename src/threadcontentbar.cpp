@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -63,16 +63,16 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
      threadToolbar1 = new wxAuiToolBar(threadContentsBarPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 				       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
      threadToolbar1->SetToolBitmapSize(wxSize(32,32));
-     threadToolbar1->AddTool(ID_TCBAutoReload, wxT("autoreload"), 
-			     wxBitmap(autoReloadImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar1->AddTool(ID_TCBAutoReload, wxT("autoreload"),
+			     wxBitmap(autoReloadImg, wxBITMAP_TYPE_ANY),
 			     wxT("オートリロード・スクロール"));
-     threadToolbar1->AddTool(ID_TCBRedResExtract, wxT("redresextract"), 
-			     wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar1->AddTool(ID_TCBRedResExtract, wxT("redresextract"),
+			     wxBitmap(redResExtractImg, wxBITMAP_TYPE_ANY),
 			     wxT("赤レス抽出"));
      // 新着チェックボタンは▼ボタンを押すとメニューが出る
      threadToolbar1->AddSeparator();
-     threadToolbar1->AddTool(ID_TCBRefresh, wxT("refresh"), 
-			     wxBitmap(refreshImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar1->AddTool(ID_TCBRefresh, wxT("refresh"),
+			     wxBitmap(refreshImg, wxBITMAP_TYPE_ANY),
 			     wxT("新着チェック/表示レス数/スレの再描画"));
      // メニューの設定
      wxAuiToolBarItemArray prepend_items1;
@@ -99,29 +99,29 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
      threadToolbar2 = new wxAuiToolBar(threadContentsBarPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 				       wxAUI_TB_DEFAULT_STYLE | wxAUI_TB_OVERFLOW);
      threadToolbar2->SetToolBitmapSize(wxSize(32,32));
-     threadToolbar2->AddTool(ID_TCBScrollToNewRes, wxT("scrolltonewres"), 
-			     wxBitmap(scrollToNewResImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar2->AddTool(ID_TCBScrollToNewRes, wxT("scrolltonewres"),
+			     wxBitmap(scrollToNewResImg, wxBITMAP_TYPE_ANY),
 			     wxT("新着までスクロール"));
-     threadToolbar2->AddTool(ID_TCBStop, wxT("stop"), 
-			     wxBitmap(stopImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar2->AddTool(ID_TCBStop, wxT("stop"),
+			     wxBitmap(stopImg, wxBITMAP_TYPE_ANY),
 			     wxT("中止"));
-     threadToolbar2->AddTool(ID_TCBResExtract, wxT("resextract"), 
-			     wxBitmap(resExtractImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar2->AddTool(ID_TCBResExtract, wxT("resextract"),
+			     wxBitmap(resExtractImg, wxBITMAP_TYPE_ANY),
 			     wxT("レス抽出"));
-     threadToolbar2->AddTool(ID_TCBNewThread, wxT("newthread"), 
-			     wxBitmap(newThreadImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar2->AddTool(ID_TCBNewThread, wxT("newthread"),
+			     wxBitmap(newThreadImg, wxBITMAP_TYPE_ANY),
 			     wxT("次スレ候補検索/次スレ候補を開く"));
-     threadToolbar2->AddTool(ID_CallResponseWindow, wxT("response"), 
-			     wxBitmap(responseImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar2->AddTool(ID_CallResponseWindow, wxT("response"),
+			     wxBitmap(responseImg, wxBITMAP_TYPE_ANY),
 			     wxT("レス"));
-     threadToolbar2->AddTool(ID_TCBBookMark, wxT("bookmark"), 
-			     wxBitmap(bookMarkImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar2->AddTool(ID_TCBBookMark, wxT("bookmark"),
+			     wxBitmap(bookMarkImg, wxBITMAP_TYPE_ANY),
 			     wxT("ブックマークに追加"));
-     threadToolbar2->AddTool(ID_TCBDeleteLog, wxT("deletelog"), 
-			     wxBitmap(deleteLogImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar2->AddTool(ID_TCBDeleteLog, wxT("deletelog"),
+			     wxBitmap(deleteLogImg, wxBITMAP_TYPE_ANY),
 			     wxT("ログ削除"));
-     threadToolbar2->AddTool(ID_TCBClose, wxT("close"), 
-			     wxBitmap(closeImg, wxBITMAP_TYPE_ANY), 
+     threadToolbar2->AddTool(ID_TCBClose, wxT("close"),
+			     wxBitmap(closeImg, wxBITMAP_TYPE_ANY),
 			     wxT("タブを閉じる/新着なしのタブを閉じる"));
 
      // メニューの設定
@@ -192,7 +192,7 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
    #endif
 #else
      // 通常検索
-     normalSearchButton = new wxBitmapButton(searchBarPanel, wxID_ANY, 
+     normalSearchButton = new wxBitmapButton(searchBarPanel, wxID_ANY,
 					     wxBitmap(normalSearchImg, wxBITMAP_TYPE_PNG),
 					     wxDefaultPosition, threadContentBarImgSize);
 #endif
@@ -221,10 +221,10 @@ wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
 
 #else
      // 引っかかった検索ワードを前後させる
-     backwardButton = new wxBitmapButton(searchBarPanel, wxID_ANY, wxBitmap(backwardImg, wxBITMAP_TYPE_PNG), 
+     backwardButton = new wxBitmapButton(searchBarPanel, wxID_ANY, wxBitmap(backwardImg, wxBITMAP_TYPE_PNG),
 					 wxDefaultPosition, threadContentBarImgSize,
 					 wxBU_AUTODRAW, wxDefaultValidator, wxT("前へ"));
-     forwardButton  = new wxBitmapButton(searchBarPanel, wxID_ANY, wxBitmap(forwardImg , wxBITMAP_TYPE_PNG), 
+     forwardButton  = new wxBitmapButton(searchBarPanel, wxID_ANY, wxBitmap(forwardImg , wxBITMAP_TYPE_PNG),
 					 wxDefaultPosition, threadContentBarImgSize,
 					 wxBU_AUTODRAW, wxDefaultValidator, wxT("次へ"));
 #endif

@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -96,7 +96,7 @@ private:
      void set_properties(const wxString& title);
      void do_layout();
      // end wxGlade
-     
+
      // レスの投稿
      void OnPostResponse(wxCommandEvent &event);
      void QuitResponseWindow(wxCommandEvent &event);

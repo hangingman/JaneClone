@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -22,7 +22,6 @@
 
 #include "settingwindow.hpp"
 
-
 BEGIN_EVENT_TABLE(SettingDialog, wxDialog)
    EVT_BUTTON(ID_OnOkSetting, SettingDialog::OnQuit)
    EVT_BUTTON(ID_OnCancelSetting, SettingDialog::OnQuit)
@@ -33,13 +32,13 @@ END_EVENT_TABLE()
  * 設定画面のコンストラクタ
  */
 SettingDialog::SettingDialog(wxWindow* parent, int id, const wxString& title)
-:wxDialog(parent, id, title) 
+:wxDialog(parent, id, title)
 {
      bottomPanel = new wxPanel(this, wxID_ANY);
      splitterWindow = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_3D|wxSP_BORDER);
      // 左側のツリー部分
      treePanel = new wxPanel(splitterWindow, wxID_ANY);
-     settingTreeCtrl = new wxTreeCtrl(treePanel, ID_SettingPanelTree, wxDefaultPosition, wxDefaultSize, 
+     settingTreeCtrl = new wxTreeCtrl(treePanel, ID_SettingPanelTree, wxDefaultPosition, wxDefaultSize,
 				      wxTR_HIDE_ROOT|wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
      // 右側の設定画面部分
      settingPanel = new wxPanel(splitterWindow, wxID_ANY);
@@ -121,21 +120,21 @@ void SettingDialog::DoLayout() {
  */
 void SettingDialog::SaveConfig(const wxString& title)
 {
-     if ( title.Contains(wxT("User"))) 
+     if ( title.Contains(wxT("User")))
      {
-	  if ( UserSettingPanel* user = 
+	  if ( UserSettingPanel* user =
 	       dynamic_cast<UserSettingPanel*>
-	       (wxWindow::FindWindowById(ID_UserSettingPanel, settingPanel))) 
+	       (wxWindow::FindWindowById(ID_UserSettingPanel, settingPanel)))
 	  {
 	       // ユーザー設定パネル
 	       user->save_properties();
 	  }
      }
-     else if (title.Contains(wxT("通信")))	  
+     else if (title.Contains(wxT("通信")))
      {
-	  if ( NetworkSettingPanel* network = 
+	  if ( NetworkSettingPanel* network =
 	       dynamic_cast<NetworkSettingPanel*>
-	       (wxWindow::FindWindowById(ID_NetworkPanel, settingPanel))) 
+	       (wxWindow::FindWindowById(ID_NetworkPanel, settingPanel)))
 	  {
 	       // 設定パネル
 	       network->save_properties();
@@ -145,14 +144,14 @@ void SettingDialog::SaveConfig(const wxString& title)
 /**
  * 設定画面のクローズ
  */
-void SettingDialog::OnQuit(wxCommandEvent& event) 
+void SettingDialog::OnQuit(wxCommandEvent& event)
 {
      if (settingPanel) {
 	  // 設定の保存
 	  const wxString title = this->GetTitle();
 	  SaveConfig(title);
      }
-     
+
      this->EndModal(0);
 }
 /**
@@ -175,10 +174,10 @@ void SettingDialog::OnChangeSettingPanel(wxTreeEvent& event) {
 	  if (oldItemStr != wxEmptyString) {
 	       SaveConfig(oldItemStr);
 	  }
-	  
+
 	  // settingPanelのインスタンスが存在するならばDestroy
 	  // 子ウィンドウを殺す
-	  settingPanel->DestroyChildren();	  
+	  settingPanel->DestroyChildren();
      }
 
      if (itemStr == wxT("通信")) {
@@ -247,7 +246,7 @@ END_EVENT_TABLE()
  * ビューア設定画面のコンストラクタ
  */
 ViewerSettingDialog::ViewerSettingDialog(wxWindow* parent, int id, const wxString& title)
-:wxDialog(parent, id, title) 
+:wxDialog(parent, id, title)
 {
      bottomPanel = new wxPanel(this, wxID_ANY);
      settingNoteBook = new wxNotebook(this, ID_ViewerSettingNote);

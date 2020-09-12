@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -29,13 +29,13 @@
  * @param wxTreeCtrl* treeCtrl 設定対象のツリー
  * @param const wxWindowID id  設定対象のGUIの部位を表すID
  */
-void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWindowID id) 
+void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWindowID id)
 {
      // プロパティファイルにフォント設定/背景色があれば使用する
      wxString widgetsName = wxT("ID_TreeFontButton");
      wxString widgetsInfo = wxEmptyString;
      JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-     if (widgetsInfo != wxEmptyString) 
+     if (widgetsInfo != wxEmptyString)
      {
 	  wxFont font;
 	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
@@ -44,7 +44,7 @@ void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWin
      widgetsName = wxT("ID_BoardListBGColorButton");
      widgetsInfo.Clear();
      JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-     if (widgetsInfo != wxEmptyString) 
+     if (widgetsInfo != wxEmptyString)
      {
 	  wxColour bgColor;
 	  bool ret = bgColor.Set(widgetsInfo);
@@ -68,11 +68,11 @@ void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWin
 		       wxMouseEventHandler(JaneClone::OnEnterWindow),
 		       NULL, wxWindow::FindWindowById(ID_WxJaneClone));
 
-     switch (id) 
+     switch (id)
      {
 
      case ID_BoardTreectrl:
-     {	  
+     {
 	  treeCtrl->SetLabel(BOARD_TREE);
 	  wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("2ch板一覧"));
 	  treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
@@ -86,14 +86,14 @@ void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWin
 	  treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
      }
      break;
-	  
+
      case ID_NowReadingTreectrl:
      {
 	  treeCtrl->SetLabel(NOW_READ_TREE);
 	  wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("閲覧中一覧"));
 	  treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
      }
-     
+
      break;
      }
 };
@@ -102,7 +102,7 @@ void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWin
 /**
  * wxWidgetsのイベント通知関数のラッパー
  *
- * @param const wxWindowID type 
+ * @param const wxWindowID type
  * @param const wxWindowID id
  * @param const wxString&  m
  * @param wxObject* o
@@ -114,7 +114,7 @@ void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID i
      if (!m.IsEmpty()) {
 	  e->SetString(m.c_str());
      }
-     
+
      if (o) {
 	  e->SetEventObject(o);
      }
@@ -123,7 +123,7 @@ void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID i
      wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
 #else
      wxWindow::FindWindowById(ID_WxJaneClone)->AddPendingEvent(*e);
-#endif    
+#endif
 };
 
 

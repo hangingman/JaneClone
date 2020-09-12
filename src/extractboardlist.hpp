@@ -1,4 +1,4 @@
-﻿/**JaneClone - a text board site viewer for 2ch
+/**JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -39,7 +39,7 @@ private:
      // 内部の処理関数
      void FindBoardInfo(xmlNode*& element);
      void SetBoardInfo(const wxString category, const wxString name, const wxString url);
-     
+
      // 構造体
      htmlDocPtr m_doc;
      // 板情報を含む配列

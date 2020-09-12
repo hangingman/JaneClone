@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -34,10 +34,10 @@
  */
 class BasicDrawPane : public wxPanel
 {
-    
+
 public:
      BasicDrawPane(wxWindow* parent, wxWindowID id, const wxString& title);
-    
+
      void PaintEvent(wxPaintEvent & evt);
      void PaintNow();
      void Render(wxDC& dc);
@@ -51,7 +51,7 @@ public:
 	  {
 	       m_text = text;
 	  };
-     
+
      void SetInnerBGColor(const wxColour& color)
 	  {
 	       m_bgColor = color;
@@ -75,7 +75,7 @@ public:
      */
 
 private:
-     
+
      // 内部で保存するフォント
      wxFont   m_font;
      // 内部で保存するテキスト
@@ -84,7 +84,7 @@ private:
      wxColour m_bgColor;
      // 内部で保存するテキストの色
      wxColour m_textForeGround;
-    
+
      DECLARE_EVENT_TABLE()
 };
 

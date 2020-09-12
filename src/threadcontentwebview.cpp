@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@
  * 通常のコンストラクタ
  */
 ThreadContentWebView::ThreadContentWebView(wxWindow* parent, const wxString& threadContentPath):
-wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO) 
+wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, wxHW_SCROLLBAR_AUTO)
 {
      // ブラウザの準備
      wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
@@ -47,7 +47,7 @@ wxHtmlWindow(parent, ID_ThreadContentWindow, wxDefaultPosition, wxDefaultSize, w
 
      // メモリに読み込んだHTMLを表示する
      m_browser->SetPage(htmlSource, wxEmptyString);
-     
+
      // スクロールのフラグ
      fNeedScroll = false;
 }
@@ -103,7 +103,7 @@ const wxString ThreadContentWebView::GetConvertedDatFile(const wxString& threadC
 	  wxString embededCSS;
 
 	  // ファイルがオープンされているならば
-	  if (jsFile.IsOpened()) 
+	  if (jsFile.IsOpened())
 	  {
 		  // jQueryの読み込み
 		  wxFileName curdir( wxGetCwd(), "" );
@@ -129,7 +129,7 @@ const wxString ThreadContentWebView::GetConvertedDatFile(const wxString& threadC
 		  embededJS += jQueryPath;
 		  embededJS += wxT("contextMenu.min.js\" type=\"text/javascript\"></script>");
 
-		  for (embededJS += jsFile.GetFirstLine(); !jsFile.Eof(); embededJS += jsFile.GetNextLine()) 
+		  for (embededJS += jsFile.GetFirstLine(); !jsFile.Eof(); embededJS += jsFile.GetNextLine())
 		  {
 			  embededJS += wxT("\n");
 		  }
@@ -158,13 +158,13 @@ const wxString ThreadContentWebView::GetConvertedDatFile(const wxString& threadC
 	  // contextMenu
 	  /**
 	  htmlSource += wxT("<ul id=\"OnRightClickHtmlWindow\" class=\"contextMenu\">"
-			    "<li><a href=\"#ID_CopyFromHtmlWindow\"   >コピー</a></li>" 
-			    "<li><a href=\"#ID_CopyURLFromHtmlWindow\">リンクをコピー</a></li>" 
-			    "<li><a href=\"#ID_CopyURLFromHtmlWindow\">全て選択</a></li>" 
+			    "<li><a href=\"#ID_CopyFromHtmlWindow\"   >コピー</a></li>"
+			    "<li><a href=\"#ID_CopyURLFromHtmlWindow\">リンクをコピー</a></li>"
+			    "<li><a href=\"#ID_CopyURLFromHtmlWindow\">全て選択</a></li>"
 			    "</ul>");
 	  */
     	  SendLogging(htmlSource);
-     }     
+     }
 
      // テキストファイルの読み込み
      wxTextFile datfile;
@@ -174,7 +174,7 @@ const wxString ThreadContentWebView::GetConvertedDatFile(const wxString& threadC
 
      // ファイルがオープンされているならば
      if (datfile.IsOpened()) {
-	  for (str = datfile.GetFirstLine(); 
+	  for (str = datfile.GetFirstLine();
 	       !datfile.Eof();
 	       str = datfile.GetNextLine()) {
 
@@ -231,7 +231,7 @@ void ThreadContentWebView::ForceScroll(const wxPoint* p) {
 void ThreadContentWebView::OnSize(wxSizeEvent& event) {
 
      // 現在位置の取得
-     int x, y; 
+     int x, y;
      GetViewStart(&x, &y);
      wxHtmlWindow::OnSize(event);
      Scroll(x, y);
@@ -241,13 +241,13 @@ void ThreadContentWebView::OnSize(wxSizeEvent& event) {
  * 左クリック時に起こるイベント
  */
 void ThreadContentWebView::OnLeftClickHtmlWindow(wxHtmlLinkEvent& event) {
-     
+
      const wxHtmlLinkInfo linkInfo = event.GetLinkInfo();
      const wxString href = linkInfo.GetHref();
      const wxString target = linkInfo.GetTarget();
      wxString rest = wxEmptyString;
      long res = 0;
-     
+
      // bmp,jpg,jpeg,png,gifなどの拡張子が末尾に付いている場合ダウンロードを行う
      if (regexImage.IsValid()) {
 	  // 正規表現のコンパイルにエラーがなければマッチさせる
@@ -276,7 +276,7 @@ void ThreadContentWebView::OnClickOrdinaryLink(const wxString& link) {
      // URLからホスト名を取得する
      PartOfURI uri;
      bool ret = JaneCloneUtil::SubstringURI(link, &uri);
-     
+
      if (ret) {
 	  if (uri.hostname.Contains(wxT("2ch.net"))) useDefaultBrowser = false;
      } else {
@@ -315,7 +315,7 @@ void ThreadContentWebView::OnClickOrdinaryLink(const wxString& link) {
 		    wxLaunchDefaultBrowser(link);
 		    return;
 	       }
-	       
+
 	       boardNameAscii = wxString(container.at(3).c_str(), wxConvUTF8);
 	       boardURL       = wxT("http://") + host + wxT("/") + boardNameAscii;
 	       origNumber     = wxString(container.at(4).c_str(), wxConvUTF8);
@@ -340,7 +340,7 @@ void ThreadContentWebView::OnClickOrdinaryLink(const wxString& link) {
 		    // 必要な構造体を宣言する
 		    ThreadInfo threadInfoHash;
 		    URLvsBoardName boardInfoHash;
-	       
+
 		    if (JaneClone* wxJaneClone = dynamic_cast<JaneClone*>(boardNoteBook->GetParent())) {
 
 			 // ハッシュから板名を探す
@@ -360,7 +360,7 @@ void ThreadContentWebView::OnClickOrdinaryLink(const wxString& link) {
 			 if (!urlIsThread) return; // スレッドでないならここで終了
 
 			 // スレッドタイトルを取得するため、リストコントロールを引き出してくる
-			 VirtualBoardListCtrl* vbListCtrl = 
+			 VirtualBoardListCtrl* vbListCtrl =
 			      dynamic_cast<VirtualBoardListCtrl*>(wxWindow::FindWindowByName(boardInfoHash.boardName));
 			 if (vbListCtrl == NULL) {
 			      // ERROR
@@ -369,8 +369,8 @@ void ThreadContentWebView::OnClickOrdinaryLink(const wxString& link) {
 			 }
 
 			 // STLで見つけてやる.ラムダ式など使ってみる.
-			 std::vector<VirtualBoardListItem>::iterator it2 = 
-			      std::find_if(vbListCtrl->m_vBoardList.begin(), 
+			 std::vector<VirtualBoardListItem>::iterator it2 =
+			      std::find_if(vbListCtrl->m_vBoardList.begin(),
 					   vbListCtrl->m_vBoardList.end(),
 					   [&origNumber] (const VirtualBoardListItem& item) -> bool {
 						return item.getOid() == origNumber;
@@ -380,12 +380,12 @@ void ThreadContentWebView::OnClickOrdinaryLink(const wxString& link) {
 
 			      // タイトル取得
 			      const wxString title = (*it2).getTitle();
- 
+
 			      // ソケット通信を行う
 			      SocketCommunication* sock = new SocketCommunication();
-			      const wxString threadContentPath = sock->DownloadThread(boardName, 
-										      boardURL, 
-										      boardNameAscii, 
+			      const wxString threadContentPath = sock->DownloadThread(boardName,
+										      boardURL,
+										      boardNameAscii,
 										      origNumber);
 			      delete sock;
 			      // 無事に通信が終了したならばステータスバーに表示
@@ -411,7 +411,7 @@ void ThreadContentWebView::OnClickOrdinaryLink(const wxString& link) {
 			 }
 		    }
 	       }
-	  }  
+	  }
      }
 }
 /*
@@ -464,7 +464,7 @@ void ThreadContentWebView::SetJaneCloneImageViewer(const wxString& href, const w
      // resultの結果を元に画像のサムネイルと画像を配置する
      wxImage image;
      wxBitmap bitmap;
-     
+
      // load wxImage
      if (!image.LoadFile(result->imagePath)) {
 	  wxMessageBox(wxT("画像ファイルの読み出しに失敗しました"),
@@ -488,7 +488,7 @@ void ThreadContentWebView::SetJaneCloneImageViewer(const wxString& href, const w
      // FIXME: JaneClone-1.1.3
      //wxMemoryFSHandler::AddFile(filename, bitmap, type);
      // 現在位置の取得とスクロール
-     int x, y; 
+     int x, y;
      GetViewStart(&x, &y);
      this->AppendToPage(wxEmptyString);
      Scroll(x, y);
@@ -509,7 +509,7 @@ bool ThreadContentWebView::CheckSkinFiles(SkinInfo* skin) {
      }
 
      if (!wxDir::Exists(skinPath)) {
-	  wxMessageBox(wxT("スキン用のディレクトリが存在しません、設定画面を開いてスキンのパス設定を確認してください。"), 
+	  wxMessageBox(wxT("スキン用のディレクトリが存在しません、設定画面を開いてスキンのパス設定を確認してください。"),
 		       wxT("スキン設定"), wxICON_ERROR);
 	  return false;
      }
@@ -519,7 +519,7 @@ bool ThreadContentWebView::CheckSkinFiles(SkinInfo* skin) {
 	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Footer.html");
 	  skin->footer = ReadPlainTextFile(filePath);
 	  ret = true;
-     }	  
+     }
      // Header.html
      if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Header.html"))) {
 	  const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Header.html");
@@ -547,11 +547,11 @@ bool ThreadContentWebView::CheckSkinFiles(SkinInfo* skin) {
      // ***.js
      // TODO: SpiderMonkeyの適用
 
-     if (ret) {  
+     if (ret) {
 	  wxString message = wxT("スキンを適用します\n");
 	  SendLogging(message);
      }
-     
+
      return ret;
 }
 /**

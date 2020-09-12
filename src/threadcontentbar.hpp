@@ -1,4 +1,4 @@
-﻿/* JaneClone - a text board site viewer for 2ch
+/* JaneClone - a text board site viewer for 2ch
  * Copyright (C) 2012-2014 Hiroyuki Nagata
  *
  * This program is free software; you can redistribute it and/or
@@ -53,7 +53,7 @@ class ThreadContentBar: public wxPanel {
 public:
      // begin wxGlade: ThreadContentBar::ids
      // end wxGlade
-     ThreadContentBar(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, 
+     ThreadContentBar(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize,
 		      long style=wxDEFAULT_FRAME_STYLE);
 
      // スレッドタイトルをクラスに設定する
@@ -146,7 +146,7 @@ private:
 #ifdef __WXMAC__
      // メインのスレッドにログとイベントを送る
      void SendUIUpdateEvent() {
-	  JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI, 
+	  JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI,
 					    ID_ThreadContentBarUpdate,
 					    wxString("ThreadContentBar"),
 					    this);
