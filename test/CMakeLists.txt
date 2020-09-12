@@ -5,7 +5,6 @@ project(janeclone_test CXX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "ON")
 
 include("${wxWidgets_USE_FILE}")
 include_directories(${janeclone_SOURCE_DIR})
@@ -35,6 +34,3 @@ endif()
 add_test(NAME sqlite COMMAND $<TARGET_FILE:sqlite-test>)
 set_tests_properties(sqlite PROPERTIES
   ENVIRONMENT WK_DIR=${root_BINARY_DIR}/test)
-
-add_custom_target(testclean ALL
-  COMMAND rm -f sqlite-test)

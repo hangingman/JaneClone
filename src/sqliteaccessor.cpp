@@ -113,7 +113,6 @@ SQLiteAccessor::SQLiteAccessor() {
                              "    uuid_filename TEXT"
                              ");"));
     })(db);
-
 }
 
 /**
@@ -122,17 +121,22 @@ SQLiteAccessor::SQLiteAccessor() {
 void SQLiteAccessor::SetBoardInfoCommit(wxArrayString* boardInfoArray) {
 
     DB db;
-
     AutoCloseable([&](DB& db)
     {
         // 既存のデータは消しておく
-        const wxString sqlDel = wxT("DELETE FROM BOARD_INFO");
+        const wxString sqlDel = wxT("DELETE FROM board_info;");
         auto stmt1 = db.PrepareStatement(sqlDel);
         stmt1.ExecuteUpdate();
 
         // 板一覧更新では外部板情報はコミットされない
-        const wxString sqlIn = wxT("INSERT INTO BOARD_INFO (BOARDNAME_KANJI, BOARD_URL, CATEGORY, IS_OUTSIDE) VALUES (?, ?, ?, '0')");
-        auto stmt2 = db.PrepareStatement (sqlIn);
+        const wxString sqlIn = wxT("INSERT INTO board_info ("
+                                   "    BOARDNAME_KANJI,"
+                                   "    BOARD_URL,"
+                                   "    CATEGORY,"
+                                   "    IS_OUTSIDE)"
+                                   "VALUES (?, ?, ?, '0');");
+
+        auto stmt2 = db.PrepareStatement(sqlIn);
 
         for (unsigned int i = 0; i < boardInfoArray->GetCount(); i += 3) {
             // レコードを追加する
@@ -142,8 +146,9 @@ void SQLiteAccessor::SetBoardInfoCommit(wxArrayString* boardInfoArray) {
             stmt2.Bind(3, boardInfoArray->Item(i+2));
             stmt2.ExecuteUpdate();
         }
-    });
+    })(db);
 }
+
 /**
  * 板一覧情報をSQLite内のテーブルから取得しArrayStringの形で返す
  */
@@ -189,6 +194,7 @@ wxArrayString SQLiteAccessor::GetBoardInfo() {
 
     return array;
 }
+
 /**
  * 板一覧情報(カテゴリ一覧)をSQLite内のテーブルから取得しArrayStringの形で返す
  */
@@ -230,6 +236,7 @@ wxArrayString SQLiteAccessor::GetCategoryList() {
 
     return array;
 }
+
 /**
  * 指定されたテーブルに情報が存在するかどうか聞く(トランザクション処理なし単独)
  */
@@ -270,92 +277,60 @@ bool SQLiteAccessor::TableHasData(const wxString tableName) {
     // ここまで来てしまうとエラーなのでfalse
     return false;
 }
+
 /**
  * 指定されたテーブルを削除する
  */
 void SQLiteAccessor::DropTable(const wxString tableName) {
 
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
-
-    try {
-
-        // dbファイルの初期化
-        wxSQLite3Database::InitializeSQLite();
-        wxSQLite3Database db;
-        db.Open(dbFile);
-        db.Begin();
-
-        // PreparedStatementを準備する
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
         const wxString sql = wxT("DROP TABLE ?");
         wxSQLite3Statement stmt = db.PrepareStatement (sql);
         stmt.Bind(1, tableName);
-        stmt.ExecuteUpdate();
-
-        // コミット実行
-        db.Commit();
-        db.Close();
-
-    } catch (wxSQLite3Exception& e) {
-        wxMessageBox(e.GetMessage());
-    }
+    })(db);
 }
+
 /**
  * 指定されたテーブルのデータを削除する
  */
 void SQLiteAccessor::DeleteTableData(const wxString tableName) {
 
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
-
-    try {
-
-        // dbファイルの初期化
-        wxSQLite3Database::InitializeSQLite();
-        wxSQLite3Database db;
-        db.Open(dbFile);
-        db.Begin();
-        // PreparedStatementを準備する
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
         const wxString sql = wxT("DELETE FROM ") + tableName;
         wxSQLite3Statement stmt = db.PrepareStatement(sql);
         stmt.ExecuteUpdate();
-        // コミット実行
-        db.Commit();
-        db.Close();
-
-    } catch (wxSQLite3Exception& e) {
-        wxMessageBox(e.GetMessage());
-    }
+    })(db);
 }
+
 /**
  * ユーザーがJaneClone終了時にタブで開いていた板の名前を登録する
  */
 void SQLiteAccessor::SetUserLookingBoardList(wxArrayString& userLookingBoardListArray) {
 
     // Tableの中身を削除する
-    DeleteTableData(wxT("USER_LOOKING_BOARDLIST"));
+    DeleteTableData(wxT("user_looking_boardlist"));
 
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
-    wxSQLite3Database::InitializeSQLite();
-    wxSQLite3Database db;
-    db.Open(dbFile);
-    db.Begin();
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
+        // PreparedStatementを準備する
+        const wxString sqlIn = wxT("INSERT INTO user_looking_boardlist ("
+                                   "    boardname_kanji"
+                                   ") VALUES (?);");
+        wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
 
-    // PreparedStatementを準備する
-    const wxString sqlIn = wxT("INSERT INTO USER_LOOKING_BOARDLIST (BOARDNAME_KANJI) VALUES (?)");
-    wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
-
-    // 配列内のレコードを追加する
-    for (unsigned int i = 0; i < userLookingBoardListArray.GetCount();i++) {
-        // レコードを追加する
-        stmt.ClearBindings();
-        stmt.Bind(1, userLookingBoardListArray.Item(i));
-        stmt.ExecuteUpdate();
-    }
-    // コミット実行
-    db.Commit();
-    db.Close();
+        // 配列内のレコードを追加する
+        for (unsigned int i = 0; i < userLookingBoardListArray.GetCount();i++) {
+            // レコードを追加する
+            stmt.ClearBindings();
+            stmt.Bind(1, userLookingBoardListArray.Item(i));
+            stmt.ExecuteUpdate();
+        }
+    })(db);
 }
 /**
  * JaneClone開始時に以前ユーザーがタブで開いていた板の名前を取得する
@@ -396,34 +371,32 @@ wxArrayString SQLiteAccessor::GetUserLookedBoardList() {
 void SQLiteAccessor::SetUserLookingThreadList(wxArrayString& userLookingThreadListArray) {
 
     // Tableの中身を削除する
-    DeleteTableData(wxT("USER_LOOKING_THREADLIST"));
+    DeleteTableData(wxT("user_looking_threadlist"));
 
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
-    wxSQLite3Database::InitializeSQLite();
-    wxSQLite3Database db;
-    db.Open(dbFile);
-    db.Begin();
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
+        // PreparedStatementを準備する
+        const wxString sqlIn
+            = wxT("INSERT INTO user_looking_threadlist ("
+                  "    thread_title,"
+                  "    thread_orig_num,"
+                  "    boardname_ascii"
+                  ") VALUES (?, ?, ?);");
+        auto stmt = db.PrepareStatement(sqlIn);
 
-    // PreparedStatementを準備する
-    const wxString sqlIn
-        = wxT("INSERT INTO USER_LOOKING_THREADLIST (THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII) VALUES (?, ?, ?)");
-    wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
-
-    // 配列内のレコードを追加する
-    for (unsigned int i = 0; i < userLookingThreadListArray.GetCount();i+=3) {
-        // レコードを追加する
-        stmt.ClearBindings();
-        stmt.Bind(1, userLookingThreadListArray.Item(i));
-        stmt.Bind(2, userLookingThreadListArray.Item(i+1));
-        stmt.Bind(3, userLookingThreadListArray.Item(i+2));
-        stmt.ExecuteUpdate();
-    }
-    // コミット実行
-    db.Commit();
-    db.Close();
-
+        // 配列内のレコードを追加する
+        for (unsigned int i = 0; i < userLookingThreadListArray.GetCount();i+=3) {
+            // レコードを追加する
+            stmt.ClearBindings();
+            stmt.Bind(1, userLookingThreadListArray.Item(i));
+            stmt.Bind(2, userLookingThreadListArray.Item(i+1));
+            stmt.Bind(3, userLookingThreadListArray.Item(i+2));
+            stmt.ExecuteUpdate();
+        }
+    })(db);
 }
+
 /**
  * JaneClone開始時に以前ユーザーがタブで開いていたスレッドの情報を取得する
  */
@@ -461,39 +434,36 @@ wxArrayString SQLiteAccessor::GetUserLookedThreadList() {
     }
     return array;
 }
+
 /**
  * ユーザーがスレッドの情報をお気に入りに登録する
  */
 void SQLiteAccessor::SetUserFavoriteThreadList(wxArrayString& userFavoriteThreadListArray) {
 
     // Tableの中身を削除する
-    DeleteTableData(wxT("USER_FAVORITE_THREADLIST"));
+    DeleteTableData(wxT("user_favorite_threadlist"));
 
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
-    wxSQLite3Database::InitializeSQLite();
-    wxSQLite3Database db;
-    db.Open(dbFile);
-    db.Begin();
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
+        const wxString sqlIn
+            = wxT("INSERT INTO user_favorite_threadlist ("
+                  "    thread_title,"
+                  "    thread_orig_num,"
+                  "    boardname_ascii"
+                  ") VALUES (?, ?, ?);");
+        wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
 
-    // PreparedStatementを準備する
-    const wxString sqlIn
-        = wxT("insert into USER_FAVORITE_THREADLIST (THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII) VALUES (?, ?, ?)");
-    wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
-
-    // 配列内のレコードを追加する
-    for (unsigned int i = 0; i < userFavoriteThreadListArray.GetCount();i+=3) {
-        // レコードを追加する
-        stmt.ClearBindings();
-        stmt.Bind(1, userFavoriteThreadListArray.Item(i));
-        stmt.Bind(2, userFavoriteThreadListArray.Item(i+1));
-        stmt.Bind(3, userFavoriteThreadListArray.Item(i+2));
-        stmt.ExecuteUpdate();
-    }
-    // コミット実行
-    db.Commit();
-    db.Close();
-
+        // 配列内のレコードを追加する
+        for (unsigned int i = 0; i < userFavoriteThreadListArray.GetCount();i+=3) {
+            // レコードを追加する
+            stmt.ClearBindings();
+            stmt.Bind(1, userFavoriteThreadListArray.Item(i));
+            stmt.Bind(2, userFavoriteThreadListArray.Item(i+1));
+            stmt.Bind(3, userFavoriteThreadListArray.Item(i+2));
+            stmt.ExecuteUpdate();
+        }
+    })(db);
 }
 /**
  * ユーザーがお気に入りに登録しているスレッドの情報を取得する
@@ -529,6 +499,7 @@ void SQLiteAccessor::GetUserFavoriteThreadList(std::vector<std::tuple<wxString, 
         }
     }
 }
+
 /**
  * スレタブの情報をSQLiteに格納する
  */
@@ -540,45 +511,38 @@ void SQLiteAccessor::SetThreadInfo(ThreadInfo* t, const wxWindowID id) {
     // テーブル名の決定
     wxString tableName = wxEmptyString;
     if ( id == wxID_ANY) {
-        tableName = wxT("USER_CLOSED_THREADLIST");
+        tableName = wxT("user_closed_threadlist");
     } else if ( id == ID_AddThreadFavorite) {
-        tableName = wxT("USER_FAVORITE_THREADLIST");
+        tableName = wxT("user_favorite_threadlist");
     } else if ( id == ID_AddBoardFavorite) {
-        tableName = wxT("USER_FAVORITE_THREADLIST");
+        tableName = wxT("user_favorite_threadlist");
     } else {
         // ERROR
         return;
     }
 
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
-    wxSQLite3Database::InitializeSQLite();
-
-    try {
-        wxSQLite3Database db;
-        db.Open(dbFile);
-        db.Begin();
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
         /** 閉じられたスレタブの情報をインサート */
-        const wxString sqlIn = wxT("INSERT INTO ")
-            + tableName
-            + wxT(" (TIMEINFO, THREAD_TITLE, THREAD_ORIG_NUM, BOARDNAME_ASCII ) VALUES (?,?,?,?)");
+        const wxString sqlIn =
+            wxString::Format("INSERT INTO %s (", tableName)
+            + wxT("    timeinfo,"
+                  "    thread_title,"
+                  "    thread_orig_num,"
+                  "    boardname_ascii)"
+                  "VALUES (?,?,?,?);");
 
-        wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+        auto stmt = db.PrepareStatement(sqlIn);
         stmt.ClearBindings();
         stmt.BindTimestamp(1, now);
         stmt.Bind(2,t->title);
         stmt.Bind(3,t->origNumber);
         stmt.Bind(4,t->boardNameAscii);
         stmt.ExecuteUpdate();
-
-        // コミット実行
-        db.Commit();
-        db.Close();
-
-    } catch (wxSQLite3Exception& e) {
-        wxMessageBox(e.GetMessage());
-    }
+    })(db);
 }
+
 /**
  * 最近閉じた板タブ名リストを取得する
  */
@@ -620,6 +584,7 @@ wxArrayString SQLiteAccessor::GetClosedBoardInfo() {
 
     return array;
 }
+
 /**
  * 板タブを閉じた際に情報をSQLiteに格納する
  */
@@ -630,17 +595,17 @@ void SQLiteAccessor::SetClosedBoardInfo(URLvsBoardName* hash) {
     // 現在時間timestamp
     wxDateTime now = wxDateTime::Now();
 
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
-    wxSQLite3Database::InitializeSQLite();
-
-    try {
-        wxSQLite3Database db;
-        db.Open(dbFile);
-        db.Begin();
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
         /** 閉じられたスレタブの情報をインサート */
         const wxString sqlIn =
-            wxT("INSERT INTO USER_CLOSED_BOARDLIST(TIMEINFO, BOARDNAME_KANJI, BOARD_URL, BOARDNAME_ASCII) VALUES (?,?,?,?)");
+            wxT("INSERT INTO user_closed_boardlist ("
+                "    timeinfo,"
+                "    boardname_kanji,"
+                "    board_url,"
+                "    boardname_ascii)"
+                "VALUES (?,?,?,?);");
         wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
         stmt.ClearBindings();
         stmt.BindTimestamp(1, now);
@@ -648,15 +613,9 @@ void SQLiteAccessor::SetClosedBoardInfo(URLvsBoardName* hash) {
         stmt.Bind(3,hash->boardURL);
         stmt.Bind(4,hash->boardNameAscii);
         stmt.ExecuteUpdate();
-
-        // コミット実行
-        db.Commit();
-        db.Close();
-
-    } catch (wxSQLite3Exception& e) {
-        wxMessageBox(e.GetMessage());
-    }
+    })(db);
 }
+
 /**
  * 最近閉じたスレタブ名リストを取得する
  */
@@ -711,6 +670,7 @@ wxArrayString SQLiteAccessor::GetThreadInfo(const wxWindowID id) {
 
     return array;
 }
+
 /**
  * 最近閉じたスレッドタブ情報を取得する
  */
@@ -761,6 +721,7 @@ void SQLiteAccessor::GetThreadFullInfo(const int number, std::unique_ptr<ThreadI
         wxMessageBox(e.GetMessage());
     }
 }
+
 /**
  * 指定されたテーブルにレコードが何件存在するかどうかを調べるメソッド
  */
@@ -796,6 +757,7 @@ int SQLiteAccessor::HowManyRecord(const wxString tableName) {
 
     return 0;
 }
+
 /**
  * JaneCloneが使用するSQLiteのDBファイルの場所を返す
  * 環境変数"JANECLONE_DB_FILE_PATH"が設定されていればその値を返す
@@ -823,45 +785,33 @@ void SQLiteAccessor::SetUserSearchedKeyword(const wxString& keyword, const wxWin
 
     // 現在時間timestamp
     wxDateTime now = wxDateTime::Now();
+    wxString boardName;
 
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
-    wxSQLite3Database::InitializeSQLite();
+    if (id == ID_BoardSearchBarCombo) {
+        boardName = wxT("user_searched_boardname");
+    } else if (id == ID_ThreadSearchBarCombo) {
+        boardName = wxT("user_searched_threadname");
+    } else {
+        // ERROR
+        return;
+    }
 
-    try {
-        wxSQLite3Database db;
-        db.Open(dbFile);
-        db.Begin();
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
+        const wxString sqlIn =
+            wxString::Format("INSERT INTO %s (", boardName)
+            + wxT("timeinfo, keyword) VALUES (?,?)");
 
-        wxString boardName;
-
-        if (id == ID_BoardSearchBarCombo) {
-            boardName = wxT("USER_SEARCHED_BOARDNAME");
-        } else if (id == ID_ThreadSearchBarCombo) {
-            boardName = wxT("USER_SEARCHED_THREADNAME");
-        } else {
-            // エラールート
-            db.Commit();
-            db.Close();
-            return;
-        }
-
-        const wxString sqlIn = wxT("INSERT INTO ") + boardName + wxT("(TIMEINFO, KEYWORD) VALUES (?,?)");
-        wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+        auto stmt = db.PrepareStatement (sqlIn);
         stmt.ClearBindings();
 
         stmt.BindTimestamp(1, now);
         stmt.Bind(2, keyword);
         stmt.ExecuteUpdate();
-
-        // コミット実行
-        db.Commit();
-        db.Close();
-
-    } catch (wxSQLite3Exception& e) {
-        wxMessageBox(e.GetMessage());
-    }
+    })(db);
 }
+
 /**
  * ユーザーが検索ボックスで検索したキーワードを取得する
  */
@@ -915,6 +865,7 @@ wxArrayString SQLiteAccessor::GetUserSearchedKeyword(const wxWindowID id) {
 
     return array;
 }
+
 /**
  * 登録済みの新月の公開ノード一覧を取得する
  */
@@ -949,33 +900,34 @@ wxArrayString SQLiteAccessor::GetShingetsuNodeList() {
 
     return array;
 }
+
 /**
  * 新月の公開ノードを登録する
  */
 void SQLiteAccessor::SetShingetsuNode(const wxString& nodeURL) {
 
-
-    // dbファイルの初期化
-    wxString dbFile = GetDBFilePath();
     // 現在時間timestamp
     wxDateTime now = wxDateTime::Now();
 
-    try {
-
-        // dbファイルの初期化
-        wxString dbFile = GetDBFilePath();
-        wxSQLite3Database::InitializeSQLite();
-        wxSQLite3Database db;
-        db.Open(dbFile);
-        db.Begin();
-
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
         /** 同じURLが登録されているか */
 
         // リザルトセットを用意する
         wxSQLite3ResultSet rs;
         // SQL文を用意する
-        const wxString SQL_QUERY = wxT("select count(BOARD_URL) from BOARD_INFO_SHINGETSU where BOARD_URL = '") + nodeURL + wxT("'");
-        rs = db.ExecuteQuery(SQL_QUERY);
+        const wxString sqlSe =
+            wxT("SELECT"
+                "    COUNT(board_url) "
+                "FROM"
+                "    board_info_shingetsu "
+                "WHERE board_url = ?;");
+
+        auto stmt2 = db.PrepareStatement(sqlSe);
+        stmt2.ClearBindings();
+        stmt2.Bind(1, nodeURL);
+        rs = stmt2.ExecuteQuery();
 
         int record = 0;
 
@@ -990,66 +942,62 @@ void SQLiteAccessor::SetShingetsuNode(const wxString& nodeURL) {
             stmt.Bind(2, nodeURL);
             stmt.ExecuteUpdate();
         }
-
-        // コミット実行
-        db.Commit();
-        db.Close();
-
-    } catch (wxSQLite3Exception& e) {
-        wxMessageBox(e.GetMessage());
-    }
+    })(db);
 }
+
 /**
  * ダウンロードした画像のファイル名とUUIDをデータベースに格納する
  */
 void SQLiteAccessor::SetImageFileName(std::vector<ImageFileInfo>& imageFileInfo)
 {
-    wxSQLite3Database db;
     wxDateTime now = wxDateTime::Now();
 
-    INITIALIZE_JC_WXSQLITE3(db, now)
-
-        for (std::vector<ImageFileInfo>::iterator it = imageFileInfo.begin(); it != imageFileInfo.end(); it++) {
-            const wxString sqlIn = wxT("INSERT INTO CACHED_IMAGE (TIMEINFO, FILENAME, UUID_FILENAME) VALUES (?,?,?)");
-            wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
+        for (auto it = imageFileInfo.begin(); it != imageFileInfo.end(); it++) {
+            const wxString sqlIn =
+                wxT("INSERT INTO cached_image ("
+                    "    timeinfo, filename, uuid_filename)"
+                    "VALUES (?,?,?);");
+            auto stmt = db.PrepareStatement(sqlIn);
             stmt.ClearBindings();
 
             stmt.BindTimestamp(1, now);
-
-#if !defined(__clang__) && ( __GNUC__ <= 4 && __GNUC_MINOR__ < 8 )
-            stmt.Bind(2, *it->fileName);
-            stmt.Bind(3, *it->uuidFileName);
-#else
             stmt.Bind(2, it->fileName);
             stmt.Bind(3, it->uuidFileName);
-#endif
             stmt.ExecuteUpdate();
         }
+    })(db);
+}
 
-    CLOSE_CONN_JC_WXSQLITE3(db)
-        }
 /**
  * ダウンロードした画像のファイル名とUUIDをデータベースに格納する
  * @param const ImageFileInfo* imageFileInfo ファイル情報
  */
 void SQLiteAccessor::SetImageFileName(ImageFileInfo& imageFileInfo)
 {
-    wxSQLite3Database db;
     wxDateTime now = wxDateTime::Now();
 
-    INITIALIZE_JC_WXSQLITE3(db, now)
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
+        const wxString sqlIn =
+            wxT("INSERT INTO cached_image ("
+                "    timeinfo,"
+                "    filename,"
+                "    uuid_filename)"
+                "VALUES (?,?,?);");
+        auto stmt = db.PrepareStatement(sqlIn);
+        stmt.ClearBindings();
 
-        const wxString sqlIn = wxT("INSERT INTO CACHED_IMAGE (TIMEINFO, FILENAME, UUID_FILENAME) VALUES (?,?,?)");
-    wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
-    stmt.ClearBindings();
+        stmt.BindTimestamp(1, now);
+        stmt.Bind(2, imageFileInfo.fileName);
+        stmt.Bind(3, imageFileInfo.uuidFileName);
+        stmt.ExecuteUpdate();
+    })(db);
+}
 
-    stmt.BindTimestamp(1, now);
-    stmt.Bind(2, imageFileInfo.fileName);
-    stmt.Bind(3, imageFileInfo.uuidFileName);
-    stmt.ExecuteUpdate();
-
-    CLOSE_CONN_JC_WXSQLITE3(db)
-        }
 /**
  * 画像のファイル名とUUIDのリストをデータベースから取得する
  * true : データあり
@@ -1091,6 +1039,7 @@ bool SQLiteAccessor::GetImageFileName(const wxArrayString& fileNameArray, std::v
             return false;
         }
 }
+
 /**
  * 画像のファイル名とUUIDをデータベースから取得する
  * @param  const wxString&	  画像ファイル名
@@ -1139,24 +1088,24 @@ bool SQLiteAccessor::GetImageFileName(const wxString& fileName, ImageFileInfo& i
  */
 bool SQLiteAccessor::SetOutSideBoardInfo(const wxString& url,const wxString& boardName,const wxString& category)
 {
-    wxSQLite3Database db;
-    INITIALIZE_DBONLY_JC_WXSQLITE3(db)
-
+    DB db;
+    AutoCloseable([&](DB& db)
+    {
         // SQL文を用意する
-        const wxString sqlIn = wxT("INSERT INTO BOARD_INFO "
-                                   L"(BOARDNAME_KANJI, "
-                                   L"BOARD_URL, "
-                                   L"CATEGORY, "
-                                   L"IS_OUTSIDE"
-                                   L") VALUES (?, ?, ?, '1')");
+        const wxString sqlIn = wxT("INSERT INTO board_info ("
+                                   "    boardname_kanji,"
+                                   "    board_url, "
+                                   "    category, "
+                                   "    is_outside"
+                                   ") VALUES (?, ?, ?, '1');");
 
-    // SQL文を実行する
-    wxSQLite3Statement stmt = db.PrepareStatement (sqlIn);
-    stmt.Bind(1, boardName);
-    stmt.Bind(2, url);
-    stmt.Bind(3, category);
-    stmt.ExecuteUpdate();
+        // SQL文を実行する
+        auto stmt = db.PrepareStatement (sqlIn);
+        stmt.Bind(1, boardName);
+        stmt.Bind(2, url);
+        stmt.Bind(3, category);
+        stmt.ExecuteUpdate();
+    })(db);
 
-    CLOSE_CONN_JC_WXSQLITE3(db)
-        return true;
+    return true;
 }
