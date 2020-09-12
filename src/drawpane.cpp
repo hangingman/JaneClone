@@ -54,10 +54,10 @@ END_EVENT_TABLE()
 BasicDrawPane::BasicDrawPane(wxWindow* parent, wxWindowID id, const wxString& title) :
 wxPanel(parent)
 {
-     // 内部テキスト
-     m_text = title;
-     // ID
-     this->SetId(id);
+    // 内部テキスト
+    m_text = title;
+    // ID
+    this->SetId(id);
 }
 
 /*
@@ -67,8 +67,8 @@ wxPanel(parent)
  */
 void BasicDrawPane::PaintEvent(wxPaintEvent & evt)
 {
-     wxPaintDC dc(this);
-     this->Render(dc);
+    wxPaintDC dc(this);
+    this->Render(dc);
 }
 /*
  * Alternatively, you can use a clientDC to paint on the panel
@@ -84,8 +84,8 @@ void BasicDrawPane::PaintEvent(wxPaintEvent & evt)
  */
 void BasicDrawPane::PaintNow()
 {
-     wxClientDC dc(this);
-     this->Render(dc);
+    wxClientDC dc(this);
+    this->Render(dc);
 }
 /*
  * Here we do the actual rendering. I put it in a separate
@@ -95,32 +95,32 @@ void BasicDrawPane::PaintNow()
 void BasicDrawPane::Render(wxDC&  dc)
 {
 
-     int width, height;
-     this->GetSize(&width, &height);
+    int width, height;
+    this->GetSize(&width, &height);
 
-     if ( m_bgColor.IsOk() )
-     {
-	  dc.SetBrush(wxBrush(m_bgColor));
-	  dc.DrawRectangle(0, 0, width, height);
-     }
+    if ( m_bgColor.IsOk() )
+        {
+            dc.SetBrush(wxBrush(m_bgColor));
+            dc.DrawRectangle(0, 0, width, height);
+        }
 
-     if ( m_textForeGround.IsOk() )
-     {
-	  dc.SetTextForeground( m_textForeGround );
-     }
+    if ( m_textForeGround.IsOk() )
+        {
+            dc.SetTextForeground( m_textForeGround );
+        }
 
-     if ( !m_text.IsEmpty() )
-     {
-	  dc.SetBackgroundMode(wxTRANSPARENT);
-	  dc.SetFont( m_font );
+    if ( !m_text.IsEmpty() )
+        {
+            dc.SetBackgroundMode(wxTRANSPARENT);
+            dc.SetFont( m_font );
 
-	  /*
-	   * ちょうど中央表示できるよう調整
-	   */
-	  const int cHeight = dc.GetCharHeight();
-	  const int cWidth  = dc.GetCharWidth();
-	  const int textLen = m_text.Len();
-	  const int textHalfSize = textLen * cWidth / 2;
-	  dc.DrawText( m_text, width / 2 - textHalfSize, height / 2 - cHeight / 2 );
-     }
+            /*
+             * ちょうど中央表示できるよう調整
+             */
+            const int cHeight = dc.GetCharHeight();
+            const int cWidth  = dc.GetCharWidth();
+            const int textLen = m_text.Len();
+            const int textHalfSize = textLen * cWidth / 2;
+            dc.DrawText( m_text, width / 2 - textHalfSize, height / 2 - cHeight / 2 );
+        }
 }

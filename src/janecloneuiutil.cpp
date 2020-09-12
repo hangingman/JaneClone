@@ -31,71 +31,71 @@
  */
 void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWindowID id)
 {
-     // プロパティファイルにフォント設定/背景色があれば使用する
-     wxString widgetsName = wxT("ID_TreeFontButton");
-     wxString widgetsInfo = wxEmptyString;
-     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-     if (widgetsInfo != wxEmptyString)
-     {
-	  wxFont font;
-	  bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
-	  if(ret) treeCtrl->SetFont(font);
-     }
-     widgetsName = wxT("ID_BoardListBGColorButton");
-     widgetsInfo.Clear();
-     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-     if (widgetsInfo != wxEmptyString)
-     {
-	  wxColour bgColor;
-	  bool ret = bgColor.Set(widgetsInfo);
-	  if(ret) treeCtrl->SetBackgroundColour(bgColor);
-     }
+    // プロパティファイルにフォント設定/背景色があれば使用する
+    wxString widgetsName = wxT("ID_TreeFontButton");
+    wxString widgetsInfo = wxEmptyString;
+    JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+    if (widgetsInfo != wxEmptyString)
+        {
+            wxFont font;
+            bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
+            if(ret) treeCtrl->SetFont(font);
+        }
+    widgetsName = wxT("ID_BoardListBGColorButton");
+    widgetsInfo.Clear();
+    JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+    if (widgetsInfo != wxEmptyString)
+        {
+            wxColour bgColor;
+            bool ret = bgColor.Set(widgetsInfo);
+            if(ret) treeCtrl->SetBackgroundColour(bgColor);
+        }
 
-     wxTreeItemData treeData;
-     wxTreeItemId m_rootId;
+    wxTreeItemData treeData;
+    wxTreeItemId m_rootId;
 
-     // イメージリストにアイコンを登録する
-     wxImageList* treeImage = new wxImageList(16, 16);
-     wxBitmap idx1(folderImg, wxBITMAP_TYPE_PNG);
-     treeImage->Add(idx1);
-     wxBitmap idx2(textHtmlImg, wxBITMAP_TYPE_PNG);
-     treeImage->Add(idx2);
-     treeCtrl->AssignImageList(treeImage);
+    // イメージリストにアイコンを登録する
+    wxImageList* treeImage = new wxImageList(16, 16);
+    wxBitmap idx1(folderImg, wxBITMAP_TYPE_PNG);
+    treeImage->Add(idx1);
+    wxBitmap idx2(textHtmlImg, wxBITMAP_TYPE_PNG);
+    treeImage->Add(idx2);
+    treeCtrl->AssignImageList(treeImage);
 
-     // ツリー部分へのカーソル合わせが起きた場合のイベント通知
-     treeCtrl->Connect(id,
-		       wxEVT_ENTER_WINDOW,
-		       wxMouseEventHandler(JaneClone::OnEnterWindow),
-		       NULL, wxWindow::FindWindowById(ID_WxJaneClone));
+    // ツリー部分へのカーソル合わせが起きた場合のイベント通知
+    treeCtrl->Connect(id,
+                      wxEVT_ENTER_WINDOW,
+                      wxMouseEventHandler(JaneClone::OnEnterWindow),
+                      NULL, wxWindow::FindWindowById(ID_WxJaneClone));
 
-     switch (id)
-     {
+    switch (id)
+        {
 
-     case ID_BoardTreectrl:
-     {
-	  treeCtrl->SetLabel(BOARD_TREE);
-	  wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("2ch板一覧"));
-	  treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
-     }
-     break;
+        case ID_BoardTreectrl:
+            {
+                treeCtrl->SetLabel(BOARD_TREE);
+                wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("2ch板一覧"));
+                treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
+            }
+            break;
 
-     case ID_FavsTreectrl:
-     {
-	  treeCtrl->SetLabel(FAVS_TREE);
-	  wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("お気に入り一覧"));
-	  treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
-     }
-     break;
+        case ID_FavsTreectrl:
+            {
+                treeCtrl->SetLabel(FAVS_TREE);
+                wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("お気に入り一覧"));
+                treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
+            }
+            break;
 
-     case ID_NowReadingTreectrl:
-     {
-	  treeCtrl->SetLabel(NOW_READ_TREE);
-	  wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("閲覧中一覧"));
-	  treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
-     }
+        case ID_NowReadingTreectrl:
+            {
+                treeCtrl->SetLabel(NOW_READ_TREE);
+                wxTreeItemId rootTemp = treeCtrl->AddRoot(wxT("閲覧中一覧"));
+                treeCtrl->SetItemImage(rootTemp, 0, wxTreeItemIcon_Normal);
+            }
 
-     break;
-     }
+            break;
+        }
 };
 
 
@@ -109,20 +109,20 @@ void JaneCloneUiUtil::SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWin
  */
 void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID id, const wxString& m, wxObject* o)
 {
-     wxCommandEvent* e = new wxCommandEvent(type, id);
+    wxCommandEvent* e = new wxCommandEvent(type, id);
 
-     if (!m.IsEmpty()) {
-	  e->SetString(m.c_str());
-     }
+    if (!m.IsEmpty()) {
+        e->SetString(m.c_str());
+    }
 
-     if (o) {
-	  e->SetEventObject(o);
-     }
+    if (o) {
+        e->SetEventObject(o);
+    }
 
 #if wxCHECK_VERSION(2, 9, 0)
-     wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
+    wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(e->Clone());
 #else
-     wxWindow::FindWindowById(ID_WxJaneClone)->AddPendingEvent(*e);
+    wxWindow::FindWindowById(ID_WxJaneClone)->AddPendingEvent(*e);
 #endif
 };
 
@@ -134,5 +134,5 @@ void JaneCloneUiUtil::QueueEventHelper(const wxWindowID type, const wxWindowID i
  */
 void JaneCloneUiUtil::SendLoggingHelper(const wxString& message)
 {
-     JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging, message);
+    JaneCloneUiUtil::QueueEventHelper(wxEVT_COMMAND_TEXT_UPDATED, ID_Logging, message);
 };

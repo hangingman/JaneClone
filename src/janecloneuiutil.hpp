@@ -33,28 +33,28 @@
 class JaneCloneUiUtil {
 
 public:
-     /**
-      * wxTreeCtrlのインスタンスを受け取って共通の設定を行う
-      *
-      * @param wxTreeCtrl* treeCtrl 設定対象のツリー
-      * @param const wxWindowID id  設定対象のGUIの部位を表すID
-      */
-     void static SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWindowID id);
-     /**
-      * wxWidgetsのイベント通知関数のラッパー
-      *
-      * @param const wxWindowID type
-      * @param const wxWindowID id
-      * @param const wxString&   m          Message for event destination
-      * @param wxObject* o          wxObject for event destination
-      */
-     void static QueueEventHelper(const wxWindowID type, const wxWindowID id, const wxString& m = wxEmptyString, wxObject* o = NULL);
-     /**
-      * JaneCloneのログ処理のラッパー
-      *
-      * @param const wxString& message
-      */
-     void static SendLoggingHelper(const wxString& message);
+    /**
+     * wxTreeCtrlのインスタンスを受け取って共通の設定を行う
+     *
+     * @param wxTreeCtrl* treeCtrl 設定対象のツリー
+     * @param const wxWindowID id  設定対象のGUIの部位を表すID
+     */
+    void static SetTreeCtrlCommonSetting(wxTreeCtrl* treeCtrl, const wxWindowID id);
+    /**
+     * wxWidgetsのイベント通知関数のラッパー
+     *
+     * @param const wxWindowID type
+     * @param const wxWindowID id
+     * @param const wxString&   m          Message for event destination
+     * @param wxObject* o          wxObject for event destination
+     */
+    void static QueueEventHelper(const wxWindowID type, const wxWindowID id, const wxString& m = wxEmptyString, wxObject* o = NULL);
+    /**
+     * JaneCloneのログ処理のラッパー
+     *
+     * @param const wxString& message
+     */
+    void static SendLoggingHelper(const wxString& message);
 };
 
 #endif /* JANECLONEUIUTIL_HPP_ */

@@ -31,44 +31,44 @@
 
 class wxImagePanel : public wxPanel {
 
-     wxBitmap image;
+    wxBitmap image;
 
 public:
-     /// Default constructor
-     wxImagePanel(wxWindow* parent, std::unique_ptr<DownloadImageResult>& result, const wxBitmapType type);
-     /// Copy constructor
-     wxImagePanel(const wxImagePanel& rhs);
-     /// Assignment operator
-     wxImagePanel& operator=(const wxImagePanel& rhs);
+    /// Default constructor
+    wxImagePanel(wxWindow* parent, std::unique_ptr<DownloadImageResult>& result, const wxBitmapType type);
+    /// Copy constructor
+    wxImagePanel(const wxImagePanel& rhs);
+    /// Assignment operator
+    wxImagePanel& operator=(const wxImagePanel& rhs);
 
-     void PaintEvent(wxPaintEvent & evt);
-     void PaintNow();
-     void Render(wxDC& dc);
-     wxString GetFilePath();
-     wxString GetImageURL();
-     const DownloadImageResult& GetDownloadImageResult()
-	  {
-	       return imageInfo;
-	  };
+    void PaintEvent(wxPaintEvent & evt);
+    void PaintNow();
+    void Render(wxDC& dc);
+    wxString GetFilePath();
+    wxString GetImageURL();
+    const DownloadImageResult& GetDownloadImageResult()
+    {
+        return imageInfo;
+    };
 
-     void Rotate90(bool clockwise);
-     void Resize(bool toBig);
-     void Reset();
-     double GetMagnification();
-     void SetMagnification(double magnification);
+    void Rotate90(bool clockwise);
+    void Resize(bool toBig);
+    void Reset();
+    double GetMagnification();
+    void SetMagnification(double magnification);
 
 private:
-     // 画像ファイル情報
-     DownloadImageResult imageInfo;
-     // ビットマップの種別
-     wxBitmapType m_type;
-     // 画像の倍率(0.1 ~ x ~ 2.0)
-     double magnification;
-     // 画像の元のサイズ
-     int originalHeight;
-     int originalWidth;
+    // 画像ファイル情報
+    DownloadImageResult imageInfo;
+    // ビットマップの種別
+    wxBitmapType m_type;
+    // 画像の倍率(0.1 ~ x ~ 2.0)
+    double magnification;
+    // 画像の元のサイズ
+    int originalHeight;
+    int originalWidth;
 
-     DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 

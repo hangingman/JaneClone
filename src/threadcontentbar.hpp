@@ -30,15 +30,15 @@
 #include "janecloneuiutil.hpp"
 
 #ifdef HAVE_CONFIG_H
-  #include "config.h"
+#  include "config.h"
 #endif
 
 #ifdef USE_WX_WEBVIEW
-   #include "threadcontentwebview.hpp"
-   #define WEB_RENDER_CLASS ThreadContentWebView
+#  include "threadcontentwebview.hpp"
+#  define WEB_RENDER_CLASS ThreadContentWebView
 #else
-   #include "threadcontentwindow.hpp"
-   #define WEB_RENDER_CLASS ThreadContentWindow
+#  include "threadcontentwindow.hpp"
+#  define WEB_RENDER_CLASS ThreadContentWindow
 #endif
 
 // begin wxGlade: ::dependencies
@@ -51,140 +51,140 @@ static const wxSize   searchWordComboSize     = wxSize(64, 32);
 class ThreadContentBar: public wxPanel {
 
 public:
-     // begin wxGlade: ThreadContentBar::ids
-     // end wxGlade
-     ThreadContentBar(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize,
-		      long style=wxDEFAULT_FRAME_STYLE);
+    // begin wxGlade: ThreadContentBar::ids
+    // end wxGlade
+    ThreadContentBar(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize,
+                     long style=wxDEFAULT_FRAME_STYLE);
 
-     // スレッドタイトルをクラスに設定する
-     void SetTitle(const wxString& title);
+    // スレッドタイトルをクラスに設定する
+    void SetTitle(const wxString& title);
 
-     // スレッドの内容を設定する
-     void SetThreadContentWindow(const wxString& threadContentPath, const wxString& origNumber);
-     // スレッドの内容をリロードする
-     void ReloadThreadContentWindow(const wxString& threadContentPath);
+    // スレッドの内容を設定する
+    void SetThreadContentWindow(const wxString& threadContentPath, const wxString& origNumber);
+    // スレッドの内容をリロードする
+    void ReloadThreadContentWindow(const wxString& threadContentPath);
 
-     // 開いているHTMLのスクロール位置を取得する
-     void GetThreadContentWindowScrollPos(wxPoint* p) {
-	  tcw->GetHtmlWindowScrollPos(p);
-     };
-     // スレッドをスクロールさせる
-     void SetThreadContentWindowScroll(const wxPoint* p) {
-	  tcw->ForceScroll(p);
-     };
-     // 開いているスレタブの保持するレス数を取得する
-     int GetThreadContentThreadResponseNum() {
-	  return tcw->GetCurrentThreadResponseNum();
-     };
-     // 開いているスレタブの保持するHTMLを取得する
-     const wxString GetThreadRawHTML() {
-	  return tcw->GetThreadRawHTML();
-     };
+    // 開いているHTMLのスクロール位置を取得する
+    void GetThreadContentWindowScrollPos(wxPoint* p) {
+        tcw->GetHtmlWindowScrollPos(p);
+    };
+    // スレッドをスクロールさせる
+    void SetThreadContentWindowScroll(const wxPoint* p) {
+        tcw->ForceScroll(p);
+    };
+    // 開いているスレタブの保持するレス数を取得する
+    int GetThreadContentThreadResponseNum() {
+        return tcw->GetCurrentThreadResponseNum();
+    };
+    // 開いているスレタブの保持するHTMLを取得する
+    const wxString GetThreadRawHTML() {
+        return tcw->GetThreadRawHTML();
+    };
 
 #ifdef __WXMAC__
-     // 画像リソースの更新を行う
-     void UpdateResources() {
+    // 画像リソースの更新を行う
+    void UpdateResources() {
 
-	  wxSizer* horizonalSizer2 = searchBarPanel->GetSizer();
+        wxSizer* horizonalSizer2 = searchBarPanel->GetSizer();
 
-	  // リソースの更新
-	  wxBitmap* normalSearch = new wxBitmap();
-	  if (normalSearch->LoadFile(normalSearchImg, wxBITMAP_TYPE_PNG))
-	       normalSearchButton->SetBitmap(*normalSearch);
-	  wxBitmap* backward = new wxBitmap();
-	  if (backward->LoadFile(backwardImg, wxBITMAP_TYPE_PNG))
-	       backwardButton->SetBitmap(*backward);
-	  wxBitmap* forward = new wxBitmap();
-	  if (forward->LoadFile(forwardImg, wxBITMAP_TYPE_PNG))
-	       forwardButton->SetBitmap(*forward);
+        // リソースの更新
+        wxBitmap* normalSearch = new wxBitmap();
+        if (normalSearch->LoadFile(normalSearchImg, wxBITMAP_TYPE_PNG))
+            normalSearchButton->SetBitmap(*normalSearch);
+        wxBitmap* backward = new wxBitmap();
+        if (backward->LoadFile(backwardImg, wxBITMAP_TYPE_PNG))
+            backwardButton->SetBitmap(*backward);
+        wxBitmap* forward = new wxBitmap();
+        if (forward->LoadFile(forwardImg, wxBITMAP_TYPE_PNG))
+            forwardButton->SetBitmap(*forward);
 
-	  searchWordCombo_choices = NULL;
-	  searchWordCombo = new wxComboBox(searchBarPanel, wxID_ANY, wxT(""), wxDefaultPosition,
-					   wxDefaultSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
+        searchWordCombo_choices = NULL;
+        searchWordCombo = new wxComboBox(searchBarPanel, wxID_ANY, wxT(""), wxDefaultPosition,
+                                         wxDefaultSize, 0, searchWordCombo_choices, wxCB_DROPDOWN);
 
-	  wxBitmap* hideSearch = new wxBitmap();
-	  if (hideSearch->LoadFile(hideSearchBarImg, wxBITMAP_TYPE_PNG))
-	       hideSearchBarButton->SetBitmap(*hideSearch);
+        wxBitmap* hideSearch = new wxBitmap();
+        if (hideSearch->LoadFile(hideSearchBarImg, wxBITMAP_TYPE_PNG))
+            hideSearchBarButton->SetBitmap(*hideSearch);
 
-	  horizonalSizer2->Add(normalSearchButton, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
-	  horizonalSizer2->Add(searchWordCombo, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
-	  horizonalSizer2->Add(backwardButton, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
-	  horizonalSizer2->Add(forwardButton, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
-	  horizonalSizer2->Add(panel_2, 1, wxEXPAND, 0);
-	  horizonalSizer2->Add(hideSearchBarButton, 0, wxALIGN_RIGHT|wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
+        horizonalSizer2->Add(normalSearchButton, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
+        horizonalSizer2->Add(searchWordCombo, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
+        horizonalSizer2->Add(backwardButton, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
+        horizonalSizer2->Add(forwardButton, 0, wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
+        horizonalSizer2->Add(panel_2, 1, wxEXPAND, 0);
+        horizonalSizer2->Add(hideSearchBarButton, 0, wxALIGN_RIGHT|wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
 
-	  // サイズを調整する
-	  this->Fit();
-     };
+        // サイズを調整する
+        this->Fit();
+    };
 #endif
 
 private:
-     // begin wxGlade: ThreadContentBar::methods
-     void set_properties();
-     void do_layout();
-     // end wxGlade
+    // begin wxGlade: ThreadContentBar::methods
+    void set_properties();
+    void do_layout();
+    // end wxGlade
 
-     // スレッドが乗るパネル
-     wxPanel* threadContentPanel;
-     // スレッドの内容を描画するクラス
-     WEB_RENDER_CLASS* tcw;
-     // 検索ワードの履歴管理用文字列
-     wxString* searchWordCombo_choices;
+    // スレッドが乗るパネル
+    wxPanel* threadContentPanel;
+    // スレッドの内容を描画するクラス
+    WEB_RENDER_CLASS* tcw;
+    // 検索ワードの履歴管理用文字列
+    wxString* searchWordCombo_choices;
 
-     // 新着までスクロール
-     void OnClickTCBScrollToNewRes(wxCommandEvent& event);
-     // スレッド内容バーの内容を隠す
-     void OnClickTCBHideSearchBar(wxCommandEvent& event);
+    // 新着までスクロール
+    void OnClickTCBScrollToNewRes(wxCommandEvent& event);
+    // スレッド内容バーの内容を隠す
+    void OnClickTCBHideSearchBar(wxCommandEvent& event);
 
-     /**
-      * メインのスレッドにログとイベントを送る
-      */
-     void SendLogging(wxString& message) {
-	  JaneCloneUiUtil::SendLoggingHelper(message);
-     };
+    /**
+     * メインのスレッドにログとイベントを送る
+     */
+    void SendLogging(wxString& message) {
+        JaneCloneUiUtil::SendLoggingHelper(message);
+    };
 
 #ifdef __WXMAC__
-     // メインのスレッドにログとイベントを送る
-     void SendUIUpdateEvent() {
-	  JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI,
-					    ID_ThreadContentBarUpdate,
-					    wxString("ThreadContentBar"),
-					    this);
-     };
+    // メインのスレッドにログとイベントを送る
+    void SendUIUpdateEvent() {
+        JaneCloneUiUtil::QueueEventHelper(wxEVT_UPDATE_UI,
+                                          ID_ThreadContentBarUpdate,
+                                          wxString("ThreadContentBar"),
+                                          this);
+    };
 #endif
 
-     // スレッドのタイトル
-     wxString m_title;
-     // スレッドの固有番号
-     wxString m_origNumber;
+    // スレッドのタイトル
+    wxString m_title;
+    // スレッドの固有番号
+    wxString m_origNumber;
 
 protected:
-     // begin wxGlade: ThreadContentBar::attributes
-     wxStaticText* threadName;
-     wxPanel* spacePanel1;
+    // begin wxGlade: ThreadContentBar::attributes
+    wxStaticText* threadName;
+    wxPanel* spacePanel1;
 
-     wxAuiToolBar* threadToolbar1;
-     wxAuiToolBar* threadToolbar2;
+    wxAuiToolBar* threadToolbar1;
+    wxAuiToolBar* threadToolbar2;
 
-     wxPanel* threadContentsBarPanel;
-     wxPanel* searchBarPanel;
-     wxComboBox* searchWordCombo;
-     wxPanel* panel_2;
+    wxPanel* threadContentsBarPanel;
+    wxPanel* searchBarPanel;
+    wxComboBox* searchWordCombo;
+    wxPanel* panel_2;
 
 #if wxCHECK_VERSION(2, 9, 1)
-     wxButton* normalSearchButton;
-     wxButton* backwardButton;
-     wxButton* forwardButton;
-     wxButton* hideSearchBarButton;
+    wxButton* normalSearchButton;
+    wxButton* backwardButton;
+    wxButton* forwardButton;
+    wxButton* hideSearchBarButton;
 #else
-     wxBitmapButton* normalSearchButton;
-     wxBitmapButton* backwardButton;
-     wxBitmapButton* forwardButton;
-     wxBitmapButton* hideSearchBarButton;
+    wxBitmapButton* normalSearchButton;
+    wxBitmapButton* backwardButton;
+    wxBitmapButton* forwardButton;
+    wxBitmapButton* hideSearchBarButton;
 #endif
 
-     DECLARE_EVENT_TABLE()
-     // end wxGlade
+    DECLARE_EVENT_TABLE()
+    // end wxGlade
 }; // wxGlade: end class
 
 

@@ -30,23 +30,23 @@
 class ExtractBoardList {
 
 public:
-     // コンストラクタ
-     ExtractBoardList(const char* file);
-     // HTML整形
-     static const wxString HtmlFormat(const wxString& html);
+    // コンストラクタ
+    ExtractBoardList(const char* file);
+    // HTML整形
+    static const wxString HtmlFormat(const wxString& html);
 
 private:
-     // 内部の処理関数
-     void FindBoardInfo(xmlNode*& element);
-     void SetBoardInfo(const wxString category, const wxString name, const wxString url);
+    // 内部の処理関数
+    void FindBoardInfo(xmlNode*& element);
+    void SetBoardInfo(const wxString category, const wxString name, const wxString url);
 
-     // 構造体
-     htmlDocPtr m_doc;
-     // 板情報を含む配列
-     wxArrayString* boardInfoArray;
-     // 除外するカテゴリ
-     const wxString excludeCategory1 = wxT("特別企画");
-     const wxString excludeCategory2 = wxT("他のサイト");
+    // 構造体
+    htmlDocPtr m_doc;
+    // 板情報を含む配列
+    wxArrayString* boardInfoArray;
+    // 除外するカテゴリ
+    const wxString excludeCategory1 = wxT("特別企画");
+    const wxString excludeCategory2 = wxT("他のサイト");
 };
 
 #endif // EXTRACTBOARDLIST_HPP

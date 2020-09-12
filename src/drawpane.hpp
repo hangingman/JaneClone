@@ -36,56 +36,56 @@ class BasicDrawPane : public wxPanel
 {
 
 public:
-     BasicDrawPane(wxWindow* parent, wxWindowID id, const wxString& title);
+    BasicDrawPane(wxWindow* parent, wxWindowID id, const wxString& title);
 
-     void PaintEvent(wxPaintEvent & evt);
-     void PaintNow();
-     void Render(wxDC& dc);
+    void PaintEvent(wxPaintEvent & evt);
+    void PaintNow();
+    void Render(wxDC& dc);
 
-     void SetInnerFont(const wxFont& font)
-	  {
-	       m_font = font;
-	  };
+    void SetInnerFont(const wxFont& font)
+    {
+        m_font = font;
+    };
 
-     void SetInnerText(const wxString& text)
-	  {
-	       m_text = text;
-	  };
+    void SetInnerText(const wxString& text)
+    {
+        m_text = text;
+    };
 
-     void SetInnerBGColor(const wxColour& color)
-	  {
-	       m_bgColor = color;
-	  };
+    void SetInnerBGColor(const wxColour& color)
+    {
+        m_bgColor = color;
+    };
 
-     void SetInnerTextForeGroundColor(const wxColour& color)
-	  {
-	       m_textForeGround = color;
-	  };
+    void SetInnerTextForeGroundColor(const wxColour& color)
+    {
+        m_textForeGround = color;
+    };
 
-     // some useful events
-     /*
-       void mouseMoved(wxMouseEvent& event);
-       void mouseDown(wxMouseEvent& event);
-       void mouseWheelMoved(wxMouseEvent& event);
-       void mouseReleased(wxMouseEvent& event);
-       void rightClick(wxMouseEvent& event);
-       void mouseLeftWindow(wxMouseEvent& event);
-       void keyPressed(wxKeyEvent& event);
-       void keyReleased(wxKeyEvent& event);
-     */
+    // some useful events
+    /*
+      void mouseMoved(wxMouseEvent& event);
+      void mouseDown(wxMouseEvent& event);
+      void mouseWheelMoved(wxMouseEvent& event);
+      void mouseReleased(wxMouseEvent& event);
+      void rightClick(wxMouseEvent& event);
+      void mouseLeftWindow(wxMouseEvent& event);
+      void keyPressed(wxKeyEvent& event);
+      void keyReleased(wxKeyEvent& event);
+    */
 
 private:
 
-     // 内部で保存するフォント
-     wxFont   m_font;
-     // 内部で保存するテキスト
-     wxString m_text;
-     // 内部で保存する背景色
-     wxColour m_bgColor;
-     // 内部で保存するテキストの色
-     wxColour m_textForeGround;
+    // 内部で保存するフォント
+    wxFont   m_font;
+    // 内部で保存するテキスト
+    wxString m_text;
+    // 内部で保存する背景色
+    wxColour m_bgColor;
+    // 内部で保存するテキストの色
+    wxColour m_textForeGround;
 
-     DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif /* DRAWPANE_HPP_ */

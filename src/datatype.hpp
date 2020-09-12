@@ -23,7 +23,7 @@
 #define DATATYPE_HPP_
 
 #ifdef HAVE_CONFIG_H
-   #include "config.h"
+#  include "config.h"
 #endif
 
 #include <wx/wx.h>
@@ -60,22 +60,22 @@
 
 // 実行ファイルの拡張子
 #ifdef __WXMSW__
-  #define wxExt wxT(".exe")
+#  define wxExt wxT(".exe")
 #else
-  #define wxExt wxT("")
+#  define wxExt wxT("")
 #endif
 
 /**
  * テキストの終端文字が何で終わるのかを定義
  */
 #ifdef __WXMSW__
-   #define TEXT_ENDLINE_TYPE wxTextFileType_Dos
+#  define TEXT_ENDLINE_TYPE wxTextFileType_Dos
 #endif
 #ifdef __WXGTK__
-   #define TEXT_ENDLINE_TYPE wxTextFileType_Unix
+#  define TEXT_ENDLINE_TYPE wxTextFileType_Unix
 #endif
 #ifdef __WXMAC__
-   #define TEXT_ENDLINE_TYPE wxTextFileType_Mac
+#  define TEXT_ENDLINE_TYPE wxTextFileType_Mac
 #endif
 
 /** 定数化された書き込み前のCOOKIEの状態 */
@@ -115,9 +115,9 @@
 
 // ユーザーエージェント
 #ifdef PACKAGE_VERSION
-   static const std::string userAgent = std::string("Monazilla/1.00 JaneClone(" PACKAGE_VERSION ")" );
+static const std::string userAgent = std::string("Monazilla/1.00 JaneClone(" PACKAGE_VERSION ")" );
 #else
-   static const std::string userAgent = std::string("Monazilla/1.00 JaneClone(Unknown)");
+static const std::string userAgent = std::string("Monazilla/1.00 JaneClone(Unknown)");
 #endif
 
 // バージョン
@@ -126,36 +126,35 @@ static const wxString janecloneVersion = wxT( PACKAGE_VERSION );
 // 実行されているバイナリのパス
 inline wxString GetJcExecutablePath()
 {
-     wxFileName f(wxStandardPaths::Get().GetExecutablePath());
-     wxString appPath(f.GetPath());
-     return appPath;
+    wxFileName f(wxStandardPaths::Get().GetExecutablePath());
+    wxString appPath(f.GetPath());
+    return appPath;
 }
 
 // リソースファイルのパス
-inline wxString GetResourcePath(wxString fileName = wxEmptyString) {
+inline wxString GetResourcePath(wxString fileName) {
 
 #if defined (__WXMSW__) || defined(__WXGTK__)
-  #ifdef DEBIAN_PACKAGE_BUILD
-     wxFileName filePath;
-     filePath.AppendDir("share");
-     filePath.AppendDir("pixmaps");
-     filePath.AppendDir("janeclone");
-  #else
-     wxFileName filePath(GetJcExecutablePath());
-     filePath.AppendDir("rc");
-  #endif
-#elif defined(__WXMAC__)
-     wxFileName filePath(GetJcExecutablePath());
-     filePath.AppendDir("JaneClone.app");
-     filePath.AppendDir("Contents");
-     filePath.AppendDir("Resources");
+#ifdef DEBIAN_PACKAGE_BUILD
+    wxFileName filePath = wxFileName::DirName("share");
+    filePath.AppendDir("pixmaps");
+    filePath.AppendDir("janeclone");
+#else
+    wxFileName filePath = wxFileName::DirName(GetJcExecutablePath());
+    filePath.AppendDir("rc");
 #endif
-     if (fileName != wxEmptyString) {
-       wxFileName f(fileName);
-       filePath.SetName(f.GetName());
-       filePath.SetExt(f.GetExt());
-     }
-     return filePath.GetFullPath();
+#elif defined(__WXMAC__)
+    wxFileName filePath = wxFileName::DirName(GetJcExecutablePath());
+    filePath.AppendDir("JaneClone.app");
+    filePath.AppendDir("Contents");
+    filePath.AppendDir("Resources");
+#endif
+    if (fileName != wxEmptyString) {
+        wxFileName f(fileName);
+        filePath.SetName(f.GetName());
+        filePath.SetExt(f.GetExt());
+    }
+    return filePath.GetFullPath();
 }
 
 // Javascriptのデフォルトのパス
@@ -217,102 +216,102 @@ static const wxString amazonIconImg	 = GetResourcePath("amazon.png");
 // 2chの板名とURLを対応させるクラス
 typedef struct
 {
-     wxString boardName;
-     wxString boardURL;
-     wxString boardNameAscii;
+    wxString boardName;
+    wxString boardURL;
+    wxString boardNameAscii;
 } URLvsBoardName;
 
 // スレッド一覧用のクラス
 typedef struct
 {
-     // キー値(ホスト名にこの番号をつけることでスレッドのURLになる)
-     wxString oid;
-     // 番号(単に取得したdatファイルの順序から)
-     int number;
-     // タイトル
-     wxString title;
-     // レス
-     int response;
-     // 取得
-     int cachedResponseNumber;
-     // 新着
-     int newResponseNumber;
-     // 増レス
-     int increaseResponseNumber;
-     // 勢い
-     wxString momentum;
-     // 最終取得
-     wxString lastUpdate;
-     // since
-     wxString since;
-     // 板
-     wxString boardName;
+    // キー値(ホスト名にこの番号をつけることでスレッドのURLになる)
+    wxString oid;
+    // 番号(単に取得したdatファイルの順序から)
+    int number;
+    // タイトル
+    wxString title;
+    // レス
+    int response;
+    // 取得
+    int cachedResponseNumber;
+    // 新着
+    int newResponseNumber;
+    // 増レス
+    int increaseResponseNumber;
+    // 勢い
+    wxString momentum;
+    // 最終取得
+    wxString lastUpdate;
+    // since
+    wxString since;
+    // 板
+    wxString boardName;
 } ThreadList;
 
 // 2chの板名(ascii)と固有番号を対応させて保存するクラス
 typedef struct
 {
-     // スレッドタイトル
-     wxString title;
-     // スレッド固有番号
-     wxString origNumber;
-     // 板名(英数)
-     wxString boardNameAscii;
+    // スレッドタイトル
+    wxString title;
+    // スレッド固有番号
+    wxString origNumber;
+    // 板名(英数)
+    wxString boardNameAscii;
 } ThreadInfo;
 
 // 書き込みを行う際の投稿内容
 typedef struct
 {
-     wxString name;
-     wxString mail;
-     wxString kakikomi;
+    wxString name;
+    wxString mail;
+    wxString kakikomi;
 } PostContent;
 
 // 画像をダウンロードした後の結果
 typedef struct
 {
-     wxString imagePath; // 画像ファイルのパス
-     wxString imageURL;  // 画像ファイルのURL
-     wxString ext;       // 画像ファイルの拡張子
-     wxString fileName;  // 画像ファイル名      ex) xxx.jpg
-     bool     result;    // 取得の成否
-     ThreadInfo* threadInfo;// 取得元スレッド情報
+    wxString imagePath; // 画像ファイルのパス
+    wxString imageURL;  // 画像ファイルのURL
+    wxString ext;       // 画像ファイルの拡張子
+    wxString fileName;  // 画像ファイル名      ex) xxx.jpg
+    bool     result;    // 取得の成否
+    ThreadInfo* threadInfo;// 取得元スレッド情報
 } DownloadImageResult;
 
 // URIを分解した時の各要素
 typedef struct
 {
-     wxString protocol;
-     wxString hostname;
-     wxString port;
-     wxString path;
+    wxString protocol;
+    wxString hostname;
+    wxString port;
+    wxString path;
 } PartOfURI;
 
 // スキン使用時の各種情報
 typedef struct
 {
-     wxString footer; // Footer.html
-     wxString header; // Header.html
-     wxString newres; // NewRes.html
-     wxString popup;  // PopupRes.html
-     wxString res;    // Res.html
-     wxArrayString jsPath; // Javascriptファイルのパス
+    wxString footer; // Footer.html
+    wxString header; // Header.html
+    wxString newres; // NewRes.html
+    wxString popup;  // PopupRes.html
+    wxString res;    // Res.html
+    wxArrayString jsPath; // Javascriptファイルのパス
 } SkinInfo;
 
 // ダウンロードした画像情報
 typedef struct
 {
-     wxString fileName;     // URLを含んだファイル名    ex) http://hogehoge/donwload0x0x.jpg
-     wxString uuidFileName; // UUIDを配られたファイル名 ex) XXXXXXXXXXXXXXXX.jpg
+    wxString fileName;     // URLを含んだファイル名    ex) http://hogehoge/donwload0x0x.jpg
+    wxString uuidFileName; // UUIDを配られたファイル名 ex) XXXXXXXXXXXXXXXX.jpg
 } ImageFileInfo;
 
 // 板名とそのURLを保持するwxHashMap　JaneCloneが起動している間は保持される
 // URLvsBoardNameのHashMap（板名をkeyとしてBoardURLとascii文字の固有名を持つ）
 WX_DECLARE_HASH_MAP( wxString, // type of the keys
-		  URLvsBoardName,      // type of the values
-		  wxStringHash ,       // hasher
-		  wxStringEqual,       // key equality predicate
-		  NameURLHash);	       // name of the class
+                     URLvsBoardName,      // type of the values
+                     wxStringHash ,       // hasher
+                     wxStringEqual,       // key equality predicate
+                     NameURLHash);	       // name of the class
 
 // ユーザーがタブに保持しているスレッドの情報を保存するHashSetの宣言
 WX_DECLARE_HASH_MAP( wxString,        // type of the keys
@@ -328,15 +327,15 @@ WX_DECLARE_HASH_MAP( wxString,        // type of the keys
 
 // ヘッダ部分にあたるHTML
 static const wxString HTML_HEADER =
-		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body bgcolor=#efefef text=black link=blue alink=red vlink=#660099>");
+    wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body bgcolor=#efefef text=black link=blue alink=red vlink=#660099>");
 
 // ヘッダ部分にあたるHTML
 static const wxString CUSTOM_HTML_HEADER =
-     wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+    wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 
 // ポップアップウィンドウのヘッダ部分にあたるHTML
 static const wxString HTML_HEADER_POPUP =
-		wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body bgcolor=#eedcb3 text=black link=blue alink=red vlink=#660099>");
+    wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body bgcolor=#eedcb3 text=black link=blue alink=red vlink=#660099>");
 
 // 投稿失敗時のHTML
 static const wxString FAIL_TO_POST = wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; \
@@ -344,7 +343,7 @@ static const wxString FAIL_TO_POST = wxT("<html><head><meta http-equiv=\"Content
 
 // 読み込みに失敗した場合に表示するページ
 static const wxString FAIL_TO_READ_PAGE =
-     wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"><title></title></head><body><span>ファイルの読み込みに失敗しました・リロードしてみてください</span></body></html>");
+    wxT("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"><title></title></head><body><span>ファイルの読み込みに失敗しました・リロードしてみてください</span></body></html>");
 
 // フッター部分にあたるHTML
 static const wxString HTML_FOOTER = wxT("</body></html>");

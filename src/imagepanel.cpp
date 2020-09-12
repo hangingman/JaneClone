@@ -46,19 +46,19 @@ END_EVENT_TABLE()
  * Default constructor
  */
 wxImagePanel::wxImagePanel(wxWindow* parent, std::unique_ptr<DownloadImageResult>& result, const wxBitmapType type) : wxPanel(parent, ID_ImagePanel) {
-     // load the file... ideally add a check to see if loading was successful
-     image.LoadFile(result->imagePath, type);
+    // load the file... ideally add a check to see if loading was successful
+    image.LoadFile(result->imagePath, type);
 
-     // copy file information (better copy way is ?)
-     this->imageInfo.imagePath = wxString(result->imagePath);
-     this->imageInfo.imageURL  = wxString(result->imageURL);
-     this->imageInfo.ext       = wxString(result->ext);
-     this->imageInfo.fileName  = wxString(result->fileName);
-     this->imageInfo.result    = result->result;
-     this->originalHeight      = image.GetHeight();
-     this->originalWidth       = image.GetWidth();
-     this->magnification       = 1.0;
-     this->m_type              = type;
+    // copy file information (better copy way is ?)
+    this->imageInfo.imagePath = wxString(result->imagePath);
+    this->imageInfo.imageURL  = wxString(result->imageURL);
+    this->imageInfo.ext       = wxString(result->ext);
+    this->imageInfo.fileName  = wxString(result->fileName);
+    this->imageInfo.result    = result->result;
+    this->originalHeight      = image.GetHeight();
+    this->originalWidth       = image.GetWidth();
+    this->magnification       = 1.0;
+    this->m_type              = type;
 }
 /**
  * Copy constructor
@@ -69,10 +69,10 @@ wxImagePanel::wxImagePanel(const wxImagePanel& rhs) {
  * Assignment operator
  */
 wxImagePanel& wxImagePanel::operator=(const wxImagePanel& rhs) {
-     if (this != &rhs) {
-	  // TODO: implement copy
-     }
-     return *this;
+    if (this != &rhs) {
+        // TODO: implement copy
+    }
+    return *this;
 }
 /*
  * Called by the system of by wxWidgets when the panel needs
@@ -80,9 +80,9 @@ wxImagePanel& wxImagePanel::operator=(const wxImagePanel& rhs) {
  * calling Refresh()/Update().
  */
 void wxImagePanel::PaintEvent(wxPaintEvent & evt) {
-     // depending on your system you may need to look at double-buffered dcs
-     wxPaintDC dc(this);
-     Render(dc);
+    // depending on your system you may need to look at double-buffered dcs
+    wxPaintDC dc(this);
+    Render(dc);
 
 }
 /*
@@ -94,9 +94,9 @@ void wxImagePanel::PaintEvent(wxPaintEvent & evt) {
  * back (by sending a paint event).
  */
 void wxImagePanel::PaintNow() {
-     // depending on your system you may need to look at double-buffered dcs
-     wxClientDC dc(this);
-     Render(dc);
+    // depending on your system you may need to look at double-buffered dcs
+    wxClientDC dc(this);
+    Render(dc);
 }
 /*
  * Here we do the actual rendering. I put it in a separate
@@ -104,20 +104,20 @@ void wxImagePanel::PaintNow() {
  * (e.g. wxPaintDC or wxClientDC) is used.
  */
 void wxImagePanel::Render(wxDC&  dc) {
-     dc.Clear();
-     dc.DrawBitmap( image, 0, 0, false );
+    dc.Clear();
+    dc.DrawBitmap( image, 0, 0, false );
 }
 /**
  * 画像のファイルパスを返す
  */
 wxString wxImagePanel::GetFilePath() {
-     return imageInfo.imagePath;
+    return imageInfo.imagePath;
 }
 /**
  * 画像のダウンロード先を返す
  */
 wxString wxImagePanel::GetImageURL() {
-     return imageInfo.imageURL;
+    return imageInfo.imageURL;
 }
 /**
  * 画像を90度回転させる
@@ -125,9 +125,9 @@ wxString wxImagePanel::GetImageURL() {
  */
 void wxImagePanel::Rotate90(bool clockwise) {
 
-     wxImage copy = this->image.ConvertToImage();
-     image  = wxBitmap(copy.Rotate90(clockwise));
-     PaintNow();
+    wxImage copy = this->image.ConvertToImage();
+    image  = wxBitmap(copy.Rotate90(clockwise));
+    PaintNow();
 }
 /**
  * 画像をリサイズする
@@ -135,62 +135,62 @@ void wxImagePanel::Rotate90(bool clockwise) {
  */
 void wxImagePanel::Resize(bool toBig) {
 
-     if (this->originalHeight <= 0 || this->originalWidth <= 0) {
-	  return;
-     }
+    if (this->originalHeight <= 0 || this->originalWidth <= 0) {
+        return;
+    }
 
-     if ( 0.1 <= this->magnification && this->magnification <= 2.0 ) {
-	  if (toBig && magnification == 2.0) {
-	       return;
-	  } else if (toBig) {
-	       // 大きくする
-	       this->magnification += 0.1;
-	  } else if (!toBig && magnification == 0.1) {
-	       return;
-	  } else {
-	       // 小さくする
-	       this->magnification -= 0.1;
-	  }
+    if ( 0.1 <= this->magnification && this->magnification <= 2.0 ) {
+        if (toBig && magnification == 2.0) {
+            return;
+        } else if (toBig) {
+            // 大きくする
+            this->magnification += 0.1;
+        } else if (!toBig && magnification == 0.1) {
+            return;
+        } else {
+            // 小さくする
+            this->magnification -= 0.1;
+        }
 
-	  bool ret = image.LoadFile(imageInfo.imagePath, m_type);
-	  if (!ret) {
-	       wxMessageBox(wxT("リサイズ実行時に画像ファイルが見つかりませんでした"));
-	       return;
-	  }
+        bool ret = image.LoadFile(imageInfo.imagePath, m_type);
+        if (!ret) {
+            wxMessageBox(wxT("リサイズ実行時に画像ファイルが見つかりませんでした"));
+            return;
+        }
 
-	  wxImage copy = image.ConvertToImage();
-	  int x = originalWidth*magnification;
-	  int y = originalHeight*magnification;
+        wxImage copy = image.ConvertToImage();
+        int x = originalWidth*magnification;
+        int y = originalHeight*magnification;
 
-	  image  = wxBitmap(copy.Rescale(x, y, wxIMAGE_QUALITY_HIGH));
-	  PaintNow();
-     }
+        image  = wxBitmap(copy.Rescale(x, y, wxIMAGE_QUALITY_HIGH));
+        PaintNow();
+    }
 }
 /**
  * 画像を元のサイズに戻す
  */
 void wxImagePanel::Reset() {
 
-     if (originalHeight <= 0 || originalWidth <= 0) {
-	  return;
-     }
+    if (originalHeight <= 0 || originalWidth <= 0) {
+        return;
+    }
 
-     bool ret = image.LoadFile(imageInfo.imagePath, m_type);
-     if (!ret) {
-	  wxMessageBox(wxT("リサイズ実行時に画像ファイルが見つかりませんでした"));
-	  return;
-     }
+    bool ret = image.LoadFile(imageInfo.imagePath, m_type);
+    if (!ret) {
+        wxMessageBox(wxT("リサイズ実行時に画像ファイルが見つかりませんでした"));
+        return;
+    }
 
-     wxImage copy = image.ConvertToImage();
-     image  = wxBitmap(copy.Rescale(originalWidth, originalHeight, wxIMAGE_QUALITY_HIGH));
-     this->magnification = 1.0;
-     PaintNow();
+    wxImage copy = image.ConvertToImage();
+    image  = wxBitmap(copy.Rescale(originalWidth, originalHeight, wxIMAGE_QUALITY_HIGH));
+    this->magnification = 1.0;
+    PaintNow();
 }
 
 double wxImagePanel::GetMagnification() {
-     return this->magnification;
+    return this->magnification;
 }
 
 void wxImagePanel::SetMagnification(double magnification) {
-     this->magnification = magnification;
+    this->magnification = magnification;
 }

@@ -35,56 +35,56 @@ class SettingDialog: public wxDialog
 {
 
 public:
-     /**
-      * 設定画面のコンストラクタ
-      */
-     SettingDialog(wxWindow* parent,
-		   int id,
-		   const wxString& title);
+    /**
+     * 設定画面のコンストラクタ
+     */
+    SettingDialog(wxWindow* parent,
+                  int id,
+                  const wxString& title);
 
 #ifdef __WXMAC__
-     // リソースの更新を行う
-     void UpdateResources() {
-	  wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-	  vbox->Add(new NetworkSettingPanel(settingPanel));
-	  settingPanel->SetSizer(vbox);
-     };
+    // リソースの更新を行う
+    void UpdateResources() {
+        wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+        vbox->Add(new NetworkSettingPanel(settingPanel));
+        settingPanel->SetSizer(vbox);
+    };
 #endif
 
 
 private:
-     void SetProperties();
-     void DoLayout();
-     void OnQuit(wxCommandEvent& event);
-     void OnChangeSettingPanel(wxTreeEvent& event);
-     void SaveConfig(const wxString& title);
+    void SetProperties();
+    void DoLayout();
+    void OnQuit(wxCommandEvent& event);
+    void OnChangeSettingPanel(wxTreeEvent& event);
+    void SaveConfig(const wxString& title);
 
 #ifdef __WXMAC__
-     // メインのスレッドにイベントを送る
-     void SendUIUpdateEvent() {
-	  wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_SettingPanelUpdate);
-	  wxString ui = wxT("SettingDialog");
-	  event->SetString(ui.c_str());
-	  event->SetEventObject(this);
+    // メインのスレッドにイベントを送る
+    void SendUIUpdateEvent() {
+        wxCommandEvent* event = new wxCommandEvent(wxEVT_UPDATE_UI, ID_SettingPanelUpdate);
+        wxString ui = wxT("SettingDialog");
+        event->SetString(ui.c_str());
+        event->SetEventObject(this);
 
-   #if wxCHECK_VERSION(2, 9, 0)
-	  wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
-   #else
-	  this->GetEventHandler()->AddPendingEvent(*event);
-   #endif
-     };
+#if wxCHECK_VERSION(2, 9, 0)
+        wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(event->Clone());
+#else
+        this->GetEventHandler()->AddPendingEvent(*event);
+#endif
+    };
 #endif
 
 protected:
-     wxTreeCtrl* settingTreeCtrl;
-     wxPanel* treePanel;
-     wxPanel* settingPanel;
-     wxSplitterWindow* splitterWindow;
-     wxPanel* spacePanel;
-     wxButton* okButton;
-     wxButton* cancelButton;
-     wxPanel* bottomPanel;
-     DECLARE_EVENT_TABLE()
+    wxTreeCtrl* settingTreeCtrl;
+    wxPanel* treePanel;
+    wxPanel* settingPanel;
+    wxSplitterWindow* splitterWindow;
+    wxPanel* spacePanel;
+    wxButton* okButton;
+    wxButton* cancelButton;
+    wxPanel* bottomPanel;
+    DECLARE_EVENT_TABLE()
 };
 
 /**
@@ -94,28 +94,28 @@ class ViewerSettingDialog: public wxDialog
 {
 
 public:
-     /**
-      * ビューア設定画面のコンストラクタ
-      */
-     ViewerSettingDialog(wxWindow* parent,
-			 int id,
-			 const wxString& title);
+    /**
+     * ビューア設定画面のコンストラクタ
+     */
+    ViewerSettingDialog(wxWindow* parent,
+                        int id,
+                        const wxString& title);
 
 private:
-     void SetProperties();
-     void DoLayout();
-     void OnQuit(wxCommandEvent& event);
-     void OnChangeSettingPanel(wxNotebookEvent& event);
-     void SaveConfig(const wxString& title);
+    void SetProperties();
+    void DoLayout();
+    void OnQuit(wxCommandEvent& event);
+    void OnChangeSettingPanel(wxNotebookEvent& event);
+    void SaveConfig(const wxString& title);
 
 protected:
-     wxPanel* bottomPanel;
-     wxNotebook* settingNoteBook;
-     wxPanel* settingPanel;
-     wxPanel* spacePanel;
-     wxButton* okButton;
-     wxButton* cancelButton;
-     DECLARE_EVENT_TABLE()
+    wxPanel* bottomPanel;
+    wxNotebook* settingNoteBook;
+    wxPanel* settingPanel;
+    wxPanel* spacePanel;
+    wxButton* okButton;
+    wxButton* cancelButton;
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // SETTINGWINDOW_H

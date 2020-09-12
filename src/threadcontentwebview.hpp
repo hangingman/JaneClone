@@ -39,75 +39,75 @@
 class ThreadContentWebView : public wxHtmlWindow {
 
 public:
-     /**
-      * 通常のコンストラクタ
-      */
-     ThreadContentWebView(wxWindow* parent, const wxString& threadContentPath);
-     /**
-      * オペレーターに対する参照返し
-      */
-     ThreadContentWebView& operator=(const ThreadContentWebView&) {return *this;}
-     /**
-      * ウィンドウ上で右クリックした場合の処理
-      */
-     void OnRightClickHtmlWindow(wxMouseEvent& event);
-     /**
-      * 現在開いているHTMLのスクロール位置を取得する
-      */
-     void GetHtmlWindowScrollPos(wxPoint* p);
-     /**
-      * 外のクラスから強制的にスクロールさせる
-      */
-     void ForceScroll(const wxPoint* p);
-     /**
-      * このクラスが保持するスレッドのレス数を返す
-      */
-     int GetCurrentThreadResponseNum() {
-	  return m_response_number;
-     };
+    /**
+     * 通常のコンストラクタ
+     */
+    ThreadContentWebView(wxWindow* parent, const wxString& threadContentPath);
+    /**
+     * オペレーターに対する参照返し
+     */
+    ThreadContentWebView& operator=(const ThreadContentWebView&) {return *this;}
+    /**
+     * ウィンドウ上で右クリックした場合の処理
+     */
+    void OnRightClickHtmlWindow(wxMouseEvent& event);
+    /**
+     * 現在開いているHTMLのスクロール位置を取得する
+     */
+    void GetHtmlWindowScrollPos(wxPoint* p);
+    /**
+     * 外のクラスから強制的にスクロールさせる
+     */
+    void ForceScroll(const wxPoint* p);
+    /**
+     * このクラスが保持するスレッドのレス数を返す
+     */
+    int GetCurrentThreadResponseNum() {
+        return m_response_number;
+    };
 
 private:
-     /**
-      * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
-      */
-     const wxString GetConvertedDatFile(const wxString& threadContentPath);
-     /**
-      * メインのスレッドにログとイベントを送る
-      */
-     void SendLogging(wxString& message) {
-	  JaneCloneUiUtil::SendLoggingHelper(message);
-     };
+    /**
+     * 指定されたパスからHTMLファイルを読み出し、2ch形式に加工する
+     */
+    const wxString GetConvertedDatFile(const wxString& threadContentPath);
+    /**
+     * メインのスレッドにログとイベントを送る
+     */
+    void SendLogging(wxString& message) {
+        JaneCloneUiUtil::SendLoggingHelper(message);
+    };
 
-     // linkを左クリックした時に起こるイベント
-     void OnLeftClickHtmlWindow(wxHtmlLinkEvent& event);
-     // リンクが2chのものかどうか判定
-     void OnClickOrdinaryLink(const wxString& link);
-     // 画像ビューアの状態を確認し、設定する
-     void SetJaneCloneImageViewer(const wxString& href, const wxString& ext);
-     // リサイズ時のイベント
-     void OnSize(wxSizeEvent& event);
-     // スキン用のファイルが有るかどうか確認する
-     bool CheckSkinFiles(SkinInfo* skin);
-     // 指定されたファイル中のテキストをメモリに展開する
-     wxString ReadPlainTextFile(const wxString& filePath);
+    // linkを左クリックした時に起こるイベント
+    void OnLeftClickHtmlWindow(wxHtmlLinkEvent& event);
+    // リンクが2chのものかどうか判定
+    void OnClickOrdinaryLink(const wxString& link);
+    // 画像ビューアの状態を確認し、設定する
+    void SetJaneCloneImageViewer(const wxString& href, const wxString& ext);
+    // リサイズ時のイベント
+    void OnSize(wxSizeEvent& event);
+    // スキン用のファイルが有るかどうか確認する
+    bool CheckSkinFiles(SkinInfo* skin);
+    // 指定されたファイル中のテキストをメモリに展開する
+    wxString ReadPlainTextFile(const wxString& filePath);
 
 private:
-     // 内部でもつリンク情報
-     wxHtmlLinkInfo* m_linkInfo;
-     // wxWebViewのインスタンス
-     wxWebView* m_browser;
-     // 内部でもつテキスト情報
-     wxString m_selectedText;
-     // 内部でもつHTML情報
-     wxString m_htmlSource;
-     // リサイズ前のスクロール座標
-     int m_x, m_y;
-     // このクラスが保持するスレッドのレス数
-     int m_response_number;
-     // 書き込みウィンドウに渡すレス番号
-     long m_response;
-     // スクロールさせる必要があるかどうか
-     bool fNeedScroll;
+    // 内部でもつリンク情報
+    wxHtmlLinkInfo* m_linkInfo;
+    // wxWebViewのインスタンス
+    wxWebView* m_browser;
+    // 内部でもつテキスト情報
+    wxString m_selectedText;
+    // 内部でもつHTML情報
+    wxString m_htmlSource;
+    // リサイズ前のスクロール座標
+    int m_x, m_y;
+    // このクラスが保持するスレッドのレス数
+    int m_response_number;
+    // 書き込みウィンドウに渡すレス番号
+    long m_response;
+    // スクロールさせる必要があるかどうか
+    bool fNeedScroll;
 };
 
 #endif /* THREADCONTENTWEBVIEW_HPP_ */

@@ -37,48 +37,48 @@
 class AnchoredResponsePopup: public wxPopupTransientWindow {
 
 public:
-     /**
-      * ポップアップ用ウィンドウのコンストラクタ
-      *
-      * @param wxWindow* parent     親ウィンドウのインスタンス
-      * @param wxPoint&  point      ウィンドウの出現位置
-      * @param wxSize    size       ウィンドウのサイズ
-      * @raram wxString& htmlSource 表示させるHTMLソース
-      */
-     AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource );
-     virtual ~AnchoredResponsePopup(){};
+    /**
+     * ポップアップ用ウィンドウのコンストラクタ
+     *
+     * @param wxWindow* parent     親ウィンドウのインスタンス
+     * @param wxPoint&  point      ウィンドウの出現位置
+     * @param wxSize    size       ウィンドウのサイズ
+     * @raram wxString& htmlSource 表示させるHTMLソース
+     */
+    AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource );
+    virtual ~AnchoredResponsePopup(){};
 
-     void Popup(wxWindow *focus = NULL);
-     void OnDismiss();
-     bool ProcessLeftDown(wxMouseEvent& event);
-     bool Show( bool show = true );
-     wxSize GetPopupWindowSize();
-
-private:
-     void EnterWindow(wxMouseEvent &event);
-     void LeaveWindow(wxMouseEvent &event);
-     void OnSize( wxSizeEvent &event );
-     void OnSetFocus( wxFocusEvent &event );
-     void OnKillFocus( wxFocusEvent &event );
-     // スキン用のファイルが有るかどうか確認する
-     bool CheckSkinFiles(SkinInfo* skin);
-     // 指定されたファイル中のテキストをメモリに展開する
-     wxString ReadPlainTextFile(const wxString& filePath);
-
-     // ユーザーがリンクをクリックした場合ブラウザでジャンプ
-     void OnLinkClocked(wxHtmlLinkEvent& event)
-	  {
-	       const wxHtmlLinkInfo linkInfo = event.GetLinkInfo();
-	       const wxString href = linkInfo.GetHref();
-	       wxLaunchDefaultBrowser(href);
-	  };
-
+    void Popup(wxWindow *focus = NULL);
+    void OnDismiss();
+    bool ProcessLeftDown(wxMouseEvent& event);
+    bool Show( bool show = true );
+    wxSize GetPopupWindowSize();
 
 private:
-     wxHtmlWindow *htmlWin;
+    void EnterWindow(wxMouseEvent &event);
+    void LeaveWindow(wxMouseEvent &event);
+    void OnSize( wxSizeEvent &event );
+    void OnSetFocus( wxFocusEvent &event );
+    void OnKillFocus( wxFocusEvent &event );
+    // スキン用のファイルが有るかどうか確認する
+    bool CheckSkinFiles(SkinInfo* skin);
+    // 指定されたファイル中のテキストをメモリに展開する
+    wxString ReadPlainTextFile(const wxString& filePath);
 
-     DECLARE_CLASS(AnchoredResponsePopup)
-     DECLARE_EVENT_TABLE()
+    // ユーザーがリンクをクリックした場合ブラウザでジャンプ
+    void OnLinkClocked(wxHtmlLinkEvent& event)
+    {
+        const wxHtmlLinkInfo linkInfo = event.GetLinkInfo();
+        const wxString href = linkInfo.GetHref();
+        wxLaunchDefaultBrowser(href);
+    };
+
+
+private:
+    wxHtmlWindow *htmlWin;
+
+    DECLARE_CLASS(AnchoredResponsePopup)
+    DECLARE_EVENT_TABLE()
 };
 
 #endif /* ANCHOREDRESPONSEPOPUP_HPP_ */
