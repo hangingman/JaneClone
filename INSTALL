@@ -3,7 +3,7 @@ JaneClone のインストール方法
 JaneClone Installation Instructions
 ***********************************
 
-Copyright (C) 2014 Hiroyuki Nagata
+Copyright (C) 2020 Hiroyuki Nagata
 
  Copying and distribution of this file, with or without modification,
 are permitted in any medium without royalty provided the copyright
@@ -13,17 +13,16 @@ without warranty of any kind.
 基本インストール
 ==================
 
-　Windows, Linux, Mac, BSD環境にてconfigure;makeのコマンドを実行すれば
+　Windows, Linux, Mac, BSD環境にてcmake,ninjaのコマンドを実行すれば
 JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, BSD環境
 の順にインストール方法を記載します.
 
- A.Windows(MinGW32)
- B.Windows(MinGW64)
- C.Windows(VC++)
- D.Linux(RedHat系)
+ A.Windows(MinGW32) [準備中]
+ B.Windows(MinGW64) [準備中]
+ C.Windows(VC++)    [準備中]
+ D.Linux(RedHat系)  [準備中]
  E.Linux(Debian系)
  F.Mac OSX
- G.BSD
 
  [A.Windows(MinGW32)]
  A-1. 依存するライブラリのインストール
@@ -62,7 +61,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
  A-2. パッケージング
 
   [JaneCloneのコンパイル]
-  $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
+  $ git clone git://github.com/hangingman/JaneClone.git
   $ cd /path/to/JaneClone
   $ ./bootstrap
   $ ./configure
@@ -108,7 +107,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
  B-2. パッケージング
 
   [JaneCloneのコンパイル]
-  $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
+  $ git clone git://github.com/hangingman/JaneClone.git
   $ cd /path/to/JaneClone
   $ ./bootstrap
   $ ./configure
@@ -128,7 +127,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
 
   プロジェクト内部にextras/packageディレクトリができていればビルド成功です.
   Linux上でのWindows向けバイナリビルド方法については以下のリンクを参照してください.
-  https://github.com/Hiroyuki-Nagata/JaneClone/wiki/_pages
+  https://github.com/hangingman/JaneClone/wiki/_pages
 
  [C.Windows(VC++)]
  C-1. 環境構築
@@ -138,7 +137,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
    インストールできたら「Git Bash」を起動して、以下のコマンドを実行してください。
 
    $ cd [ソースを格納したいフォルダ]
-   $ git clone https://github.com/Hiroyuki-Nagata/JaneClone.git
+   $ git clone https://github.com/hangingman/JaneClone.git
 
    ※チェックアウトが遅いときは「git clone」を「git clone --depth=50」などに変えてください。
    ※Visual Studioの内部機能の「チームエクスプローラー」からソースをチェックアウトすることもできます。
@@ -187,7 +186,7 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
 
   [JaneCloneのコンパイル]
 
-  $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
+  $ git clone git://github.com/hangingman/JaneClone.git
   $ cd /path/to/JaneClone
   $ ./bootstrap
   $ ./configure
@@ -201,100 +200,36 @@ JaneCloneの実行ファイルが作成されます.以下, Window, Linux, Mac, 
 
   DebianもしくはUbuntuの環境を想定します.
   amd64, x86_64の環境どちらでもコンパイルできると思います.
-  Debian Wheezy,Sidのx86_64の環境でビルドを行いました.
-  また,Travis環境( Ubuntu 12.0.4 x86_64の環境)で常にパッケージビルドを行っています.
+  Debian Busterのx86_64の環境でビルドを行いました.
+  また,Travis環境で常にパッケージビルドを行っています.
 
   // JaneClone本体のビルド用
-  # apt-get install debhelper autotools-dev libatk1.0-0 libc6		\
-  libcairo2 libdbus-1-3 libfontconfig1 libfreetype6 libgcc1   		\
-  libglib2.0-0 libgtk2.0-0 libpango1.0-0 libstdc++6 libwxbase2.8-0 	\
-  libwxgtk2.8-0 libxml2-dev autoconf automake libtool devscripts        \
-  fonts-mona cdbs libwxsqlite3-3.0-dev
+  # apt-get install libwxbase3.0 libwxgtk3.0-dev libwxsqlite3-3.0-dev   \
+    libxml2-dev libcurl4-openssl-dev libssl-dev cmake ninja-build
 
   // ソースをダウンロードするため
   # apt-get install git
 
  E-2. パッケージング
 
-  $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
+  $ git clone git://github.com/hangingman/JaneClone.git
   $ cd /path/to/JaneClone
-  $ ./bootstrap
-  $ ./configure
-  $ make
+  $ ./ninja_rebuild.sh
 
-  ・make installで /usr/local 以下に janeclone のラッパースクリプトが入ります
-　・make package-deb で Debian のパッケージを作成できます
+　・ninja package で Debian のパッケージを作成できるようにする予定
 
  [F.Mac OSX]
  F-1. 依存するライブラリのインストール
 
   clang, gsed, wxWidgetsのインストール
-  # sudo port install clang-3.4 gsed libtool wxWidgets(開発版をインストールする)
-  あとlibcurl, libxml2も開発版を入れる
-  # sudo port install libcurl4-*** libxml2-*** (名前忘れました）
+  $ export OPENSSL_ROOT_DIR=/usr/local/opt/openssl/
+  $ export HOMEBREW_NO_AUTO_UPDATE=1
+  $ brew install gnu-sed wxmac cmake ninja openssl
 
  F-2. パッケージング
 
-  $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
+  $ git clone git://github.com/hangingman/JaneClone.git
   $ cd /path/to/JaneClone
-  $ git submodule init
-  $ git submodule update
-  $ ./bootstrap
-  $ ./configure CC='clang-mp-3.3' CXX='clang++-mp-3.3 -std=c++11 -stdlib=libc++'
-  $ make
+  $ ./ninja_rebuild.sh
 
- [G.BSD]
- G-1. 依存するライブラリのインストール
-
-  まず最初にGNOMEによるデスクトップ環境を構築してください。
-  また、ビルドにはGNU Autotoolsのパッケージ群が必要になります。
-  (automake/autoconf/libtool/autoreconf...)
-
-  必要なものを準備する
-  # pkg_add -r autoconf automake autoreconf
-  # pkg_add -r gsed
-  # pkg_add -r subversion
-
-  libc++/libcxxrtをビルドする必要がある(面倒ですねえ。。。)
-  # svn co svn://svn.freebsd.org/base/releng/9.1/lib /usr/src/lib
-  # svn co svn://svn.freebsd.org/base/releng/9.1/contrib /usr/src/contrib
-  # cd /usr/src/lib/libcxxrt
-  # make
-  # make install
-  # cd /usr/src/lib/libc++
-  # make CXX=clang++
-  # make install
-
-  # libcurlをビルドする
-  # cd /usr/ports/ftp/curl
-  # make && make install && make clean
-
-  wxWidgetsのライブラリのインストール
-  (wx-2.8はバグがあるので最新版をインストールする)
-  # git clone https://github.com/wxWidgets/wxWidgets.git
-  # cd wxWidgets
-  # git checkout WX_3_0_0-rc2
-  # cd ../
-  # mkdir wxWidgets-3.0.0-rc2
-  # cd wxWidgets-3.0.0-rc2/
-  # ../wxWidgets/configure CXXFLAGS="-stdlib=libc++ -std=c++11"       \
-    OBJCXXFLAGS="-stdlib=libc++ -std=c++11" CPPFLAGS="-stdlib=libc++" \
-    LDFLAGS="-stdlib=libc++" CXX=clang++ CXXCPP="clang++ -E" CC=clang \
-    CPP="clang -E" --enable-unicode --enable-debug --enable-gdb-debug \
-    --with-libjpeg=builtin --with-libpng=builtin --with-regex=builtin \
-    --with-libtiff=builtin --with-zlib=builtin --with-expat=builtin   \
-    --enable-std_containers --enable-std_iostreams --enable-std_string
-  # make
-  # make install
-
-  ちゃんんとバージョンが出たら成功
-  # wx-config --version
-  3.0.0
-
- G-2. パッケージング
-
-  $ git clone git://github.com/Hiroyuki-Nagata/JaneClone.git
-  $ cd /path/to/JaneClone
-  $ ./bootstrap
-  $ ./configure CC='clang' CXX='clang++ -std=c++11 -stdlib=libc++'
-  $ make
+　・ninja package で Mac のパッケージを作成できるようにする予定
