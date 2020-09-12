@@ -69,3 +69,12 @@ else()
 endif()
 
 add_subdirectory(src)
+
+if(test)
+  enable_testing()
+  find_package(GTest REQUIRED)
+  add_subdirectory(test)
+  message(STATUS "test     :	  on")
+else()
+  message(STATUS "test     :	  off")
+endif()
