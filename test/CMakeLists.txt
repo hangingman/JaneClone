@@ -11,7 +11,7 @@ include_directories(${janeclone_SOURCE_DIR})
 include_directories(${CMAKE_BINARY_DIR})
 
 add_executable(sqlite-test sqlite-test.cpp
-  ${janeclone_SOURCE_DIR}/sqliteaccessor.cpp)
+                           ${janeclone_SOURCE_DIR}/sqliteaccessor.cpp)
 
 target_link_libraries(sqlite-test gtest gtest_main pthread)
 
@@ -30,7 +30,7 @@ else()
   include_directories(${WxSQLite3_INCLUDE_DIRS})
   target_link_libraries(sqlite-test ${WxSQLite3_LIBRARIES})
 endif()
-			 
+
 add_test(NAME sqlite COMMAND $<TARGET_FILE:sqlite-test>)
-set_tests_properties(sqlite PROPERTIES
-  ENVIRONMENT WK_DIR=${root_BINARY_DIR}/test)
+set_tests_properties(sqlite PROPERTIES ENVIRONMENT
+                                       WK_DIR=${root_BINARY_DIR}/test)

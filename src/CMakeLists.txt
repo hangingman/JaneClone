@@ -99,9 +99,17 @@ if(${CMAKE_OS_NAME} MATCHES "(Debian|Ubuntu)")
   set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
   set(CPACK_DEBIAN_PACKAGE_DEPENDS "libwxbase3.0-0v5, libwxgtk3.0-0v5")
 
+  set(JANECLONE_EXEC_RC_DIR "/usr/share/pixmaps/janeclone")
+
   install(TARGETS janeclone RUNTIME DESTINATION "/usr/bin/")
   file(GLOB RC_FILES ${janeclone_SOURCE_DIR}/rc/*)
-  install(FILES ${RC_FILES} DESTINATION /usr/share/pixmaps/janeclone/)
+  install(FILES ${RC_FILES} DESTINATION ${JANECLONE_EXEC_RC_DIR})
+
+  configure_file(${root_SOURCE_DIR}/misc/janeclone.desktop.in
+    ${CMAKE_BINARY_DIR}/misc/janeclone.desktop @ONLY)
+  install(FILES ${CMAKE_BINARY_DIR}/misc/janeclone.desktop
+    DESTINATION /usr/share/applications/janeclone/)
+  
   # TODO: /usr/lib/janeclone のほうがいいかもしれない
   install(TARGETS curlpp LIBRARY DESTINATION "/usr/lib/")
   install(TARGETS utilspp LIBRARY DESTINATION "/usr/lib/")
