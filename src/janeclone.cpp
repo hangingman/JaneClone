@@ -2759,8 +2759,8 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
     info.AddDeveloper(wxT("K.Watanabe\tkwtnb@outlook.com"));
     info.AddDeveloper(wxT("Vabock\tvabock@gmail.com"));
     info.SetVersion(janecloneVersion);
-    info.SetCopyright(wxT("Copyright(C) 2015 Nagata Hiroyuki, All Rights Reserved. "));
-    info.SetWebSite(wxT("http://nantonaku-shiawase.hatenablog.com/"));
+    info.SetCopyright(wxT("Copyright(C) 2020 Nagata Hiroyuki, All Rights Reserved. "));
+    info.SetWebSite(JANECLONE_DOWNLOADSITE);
 
     // 説明を追加
     wxString description = wxT("wxWidgetsのバージョン:");
@@ -2791,8 +2791,6 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
 
     // ライセンスを読み込む
     wxTextFile licenceFile;
-    wxMessageBox( licencePath );
-
     licenceFile.Open(licencePath, wxConvUTF8);
     wxString licence;
 

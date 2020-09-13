@@ -131,24 +131,34 @@ inline wxString GetJcExecutablePath()
     return appPath;
 }
 
+// パッケージでインストールされるパス
+static const wxRegEx packageBinPath(_T("(/usr/bin|/usr/local/bin)"), wxRE_ADVANCED + wxRE_ICASE);
+
 // リソースファイルのパス
 inline wxString GetResourcePath(wxString fileName) {
 
-#if defined (__WXMSW__) || defined(__WXGTK__)
-#ifdef DEBIAN_PACKAGE_BUILD
-    wxFileName filePath = wxFileName::DirName("share");
-    filePath.AppendDir("pixmaps");
-    filePath.AppendDir("janeclone");
-#else
+#if defined(__WXGTK__)
+    wxFileName exePath = wxFileName::DirName(GetJcExecutablePath());
+    wxFileName filePath;
+
+    if (packageBinPath.Matches(exePath.GetFullPath(wxPATH_UNIX))) {
+        // 実行ファイルが /usr 以下 の場合パッケージビルドとみなす
+        filePath = wxFileName::DirName("/usr/share/pixmaps/janeclone");
+    } else {
+        filePath = wxFileName::DirName(GetJcExecutablePath());
+        filePath.AppendDir("rc");
+    }
+
+#elif defined (__WXMSW__)
     wxFileName filePath = wxFileName::DirName(GetJcExecutablePath());
     filePath.AppendDir("rc");
-#endif
 #elif defined(__WXMAC__)
     wxFileName filePath = wxFileName::DirName(GetJcExecutablePath());
     filePath.AppendDir("JaneClone.app");
     filePath.AppendDir("Contents");
     filePath.AppendDir("Resources");
 #endif
+
     if (fileName != wxEmptyString) {
         wxFileName f(fileName);
         filePath.SetName(f.GetName());
