@@ -61,9 +61,9 @@ before_script:
 script:
   - echo $TRAVIS_OS_NAME
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-        cmake --version
+        cmake --version;
         sh ninja_rebuild.sh;
-    ; fi
+    fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then sh ninja_rebuild.sh; fi
 
 branches:
