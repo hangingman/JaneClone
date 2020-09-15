@@ -1,7 +1,9 @@
 project(curlpp CXX)
 
-# autotools同様のconfig.hを作成する option(FOO_ENABLE "Enable Foo" ON) if(FOO_ENABLE)
-# set(FOO_STRING "foo") endif()
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 configure_file(include/curlpp/config.h.in include/curlpp/config.h @ONLY)
 add_definitions(-DHAVE_CONFIG_H)
 
