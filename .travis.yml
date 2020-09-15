@@ -1,21 +1,14 @@
 # linux dist=xenial
 # -> https://packages.ubuntu.com/
-os:
-  - linux
-  - osx
-
-dist: xenial
-  
 language: cpp
-
-compiler:
-  - gcc
-  - clang
 
 jobs:
   include:
-  - name: Ubuntu 16.04 LTS - Xenial
+  - os: linux
     dist: xenial
+    compiler: gcc
+    cache:
+      apt: true
     addons:
       apt:
         sources:
@@ -24,17 +17,27 @@ jobs:
         - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial-rc main'
         packages:
         - cmake
-  
-matrix:
-  exclude:
-    - os: osx
-      compiler: gcc
+        
+  - os: linux
+    dist: xenial
+    compiler: clang
+    cache:
+      apt: true
+    addons:
+      apt:
+        sources:
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial main'
+          key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial-rc main'
+        packages:
+        - cmake
+  - os: osx
+    compiler: clang
+    cache:
+      directories:
+        - $HOME/Library/Caches/Homebrew
+        - /usr/local/Homebrew
 
-cache:
-  apt: true
-  directories:
-    - $HOME/Library/Caches/Homebrew
-    - /usr/local/Homebrew
 
 before_cache:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew cleanup; fi
