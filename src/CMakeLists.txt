@@ -106,7 +106,7 @@ if(${CMAKE_OS_NAME} MATCHES "(Debian|Ubuntu)")
   configure_file(${root_SOURCE_DIR}/misc/janeclone.desktop.in
     ${CMAKE_BINARY_DIR}/misc/janeclone.desktop @ONLY)
   install(FILES ${CMAKE_BINARY_DIR}/misc/janeclone.desktop
-    DESTINATION /usr/share/applications/janeclone/)
+    DESTINATION /usr/share/applications/)
   
   # TODO: /usr/lib/janeclone のほうがいいかもしれない
   install(TARGETS curlpp LIBRARY DESTINATION "/usr/lib/")

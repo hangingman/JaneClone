@@ -52,11 +52,6 @@ env:
 before_install:
   - echo $TRAVIS_OS_NAME
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-        echo "check cmake v3.13...";
-        sudo apt-cache show cmake -a | grep Version;
-        sudo ls -l /usr/local/cmake-*/bin/;
-    fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
         sudo apt-get update -qq;
     fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
@@ -77,7 +72,7 @@ script:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
         mkdir build;
         /usr/bin/cmake --version;
-        cd build && /usr/bin/cmake -G "Ninja" .. && ninja;
+        cd build && /usr/bin/cmake -G "Ninja" .. && ninja package;
     fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then sh ninja_rebuild.sh; fi
 
