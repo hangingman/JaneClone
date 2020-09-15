@@ -4,12 +4,27 @@ os:
   - linux
   - osx
 
+dist: xenial
+  
 language: cpp
 
 compiler:
   - gcc
   - clang
 
+jobs:
+  include:
+  - name: Ubuntu 16.04 LTS - Xenial
+    dist: xenial
+    addons:
+      apt:
+        sources:
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial main'
+          key_url: 'https://apt.kitware.com/keys/kitware-archive-latest.asc'
+        - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial-rc main'
+        packages:
+        - cmake
+  
 matrix:
   exclude:
     - os: osx
@@ -34,10 +49,8 @@ env:
 before_install:
   - echo $TRAVIS_OS_NAME
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-        echo "update cmake v3.13...";
-        sudo apt-get install apt-transport-https ca-certificates gnupg software-properties-common wget;
-        wget -qO - https://apt.kitware.com/keys/kitware-archive-latest.asc | sudo apt-key add -;
-        sudo apt-add-repository -y 'deb https://apt.kitware.com/ubuntu/ xenial main';
+        echo "check cmake v3.13...";
+        sudo apt-cache show cmake -a | grep Version;
     fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
         sudo apt-get update -qq;
@@ -49,7 +62,7 @@ before_install:
 install:
   - echo $TRAVIS_OS_NAME
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-        sudo apt-get install libwxbase3.0 libwxgtk3.0-dev libwxsqlite3-3.0-dev libxml2-dev libcurl4-openssl-dev libssl-dev cmake ninja-build;
+        sudo apt-get install -y libwxbase3.0 libwxgtk3.0-dev libwxsqlite3-3.0-dev libxml2-dev libcurl4-openssl-dev libssl-dev ninja-build;
     fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
         brew install gnu-sed wxmac cmake ninja openssl;
