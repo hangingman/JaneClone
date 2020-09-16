@@ -42,10 +42,10 @@ static const wxCmdLineEntryDesc gCmdLineDesc[] =
      };
 #endif
 
-     /*
-      * wxAppを継承したwxMainを宣言
-      */
-     class wxMain: public wxApp {
+/*
+ * wxAppを継承したwxMainを宣言
+ */
+class wxMain: public wxApp {
 
          wxLocale m_Locale;
 
@@ -79,16 +79,9 @@ static const wxCmdLineEntryDesc gCmdLineDesc[] =
          if (!wxApp::OnInit())
              return false;
 
-         // コマンドラインで与えられた引数を取得する
-         if (m_pid != 0 && m_pid == wxGetProcessId()) {
-             // このプロセスをしばらく待機
-             // ! Fix Me ! なんかここ実装しなくても動作してるけど…
-         }
-
          // JaneClone起動前に複数起動をチェックする
-         const wxString name = wxString::Format(_("JaneClone-%s"), wxGetUserId().c_str());
-         m_checker = new wxSingleInstanceChecker(name);
-         if ( m_checker->IsAnotherRunning()) {
+         m_checker = new wxSingleInstanceChecker();
+         if (m_checker->IsAnotherRunning()) {
              wxMessageBox(wxT("誤作動防止のためJaneCloneは複数起動できません。終了します。"),
                           wxT("JaneClone起動"), wxOK | wxICON_ERROR);
              return false;
@@ -97,6 +90,7 @@ static const wxCmdLineEntryDesc gCmdLineDesc[] =
          wxInitAllImageHandlers();
          wxImage::AddHandler( new wxPNGHandler );
          wxFileSystem::AddHandler(new wxMemoryFSHandler);
+
          wxJaneClone = new JaneClone(NULL, ID_WxJaneClone, wxEmptyString);
          SetTopWindow(wxJaneClone);
          wxJaneClone->Show();
