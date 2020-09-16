@@ -1720,10 +1720,9 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
         // portの取得
         port.Replace(wxT(":"), wxEmptyString, true);
         int portInteger = 80;
-        if (port != wxEmptyString)
-            {
-                portInteger = wxAtoi(port);
-            }
+        if (port != wxEmptyString) {
+            portInteger = wxAtoi(port);
+        }
 
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
