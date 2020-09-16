@@ -21,6 +21,7 @@
 
 #include "socketcommunication.hpp"
 
+
 const wxString SocketCommunication::properties[] =
     {
      wxT("ID_NetworkPanelUseProxy")		,/* プロキシを使用するかどうか				*/
@@ -50,15 +51,16 @@ SocketCommunication::SocketCommunication()
     this->bodyBuf.clear();
     propMap.clear();
 
-    for ( auto key : properties )
-        {
-            wxString val = wxEmptyString;
-            JaneCloneUtil::GetJaneCloneProperties(key, &val, val);
-            if ( val != wxEmptyString )
-                {
-                    propMap[key] = val;
-                }
+    for ( auto key : properties ) {
+        wxString val = wxEmptyString;
+        JaneCloneUtil::GetJaneCloneProperties(key, &val, val);
+        if ( val != wxEmptyString ) {
+            propMap[key] = val;
         }
+    }
+
+    this->writeHeaderFunc = new HeaderFunction(WFunctor(this, &Sock::WriteHeader));
+    this->writeBodyFunc = new WriteFunction(WFunctor(this, &Sock::WriteBody));
 }
 /**
  * 板一覧ファイルをダウンロードしてくるメソッド 引数は板一覧ファイル保存先、板一覧ファイルヘッダ保存先
@@ -129,16 +131,14 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
-        // ヘッダー用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::HeaderFunction(
-                                                             curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new HttpHeader(headers));
+        myRequest.setOpt(new Verbose(true));
+        myRequest.setOpt(this->writeHeaderFunc);
 
         // メインのデータ出力
         std::ofstream ofs(outputPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         wxString message = wxT("2chの板一覧情報を取得 (ん`　 )\n");
@@ -343,15 +343,13 @@ int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
-        // ヘッダー用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::HeaderFunction(
-                                                             curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new HttpHeader(headers));
+        myRequest.setOpt(new Verbose(true));
+        myRequest.setOpt(this->writeHeaderFunc);
 
         std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         wxString message = wxT("スレッド一覧を取得 (ん`　 )\n");
@@ -441,15 +439,13 @@ int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath,
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
-        // ヘッダー用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::HeaderFunction(
-                                                             curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new HttpHeader(headers));
+        myRequest.setOpt(new Verbose(true));
+        myRequest.setOpt(this->writeHeaderFunc);
 
         std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         wxString message = wxT("スレッド一覧を取得 (ん`　 )\n");
@@ -619,15 +615,13 @@ void SocketCommunication::DownloadThreadNew(const wxString& gzipPath,
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
-        // ヘッダー用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::HeaderFunction(
-                                                             curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new HttpHeader(headers));
+        myRequest.setOpt(new Verbose(true));
+        myRequest.setOpt(this->writeHeaderFunc);
 
         std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         wxString message = wxT("2chのスレッドを取得 (ん`　 )\n");
@@ -758,15 +752,11 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
-        // ヘッダー用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::HeaderFunction(
-                                                             curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
-        // BODY用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::WriteFunction(
-                                                            curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteDataInternal)));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new HttpHeader(headers));
+        myRequest.setOpt(new Verbose(true));
+        myRequest.setOpt(this->writeHeaderFunc);
+        myRequest.setOpt(this->writeBodyFunc);
 
         wxString message = wxT("2chのスレッドを取得 (ん`　 )\n");
         message += server;
@@ -932,18 +922,16 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::HttpHeader(headers));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
-        // ヘッダー用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::HeaderFunction(
-                                                             curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new HttpHeader(headers));
+        myRequest.setOpt(new Verbose(true));
+        myRequest.setOpt(this->writeHeaderFunc);
 
         // 何も見つからなかった時に備えてgzipPathは仮の値に
         const wxString pastTempPath = gzipPath + wxT("temp");
 
         std::ofstream ofs(pastTempPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         wxString message = wxT("2chのスレッド(過去スレ)を取得 (ん`　 )\n");
@@ -1023,8 +1011,7 @@ void SocketCommunication::RemoveTmpFile(const wxString& removeFile)
 /**
  * HTTPヘッダを書きだす
  */
-size_t SocketCommunication::WriteHeaderData(char *ptr, size_t size, size_t nmemb)
-{
+size_t SocketCommunication::WriteHeader(char *ptr, size_t size, size_t nmemb) {
 
     // 文字列をメンバ変数に格納
     size_t realsize = size * nmemb;
@@ -1072,13 +1059,13 @@ size_t SocketCommunication::WriteHeaderData(char *ptr, size_t size, size_t nmemb
 /**
  * HTTPボディを書きだす
  */
-size_t SocketCommunication::WriteDataInternal(char *ptr, size_t size, size_t nmemb)
-{
+size_t SocketCommunication::WriteBody(char *ptr, size_t size, size_t nmemb) {
     // 文字列をメンバ変数に格納
     size_t realsize = size * nmemb;
     bodyBuf.append( static_cast<const char *>(ptr), realsize );
     return realsize;
 }
+
 /**
    ・bbs.cgiを呼び出すとスレッドにレスの書き込みができます。
 
@@ -1208,18 +1195,16 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, SEND);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::HttpHeader(headers));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new HttpHeader(headers));
         const std::string postField = std::string(kakikomiInfo.mb_str());
-        myRequest.setOpt(new curlpp::options::PostFields(postField));
-        myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
-        // ヘッダー用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::HeaderFunction(
-                                                             curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+        myRequest.setOpt(new PostFields(postField));
+        myRequest.setOpt(new PostFieldSize(postField.length()));
+        myRequest.setOpt(new Verbose(true));
+        myRequest.setOpt(this->writeHeaderFunc);
 
         std::ofstream ofs(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         wxString message = wxT("書き込み実行 (ヽ´ん`)\n");
@@ -1377,18 +1362,16 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, SEND);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::HttpHeader(headers));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new HttpHeader(headers));
         const std::string postField = std::string(kakikomiInfo.mb_str());
-        myRequest.setOpt(new curlpp::options::PostFields(postField));
-        myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
-        // ヘッダー用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::HeaderFunction(
-                                                             curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+        myRequest.setOpt(new PostFields(postField));
+        myRequest.setOpt(new PostFieldSize(postField.length()));
+        myRequest.setOpt(new Verbose(true));
+        myRequest.setOpt(this->writeHeaderFunc);
 
         std::ofstream ofs(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         wxString message = wxT("書き込み実行 (ヽ´ん`)\n");
@@ -1549,18 +1532,16 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, SEND);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::HttpHeader(headers));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new HttpHeader(headers));
         const std::string postField = std::string(kakikomiInfo.mb_str());
-        myRequest.setOpt(new curlpp::options::PostFields(postField));
-        myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
-        // ヘッダー用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::HeaderFunction(
-                                                             curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+        myRequest.setOpt(new PostFields(postField));
+        myRequest.setOpt(new PostFieldSize(postField.length()));
+        myRequest.setOpt(new Verbose(true));
+        myRequest.setOpt(this->writeHeaderFunc);
 
         std::ofstream ofs(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         wxString message = wxT("書き込み実行 (ヽ´ん`)\n");
@@ -1944,10 +1925,10 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new cURLpp::Options::Url(requestQuery));
-        myRequest.setOpt(new cURLpp::Options::Port(portInteger));
+        myRequest.setOpt(new Url(requestQuery));
+        myRequest.setOpt(new Port(portInteger));
         std::ofstream ofs(outputFilename.c_str() , std::ios::out | std::ios::trunc );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         // ログ出力
@@ -2022,10 +2003,10 @@ wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostna
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new cURLpp::Options::Url(requestQuery));
-        myRequest.setOpt(new cURLpp::Options::Port(portInteger));
+        myRequest.setOpt(new Url(requestQuery));
+        myRequest.setOpt(new Port(portInteger));
         std::ofstream ofs(outputFilename.c_str() , std::ios::out | std::ios::trunc );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         // ログ出力
@@ -2140,15 +2121,13 @@ void SocketCommunication::LoginBe2ch()
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, SEND);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::HttpHeader(headers));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new HttpHeader(headers));
         const std::string postField = std::string(kakikomiInfo.mb_str());
-        myRequest.setOpt(new curlpp::options::PostFields(postField));
-        myRequest.setOpt(new curlpp::options::PostFieldSize(postField.length()));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
-        // ヘッダー用ファンクタを設定する
-        myRequest.setOpt(new curlpp::options::HeaderFunction(
-                                                             curlpp::types::WriteFunctionFunctor(this, &SocketCommunication::WriteHeaderData)));
+        myRequest.setOpt(new PostFields(postField));
+        myRequest.setOpt(new PostFieldSize(postField.length()));
+        myRequest.setOpt(new Verbose(true));
+        myRequest.setOpt(this->writeHeaderFunc);
 
         wxString message = wxT("BEにログイン (ヽ´ん`)...\n");
         JaneCloneUiUtil::SendLoggingHelper(message);
@@ -2196,11 +2175,11 @@ bool SocketCommunication::GetShitarabaBoardInfo(const wxString& path, wxString& 
         curlpp::Cleanup myCleanup;
         curlpp::Easy myRequest;
         LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new curlpp::options::Url(url));
-        myRequest.setOpt(new curlpp::options::Verbose(true));
+        myRequest.setOpt(new Url(url));
+        myRequest.setOpt(new Verbose(true));
 
         std::ofstream ofs(dataFilePath.mb_str() , std::ios::out | std::ios::trunc );
-        curlpp::options::WriteStream ws(&ofs);
+        WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
         wxString message = wxT("したらば掲示板にアクセス (ヽ´ん`)...\n");
@@ -2354,7 +2333,7 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
             long sec = 0;
             if ( connectTimeout.IsNumber() && connectTimeout.ToLong(&sec, 10) )
                 {
-                    request.setOpt(new curlpp::options::Timeout(sec));
+                    request.setOpt(new Timeout(sec));
                 }
         }
 
@@ -2364,7 +2343,7 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
             long sec = 0;
             if ( receiveTimeout.IsNumber() && receiveTimeout.ToLong(&sec, 10) )
                 {
-                    request.setOpt(new curlpp::options::ConnectTimeout(sec));
+                    request.setOpt(new ConnectTimeout(sec));
                 }
         }
 
@@ -2379,7 +2358,7 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
             if ( username.IsWord() && password.IsWord() )
                 {
                     const wxString concat = username + wxT(":") + password;
-                    request.setOpt(new curlpp::options::UserPwd(std::string(concat.mb_str())));
+                    request.setOpt(new UserPwd(std::string(concat.mb_str())));
                 }
             else
                 {
@@ -2420,8 +2399,8 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
                                     if ( port.ToLong(&p, 10))
                                         {
                                             JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy送信: %s:%ld\n", proxy, p));
-                                            request.setOpt(new curlpp::options::Proxy(std::string(proxy.mb_str())));
-                                            request.setOpt(new curlpp::options::ProxyPort(p));
+                                            request.setOpt(new Proxy(std::string(proxy.mb_str())));
+                                            request.setOpt(new ProxyPort(p));
                                         }
                                     else
                                         {
@@ -2444,8 +2423,8 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
                                     if ( port.ToLong(&p, 10) )
                                         {
                                             JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy受信: %s:%ld\n", proxy, p));
-                                            request.setOpt(new curlpp::options::Proxy(std::string(proxy.mb_str())));
-                                            request.setOpt(new curlpp::options::ProxyPort(p));
+                                            request.setOpt(new Proxy(std::string(proxy.mb_str())));
+                                            request.setOpt(new ProxyPort(p));
                                         }
                                     else
                                         {
@@ -2462,8 +2441,7 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
 /**
  * ユーザの設定しているユーザーエージェントを取得する
  */
-inline std::string SocketCommunication::CustomUserAgent()
-{
+inline std::string SocketCommunication::CustomUserAgent() {
     wxString customUserAgent = wxEmptyString;
     JaneCloneUtil::GetJaneCloneProperties(wxT("ID_NetworkPanelUserAgent"), &customUserAgent, wxString(userAgent));
     return customUserAgent.ToStdString();

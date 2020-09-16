@@ -53,15 +53,27 @@
 #include "janecloneuiutil.hpp"
 #include "sqliteaccessor.hpp"
 
+// curlppの名前空間が冗長なのでusingする
+using namespace curlpp::options;
+using namespace curlpp::types;
+
+using WFunctor = WriteFunctionFunctor;
+
+
 class SocketCommunication {
 
+    using Sock = SocketCommunication;
 
 public:
+
+    HeaderFunction* writeHeaderFunc;
+    WriteFunction* writeBodyFunc;
 
     /**
      * コンストラクタ
      */
     SocketCommunication();
+
     /**
      * 板一覧ファイルをダウンロードしてくるメソッド
      * もし前回通信した際のログが残っていれば更新の確認のみ行う
@@ -264,11 +276,11 @@ private:
     /**
      * HTTPヘッダを書きだす
      */
-    size_t WriteHeaderData(char *ptr, size_t size, size_t nmemb);
+    size_t WriteHeader(char *ptr, size_t size, size_t nmemb);
     /**
      * HTTPボディを書きだす
      */
-    size_t WriteDataInternal(char *ptr, size_t size, size_t nmemb);
+    size_t WriteBody(char *ptr, size_t size, size_t nmemb);
     /**
      * COOKIE関連の初期化処理を行う
      */
