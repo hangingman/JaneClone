@@ -1327,52 +1327,37 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
     wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
     // ホスト名
     wxString hostName;
-    if (reThreadList.IsValid())
-        {
-            if (reThreadList.Matches(boardInfoHash.boardURL))
-                {
-                    hostName = reThreadList.GetMatch(boardInfoHash.boardURL, 2);
-                }
+    if (reThreadList.IsValid()) {
+        if (reThreadList.Matches(boardInfoHash.boardURL)) {
+            hostName = reThreadList.GetMatch(boardInfoHash.boardURL, 2);
         }
+    }
 
     // 投稿時間を算出する(UNIX Time)
     wxString timeNow = JaneCloneUtil::GetTimeNow();
     wxString message = wxT("UNIX Time:") + timeNow;
     JaneCloneUiUtil::SendLoggingHelper(message);
 
-    wxDir dir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
-    wxString headerPath = dir.GetName();
     wxDir jcDir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
     wxDir datDir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat"));
 
     // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-    if (!jcDir.HasSubDirs(wxT("dat")))
-        {
-            ::wxMkdir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat"));
-        }
+    if (!jcDir.HasSubDirs(wxT("dat"))) {
+        ::wxMkdir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat"));
+    }
 
-    if (!datDir.HasSubDirs(wxT("kakikomi")))
-        {
-            ::wxMkdir(datDir.GetName() + wxFILE_SEP_PATH + wxT("kakikomi"));
-        }
+    if (!datDir.HasSubDirs(wxT("kakikomi"))) {
+        ::wxMkdir(datDir.GetName() + wxFILE_SEP_PATH + wxT("kakikomi"));
+    }
 
-#ifdef __WXMSW__
-    // Windowsではパスの区切りは"\"
-    headerPath += wxT("\\dat\\");
-    headerPath += wxT("kakikomi");
-    headerPath += wxT("\\");
-    headerPath += timeNow;
-    headerPath += wxT(".header");
-#else
-    // それ以外ではパスの区切りは"/"
-    headerPath += wxT("/dat/");
-    headerPath += wxT("kakikomi");
-    headerPath += wxT("/");
-    headerPath += timeNow;
-    headerPath += wxT(".header");
-#endif
-
-    wxString buttonText = wxT("%8F%91%82%AB%8D%9E%82%DE");
+    wxFileName headerDir = wxFileName::DirName(wxGetHomeDir());
+    headerDir.AppendDir(JANECLONE_DIR);
+    headerDir.AppendDir("dat");
+    headerDir.AppendDir("kakikomi");
+    headerDir.SetName(timeNow);
+    headerDir.SetExt("header");
+    const wxString headerPath = headerDir.GetFullPath();
+    const wxString buttonText = wxT("%8F%91%82%AB%8D%9E%82%DE");
 
     // Postする内容のデータサイズを取得する
     wxString kakikomiInfo = wxT("bbs=") + boardInfoHash.boardNameAscii + wxT("&key=")
@@ -1381,8 +1366,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
         + postContent->kakikomi + wxT("&submit=") + buttonText;
 
     // 接続先
-    std::string url(hostName.mb_str());
-    url += "/test/bbs.cgi";
+    const std::string url = std::string(hostName.mb_str()) + "/test/bbs.cgi";
     // URL
     const wxString boardURL = boardInfoHash.boardURL;
     // リファラを引数から作成する
@@ -1456,23 +1440,12 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 /**
  * COOKIE関連の初期化処理を行う
  */
-void SocketCommunication::InitializeCookie()
-{
-    // カレントディレクトリを設定
-    wxDir dir(::wxGetHomeDir());
-    wxDir jcDir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
-    wxDir propDir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("prop"));
-
-    // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-    if (!dir.HasSubDirs(JANECLONE_DIR))
-        {
-            ::wxMkdir(jcDir.GetName());
-        }
-
-    if (!jcDir.HasSubDirs(wxT("prop")))
-        {
-            ::wxMkdir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("prop"));
-        }
+void SocketCommunication::InitializeCookie() {
+    // mkdir -p ~/.jc/prop/
+    wxFileName propDir = wxFileName::DirName(wxGetHomeDir());
+    propDir.AppendDir(JANECLONE_DIR);
+    propDir.AppendDir("prop");
+    propDir.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
 }
 /**
  * COOKIE文字列の連結処理を行う
@@ -1488,47 +1461,41 @@ void SocketCommunication::AssembleCookie(wxString& cookie, const wxString& hidde
     const std::string &str = EnumString<JANECLONE_ENUMS>::From( static_cast<JANECLONE_ENUMS>(ID_ResponseWindowBeChk) );
     widgetsName = wxString((const char*)str.c_str(), wxConvUTF8);
     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo, widgetsInfo);
-    if (widgetsInfo)
-        {
-            // BEログインして書き込む場合
-            wxString dmdm = wxEmptyString;
-            wxString mdmd = wxEmptyString;
+    if (widgetsInfo) {
+        // BEログインして書き込む場合
+        wxString dmdm = wxEmptyString;
+        wxString mdmd = wxEmptyString;
+        JaneCloneUtil::GetJaneCloneProperties(wxT("DMDM"), &dmdm, dmdm);
+        JaneCloneUtil::GetJaneCloneProperties(wxT("MDMD"), &mdmd, mdmd);
+
+        if ( dmdm.Len() == 0 || mdmd.Len() == 0 ) {
+            // クッキーがないのでログインしてクッキー☆をもらう
+            LoginBe2ch();
             JaneCloneUtil::GetJaneCloneProperties(wxT("DMDM"), &dmdm, dmdm);
             JaneCloneUtil::GetJaneCloneProperties(wxT("MDMD"), &mdmd, mdmd);
+            SubstringCookie(dmdm);
+            SubstringCookie(mdmd);
 
-            if ( dmdm.Len() == 0 || mdmd.Len() == 0 )
-                {
-                    // クッキーがないのでログインしてクッキー☆をもらう
-                    LoginBe2ch();
-                    JaneCloneUtil::GetJaneCloneProperties(wxT("DMDM"), &dmdm, dmdm);
-                    JaneCloneUtil::GetJaneCloneProperties(wxT("MDMD"), &mdmd, mdmd);
-                    SubstringCookie(dmdm);
-                    SubstringCookie(mdmd);
+            if (dmdm.Len() != 0 && mdmd.Len() != 0) {
+                cookie.Append(dmdm);
+                cookie.Append(wxT("; "));
+                cookie.Append(mdmd);
+                cookie.Append(wxT("; "));
+            }
 
-                    if (dmdm.Len() != 0 && mdmd.Len() != 0)
-                        {
-                            cookie.Append(dmdm);
-                            cookie.Append(wxT("; "));
-                            cookie.Append(mdmd);
-                            cookie.Append(wxT("; "));
-                        }
+        } else {
+            // クッキーがあるのでそのまま処理する
+            SubstringCookie(dmdm);
+            SubstringCookie(mdmd);
 
-                }
-            else
-                {
-                    // クッキーがあるのでそのまま処理する
-                    SubstringCookie(dmdm);
-                    SubstringCookie(mdmd);
-
-                    if (dmdm.Len() != 0 && mdmd.Len() != 0)
-                        {
-                            cookie.Append(dmdm);
-                            cookie.Append(wxT("; "));
-                            cookie.Append(mdmd);
-                            cookie.Append(wxT("; "));
-                        }
-                }
-        } /** BEログインチェック処理終わり */
+            if (dmdm.Len() != 0 && mdmd.Len() != 0) {
+                cookie.Append(dmdm);
+                cookie.Append(wxT("; "));
+                cookie.Append(mdmd);
+                cookie.Append(wxT("; "));
+            }
+        }
+    } /** BEログインチェック処理終わり */
 
     // Cookie-PONの取得
     wxString cookiePon;
@@ -1548,76 +1515,67 @@ void SocketCommunication::AssembleCookie(wxString& cookie, const wxString& hidde
     JaneCloneUtil::GetJaneCloneProperties(wxT("PREN"), &pren, pren);
     SubstringCookie(pren);
 
-    if (cookiePon.Len() != 0)
-        {
-            cookie.Append(cookiePon);
-            cookie.Append(wxT("; "));
-        }
+    if (cookiePon.Len() != 0) {
+        cookie.Append(cookiePon);
+        cookie.Append(wxT("; "));
+    }
 
-    if (cookieHap.Len() != 0)
-        {
-            cookie.Append(cookieHap);
-            cookie.Append(wxT("; "));
-        }
+    if (cookieHap.Len() != 0) {
+        cookie.Append(cookieHap);
+        cookie.Append(wxT("; "));
+    }
 
-    if (hidden.Len() != 0)
-        {
-            cookie.Append(hidden);
-        }
+    if (hidden.Len() != 0) {
+        cookie.Append(hidden);
+    }
 
-    if (pren.Len() != 0)
-        {
-            cookie.Append(hidden);
-        }
+    if (pren.Len() != 0) {
+        cookie.Append(hidden);
+    }
 
-    if (cookie.EndsWith(wxT("; ")))
-        {
-            cookie = cookie.RemoveLast();
-            cookie = cookie.RemoveLast();
-        }
+    if (cookie.EndsWith(wxT("; "))) {
+        cookie = cookie.RemoveLast();
+        cookie = cookie.RemoveLast();
+    }
 }
 /**
  * 投稿内容をソケット通信クラスに設定する
  * @param PostContent構造体
  */
-void SocketCommunication::SetPostContent(std::unique_ptr<PostContent>& postContent)
-{
+void SocketCommunication::SetPostContent(std::unique_ptr<PostContent>& postContent) {
     this->postContent = std::move(postContent);
 }
+
 /**
  * COOKIEのデータ書き出しを行う
  */
-void SocketCommunication::WriteCookieData(const wxString& dataFilePath)
-{
+void SocketCommunication::WriteCookieData(const wxString& dataFilePath) {
     // HTTPヘッダファイルを読み込む
     InitializeCookie();
     wxTextFile cookieFile;
     cookieFile.Open(dataFilePath, wxConvUTF8);
     wxString str, hiddenName, hiddenVal;
 
-    if (cookieFile.IsOpened())
-        {
-            for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine())
-                {
-                    // hidden要素を抜き出す
-                    if (str.Contains(wxT("<html>")))
-                        {
-                            // hidden要素正規表現
-                            //                                     <input type=hidden name="yuki" value="akari">
-                            static const wxRegEx hiddenElement(_T("<input type=hidden name=\"(.+?)\" value=\"(.+?)\">"), wxRE_ADVANCED + wxRE_ICASE);
+    // hidden要素正規表現
+    //   <input type=hidden name="yuki" value="akari">
+    static const wxRegEx
+        hiddenElement(_T("<input type=hidden name=\"(.+?)\" value=\"(.+?)\">"), wxRE_ADVANCED + wxRE_ICASE);
 
-                            if (hiddenElement.IsValid())
-                                {
-                                    if (hiddenElement.Matches(str))
-                                        {
-                                            // マッチさせたそれぞれの要素を取得する
-                                            hiddenName = hiddenElement.GetMatch(str, 1);
-                                            hiddenVal = hiddenElement.GetMatch(str, 2);
-                                        }
-                                }
-                        }
-                }
+    if (!cookieFile.IsOpened()) {
+        wxMessageBox(wxT("COOKIEデータの書き込みに失敗しました")
+                     , wxT("COOKIEデータの書き込み")
+                     , wxICON_ERROR);
+        return;
+    }
+
+    for (str = cookieFile.GetFirstLine(); !cookieFile.Eof(); str = cookieFile.GetNextLine()) {
+        // hidden要素を抜き出す
+        if (str.Contains(wxT("<html>")) && hiddenElement.IsValid() && hiddenElement.Matches(str)) {
+            // マッチさせたそれぞれの要素を取得する
+            hiddenName = hiddenElement.GetMatch(str, 1);
+            hiddenVal = hiddenElement.GetMatch(str, 2);
         }
+    }
 
     // クッキー情報をコンフィグファイルに書き出す
     JaneCloneUtil::SetJaneCloneProperties(wxT("HiddenName"), hiddenName);
@@ -1625,55 +1583,49 @@ void SocketCommunication::WriteCookieData(const wxString& dataFilePath)
 
     cookieFile.Close();
 }
+
 /**
  * 指定されたURLからデータをダウンロードする
  */
-void SocketCommunication::DownloadImageFile(const wxString& href, std::unique_ptr<DownloadImageResult>& result)
-{
+void SocketCommunication::DownloadImageFile(const wxString& href,
+                                            std::unique_ptr<DownloadImageResult>& result) {
     // http or ftp
-    if (href.StartsWith(wxT("http")) || href.StartsWith(wxT("ttp")))
-        {
-            // http もしくは ttpの場合
-            DownloadImageFileByHttp(href, result);
-            SaveImageFileInfoDB(href, result);
+    if (href.StartsWith(wxT("http")) || href.StartsWith(wxT("ttp"))) {
+        // http もしくは ttpの場合
+        DownloadImageFileByHttp(href, result);
+        SaveImageFileInfoDB(href, result);
 
-        }
-    else if (href.StartsWith(wxT("ftp")))
-        {
-            // ftp の場合(これってあんまり無くね？)
-            DownloadImageFileByFtp(href, result);
-            SaveImageFileInfoDB(href, result);
+    } else if (href.StartsWith(wxT("ftp"))) {
+        // ftp の場合(これってあんまり無くね？)
+        DownloadImageFileByFtp(href, result);
+        SaveImageFileInfoDB(href, result);
 
-        }
-    else
-        {
-            wxMessageBox(wxT("ダウンロード対象のURLがhttp, ftpいずれでもありません."), wxT("画像ダウンロード"), wxICON_ERROR);
-        }
+    } else {
+        wxMessageBox(wxT("ダウンロード対象のURLがhttp, ftpいずれでもありません."),
+                     wxT("画像ダウンロード"),
+                     wxICON_ERROR);
+    }
 }
 /**
  * HTTPでのダウンロード
  */
-void SocketCommunication::DownloadImageFileByHttp(const wxString& href, std::unique_ptr<DownloadImageResult>& result)
-{
+void SocketCommunication::DownloadImageFileByHttp(const wxString& href,
+                                                  std::unique_ptr<DownloadImageResult>& result) {
     // 画像の保存先をコンフィグファイルから取得する
     // デフォルトは $HOME/.jc/cache
     InitializeCookie();
-    wxString imageFilePath = ::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR;
-
-    wxString tmp = wxFILE_SEP_PATH;
-    tmp += wxT("cache");
-    JaneCloneUtil::GetJaneCloneProperties(wxT("CachePath"), &tmp);
-    imageFilePath += tmp;
+    wxFileName cacheDir = wxFileName::DirName(wxGetHomeDir());
+    cacheDir.AppendDir(JANECLONE_DIR);
+    cacheDir.AppendDir("cache");
 
     // 画像ファイルパスを決定する
     wxString md5 = JaneCloneUtil::GenerateMD5String(href);
+    cacheDir.SetName(md5);
+    cacheDir.SetExt(result->ext);
+    const wxString imageFilePath = cacheDir.GetFullPath();
 
-    wxString ext  = wxT(".") + result->ext;
-    imageFilePath += wxFILE_SEP_PATH;
-    imageFilePath += md5;
-    imageFilePath += ext;
     result->imagePath = imageFilePath;
-    result->fileName  = md5 + ext;
+    result->fileName  = md5 + result->ext;
 
     /** Content-typeの判別 */
     wxString contentType = JaneCloneUtil::DetermineContentType(href);
@@ -1696,55 +1648,40 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href, std::uni
     wxFileOutputStream output(imageFilePath);
     wxDataOutputStream store(output);
 
-    if (http.Connect(server, 80))
-        {
-            wxInputStream *stream;
-            stream = http.GetInputStream(path);
+    if (http.Connect(server, 80)) {
+        wxInputStream *stream;
+        stream = http.GetInputStream(path);
 
-            if (stream == NULL)
-                {
-                    output.Close();
+        if (stream == NULL) {
+            output.Close();
+        } else {
+            unsigned char buffer[1024];
+            int byteRead;
+
+            // ストリームを受け取るループ部分
+            while (!stream->Eof()) {
+                stream->Read(buffer, sizeof(buffer));
+                store.Write8(buffer, sizeof(buffer));
+                byteRead = stream->LastRead();
+                if (byteRead <= 0) {
+                    break;
                 }
-            else
-                {
-                    unsigned char buffer[1024];
-                    int byteRead;
-
-                    // ストリームを受け取るループ部分
-                    while (!stream->Eof())
-                        {
-                            stream->Read(buffer, sizeof(buffer));
-                            store.Write8(buffer, sizeof(buffer));
-                            byteRead = stream->LastRead();
-                            if (byteRead <= 0)
-                                {
-                                    break;
-                                }
-                        }
-
-                    output.Close();
-                }
-        }
-    else
-        {
+            }
             output.Close();
         }
+    } else {
+        output.Close();
+    }
 }
+
 /**
  * FTPでのダウンロード
  */
-void SocketCommunication::DownloadImageFileByFtp(const wxString& href, std::unique_ptr<DownloadImageResult>& result)
-{
+void SocketCommunication::DownloadImageFileByFtp(const wxString& href,
+                                                 std::unique_ptr<DownloadImageResult>& result) {
     // 画像の保存先をコンフィグファイルから取得する
     // デフォルトは $HOME/.jc/cache
-    InitializeCookie();
-    wxString imageFilePath = ::wxGetHomeDir();
-
-    wxString tmp = wxFILE_SEP_PATH;
-    tmp += wxT("cache");
-    JaneCloneUtil::GetJaneCloneProperties(wxT("CachePath"), &tmp);
-    imageFilePath += tmp;
-
+    // 実装する
 }
 
 #ifdef USE_SHINGETSU
@@ -1756,8 +1693,8 @@ void SocketCommunication::DownloadImageFileByFtp(const wxString& href, std::uniq
  *
  * 新月のAPIについては：http://shingetsu.info/saku/api
  */
-bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostname, wxString& outputFilePath)
-{
+bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostname,
+                                                      wxString& outputFilePath) {
 
     // URIから各パラメーターを抜き取る
     PartOfURI* uri = new PartOfURI;
@@ -1830,6 +1767,7 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
 
     return false;
 }
+
 /**
  * 新月のスレッドをダウンロードしてくるメソッド
  * @param  公開ノードのURL
@@ -1837,8 +1775,9 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
  * @param  ファイル名
  * @return ダウンロードしたcsvファイルの保存先
  */
-wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostname, const wxString& title, const wxString& filename)
-{
+wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostname,
+                                                      const wxString& title,
+                                                      const wxString& filename) {
     // URIから各パラメーターを抜き取る
     PartOfURI* uri = new PartOfURI;
     bool urlIsSane = JaneCloneUtil::SubstringURI(nodeHostname, uri);
@@ -1910,17 +1849,17 @@ wxString SocketCommunication::DownloadShingetsuThread(const wxString& nodeHostna
 }
 
 #endif /** USE_SHINGETSU */
+
 /**
  * ダウンロードした画像ファイル情報をDBに格納する
  */
-void SocketCommunication::SaveImageFileInfoDB(const wxString& href, std::unique_ptr<DownloadImageResult>& result)
-{
-    if ( ! href || ! result)
-        {
-            wxString message = wxT("ダウンロードした画像ファイル情報が取得できませんでした.");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-            return;
-        }
+void SocketCommunication::SaveImageFileInfoDB(const wxString& href,
+                                              std::unique_ptr<DownloadImageResult>& result) {
+    if ( ! href || ! result) {
+        wxString message = wxT("ダウンロードした画像ファイル情報が取得できませんでした.");
+        JaneCloneUiUtil::SendLoggingHelper(message);
+        return;
+    }
 
     ImageFileInfo imageInfo;
     imageInfo.fileName = href;
@@ -1929,11 +1868,11 @@ void SocketCommunication::SaveImageFileInfoDB(const wxString& href, std::unique_
     // ファイル情報を格納
     SQLiteAccessor::SetImageFileName(imageInfo);
 }
+
 /**
  * BE２ちゃんねるにログインしてプロパティファイルに情報を書き出す
  */
-void SocketCommunication::LoginBe2ch()
-{
+void SocketCommunication::LoginBe2ch() {
     wxString beMailAddress, bePassword;
 
     // プロパティファイルから設定されている項目を読みだして設定する
@@ -1941,36 +1880,31 @@ void SocketCommunication::LoginBe2ch()
     pArray[0]	= std::make_pair(wxT("ID_BEMailAddress"), beMailAddress);
     pArray[1]	= std::make_pair(wxT("ID_BEPassword"),    bePassword);
 
-    for (int i = 0; i < 2; i++ )
-        {
-            wxString widgetsName = pArray[i].first;
-            wxString widgetsInfo = wxEmptyString;
-            JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
+    for (int i = 0; i < 2; i++ ) {
+        wxString widgetsName = pArray[i].first;
+        wxString widgetsInfo = wxEmptyString;
+        JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
 
-            if ( i == 0 )
-                {
-                    beMailAddress = widgetsInfo;
-                }
-            else if ( i == 1)
-                {
-                    bePassword = widgetsInfo;
-                }
+        if ( i == 0 ) {
+            beMailAddress = widgetsInfo;
+        } else if ( i == 1) {
+            bePassword = widgetsInfo;
         }
+    }
 
     delete[] pArray;
 
-    if ( beMailAddress == wxEmptyString || bePassword == wxEmptyString )
-        {
-            wxString log = wxT("BEのアドレスとパスワードが設定されてないよ（´・ω・｀）\n");
-            return;
-        }
+    if ( beMailAddress == wxEmptyString || bePassword == wxEmptyString ) {
+        wxString log = wxT("BEのアドレスとパスワードが設定されてないよ（´・ω・｀）\n");
+        return;
+    }
 
     /**
      * BEログインの処理実体
      */
 
     // Postする内容のデータサイズを取得する
-    wxString kakikomiInfo = wxT("m=")
+    const wxString kakikomiInfo = wxT("m=")
         + beMailAddress
         + wxT("&p=")
         + bePassword
@@ -2032,15 +1966,15 @@ void SocketCommunication::LoginBe2ch()
 /**
  * したらば掲示板の情報を取得する
  */
-bool SocketCommunication::GetShitarabaBoardInfo(const wxString& path, wxString& boardName, wxString& category)
-{
+bool SocketCommunication::GetShitarabaBoardInfo(const wxString& path,
+                                                wxString& boardName,
+                                                wxString& category) {
     std::vector<std::string> container;
     JaneCloneUtil::SplitStdString(container, std::string(path.mb_str()), "/");
 
-    if (container.size() < 3)
-        {
-            return false;
-        }
+    if (container.size() < 3) {
+        return false;
+    }
 
     // http://jbbs.livedoor.jp/bbs/api/setting.cgi/[カテゴリ]/[番地]/
     std::string url = "jbbs.shitaraba.net/bbs/api/setting.cgi/" + container.at(1) + "/" + container.at(2) + "/";
@@ -2090,34 +2024,31 @@ bool SocketCommunication::GetShitarabaBoardInfo(const wxString& path, wxString& 
     wxString str;
 
     // ファイルがオープンされているならば
-    if (shitarabaDataFile.IsOpened())
-        {
-            for (str = shitarabaDataFile.GetFirstLine(); !shitarabaDataFile.Eof(); str = shitarabaDataFile.GetNextLine())
-                {
-                    // データを取得する
-                    wxString rest = wxEmptyString;
+    if (!shitarabaDataFile.IsOpened()) {
+        wxMessageBox(wxT("スレッドデータの書き込みに失敗しました")
+                     , wxT("したらば掲示板")
+                     , wxICON_ERROR);
+        return false;
+    }
 
-                    if (str.StartsWith(wxT("BBS_TITLE="), &rest))
-                        {
-                            boardName = rest;
-                        }
-
-                    if (str.StartsWith(wxT("CATEGORY="), &rest))
-                        {
-                            category = rest;
-                        }
-                }
+    for (str = shitarabaDataFile.GetFirstLine(); !shitarabaDataFile.Eof(); str = shitarabaDataFile.GetNextLine()) {
+        // データを取得する
+        wxString rest = wxEmptyString;
+        if (str.StartsWith(wxT("BBS_TITLE="), &rest)) {
+            boardName = rest;
         }
+
+        if (str.StartsWith(wxT("CATEGORY="), &rest)) {
+            category = rest;
+        }
+    }
 
     shitarabaDataFile.Close();
-    if ( boardName == wxEmptyString )
-        {
-            return false;
-        }
-    else
-        {
-            return true;
-        }
+    if ( boardName == wxEmptyString ) {
+        return false;
+    }
+
+    return true;
 }
 
 /**
@@ -2130,20 +2061,20 @@ bool SocketCommunication::GetShitarabaBoardInfo(const wxString& path, wxString& 
  * @param  URL全体
  * @return URLが他掲示板のものである:true, 2chのURLである:false
  */
-bool SocketCommunication::SetOtherBoardInfomation(wxString& boardNameAscii, wxString& hostName, wxString& boardURL)
-{
+bool SocketCommunication::SetOtherBoardInfomation(wxString& boardNameAscii,
+                                                  wxString& hostName,
+                                                  wxString& boardURL) {
 
     if ( hostName.Contains(wxT("jbbs.shitaraba.net")) ||
-         hostName.Contains(wxT("jbbs.livedoor.jp")) )
-        {
-            // 入力されたURLはしたらば掲示板なのでboardNameAsciiの内容を変更
-            wxURI uri(boardURL);
-            boardNameAscii = uri.GetPath();
+         hostName.Contains(wxT("jbbs.livedoor.jp")) ) {
+        // 入力されたURLはしたらば掲示板なのでboardNameAsciiの内容を変更
+        wxURI uri(boardURL);
+        boardNameAscii = uri.GetPath();
 
-            // したらば掲示板 => /news/xxxx/ の形式, 両端のスラッシュを削除
-            boardNameAscii = boardNameAscii.Mid(1, boardNameAscii.Len() - 2);
-            return true;
-        }
+        // したらば掲示板 => /news/xxxx/ の形式, 両端のスラッシュを削除
+        boardNameAscii = boardNameAscii.Mid(1, boardNameAscii.Len() - 2);
+        return true;
+    }
 
     return false;
 }
@@ -2154,15 +2085,14 @@ bool SocketCommunication::SetOtherBoardInfomation(wxString& boardNameAscii, wxSt
  * @param bool      isShitaraba    したらば掲示板:true, 2ch:false
  * @param wxString& boardNameAscii アルファベットの板名
  */
-wxString SocketCommunication::GetOutputFileName(bool isShitaraba, wxString& boardNameAscii)
-{
+wxString SocketCommunication::GetOutputFileName(bool isShitaraba,
+                                                wxString& boardNameAscii) {
     wxString outputFileName = boardNameAscii + wxT(".dat");
 
-    if (isShitaraba)
-        {
-            // boardNameAscii = xxxx/0000
-            outputFileName = boardNameAscii.AfterFirst(wxT('/')) + wxT(".dat");
-        }
+    if (isShitaraba) {
+        // boardNameAscii = xxxx/0000
+        outputFileName = boardNameAscii.AfterFirst(wxT('/')) + wxT(".dat");
+    }
 
     return outputFileName;
 }
@@ -2173,30 +2103,20 @@ wxString SocketCommunication::GetOutputFileName(bool isShitaraba, wxString& boar
  * @param bool      isShitaraba    したらば掲示板:true, 2ch:false
  * @param wxString& boardNameAscii アルファベットの板名
  */
-wxString SocketCommunication::GetOutputFilePath(bool isShitaraba, wxString& boardNameAscii)
-{
+wxString SocketCommunication::GetOutputFilePath(bool isShitaraba,
+                                                wxString& boardNameAscii) {
 
-#ifdef __WXMSW__
-    boardNameAscii.Replace(wxT("/"), wxT("\\"));
-    const wxString boardPath = boardNameAscii;
-#else
-    const wxString boardPath = boardNameAscii;
-#endif
     // 出力先のファイルパスを設定する
-    const wxString outputFilePath =
-        ::wxGetHomeDir()
-        + wxFILE_SEP_PATH
-        + JANECLONE_DIR
-        + wxFILE_SEP_PATH
-        + wxT("dat")
-        + wxFILE_SEP_PATH
-        + boardNameAscii;
+    wxFileName outputDir = wxFileName::DirName(wxGetHomeDir());
+    outputDir.AppendDir(JANECLONE_DIR);
+    outputDir.AppendDir("dat");
+    outputDir.AppendDir(boardNameAscii);
+    const wxString outputFilePath = outputDir.GetFullPath();
 
     // 保存用フォルダ存在するか確認。無ければフォルダを作成
-    if (!wxDir::Exists(outputFilePath))
-        {
-            ::wxMkdir(outputFilePath);
-        }
+    if (!wxDir::Exists(outputFilePath)) {
+        ::wxMkdir(outputFilePath);
+    }
 
     return outputFilePath;
 }
@@ -2208,22 +2128,18 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
     /**
      * Timeout Setting
      */
-    if ( propMap.find(wxT("ID_Connection_Timeout_Sec")) != propMap.end() )
-        {
+    if ( propMap.find(wxT("ID_Connection_Timeout_Sec")) != propMap.end() ) {
             const wxString connectTimeout = propMap[wxT("ID_Connection_Timeout_Sec")];
             long sec = 0;
-            if ( connectTimeout.IsNumber() && connectTimeout.ToLong(&sec, 10) )
-                {
+            if ( connectTimeout.IsNumber() && connectTimeout.ToLong(&sec, 10) ) {
                     request.setOpt(new Timeout(sec));
                 }
         }
 
-    if ( propMap.find(wxT("ID_Receive_Timeout_Sec")) != propMap.end() )
-        {
+    if ( propMap.find(wxT("ID_Receive_Timeout_Sec")) != propMap.end() ) {
             const wxString receiveTimeout = propMap[wxT("ID_Receive_Timeout_Sec")];
             long sec = 0;
-            if ( receiveTimeout.IsNumber() && receiveTimeout.ToLong(&sec, 10) )
-                {
+            if ( receiveTimeout.IsNumber() && receiveTimeout.ToLong(&sec, 10) ) {
                     request.setOpt(new ConnectTimeout(sec));
                 }
         }
@@ -2232,17 +2148,13 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
      * BASIC Auth
      */
     if ( propMap.find(wxT("ID_NetworkPanelBasicAuthUserName")) != propMap.end() &&
-         propMap.find(wxT("ID_NetworkPanelBasicAuthPassword")) != propMap.end())
-        {
+         propMap.find(wxT("ID_NetworkPanelBasicAuthPassword")) != propMap.end()) {
             const wxString username = propMap[wxT("ID_NetworkPanelBasicAuthUserName")];
             const wxString password = propMap[wxT("ID_NetworkPanelBasicAuthPassword")]; // TODO: パスワードのHASH化
-            if ( username.IsWord() && password.IsWord() )
-                {
+            if ( username.IsWord() && password.IsWord() ) {
                     const wxString concat = username + wxT(":") + password;
                     request.setOpt(new UserPwd(std::string(concat.mb_str())));
-                }
-            else
-                {
+                } else {
                     const wxString message = wxT("無効なBASIC認証設定が無視されました");
                     JaneCloneUiUtil::SendLoggingHelper(message);
                 }
@@ -2251,72 +2163,58 @@ void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io
     /**
      * PROXY
      */
-    if (propMap.find(wxT("ID_NetworkPanelUseProxy")) != propMap.end() )
-        {
-            bool useProxy = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxy")]);
+    if (propMap.find(wxT("ID_NetworkPanelUseProxy")) != propMap.end() ) {
+        bool useProxy = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxy")]);
 
-            if (useProxy)
-                {
-                    // ProxyCache
-                    if ( propMap.find(wxT("ID_NetworkPanelUseProxyCache")) != propMap.end())
-                        {
-                            // TODO: Proxyキャッシュとはなんだ
-                            bool useProxyCache = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxyCache")]);
-                        }
+        if (useProxy) {
+            // ProxyCache
+            if ( propMap.find(wxT("ID_NetworkPanelUseProxyCache")) != propMap.end()) {
+                // TODO: Proxyキャッシュとはなんだ
+                bool useProxyCache = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxyCache")]);
+            }
 
-                    // PROXYを使用する設定
-                    if (io == SEND)
-                        {
-                            // 送信
-                            // Proxy送信用アドレス
-                            // Proxy送信用ポート
-                            if ( propMap.find(wxT("ID_NetworkPanelProxySendAddr")) != propMap.end() &&
-                                 propMap.find(wxT("ID_NetworkPanelProxySendPort")) != propMap.end())
-                                {
-                                    const wxString proxy = propMap[wxT("ID_NetworkPanelProxySendAddr")];
-                                    const wxString port  = propMap[wxT("ID_NetworkPanelProxySendPort")];
-                                    long p = 0;
+            // PROXYを使用する設定
+            if (io == SEND) {
+                // 送信
+                // Proxy送信用アドレス
+                // Proxy送信用ポート
+                if ( propMap.find(wxT("ID_NetworkPanelProxySendAddr")) != propMap.end() &&
+                     propMap.find(wxT("ID_NetworkPanelProxySendPort")) != propMap.end()) {
+                    const wxString proxy = propMap[wxT("ID_NetworkPanelProxySendAddr")];
+                    const wxString port  = propMap[wxT("ID_NetworkPanelProxySendPort")];
+                    long p = 0;
 
-                                    if ( port.ToLong(&p, 10))
-                                        {
-                                            JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy送信: %s:%ld\n", proxy, p));
-                                            request.setOpt(new Proxy(std::string(proxy.mb_str())));
-                                            request.setOpt(new ProxyPort(p));
-                                        }
-                                    else
-                                        {
-                                            JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
-                                        }
-                                }
-                        }
-                    else
-                        {
-                            // 受信
-                            // Proxy受信用アドレス
-                            // Proxy受信用ポート
-                            if ( propMap.find(wxT("ID_NetworkPanelProxyReceiveAddr")) != propMap.end() &&
-                                 propMap.find(wxT("ID_NetworkPanelProxyReceivePort")) != propMap.end())
-                                {
-                                    const wxString proxy = propMap[wxT("ID_NetworkPanelProxyReceiveAddr")];
-                                    const wxString port  = propMap[wxT("ID_NetworkPanelProxyReceivePort")];
-                                    long p = 0;
-
-                                    if ( port.ToLong(&p, 10) )
-                                        {
-                                            JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy受信: %s:%ld\n", proxy, p));
-                                            request.setOpt(new Proxy(std::string(proxy.mb_str())));
-                                            request.setOpt(new ProxyPort(p));
-                                        }
-                                    else
-                                        {
-                                            JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
-                                        }
-                                }
-                        }
-                    // wxT("ID_NetworkPanelProxySSLAuthAddr")	,/* Proxy SSL認証用アドレス				*/
-                    // wxT("ID_NetworkPanelProxySSLAuthPort")	,/* Proxy SSL認証用ポート				*/
+                    if ( port.ToLong(&p, 10)) {
+                        JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy送信: %s:%ld\n", proxy, p));
+                        request.setOpt(new Proxy(std::string(proxy.mb_str())));
+                        request.setOpt(new ProxyPort(p));
+                    } else {
+                        JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
+                    }
                 }
+            } else {
+                // 受信
+                // Proxy受信用アドレス
+                // Proxy受信用ポート
+                if ( propMap.find(wxT("ID_NetworkPanelProxyReceiveAddr")) != propMap.end() &&
+                     propMap.find(wxT("ID_NetworkPanelProxyReceivePort")) != propMap.end()) {
+                    const wxString proxy = propMap[wxT("ID_NetworkPanelProxyReceiveAddr")];
+                    const wxString port  = propMap[wxT("ID_NetworkPanelProxyReceivePort")];
+                    long p = 0;
+
+                    if ( port.ToLong(&p, 10) ) {
+                        JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy受信: %s:%ld\n", proxy, p));
+                        request.setOpt(new Proxy(std::string(proxy.mb_str())));
+                        request.setOpt(new ProxyPort(p));
+                    } else {
+                        JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
+                    }
+                }
+            }
+            // wxT("ID_NetworkPanelProxySSLAuthAddr")	,/* Proxy SSL認証用アドレス				*/
+            // wxT("ID_NetworkPanelProxySSLAuthPort")	,/* Proxy SSL認証用ポート				*/
         }
+    }
 }
 
 /**
