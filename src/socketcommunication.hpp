@@ -177,16 +177,6 @@ private:
     };
 
     /**
-     * ファイル区切り文字
-     */
-    inline char separator() {
-#ifdef __WXMSW__
-        return '\\';
-#else
-        return '/';
-#endif
-    };
-    /**
      * ヘッダファイル情報
      */
     std::string respBuf;
@@ -282,9 +272,9 @@ private:
      */
     size_t WriteBody(char *ptr, size_t size, size_t nmemb);
     /**
-     * COOKIE関連の初期化処理を行う
+     * COOKIE保存用ディレクトリ作成を行う
      */
-    void InitializeCookie();
+    void InitCookieDir();
     /**
      * COOKIE文字列の連結処理を行う
      */
@@ -301,8 +291,6 @@ private:
      * COOKIEのデータ書き出しを行う
      */
     void WriteCookieData(const wxString& dataFilePath);
-    // wxFileConfigクラスのインスタンス(書き込みの際のみ確保される)
-    wxFileConfig* config;
     // 投稿内容を保存するクラス(書き込みの際のみ確保される)
     std::unique_ptr<PostContent> postContent;
 

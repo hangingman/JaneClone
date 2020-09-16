@@ -101,8 +101,7 @@ int SocketCommunication::DownloadBoardList(const wxString& outputPath,
  * 新規に板一覧情報を取得しに行く
  */
 int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
-                                              const wxString& headerPath)
-{
+                                              const wxString& headerPath) {
 
     // 板一覧情報が変更されていれば取得
     wxString link = wxEmptyString;
@@ -139,20 +138,16 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
         WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
-        wxString message = wxT("2chの板一覧情報を取得 (ん`　 )\n");
-        message += server;
-        message += path;
-        message += wxT("\n");
+        const wxString message = wxString::Format("2chの板一覧情報を取得 (ん`　 ) %s%s\n", server, path);
         JaneCloneUiUtil::SendLoggingHelper(message);
 
         myRequest.perform();
 
         // レスポンスヘッダーの書き出し
-        if (!respBuf.empty())
-            {
-                std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-                ofsHeader << respBuf << std::endl;
-            }
+        if (!respBuf.empty()) {
+            std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+            ofsHeader << respBuf << std::endl;
+        }
 
         return 0;
 
@@ -328,10 +323,7 @@ int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
         WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
-        wxString message = wxT("スレッド一覧を取得 (ん`　 )\n");
-        message += server;
-        message += path;
-        message += wxT("\n");
+        const wxString message = wxString::Format("スレッド一覧を取得 (ん`　 ) %s%s\n", server, path);
         JaneCloneUiUtil::SendLoggingHelper(message);
 
         myRequest.perform();
@@ -420,20 +412,16 @@ int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath,
         WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
-        wxString message = wxT("スレッド一覧を取得 (ん`　 )\n");
-        message += server;
-        message += path;
-        message += wxT("\n");
+        const wxString message = wxString::Format("スレッド一覧を取得 (ん`　 ) %s%s\n", server, path);
         JaneCloneUiUtil::SendLoggingHelper(message);
 
         myRequest.perform();
 
         // レスポンスヘッダーの書き出し
-        if (!respBuf.empty())
-            {
-                std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-                ofsHeader << respBuf << std::endl;
-            }
+        if (!respBuf.empty()) {
+            std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+            ofsHeader << respBuf << std::endl;
+        }
 
         return 0;
 
@@ -596,21 +584,21 @@ void SocketCommunication::DownloadThreadNew(const wxString& gzipPath,
 
         if (rc == 200) {
             // 通常スレッド取得
-            wxString message = wxT("新規取得 (ヽ´ん`)\n");
+            const wxString message = wxT("新規取得 (ヽ´ん`)\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
         } else if (rc == 203) {
             // dat落ち確定
-            wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
+            const wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
             DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
         } else if (rc == 302) {
             // dat落ちか削除
-            wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
+            const wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
             DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
         } else if (rc == 404) {
             // dat落ちか削除
-            wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
+            const wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
         }
 
@@ -730,12 +718,12 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
             }
         } else if (rc == 304) {
             // レスポンスコードが304ならば変更なし、何もしない
-            wxString message = wxT("更新なし (ヽ´ん`)\n");
+            const wxString message = wxT("更新なし (ヽ´ん`)\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
 
         } else if (rc == 206) {
             // スレッドに更新ありの場合の処理、更新部分を追加する
-            wxString message = wxT("更新あり (ヽ´ん`)\n");
+            const wxString message = wxT("更新あり (ヽ´ん`)\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
 
             if (!bodyBuf.empty()) {
@@ -749,18 +737,18 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
 
         } else if (rc == 203) {
             // dat落ち確定
-            wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
+            const wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
 
             DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
         } else if (rc == 302) {
             // dat落ちか削除
-            wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
+            const wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
             DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
         } else if (rc == 404) {
             // dat落ちか削除
-            wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
+            const wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
         }
 
@@ -861,15 +849,11 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
 
         // 何も見つからなかった時に備えてgzipPathは仮の値に
         const wxString pastTempPath = gzipPath + wxT("temp");
-
         std::ofstream ofs(pastTempPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
         WriteStream ws(&ofs);
         myRequest.setOpt(ws);
 
-        wxString message = wxT("2chのスレッド(過去スレ)を取得 (ん`　 )\n");
-        message += server;
-        message += path;
-        message += wxT("\n");
+        const wxString message = wxString::Format("2chのスレッド(過去スレ)を取得(ん`　 ) %s%s\n", server, path);
         JaneCloneUiUtil::SendLoggingHelper(message);
 
         // 過去スレ取得は２回目のクラスメソッド起動になるはずなので
@@ -882,21 +866,21 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
 
         if (rc == 200) {
             // 通常スレッド取得
-            wxString message = wxT("新規取得 (ヽ´ん`)\n");
+            const wxString message = wxT("新規取得 (ヽ´ん`)\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
             // ファイルのリネーム
             wxRenameFile(pastTempPath, gzipPath);
         } else if (rc == 203) {
             // dat落ち確定
-            wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
+            const wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
         } else if (rc == 302) {
             // dat落ちか削除
-            wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
+            const wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
         } else if (rc == 404) {
             // dat落ちか削除
-            wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
+            const wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
             JaneCloneUiUtil::SendLoggingHelper(message);
         }
 
@@ -1155,7 +1139,7 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
      */
 
     // 不可視項目値をコンフィグファイルから取得する
-    InitializeCookie();
+    InitCookieDir();
     wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR");
     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName, hiddenName);
     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal, hiddenVal);
@@ -1310,7 +1294,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
      */
 
     // 不可視項目値をコンフィグファイルから取得する
-    InitializeCookie();
+    InitCookieDir();
     wxString hiddenName = wxT("ERROR"), hiddenVal = wxT("ERROR");
     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenName"), &hiddenName, hiddenName);
     JaneCloneUtil::GetJaneCloneProperties(wxT("HiddenValue"), &hiddenVal, hiddenVal);
@@ -1440,13 +1424,14 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 /**
  * COOKIE関連の初期化処理を行う
  */
-void SocketCommunication::InitializeCookie() {
+void SocketCommunication::InitCookieDir() {
     // mkdir -p ~/.jc/prop/
     wxFileName propDir = wxFileName::DirName(wxGetHomeDir());
     propDir.AppendDir(JANECLONE_DIR);
     propDir.AppendDir("prop");
     propDir.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
 }
+
 /**
  * COOKIE文字列の連結処理を行う
  */
@@ -1551,7 +1536,7 @@ void SocketCommunication::SetPostContent(std::unique_ptr<PostContent>& postConte
  */
 void SocketCommunication::WriteCookieData(const wxString& dataFilePath) {
     // HTTPヘッダファイルを読み込む
-    InitializeCookie();
+    InitCookieDir();
     wxTextFile cookieFile;
     cookieFile.Open(dataFilePath, wxConvUTF8);
     wxString str, hiddenName, hiddenVal;
@@ -1613,7 +1598,7 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href,
                                                   std::unique_ptr<DownloadImageResult>& result) {
     // 画像の保存先をコンフィグファイルから取得する
     // デフォルトは $HOME/.jc/cache
-    InitializeCookie();
+    InitCookieDir();
     wxFileName cacheDir = wxFileName::DirName(wxGetHomeDir());
     cacheDir.AppendDir(JANECLONE_DIR);
     cacheDir.AppendDir("cache");
