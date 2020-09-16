@@ -72,29 +72,27 @@ int SocketCommunication::DownloadBoardList(const wxString& outputPath,
     // 実行コード
     int rc = 0;
     // 拡張子をgzipに変える
-    wxString gzipPath = outputPath;
-    gzipPath.Replace(wxT(".html"), wxT(".gzip"));
+    wxFileName htmlFile = wxFileName(outputPath);
+    htmlFile.SetExt("gzip");
+    const wxString gzipPath = htmlFile.GetFullPath();
     // 一時保存用ファイルのパスを設定する
-    wxString tmpPath = ::wxGetHomeDir()
-        + wxFILE_SEP_PATH
-        + JANECLONE_DIR
-        + wxFILE_SEP_PATH
-        + wxT("dat")
-        + wxFILE_SEP_PATH
-        + wxT("tmp.html");
+    wxFileName tmpDir = wxFileName::DirName(wxGetHomeDir());
+    tmpDir.AppendDir(JANECLONE_DIR);
+    tmpDir.AppendDir("dat");
+    tmpDir.SetFullName("tmp.html");
+    const wxString tmpPath = tmpDir.GetFullPath();
 
     // 板一覧情報を取得する
     rc = DownloadBoardListNew(gzipPath, headerPath);
 
-    if (wxFile::Exists(gzipPath))
-        {
-            // gzip拡張子のファイルがあれば、ファイルの解凍・UTF化を行う
-            JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
-            JaneCloneUtil::ConvertSJISToUTF8(tmpPath, (wxString&) outputPath);
-            // 更新が終わったらgzipファイルを消しておく
-            RemoveTmpFile(gzipPath);
-            RemoveTmpFile(tmpPath);
-        }
+    if (wxFile::Exists(gzipPath)) {
+        // gzip拡張子のファイルがあれば、ファイルの解凍・UTF化を行う
+        JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
+        JaneCloneUtil::ConvertSJISToUTF8(tmpPath, outputPath);
+        // 更新が終わったらgzipファイルを消しておく
+        RemoveTmpFile(gzipPath);
+        RemoveTmpFile(tmpPath);
+    }
 
     return rc;
 }

@@ -95,28 +95,28 @@ public:
      * 引数１は読み込み元gzipファイルのPATH、引数２は解凍先のファイルのPATH
      * いずれもファイル名までを記述する
      */
-    static void DecommpressFile(wxString& inputPath, wxString& outputPath);
+    static void DecommpressFile(const wxString& inputPath, const wxString& outputPath);
     /**
      * ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
      * @param wxString& inputPath  読み込み元のパス
      * @param wxString& outputPath 出力先ファイルのパス
      */
-    static void ConvertSJISToUTF8(wxString& inputPath, wxString& outputPath);
+    static void ConvertSJISToUTF8(const wxString& inputPath, const wxString& outputPath);
     /**
      * ダウンロードしたファイルの文字コードをEUC-JPからUTF-8に変換する処理
      * @param wxString& inputPath  読み込み元のパス
      * @param wxString& outputPath 出力先ファイルのパス
      */
-    static void ConvertEUCJPToUTF8(wxString& inputPath, wxString& outputPath);
+    static void ConvertEUCJPToUTF8(const wxString& inputPath, const wxString& outputPath);
 
     /**
      * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
      */
-    static wxString GetHTTPCommTimeFromHeader(wxString& headerPath);
+    static wxString GetHTTPCommTimeFromHeader(const wxString& headerPath);
     /**
      * 指定された数字からスレッドの作成された時間を計算する処理
      */
-    static wxString CalcThreadCreatedTime(wxString& threadNum);
+    static wxString CalcThreadCreatedTime(const wxString& threadNum);
     /**
      * 指定されたパスにファイルがあればファイルサイズを返す処理
      */
@@ -129,8 +129,10 @@ public:
      * @param  const wxString& resNumberEnd           取得するレスの番号(終了点)
      * @return wxString        取得したレスの内容
      */
-    static wxString FindAnchoredResponse(const wxString& boardNameAscii, const wxString& origNumber,
-                                         const wxString& resNumberStart, const wxString& resNumberEnd=wxEmptyString);
+    static wxString FindAnchoredResponse(const wxString& boardNameAscii,
+                                         const wxString& origNumber,
+                                         const wxString& resNumberStart,
+                                         const wxString& resNumberEnd=wxEmptyString);
     /**
      * アンカーで指定されたレスをファイルから読み取ってレスだけを返す
      *
@@ -140,8 +142,10 @@ public:
      * @param  const bool      useTriangularBrackets  true = 返り値に'>'がつく, false = '>'がつかない
      * @return wxString        取得したレスの内容
      */
-    static wxString FindAnchoredResponseText(const wxString& boardNameAscii, const wxString& origNumber,
-                                             const long resNumber, const bool useTriangularBrackets=true);
+    static wxString FindAnchoredResponseText(const wxString& boardNameAscii,
+                                             const wxString& origNumber,
+                                             const long& resNumber,
+                                             const bool& useTriangularBrackets=true);
     /**
      * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
      * @param  const wxString& boardNameAscii         板名の英語名
@@ -149,7 +153,8 @@ public:
      * @param  const wxString& extractId              抽出対象のID
      * @return wxString        取得したレスの内容
      */
-    static wxString FindResponseById(const wxString& boardNameAscii, const wxString& origNumber,
+    static wxString FindResponseById(const wxString& boardNameAscii,
+                                     const wxString& origNumber,
                                      const wxString& extractId);
     /**
      * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
@@ -157,14 +162,15 @@ public:
      * @param  const wxString& extractId	     抽出対象のID
      * @return wxString 取得したレスの内容
      */
-    static wxString FindResponseByIndex(const wxString& rawHtml, const wxString& extractIndex);
+    static wxString FindResponseByIndex(const wxString& rawHtml,
+                                        const wxString& extractIndex);
     /**
      * HTMLノード内(<dd>~~~</dd>)に引数の要素があるか調べる
      * @param  const htmlNodePtr ptr        スレッドのHTML
      * @param  const wxString& target	     抽出対象のレス番号
      * @return true: あり, false: なし
      */
-    static bool DDNodeHasTarget(const htmlNodePtr ptr, const wxString& target);
+    static bool DDNodeHasTarget(const htmlNodePtr& ptr, const wxString& target);
     static int WriteToWxString(void* context, const char* buffer, int len);
     static void CloseWxString(void* context);
     /**
@@ -178,7 +184,7 @@ public:
     /**
      * プレインテキスト内にアンカーがあれば<a>タグをつける
      */
-    static wxString AddAnchorTag(wxString& responseText);
+    static wxString AddAnchorTag(const wxString& responseText);
     /**
      * プレインテキスト内に2chのIDがあれば<a>タグをつける
      */
@@ -193,7 +199,9 @@ public:
      * @param 固有番号
      * @param datファイルの種別 (KIND_THREAD_DAT, KIND_BOARD__DAT)
      */
-    static wxString AssembleFilePath(wxString& boardNameAscii, wxString& origNumber, const int kind);
+    static wxString AssembleFilePath(const wxString& boardNameAscii,
+                                     const wxString& origNumber,
+                                     const int& kind);
     /**
      * 現在時刻をUNIX Timeで返す
      */
@@ -211,7 +219,7 @@ public:
     /**
      * 文字列中の実体参照文字を変換する
      */
-    static wxString ConvCharacterReference(wxString& inputString);
+    static wxString ConvCharacterReference(const wxString& inputString);
     /**
      * URLの末尾にある拡張子が何か判別し、Content-Typeを返す
      */
@@ -235,12 +243,13 @@ public:
      * @param  itemOid      スレがたった時間を表すUNIX Time
      * @return momentum     勢い
      */
-    static wxString CalcThreadMomentum(wxString& itemResponse, wxString& itemOid);
+    static wxString CalcThreadMomentum(const wxString& itemResponse, const wxString& itemOid);
     /**
      * スレッドの情報をOIDをキーとするmapに変換する
      * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
      */
-    static void GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThreadMap, URLvsBoardName& boardInfo);
+    static void GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThreadMap,
+                                     URLvsBoardName& boardInfo);
     /**
      * プロパティファイルの指定されたKEYを指定されたVALUEで書き換える
      */

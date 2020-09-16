@@ -34,8 +34,8 @@
  * 引数１は読み込み元gzipファイルのPATH、引数２は解凍先のファイルのPATH
  * いずれもファイル名までを記述する
  */
-void JaneCloneUtil::DecommpressFile(wxString & inputPath,
-                                    wxString & outputPath) {
+void JaneCloneUtil::DecommpressFile(const wxString& inputPath,
+									const wxString& outputPath) {
     // gzファイルをZlibを使って解凍する
     const gzFile infile = gzopen(inputPath.mb_str(), "rb");
     FILE *outfile = fopen(outputPath.mb_str(), "wb");
@@ -56,8 +56,8 @@ void JaneCloneUtil::DecommpressFile(wxString & inputPath,
  * @param wxString& inputPath  読み込み元のパス
  * @param wxString& outputPath 出力先ファイルのパス
  */
-void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath, wxString & outputPath)
-{
+void JaneCloneUtil::ConvertSJISToUTF8(const wxString& inputPath,
+                                      const wxString& outputPath) {
     std::ifstream ifs(inputPath.mb_str());
     std::ofstream ofs(outputPath.mb_str());
     ifs >> std::noskipws; // 改行をスキップしない
@@ -72,8 +72,8 @@ void JaneCloneUtil::ConvertSJISToUTF8(wxString & inputPath, wxString & outputPat
  * @param wxString& inputPath  読み込み元のパス
  * @param wxString& outputPath 出力先ファイルのパス
  */
-void JaneCloneUtil::ConvertEUCJPToUTF8(wxString& inputPath, wxString& outputPath)
-{
+void JaneCloneUtil::ConvertEUCJPToUTF8(const wxString& inputPath,
+                                       const wxString& outputPath) {
     std::ifstream ifs(inputPath.mb_str());
     std::ofstream ofs(outputPath.mb_str());
     ifs >> std::noskipws; // 改行をスキップしない
@@ -86,7 +86,7 @@ void JaneCloneUtil::ConvertEUCJPToUTF8(wxString& inputPath, wxString& outputPath
 /**
  * 指定されたパスにあるHTTPヘッダファイルから取得日時を取得する処理
  */
-wxString JaneCloneUtil::GetHTTPCommTimeFromHeader(wxString& headerPath) {
+wxString JaneCloneUtil::GetHTTPCommTimeFromHeader(const wxString& headerPath) {
     // HTTPヘッダファイルを読み込む
     wxTextFile httpHeaderFile;
     httpHeaderFile.Open(headerPath, wxConvUTF8);
@@ -111,7 +111,7 @@ wxString JaneCloneUtil::GetHTTPCommTimeFromHeader(wxString& headerPath) {
 /**
  * 指定された数字からスレッドの作成された時間を計算する処理
  */
-wxString JaneCloneUtil::CalcThreadCreatedTime(wxString& threadNum) {
+wxString JaneCloneUtil::CalcThreadCreatedTime(const wxString& threadNum) {
     int threadNumInt = wxAtoi(threadNum);
     time_t timeGMT = (time_t) threadNumInt;
     struct tm *date = localtime(&timeGMT);
@@ -385,8 +385,12 @@ wxString JaneCloneUtil::FindAnchoredResponse(const wxString& boardNameAscii, con
  * @param  const bool	   useTriangularBrackets  true = 返り値に'>'がつく, false = '>'がつかない
  * @return wxString	   取得したレスの内容
  */
-wxString JaneCloneUtil::FindAnchoredResponseText(const wxString& boardNameAscii, const wxString& origNumber,
-                                                 const long resNumber, const bool useTriangularBrackets) {
+wxString JaneCloneUtil::FindAnchoredResponseText(
+    const wxString& boardNameAscii,
+    const wxString& origNumber,
+    const long& resNumber,
+    const bool& useTriangularBrackets
+) {
 
     // ファイルパスの組み立てとファイルの有無確認
     const wxDir dir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
@@ -622,35 +626,33 @@ void JaneCloneUtil::CloseWxString(void* context) {
  * @param  const wxString& target	     抽出対象のレス番号
  * @return true: あり, false: なし
  */
-bool JaneCloneUtil::DDNodeHasTarget(const htmlNodePtr dd, const wxString& target)
-{
-    for (htmlNodePtr ptr = dd->children; ptr != NULL; ptr = ptr->next)
-        {
-            if (ptr->type == XML_ELEMENT_NODE &&
-                xmlStrcasecmp(ptr->name, (const xmlChar*) "a") == 0)
-                {
-                    xmlAttr* attribute = ptr->properties;
-                    while(attribute && attribute->name && attribute->children)
-                        {
-                            xmlChar* value = xmlNodeListGetString(ptr->doc, attribute->children, 1);
-                            //do something with value
-                            if (xmlStrcasecmp(value, (const xmlChar*) "_blank") == 0)
-                                {
-                                    // >>xxx (= ptr->children->content) データは実体参照ではない ">>12"
-                                    const wxString anchor = wxString::FromUTF8(reinterpret_cast<const char*>(ptr->children->content));
-                                    const wxString number = anchor.SubString(2, anchor.Len() - 1);
+bool JaneCloneUtil::DDNodeHasTarget(const htmlNodePtr& dd, const wxString& target) {
 
-                                    if (number.IsSameAs(target))
-                                        {
-                                            return true;
-                                        }
-                                }
+    for (htmlNodePtr ptr = dd->children; ptr != NULL; ptr = ptr->next) {
+        if (ptr->type == XML_ELEMENT_NODE &&
+            xmlStrcasecmp(ptr->name, (const xmlChar*) "a") == 0) {
+            xmlAttr* attribute = ptr->properties;
 
-                            xmlFree(value);
-                            attribute = attribute->next;
-                        }
+            while(attribute && attribute->name && attribute->children) {
+                xmlChar* value = xmlNodeListGetString(ptr->doc, attribute->children, 1);
+                //do something with value
+                if (xmlStrcasecmp(value, (const xmlChar*) "_blank") == 0) {
+                    // >>xxx (= ptr->children->content) データは実体参照ではない ">>12"
+                    const wxString anchor =
+                        wxString::FromUTF8(reinterpret_cast<const char*>(ptr->children->content));
+                    const wxString number =
+                        anchor.SubString(2, anchor.Len() - 1);
+
+                    if (number.IsSameAs(target)) {
+                        return true;
+                    }
                 }
+
+                xmlFree(value);
+                attribute = attribute->next;
+            }
         }
+    }
 
     return false;
 }
@@ -785,7 +787,7 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
 /**
  * プレインテキスト内にアンカーがあれば<a>タグをつける
  */
-wxString JaneCloneUtil::AddAnchorTag(wxString& responseText) {
+wxString JaneCloneUtil::AddAnchorTag(const wxString& responseText) {
 
     wxString text = responseText;
     wxString tmp, result;
@@ -1027,9 +1029,9 @@ wxString JaneCloneUtil::AddColorAnchoredID(const wxString& html)
 /**
  * 指定された文字列でdatファイルへのファイルパスを組み立てる
  */
-wxString JaneCloneUtil::AssembleFilePath(wxString& boardNameAscii,
-                                         wxString& origNumber,
-                                         const int kind) {
+wxString JaneCloneUtil::AssembleFilePath(const wxString& boardNameAscii,
+                                         const wxString& origNumber,
+                                         const int& kind) {
 
     wxString filePath = wxEmptyString;
 
@@ -1117,7 +1119,7 @@ std::string JaneCloneUtil::UrlEncode(const std::string& str) {
 /**
  * 文字列中の実体参照文字を変換する
  */
-wxString JaneCloneUtil::ConvCharacterReference(wxString& inputString) {
+wxString JaneCloneUtil::ConvCharacterReference(const wxString& inputString) {
 
     wxString buffer = inputString;
     buffer.Replace(_T("&nbsp;"), _T(" "), true);
@@ -1242,7 +1244,8 @@ wxString JaneCloneUtil::GenerateMD5String(const wxString& uri) {
  * @param itemOid      スレがたった時間を表すUNIX Time
  * @return momentum    勢い
  */
-wxString JaneCloneUtil::CalcThreadMomentum(wxString& itemResponse, wxString& itemOid) {
+wxString JaneCloneUtil::CalcThreadMomentum(const wxString& itemResponse,
+                                           const wxString& itemOid) {
 
     unsigned long response;
     unsigned long oid;
@@ -1272,7 +1275,10 @@ wxString JaneCloneUtil::CalcThreadMomentum(wxString& itemResponse, wxString& ite
  * スレッドの情報をOIDをキーとするmapに変換する
  * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
  */
-void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThreadMap, URLvsBoardName& boardInfo) {
+void JaneCloneUtil::GenerateOldThreadMap(
+    std::map<wxString,ThreadList>& oldThreadMap,
+    URLvsBoardName& boardInfo
+) {
 
     // ファイルのパスを設定する
     wxString outputPath = ::wxGetHomeDir()
@@ -1340,7 +1346,9 @@ void JaneCloneUtil::GenerateOldThreadMap(std::map<wxString,ThreadList>& oldThrea
         //itemLastUpdate = wxEmptyString;
 
         // 項目を追加する
-        oldThreadMap.insert(std::map<wxString, ThreadList>::value_type(threadInfoList.oid, threadInfoList));
+        oldThreadMap.insert(
+            std::map<wxString, ThreadList>::value_type(threadInfoList.oid, threadInfoList)
+        );
 
         // ループ変数をインクリメント
         ++loopNumber;
