@@ -296,7 +296,7 @@ void ThreadContentBar::do_layout()
     threadContentsBarSizer->Add(searchBarPanel, 0, wxEXPAND, 0);
 
     // スレッドの内容部分
-    threadContentsBarSizer->Add(threadContentPanel, 1, wxEXPAND | wxBOTTOM, 5);
+    threadContentsBarSizer->Add(threadContentPanel, 1, wxEXPAND, 0);
     SetSizer(threadContentsBarSizer);
     Layout();
     // end wxGlade
@@ -317,7 +317,7 @@ void ThreadContentBar::SetThreadContentWindow(const wxString& threadContentPath,
     // スレッドの内容を表すウィンドウをthreadContentPanelを親として宣言する
     tcw = new WEB_RENDER_CLASS(threadContentPanel, threadContentPath);
     wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
-    vbox->Add(tcw, 1, wxEXPAND | wxALL, 5);
+    vbox->Add(tcw, 1, wxEXPAND, 0);
     threadContentPanel->SetSizer(vbox);
     // 内部に固有番号を持つ
     m_origNumber = origNumber;
@@ -333,7 +333,7 @@ void ThreadContentBar::ReloadThreadContentWindow(const wxString& threadContentPa
     tcw = new WEB_RENDER_CLASS(threadContentPanel, threadContentPath);
 
     wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
-    vbox->Add(tcw, 1, wxEXPAND | wxALL, 5);
+    vbox->Add(tcw, 1, wxEXPAND, 0);
     threadContentPanel->SetSizer(vbox);
 }
 /**
