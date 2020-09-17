@@ -336,7 +336,7 @@ public:
     void OnSetFocus(wxFocusEvent& event);
 
     // 各種GUI上の設定
-    void SetJaneCloneManuBar();
+    void SetJaneCloneMenuBar();
     void SetProperties();
     void DoLayout();
     void SetAuiPaneInfo();

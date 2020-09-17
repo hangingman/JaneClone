@@ -290,7 +290,7 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
     // 各種GUI設定を行う
     SetProperties();       // 前回までの設定を読み出す
     DoLayout();            // 実際にレイアウトに展開する
-    SetJaneCloneManuBar(); // メニューバーを設定する
+    SetJaneCloneMenuBar(); // メニューバーを設定する
 
     // ユーザーが前回までに見ていた板一覧タブとスレッド一覧タブをセットする
     SetPreviousUserLookedTab();
@@ -314,10 +314,10 @@ JaneClone::JaneClone(wxWindow* parent, int id, const wxString& title, const wxPo
     *m_logCtrl << wxT("(ヽ´ん`)…レイアウト設定終わりです…\n");
 }
 /**
- * SetJaneCloneManuBar
+ * SetJaneCloneMenuBar
  * メニューバーの設定を行う
  */
-void JaneClone::SetJaneCloneManuBar()
+void JaneClone::SetJaneCloneMenuBar()
 {
     /*
      * メニューバーの設置
