@@ -22,24 +22,23 @@
 #include "socketcommunication.hpp"
 
 
-const wxString SocketCommunication::properties[] =
-    {
-     wxT("ID_NetworkPanelUseProxy")		,/* プロキシを使用するかどうか				*/
-     wxT("ID_NetworkPanelUseProxyCache")	,/* プロキシでキャッシュを使用するかどうか			*/
-     wxT("ID_NetworkPanelBasicAuthUserName")	,/* ベーシック認証のユーザー名				*/
-     wxT("ID_NetworkPanelBasicAuthPassword")	,/* ベーシック認証のパスワード				*/
-     wxT("ID_NetworkPanelProxyReceiveAddr")	,/* Proxy受信用アドレス					*/
-     wxT("ID_NetworkPanelProxyReceivePort")	,/* Proxy受信用ポート					*/
-     wxT("ID_NetworkPanelProxySendAddr")	,/* Proxy送信用アドレス					*/
-     wxT("ID_NetworkPanelProxySendPort")	,/* Proxy送信用ポート					*/
-     wxT("ID_NetworkPanelProxySSLAuthAddr")	,/* Proxy SSL認証用アドレス				*/
-     wxT("ID_NetworkPanelProxySSLAuthPort")	,/* Proxy SSL認証用ポート				*/
-     wxT("ID_NetworkPanelBoardListURL")		,/* ボード一覧取得URL					*/
-     wxT("ID_NetworkPanelReceiveBufferSize")	,/* 受信バッファサイズ					*/
-     wxT("ID_NetworkPanelMaxConn")		,/* 最大接続数						*/
-     wxT("ID_Receive_Timeout_Sec")	        ,/* 受信タイムアウト秒			                */
-     wxT("ID_Connection_Timeout_Sec")		 /* 接続タイムアウト秒			                */
-    };
+const wxString SocketCommunication::properties[] = {
+    wxT("ID_NetworkPanelUseProxy")          ,// プロキシを使用するかどうか
+	wxT("ID_NetworkPanelUseProxyCache")		,// プロキシでキャッシュを使用するかどうか
+	wxT("ID_NetworkPanelBasicAuthUserName") ,// ベーシック認証のユーザー名
+	wxT("ID_NetworkPanelBasicAuthPassword") ,// ベーシック認証のパスワード
+	wxT("ID_NetworkPanelProxyReceiveAddr")	,// Proxy受信用アドレス
+	wxT("ID_NetworkPanelProxyReceivePort")	,// Proxy受信用ポート
+	wxT("ID_NetworkPanelProxySendAddr")		,// Proxy送信用アドレス
+	wxT("ID_NetworkPanelProxySendPort")		,// Proxy送信用ポート
+	wxT("ID_NetworkPanelProxySSLAuthAddr")	,// Proxy SSL認証用アドレス
+	wxT("ID_NetworkPanelProxySSLAuthPort")	,// Proxy SSL認証用ポート
+	wxT("ID_NetworkPanelBoardListURL")		,// ボード一覧取得URL
+	wxT("ID_NetworkPanelReceiveBufferSize") ,// 受信バッファサイズ
+	wxT("ID_NetworkPanelMaxConn")			,// 最大接続数
+	wxT("ID_Receive_Timeout_Sec")			,// 受信タイムアウト秒
+	wxT("ID_Connection_Timeout_Sec")		 // 接続タイムアウト秒
+};
 
 /**
  * コンストラクタ
@@ -1015,17 +1014,9 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
     wxString message = wxT("UNIX Time:") + timeNow;
     JaneCloneUiUtil::SendLoggingHelper(message);
 
-    wxDir jcDir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
-    wxDir datDir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat"));
-
-    // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-    if (!jcDir.HasSubDirs(wxT("dat"))) {
-        ::wxMkdir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat"));
-    }
-
-    if (!datDir.HasSubDirs(wxT("kakikomi"))) {
-        ::wxMkdir(datDir.GetName() + wxFILE_SEP_PATH + wxT("kakikomi"));
-    }
+    // mkdir -p ~/.jc/dat/kakikomi
+    std::list<std::string> dirs = { JANECLONE_DIR, "dat", "kakikomi" };
+    MkDirP(dirs);
 
     wxFileName headerDir = wxFileName::DirName(wxGetHomeDir());
     headerDir.AppendDir(JANECLONE_DIR);
@@ -1167,17 +1158,9 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
     wxString message = wxT("UNIX Time:") + timeNow;
     JaneCloneUiUtil::SendLoggingHelper(message);
 
-    wxDir jcDir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
-    wxDir datDir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat"));
-
-    // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-    if (!jcDir.HasSubDirs(wxT("dat"))) {
-        ::wxMkdir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat"));
-    }
-
-    if (!datDir.HasSubDirs(wxT("kakikomi"))) {
-        ::wxMkdir(datDir.GetName() + wxFILE_SEP_PATH + wxT("kakikomi"));
-    }
+    // mkdir -p ~/.jc/dat/kakikomi
+    std::list<std::string> dirs = { JANECLONE_DIR, "dat", "kakikomi" };
+    MkDirP(dirs);
 
     wxFileName headerDir = wxFileName::DirName(wxGetHomeDir());
     headerDir.AppendDir(JANECLONE_DIR);
@@ -1322,17 +1305,9 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
     wxString message = wxT("UNIX Time:") + timeNow;
     JaneCloneUiUtil::SendLoggingHelper(message);
 
-    wxDir jcDir(::wxGetHomeDir() + wxFILE_SEP_PATH + JANECLONE_DIR);
-    wxDir datDir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat"));
-
-    // ユーザーのホームディレクトリに隠しフォルダがあるかどうか確認
-    if (!jcDir.HasSubDirs(wxT("dat"))) {
-        ::wxMkdir(jcDir.GetName() + wxFILE_SEP_PATH + wxT("dat"));
-    }
-
-    if (!datDir.HasSubDirs(wxT("kakikomi"))) {
-        ::wxMkdir(datDir.GetName() + wxFILE_SEP_PATH + wxT("kakikomi"));
-    }
+    // mkdir -p ~/.jc/dat/kakikomi
+    std::list<std::string> dirs = { JANECLONE_DIR, "dat", "kakikomi" };
+    MkDirP(dirs);
 
     wxFileName headerDir = wxFileName::DirName(wxGetHomeDir());
     headerDir.AppendDir(JANECLONE_DIR);
@@ -1421,22 +1396,37 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
 
     return headerPath;
 }
+
 /**
  * COOKIE関連の初期化処理を行う
  */
 void SocketCommunication::InitCookieDir() {
     // mkdir -p ~/.jc/prop/
-    wxFileName propDir = wxFileName::DirName(wxGetHomeDir());
-    propDir.AppendDir(JANECLONE_DIR);
-    propDir.AppendDir("prop");
-    propDir.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
+    std::list<std::string> dirs = { JANECLONE_DIR, "prop" };
+    MkDirP(dirs);
 }
+
+/**
+ * HOMEディレクトリ以下に指定されたディレクトリを作成する
+ * wxPATH_MKDIR_FULL フラグを指定して,
+ * 親ディレクトリを全て作り、もしすでにディレクトリが存在していてもエラーを返さない
+ */
+void SocketCommunication::MkDirP(
+    std::list<std::string> dirs, wxFileName baseDir
+) {
+    for (std::string dir : dirs) {
+        baseDir.AppendDir(dir);
+    }
+    baseDir.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
+}
+
 
 /**
  * COOKIE文字列の連結処理を行う
  */
-void SocketCommunication::AssembleCookie(wxString& cookie, const wxString& hiddenName, const wxString& hiddenVal)
-{
+void SocketCommunication::AssembleCookie(wxString& cookie,
+                                         const wxString& hiddenName,
+                                         const wxString& hiddenVal) {
     // まずクリア
     cookie.Clear();
 
@@ -1687,17 +1677,12 @@ bool SocketCommunication::DownloadShingetsuThreadList(const wxString& nodeHostna
     const wxString protocol = uri->protocol;
     const wxString hostname = uri->hostname;
     wxString port = uri->port;
-    //const wxString path = uri->path;
     delete uri;
 
-    // 保存対象のディレクトリが存在するか確かめる
-    wxString shingetsu = ::wxGetHomeDir()
-        + wxFILE_SEP_PATH
-        + JANECLONE_DIR
-        + wxFILE_SEP_PATH
-        + wxT("shingetsu");
+    // mkdir -p ~/.jc/shingetsu
+    std::list<std::string> dirs = { JANECLONE_DIR, "shingetsu" };
+    MkDirP(dirs);
 
-    wxDir chkDir(shingetsu);
     JaneCloneUtil::CreateSpecifyDirectory(chkDir, hostname);
     const std::string outputFilename =
         std::string(chkDir.GetName().mb_str())
@@ -2098,16 +2083,19 @@ wxString SocketCommunication::GetOutputFilePath(bool isShitaraba,
     const wxString outputFilePath = outputDir.GetFullPath();
 
     // 保存用フォルダ存在するか確認。無ければフォルダを作成
-    if (!wxDir::Exists(outputFilePath)) {
-        ::wxMkdir(outputFilePath);
-    }
+    // mkdir -p ~/.jc/dat/poverty/
+    std::list<std::string> dirs = {
+        JANECLONE_DIR, "dat", boardNameAscii.ToStdString()
+    };
+    MkDirP(dirs);
 
     return outputFilePath;
 }
 /**
  * コンフィグ情報をCurl++のオブジェクトに設定する
  */
-void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io)
+void SocketCommunication::LoadConfiguration(
+    curlpp::Easy& request, const bool io)
 {
     /**
      * Timeout Setting

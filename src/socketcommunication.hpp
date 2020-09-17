@@ -276,6 +276,13 @@ private:
      */
     void InitCookieDir();
     /**
+     * HOMEディレクトリ以下に指定されたディレクトリを作成する
+     */
+    static void MkDirP(
+        std::list<std::string> dirs,
+        wxFileName baseDir = wxFileName::DirName(wxGetHomeDir())
+    );
+    /**
      * COOKIE文字列の連結処理を行う
      */
     void AssembleCookie(wxString& cookie, const wxString& hiddenName, const wxString& hiddenVal);
