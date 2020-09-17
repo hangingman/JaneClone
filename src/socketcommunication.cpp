@@ -712,7 +712,7 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
 
         if (rc == 200) {
             if (!bodyBuf.empty()) {
-                std::ofstream ofsBody(datFilePath.mb_str() , std::ios::out | std::ios::app );
+                std::ofstream ofsBody(sjisDatPath.mb_str() , std::ios::out | std::ios::trunc );
                 ofsBody << bodyBuf << std::endl;
             }
         } else if (rc == 304) {
