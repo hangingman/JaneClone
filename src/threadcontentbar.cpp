@@ -46,10 +46,7 @@ END_EVENT_TABLE()
 // EVT_BUTTON(ID_TCBBackward,	   ThreadContentBar::OnClickTCBBackward)
 
 ThreadContentBar::ThreadContentBar(wxWindow* parent, int wxWindowID, const wxPoint& pos, const wxSize& size, long style):
-wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE)
-{
-    // PNGファイル読み込み準備
-    wxImage::AddHandler( new wxPNGHandler );
+wxPanel(parent, wxWindowID, pos, size, wxDEFAULT_FRAME_STYLE) {
 
     // begin wxGlade: ThreadContentBar::ThreadContentBar
     threadContentsBarPanel = new wxPanel(this, wxID_ANY);
