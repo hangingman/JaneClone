@@ -231,7 +231,7 @@ public:
                     this->CreateCommonAuiToolBar(m_boardTreePanel, vbox, ID_BoardSearchBar);
                     vbox->Add(m_tree_ctrl, 1, wxEXPAND, 0);
                     m_boardTreePanel->SetSizer(vbox);
-                    m_boardTreePanel->Fit();
+                    m_boardTreePanel->Layout();
                 }
                 break;
 
@@ -242,7 +242,7 @@ public:
                     this->CreateCommonAuiToolBar(m_favoriteTreePanel, vbox, ID_FavsSearchBar);
                     vbox->Add(m_fav_tree_ctrl, 1, wxEXPAND, 0);
                     m_favoriteTreePanel->SetSizer(vbox);
-                    m_favoriteTreePanel->Fit();
+                    m_favoriteTreePanel->Layout();
                 }
                 break;
 
@@ -253,7 +253,7 @@ public:
                     this->CreateCommonAuiToolBar(m_nowReadingTreePanel, vbox, ID_NowReadingSearchBar);
                     vbox->Add(m_now_reading_tree_ctrl, 1, wxEXPAND, 0);
                     m_nowReadingTreePanel->SetSizer(vbox);
-                    m_nowReadingTreePanel->Fit();
+                    m_nowReadingTreePanel->Layout();
                 }
                 break;
 

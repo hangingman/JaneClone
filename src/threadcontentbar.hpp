@@ -114,7 +114,7 @@ public:
         horizonalSizer2->Add(hideSearchBarButton, 0, wxALIGN_RIGHT|wxTOP|wxBOTTOM||wxALIGN_CENTER_VERTICAL, 5);
 
         // サイズを調整する
-        this->Fit();
+        this->Layout();
     };
 #endif
 
