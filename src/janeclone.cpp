@@ -122,7 +122,6 @@ BEGIN_EVENT_TABLE(JaneClone, wxFrame)
     EVT_UPDATE_UI(ID_UserLastClosedThreadMenuUp, JaneClone::UserLastClosedThreadMenuUp)
     EVT_UPDATE_UI(ID_UserLastClosedBoardMenuUp, JaneClone::UserLastClosedBoardMenuUp)
     EVT_UPDATE_UI(ID_UserLookingTabsMenuUp, JaneClone::UserLookingTabsMenuUp)
-    EVT_UPDATE_UI(ID_JaneCloneMgrUpdate, JaneClone::JaneCloneMgrUpdate)
     EVT_UPDATE_UI(ID_NowReadingTreectrlUpdate, JaneClone::NowReadingTreectrlUpdate)
 
     // 2ch板一覧ツリーコントロールのイベント
@@ -426,8 +425,6 @@ void JaneClone::SetJaneCloneManuBar()
     menu2->AppendSubMenu(searchBar, wxT("検索バー"));
     menu2->Append(wxID_ANY, wxT("ビューア"));
     menu2->AppendCheckItem(wxID_ANY, wxT("Twitter"));
-    menu2->AppendSeparator();
-    menu2->Append(ID_JaneCloneMgrUpdate, wxT("更新"));
     menu2->AppendSeparator();
     wxMenu *focus     = new wxMenu;
     focus->Append(wxID_ANY, wxT("次のペイン"));
@@ -1028,7 +1025,7 @@ void JaneClone::DoLayout()
     // 設定ファイルからレイアウト情報を読み取る
     wxString perspective = wxEmptyString;
     JaneCloneUtil::GetJaneCloneProperties(wxT("Perspective"), &perspective);
-    m_mgr.LoadPerspective(perspective, true);
+    m_mgr.LoadPerspective(perspective, false);
 
     // プロパティファイルにフォント設定/背景色があれば使用する
     wxString widgetsName = wxT("ID_LogWindowFontButton");
@@ -2108,7 +2105,7 @@ void JaneClone::CheckLogDirectory(wxCommandEvent& event)
 #ifndef __WXMSW__
     boardNoteBook->Thaw();
 #endif
-    m_mgr.Update();
+    boardNoteBook->Update();
 }
 /**
  * スレタブをひとつ閉じる
@@ -2392,16 +2389,12 @@ void JaneClone::ReloadThread(wxString& title)
     // 既存のページから情報を取得して削除する
     ThreadContentBar* oldThreadBar = dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(page));
 
-    if (oldThreadBar)
-        {
-            wxPoint p;
-            oldThreadBar->GetThreadContentWindowScrollPos(&p);
-            oldThreadBar->ReloadThreadContentWindow(threadContentPath);
-            oldThreadBar->Fit();
-
-            m_mgr.Update();
-            oldThreadBar->SetThreadContentWindowScroll(&p);
-        }
+    if (oldThreadBar) {
+        wxPoint p;
+        oldThreadBar->GetThreadContentWindowScrollPos(&p);
+        oldThreadBar->ReloadThreadContentWindow(threadContentPath);
+        oldThreadBar->SetThreadContentWindowScroll(&p);
+    }
 
     // ノートブックに登録されたスレッド情報をハッシュに登録する
     info.origNumber = origNumber;
@@ -2550,7 +2543,7 @@ void JaneClone::Initialize2chBoardList() {
 
     // パネルにSizerを設定する
     m_boardTreePanel->SetSizer(vbox);
-    m_boardTreePanel->Update();
+    m_boardTreePanel->Layout();
 }
 
 /**
@@ -2582,7 +2575,7 @@ void JaneClone::InitializeFavsList() {
 
     // パネルにSizerを設定する
     m_favoriteTreePanel->SetSizer(vbox);
-    m_favoriteTreePanel->Update();
+    m_favoriteTreePanel->Layout();
 }
 
 /**
@@ -2617,7 +2610,7 @@ void JaneClone::InitializeNowReadingList() {
 
     // パネルにSizerを設定する
     m_nowReadingTreePanel->SetSizer(vbox);
-    m_nowReadingTreePanel->Update();
+    m_nowReadingTreePanel->Layout();
 }
 
 #ifdef USE_SHINGETSU
@@ -2664,7 +2657,7 @@ void JaneClone::InitializeShingetsuNodeList() {
 
     // パネルにSizerを設定する
     m_shingetsuTreePanel->SetSizer(vbox);
-    m_shingetsuTreePanel->Update();
+    m_shingetsuTreePanel->Layout();
 }
 #endif /** USE_SHINGETSU */
 
@@ -3488,8 +3481,6 @@ void JaneClone::OnChangedBoardTab(wxAuiNotebookEvent& event) {
         wxString message = wxT("(ヽ´ん`)…板タブ変更時にエラーあったみたい…\n");
         SendLogging(message);
         boardNoteBook->Thaw();
-        m_mgr.Update();
-
         return;
     }
 
@@ -3510,9 +3501,8 @@ void JaneClone::OnChangedBoardTab(wxAuiNotebookEvent& event) {
     SetTitle(selectedBoardName + wxT(" - JaneClone"));
     // 最後に選択したノートブックの記録
     //this->userLastAttachedNotebook = BOARD_NOTEBOOK;
-
-    m_mgr.Update();
 }
+
 /**
  * スレッド一覧タブを変更した後のイベント
  */
@@ -3881,12 +3871,6 @@ void JaneClone::UserLookingTabsMenuUp(wxUpdateUIEvent& event) {
     for (unsigned int i = 0; i < array.GetCount(); i++ ) {
         lookingTB->Append(ID_UserLookingTabsMenuClick, array[i]);
     }
-}
-/**
- * Auiマネージャーの更新を行う
- */
-void JaneClone::JaneCloneMgrUpdate(wxUpdateUIEvent& event) {
-    m_mgr.Update();
 }
 
 /**
@@ -4302,7 +4286,7 @@ void JaneClone::HideSearchBar(wxCommandEvent& event) {
     wxWindow* window = dynamic_cast<wxWindow*>(event.GetEventObject());
     if (window != NULL && (window->GetLabel() == BOARD_TREE_SEARCH || window->GetLabel() == THREADLIST_SEARCH)) {
         window->Hide();
-        m_mgr.Update();
+        window->GetParent()->Layout();
     }
 }
 /**
@@ -4642,80 +4626,38 @@ void JaneClone::SetShingetsuThreadListItemUpdate(const wxString& nodeHostname, c
 /**
  * ショートカットキー(Ctrl+F)のイベント
  */
-void JaneClone::CtrlF(wxKeyEvent& event)
-{
-    if (this->userLastAttachedNotebook == BOARD_NOTEBOOK)
-        {
-            // スレッド一覧ウィンドウの処理
-            wxWindow* target = boardNoteBook->GetPage(boardNoteBook->GetSelection());
+void JaneClone::CtrlF(wxKeyEvent& event) {
 
-            if ( wxAuiToolBar* toolBar
-                 = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowById(ID_ThreadSearchBar, target)))
-                {
+    wxWindow* searchBar = nullptr;
 
-                    if (toolBar->IsShown())
-                        {
-                            toolBar->GetNextSibling()->SetFocus();
-                            toolBar->Hide();
-                            boardNoteBook->Fit();
-                            m_mgr.Update();
-                        }
-                    else
-                        {
-                            toolBar->Show();
-                            boardNoteBook->Fit();
-                            m_mgr.Update();
-                        }
-                }
+    if (this->userLastAttachedNotebook == BOARD_NOTEBOOK) {
+        // スレッド一覧ウィンドウの処理
+        wxWindow* target = boardNoteBook->GetPage(boardNoteBook->GetSelection());
+        searchBar = wxWindow::FindWindowById(ID_ThreadSearchBar, target);
+
+    } else if (this->userLastAttachedNotebook == THREAD_NOTEBOOK) {
+        // スレッド内容ウィンドウの処理
+        ThreadContentBar* contentBar =
+            dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(threadNoteBook->GetSelection()));
+        searchBar = wxWindow::FindWindowById(ID_ThreadContentSearchBar, contentBar);
+
+    } else if (this->userLastAttachedNotebook == BOARD_TREE_NOTEBOOK) {
+        // 板一覧ウィンドウの処理
+        wxWindow* target = boardTreeNoteBook->GetPage(boardTreeNoteBook->GetSelection());
+        searchBar = wxWindow::FindWindowById(ID_BoardSearchBar, target);
+    }
+
+    // TODO: CTRL-Fを連打すると, GetNextSibling()がNULLを返して落ちる, 設計を見直す
+    // https://github.com/hangingman/XrossBoard/pull/4/commits/1c4ff6acae2072253f5c0467453d68b046fb40f3
+    if (searchBar) {
+        if (searchBar->IsShown()) {
+            searchBar->GetNextSibling()->SetFocus();
+            searchBar->Hide();
+        } else {
+            searchBar->Show();
         }
-    else if (this->userLastAttachedNotebook == THREAD_NOTEBOOK)
-        {
-            // スレッド内容ウィンドウの処理
-            ThreadContentBar* contentBar =
-                dynamic_cast<ThreadContentBar*>(threadNoteBook->GetPage(threadNoteBook->GetSelection()));
-
-            if ( wxPanel* searchBarPanel
-                 = dynamic_cast<wxPanel*>(wxWindow::FindWindowById(ID_ThreadContentSearchBar, contentBar)))
-                {
-                    // スレッド内容バーの子ウィンドウを取り出して命令する
-                    if (searchBarPanel->IsShown())
-                        {
-                            searchBarPanel->GetNextSibling()->SetFocus();
-                            searchBarPanel->Hide();
-                            threadNoteBook->Fit();
-                            m_mgr.Update();
-                        }
-                    else
-                        {
-                            searchBarPanel->Show();
-                            threadNoteBook->Fit();
-                            m_mgr.Update();
-                        }
-                }
-        }
-    else if (this->userLastAttachedNotebook == BOARD_TREE_NOTEBOOK)
-        {
-            // 板一覧ウィンドウの処理
-            wxWindow* target = boardTreeNoteBook->GetPage(boardTreeNoteBook->GetSelection());
-
-            if ( wxAuiToolBar* toolBar
-                 = dynamic_cast<wxAuiToolBar*>(wxWindow::FindWindowById(ID_BoardSearchBar, target)))
-                {
-                    if (toolBar->IsShown())
-                        {
-                            toolBar->GetNextSibling()->SetFocus();
-                            toolBar->Hide();
-                            boardTreeNoteBook->Fit();
-                            m_mgr.Update();
-                        }
-                    else
-                        {
-                            toolBar->Show();
-                            boardTreeNoteBook->Fit();
-                            m_mgr.Update();
-                        }
-                }
-        }
+        searchBar->GetParent()->Layout();
+    }
 }
 
 /**

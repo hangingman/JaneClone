@@ -321,6 +321,7 @@ void ThreadContentBar::SetThreadContentWindow(const wxString& threadContentPath,
     threadContentPanel->SetSizer(vbox);
     // 内部に固有番号を持つ
     m_origNumber = origNumber;
+    threadContentPanel->Layout();
 }
 /**
  * スレッドをリロードする
@@ -335,6 +336,7 @@ void ThreadContentBar::ReloadThreadContentWindow(const wxString& threadContentPa
     wxBoxSizer *vbox = new wxBoxSizer(wxVERTICAL);
     vbox->Add(tcw, 1, wxEXPAND, 0);
     threadContentPanel->SetSizer(vbox);
+    threadContentPanel->Layout();
 }
 /**
  * 新着までスクロール
@@ -349,6 +351,7 @@ void ThreadContentBar::OnClickTCBScrollToNewRes(wxCommandEvent& event) {
     p.y = y - p.y;
     tcw->ForceScroll(&p);
 }
+
 /**
  * スレッド内容バーの内容を隠す
  */
@@ -361,12 +364,5 @@ void ThreadContentBar::OnClickTCBHideSearchBar(wxCommandEvent& event) {
         searchBarPanel->Show();
     }
 
-    wxCommandEvent* cmEvent = new wxCommandEvent(wxEVT_UPDATE_UI, ID_JaneCloneMgrUpdate);
-
-#if wxCHECK_VERSION(2, 9, 0)
-    wxTheApp->GetTopWindow()->GetEventHandler()->QueueEvent(cmEvent->Clone());
-#else
-    this->GetEventHandler()->AddPendingEvent(*cmEvent);
-#endif
-
+    Layout();
 }

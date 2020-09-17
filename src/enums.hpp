@@ -89,7 +89,6 @@ X_TABLE_ITEM(ID_URLWindowButton)		/* URL入力ウィンドウのボタンを表�
 X_TABLE_ITEM(ID_UserLastClosedThreadMenuUp)	/* ユーザーが最後に閉じたスレッドの情報を			*/ \
 X_TABLE_ITEM(ID_UserLastClosedBoardMenuUp)	/* ユーザーが最後に閉じた板の情報を項目に			*/ \
 X_TABLE_ITEM(ID_UserLookingTabsMenuUp)		/* ユーザーが現在見ているスレタブ・板タブ			*/ \
-X_TABLE_ITEM(ID_JaneCloneMgrUpdate)		/* Auiマネージャーの更新を行う	         		        */ \
 X_TABLE_ITEM(ID_CommonAuiToolBarUpdate)         /* Auiツールバーの更新を行う 				        */ \
 X_TABLE_ITEM(ID_FavsTreectrlUpdate)             /* お気に入りツリーの更新を行う					*/ \
 X_TABLE_ITEM(ID_NowReadingTreectrlUpdate)	/* 閲覧中ツリーの更新を行う					*/ \
