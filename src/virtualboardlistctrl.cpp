@@ -578,7 +578,7 @@ VirtualBoardListCtrl::VirtualBoardListCtrl(wxWindow* parent,const wxString& boar
             itemTitle = regexThreadFst.GetMatch(line, 5);
         }
         // レス数を取得する
-        itemResponse = wxString::Format(wxT("%i"), datfile.GetLineCount());
+        itemResponse = wxString::Format(wxT("%zu"), datfile.GetLineCount());
 
         /**
          *　ログ一覧なのでこの辺は空白でいいんじゃないだろうか
