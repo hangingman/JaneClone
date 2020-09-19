@@ -124,8 +124,7 @@ static const std::string userAgent = std::string("Monazilla/1.00 JaneClone(Unkno
 static const wxString janecloneVersion = wxT( PACKAGE_VERSION );
 
 // 実行されているバイナリのパス
-inline wxString GetJcExecutablePath()
-{
+inline wxString GetJcExecutablePath() {
     wxFileName f(wxStandardPaths::Get().GetExecutablePath());
     wxString appPath(f.GetPath());
     return appPath;
@@ -153,10 +152,17 @@ inline wxString GetResourcePath(wxString fileName) {
     wxFileName filePath = wxFileName::DirName(GetJcExecutablePath());
     filePath.AppendDir("rc");
 #elif defined(__WXMAC__)
-    wxFileName filePath = wxFileName::DirName(GetJcExecutablePath());
-    filePath.AppendDir("JaneClone.app");
-    filePath.AppendDir("Contents");
-    filePath.AppendDir("Resources");
+    wxFileName exePath = wxFileName::DirName(GetJcExecutablePath());
+    wxFileName filePath;
+
+    if (exePath.GetFullPath().StartsWith("/Applications")) {
+        // 実行ファイルが /Applications 以下 の場合パッケージビルドとみなす
+        filePath = wxFileName::DirName("/Applications/JaneClone.app/Contents/Resources");
+    } else {
+        filePath = wxFileName::DirName(GetJcExecutablePath());
+        filePath.AppendDir("rc");
+    }
+
 #endif
 
     if (fileName != wxEmptyString) {
