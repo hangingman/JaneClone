@@ -75,10 +75,10 @@ script:
         cd build && /usr/bin/cmake -G "Ninja" .. && ninja package;
     fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-        bash ninja_rebuild.sh;
+        bash ${TRAVIS_BUILD_DIR}/ninja_rebuild.sh;
     fi
   - if [[ "$TRAVIS_BRANCH" == "releases/"* ]]; then
-        bash misc/upload_bintray.sh;
+        bash ${$TRAVIS_BUILD_DIR}/misc/upload_bintray.sh;
     fi
 
 # issues/*, releases/*
