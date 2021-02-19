@@ -17,7 +17,7 @@ jobs:
         - sourceline: 'deb https://apt.kitware.com/ubuntu/ xenial-rc main'
         packages:
         - cmake
-        
+
   - os: linux
     dist: xenial
     compiler: clang
@@ -74,11 +74,19 @@ script:
         /usr/bin/cmake --version;
         cd build && /usr/bin/cmake -G "Ninja" .. && ninja package;
     fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then sh ninja_rebuild.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+        bash ninja_rebuild.sh;
+    fi
+  - if [[ "$TRAVIS_BRANCH" == "releases/"* ]]; then
+        bash misc/upload_bintray.sh;
+    fi
 
+# issues/*, releases/*
+# で始まるブランチのみビルド実施
 branches:
   only:
-    - master
+    - /^issues.*$/
+    - /^releases.*$/
 
 notifications:
   email:
