@@ -17,11 +17,12 @@
 CURL="curl -v --user hiroyuki-nagata:${BINTRAY_TOKEN}"
 METHOD="-X PUT --data-binary @- "
 API="https://api.bintray.com"
+# Load version from version.txt
+VERSION=$(awk '{print $2}' ../version.txt | paste -s -d"." -)
+
 
 function upload_deb()
 {
-    # Load version from configure.ac
-    VERSION=$(awk '{print $2}' ../version.txt | paste -s -d"." -)
     echo "JaneClone version is ${VERSION}"
     # Package
     DEB_FILENAME="janeclone_${VERSION}_amd64.deb"
@@ -61,9 +62,6 @@ function upload_dmg()
     #
     # Here upload executing !
     #
-
-    # Load version from configure.ac
-    VERSION=`cat ../configure.ac | grep AC_INIT | awk '{print $2}' | gsed -e 's/\[\|\]\|,//g'`
     echo "JaneClone version is ${VERSION}"
 
     # Package
