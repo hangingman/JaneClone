@@ -21,9 +21,8 @@ API="https://api.bintray.com"
 function upload_deb()
 {
     # Load version from configure.ac
-    VERSION=`cat ../configure.ac | grep AC_INIT | awk '{print $2}' | sed -e 's/\[\|\]\|,//g'`
+    VERSION=`cat ../version.txt | awk '{print $2}' | paste -s -d"." -`
     echo "JaneClone version is ${VERSION}"
-
     # Package
     DEB_FILENAME="janeclone_${VERSION}_amd64.deb"
     # .dsc file
