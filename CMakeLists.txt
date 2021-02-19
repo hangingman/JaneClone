@@ -1,9 +1,17 @@
 cmake_minimum_required(VERSION 3.13.0 FATAL_ERROR)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
+file(READ "version.txt" ver)
+string(REGEX MATCH "VERSION_MAJOR ([0-9]*)" _ ${ver})
+set(ver_major ${CMAKE_MATCH_1})
+string(REGEX MATCH "VERSION_MINOR ([0-9]*)" _ ${ver})
+set(ver_minor ${CMAKE_MATCH_1})
+string(REGEX MATCH "VERSION_PATCH ([0-9]*)" _ ${ver})
+set(ver_patch ${CMAKE_MATCH_1})
+
 project(
   root
-  VERSION 1.1.6
+  VERSION "${ver_major}.${ver_minor}.${ver_patch}"
   LANGUAGES CXX
   HOMEPAGE_URL "http://hangingman.github.io/JaneClone/"
   DESCRIPTION "plain browser dedicated to read 5ch thread")
@@ -44,6 +52,8 @@ find_package(OpenSSL REQUIRED)
 find_package(SQLite3)
 find_package(WxSQLite3)
 
+
+message("JaneClone version: ${ver_major}.${ver_minor}.${ver_patch}")
 if(NOT SQLite3_FOUND)
   add_subdirectory(sqlite3)
   option(BUILDING_SQLite3 "Building SQLite3" ON)
