@@ -57,13 +57,14 @@ install:
 
 script:
   - echo $TRAVIS_OS_NAME
-  - bash ${TRAVIS_BUILD_DIR}/ninja_build.sh
+  - bash ${TRAVIS_BUILD_DIR}/ninja_build.sh package
   - if [[ "$TRAVIS_BRANCH" == "releases/"* ]]; then bash ${TRAVIS_BUILD_DIR}/upload_gemfury.sh; fi
 
 branches:
   only:
     - "/^issues.*$/"
     - "/^releases.*$/"
+
 notifications:
   email:
     on_success: change
