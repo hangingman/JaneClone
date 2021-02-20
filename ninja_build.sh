@@ -2,5 +2,6 @@
 
 if [ ! -e build ]; then mkdir build; fi
 cd build
-cmake -G "Ninja" ..
+/usr/bin/cmake --version
+/usr/bin/cmake -G "Ninja" ..
 ninja $@

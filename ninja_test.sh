@@ -4,6 +4,7 @@
 #
 if [ ! -e build ]; then mkdir build; fi
 cd build
-cmake -G "Ninja" -Dtest=on ..
-cmake --build .
+/usr/bin/cmake --version
+/usr/bin/cmake -G "Ninja" -Dtest=on ..
+/usr/bin/cmake --build .
 ctest -V
