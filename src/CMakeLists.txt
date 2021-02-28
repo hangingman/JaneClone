@@ -95,7 +95,7 @@ if(${CMAKE_OS_NAME} MATCHES "(Debian|Ubuntu)")
   set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Hiroyuki Nagata")
   set(CPACK_PACKAGE_NAME "janeclone")
   set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libwxbase3.0-0v5, libwxgtk3.0-0v5")
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libwxbase3.0-0v5, libwxgtk3.0-0v5, libcurl3 | libcurl4")
 
   set(JANECLONE_EXEC_RC_DIR "/usr/share/pixmaps/janeclone")
 
@@ -107,7 +107,7 @@ if(${CMAKE_OS_NAME} MATCHES "(Debian|Ubuntu)")
     ${CMAKE_BINARY_DIR}/misc/janeclone.desktop @ONLY)
   install(FILES ${CMAKE_BINARY_DIR}/misc/janeclone.desktop
     DESTINATION /usr/share/applications/)
-  
+
   # TODO: /usr/lib/janeclone のほうがいいかもしれない
   install(TARGETS curlpp LIBRARY DESTINATION "/usr/lib/")
   install(TARGETS utilspp LIBRARY DESTINATION "/usr/lib/")
