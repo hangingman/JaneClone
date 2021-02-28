@@ -45,7 +45,21 @@ set(janeclone_SRCS
     ../babel/babel.cpp
     ../babel/babel.h)
 
-add_executable(janeclone ${janeclone_SRCS})
+if(${CMAKE_OS_NAME} MATCHES "OSX")
+  # Generate Info.plist
+  configure_file(${root_SOURCE_DIR}/Info.plist.in ${root_BINARY_DIR}/Info.plist @ONLY)
+  # Resources
+  file(GLOB RC_FILES ${janeclone_SOURCE_DIR}/rc/*)
+  # Binary
+  add_executable(janeclone MACOSX_BUNDLE ${janeclone_SRCS} ${RC_FILES})
+
+  set_target_properties(janeclone PROPERTIES
+    MACOSX_BUNDLE TRUE
+    MACOSX_BUNDLE_INFO_PLIST ${root_BINARY_DIR}/Info.plist
+    RESOURCE "${RC_FILES}")
+else()
+  add_executable(janeclone ${janeclone_SRCS})
+endif()
 file(COPY ${root_SOURCE_DIR}/src/rc DESTINATION ${CMAKE_BINARY_DIR}/src)
 
 include_directories(${LIBXML2_INCLUDE_DIRS})
@@ -112,6 +126,45 @@ if(${CMAKE_OS_NAME} MATCHES "(Debian|Ubuntu)")
   install(TARGETS curlpp LIBRARY DESTINATION "/usr/lib/")
   install(TARGETS utilspp LIBRARY DESTINATION "/usr/lib/")
   install(TARGETS wxsqlite3 LIBRARY DESTINATION "/usr/lib/")
+
+  include(CPack)
+endif()
+
+#
+# Mac用Bundleパッケージの設定
+#
+if(${CMAKE_OS_NAME} MATCHES "OSX")
+
+  set(CPACK_DMG_FORMAT "UDBZ")
+  set(CPACK_DMG_VOLUME_NAME "${PROJECT_NAME}-osx64-${PACKAGE_VERSION}")
+  set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-osx64-${PACKAGE_VERSION}")
+  set(CPACK_PACKAGE_ICON "${root_SOURCE_DIR}/src/rc/janeclone.icns")
+  set(CPACK_SYSTEM_NAME "OSX")
+
+  # Note Mac specific extension .app
+  set(BUNDLE "\${CMAKE_INSTALL_PREFIX}/janeclone.app")
+
+  # Destination paths below are relative to ${CMAKE_INSTALL_PREFIX}
+  install(TARGETS janeclone
+    BUNDLE DESTINATION . COMPONENT Runtime
+    RUNTIME DESTINATION bin COMPONENT Runtime)
+
+  # Directories to look for dependencies
+  set(BUNDLE_LIB_DIRS
+    ${CMAKE_BINARY_DIR}
+    ${CMAKE_BINARY_DIR}/curlpp/src/curlpp
+    ${CMAKE_BINARY_DIR}/curlpp/src/utilspp
+    ${CMAKE_BINARY_DIR}/wxsqlite3)
+
+  # ref: https://gitlab.kitware.com/cmake/cmake/-/issues/19663
+  install(CODE "include(BundleUtilities)
+    set(BU_CHMOD_BUNDLE_ITEMS TRUE)
+    fixup_bundle(\"${BUNDLE}\" \"\" \"${BUNDLE_LIB_DIRS}\")")
+
+  set(CPACK_GENERATOR "DragNDrop")
+  set(CPACK_BUNDLE_NAME "JaneClone")
+  set(CPACK_BUNDLE_ICON "${root_SOURCE_DIR}/src/rc/janeclone.icns")
+  set(CPACK_BUNDLE_PLIST "${CMAKE_BINARY_DIR}/Info.plist")
 
   include(CPack)
 endif()

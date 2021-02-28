@@ -15,8 +15,17 @@ project(
   LANGUAGES CXX
   HOMEPAGE_URL "http://hangingman.github.io/JaneClone/"
   DESCRIPTION "plain browser dedicated to read 5ch thread")
+set(PACKAGE_NAME "JaneClone" CACHE INTERNAL "")
+set(PACKAGE_STRING "JaneClone ${PROJECT_VERSION}" CACHE INTERNAL "")
+set(PACKAGE_VERSION "${PROJECT_VERSION}" CACHE INTERNAL "")
 
+# detect OS
 include(IdentifyOS)
+if(${CMAKE_OS_NAME} MATCHES "OSX")
+  set(ENV{OPENSSL_ROOT_DIR} "/usr/local/opt/openssl")
+  set(ENV{HOMEBREW_NO_AUTO_UPDATE} 1)
+endif()
+
 add_definitions(-DPACKAGE_VERSION="${PROJECT_VERSION}")
 add_definitions(-DHAVE_CONFIG_H)
 configure_file(config.h.in config.h @ONLY)
