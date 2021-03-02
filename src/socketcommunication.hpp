@@ -24,6 +24,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <list>
 
 #include <wx/wx.h>
 #include <wx/string.h>
@@ -43,32 +44,16 @@
 #include <wx/sckstrm.h>
 #include <wx/uri.h>
 
-#include <curlpp/cURLpp.hpp>
-#include <curlpp/Easy.hpp>
-#include <curlpp/Options.hpp>
-#include <curlpp/Infos.hpp>
-
 #include "enums.hpp"
 #include "janecloneutil.hpp"
 #include "janecloneuiutil.hpp"
 #include "sqliteaccessor.hpp"
-
-// curlppの名前空間が冗長なのでusingする
-using namespace curlpp::options;
-using namespace curlpp::types;
-
-using WFunctor = WriteFunctionFunctor;
-
 
 class SocketCommunication {
 
     using Sock = SocketCommunication;
 
 public:
-
-    HeaderFunction* writeHeaderFunc;
-    WriteFunction* writeBodyFunc;
-
     /**
      * コンストラクタ
      */
@@ -320,7 +305,7 @@ private:
     /**
      * コンフィグ情報をCurl++のオブジェクトに設定する
      */
-    void LoadConfiguration(curlpp::Easy& request, const bool io);
+    //void LoadConfiguration(curlpp::Easy& request, const bool io);
     /**
      * ユーザの設定しているユーザーエージェントを取得する
      */

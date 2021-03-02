@@ -825,7 +825,7 @@ void JaneClone::SetProperties()
     // sqliteの初期化を行う
     std::unique_ptr<SQLiteAccessor> sqliteAccessor(new SQLiteAccessor());
     // Curlの初期化を行う
-    cURLpp::initialize();
+    //cURLpp::initialize();
     // babelの初期化を行う
     babel::init_babel();
     // XRCの初期化を行う
@@ -1241,7 +1241,7 @@ JaneClone::~JaneClone()
     // Auiマネージャーを削除する
     m_mgr.UnInit();
     // Curlの終了処理を行う
-    cURLpp::terminate();
+    //cURLpp::terminate();
 }
 /**
  * JaneCloneを終了させる
@@ -2762,23 +2762,24 @@ void JaneClone::OnVersionInfo(wxCommandEvent&) {
     description += wxT("Curlのバージョン:");
 
     /** curlをwxWidgetsから呼ぶテスト */
-    curl_version_info_data* data = curl_version_info(CURLVERSION_NOW);
-    description += wxString::From8BitData(data->version);
-    description += wxT("\n");
+    // TODO
+    // curl_version_info_data* data = curl_version_info(CURLVERSION_NOW);
+    // description += wxString::From8BitData(data->version);
+    // description += wxT("\n");
 
-    description += wxT("対応プロトコル:");
-    for (int i = 0; i < sizeof data->protocols; i++) {
-        description += wxString::From8BitData(data->protocols[i]);
-        description += wxT(", ");
-    }
+    // description += wxT("対応プロトコル:");
+    // for (int i = 0; i < sizeof data->protocols; i++) {
+    //     description += wxString::From8BitData(data->protocols[i]);
+    //     description += wxT(", ");
+    // }
 
-    description += wxT("OpenSSLのバージョン:");
-    description += wxString::From8BitData(data->ssl_version);
-    description += wxT("\n");
+    // description += wxT("OpenSSLのバージョン:");
+    // description += wxString::From8BitData(data->ssl_version);
+    // description += wxT("\n");
 
-    description += wxT("zlibのバージョン");
-    description += wxString::From8BitData(data->libz_version);
-    description += wxT("\n");
+    // description += wxT("zlibのバージョン");
+    // description += wxString::From8BitData(data->libz_version);
+    // description += wxT("\n");
 
     info.SetDescription(description);
 

@@ -58,8 +58,8 @@ SocketCommunication::SocketCommunication()
         }
     }
 
-    this->writeHeaderFunc = new HeaderFunction(WFunctor(this, &Sock::WriteHeader));
-    this->writeBodyFunc = new WriteFunction(WFunctor(this, &Sock::WriteBody));
+    // this->writeHeaderFunc = new HeaderFunction(WFunctor(this, &Sock::WriteHeader));
+    // this->writeBodyFunc = new WriteFunction(WFunctor(this, &Sock::WriteBody));
 }
 /**
  * 板一覧ファイルをダウンロードしてくるメソッド 引数は板一覧ファイル保存先、板一覧ファイルヘッダ保存先
@@ -121,44 +121,8 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
     const std::string url = std::string(uri.protocol.mb_str())
         + "://" + std::string(server.mb_str()) + std::string(path.mb_str());
 
-    try {
-
-        // 保存先を決める
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new HttpHeader(headers));
-        myRequest.setOpt(new Verbose(true));
-        myRequest.setOpt(this->writeHeaderFunc);
-
-        // メインのデータ出力
-        std::ofstream ofs(outputPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-        WriteStream ws(&ofs);
-        myRequest.setOpt(ws);
-
-        const wxString message = wxString::Format("2chの板一覧情報を取得 (ん`　 ) %s%s\n", server, path);
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        myRequest.perform();
-
-        // レスポンスヘッダーの書き出し
-        if (!respBuf.empty()) {
-            std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-            ofsHeader << respBuf << std::endl;
-        }
-
-        return 0;
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)outputPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)outputPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
-
-    return -1;
+    // TODO
+    return 0;
 }
 
 /**
@@ -307,43 +271,8 @@ int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
     const wxString path = wxString::Format("/%s/subject.txt", boardNameAscii);
     const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
 
-    try {
-
-        // 保存先を決める
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new HttpHeader(headers));
-        myRequest.setOpt(new Verbose(true));
-        myRequest.setOpt(this->writeHeaderFunc);
-
-        std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-        WriteStream ws(&ofs);
-        myRequest.setOpt(ws);
-
-        const wxString message = wxString::Format("スレッド一覧を取得 (ん`　 ) %s%s\n", server, path);
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        myRequest.perform();
-
-        // レスポンスヘッダーの書き出し
-        if (!respBuf.empty()) {
-            std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-            ofsHeader << respBuf << std::endl;
-        }
-
-        return 0;
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
-
-    return -1;
+    // TODO
+    return 0;
 }
 /**
  * 前回との差分のスレッド一覧をダウンロードしてくるメソッド
@@ -396,43 +325,8 @@ int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath,
     const wxString path = wxString::Format("/%s/subject.txt", boardNameAscii);
     const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
 
-    try {
-
-        // 保存先を決める
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new HttpHeader(headers));
-        myRequest.setOpt(new Verbose(true));
-        myRequest.setOpt(this->writeHeaderFunc);
-
-        std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-        WriteStream ws(&ofs);
-        myRequest.setOpt(ws);
-
-        const wxString message = wxString::Format("スレッド一覧を取得 (ん`　 ) %s%s\n", server, path);
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        myRequest.perform();
-
-        // レスポンスヘッダーの書き出し
-        if (!respBuf.empty()) {
-            std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-            ofsHeader << respBuf << std::endl;
-        }
-
-        return 0;
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
-
-    return -1;
+    // TODO
+    return 0;
 }
 /**
  * スレッドのデータをダウンロードしてくるメソッド
@@ -556,64 +450,8 @@ void SocketCommunication::DownloadThreadNew(const wxString& gzipPath,
     const wxString path = wxString::Format("/%s/dat/%s.dat", boardNameAscii, origNumber);
     const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
 
-    try {
-
-        // 保存先を決める
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new HttpHeader(headers));
-        myRequest.setOpt(new Verbose(true));
-        myRequest.setOpt(this->writeHeaderFunc);
-
-        std::ofstream ofs(gzipPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-        WriteStream ws(&ofs);
-        myRequest.setOpt(ws);
-
-        wxString message = wxT("2chのスレッドを取得 (ん`　 )\n");
-        message += server;
-        message += path;
-        message += wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        myRequest.perform();
-
-        long rc = curlpp::infos::ResponseCode::get(myRequest);
-
-        if (rc == 200) {
-            // 通常スレッド取得
-            const wxString message = wxT("新規取得 (ヽ´ん`)\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-        } else if (rc == 203) {
-            // dat落ち確定
-            const wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-            DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
-        } else if (rc == 302) {
-            // dat落ちか削除
-            const wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-            DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
-        } else if (rc == 404) {
-            // dat落ちか削除
-            const wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-        }
-
-        // レスポンスヘッダーの書き出し
-        if (!respBuf.empty()) {
-            std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-            ofsHeader << respBuf << std::endl;
-        }
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
+    // TODO
+    return;
 }
 
 /**
@@ -688,86 +526,8 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
     const wxString path = wxString::Format("/%s/dat/%s.dat", boardNameAscii, origNumber);
     const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
 
-    try {
-
-        // 保存先を決める
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new HttpHeader(headers));
-        myRequest.setOpt(new Verbose(true));
-        myRequest.setOpt(this->writeHeaderFunc);
-        myRequest.setOpt(this->writeBodyFunc);
-
-        wxString message = wxT("2chのスレッドを取得 (ん`　 )\n");
-        message += server;
-        message += path;
-        message += wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        myRequest.perform();
-
-        long rc = curlpp::infos::ResponseCode::get(myRequest);
-
-        if (rc == 200) {
-            if (!bodyBuf.empty()) {
-                std::ofstream ofsBody(sjisDatPath.mb_str() , std::ios::out | std::ios::trunc );
-                ofsBody << bodyBuf << std::endl;
-            }
-        } else if (rc == 304) {
-            // レスポンスコードが304ならば変更なし、何もしない
-            const wxString message = wxT("更新なし (ヽ´ん`)\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-
-        } else if (rc == 206) {
-            // スレッドに更新ありの場合の処理、更新部分を追加する
-            const wxString message = wxT("更新あり (ヽ´ん`)\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-
-            if (!bodyBuf.empty()) {
-                // sjisファイルの更新を実施
-                std::ofstream ofsSjis(sjisDatPath.mb_str(), std::ios::out | std::ios::app );
-                ofsSjis << bodyBuf;
-                // UTF-8に変換
-                wxRemoveFile(datFilePath);
-                JaneCloneUtil::ConvertSJISToUTF8(sjisDatPath, datFilePath);
-            }
-
-        } else if (rc == 203) {
-            // dat落ち確定
-            const wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-
-            DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
-        } else if (rc == 302) {
-            // dat落ちか削除
-            const wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-            DownloadThreadPast(gzipPath, headerPath, boardNameAscii, origNumber, hostName);
-        } else if (rc == 404) {
-            // dat落ちか削除
-            const wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-        }
-
-        // レスポンスヘッダーの書き出し
-        if (!respBuf.empty()) {
-            std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-            ofsHeader << respBuf << std::endl;
-        }
-
-        return 0;
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)datFilePath.mb_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)datFilePath.mb_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
-
-    return -1;
+    // TODO
+    return 0;
 }
 
 /**
@@ -835,74 +595,8 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
     headers.push_back("User-Agent: " + CustomUserAgent());
     headers.push_back("Connection: close");
 
-    try {
-
-        // 保存先を決める
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new HttpHeader(headers));
-        myRequest.setOpt(new Verbose(true));
-        myRequest.setOpt(this->writeHeaderFunc);
-
-        // 何も見つからなかった時に備えてgzipPathは仮の値に
-        const wxString pastTempPath = gzipPath + wxT("temp");
-        std::ofstream ofs(pastTempPath.mb_str() , std::ios::out | std::ios::trunc | std::ios::binary );
-        WriteStream ws(&ofs);
-        myRequest.setOpt(ws);
-
-        const wxString message = wxString::Format("2chのスレッド(過去スレ)を取得(ん`　 ) %s%s\n", server, path);
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        // 過去スレ取得は２回目のクラスメソッド起動になるはずなので
-        // 文字列をクリアーしておく
-        this->respBuf.clear();
-        this->bodyBuf.clear();
-        myRequest.perform();
-
-        long rc = curlpp::infos::ResponseCode::get(myRequest);
-
-        if (rc == 200) {
-            // 通常スレッド取得
-            const wxString message = wxT("新規取得 (ヽ´ん`)\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-            // ファイルのリネーム
-            wxRenameFile(pastTempPath, gzipPath);
-        } else if (rc == 203) {
-            // dat落ち確定
-            const wxString message = wxT("dat落ちや 彡(゜)(゜) ち〜ん\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-        } else if (rc == 302) {
-            // dat落ちか削除
-            const wxString message = wxT("dat落ちか削除済みやな 彡(゜)(゜) ち〜ん\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-        } else if (rc == 404) {
-            // dat落ちか削除
-            const wxString message = wxT("サーバが見つからん 彡(゜)(゜) ち〜ん\n");
-            JaneCloneUiUtil::SendLoggingHelper(message);
-        }
-
-        // レスポンスヘッダーの書き出し
-        if (!respBuf.empty()) {
-            std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-            ofsHeader << respBuf << std::endl;
-        }
-
-        // 一時ファイル削除
-        RemoveTmpFile(pastTempPath);
-
-        return 0;
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)gzipPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
-
-    return -1;
+    // TODO
+    return 0;
 }
 /**
  * 一時ファイルを消す
@@ -1060,41 +754,7 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
     headers.push_back("Content-Type: application/x-www-form-urlencoded");
     headers.push_back("Connection: close");
 
-    try {
-
-        // 保存先を決める
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, SEND);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new HttpHeader(headers));
-        const std::string postField = std::string(kakikomiInfo.mb_str());
-        myRequest.setOpt(new PostFields(postField));
-        myRequest.setOpt(new PostFieldSize(postField.length()));
-        myRequest.setOpt(new Verbose(true));
-        myRequest.setOpt(this->writeHeaderFunc);
-
-        std::ofstream ofs(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-        WriteStream ws(&ofs);
-        myRequest.setOpt(ws);
-
-        wxString message = wxT("書き込み実行 (ヽ´ん`)\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        // 文字列をクリアーしておく
-        this->respBuf.clear();
-        this->bodyBuf.clear();
-
-        wxSleep(2);
-        myRequest.perform();
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
+    // TODO
 
     // Shift_JIS から UTF-8への変換処理
     wxString tmpPath = headerPath;
@@ -1204,41 +864,7 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
     headers.push_back("Cookie: " + std::string(cookie.mb_str()));
     headers.push_back("Connection: close");
 
-    try {
-
-        // 保存先を決める
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, SEND);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new HttpHeader(headers));
-        const std::string postField = std::string(kakikomiInfo.mb_str());
-        myRequest.setOpt(new PostFields(postField));
-        myRequest.setOpt(new PostFieldSize(postField.length()));
-        myRequest.setOpt(new Verbose(true));
-        myRequest.setOpt(this->writeHeaderFunc);
-
-        std::ofstream ofs(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-        WriteStream ws(&ofs);
-        myRequest.setOpt(ws);
-
-        wxString message = wxT("書き込み実行 (ヽ´ん`)\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        // 文字列をクリアーしておく
-        this->respBuf.clear();
-        this->bodyBuf.clear();
-
-        wxSleep(2);
-        myRequest.perform();
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
+    // TODO
 
     // Shift_JIS から UTF-8への変換処理
     wxString tmpPath = headerPath;
@@ -1350,41 +976,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
     headers.push_back("Cookie: " + std::string(cookie.mb_str()));
     headers.push_back("Connection: close");
 
-    try {
-
-        // 保存先を決める
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, SEND);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new HttpHeader(headers));
-        const std::string postField = std::string(kakikomiInfo.mb_str());
-        myRequest.setOpt(new PostFields(postField));
-        myRequest.setOpt(new PostFieldSize(postField.length()));
-        myRequest.setOpt(new Verbose(true));
-        myRequest.setOpt(this->writeHeaderFunc);
-
-        std::ofstream ofs(headerPath.mb_str() , std::ios::out | std::ios::trunc );
-        WriteStream ws(&ofs);
-        myRequest.setOpt(ws);
-
-        wxString message = wxT("書き込み実行 (ヽ´ん`)\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        // 文字列をクリアーしておく
-        this->respBuf.clear();
-        this->bodyBuf.clear();
-
-        wxSleep(2);
-        myRequest.perform();
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxString((const char*)headerPath.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
+    // TODO
 
     // Shift_JIS から UTF-8への変換処理
     wxString tmpPath = headerPath;
@@ -1900,36 +1492,8 @@ void SocketCommunication::LoginBe2ch() {
 
     std::string url = "be.2ch.net/test/login.php";
 
-    try {
-
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, SEND);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new HttpHeader(headers));
-        const std::string postField = std::string(kakikomiInfo.mb_str());
-        myRequest.setOpt(new PostFields(postField));
-        myRequest.setOpt(new PostFieldSize(postField.length()));
-        myRequest.setOpt(new Verbose(true));
-        myRequest.setOpt(this->writeHeaderFunc);
-
-        wxString message = wxT("BEにログイン (ヽ´ん`)...\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        // 文字列をクリアーしておく
-        this->respBuf.clear();
-        this->bodyBuf.clear();
-
-        wxSleep(2);
-        myRequest.perform();
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
+    // TODO
+    return;
 }
 
 /**
@@ -1954,32 +1518,7 @@ bool SocketCommunication::GetShitarabaBoardInfo(const wxString& path,
     dataFilePath += wxFILE_SEP_PATH;
     dataFilePath += wxT("shitaraba_info.txt");
 
-    try {
-
-        curlpp::Cleanup myCleanup;
-        curlpp::Easy myRequest;
-        LoadConfiguration(myRequest, RECV);
-        myRequest.setOpt(new Url(url));
-        myRequest.setOpt(new Verbose(true));
-
-        std::ofstream ofs(dataFilePath.mb_str() , std::ios::out | std::ios::trunc );
-        WriteStream ws(&ofs);
-        myRequest.setOpt(ws);
-
-        wxString message = wxT("したらば掲示板にアクセス (ヽ´ん`)...\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-
-        myRequest.perform();
-
-    } catch (curlpp::RuntimeError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-        return false;
-    } catch (curlpp::LogicError &e) {
-        wxString message = wxString((const char*)e.what(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-        return false;
-    }
+    // TODO
 
     /**
      * したらば掲示板の文字コードはクソEUC-JPである
@@ -2094,100 +1633,99 @@ wxString SocketCommunication::GetOutputFilePath(bool isShitaraba,
 /**
  * コンフィグ情報をCurl++のオブジェクトに設定する
  */
-void SocketCommunication::LoadConfiguration(
-    curlpp::Easy& request, const bool io)
-{
-    /**
-     * Timeout Setting
-     */
-    if ( propMap.find(wxT("ID_Connection_Timeout_Sec")) != propMap.end() ) {
-            const wxString connectTimeout = propMap[wxT("ID_Connection_Timeout_Sec")];
-            long sec = 0;
-            if ( connectTimeout.IsNumber() && connectTimeout.ToLong(&sec, 10) ) {
-                    request.setOpt(new Timeout(sec));
-                }
-        }
+// void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io)
+// {
+//     /**
+//      * Timeout Setting
+//      */
+//     if ( propMap.find(wxT("ID_Connection_Timeout_Sec")) != propMap.end() ) {
+//             const wxString connectTimeout = propMap[wxT("ID_Connection_Timeout_Sec")];
+//             long sec = 0;
+//             if ( connectTimeout.IsNumber() && connectTimeout.ToLong(&sec, 10) ) {
+//                     request.setOpt(new Timeout(sec));
+//                 }
+//         }
 
-    if ( propMap.find(wxT("ID_Receive_Timeout_Sec")) != propMap.end() ) {
-            const wxString receiveTimeout = propMap[wxT("ID_Receive_Timeout_Sec")];
-            long sec = 0;
-            if ( receiveTimeout.IsNumber() && receiveTimeout.ToLong(&sec, 10) ) {
-                    request.setOpt(new ConnectTimeout(sec));
-                }
-        }
+//     if ( propMap.find(wxT("ID_Receive_Timeout_Sec")) != propMap.end() ) {
+//             const wxString receiveTimeout = propMap[wxT("ID_Receive_Timeout_Sec")];
+//             long sec = 0;
+//             if ( receiveTimeout.IsNumber() && receiveTimeout.ToLong(&sec, 10) ) {
+//                     request.setOpt(new ConnectTimeout(sec));
+//                 }
+//         }
 
-    /**
-     * BASIC Auth
-     */
-    if ( propMap.find(wxT("ID_NetworkPanelBasicAuthUserName")) != propMap.end() &&
-         propMap.find(wxT("ID_NetworkPanelBasicAuthPassword")) != propMap.end()) {
-            const wxString username = propMap[wxT("ID_NetworkPanelBasicAuthUserName")];
-            const wxString password = propMap[wxT("ID_NetworkPanelBasicAuthPassword")]; // TODO: パスワードのHASH化
-            if ( username.IsWord() && password.IsWord() ) {
-                    const wxString concat = username + wxT(":") + password;
-                    request.setOpt(new UserPwd(std::string(concat.mb_str())));
-                } else {
-                    const wxString message = wxT("無効なBASIC認証設定が無視されました");
-                    JaneCloneUiUtil::SendLoggingHelper(message);
-                }
-        }
+//     /**
+//      * BASIC Auth
+//      */
+//     if ( propMap.find(wxT("ID_NetworkPanelBasicAuthUserName")) != propMap.end() &&
+//          propMap.find(wxT("ID_NetworkPanelBasicAuthPassword")) != propMap.end()) {
+//             const wxString username = propMap[wxT("ID_NetworkPanelBasicAuthUserName")];
+//             const wxString password = propMap[wxT("ID_NetworkPanelBasicAuthPassword")]; // TODO: パスワードのHASH化
+//             if ( username.IsWord() && password.IsWord() ) {
+//                     const wxString concat = username + wxT(":") + password;
+//                     request.setOpt(new UserPwd(std::string(concat.mb_str())));
+//                 } else {
+//                     const wxString message = wxT("無効なBASIC認証設定が無視されました");
+//                     JaneCloneUiUtil::SendLoggingHelper(message);
+//                 }
+//         }
 
-    /**
-     * PROXY
-     */
-    if (propMap.find(wxT("ID_NetworkPanelUseProxy")) != propMap.end() ) {
-        bool useProxy = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxy")]);
+//     /**
+//      * PROXY
+//      */
+//     if (propMap.find(wxT("ID_NetworkPanelUseProxy")) != propMap.end() ) {
+//         bool useProxy = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxy")]);
 
-        if (useProxy) {
-            // ProxyCache
-            if ( propMap.find(wxT("ID_NetworkPanelUseProxyCache")) != propMap.end()) {
-                // TODO: Proxyキャッシュとはなんだ
-                bool useProxyCache = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxyCache")]);
-            }
+//         if (useProxy) {
+//             // ProxyCache
+//             if ( propMap.find(wxT("ID_NetworkPanelUseProxyCache")) != propMap.end()) {
+//                 // TODO: Proxyキャッシュとはなんだ
+//                 bool useProxyCache = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxyCache")]);
+//             }
 
-            // PROXYを使用する設定
-            if (io == SEND) {
-                // 送信
-                // Proxy送信用アドレス
-                // Proxy送信用ポート
-                if ( propMap.find(wxT("ID_NetworkPanelProxySendAddr")) != propMap.end() &&
-                     propMap.find(wxT("ID_NetworkPanelProxySendPort")) != propMap.end()) {
-                    const wxString proxy = propMap[wxT("ID_NetworkPanelProxySendAddr")];
-                    const wxString port  = propMap[wxT("ID_NetworkPanelProxySendPort")];
-                    long p = 0;
+//             // PROXYを使用する設定
+//             if (io == SEND) {
+//                 // 送信
+//                 // Proxy送信用アドレス
+//                 // Proxy送信用ポート
+//                 if ( propMap.find(wxT("ID_NetworkPanelProxySendAddr")) != propMap.end() &&
+//                      propMap.find(wxT("ID_NetworkPanelProxySendPort")) != propMap.end()) {
+//                     const wxString proxy = propMap[wxT("ID_NetworkPanelProxySendAddr")];
+//                     const wxString port  = propMap[wxT("ID_NetworkPanelProxySendPort")];
+//                     long p = 0;
 
-                    if ( port.ToLong(&p, 10)) {
-                        JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy送信: %s:%ld\n", proxy, p));
-                        request.setOpt(new Proxy(std::string(proxy.mb_str())));
-                        request.setOpt(new ProxyPort(p));
-                    } else {
-                        JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
-                    }
-                }
-            } else {
-                // 受信
-                // Proxy受信用アドレス
-                // Proxy受信用ポート
-                if ( propMap.find(wxT("ID_NetworkPanelProxyReceiveAddr")) != propMap.end() &&
-                     propMap.find(wxT("ID_NetworkPanelProxyReceivePort")) != propMap.end()) {
-                    const wxString proxy = propMap[wxT("ID_NetworkPanelProxyReceiveAddr")];
-                    const wxString port  = propMap[wxT("ID_NetworkPanelProxyReceivePort")];
-                    long p = 0;
+//                     if ( port.ToLong(&p, 10)) {
+//                         JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy送信: %s:%ld\n", proxy, p));
+//                         request.setOpt(new Proxy(std::string(proxy.mb_str())));
+//                         request.setOpt(new ProxyPort(p));
+//                     } else {
+//                         JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
+//                     }
+//                 }
+//             } else {
+//                 // 受信
+//                 // Proxy受信用アドレス
+//                 // Proxy受信用ポート
+//                 if ( propMap.find(wxT("ID_NetworkPanelProxyReceiveAddr")) != propMap.end() &&
+//                      propMap.find(wxT("ID_NetworkPanelProxyReceivePort")) != propMap.end()) {
+//                     const wxString proxy = propMap[wxT("ID_NetworkPanelProxyReceiveAddr")];
+//                     const wxString port  = propMap[wxT("ID_NetworkPanelProxyReceivePort")];
+//                     long p = 0;
 
-                    if ( port.ToLong(&p, 10) ) {
-                        JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy受信: %s:%ld\n", proxy, p));
-                        request.setOpt(new Proxy(std::string(proxy.mb_str())));
-                        request.setOpt(new ProxyPort(p));
-                    } else {
-                        JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
-                    }
-                }
-            }
-            // wxT("ID_NetworkPanelProxySSLAuthAddr")	,/* Proxy SSL認証用アドレス				*/
-            // wxT("ID_NetworkPanelProxySSLAuthPort")	,/* Proxy SSL認証用ポート				*/
-        }
-    }
-}
+//                     if ( port.ToLong(&p, 10) ) {
+//                         JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy受信: %s:%ld\n", proxy, p));
+//                         request.setOpt(new Proxy(std::string(proxy.mb_str())));
+//                         request.setOpt(new ProxyPort(p));
+//                     } else {
+//                         JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
+//                     }
+//                 }
+//             }
+//             // wxT("ID_NetworkPanelProxySSLAuthAddr")	,/* Proxy SSL認証用アドレス				*/
+//             // wxT("ID_NetworkPanelProxySSLAuthPort")	,/* Proxy SSL認証用ポート				*/
+//         }
+//     }
+// }
 
 /**
  * ユーザの設定しているユーザーエージェントを取得する

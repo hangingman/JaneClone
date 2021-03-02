@@ -67,11 +67,6 @@
 #include <wx/fontdlg.h>
 #include <wx/menu.h>
 
-// Curl
-#include <curl/curl.h>
-// Curlpp
-#include <curlpp/cURLpp.hpp>
-
 // 自作クラスのヘッダ
 #include "enums.hpp"
 #include "extractboardlist.hpp"
