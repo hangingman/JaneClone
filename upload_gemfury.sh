@@ -28,7 +28,7 @@ function upload_deb()
     expect -re \".*Email: \" {
       send \"${MAIL}\"
       send \r
-      expect -re \".*Password: \" {
+      expect -re \".*Password:.*\" {
         send \"${GEMFURY_PASSWD}\"
         send \r
         expect eof exit 0
@@ -60,11 +60,11 @@ function upload_dmg()
     cat ../${DMG_FILENAME} | ${CURL} ${METHOD} ${API}${RESOURCE}
 }
 
-# if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+if [ "$TRAVIS_OS_NAME" == "linux" ]; then
     echo "--> Here we upload debian package file...";
     upload_deb || exit 1;
     echo "--> Finish !";
-# fi
+fi
 # if [ "$TRAVIS_OS_NAME" == "osx" ]; then
 #     echo "--> Here we upload disk image file for osx..."
 #     upload_dmg || exit 1
