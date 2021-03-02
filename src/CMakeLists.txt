@@ -72,18 +72,7 @@ include_directories(${CMAKE_BINARY_DIR})
 target_link_libraries(janeclone ${LIBXML2_LIBRARIES})
 target_link_libraries(janeclone ${wxWidgets_LIBRARIES})
 target_link_libraries(janeclone ${ZLIB_LIBRARIES})
-target_link_libraries(janeclone ${CURL_LIBRARIES})
 target_link_libraries(janeclone ${OPENSSL_LIBRARIES})
-
-if(BUILDING_CURLPP)
-  include_directories(${root_SOURCE_DIR}/curlpp/include)
-  include_directories(${CMAKE_BINARY_DIR}/curlpp/include)
-  target_link_libraries(janeclone curlpp)
-  target_link_libraries(janeclone utilspp)
-else()
-  include_directories(${CURLpp_INCLUDE_DIRS})
-  target_link_libraries(janeclone ${CURLpp_LIBRARIES})
-endif()
 
 if(BUILDING_SQLite3)
   include_directories(${root_SOURCE_DIR}/sqlite3)
@@ -109,7 +98,7 @@ if(${CMAKE_OS_NAME} MATCHES "(Debian|Ubuntu)")
   set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Hiroyuki Nagata")
   set(CPACK_PACKAGE_NAME "janeclone")
   set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libwxbase3.0-0v5, libwxgtk3.0-0v5, libcurl3 | libcurl4")
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "libwxbase3.0-0v5, libwxgtk3.0-0v5")
 
   set(JANECLONE_EXEC_RC_DIR "/usr/share/pixmaps/janeclone")
 
@@ -123,8 +112,6 @@ if(${CMAKE_OS_NAME} MATCHES "(Debian|Ubuntu)")
     DESTINATION /usr/share/applications/)
 
   # TODO: /usr/lib/janeclone のほうがいいかもしれない
-  install(TARGETS curlpp LIBRARY DESTINATION "/usr/lib/")
-  install(TARGETS utilspp LIBRARY DESTINATION "/usr/lib/")
   install(TARGETS wxsqlite3 LIBRARY DESTINATION "/usr/lib/")
 
   include(CPack)
@@ -152,8 +139,6 @@ if(${CMAKE_OS_NAME} MATCHES "OSX")
   # Directories to look for dependencies
   set(BUNDLE_LIB_DIRS
     ${CMAKE_BINARY_DIR}
-    ${CMAKE_BINARY_DIR}/curlpp/src/curlpp
-    ${CMAKE_BINARY_DIR}/curlpp/src/utilspp
     ${CMAKE_BINARY_DIR}/wxsqlite3)
 
   # ref: https://gitlab.kitware.com/cmake/cmake/-/issues/19663

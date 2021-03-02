@@ -54,13 +54,11 @@ find_package(
   REQUIRED)
 set(wxWidgets_CONFIG_OPTIONS --toolkit=aui,qa,adv,base,core,html,net,xrc)
 
-find_package(CURL REQUIRED)
-find_package(CURLpp)
 find_package(ZLIB REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(SQLite3)
 find_package(WxSQLite3)
-
+find_package(Boost 1.56 REQUIRED COMPONENTS system)
 
 message("JaneClone version: ${ver_major}.${ver_minor}.${ver_patch}")
 if(NOT SQLite3_FOUND)
@@ -77,14 +75,6 @@ if(NOT WxSQLite3_FOUND)
   message(STATUS "wxsqlite3:	  builtin")
 else()
   message(STATUS "wxsqlite3:	  sys")
-endif()
-
-if(NOT CURLpp_FOUND)
-  add_subdirectory(curlpp)
-  option(BUILDING_CURLPP "Building CURLpp" ON)
-  message(STATUS "curlpp   :	  builtin")
-else()
-  message(STATUS "curlpp   :	  sys")
 endif()
 
 add_subdirectory(src)
