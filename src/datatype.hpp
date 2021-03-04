@@ -126,8 +126,10 @@ static const wxString janecloneVersion = wxT( PACKAGE_VERSION );
 
 // 実行されているバイナリのパス
 inline wxString GetJcExecutablePath() {
+    //  /home/hiroyuki/git/JaneClone/build/src/janeclone ならば
+    //  /home/hiroyuki/git/JaneClone/build/src           が返る
     boost::filesystem::path execPath = boost::dll::program_location().parent_path();
-    wxString appPath(execPath.branch_path().string());
+    wxString appPath(execPath.string());
     return appPath;
 }
 
@@ -171,6 +173,7 @@ inline wxString GetResourcePath(wxString fileName) {
         filePath.SetName(f.GetName());
         filePath.SetExt(f.GetExt());
     }
+
     return filePath.GetFullPath();
 }
 
