@@ -58,7 +58,7 @@ find_package(ZLIB REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(SQLite3)
 find_package(WxSQLite3)
-find_package(Boost 1.56 REQUIRED COMPONENTS system)
+find_package(Boost 1.61 REQUIRED COMPONENTS system filesystem)
 
 message("JaneClone version: ${ver_major}.${ver_minor}.${ver_patch}")
 if(NOT SQLite3_FOUND)

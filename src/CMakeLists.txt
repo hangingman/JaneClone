@@ -68,11 +68,13 @@ include_directories(${ZLIB_INCLUDE_DIRS})
 include_directories(${OPENSSL_INCLUDE_DIR})
 include_directories(${root_SOURCE_DIR}/babel)
 include_directories(${CMAKE_BINARY_DIR})
+include_directories(${Boost_INCLUDE_DIRS})
 
 target_link_libraries(janeclone ${LIBXML2_LIBRARIES})
 target_link_libraries(janeclone ${wxWidgets_LIBRARIES})
 target_link_libraries(janeclone ${ZLIB_LIBRARIES})
 target_link_libraries(janeclone ${OPENSSL_LIBRARIES})
+target_link_libraries(janeclone ${Boost_LIBRARIES} -ldl)
 
 if(BUILDING_SQLite3)
   include_directories(${root_SOURCE_DIR}/sqlite3)

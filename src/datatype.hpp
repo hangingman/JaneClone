@@ -26,6 +26,7 @@
 #  include "config.h"
 #endif
 
+#include <boost/dll.hpp>
 #include <wx/wx.h>
 #include <vector>
 #include <map>
@@ -125,8 +126,8 @@ static const wxString janecloneVersion = wxT( PACKAGE_VERSION );
 
 // 実行されているバイナリのパス
 inline wxString GetJcExecutablePath() {
-    wxFileName f(wxStandardPaths::Get().GetExecutablePath());
-    wxString appPath(f.GetPath());
+    boost::filesystem::path execPath = boost::dll::program_location().parent_path();
+    wxString appPath(execPath.branch_path().string());
     return appPath;
 }
 
