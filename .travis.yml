@@ -2,31 +2,10 @@ language: cpp
 jobs:
   include:
   - os: linux
-    dist: xenial
+    dist: focal
     compiler: gcc
     cache:
       apt: true
-    addons:
-      apt:
-        sources:
-        - sourceline: deb https://apt.kitware.com/ubuntu/ xenial main
-          key_url: https://apt.kitware.com/keys/kitware-archive-latest.asc
-        - sourceline: deb https://apt.kitware.com/ubuntu/ xenial-rc main
-        packages:
-        - cmake
-  - os: linux
-    dist: xenial
-    compiler: clang
-    cache:
-      apt: true
-    addons:
-      apt:
-        sources:
-        - sourceline: deb https://apt.kitware.com/ubuntu/ xenial main
-          key_url: https://apt.kitware.com/keys/kitware-archive-latest.asc
-        - sourceline: deb https://apt.kitware.com/ubuntu/ xenial-rc main
-        packages:
-        - cmake
   - os: osx
     compiler: clang
     cache:
@@ -52,7 +31,7 @@ before_install:
 
 install:
   - echo $TRAVIS_OS_NAME
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y libwxbase3.0 libwxgtk3.0-dev libwxsqlite3-3.0-dev libxml2-dev libcurl4-openssl-dev libssl-dev ninja-build expect; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y zlib1g-dev libwxbase3.0-dev libwxsqlite3-3.0-dev libxml2-dev libssl-dev libboost1.67-all-dev cmake ninja-build expect; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install gnu-sed wxmac cmake ninja openssl expect; fi
 
 script:
