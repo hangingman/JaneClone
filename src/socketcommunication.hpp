@@ -22,32 +22,24 @@
 #ifndef SOCKETCOMMUNICATION_HPP_
 #define SOCKETCOMMUNICATION_HPP_
 
-#include <sstream>
 #include <iostream>
-#include <list>
+#include <istream>
+#include <ostream>
+#include <string>
+#include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 
-#include <wx/wx.h>
-#include <wx/string.h>
-#include <wx/filefn.h>
-#include <wx/filename.h>
-#include <wx/textfile.h>
 #include <wx/protocol/http.h>
-#include <wx/protocol/protocol.h>
 #include <wx/wfstream.h>
 #include <wx/datstrm.h>
-#include <wx/regex.h>
-#include <wx/dir.h>
-#include <wx/utils.h>
-#include <wx/config.h>
-#include <wx/fileconf.h>
-#include <wx/sstream.h>
-#include <wx/sckstrm.h>
 #include <wx/uri.h>
 
 #include "enums.hpp"
 #include "janecloneutil.hpp"
 #include "janecloneuiutil.hpp"
 #include "sqliteaccessor.hpp"
+
+//using boost::asio::ip::tcp;
 
 class SocketCommunication {
 
@@ -162,10 +154,6 @@ private:
     };
 
     /**
-     * ヘッダファイル情報
-     */
-    std::string respBuf;
-    /**
      * HTTPの本文の情報
      */
     std::string bodyBuf;
@@ -249,9 +237,10 @@ private:
      */
     void RemoveTmpFile(const wxString& removeFile);
     /**
-     * HTTPヘッダを書きだす
+     * HTTPレスポンスヘッダーを読み取り、ローカルに書き出す
      */
-    size_t WriteHeader(char *ptr, size_t size, size_t nmemb);
+    void WriteHeaderLines(std::istream& responseStream, const wxString& headerPath);
+    void WriteHeader(std::string& line);
     /**
      * HTTPボディを書きだす
      */

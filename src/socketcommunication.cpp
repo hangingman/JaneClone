@@ -46,8 +46,8 @@ const wxString SocketCommunication::properties[] = {
  */
 SocketCommunication::SocketCommunication()
 {
-    this->respBuf.clear();
-    this->bodyBuf.clear();
+    // this->respBuf.clear();
+    // this->bodyBuf.clear();
     propMap.clear();
 
     for ( auto key : properties ) {
@@ -108,20 +108,64 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
     PartOfURI uri;
     JaneCloneUtil::SubstringURI(link, &uri);
 
-    wxString server = uri.hostname == wxEmptyString ? wxT("menu.2ch.net") : uri.hostname;
+    wxString host = uri.hostname == wxEmptyString ? wxT("menu.2ch.net") : uri.hostname;
     wxString path = uri.path == wxEmptyString ? wxT("/bbsmenu.html") : uri.path;
-
-    // ヘッダの作成
-    std::list<std::string> headers;
-    headers.push_back("Accept-Encoding: gzip");
-    headers.push_back(std::string(wxString::Format(wxT("Host: %s"), server).mb_str()));
-    headers.push_back("Accept-Language: ja");
-    headers.push_back("User-Agent: " + CustomUserAgent());
-
     const std::string url = std::string(uri.protocol.mb_str())
-        + "://" + std::string(server.mb_str()) + std::string(path.mb_str());
+        + "://"
+        + host.ToStdString()
+        + path.ToStdString();
 
-    // TODO
+    try {
+        // サーバー名に応じたエンドポイントを取得する
+        boost::asio::io_service io_service;
+        boost::asio::ip::tcp::resolver resolver(io_service);
+
+        boost::asio::ip::tcp::resolver::query query(host.ToStdString(), "https");
+        boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+        boost::asio::ssl::context ctx(boost::asio::ssl::context::method::sslv23_client);
+        boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssock(io_service, ctx);
+        boost::asio::connect(ssock.lowest_layer(), endpoint_iterator );
+        ssock.handshake(boost::asio::ssl::stream_base::handshake_type::client);
+
+        // ヘッダの作成
+        boost::asio::streambuf request;
+        std::ostream request_stream(&request);
+        request_stream << "GET " << path.ToStdString() << " HTTP/1.0\r\n";
+        request_stream << "Accept-Encoding: gzip\r\n";
+        request_stream << "Host: " << host.ToStdString() << "\r\n";
+        request_stream << "Accept-Language: ja\r\n";
+        request_stream << "User-Agent: " << CustomUserAgent() << "\r\n";
+        request_stream << "Connection: close\r\n\r\n";
+
+        const wxString message = wxString::Format("2chの板一覧情報を取得 (ん`　 ) %s%s\n", host, path);
+        JaneCloneUiUtil::SendLoggingHelper(message);
+
+        // リクエスト送信/レスポンス受信
+        boost::asio::write(ssock, request);
+        boost::asio::streambuf response;
+        boost::asio::read_until(ssock, response, "\r\n");
+        std::istream responseStream(&response);
+
+        // レスポンスヘッダーを読み取り、ローカルに書き出す
+        boost::asio::read_until(ssock, response, "\r\n\r\n");
+        WriteHeaderLines(responseStream, headerPath);
+
+        // EOFまで読み込む
+        boost::system::error_code error;
+        std::ofstream ofs(outputPath.ToStdString(), std::ios::out | std::ios::trunc | std::ios::binary);
+
+        while (boost::asio::read(ssock, response, boost::asio::transfer_at_least(1), error)) {
+            ofs << &response;
+        }
+
+        if (error != boost::asio::error::eof) {
+            throw boost::system::system_error(error);
+        }
+
+    } catch(std::exception const& e) {
+        wxString message = wxString::Format("%s %s\n", e.what(), outputPath.ToStdString());
+        JaneCloneUiUtil::SendLoggingHelper(message);
+    }
     return 0;
 }
 
@@ -606,14 +650,26 @@ void SocketCommunication::RemoveTmpFile(const wxString& removeFile) {
         wxRemoveFile(removeFile);
     }
 }
-/**
- * HTTPヘッダを書きだす
- */
-size_t SocketCommunication::WriteHeader(char *ptr, size_t size, size_t nmemb) {
 
-    // 文字列をメンバ変数に格納
-    size_t realsize = size * nmemb;
-    std::string line(static_cast<const char *>(ptr), realsize);
+
+/**
+ * レスポンスヘッダーを読み取り、ローカルに書き出す
+ */
+void SocketCommunication::WriteHeaderLines(std::istream& responseStream, const wxString& headerPath) {
+
+    std::string line;
+    std::string headerBuf;
+    while (std::getline(responseStream, line) && line != "\r") {
+        WriteHeader(line);
+        headerBuf += line;
+        headerBuf += "\n";
+    }
+
+    std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+    ofsHeader << headerBuf << std::endl;
+}
+
+void SocketCommunication::WriteHeader(std::string& line) {
 
     // ログに出力する
     if (std::string::npos != line.find("HTTP")) {
@@ -639,10 +695,8 @@ size_t SocketCommunication::WriteHeader(char *ptr, size_t size, size_t nmemb) {
             JaneCloneUtil::SetJaneCloneProperties(wxT("PREN"), cookie);
         }
     }
-
-    respBuf.append(line);
-    return realsize;
 }
+
 /**
  * HTTPボディを書きだす
  */
