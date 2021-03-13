@@ -22,6 +22,10 @@
 #include "socketcommunication.hpp"
 
 
+using tcp = boost::asio::ip::tcp;    // from <boost/asio/ip/tcp.hpp>
+namespace ssl = boost::asio::ssl;    // from <boost/asio/ssl.hpp>
+
+
 const wxString SocketCommunication::properties[] = {
     wxT("ID_NetworkPanelUseProxy")          ,// プロキシを使用するかどうか
 	wxT("ID_NetworkPanelUseProxyCache")		,// プロキシでキャッシュを使用するかどうか
@@ -46,8 +50,6 @@ const wxString SocketCommunication::properties[] = {
  */
 SocketCommunication::SocketCommunication()
 {
-    // this->respBuf.clear();
-    // this->bodyBuf.clear();
     propMap.clear();
 
     for ( auto key : properties ) {
@@ -57,9 +59,6 @@ SocketCommunication::SocketCommunication()
             propMap[key] = val;
         }
     }
-
-    // this->writeHeaderFunc = new HeaderFunction(WFunctor(this, &Sock::WriteHeader));
-    // this->writeBodyFunc = new WriteFunction(WFunctor(this, &Sock::WriteBody));
 }
 /**
  * 板一覧ファイルをダウンロードしてくるメソッド 引数は板一覧ファイル保存先、板一覧ファイルヘッダ保存先
@@ -118,14 +117,15 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
     try {
         // サーバー名に応じたエンドポイントを取得する
         boost::asio::io_service io_service;
-        boost::asio::ip::tcp::resolver resolver(io_service);
+        tcp::resolver resolver(io_service);
 
-        boost::asio::ip::tcp::resolver::query query(host.ToStdString(), "https");
-        boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-        boost::asio::ssl::context ctx(boost::asio::ssl::context::method::sslv23_client);
-        boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssock(io_service, ctx);
+        tcp::resolver::query query(host.ToStdString(), "https");
+        tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+        ssl::context ctx(ssl::context::method::sslv23_client);
+
+        ssl::stream<tcp::socket> ssock(io_service, ctx);
         boost::asio::connect(ssock.lowest_layer(), endpoint_iterator );
-        ssock.handshake(boost::asio::ssl::stream_base::handshake_type::client);
+        ssock.handshake(ssl::stream_base::handshake_type::client);
 
         // ヘッダの作成
         boost::asio::streambuf request;
@@ -276,9 +276,10 @@ wxString SocketCommunication::DownloadThreadList(wxString& boardName, wxString& 
  * @return 実行コード
  */
 int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
-                                               const wxString& headerPath, const wxString& boardNameAscii,
-                                               const wxString& hostName, const wxString& boardURL)
-{
+                                               const wxString& headerPath,
+                                               const wxString& boardNameAscii,
+                                               const wxString& hostName,
+                                               const wxString& boardURL) {
 
     /**
      * スレッド一覧取得の凡例</br>
@@ -296,28 +297,69 @@ int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
     int rc = 0;
 
     // 取得先のパスを引数から作成する
-    wxString getPath = wxT("GET /");
-    getPath += boardNameAscii;
-    getPath += wxT("/subject.txt");
-
-    // ヘッダの作成
-    std::list<std::string> headers;
-    headers.push_back(std::string(getPath.mb_str()) + ": HTTP/1.1");
-    headers.push_back("Accept-Encoding: gzip");
-    headers.push_back("Host: " + std::string(hostName.mb_str()));
-    headers.push_back("Accept: */*");
-    headers.push_back("Referer: " + std::string(boardURL.mb_str()));
-    headers.push_back("Accept-Language: ja");
-    headers.push_back("User-Agent: " + CustomUserAgent());
-    headers.push_back("Connection: close");
-
-    const wxString server = hostName;
+    const wxString getPath = wxString::Format("GET /%s/subject.txt", boardNameAscii);
+    const wxString host = hostName;
     const wxString path = wxString::Format("/%s/subject.txt", boardNameAscii);
-    const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
+    const std::string url = host.ToStdString() + path.ToStdString();
 
-    // TODO
+    try {
+        // サーバー名に応じたエンドポイントを取得する
+        boost::asio::io_service io_service;
+        tcp::resolver resolver(io_service);
+
+        //tcp::resolver::query query(host.ToStdString(), "https");
+        tcp::resolver::query query("192.168.0.5:8080", "http");
+        tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+        ssl::context ctx(ssl::context::method::sslv23_client);
+
+        ssl::stream<tcp::socket> ssock(io_service, ctx);
+        boost::asio::connect(ssock.lowest_layer(), endpoint_iterator );
+        ssock.handshake(ssl::stream_base::handshake_type::client);
+
+        // ヘッダの作成
+        boost::asio::streambuf request;
+        std::ostream request_stream(&request);
+        request_stream << "GET " << getPath.ToStdString() << " HTTP/1.1\r\n";
+        request_stream << "Accept-Encoding: gzip\r\n";
+        request_stream << "Host: " << host.ToStdString() << "\r\n";
+        request_stream << "Accept: */*\r\n";
+        request_stream << "Referer: " << boardURL.ToStdString() << "\r\n";
+        request_stream << "Accept-Language: ja\r\n";
+        request_stream << "User-Agent: " << CustomUserAgent() << "\r\n";
+        request_stream << "Connection: close\r\n\r\n";
+
+        const wxString message = wxString::Format("スレッド一覧を取得 (ん`　 ) %s%s\n", host, path);
+        JaneCloneUiUtil::SendLoggingHelper(message);
+
+        // リクエスト送信/レスポンス受信
+        boost::asio::write(ssock, request);
+        boost::asio::streambuf response;
+        boost::asio::read_until(ssock, response, "\r\n");
+        std::istream responseStream(&response);
+
+        // レスポンスヘッダーを読み取り、ローカルに書き出す
+        boost::asio::read_until(ssock, response, "\r\n\r\n");
+        WriteHeaderLines(responseStream, headerPath);
+
+        // EOFまで読み込む
+        boost::system::error_code error;
+        std::ofstream ofs(gzipPath.ToStdString(), std::ios::out | std::ios::trunc | std::ios::binary);
+
+        while (boost::asio::read(ssock, response, boost::asio::transfer_at_least(1), error)) {
+            ofs << &response;
+        }
+
+        if (error != boost::asio::error::eof) {
+            throw boost::system::system_error(error);
+        }
+
+    } catch(std::exception const& e) {
+        wxString message = wxString::Format("%s %s\n", e.what(), gzipPath.ToStdString());
+        JaneCloneUiUtil::SendLoggingHelper(message);
+    }
     return 0;
 }
+
 /**
  * 前回との差分のスレッド一覧をダウンロードしてくるメソッド
  * @param gzipのダウンロード先パス
@@ -349,13 +391,11 @@ int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath,
     wxString lastModifiedTime = GetHTTPResponseCode(headerPath, wxT("Last-Modified:"));
 
     // 取得先のパスを引数から作成する
-    wxString getPath = wxT("GET /");
-    getPath += boardNameAscii;
-    getPath += wxT("/subject.txt");
+    wxString getPath = wxString::Format("GET /%s/subject.txt", boardNameAscii);
 
     // ヘッダの作成
     std::list<std::string> headers;
-    headers.push_back(std::string(getPath.mb_str()) + ": HTTP/1.1");
+    headers.push_back(getPath.ToStdString() + ": HTTP/1.1");
     headers.push_back("Accept-Encoding: gzip");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
     headers.push_back("If-Modified-Since: " + std::string(lastModifiedTime.mb_str()));
@@ -365,9 +405,9 @@ int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath,
     headers.push_back("User-Agent: " + CustomUserAgent());
     headers.push_back("Connection: close");
 
-    const wxString server = hostName;
+    const wxString host = hostName;
     const wxString path = wxString::Format("/%s/subject.txt", boardNameAscii);
-    const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
+    const std::string url = std::string(host.mb_str()) + std::string(path.mb_str());
 
     // TODO
     return 0;
@@ -481,7 +521,7 @@ void SocketCommunication::DownloadThreadNew(const wxString& gzipPath,
 
     // ヘッダの作成
     std::list<std::string> headers;
-    headers.push_back(std::string(getPath.mb_str()) + " HTTP/1.1");
+    headers.push_back(getPath.ToStdString() + " HTTP/1.1");
     headers.push_back("Accept-Encoding: gzip");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
     headers.push_back("Accept: */*");
@@ -490,9 +530,9 @@ void SocketCommunication::DownloadThreadNew(const wxString& gzipPath,
     headers.push_back("User-Agent: " + CustomUserAgent());
     headers.push_back("Connection: close");
 
-    const wxString server = hostName;
+    const wxString host = hostName;
     const wxString path = wxString::Format("/%s/dat/%s.dat", boardNameAscii, origNumber);
-    const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
+    const std::string url = std::string(host.mb_str()) + std::string(path.mb_str());
 
     // TODO
     return;
@@ -555,7 +595,7 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
 
     // ヘッダの作成
     std::list<std::string> headers;
-    headers.push_back(std::string(getPath.mb_str()) + " HTTP/1.1");
+    headers.push_back(getPath.ToStdString() + " HTTP/1.1");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
     headers.push_back("Accept: */*");
     headers.push_back("Referer: "+ std::string(referer.mb_str()));
@@ -566,9 +606,9 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
     headers.push_back("User-Agent: " + CustomUserAgent());
     headers.push_back("Connection: close");
 
-    const wxString server = hostName;
+    const wxString host = hostName;
     const wxString path = wxString::Format("/%s/dat/%s.dat", boardNameAscii, origNumber);
-    const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
+    const std::string url = std::string(host.mb_str()) + std::string(path.mb_str());
 
     // TODO
     return 0;
@@ -597,7 +637,7 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
      * http://[サーバー]/[板名]/kako/[スレッド番号（上3桁）]/[スレッド番号].dat.gz
      * ・[スレッド番号].dat.gzが無い場合、[スレッド番号].datで要求すると取得できる場合があります。
      */
-    wxString server = hostName;
+    wxString host = hostName;
     wxString path = wxEmptyString;
 
     if (origNumber.Len() == 10) {
@@ -627,10 +667,10 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
         wxString::Format("http://%s/test/read.cgi/%s/%s/",
                          hostName, boardNameAscii, origNumber);
     // 取得するURLの構築
-    const std::string url = std::string(server.mb_str()) + std::string(path.mb_str());
+    const std::string url = std::string(host.mb_str()) + std::string(path.mb_str());
     // ヘッダの作成
     std::list<std::string> headers;
-    headers.push_back(std::string(getPath.mb_str()) + ": HTTP/1.1");
+    headers.push_back(getPath.ToStdString() + ": HTTP/1.1");
     headers.push_back("Accept-Encoding: gzip");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
     headers.push_back("Accept: */*");
@@ -1255,7 +1295,7 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href,
     PartOfURI* uri = new PartOfURI;
     wxString url = href;
     bool ret = JaneCloneUtil::SubstringURI(url, uri);
-    wxString server = uri->hostname;
+    wxString host = uri->hostname;
     wxString path = uri->path;
     wxString msg = wxT("");
     delete uri;
@@ -1269,7 +1309,7 @@ void SocketCommunication::DownloadImageFileByHttp(const wxString& href,
     wxFileOutputStream output(imageFilePath);
     wxDataOutputStream store(output);
 
-    if (http.Connect(server, 80)) {
+    if (http.Connect(host, 80)) {
         wxInputStream *stream;
         stream = http.GetInputStream(path);
 
@@ -1685,10 +1725,10 @@ wxString SocketCommunication::GetOutputFilePath(bool isShitaraba,
     return outputFilePath;
 }
 /**
- * コンフィグ情報をCurl++のオブジェクトに設定する
+ * コンフィグ情報をboost::asioに設定する
  */
-// void SocketCommunication::LoadConfiguration(curlpp::Easy& request, const bool io)
-// {
+void SocketCommunication::LoadConfiguration(const bool io)
+{
 //     /**
 //      * Timeout Setting
 //      */
@@ -1724,62 +1764,62 @@ wxString SocketCommunication::GetOutputFilePath(bool isShitaraba,
 //                 }
 //         }
 
-//     /**
-//      * PROXY
-//      */
-//     if (propMap.find(wxT("ID_NetworkPanelUseProxy")) != propMap.end() ) {
-//         bool useProxy = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxy")]);
+    /**
+     * PROXY
+     */
+    if (propMap.find(wxT("ID_NetworkPanelUseProxy")) != propMap.end() ) {
+        bool useProxy = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxy")]);
 
-//         if (useProxy) {
-//             // ProxyCache
-//             if ( propMap.find(wxT("ID_NetworkPanelUseProxyCache")) != propMap.end()) {
-//                 // TODO: Proxyキャッシュとはなんだ
-//                 bool useProxyCache = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxyCache")]);
-//             }
+        if (useProxy) {
+            // ProxyCache
+            if ( propMap.find(wxT("ID_NetworkPanelUseProxyCache")) != propMap.end()) {
+                // TODO: Proxyキャッシュとはなんだ
+                bool useProxyCache = JaneCloneUtil::ParseBool(propMap[wxT("ID_NetworkPanelUseProxyCache")]);
+            }
 
-//             // PROXYを使用する設定
-//             if (io == SEND) {
-//                 // 送信
-//                 // Proxy送信用アドレス
-//                 // Proxy送信用ポート
-//                 if ( propMap.find(wxT("ID_NetworkPanelProxySendAddr")) != propMap.end() &&
-//                      propMap.find(wxT("ID_NetworkPanelProxySendPort")) != propMap.end()) {
-//                     const wxString proxy = propMap[wxT("ID_NetworkPanelProxySendAddr")];
-//                     const wxString port  = propMap[wxT("ID_NetworkPanelProxySendPort")];
-//                     long p = 0;
+            // PROXYを使用する設定
+            if (io == SEND) {
+                // 送信
+                // Proxy送信用アドレス
+                // Proxy送信用ポート
+                if ( propMap.find(wxT("ID_NetworkPanelProxySendAddr")) != propMap.end() &&
+                     propMap.find(wxT("ID_NetworkPanelProxySendPort")) != propMap.end()) {
+                    const wxString proxy = propMap[wxT("ID_NetworkPanelProxySendAddr")];
+                    const wxString port  = propMap[wxT("ID_NetworkPanelProxySendPort")];
+                    long p = 0;
 
-//                     if ( port.ToLong(&p, 10)) {
-//                         JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy送信: %s:%ld\n", proxy, p));
-//                         request.setOpt(new Proxy(std::string(proxy.mb_str())));
-//                         request.setOpt(new ProxyPort(p));
-//                     } else {
-//                         JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
-//                     }
-//                 }
-//             } else {
-//                 // 受信
-//                 // Proxy受信用アドレス
-//                 // Proxy受信用ポート
-//                 if ( propMap.find(wxT("ID_NetworkPanelProxyReceiveAddr")) != propMap.end() &&
-//                      propMap.find(wxT("ID_NetworkPanelProxyReceivePort")) != propMap.end()) {
-//                     const wxString proxy = propMap[wxT("ID_NetworkPanelProxyReceiveAddr")];
-//                     const wxString port  = propMap[wxT("ID_NetworkPanelProxyReceivePort")];
-//                     long p = 0;
+                    if ( port.ToLong(&p, 10)) {
+                        JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy送信: %s:%ld\n", proxy, p));
+                        // request.setOpt(new Proxy(std::string(proxy.mb_str())));
+                        // request.setOpt(new ProxyPort(p));
+                    } else {
+                        JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
+                    }
+                }
+            } else {
+                // 受信
+                // Proxy受信用アドレス
+                // Proxy受信用ポート
+                if ( propMap.find(wxT("ID_NetworkPanelProxyReceiveAddr")) != propMap.end() &&
+                     propMap.find(wxT("ID_NetworkPanelProxyReceivePort")) != propMap.end()) {
+                    const wxString proxy = propMap[wxT("ID_NetworkPanelProxyReceiveAddr")];
+                    const wxString port  = propMap[wxT("ID_NetworkPanelProxyReceivePort")];
+                    long p = 0;
 
-//                     if ( port.ToLong(&p, 10) ) {
-//                         JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy受信: %s:%ld\n", proxy, p));
-//                         request.setOpt(new Proxy(std::string(proxy.mb_str())));
-//                         request.setOpt(new ProxyPort(p));
-//                     } else {
-//                         JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
-//                     }
-//                 }
-//             }
-//             // wxT("ID_NetworkPanelProxySSLAuthAddr")	,/* Proxy SSL認証用アドレス				*/
-//             // wxT("ID_NetworkPanelProxySSLAuthPort")	,/* Proxy SSL認証用ポート				*/
-//         }
-//     }
-// }
+                    if ( port.ToLong(&p, 10) ) {
+                        JaneCloneUiUtil::SendLoggingHelper(wxString::Format("Proxy受信: %s:%ld\n", proxy, p));
+                        // request.setOpt(new Proxy(std::string(proxy.mb_str())));
+                        // request.setOpt(new ProxyPort(p));
+                    } else {
+                        JaneCloneUiUtil::SendLoggingHelper(wxT("無効なProxy設定が無視されました\n"));
+                    }
+                }
+            }
+            // wxT("ID_NetworkPanelProxySSLAuthAddr")	,/* Proxy SSL認証用アドレス				*/
+            // wxT("ID_NetworkPanelProxySSLAuthPort")	,/* Proxy SSL認証用ポート				*/
+        }
+    }
+}
 
 /**
  * ユーザの設定しているユーザーエージェントを取得する

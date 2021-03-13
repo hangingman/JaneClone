@@ -292,9 +292,9 @@ private:
      */
     static wxString GetOutputFilePath(bool isShitaraba, wxString& boardNameAscii);
     /**
-     * コンフィグ情報をCurl++のオブジェクトに設定する
+     * コンフィグ情報をboost::asioに設定する
      */
-    //void LoadConfiguration(curlpp::Easy& request, const bool io);
+    void LoadConfiguration(const bool io);
     /**
      * ユーザの設定しているユーザーエージェントを取得する
      */
