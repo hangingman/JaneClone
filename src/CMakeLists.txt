@@ -1,5 +1,4 @@
 project(janeclone CXX)
-find_package (cppnetlib 0.13.0 REQUIRED)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -70,14 +69,12 @@ include_directories(${OPENSSL_INCLUDE_DIR})
 include_directories(${root_SOURCE_DIR}/babel)
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
-include_directories(${CPPNETLIB_INCLUDE_DIRS})
 
 target_link_libraries(janeclone ${LIBXML2_LIBRARIES})
 target_link_libraries(janeclone ${wxWidgets_LIBRARIES})
 target_link_libraries(janeclone ${ZLIB_LIBRARIES})
 target_link_libraries(janeclone ${OPENSSL_LIBRARIES})
 target_link_libraries(janeclone ${Boost_LIBRARIES} -ldl)
-target_link_libraries(janeclone ${CPPNETLIB_LIBRARIES})
 
 if(BUILDING_SQLite3)
   include_directories(${root_SOURCE_DIR}/sqlite3)

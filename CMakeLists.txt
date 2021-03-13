@@ -61,9 +61,6 @@ find_package(WxSQLite3)
 find_package(Boost 1.61 REQUIRED COMPONENTS system filesystem)
 
 message("JaneClone version: ${ver_major}.${ver_minor}.${ver_patch}")
-
-add_subdirectory(cpp-netlib)
-
 if(NOT SQLite3_FOUND)
   add_subdirectory(sqlite3)
   option(BUILDING_SQLite3 "Building SQLite3" ON)
