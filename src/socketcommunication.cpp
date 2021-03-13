@@ -21,10 +21,7 @@
 
 #include "socketcommunication.hpp"
 
-
-using tcp = boost::asio::ip::tcp;    // from <boost/asio/ip/tcp.hpp>
-namespace ssl = boost::asio::ssl;    // from <boost/asio/ssl.hpp>
-
+using namespace boost::network;
 
 const wxString SocketCommunication::properties[] = {
     wxT("ID_NetworkPanelUseProxy")          ,// プロキシを使用するかどうか
@@ -115,52 +112,29 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
         + path.ToStdString();
 
     try {
-        // サーバー名に応じたエンドポイントを取得する
-        boost::asio::io_service io_service;
-        tcp::resolver resolver(io_service);
-
-        tcp::resolver::query query(host.ToStdString(), "https");
-        tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-        ssl::context ctx(ssl::context::method::sslv23_client);
-
-        ssl::stream<tcp::socket> ssock(io_service, ctx);
-        boost::asio::connect(ssock.lowest_layer(), endpoint_iterator );
-        ssock.handshake(ssl::stream_base::handshake_type::client);
-
+        http::client client;
+        http::client::request request(url);
         // ヘッダの作成
-        boost::asio::streambuf request;
-        std::ostream request_stream(&request);
-        request_stream << "GET " << path.ToStdString() << " HTTP/1.0\r\n";
-        request_stream << "Accept-Encoding: gzip\r\n";
-        request_stream << "Host: " << host.ToStdString() << "\r\n";
-        request_stream << "Accept-Language: ja\r\n";
-        request_stream << "User-Agent: " << CustomUserAgent() << "\r\n";
-        request_stream << "Connection: close\r\n\r\n";
+        request
+            << header("Accept-Encoding", "gzip")
+            << header("Host", host.ToStdString())
+            << header("Accept-Language", "ja")
+            << header("User-Agent", CustomUserAgent())
+            << header("Connection", "close");
 
         const wxString message = wxString::Format("2chの板一覧情報を取得 (ん`　 ) %s%s\n", host, path);
         JaneCloneUiUtil::SendLoggingHelper(message);
 
         // リクエスト送信/レスポンス受信
-        boost::asio::write(ssock, request);
-        boost::asio::streambuf response;
-        boost::asio::read_until(ssock, response, "\r\n");
-        std::istream responseStream(&response);
+        http::client::response response = client.get(request);
 
         // レスポンスヘッダーを読み取り、ローカルに書き出す
-        boost::asio::read_until(ssock, response, "\r\n\r\n");
-        WriteHeaderLines(responseStream, headerPath);
+        JaneCloneUiUtil::SendLoggingHelper(wxString::Format("%s %d %s\n", response.version(), response.status(), response.status_message()));
+        WriteHeaderLines(headers(response), headerPath);
 
         // EOFまで読み込む
-        boost::system::error_code error;
         std::ofstream ofs(outputPath.ToStdString(), std::ios::out | std::ios::trunc | std::ios::binary);
-
-        while (boost::asio::read(ssock, response, boost::asio::transfer_at_least(1), error)) {
-            ofs << &response;
-        }
-
-        if (error != boost::asio::error::eof) {
-            throw boost::system::system_error(error);
-        }
+        ofs << body(response);
 
     } catch(std::exception const& e) {
         wxString message = wxString::Format("%s %s\n", e.what(), outputPath.ToStdString());
@@ -303,55 +277,31 @@ int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
     const std::string url = host.ToStdString() + path.ToStdString();
 
     try {
-        // サーバー名に応じたエンドポイントを取得する
-        boost::asio::io_service io_service;
-        tcp::resolver resolver(io_service);
-
-        //tcp::resolver::query query(host.ToStdString(), "https");
-        tcp::resolver::query query("192.168.0.5:8080", "http");
-        tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-        ssl::context ctx(ssl::context::method::sslv23_client);
-
-        ssl::stream<tcp::socket> ssock(io_service, ctx);
-        boost::asio::connect(ssock.lowest_layer(), endpoint_iterator );
-        ssock.handshake(ssl::stream_base::handshake_type::client);
-
+        http::client client;
+        http::client::request request(url);
         // ヘッダの作成
-        boost::asio::streambuf request;
-        std::ostream request_stream(&request);
-        request_stream << "GET " << getPath.ToStdString() << " HTTP/1.1\r\n";
-        request_stream << "Accept-Encoding: gzip\r\n";
-        request_stream << "Host: " << host.ToStdString() << "\r\n";
-        request_stream << "Accept: */*\r\n";
-        request_stream << "Referer: " << boardURL.ToStdString() << "\r\n";
-        request_stream << "Accept-Language: ja\r\n";
-        request_stream << "User-Agent: " << CustomUserAgent() << "\r\n";
-        request_stream << "Connection: close\r\n\r\n";
+        request
+            << header("Accept-Encoding", "gzip")
+            << header("Host", host.ToStdString())
+            << header("Accept", "*/*")
+            << header("Referer", boardURL.ToStdString())
+            << header("Accept-Language", "ja")
+            << header("User-Agent", CustomUserAgent())
+            << header("Connection", "close");
 
         const wxString message = wxString::Format("スレッド一覧を取得 (ん`　 ) %s%s\n", host, path);
         JaneCloneUiUtil::SendLoggingHelper(message);
 
         // リクエスト送信/レスポンス受信
-        boost::asio::write(ssock, request);
-        boost::asio::streambuf response;
-        boost::asio::read_until(ssock, response, "\r\n");
-        std::istream responseStream(&response);
+        http::client::response response = client.get(request);
 
         // レスポンスヘッダーを読み取り、ローカルに書き出す
-        boost::asio::read_until(ssock, response, "\r\n\r\n");
-        WriteHeaderLines(responseStream, headerPath);
+        JaneCloneUiUtil::SendLoggingHelper(wxString::Format("%s %d %s\n", response.version(), response.status(), response.status_message()));
+        WriteHeaderLines(headers(response), headerPath);
 
         // EOFまで読み込む
-        boost::system::error_code error;
         std::ofstream ofs(gzipPath.ToStdString(), std::ios::out | std::ios::trunc | std::ios::binary);
-
-        while (boost::asio::read(ssock, response, boost::asio::transfer_at_least(1), error)) {
-            ofs << &response;
-        }
-
-        if (error != boost::asio::error::eof) {
-            throw boost::system::system_error(error);
-        }
+        ofs << body(response);
 
     } catch(std::exception const& e) {
         wxString message = wxString::Format("%s %s\n", e.what(), gzipPath.ToStdString());
@@ -695,32 +645,28 @@ void SocketCommunication::RemoveTmpFile(const wxString& removeFile) {
 /**
  * レスポンスヘッダーを読み取り、ローカルに書き出す
  */
-void SocketCommunication::WriteHeaderLines(std::istream& responseStream, const wxString& headerPath) {
+template<class T>
+void SocketCommunication::WriteHeaderLines(res_headers<T> responseHeaders, const wxString& headerPath) {
 
-    std::string line;
     std::string headerBuf;
-    while (std::getline(responseStream, line) && line != "\r") {
-        WriteHeader(line);
+    for (auto && h: responseHeaders) {
+        // デバッグ用に標準出力に出しておく
+        std::string line = h.first + ": " + h.second;
+        std::cout << line << std::endl;
+        WriteHeader(h, line);
         headerBuf += line;
         headerBuf += "\n";
     }
 
-    std::ofstream ofsHeader(headerPath.mb_str() , std::ios::out | std::ios::trunc );
+    std::ofstream ofsHeader(headerPath.ToStdString() , std::ios::out | std::ios::trunc );
     ofsHeader << headerBuf << std::endl;
 }
 
-void SocketCommunication::WriteHeader(std::string& line) {
-
-    // ログに出力する
-    if (std::string::npos != line.find("HTTP")) {
-        wxString message = wxString(line.c_str(), wxConvUTF8) + wxT("\n");
-        JaneCloneUiUtil::SendLoggingHelper(message);
-    }
+void SocketCommunication::WriteHeader(const std::pair<std::string, std::string>& header, const std::string& line) {
 
     // クッキーを書き出す
-    if (std::string::npos != line.find("Set-Cookie:")) {
-        wxString cookie;
-        wxString(line.c_str(), wxConvUTF8).StartsWith(wxT("Set-Cookie: "), &cookie);
+    if (header.first == "Set-Cookie") {
+        wxString cookie = header.second;
 
         // 2chからもらえるCookieは複数ある
         if (cookie.Contains(wxT("PON"))) {

@@ -26,8 +26,11 @@
 #include <istream>
 #include <ostream>
 #include <string>
-#include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
+
+// ref: https://cpp-netlib.org/0.13.0/reference/http_client.html#features
+//
+#define BOOST_NETWORK_ENABLE_HTTPS
+#include <boost/network/protocol/http/client.hpp>
 
 #include <wx/protocol/http.h>
 #include <wx/wfstream.h>
@@ -39,7 +42,9 @@
 #include "janecloneuiutil.hpp"
 #include "sqliteaccessor.hpp"
 
-//using boost::asio::ip::tcp;
+
+template <class T>
+using res_headers = boost::network::http::impl::response_headers_wrapper<T>;
 
 class SocketCommunication {
 
@@ -239,8 +244,9 @@ private:
     /**
      * HTTPレスポンスヘッダーを読み取り、ローカルに書き出す
      */
-    void WriteHeaderLines(std::istream& responseStream, const wxString& headerPath);
-    void WriteHeader(std::string& line);
+    template<class T>
+    void WriteHeaderLines(res_headers<T> responseHeaders, const wxString& headerPath);
+    void WriteHeader(const std::pair<std::string, std::string>& header, const std::string& line);
     /**
      * HTTPボディを書きだす
      */
