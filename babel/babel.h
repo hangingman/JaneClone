@@ -207,7 +207,7 @@ namespace {
 //#define __BBL_USING_STDMAP_TABLE__
 
 #	if defined(__BBL_USING_STATIC_TABLE__) && defined(__BBL_USING_STDMAP_TABLE__)
-#		error	マッピング実装方法指定マクロはどれか一つにしてください。
+#		error	"マッピング実装方法指定マクロはどれか一つにしてください。"
 #	endif
 
 #	if !(defined(__BBL_USING_STATIC_TABLE__) || defined(__BBL_USING_STDMAP_TABLE__))
@@ -249,7 +249,7 @@ namespace {
 #	if defined(__BBL_USE_UNICODE_MAP_CP932__) && defined(__BBL_USE_UNICODE_MAP_UTC__) || \
 		defined(__BBL_USE_UNICODE_MAP_CP932__) && defined(__BBL_USE_UNICODE_MAP_APPLE__) || \
 		defined(__BBL_USE_UNICODE_MAP_UTC__) && defined(__BBL_USE_UNICODE_MAP_APPLE__)
-#		error	UNICODE⇔Shift_JISマッピングデフォルト指定マクロはどれか一つにしてください。
+#		error	"UNICODE⇔Shift_JISマッピングデフォルト指定マクロはどれか一つにしてください。"
 #	endif
 
 #	if !(defined(__BBL_USE_UNICODE_MAP_CP932__) || defined(__BBL_USE_UNICODE_MAP_UTC__) || defined(__BBL_USE_UNICODE_MAP_APPLE__))
@@ -927,8 +927,8 @@ class bbl_translater {
 #ifdef _MSC_VER
 	bbl_translater(const bbl_translater &X) : engine(X.engine) { }
 #else
-	bbl_translater(const bbl_translater &X = dull_engine_type::create() ) : engine(X.engine) { }		
-#endif      
+	bbl_translater(const bbl_translater &X = dull_engine_type::create() ) : engine(X.engine) { }
+#endif
 
 	~bbl_translater() { }
 
