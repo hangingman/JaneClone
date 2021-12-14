@@ -95,7 +95,7 @@ public:
      * 引数１は読み込み元gzipファイルのPATH、引数２は解凍先のファイルのPATH
      * いずれもファイル名までを記述する
      */
-    static void DecommpressFile(const wxString& inputPath, const wxString& outputPath);
+    static void DecompressFile(const wxString& inputPath, const wxString& outputPath);
     /**
      * ダウンロードしたファイルの文字コードをShift-JISからUTF-8に変換する処理
      * @param wxString& inputPath  読み込み元のパス

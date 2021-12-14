@@ -1397,13 +1397,14 @@ void JaneClone::SetBoardNameToNoteBook(wxString& boardName, wxString& boardURL, 
     std::map<wxString, ThreadList> oldThreadMap;
     URLvsBoardName boardInfo;
     boardInfo.boardName      = boardName;
-    boardInfo.boardURL	      = boardURL;
+    boardInfo.boardURL       = boardURL;
     boardInfo.boardNameAscii = boardNameAscii;
     // map化の実行
     JaneCloneUtil::GenerateOldThreadMap(oldThreadMap, boardInfo);
 
     // スレ一覧をダウンロードする
     std::unique_ptr<SocketCommunication> sock(new SocketCommunication());
+    std::cerr << "boardNameAscii: " << boardNameAscii << std::endl;
     wxString outputPath = sock->DownloadThreadList(boardName, boardURL, boardNameAscii);
 
 
@@ -2520,8 +2521,7 @@ void JaneClone::Initialize2chBoardList() {
         urlVsName.boardURL = url;
 
         // 正規表現を使ってサーバ名と板名(ascii)を取得する
-        // そこまで難しい正規表現を使う必要はないようです
-        wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
+        wxRegEx reThreadList(_T("(http?s://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
 
         // 正規表現のコンパイルにエラーがなければ
         if (reThreadList.IsValid()) {
@@ -2716,8 +2716,7 @@ void JaneClone::SetBoardList(const bool updateHash)
         urlVsName.boardURL = url;
 
         // 正規表現を使ってサーバ名と板名(ascii)を取得する
-        // そこまで難しい正規表現を使う必要はないようです
-        wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
+        wxRegEx reThreadList(_T("(http?s://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
 
         // 正規表現のコンパイルにエラーがなければ
         if (reThreadList.IsValid()) {
