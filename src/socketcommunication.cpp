@@ -476,8 +476,7 @@ wxString SocketCommunication::DownloadThread(const wxString& boardName,
     const wxString headerPath = outputDir.GetFullPath();
 
     // URLからホスト名を取得する
-    wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
-                         wxRE_ADVANCED + wxRE_ICASE);
+    wxRegEx reThreadList(_T("(http?s://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
     // ホスト名
     wxString hostName;
     if (reThreadList.IsValid()) {
