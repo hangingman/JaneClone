@@ -24,20 +24,20 @@
 
 const wxString SocketCommunication::properties[] = {
     wxT("ID_NetworkPanelUseProxy")          ,// プロキシを使用するかどうか
-	wxT("ID_NetworkPanelUseProxyCache")		,// プロキシでキャッシュを使用するかどうか
-	wxT("ID_NetworkPanelBasicAuthUserName") ,// ベーシック認証のユーザー名
-	wxT("ID_NetworkPanelBasicAuthPassword") ,// ベーシック認証のパスワード
-	wxT("ID_NetworkPanelProxyReceiveAddr")	,// Proxy受信用アドレス
-	wxT("ID_NetworkPanelProxyReceivePort")	,// Proxy受信用ポート
-	wxT("ID_NetworkPanelProxySendAddr")		,// Proxy送信用アドレス
-	wxT("ID_NetworkPanelProxySendPort")		,// Proxy送信用ポート
-	wxT("ID_NetworkPanelProxySSLAuthAddr")	,// Proxy SSL認証用アドレス
-	wxT("ID_NetworkPanelProxySSLAuthPort")	,// Proxy SSL認証用ポート
-	wxT("ID_NetworkPanelBoardListURL")		,// ボード一覧取得URL
-	wxT("ID_NetworkPanelReceiveBufferSize") ,// 受信バッファサイズ
-	wxT("ID_NetworkPanelMaxConn")			,// 最大接続数
-	wxT("ID_Receive_Timeout_Sec")			,// 受信タイムアウト秒
-	wxT("ID_Connection_Timeout_Sec")		 // 接続タイムアウト秒
+    wxT("ID_NetworkPanelUseProxyCache")     ,// プロキシでキャッシュを使用するかどうか
+    wxT("ID_NetworkPanelBasicAuthUserName") ,// ベーシック認証のユーザー名
+    wxT("ID_NetworkPanelBasicAuthPassword") ,// ベーシック認証のパスワード
+    wxT("ID_NetworkPanelProxyReceiveAddr")  ,// Proxy受信用アドレス
+    wxT("ID_NetworkPanelProxyReceivePort")  ,// Proxy受信用ポート
+    wxT("ID_NetworkPanelProxySendAddr")     ,// Proxy送信用アドレス
+    wxT("ID_NetworkPanelProxySendPort")     ,// Proxy送信用ポート
+    wxT("ID_NetworkPanelProxySSLAuthAddr"),  // Proxy SSL認証用アドレス
+    wxT("ID_NetworkPanelProxySSLAuthPort"),  // Proxy SSL認証用ポート
+    wxT("ID_NetworkPanelBoardListURL")    ,  // ボード一覧取得URL
+    wxT("ID_NetworkPanelReceiveBufferSize") ,// 受信バッファサイズ
+    wxT("ID_NetworkPanelMaxConn")  ,         // 最大接続数
+    wxT("ID_Receive_Timeout_Sec")  ,         // 受信タイムアウト秒
+    wxT("ID_Connection_Timeout_Sec")         // 接続タイムアウト秒
 };
 
 /**
@@ -86,7 +86,7 @@ int SocketCommunication::DownloadBoardList(const wxString& outputPath,
 
     if (wxFile::Exists(gzipPath)) {
         // gzip拡張子のファイルがあれば、ファイルの解凍・UTF化を行う
-        JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
+        JaneCloneUtil::DecompressFile(gzipPath, tmpPath);
         JaneCloneUtil::ConvertSJISToUTF8(tmpPath, outputPath);
         // 更新が終わったらgzipファイルを消しておく
         RemoveTmpFile(gzipPath);
@@ -115,6 +115,7 @@ int SocketCommunication::DownloadBoardListNew(const wxString& outputPath,
     std::list<std::string> headers;
     headers.push_back("Accept-Encoding: gzip");
     headers.push_back(std::string(wxString::Format(wxT("Host: %s"), server).mb_str()));
+    headers.push_back("Scheme: https");
     headers.push_back("Accept-Language: ja");
     headers.push_back("User-Agent: " + CustomUserAgent());
 
@@ -201,7 +202,7 @@ wxString SocketCommunication::GetHTTPResponseCode(const wxString& headerPath,
 wxString SocketCommunication::DownloadThreadList(wxString& boardName, wxString& boardURL, wxString& boardNameAscii)
 {
     // URLからホスト名を取得する
-    wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
+    wxRegEx reThreadList(_T("(http?s://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
     // ホスト名
     wxString hostName;
     if (reThreadList.IsValid()) {
@@ -244,7 +245,7 @@ wxString SocketCommunication::DownloadThreadList(wxString& boardName, wxString& 
 
     // gzip拡張子のファイルがあれば、ファイルの解凍・UTF化を行う
     if (wxFile::Exists(gzipPath)) {
-        JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
+        JaneCloneUtil::DecompressFile(gzipPath, tmpPath);
     }
 
     if (wxFile::Exists(tmpPath)) {
@@ -297,6 +298,7 @@ int SocketCommunication::DownloadThreadListNew(const wxString& gzipPath,
     headers.push_back(std::string(getPath.mb_str()) + ": HTTP/1.1");
     headers.push_back("Accept-Encoding: gzip");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
+    headers.push_back("Scheme: https");
     headers.push_back("Accept: */*");
     headers.push_back("Referer: " + std::string(boardURL.mb_str()));
     headers.push_back("Accept-Language: ja");
@@ -385,6 +387,7 @@ int SocketCommunication::DownloadThreadListMod(const wxString& gzipPath,
     headers.push_back(std::string(getPath.mb_str()) + ": HTTP/1.1");
     headers.push_back("Accept-Encoding: gzip");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
+    headers.push_back("Scheme: https");
     headers.push_back("If-Modified-Since: " + std::string(lastModifiedTime.mb_str()));
     headers.push_back("Accept: */*");
     headers.push_back("Referer: " + std::string(boardURL.mb_str()));
@@ -473,8 +476,7 @@ wxString SocketCommunication::DownloadThread(const wxString& boardName,
     const wxString headerPath = outputDir.GetFullPath();
 
     // URLからホスト名を取得する
-    wxRegEx reThreadList(_T("(http://)([^/]+)/([^/]+)"),
-                         wxRE_ADVANCED + wxRE_ICASE);
+    wxRegEx reThreadList(_T("(http?s://)([^/]+)/([^/]+)"), wxRE_ADVANCED + wxRE_ICASE);
     // ホスト名
     wxString hostName;
     if (reThreadList.IsValid()) {
@@ -493,7 +495,7 @@ wxString SocketCommunication::DownloadThread(const wxString& boardName,
 
     if (wxFile::Exists(gzipPath)) {
         // gzip拡張子のファイルがあれば、ファイルの解凍を行う
-        JaneCloneUtil::DecommpressFile(gzipPath, tmpPath);
+        JaneCloneUtil::DecompressFile(gzipPath, tmpPath);
     }
 
     if (wxFile::Exists(tmpPath)) {
@@ -546,6 +548,7 @@ void SocketCommunication::DownloadThreadNew(const wxString& gzipPath,
     headers.push_back(std::string(getPath.mb_str()) + " HTTP/1.1");
     headers.push_back("Accept-Encoding: gzip");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
+    headers.push_back("Scheme: https");
     headers.push_back("Accept: */*");
     headers.push_back("Referer: "+ std::string(referer.mb_str()));
     headers.push_back("Accept-Language: ja");
@@ -675,6 +678,7 @@ int SocketCommunication::DownloadThreadMod(const wxString& gzipPath,
     std::list<std::string> headers;
     headers.push_back(std::string(getPath.mb_str()) + " HTTP/1.1");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
+    headers.push_back("Scheme: https");
     headers.push_back("Accept: */*");
     headers.push_back("Referer: "+ std::string(referer.mb_str()));
     headers.push_back("Accept-Language: ja");
@@ -829,6 +833,7 @@ int SocketCommunication::DownloadThreadPast(const wxString& gzipPath, const wxSt
     headers.push_back(std::string(getPath.mb_str()) + ": HTTP/1.1");
     headers.push_back("Accept-Encoding: gzip");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
+    headers.push_back("Scheme: https");
     headers.push_back("Accept: */*");
     headers.push_back("Referer: "+ std::string(referer.mb_str()));
     headers.push_back("Accept-Language: ja");
@@ -1052,6 +1057,7 @@ wxString SocketCommunication::PostFirstToThread(URLvsBoardName& boardInfoHash, T
     std::list<std::string> headers;
     headers.push_back("POST /test/bbs.cgi HTTP/1.1");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
+    headers.push_back("Scheme: https");
     headers.push_back("Accept: */*");
     headers.push_back("Referer: " + std::string(referer.mb_str()));
     headers.push_back("Accept-Language: ja");
@@ -1195,6 +1201,7 @@ wxString SocketCommunication::PostConfirmToThread(URLvsBoardName& boardInfoHash,
     std::list<std::string> headers;
     headers.push_back("POST /test/bbs.cgi HTTP/1.1");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
+    headers.push_back("Scheme: https");
     headers.push_back("Accept: */*");
     headers.push_back("Referer: " + std::string(referer.mb_str()));
     headers.push_back("Accept-Language: ja");
@@ -1341,6 +1348,7 @@ wxString SocketCommunication::PostResponseToThread(URLvsBoardName& boardInfoHash
     std::list<std::string> headers;
     headers.push_back("POST /test/bbs.cgi HTTP/1.1");
     headers.push_back("Host: " + std::string(hostName.mb_str()));
+    headers.push_back("Scheme: https");
     headers.push_back("Accept: */*");
     headers.push_back("Referer: " + std::string(referer.mb_str()));
     headers.push_back("Accept-Language: ja");

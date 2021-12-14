@@ -32,12 +32,22 @@
 /**
  * gzipファイルを解凍する処理
  * 引数１は読み込み元gzipファイルのPATH、引数２は解凍先のファイルのPATH
- * いずれもファイル名までを記述する
+ * いずれもファイル名までを記述する, 読み込みに失敗した場合プレインテキストと
+ * みなして引数１を引数２にリネームする
  */
-void JaneCloneUtil::DecommpressFile(const wxString& inputPath,
-									const wxString& outputPath) {
+void JaneCloneUtil::DecompressFile(const wxString& inputPath,
+                                   const wxString& outputPath) {
     // gzファイルをZlibを使って解凍する
     const gzFile infile = gzopen(inputPath.mb_str(), "rb");
+    if (infile == Z_NULL) {
+        std::cerr << "gzopen: "
+                  << inputPath.mb_str()
+                  << "return Z_NULL"
+                  << std::endl;
+        wxRenameFile(inputPath, outputPath);
+    } else {
+        std::cerr << infile << std::endl;
+    }
     FILE *outfile = fopen(outputPath.mb_str(), "wb");
 
     char buffer[2048];
