@@ -39,4 +39,5 @@ jobs:
       env:
         GEMFURY_PUSH_TOKEN: ${{ secrets.GEMFURY_PUSH_TOKEN }}
       run: |
-        curl -F package=@build/janeclone_*_*.deb https://${GEMFURY_PUSH_TOKEN}@push.fury.io/hangingman/
+        PACKAGE=`ls build/janeclone_*_*.deb`
+        curl -F package=@${PACKAGE} https://${GEMFURY_PUSH_TOKEN}@push.fury.io/hangingman/
