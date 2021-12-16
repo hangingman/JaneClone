@@ -1,13 +1,9 @@
-name: Build JaneClone
+name: Create package of JaneClone
 
 on:
   push:
-    branches: 
-    - develop
-    - releases/*
-  pull_request:
     branches:
-    - develop
+    - releases/*
 
 env:
   ACTIONS_ALLOW_UNSECURE_COMMANDS: true
@@ -38,3 +34,9 @@ jobs:
     - name: Build
       working-directory: ${{github.workspace}}/build
       run: ninja && ninja package
+
+    - name: Publish .deb to Gemfury
+      env:
+        GEMFURY_PUSH_TOKEN: ${{ secrets.GEMFURY_PUSH_TOKEN }}
+      run: |
+        curl -F package=@build/janeclone_*_*.deb https://{$GEMFURY_PUSH_TOKEN}@push.fury.io/hangingman/
