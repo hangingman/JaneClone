@@ -100,7 +100,8 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
     htmlWin->SetSize(hx, hy);
     // このウィンドウ(popup)にサイザーをセットして最小の大きさに設定する
     topsizer->Add(htmlWin, 1, wxALL, 10);
-    this->SetSize(hx, hy);
+    SetSizerAndFit(topsizer);
+    Layout();
 }
 
 wxSize AnchoredResponsePopup::GetPopupWindowSize() {
@@ -178,6 +179,7 @@ AnchoredResponsePopup::GetSkinInfo(const wxString& skinPath) {
 
     return std::move(skin);
 }
+
 /**
  * 指定されたファイル中のテキストをメモリに展開する
  */

@@ -154,7 +154,7 @@ public:
         *m_logCtrl << event.GetString();
     };
     // メインのスレッドにログとイベントを送る
-    void SendLogging(wxString& message) {
+    void SendLogging(const wxString& message) {
         JaneCloneUiUtil::SendLoggingHelper(message);
     };
 
