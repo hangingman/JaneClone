@@ -81,23 +81,21 @@ wxListCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_VIRT
     widgetsName = wxT("ID_ExtractFontButton");
     widgetsInfo.Clear();
     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-    if (widgetsInfo != wxEmptyString)
-        {
-            wxFont font;
-            bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
-            if(ret) m_attr_search.SetFont(font);
-        }
+    if (widgetsInfo != wxEmptyString) {
+        wxFont font;
+        bool ret = font.SetNativeFontInfoUserDesc(widgetsInfo);
+        if(ret) m_attr_search.SetFont(font);
+    }
 
     widgetsName = wxT("ID_ThreadListBGColorButton");
     widgetsInfo.Clear();
     JaneCloneUtil::GetJaneCloneProperties(widgetsName, &widgetsInfo);
-    if (widgetsInfo != wxEmptyString)
-        {
-            wxColour bgColor;
-            bool ret = bgColor.Set(widgetsInfo);
-            if(ret) m_attr.SetBackgroundColour(bgColor);
-            if(ret) m_attr_search.SetBackgroundColour(bgColor);
-        } else {
+    if (widgetsInfo != wxEmptyString) {
+        wxColour bgColor;
+        bool ret = bgColor.Set(widgetsInfo);
+        if(ret) m_attr.SetBackgroundColour(bgColor);
+        if(ret) m_attr_search.SetBackgroundColour(bgColor);
+    } else {
         // デフォルト設定
         m_attr.SetBackgroundColour(*wxLIGHT_GREY);
         m_attr_search.SetBackgroundColour(wxColour(wxT("YELLOW")));

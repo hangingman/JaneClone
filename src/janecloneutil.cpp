@@ -484,6 +484,7 @@ wxString JaneCloneUtil::FindAnchoredResponseText(
 
     return res;
 }
+
 /**
  * レスをIDで抽出してファイルから読み取ってDOM形式にして送り返す
  * @param  const wxString& boardNameAscii	  板名の英語名
@@ -744,6 +745,7 @@ wxString JaneCloneUtil::ReplaceURLText(const wxString& responseText) {
 
     return result;
 }
+
 /**
  * レス内に画像があれば<img>タグを付ける
  */
@@ -798,6 +800,7 @@ void JaneCloneUtil::AddImgTag(wxString& responseText) {
         responseText.Append(wxT(BR));
     }
 }
+
 /**
  * プレインテキスト内にアンカーがあれば<a>タグをつける
  */
@@ -825,6 +828,7 @@ wxString JaneCloneUtil::AddAnchorTag(const wxString& responseText) {
 
     return result;
 }
+
 /**
  * プレインテキスト内に2chのIDがあれば<a>タグをつける
  */
@@ -1130,6 +1134,7 @@ std::string JaneCloneUtil::UrlEncode(const std::string& str) {
 
     return retStr;
 }
+
 /**
  * 文字列中の実体参照文字を変換する
  */
@@ -1143,8 +1148,38 @@ wxString JaneCloneUtil::ConvCharacterReference(const wxString& inputString) {
     buffer.Replace(_T("&quot;"), _T("\""), true);
     buffer.Replace(_T("&apos;"), _T("'"), true);
     buffer.Replace(_T("&copy;"), _T("©"), true);
+
+    if (regexUnicodeRef.IsValid() && regexUnicodeRef.Matches(buffer)) {
+        wxString tmp, result;
+        size_t start, len;
+
+        // コード的にちょっとわかりにくいのですが、正規表現でテキスト内にある
+        // ユニコードの実体参照を抽出しwxStringに変換しています
+        for (tmp = buffer;
+             regexUnicodeRef.Matches(tmp);
+             tmp = tmp.SubString(start + len + 1, tmp.Len())) {
+
+            regexUnicodeRef.GetMatch(&start, &len, 1);
+            result += tmp.SubString(0, start - 1 - 2);
+
+            long u = 0L;
+            wxString possibleNumber = tmp.SubString(start, start + len - 1);
+            if (possibleNumber.ToLong(&u)) {
+                // 数値(=long型)に変換できればUnicodeに変換する
+                wxUniChar unicode(u);
+                result += wxString(unicode);
+            } else {
+                result += possibleNumber;
+            }
+        }
+
+        result += tmp;
+        return result;
+    }
+
     return buffer;
 }
+
 /**
  * URLの末尾にある拡張子が何か判別し、Content-Typeを返す
  */
@@ -1285,6 +1320,7 @@ wxString JaneCloneUtil::CalcThreadMomentum(const wxString& itemResponse,
         return wxT("std::underflow_error");
     }
 }
+
 /**
  * スレッドの情報をOIDをキーとするmapに変換する
  * @param map<wxString,ThreadList>& oldThreadMap 古いスレッドの情報を保持するコンテナ
@@ -1388,6 +1424,7 @@ void JaneCloneUtil::SetJaneCloneProperties(const wxString& key, const T& value) 
     config->Flush();
     delete config;
 }
+
 // テンプレート関数の実体化
 template void JaneCloneUtil::SetJaneCloneProperties<wxString>(const wxString& key, const wxString& value);
 template void JaneCloneUtil::SetJaneCloneProperties<long>(const wxString& key, const long& value);

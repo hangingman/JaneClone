@@ -391,4 +391,8 @@ static const wxRegEx regexID(_T("ID:(([-/\\.a-zA-Z0-9_#~:.?+=&%!@]){8,9})"), wxR
 // 2chのレス番号マッチング用正規表現
 static const wxRegEx regexIndex(_T("<a href=\"#([[:digit:]]{1,4})\">([[:digit:]]{1,4})</a>"), wxRE_ADVANCED + wxRE_ICASE);
 
+// emoji等タグマッチング用正規表現
+static const wxRegEx regexUnicodeRef(_T("&#([[:digit:]]{1,7});"), wxRE_ADVANCED + wxRE_ICASE);
+
+
 #endif /* DATATYPE_HPP_ */
