@@ -22,6 +22,7 @@
 #ifndef ANCHOREDRESPONSEPOPUP_HPP_
 #define ANCHOREDRESPONSEPOPUP_HPP_
 
+#include <memory>
 #include <wx/msgdlg.h>
 #include <wx/html/htmlwin.h>
 #include <wx/scrolwin.h>
@@ -60,8 +61,8 @@ private:
     void OnSize( wxSizeEvent &event );
     void OnSetFocus( wxFocusEvent &event );
     void OnKillFocus( wxFocusEvent &event );
-    // スキン用のファイルが有るかどうか確認する
-    bool CheckSkinFiles(SkinInfo* skin);
+    // スキン用のファイルが有るかどうか確認し、あれば構造体を返す
+    std::unique_ptr<SkinInfo> GetSkinInfo(const wxString& skinPath);
     // 指定されたファイル中のテキストをメモリに展開する
     wxString ReadPlainTextFile(const wxString& filePath);
 

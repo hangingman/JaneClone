@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  * Contributor:
- *	Hiroyuki Nagata <idiotpanzer@gmail.com>
+ *  Hiroyuki Nagata <idiotpanzer@gmail.com>
  */
 
 #include "anchoredresponsepopup.hpp"
@@ -45,12 +45,19 @@ END_EVENT_TABLE()
 AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, wxSize size, wxString& htmlSource )
 :wxPopupTransientWindow( parent ) {
 
-    // スキンを使わないならデフォルトフォントを設定する
-    SkinInfo* skinInfo = new SkinInfo;
+    // スキン用のパスが設定されていれば読み出す
+    wxString skinPath = wxEmptyString;
+    JaneCloneUtil::GetJaneCloneProperties(wxT("DEFAULT_SKINFILE_PATH"), &skinPath);
+    bool useSkin = false;
+    std::unique_ptr<SkinInfo> skinInfo = nullptr;
+
+    if (skinPath != wxEmptyString) {
+        useSkin = true;
+        std::unique_ptr<SkinInfo> skinInfo = GetSkinInfo(skinPath);
+    }
+
     // HTMLのソース
     wxString html = wxEmptyString;
-    bool  useSkin = CheckSkinFiles(skinInfo);
-
     wxBoxSizer* topsizer = new wxBoxSizer(wxVERTICAL);
     // wxHtmlWindowにHTMLソースを設定する
     htmlWin = new wxHtmlWindow(this, wxID_ANY, wxPoint(0, 0), size, wxHW_SCROLLBAR_AUTO);
@@ -84,9 +91,6 @@ AnchoredResponsePopup::AnchoredResponsePopup( wxWindow *parent, wxPoint& point, 
         html += htmlSource;
         html += skinInfo->footer;
     }
-
-    // 後片付け
-    delete skinInfo;
 
     htmlWin->SetBorders(0);
     htmlWin->SetPage(html);
@@ -135,61 +139,44 @@ void AnchoredResponsePopup::EnterWindow(wxMouseEvent &event) {
 
 void AnchoredResponsePopup::LeaveWindow(wxMouseEvent &event) {
 }
-/**
- * スキン用のファイルが有るかどうか確認する
- */
-bool AnchoredResponsePopup::CheckSkinFiles(SkinInfo* skin) {
 
-    // スキン用のパスが設定されていなければ即リターン
-    const wxString key = wxT("DEFAULT_SKINFILE_PATH");
-    wxString skinPath = wxEmptyString;
-    JaneCloneUtil::GetJaneCloneProperties(key, &skinPath);
-    bool ret = false;
+std::unique_ptr<SkinInfo>
+AnchoredResponsePopup::GetSkinInfo(const wxString& skinPath) {
 
-    if (skinPath == wxEmptyString) {
-        return false;
-    }
-
+    std::unique_ptr<SkinInfo> skin = std::make_unique<SkinInfo>();
     if (!wxDir::Exists(skinPath)) {
         wxMessageBox(wxT("スキン用のディレクトリが存在しません、設定画面を開いてスキンのパス設定を確認してください。"),
                      wxT("スキン設定"), wxICON_ERROR);
-        return false;
+        return nullptr;
     }
 
     // Footer.html
     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Footer.html"))) {
         const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Footer.html");
         skin->footer = ReadPlainTextFile(filePath);
-        ret = true;
     }
     // Header.html
     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Header.html"))) {
         const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Header.html");
         skin->header = ReadPlainTextFile(filePath);
-        ret = true;
     }
     // NewRes.html
     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("NewRes.html"))) {
         const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("NewRes.html");
         skin->newres = ReadPlainTextFile(filePath);
-        ret = true;
     }
     // PopupRes.html
     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("PopupRes.html"))) {
         const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("PopupRes.html");
         skin->popup = ReadPlainTextFile(filePath);
-        ret = true;
     }
     // Res.html
     if (wxFile::Exists(skinPath + wxFILE_SEP_PATH + wxT("Res.html"))) {
         const wxString filePath = skinPath + wxFILE_SEP_PATH + wxT("Res.html");
         skin->res = ReadPlainTextFile(filePath);
-        ret = true;
     }
-    // ***.js
-    // TODO: SpiderMonkeyの適用
 
-    return ret;
+    return std::move(skin);
 }
 /**
  * 指定されたファイル中のテキストをメモリに展開する
